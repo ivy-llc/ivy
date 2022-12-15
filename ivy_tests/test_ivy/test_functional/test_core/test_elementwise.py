@@ -29,7 +29,6 @@ def _not_too_close_to_zero(x):
 def test_abs(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -40,7 +39,6 @@ def test_abs(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -62,7 +60,6 @@ def test_abs(
 def test_acosh(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -73,7 +70,6 @@ def test_acosh(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -96,7 +92,6 @@ def test_acosh(
 def test_acos(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -107,7 +102,6 @@ def test_acos(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -134,7 +128,6 @@ def test_add(
     *,
     dtype_and_x,
     alpha,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -146,7 +139,6 @@ def test_add(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -171,7 +163,6 @@ def test_add(
 def test_asin(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -182,7 +173,6 @@ def test_asin(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -205,7 +195,6 @@ def test_asin(
 def test_asinh(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -216,7 +205,6 @@ def test_asinh(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -235,7 +223,6 @@ def test_asinh(
 def test_atan(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -246,7 +233,6 @@ def test_atan(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -270,7 +256,6 @@ def test_atan(
 def test_atan2(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -282,7 +267,6 @@ def test_atan2(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -300,7 +284,6 @@ def test_atan2(
 def test_atanh(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -311,7 +294,6 @@ def test_atanh(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -334,7 +316,6 @@ def test_atanh(
 def test_bitwise_and(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -345,7 +326,6 @@ def test_bitwise_and(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -367,7 +347,6 @@ def test_bitwise_and(
 def test_bitwise_left_shift(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -383,7 +362,6 @@ def test_bitwise_left_shift(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -404,7 +382,6 @@ def test_bitwise_left_shift(
 def test_bitwise_invert(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -415,7 +392,6 @@ def test_bitwise_invert(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -436,7 +412,6 @@ def test_bitwise_invert(
 def test_bitwise_or(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -447,7 +422,6 @@ def test_bitwise_or(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -469,7 +443,6 @@ def test_bitwise_or(
 def test_bitwise_right_shift(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -487,7 +460,6 @@ def test_bitwise_right_shift(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -509,7 +481,6 @@ def test_bitwise_right_shift(
 def test_bitwise_xor(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -517,11 +488,9 @@ def test_bitwise_xor(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -543,7 +512,6 @@ def test_bitwise_xor(
 def test_ceil(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -554,7 +522,6 @@ def test_ceil(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -571,7 +538,6 @@ def test_ceil(
 def test_cos(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -582,7 +548,6 @@ def test_cos(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -599,7 +564,6 @@ def test_cos(
 def test_cosh(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -610,7 +574,6 @@ def test_cosh(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -629,7 +592,6 @@ def test_cosh(
 def test_divide(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -643,7 +605,6 @@ def test_divide(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -663,7 +624,6 @@ def test_divide(
 def test_equal(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -674,7 +634,6 @@ def test_equal(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -692,7 +651,6 @@ def test_equal(
 def test_exp(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -703,7 +661,6 @@ def test_exp(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -720,7 +677,6 @@ def test_exp(
 def test_expm1(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -731,7 +687,6 @@ def test_expm1(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -752,7 +707,6 @@ def test_expm1(
 def test_floor(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -764,7 +718,6 @@ def test_floor(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -787,7 +740,6 @@ def test_floor(
 def test_floor_divide(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -802,7 +754,7 @@ def test_floor_divide(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
+
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -823,7 +775,6 @@ def test_floor_divide(
 def test_greater(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -836,7 +787,6 @@ def test_greater(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -856,7 +806,6 @@ def test_greater(
 def test_greater_equal(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -871,7 +820,6 @@ def test_greater_equal(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -891,7 +839,6 @@ def test_greater_equal(
 def test_isfinite(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -902,7 +849,6 @@ def test_isfinite(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -921,7 +867,6 @@ def test_isfinite(
 def test_isinf(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -932,7 +877,6 @@ def test_isinf(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -951,7 +895,6 @@ def test_isinf(
 def test_isnan(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -962,7 +905,6 @@ def test_isnan(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -983,7 +925,6 @@ def test_isnan(
 def test_less(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -998,7 +939,6 @@ def test_less(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1018,7 +958,6 @@ def test_less(
 def test_less_equal(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1033,7 +972,6 @@ def test_less_equal(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1051,7 +989,6 @@ def test_less_equal(
 def test_log(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1064,7 +1001,6 @@ def test_log(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1085,7 +1021,6 @@ def test_log(
 def test_log1p(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1098,7 +1033,6 @@ def test_log1p(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1115,7 +1049,6 @@ def test_log1p(
 def test_log2(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1128,7 +1061,6 @@ def test_log2(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1146,7 +1078,6 @@ def test_log2(
 def test_log10(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1159,7 +1090,6 @@ def test_log10(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1184,7 +1114,6 @@ def test_log10(
 def test_logaddexp(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1195,7 +1124,6 @@ def test_logaddexp(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1215,7 +1143,6 @@ def test_logaddexp(
 def test_logical_and(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1227,7 +1154,7 @@ def test_logical_and(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -1244,7 +1171,6 @@ def test_logical_and(
 def test_logical_not(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1256,7 +1182,6 @@ def test_logical_not(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        num_positional_args=num_positional_args,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -1272,7 +1197,6 @@ def test_logical_not(
 def test_logical_or(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1284,7 +1208,6 @@ def test_logical_or(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1302,7 +1225,6 @@ def test_logical_or(
 def test_logical_xor(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1314,7 +1236,6 @@ def test_logical_xor(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1334,7 +1255,6 @@ def test_logical_xor(
 def test_multiply(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1346,7 +1266,6 @@ def test_multiply(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1366,7 +1285,6 @@ def test_multiply(
 def test_negative(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1377,7 +1295,6 @@ def test_negative(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1396,7 +1313,6 @@ def test_negative(
 def test_not_equal(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1408,7 +1324,6 @@ def test_not_equal(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1428,7 +1343,6 @@ def test_not_equal(
 def test_positive(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1439,7 +1353,6 @@ def test_positive(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1507,7 +1420,6 @@ def pow_helper(draw, available_dtypes=None):
 def test_pow(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1533,7 +1445,6 @@ def test_pow(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1561,7 +1472,6 @@ def test_remainder(
     *,
     dtype_and_x,
     modulus,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1579,7 +1489,6 @@ def test_remainder(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=[as_variable, False],
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1602,7 +1511,6 @@ def test_remainder(
 def test_round(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1613,7 +1521,6 @@ def test_round(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1632,7 +1539,6 @@ def test_round(
 def test_sign(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1644,7 +1550,6 @@ def test_sign(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1661,7 +1566,6 @@ def test_sign(
 def test_sin(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1672,7 +1576,6 @@ def test_sin(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1689,7 +1592,6 @@ def test_sin(
 def test_sinh(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1700,7 +1602,6 @@ def test_sinh(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1719,7 +1620,6 @@ def test_sinh(
 def test_square(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1731,7 +1631,6 @@ def test_square(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        num_positional_args=num_positional_args,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -1749,7 +1648,6 @@ def test_square(
 def test_sqrt(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1760,7 +1658,6 @@ def test_sqrt(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1787,7 +1684,6 @@ def test_subtract(
     *,
     dtype_and_x,
     alpha,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1798,7 +1694,6 @@ def test_subtract(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1819,7 +1714,6 @@ def test_subtract(
 def test_tan(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1830,7 +1724,6 @@ def test_tan(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1849,7 +1742,6 @@ def test_tan(
 def test_tanh(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1860,7 +1752,6 @@ def test_tanh(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1881,7 +1772,6 @@ def test_tanh(
 def test_trunc(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1892,7 +1782,6 @@ def test_trunc(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1913,7 +1802,6 @@ def test_trunc(
 def test_erf(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1924,7 +1812,6 @@ def test_erf(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1969,7 +1856,6 @@ def min_max_helper(draw):
 def test_minimum(
     *,
     dtype_and_x_and_use_where,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -1980,7 +1866,6 @@ def test_minimum(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -2001,7 +1886,6 @@ def test_minimum(
 def test_maximum(
     *,
     dtype_and_x_and_use_where,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -2012,7 +1896,6 @@ def test_maximum(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -2039,7 +1922,6 @@ def test_maximum(
 def test_reciprocal(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -2050,7 +1932,6 @@ def test_reciprocal(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -2070,7 +1951,6 @@ def test_reciprocal(
 def test_deg2rad(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -2081,7 +1961,6 @@ def test_deg2rad(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -2099,7 +1978,6 @@ def test_deg2rad(
 def test_rad2deg(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -2110,7 +1988,6 @@ def test_rad2deg(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -2133,7 +2010,6 @@ def test_rad2deg(
 def test_trunc_divide(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -2146,7 +2022,6 @@ def test_trunc_divide(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -2168,7 +2043,6 @@ def test_trunc_divide(
 def test_isreal(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -2179,7 +2053,6 @@ def test_isreal(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,

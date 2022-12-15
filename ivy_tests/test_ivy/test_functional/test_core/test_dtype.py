@@ -103,7 +103,6 @@ def astype_helper(draw):
 def test_astype(
     *,
     dtype_and_x_and_cast_dtype,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -114,7 +113,6 @@ def test_astype(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -190,7 +188,6 @@ def test_broadcast_to(
     *,
     array_and_shape,
     input_dtype,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -209,7 +206,6 @@ def test_broadcast_to(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -232,7 +228,6 @@ def test_can_cast(
     *,
     dtype_and_x,
     to_dtype,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -243,7 +238,6 @@ def test_can_cast(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -286,7 +280,6 @@ def _array_or_type(draw, float_or_int):
 def test_finfo(
     *,
     type,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -301,7 +294,6 @@ def test_finfo(
     ret = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -331,7 +323,6 @@ def test_finfo(
 def test_iinfo(
     *,
     type,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -346,7 +337,6 @@ def test_iinfo(
     ret = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -510,7 +500,6 @@ def test_dtype(
     array,
     input_dtype,
     as_native,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -528,7 +517,6 @@ def test_dtype(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -549,7 +537,6 @@ def test_dtype(
 def test_dtype_bits(
     *,
     input_dtype,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -559,7 +546,6 @@ def test_dtype_bits(
     ret = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -584,7 +570,6 @@ def test_dtype_bits(
 def test_is_bool_dtype(
     *,
     dtype_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -595,7 +580,6 @@ def test_is_bool_dtype(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -615,7 +599,6 @@ def test_is_bool_dtype(
 def test_is_float_dtype(
     *,
     dtype_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -626,7 +609,6 @@ def test_is_float_dtype(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -646,7 +628,6 @@ def test_is_float_dtype(
 def test_is_int_dtype(
     *,
     dtype_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -657,7 +638,6 @@ def test_is_int_dtype(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -677,7 +657,6 @@ def test_is_int_dtype(
 def test_is_uint_dtype(
     *,
     dtype_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -688,7 +667,6 @@ def test_is_uint_dtype(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -712,7 +690,6 @@ def test_is_uint_dtype(
 def test_promote_types(
     *,
     dtype_and_values,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -725,7 +702,6 @@ def test_promote_types(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -751,7 +727,6 @@ def test_promote_types(
 def test_type_promote_arrays(
     *,
     dtype_and_values,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -762,7 +737,6 @@ def test_type_promote_arrays(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=types,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,

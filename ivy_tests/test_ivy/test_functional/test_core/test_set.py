@@ -22,7 +22,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 def test_unique_values(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -35,7 +34,6 @@ def test_unique_values(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -59,7 +57,6 @@ def test_unique_values(
 def test_unique_all(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -72,7 +69,6 @@ def test_unique_all(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -96,7 +92,6 @@ def test_unique_all(
 def test_unique_counts(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -109,7 +104,6 @@ def test_unique_counts(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -133,7 +127,6 @@ def test_unique_counts(
 def test_unique_inverse(
     *,
     dtype_and_x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -146,7 +139,6 @@ def test_unique_inverse(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,

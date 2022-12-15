@@ -21,7 +21,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 def test_all(
     dtype_x_axis,
     keepdims,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -33,7 +32,6 @@ def test_all(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -57,7 +55,6 @@ def test_all(
 def test_any(
     dtype_x_axis,
     keepdims,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -69,7 +66,6 @@ def test_any(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,

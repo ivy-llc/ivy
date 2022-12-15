@@ -56,7 +56,6 @@ def _arrays_idx_n_dtypes(draw):
 def test_concat(
     *,
     xs_n_input_dtypes_n_unique_idx,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -67,7 +66,6 @@ def test_concat(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -95,7 +93,6 @@ def test_expand_dims(
     *,
     dtype_value,
     axis,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -107,7 +104,6 @@ def test_expand_dims(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -135,7 +131,6 @@ def test_flip(
     *,
     dtype_value,
     axis,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -147,7 +142,6 @@ def test_flip(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -178,7 +172,6 @@ def test_permute_dims(
     *,
     dtype_value,
     permutation,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -190,7 +183,6 @@ def test_permute_dims(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -216,7 +208,6 @@ def test_reshape(
     dtype_value,
     reshape,
     order,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -228,7 +219,6 @@ def test_reshape(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -277,7 +267,6 @@ def test_roll(
     dtype_value,
     shift,
     axis,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -297,7 +286,6 @@ def test_roll(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=value_dtype + shift_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -332,7 +320,6 @@ def test_squeeze(
     *,
     dtype_value,
     axis,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -344,7 +331,6 @@ def test_squeeze(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -383,7 +369,6 @@ def test_stack(
     *,
     dtypes_arrays,
     axis,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -395,7 +380,6 @@ def test_stack(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -431,7 +415,6 @@ def _basic_min_x_max(draw):
 def test_clip(
     *,
     dtype_x_min_max,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -442,7 +425,6 @@ def test_clip(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes[0],
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -483,7 +465,6 @@ def _constant_pad_helper(draw):
 def test_constant_pad(
     *,
     dtype_value_pad_width_constant,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -495,7 +476,6 @@ def test_constant_pad(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -558,7 +538,6 @@ def test_repeat(
     dtype_value,
     axis,
     repeat,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -578,7 +557,6 @@ def test_repeat(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=value_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -649,7 +627,6 @@ def test_split(
     num_or_size_splits,
     axis,
     with_remainder,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -661,7 +638,6 @@ def test_split(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -692,7 +668,6 @@ def test_swapaxes(
     dtype_value,
     axis0,
     axis1,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -704,7 +679,6 @@ def test_swapaxes(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -734,7 +708,6 @@ def test_tile(
     *,
     dtype_value,
     repeat,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -746,7 +719,6 @@ def test_tile(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype + repeat_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -764,7 +736,7 @@ def test_tile(
 def test_zero_pad(
     *,
     dtype_value_pad_width,
-    num_positional_args,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -774,7 +746,6 @@ def test_zero_pad(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -800,7 +771,6 @@ def test_unstack(
     *,
     x_n_dtype_axis,
     keepdims,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -814,7 +784,6 @@ def test_unstack(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,

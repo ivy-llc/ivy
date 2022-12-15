@@ -27,7 +27,6 @@ def test_argsort(
     dtype_x_axis,
     descending,
     stable,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -38,7 +37,6 @@ def test_argsort(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -68,7 +66,6 @@ def test_sort(
     dtype_x_axis,
     descending,
     stable,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -79,7 +76,6 @@ def test_sort(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -149,7 +145,6 @@ def test_searchsorted(
     side,
     use_sorter,
     ret_dtype,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -167,7 +162,6 @@ def test_searchsorted(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,

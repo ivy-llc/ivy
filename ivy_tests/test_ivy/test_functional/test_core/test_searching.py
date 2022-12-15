@@ -60,7 +60,6 @@ def test_argmax(
     *,
     dtype_x_axis,
     keepdims,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -71,7 +70,6 @@ def test_argmax(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -93,7 +91,6 @@ def test_argmin(
     dtype_x_axis,
     keepdims,
     output_dtype,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -104,7 +101,6 @@ def test_argmin(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -136,7 +132,6 @@ def test_nonzero(
     as_tuple,
     size,
     fill_value,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -147,7 +142,6 @@ def test_nonzero(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -166,7 +160,6 @@ def test_nonzero(
 def test_where(
     *,
     broadcastables,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -178,7 +171,6 @@ def test_where(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=["bool"] + dtypes,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -197,7 +189,6 @@ def test_where(
 def test_argwhere(
     *,
     x,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -208,7 +199,6 @@ def test_argwhere(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,

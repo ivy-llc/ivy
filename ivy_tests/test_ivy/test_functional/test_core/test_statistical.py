@@ -82,7 +82,6 @@ def test_min(
     *,
     dtype_and_x,
     keep_dims,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -93,7 +92,6 @@ def test_min(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -108,14 +106,12 @@ def test_min(
 @handle_test(
     fn_tree="functional.ivy.max",
     dtype_and_x=statistical_dtype_values(function="max"),
-    num_positional_args=helpers.num_positional_args(fn_name="max"),
     keep_dims=st.booleans(),
 )
 def test_max(
     *,
     dtype_and_x,
     keep_dims,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -126,7 +122,6 @@ def test_max(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -147,7 +142,6 @@ def test_mean(
     *,
     dtype_and_x,
     keep_dims,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -158,7 +152,6 @@ def test_mean(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -181,7 +174,6 @@ def test_var(
     *,
     dtype_and_x,
     keep_dims,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -192,7 +184,6 @@ def test_var(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -216,7 +207,6 @@ def test_prod(
     *,
     dtype_x_axis_castable,
     keep_dims,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -231,7 +221,6 @@ def test_prod(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -255,7 +244,6 @@ def test_sum(
     *,
     dtype_x_axis_castable,
     keep_dims,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -270,7 +258,6 @@ def test_sum(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -294,7 +281,6 @@ def test_std(
     *,
     dtype_and_x,
     keep_dims,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -305,7 +291,6 @@ def test_std(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -330,7 +315,6 @@ def test_cumsum(
     dtype_x_axis_castable,
     exclusive,
     reverse,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -345,7 +329,6 @@ def test_cumsum(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -370,7 +353,6 @@ def test_cumprod(
     dtype_x_axis_castable,
     exclusive,
     reverse,
-    num_positional_args,
     test_flags,
     backend_fw,
     fn_name,
@@ -385,7 +367,6 @@ def test_cumprod(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
-        num_positional_args=num_positional_args,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
