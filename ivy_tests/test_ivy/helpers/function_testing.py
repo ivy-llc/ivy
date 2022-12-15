@@ -17,6 +17,7 @@ import ivy
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy.functional.ivy.gradients import _variable
+from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
@@ -318,11 +319,7 @@ def test_function(
     except Exception as e:
         ivy.unset_backend()
         raise e
-    hasattr_unsupported_gradients = hasattr(fn, "unsupported_gradients")
-    if hasattr_unsupported_gradients:
-        fw_list = fn.unsupported_gradients
-    else:
-        fw_list = None
+    fw_list = gradient_unsupported_dtypes(fn=ivy.__dict__[fn_name])
     ivy.unset_backend()
     # gradient test
     fw = ivy.current_backend_str()
@@ -332,7 +329,7 @@ def test_function(
         and not instance_method
         and "bool" not in input_dtypes
     ):
-        if hasattr_unsupported_gradients and fw in fw_list:
+        if fw in fw_list:
             if ivy.nested_argwhere(
                 all_as_kwargs_np,
                 lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
@@ -1093,18 +1090,18 @@ def test_method(
     ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
         ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
     )
-    hasattr_unsupported_gradients = hasattr(
-        ins_gt.__getattribute__(method_name), "unsupported_gradients"
-    )
-    if hasattr_unsupported_gradients:
-        fw_list = ins_gt.__getattribute__(method_name).unsupported_gradients
-    else:
-        fw_list = None
+    fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
+    fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
+    for k, v in fw_list2.items():
+        if k not in fw_list:
+            fw_list[k] = []
+        fw_list[k].extend(v)
+
     ivy.unset_backend()
     # gradient test
     fw = ivy.current_backend_str()
     if test_gradients and not fw == "numpy" and "bool" not in method_input_dtypes:
-        if hasattr_unsupported_gradients and fw in fw_list:
+        if fw in fw_list:
             if ivy.nested_argwhere(
                 method_all_as_kwargs_np,
                 lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
@@ -1697,6 +1694,31 @@ def gradient_incompatible_function(*, fn):
         and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
     )
+
+
+def gradient_unsupported_dtypes(*, fn):
+    visited = set()
+    to_visit = [fn]
+    out, res = {}, {}
+    while to_visit:
+        fn = to_visit.pop()
+        if fn in visited:
+            continue
+        visited.add(fn)
+        unsupported_grads = (
+            fn.unsupported_gradients if hasattr(fn, "unsupported_gradients") else {}
+        )
+        for k, v in unsupported_grads.items():
+            if k not in out:
+                out[k] = []
+            out[k].extend(v)
+        # skip if it's not a function
+        if not (inspect.isfunction(fn) or inspect.ismethod(fn)):
+            continue
+        fl = _get_function_list(fn)
+        res = _get_functions_from_string(fl, __import__(fn.__module__))
+        to_visit.extend(res)
+    return out
 
 
 def _is_frontend_array(x):
