@@ -412,8 +412,8 @@ from . import manipulations
 from .manipulations import *
 from . import mathematical_functions
 from .mathematical_functions import *
-from . import statistaical
-from .statistaical import *
+from . import statistical
+from .statistical import *
 from . import searching_sorting
 from .searching_sorting import *
 
