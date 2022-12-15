@@ -43,9 +43,8 @@ def binary_cross_entropy_with_logits(
         The binary cross entropy with logits loss between the given distributions.
 
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 1, 0, 1])
@@ -66,14 +65,6 @@ def binary_cross_entropy_with_logits(
     >>> z = ivy.binary_cross_entropy_with_logits(x, y, pos_weight=pos_weight)
     >>> print(z)
     ivy.array([[2.672, 0.002, 0.029, 5.305]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, 1, 0, 1])
-    >>> y = ivy.native_array([1.3, 1.7, 2.2, 0.6])
-    >>> z = ivy.binary_cross_entropy_with_logits(x, y)
-    >>> print(z)
-    ivy.array([1.541, 0.168, 2.305, 0.437])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -103,17 +94,6 @@ def binary_cross_entropy_with_logits(
     {
         a: ivy.array([0.024, 3.822, 0.263])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 1, 0, 0])
-    >>> y = ivy.array([1.8, 5.2, 12.2, 7.2])
-    >>> z = ivy.binary_cross_entropy_with_logits(x, y)
-    >>> print(z)
-    ivy.array([0.153, 0.006, 12.205, 7.201])
 
     """
     ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])

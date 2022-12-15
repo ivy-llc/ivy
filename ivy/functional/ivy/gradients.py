@@ -24,20 +24,20 @@ from ivy.exceptions import handle_exceptions
 
 
 def _get_duplicate_index_chains(xs):
-    """
-    Used to generate a list of duplicate index chains for a given nested structure.
+    """Used to generate a list of duplicate index chains for a
+    given nested structure.
     """
     duplicate_index_chains = ()
     if isinstance(xs, ivy.Container):
-        duplicate_index_chains = xs.duplicate_array_keychains()
+        duplicate_index_chains = xs.cont_duplicate_array_keychains()
     elif isinstance(xs, (list, tuple, dict)):
         duplicate_index_chains = ivy.duplicate_array_index_chains(xs)
     return duplicate_index_chains
 
 
 def _arrays_to_float_variables(xs, xs_grad_idxs=None):
-    """
-    Used to convert all required arrays to float variables for gradient calculation.
+    """Used to convert all required arrays to float variables for
+    gradient calculation.
     """
 
     def inner_fn(x):
@@ -58,8 +58,8 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
 
 
 def _get_required_native_variables(xs, xs_grad_idxs):
-    """
-    Used to extract all required native variables from a nested structure.
+    """Used to extract all required native variables from a
+    nested structure.
     """
     # To make sure that only the required arrays are converted to native arrays
     xs = ivy.nested_map(xs, ivy.to_ivy, include_derived=True)
@@ -84,7 +84,7 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     xs = (
         xs
         if ivy.is_array(xs)
-        else xs.prune_empty()
+        else xs.cont_prune_empty()
         if isinstance(xs, ivy.Container)
         else ivy.prune_empty(xs)
     )
@@ -96,9 +96,9 @@ def _get_required_native_variables(xs, xs_grad_idxs):
 
 
 def _get_required_float_variables(xs, xs_grad_idxs):
-    """
-    Converts all required arrays to float variables for gradient calculation. Also
-    returns a list of duplicate index chains for the nested structure.
+    """Converts all required arrays to float variables for gradient
+    calculation. Also, returns a list of duplicate index chains
+    for the nested structure.
     """
     duplicate_index_chains = _get_duplicate_index_chains(xs)
     xs = _to_ivy(xs)
@@ -110,8 +110,8 @@ def _get_required_float_variables(xs, xs_grad_idxs):
 
 
 def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=False):
-    """
-    Used to extract all relevant results from the output nested structure of a function.
+    """Used to extract all relevant results from the output
+    nested structure of a function.
     """
 
     def map_fn(x_):
@@ -152,8 +152,8 @@ def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=Fal
 
 
 def _set_duplicates(xs, duplicate_index_chains):
-    """
-    Setting the duplicates in the nested structure to have the same reference
+    """Setting the duplicates in the nested structure to
+    have the same reference
     """
     originals = [
         [key_chains[0]] * (len(key_chains) - 1) for key_chains in duplicate_index_chains
@@ -170,9 +170,7 @@ def _set_duplicates(xs, duplicate_index_chains):
 
 
 def _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=False, reshape=True):
-    """
-    Getting the relevant outputs from the function return value.
-    """
+    """Getting the relevant outputs from the function return value."""
     ret_idxs, ret_values = _get_native_variables_and_indices(
         func_ret, idxs=ret_grad_idxs, create_var=create_var, reshape=reshape
     )
@@ -186,9 +184,7 @@ def _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=False, reshape=True)
 
 
 def _get_native_y(y):
-    """
-    Converting all outputs to native arrays.
-    """
+    """Converting all outputs to native arrays."""
     array_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
     y_final = []
     if isinstance(array_idxs, list) and np.asarray(array_idxs, "object").size > 0:
@@ -197,9 +193,7 @@ def _get_native_y(y):
 
 
 def _stop_grad_and_index(func_ret, retain_grads, grads):
-    """
-    Stop gradient propagation of the function results
-    """
+    """Stop gradient propagation of the function results"""
     if not retain_grads:
         func_ret = ivy.nested_map(
             func_ret,
@@ -212,9 +206,8 @@ def _stop_grad_and_index(func_ret, retain_grads, grads):
 
 
 def _process_func_ret_and_grads(func_ret, grads, retain_grads):
-    """
-    Setting the gradients of non-finite values to zero, and stopping gradient
-    propagation of the function results.
+    """Setting the gradients of non-finite values to zero, and
+    stopping gradient propagation of the function results.
     """
     grads = _non_finite_to_zero(grads)
     func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads)
@@ -407,7 +400,7 @@ def unset_with_grads():
     >>> ivy.set_with_grads(True)
     >>> ivy.unset_with_grads()
     >>> print(ivy.with_grads(with_grads=None))
-    False
+    True
 
     >>> ivy.set_with_grads(True)
     >>> ivy.unset_with_grads()

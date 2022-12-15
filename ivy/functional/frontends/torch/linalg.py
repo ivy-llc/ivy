@@ -40,6 +40,21 @@ def eigvalsh(input, UPLO="L", *, out=None):
 
 
 @to_ivy_arrays_and_back
+def qr(input, mode="reduced", *, out=None):
+    if mode == "reduced":
+        ret = ivy.qr(input, mode="reduced")
+    elif mode == "r":
+        Q, R = ivy.qr(input, mode="r")
+        Q = []
+        ret = Q, R
+    elif mode == "complete":
+        ret = ivy.qr(input, mode="complete")
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+@to_ivy_arrays_and_back
 def slogdet(input, *, out=None):
     return ivy.slogdet(input, out=out)
 
@@ -52,3 +67,13 @@ def matrix_power(input, n, *, out=None):
 @to_ivy_arrays_and_back
 def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
     return ivy.astype(ivy.matrix_rank(input, atol=atol, rtol=rtol, out=out), ivy.int64)
+
+
+@to_ivy_arrays_and_back
+def svd(input, /, *, full_matrices=True):
+    return ivy.svd(input, compute_uv=True, full_matrices=full_matrices)
+
+
+@to_ivy_arrays_and_back
+def svdvals(input, *, out=None):
+    return ivy.svdvals(input, out=out)

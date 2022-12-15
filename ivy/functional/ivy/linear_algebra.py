@@ -687,8 +687,6 @@ def eigvalsh(
     >>> print(y)
     ivy.array([[-1.,  3.]])
 
-    Using out
-
     >>> x = ivy.array([[[3.0,2.0],[2.0,3.0]]])
     >>> y = ivy.zeros([1,2])
     >>> ivy.eigvalsh(x, out=y)
@@ -699,8 +697,6 @@ def eigvalsh(
     >>> ivy.eigvalsh(x, out=x)
     >>> print(x)
     ivy.array([[1., 5.]])
-
-    Using UPLO
 
     >>> x = ivy.array([[[2.0,3.0,6.0],[3.0,4.0,5.0],[6.0,5.0,9.0]],
     ... [[1.0,1.0,1.0],[1.0,2.0,2.0],[1.0,2.0,2.0]]])
@@ -822,14 +818,10 @@ def inv(
     >>> print(y)
     ivy.array([[-2., 1.],[1.5, -0.5]])
 
-    Using inplace
-
     >>> x = ivy.array([[1.0, 2.0], [5.0, 5.0]])
     >>> ivy.inv(x, out=x)
     >>> print(x)
     ivy.array([[-1., 0.4],[1., -0.2]])
-
-    Inverses of several matrices can be computed at once:
 
     >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]],
     ...                [[1.0, 3.0], [3.0, 5.0]]])
@@ -1190,6 +1182,57 @@ def matrix_power(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code: 'ivy.Array' inputs:
+
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> ivy.matrix_power(x,1)
+    ivy.array([[1., 2.],
+               [3., 4.]])
+
+    >>> x = ivy.array([[3., 2.], [-5., -3.]])
+    >>> ivy.matrix_power(x,-1)
+    ivy.array([[-3., -2.],
+               [ 5.,  3.]])
+
+    >>> x = ivy.array([[4., -1.], [0., 2.]])
+    >>> ivy.matrix_power(x,0)
+    ivy.array([[1., 0.],
+               [0., 1.]])
+
+    >>> x = ivy.array([[1., 2.], [0., 1.]])
+    >>> ivy.matrix_power(x,5)
+    ivy.array([[ 1., 10.],
+               [ 0.,  1.]])
+
+    >>> x = ivy.array([[1/2, 0.], [0., -1/3]])
+    >>> ivy.matrix_power(x,-2)
+    ivy.array([[4., 0.],
+               [0., 9.]])
+
+
+    With :code: 'ivy.NativeArray' inputs:
+
+    >>> x = ivy.native_array([[1., 2., 3.], [6., 5., 4.], [7., 8., 9.]])
+    >>> ivy.matrix_power(x,2)
+    ivy.array([[ 34.,  36.,  38.],
+               [ 64.,  69.,  74.],
+               [118., 126., 134.]])
+
+
+    With :code: 'ivy.Container' inputs:
+
+    >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]),
+                          b = ivy.array([[1., 0.], [0., 0.]]))
+    >>> ivy.matrix_power(x,3)
+    {
+        a: ivy.array([[37., 54.],
+                      [81., 118.]]),
+        b: ivy.array([[1., 0.],
+                      [0., 0.]])
+    }
 
     """
     return current_backend(x).matrix_power(x, n, out=out)
@@ -1746,7 +1789,6 @@ def svd(
     columns, ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh``
     is a matrix (or a stack of matrices) with orthonormal rows.
 
-
     Parameters
     ----------
     x
@@ -1818,7 +1860,7 @@ def svd(
     >>> print(U.shape, S.shape, Vh.shape)
     (9, 9) (6,) (6, 6)
 
-    Reconstruction from SVD, result is numerically close to x
+    With reconstruction from SVD, result is numerically close to x
 
     >>> reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)
     >>> print((reconstructed_x - x > 1e-3).sum())
@@ -1827,14 +1869,6 @@ def svd(
     >>> U, S, Vh = ivy.svd(x, full_matrices = False)
     >>> print(U.shape, S.shape, Vh.shape)
     (9, 6) (6,) (6, 6)
-
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
-    >>> U, S, Vh = ivy.svd(x)
-    >>> print(U.shape, S.shape, Vh.shape)
-    (3, 3) (3,) (3, 3)
 
 
     With :class:`ivy.Container` input:
@@ -1907,7 +1941,7 @@ def svdvals(
     >>> print(S.shape)
     (2,)
 
-    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
+    With comparison of the singular value S ivy.svdvals() by the result ivy.svd().
 
     >>> _, SS, _ = ivy.svd(x)
     >>> print(SS.shape)
@@ -1932,7 +1966,7 @@ def svdvals(
     >>> print(SS)
     ivy.array([10.3, 1.16, 0.615])
 
-    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
+    with comparison of singular value S ivy.svdvals() by the result ivy.svd().
 
     >>> error = (SS - S).abs()
     >>> print(error)

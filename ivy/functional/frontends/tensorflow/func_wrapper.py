@@ -9,6 +9,42 @@ import ivy
 import ivy.functional.frontends.tensorflow as frontend
 
 
+def to_ivy_dtype(dtype):
+    if not dtype or isinstance(dtype, str):
+        return dtype
+    if dtype in (int, float, bool) or ivy.is_native_dtype(dtype):
+        return ivy.as_ivy_dtype(dtype)
+    return frontend.as_dtype(dtype)._ivy_dtype
+
+
+def handle_tf_dtype(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, dtype=None, **kwargs):
+        if len(args) > (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            kwargs = {
+                **dict(
+                    zip(
+                        list(inspect.signature(fn).parameters.keys())[
+                            dtype_pos + 1 : len(args)
+                        ],
+                        args[dtype_pos + 1 :],
+                    )
+                ),
+                **kwargs,
+            }
+            args = args[:dtype_pos]
+        elif len(args) == (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            args = args[:-1]
+        dtype = to_ivy_dtype(dtype)
+        return fn(*args, dtype=dtype, **kwargs)
+
+    dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
+    new_fn.handle_tf_dtype = True
+    return new_fn
+
+
 def _tf_frontend_array_to_ivy(x):
     if isinstance(x, frontend.EagerTensor):
         return x.ivy_array

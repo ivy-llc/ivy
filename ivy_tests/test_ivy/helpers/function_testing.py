@@ -5,6 +5,7 @@ import numpy as np
 import types
 import importlib
 import inspect
+
 try:
     import tensorflow as tf
 except ImportError:
@@ -130,6 +131,12 @@ def test_function(
         if True, test for the correctness of the resulting values.
     test_gradients
         if True, test for the correctness of gradients.
+    xs_grad_idxs
+        Indices of the input arrays to compute gradients with respect to. If None,
+        gradients are returned with respect to all input arrays. (Default value = None)
+    ret_grad_idxs
+        Indices of the returned arrays for which to return computed gradients. If None,
+        gradients are returned for all returned arrays. (Default value = None)
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     on_device
@@ -333,7 +340,7 @@ def test_function(
                 pass
             else:
                 gradient_test(
-                    fn_name=fn_name,
+                    fn=fn_name,
                     all_as_kwargs_np=all_as_kwargs_np,
                     args_np=args_np,
                     kwargs_np=kwargs_np,
@@ -350,7 +357,7 @@ def test_function(
 
         else:
             gradient_test(
-                fn_name=fn_name,
+                fn=fn_name,
                 all_as_kwargs_np=all_as_kwargs_np,
                 args_np=args_np,
                 kwargs_np=kwargs_np,
@@ -720,7 +727,7 @@ def test_frontend_function(
 
 def gradient_test(
     *,
-    fn_name,
+    fn,
     all_as_kwargs_np,
     args_np,
     kwargs_np,
@@ -735,8 +742,12 @@ def gradient_test(
     ground_truth_backend: str,
 ):
     def grad_fn(all_args):
-        args, kwargs = all_args
-        ret = ivy.__dict__[fn_name](*args, **kwargs)
+        args, kwargs, i = all_args
+        ret = (
+            ivy.__dict__[fn](*args, **kwargs)
+            if isinstance(fn, str)
+            else fn[i](*args, **kwargs)
+        )
         return ivy.nested_map(ret, ivy.mean, include_derived=True)
 
     # extract all arrays from the arguments and keyword arguments
@@ -756,14 +767,17 @@ def gradient_test(
         container_flags=container_flags,
     )
     _, grads = ivy.execute_with_gradients(
-        grad_fn, [args, kwargs], xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+        grad_fn,
+        [args, kwargs, 0],
+        xs_grad_idxs=xs_grad_idxs,
+        ret_grad_idxs=ret_grad_idxs,
     )
     grads_np_flat = flatten_and_to_np(ret=grads)
 
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     test_unsupported = check_unsupported_dtype(
-        fn=ivy.__dict__[fn_name],
+        fn=ivy.__dict__[fn] if isinstance(fn, str) else fn[1],
         input_dtypes=input_dtypes,
         all_as_kwargs_np=all_as_kwargs_np,
     )
@@ -782,7 +796,10 @@ def gradient_test(
         container_flags=container_flags,
     )
     _, grads_from_gt = ivy.execute_with_gradients(
-        grad_fn, [args, kwargs], xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+        grad_fn,
+        [args, kwargs, 1],
+        xs_grad_idxs=xs_grad_idxs,
+        ret_grad_idxs=ret_grad_idxs,
     )
     grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
     ivy.unset_backend()
@@ -827,6 +844,8 @@ def test_method(
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
     test_gradients: bool = False,
+    xs_grad_idxs=None,
+    ret_grad_idxs=None,
     ground_truth_backend: str,
     device_: str = "cpu",
 ):
@@ -881,6 +900,14 @@ def test_method(
     test_values
         can be a bool or a string to indicate whether correctness of values should be
         tested. If the value is `with_v`, shapes are tested but not values.
+    test_gradients
+        if True, test for the correctness of gradients.
+    xs_grad_idxs
+        Indices of the input arrays to compute gradients with respect to. If None,
+        gradients are returned with respect to all input arrays. (Default value = None)
+    ret_grad_idxs
+        Indices of the returned arrays for which to return computed gradients. If None,
+        gradients are returned for all returned arrays. (Default value = None)
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     device_
@@ -1025,7 +1052,7 @@ def test_method(
             )
             ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
         v = ins.__getattribute__("v")
-        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
+        v_np = v.cont_map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
@@ -1059,14 +1086,70 @@ def test_method(
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
     if isinstance(ins_gt, ivy.Module):
-        v_gt = v_np.map(
+        v_gt = v_np.cont_map(
             lambda x, kc: ivy.asarray(x) if isinstance(x, np.ndarray) else x
         )
         kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
     ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
         ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
     )
+    hasattr_unsupported_gradients = hasattr(
+        ins_gt.__getattribute__(method_name), "unsupported_gradients"
+    )
+    if hasattr_unsupported_gradients:
+        fw_list = ins_gt.__getattribute__(method_name).unsupported_gradients
+    else:
+        fw_list = None
     ivy.unset_backend()
+    # gradient test
+    fw = ivy.current_backend_str()
+    if test_gradients and not fw == "numpy" and "bool" not in method_input_dtypes:
+        if hasattr_unsupported_gradients and fw in fw_list:
+            if ivy.nested_argwhere(
+                method_all_as_kwargs_np,
+                lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
+            ):
+                pass
+            else:
+                gradient_test(
+                    fn=[
+                        ins.__getattribute__(method_name),
+                        ins_gt.__getattribute__(method_name),
+                    ],
+                    all_as_kwargs_np=method_all_as_kwargs_np,
+                    args_np=args_np_method,
+                    kwargs_np=kwargs_np_method,
+                    input_dtypes=method_input_dtypes,
+                    as_variable_flags=method_as_variable_flags,
+                    native_array_flags=method_native_array_flags,
+                    container_flags=method_container_flags,
+                    rtol_=rtol_,
+                    atol_=atol_,
+                    xs_grad_idxs=xs_grad_idxs,
+                    ret_grad_idxs=ret_grad_idxs,
+                    ground_truth_backend=ground_truth_backend,
+                )
+
+        else:
+            gradient_test(
+                fn=[
+                    ins.__getattribute__(method_name),
+                    ins_gt.__getattribute__(method_name),
+                ],
+                all_as_kwargs_np=method_all_as_kwargs_np,
+                args_np=args_np_method,
+                kwargs_np=kwargs_np_method,
+                input_dtypes=method_input_dtypes,
+                as_variable_flags=method_as_variable_flags,
+                native_array_flags=method_native_array_flags,
+                container_flags=method_container_flags,
+                rtol_=rtol_,
+                atol_=atol_,
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+                ground_truth_backend=ground_truth_backend,
+            )
+
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, ret_from_gt

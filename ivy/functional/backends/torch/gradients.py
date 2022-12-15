@@ -32,7 +32,6 @@ def variable_data(x, /):
 
 def _grad_func(y, xs, retain_grads):
     """Gradient calculation function."""
-
     # Creating a zero gradient nest for the case where no gradients are computed
     grads_ = ivy.nested_map(
         xs, lambda x: ivy.to_native(ivy.zeros_like(x)), include_derived=True
@@ -49,11 +48,11 @@ def _grad_func(y, xs, retain_grads):
         )[0]
         grads = grads_ if grads is None else grads
     elif isinstance(xs, ivy.Container):
-        grads = xs.from_flat_list(
+        grads = xs.cont_from_flat_list(
             list(
                 torch.autograd.grad(
                     [y],
-                    [v for k, v in xs.to_iterator()],
+                    [v for k, v in xs.cont_to_iterator()],
                     retain_graph=True,
                     create_graph=retain_grads,
                     allow_unused=True,
