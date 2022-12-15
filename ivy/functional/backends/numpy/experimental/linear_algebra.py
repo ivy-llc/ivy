@@ -92,6 +92,7 @@ def kron(
 
 kron.support_native_out = False
 
+
 @with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def matrix_exp(
     x: np.ndarray,
