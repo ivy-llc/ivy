@@ -2602,6 +2602,39 @@ def _diag_helper(draw):
     return dtype, x, k
 
 
+# logical_and
+@handle_frontend_test(
+    fn_tree="jax.numpy.logical_and",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=2,
+    ),
+)
+def test_jax_numpy_logical_and(
+    dtypes_values,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtypes, x = dtypes_values
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.diag",
     dtype_x_k=_diag_helper(),

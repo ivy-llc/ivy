@@ -516,6 +516,13 @@ def diag(v, k=0):
 
 
 @to_ivy_arrays_and_back
+# known issue in jnp's documentation of arguments
+# https://github.com/google/jax/issues/9119
+def logical_and(x1, x2, /):
+    return ivy.logical_and(x1, x2)
+
+
+@to_ivy_arrays_and_back
 def flip(m, axis=None):
     return ivy.flip(m, axis=axis)
 
