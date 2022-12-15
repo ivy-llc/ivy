@@ -1,10 +1,8 @@
 # global
 import ivy
 from hypothesis import strategies as st
-import hypothesis.extra.numpy as nph
 # local
 import ivy_tests.test_ivy.helpers as helpers
-
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
