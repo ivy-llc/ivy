@@ -2,7 +2,7 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.torch.nn.functional import distance_functions
+from ivy.functional.frontends.torch.nn.functional import distance_functions 
 
 
 def _get_reduction_func(reduction):
