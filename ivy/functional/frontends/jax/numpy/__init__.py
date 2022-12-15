@@ -414,5 +414,7 @@ from . import mathematical_functions
 from .mathematical_functions import *
 from . import statistaical
 from .statistaical import *
+from . import array_routines
+from .array_routines import *
 
 from .._src.numpy.lax_numpy import _rewriting_take
