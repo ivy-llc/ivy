@@ -137,6 +137,9 @@ def _x_and_filters(
                 x_w, stride, filter_shape[1], padding, dilations
             )
             output_shape = [x_shape[0], output_shape_h, output_shape_w, d_in]
+        kernel = draw(
+            st.tuples(st.integers(1, 4), st.integers(1, 4))
+        )
     else:
         if not transpose:
             filter_shape = draw(
@@ -211,54 +214,8 @@ def _x_and_filters(
         )
     )
     if not transpose:
-        return dtype, x, filters, dilations, data_format, stride, padding
+        return dtype, x, filters, dilations, data_format, stride, padding, kernel
     return dtype, x, filters, dilations, data_format, stride, padding, output_shape
-
-
-@st.composite
-def _x_and_ksize(   
-    draw,
-    min_dims,
-    max_dims,
-    min_side,
-    max_side,
-    data_format,
-    stride_min=1,
-    stride_max=4
-):
-    data_format = draw(data_format)
-    in_shape = draw(
-        nph.array_shapes(
-            min_dims=min_dims, max_dims=max_dims, min_side=min_side, max_side=max_side
-        )
-    )
-    dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.dtype_helpers.get_dtypes("float"),
-            shape=in_shape,
-            num_arrays=1,
-            max_value=100,
-            min_value=-100,
-        )
-    )
-    array_dim = x[0].ndim
-    if array_dim == 5:
-        kernel = draw(
-            st.tuples(
-                st.integers(1, in_shape[1]),
-                st.integers(1, in_shape[2]),
-                st.integers(1, in_shape[3]),
-            )
-        )
-    if array_dim == 4:
-        kernel = draw(
-            st.tuples(st.integers(1, in_shape[1]), st.integers(1, in_shape[2]))
-        )
-    if array_dim == 3:
-        kernel = draw(st.tuples(st.integers(1, in_shape[1])))
-    padding = draw(st.sampled_from(["VALID", "SAME"]))
-    strides = draw(helpers.ints(min_value=stride_min, max_value=stride_max))
-    return dtype, x, kernel, strides, padding, data_format
 
 
 @handle_frontend_test(
@@ -477,16 +434,16 @@ def test_tensorflow_gelu(
 
 @handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool2d",
-    x_k_s_p=_x_and_ksize(
-        min_dims=1, 
-        max_dims=3, 
-        min_side=1, 
-        max_side=4,
-        data_format=st.sampled_from(["NHWC"])),
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="2d",
+    ),
 )
 def test_tensorflow_avg_pool2d(
     *,
-    x_k_s_p,
+    x_f_d_df,
     as_variable,
     num_positional_args,
     native_array,
@@ -494,7 +451,7 @@ def test_tensorflow_avg_pool2d(
     fn_tree,
     on_device
 ):
-    input_dtype, x, ksize, strides, padding, data_format = x_k_s_p
+    input_dtype, x, filters, dilation, data_format, stride, padding, kernel = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -505,8 +462,8 @@ def test_tensorflow_avg_pool2d(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
-        ksize=ksize,
-        strides=strides,
+        ksize=kernel,
+        strides=stride,
         padding=padding,
         data_format=data_format,
     )
