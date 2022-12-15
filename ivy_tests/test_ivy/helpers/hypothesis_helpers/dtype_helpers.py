@@ -134,6 +134,8 @@ def array_dtypes(
     -------
     A strategy that draws a list.
     """
+    if isinstance(available_dtypes, st._internal.SearchStrategy):
+        available_dtypes = draw(available_dtypes)
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if num_arrays == 1:
