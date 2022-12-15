@@ -404,8 +404,8 @@ from . import creation
 from .creation import *
 from . import dtype
 from .dtype import can_cast, promote_types
-from . import general
-from .general import *
+from . import indexing
+from .indexing import *
 from . import logic
 from .logic import *
 from . import manipulations
