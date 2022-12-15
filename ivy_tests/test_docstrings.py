@@ -105,7 +105,7 @@ def check_docstring_examples_run(
     sub = ">>> print("
     for index, line in enumerate(trimmed_docstring):
         if sub in line:
-            for i, s in enumerate(trimmed_docstring[index + 1:]):
+            for i, s in enumerate(trimmed_docstring[index + 1 :]):
                 if s.startswith(">>>") or s.lower().startswith("with"):
                     end_index = index + i + 1
                     break
