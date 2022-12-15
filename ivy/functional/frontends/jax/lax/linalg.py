@@ -36,11 +36,11 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
 
   @to_ivy_arrays_and_back
     def all_gather(x, axis_name, *, axis_index_groups=None, axis=0, tiled=False): 
-        return all_gather(x, 'i', axis_index_groups=[[0, 2], [3, 1]])      
+        return ivy.all_gather(x, 'i', axis_index_groups=[[0, 2], [3, 1]])      
      
   @to_ivy_arrays_and_back
         def all_to_all(x, axis_name, split_axis, concat_axis, *, axis_index_groups=None, tiled=False): 
-            return np.insert(np.delete(x.shape, split_axis), concat_axis, axis_size)
+            return ivy.np.insert(np.delete(x.shape, split_axis), concat_axis, axis_size)
         
   @to_ivy_arrays_and_back 
         def psum(x, axis_name, *, axis_index_groups=None):  
@@ -55,11 +55,11 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
   axis_index_groups = _canonicalize_axis_index_groups(axis_index_groups)
   out_flat = psum_p.bind(
       *leaves, axes=tuple(axis_name), axis_index_groups=axis_index_groups)
-  return tree_util.tree_unflatten(treedef, out_flat)
+  return ivy.tree_util.tree_unflatten(treedef, out_flat)
 
 @to_ivy_arrays_and_back 
 def pmax(x, axis_name, *, axis_index_groups=None):
-    return tree_util.tree_unflatten(treedef, out_flat)   
+    return ivy.tree_util.tree_unflatten(treedef, out_flat)   
     
     
         
