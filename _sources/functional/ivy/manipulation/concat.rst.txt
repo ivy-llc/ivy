@@ -5,9 +5,9 @@ concat
 
 .. autofunction:: ivy.array.array_methods.concat
 
-.. autofunction:: ivy.container.container_methods.static_concat
-
 .. autofunction:: ivy.container.container_methods.concat
+
+.. autofunction:: ivy.container.container_methods.static_concat
 |
 | **Supported Frameworks:**
 
