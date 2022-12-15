@@ -76,3 +76,44 @@ def greater_equal(x1, x2):
 @to_ivy_arrays_and_back
 def equal(x1, x2):
     return ivy.equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def all(a, axis=None, out=None, keepdims=False, *, where=False):
+    return ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
+def bitwise_and(x1, x2):
+    return ivy.bitwise_and(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def bitwise_not(x):
+    return ivy.bitwise_invert(x)
+
+
+@to_ivy_arrays_and_back
+def bitwise_or(x1, x2):
+    return ivy.bitwise_or(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def bitwise_xor(x1, x2):
+    return ivy.bitwise_xor(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def any(a, axis=None, out=None, keepdims=False, *, where=None):
+    # TODO: Out not supported
+    ret = ivy.any(a, axis=axis, keepdims=keepdims)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(None, ivy.zeros_like(ret)))
+    return ret
+
+
+alltrue = all
+
+
+sometrue = any
