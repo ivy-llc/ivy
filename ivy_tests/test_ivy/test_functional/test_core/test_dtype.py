@@ -143,7 +143,7 @@ def broadcastable_arrays(draw, dtypes):
     fn_tree="functional.ivy.broadcast_arrays",
     arrays=broadcastable_arrays(dtypes_shared("num_arrays")),
     input_dtypes=dtypes_shared("num_arrays"),
-    with_out=st.just('False')
+    with_out=st.just(False)
 )
 def test_broadcast_arrays(
     *,
@@ -226,7 +226,7 @@ def test_broadcast_to(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=1
     ),
     to_dtype=helpers.get_dtypes("valid", full=False),
-    with_out=st.just('False')
+    with_out=st.just(False)
 )
 def test_can_cast(
     *,

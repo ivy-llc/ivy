@@ -85,6 +85,7 @@ def test_unset_with_grads(grads):
     fn_tree="functional.ivy.stop_gradient",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     preserve_type=st.booleans(),
+    instance_method=st.just(False)
 )
 def test_stop_gradient(
     *,
@@ -93,9 +94,7 @@ def test_stop_gradient(
     as_variable,
     with_out,
     num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     ground_truth_backend,
@@ -104,12 +103,8 @@ def test_stop_gradient(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        with_out=with_out,
-        as_variable_flags=as_variable,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=False,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
@@ -128,7 +123,7 @@ def test_stop_gradient(
         max_value=100,
     ),
     retain_grads=st.booleans(),
-    instance_method=st.just('False')
+    instance_method=st.just(False)
 )
 def test_execute_with_gradients(
     *,
