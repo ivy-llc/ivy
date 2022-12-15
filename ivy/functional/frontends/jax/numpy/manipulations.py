@@ -98,3 +98,19 @@ def take(
     fill_value=None,
 ):
     return ivy.take_along_axis(a, indices, axis, out=out)
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def asarray(a, dtype=None, order=None):
+    return ivy.asarray(a, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def broadcast_to(arr, shape):
+    return ivy.broadcast_to(arr, shape)
+
+
+@to_ivy_arrays_and_back
+def uint16(x):
+    return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)

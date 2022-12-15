@@ -152,11 +152,6 @@ def arange(start, stop=None, step=1, dtype=None):
     return ivy.arange(start, stop, step=step, dtype=dtype)
 
 
-@to_ivy_arrays_and_back
-def uint16(x):
-    return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)
-
-
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 def zeros(shape, dtype=None):
@@ -177,18 +172,3 @@ def ones_like(a, dtype=None, shape=None):
     if shape:
         return ivy.ones(shape, dtype=dtype)
     return ivy.ones_like(a, dtype=dtype)
-
-
-@handle_numpy_dtype
-@to_ivy_arrays_and_back
-def asarray(
-    a,
-    dtype=None,
-    order=None,
-):
-    return ivy.asarray(a, dtype=dtype)
-
-
-@to_ivy_arrays_and_back
-def broadcast_to(arr, shape):
-    return ivy.broadcast_to(arr, shape)
