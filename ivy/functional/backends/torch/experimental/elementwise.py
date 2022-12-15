@@ -1,6 +1,7 @@
 # global
 from typing import Optional, Union, Tuple, List
 from numbers import Number
+from math import pi
 import torch
 
 # local
@@ -223,6 +224,22 @@ def isneginf(
 
 
 isneginf.support_native_out = True
+
+
+def angle(
+    input: torch.Tensor,
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if deg:
+        return torch.angle(input, out=out) * (180 / pi)
+    else:
+        return torch.angle(input, out=out)
+
+
+angle.support_native_out = True
 
 
 def nan_to_num(
