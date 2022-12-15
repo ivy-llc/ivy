@@ -8,16 +8,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @handle_frontend_test(
     fn_tree="torch.result_type",
-    dtype_x_axis=helpers.dtype_values_axis(
+    dtype_and_x=helpers.dtype_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        valid_axis=True,
-        max_axes_size=1,
     ),
-    keepdims=st.booleans(),
 )
 def test_torch_result_type(
-    dtype_x_axis,
-    keepdims,
+    dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -26,7 +22,7 @@ def test_torch_result_type(
     fn_tree,
     frontend,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x = dtype_and_x,
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -36,7 +32,4 @@ def test_torch_result_type(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        axis=axis,
-        keepdims=keepdims,
     )
