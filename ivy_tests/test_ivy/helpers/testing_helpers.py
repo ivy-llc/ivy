@@ -155,7 +155,7 @@ def _get_method_supported_devices_dtypes(
     backends = available_frameworks
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
-        _fn = getattr(class_module.__dict__[class_name](), method_name)
+        _fn = getattr(class_module.__dict__[class_name], method_name)
         supported_device_dtypes[b] = ivy.function_supported_devices_and_dtypes(_fn)
         ivy.unset_backend()
     return supported_device_dtypes
