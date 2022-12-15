@@ -1,6 +1,3 @@
-# global
-from hypothesis import strategies as st
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -32,4 +29,5 @@ def test_torch_result_type(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        input=x[0],
     )
