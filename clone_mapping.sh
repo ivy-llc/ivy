@@ -1,5 +1,5 @@
 USER_EMAIL="rashul.chutani@gmail.com"
-USER_NAME=""
+USER_NAME="Rashul Chutani"
 TARGET_BRANCH=$1
 CLONE_DIR=$(mktemp -d)
 GITHUB_SERVER="github.com"
@@ -13,11 +13,9 @@ ssh-keyscan -H "$GITHUB_SERVER" > "$SSH_KNOWN_HOSTS_FILE"
 
 export GIT_SSH_COMMAND="ssh -i "$DEPLOY_KEY_FILE" -o UserKnownHostsFile=$SSH_KNOWN_HOSTS_FILE"
 
-echo "Hello!"
-
 # Setup git
-#git config --global user.email "$USER_EMAIL"
-#git config --global user.name "$USER_NAME"
+git config --global user.email "$USER_EMAIL"
+git config --global user.name "$USER_NAME"
 
 git clone --single-branch --depth 1 --branch "$TARGET_BRANCH" git@github.com:unifyai/Mapping.git
 

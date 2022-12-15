@@ -399,11 +399,23 @@ class Tensor:
     def flip(self, dims):
         return torch_frontend.flip(self._ivy_array, dims)
 
+    def sort(self, dim=-1, descending=False):
+        return torch_frontend.sort(self._ivy_array, dim=dim, descending=descending)
+
     def tril(self, diagonal=0):
         return torch_frontend.tril(self._ivy_array, diagonal=diagonal)
 
     def index_select(self, dim, index):
         return torch_frontend.index_select(self._ivy_array, dim, index)
+
+    def sqrt(self):
+        return torch_frontend.sqrt(self._ivy_array)
+
+    def where(self, condition, other):
+        return ivy.where(condition, self._ivy_array, other)
+
+    def clone(self, memory_format=None):
+        return torch_frontend.tensor(ivy.array(self._ivy_array, copy=True))
 
     # Special Methods #
     # -------------------#
@@ -472,6 +484,9 @@ class Tensor:
 
     def __or__(self, other):
         return torch_frontend.bitwise_or(self._ivy_array, other)
+
+    def __invert__(self):
+        return torch_frontend.bitwise_not(self._ivy_array)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
