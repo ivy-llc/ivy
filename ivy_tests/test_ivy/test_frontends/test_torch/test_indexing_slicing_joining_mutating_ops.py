@@ -346,7 +346,7 @@ def _as_strided_helper(draw):
     )
     ndim = len(shape)
     numel = x[0].size
-    offset = draw(st.integers(min_value=0, max_value=numel-1))
+    offset = draw(st.integers(min_value=0, max_value=numel - 1))
     numel = numel - offset
     size = draw(
         helpers.get_shape(
