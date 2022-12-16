@@ -204,7 +204,7 @@ def handle_test(
     if is_hypothesis_test:
         if number_positional_args is None:
             number_positional_args = num_positional_args(fn_name=fn_tree)
-        _given_kwargs["test_flags"] = pf.function_flags(
+        test_flags = pf.function_flags(
             num_positional_args=number_positional_args,
             instance_method=instance_method,
             with_out=with_out,
@@ -221,6 +221,8 @@ def handle_test(
 
         # No Hypothesis @given is used
         if is_hypothesis_test:
+            if "test_flags" in param_names:
+                _given_kwargs["test_flags"] = test_flags
             wrapped_test = given(**_given_kwargs)(test_fn)
             possible_arguments = {
                 "fn_name": fn_name,
