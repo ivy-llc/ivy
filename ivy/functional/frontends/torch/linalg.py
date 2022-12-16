@@ -84,12 +84,12 @@ def svdvals(input, *, out=None):
 def inv_ex(input, *, check_errors=False, out=None):
     try:
         inputInv = inv.inv(input, out)
-        info = ivy.zeros([input.shape[i] for i in range(len(input.shape)-2)] + [1])
+        info = ivy.zeros([input.shape[i] for i in range(len(input.shape) - 2)] + [1])
         return inputInv, info
     except RuntimeError as e :
         if check_errors:
             raise RuntimeError(e)
         else:
-            inputInv = input*math.nan
-            info = ivy.ones([input.shape[i] for i in range(len(input.shape)-2)] + [1])
+            inputInv = input * math.nan
+            info = ivy.ones([input.shape[i] for i in range(len(input.shape) - 2)] + [1])
             return inputInv, info
