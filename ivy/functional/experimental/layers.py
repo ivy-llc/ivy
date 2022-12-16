@@ -116,7 +116,7 @@ def max_pool2d(
 
     Examples
     --------
-    >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
+    >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
     >>> print(ivy.max_pool2d(x, (2, 2), (1, 1), 'SAME'))
     ivy.array([[[[ 2,  3],
              [ 4,  5],
@@ -127,7 +127,7 @@ def max_pool2d(
              [10, 11],
              [10, 11]]]])
 
-    >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
+    >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
     >>> print(ivy.max_pool2d(x, 3, 1, 'VALID'))
     ivy.array([[[[16, 17]],
 
@@ -317,7 +317,7 @@ def avg_pool2d(
 
     Examples
     --------
-    >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
+    >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
     >>> print(ivy.avg_pool2d(x, (2, 2), (1, 1), 'SAME'))
     ivy.array([[[[ 1.,  2.],
              [ 3.,  4.],
@@ -327,7 +327,7 @@ def avg_pool2d(
            [[[ 7.,  8.],
              [ 9., 10.],
              [10., 11.]]]])
-    >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
+    >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
     >>> print(ivy.avg_pool2d(x, 3, 1, 'VALID'))
     ivy.array([[[[ 8.,  9.]],
 
