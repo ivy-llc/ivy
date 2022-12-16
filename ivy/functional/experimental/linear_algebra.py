@@ -174,20 +174,24 @@ def eig(
 ) -> Tuple[ivy.Array, ...]:
     """Computes eigenvalies and eigenvectors of x. Returns a tuple with two elements:
      first is the set of eigenvalues, second is the set of eigenvectors.
+
     Parameters
     ----------
     x
         An array of shape (..., N, N).
+
     Returns
     -------
     ret
         A tuple with two elements: first is the set of eigenvalues,
         second is the set of eigenvectors
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_.
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+    
     Functional Examples
     ------------------
     With :class:`ivy.Array` inputs:
