@@ -32,15 +32,12 @@ def _isin_data_generation_helper(draw):
     assume_unique_and_dtype_and_x=_isin_data_generation_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="isin"),
     invert=st.booleans(),
+    with_out=st.just(False),
 )
 def test_isin(
     assume_unique_and_dtype_and_x,
     invert,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
 ):
     assume_unique, x_and_dtype = assume_unique_and_dtype_and_x
@@ -48,12 +45,7 @@ def test_isin(
     elements, test_elements = values
     helpers.test_function(
         input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        instance_method=instance_method,
-        container_flags=container_flags,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name="isin",
         ground_truth_backend="numpy",
