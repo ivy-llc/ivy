@@ -462,7 +462,6 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([1, 6, 9])
         >>> y = x.bitwise_invert()
         >>> print(y)
