@@ -38,7 +38,7 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=ivy.as_ivy_dtype(dtype), **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
-    new_fn.handle_dtype = True
+    new_fn.handle_numpy_dtype = True
     return new_fn
 
 
@@ -163,7 +163,7 @@ def handle_numpy_casting_special(fn: Callable) -> Callable:
 
 
 def _numpy_frontend_to_ivy(x: Any) -> Any:
-    if isinstance(x, ndarray):
+    if hasattr(x, "ivy_array"):
         return x.ivy_array
     else:
         return x

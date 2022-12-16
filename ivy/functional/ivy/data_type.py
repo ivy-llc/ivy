@@ -5,6 +5,7 @@ import math
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable, Iterable, Any
 import numpy as np
+import importlib
 
 # local
 import ivy
@@ -77,15 +78,31 @@ def _lstrip_lines(source: str) -> str:
 # Get the list of function used the function
 def _get_function_list(func):
     tree = ast.parse(_lstrip_lines(inspect.getsource(func)))
-    names = set()
+    names = {}
     # Extract all the call names
     for node in ast.walk(tree):
         if isinstance(node, ast.Call):
             nodef = node.func
             if isinstance(nodef, ast.Name):
-                names.add(nodef.id)
+                names[nodef.id] = getattr(
+                    func,
+                    "__self__",
+                    getattr(
+                        importlib.import_module(func.__module__),
+                        func.__qualname__.split(".")[0],
+                        None,
+                    ),
+                )
             elif isinstance(nodef, ast.Attribute):
-                names.add(nodef.attr)
+                names[nodef.attr] = getattr(
+                    func,
+                    "__self__",
+                    getattr(
+                        importlib.import_module(func.__module__),
+                        func.__qualname__.split(".")[0],
+                        None,
+                    ),
+                )
 
     return names
 
@@ -94,11 +111,13 @@ def _get_function_list(func):
 def _get_functions_from_string(func_names, module):
     ret = set()
     # We only care about the functions in the ivy or the same module
-    for func_name in func_names:
-        if hasattr(ivy, func_name) and callable(getattr(ivy, func_name)):
+    for func_name in func_names.keys():
+        if hasattr(ivy, func_name) and callable(getattr(ivy, func_name, None)):
             ret.add(getattr(ivy, func_name))
-        elif hasattr(module, func_name) and callable(getattr(ivy, func_name)):
+        elif hasattr(module, func_name) and callable(getattr(ivy, func_name, None)):
             ret.add(getattr(module, func_name))
+        elif callable(getattr(func_names[func_name], func_name, None)):
+            ret.add(getattr(func_names[func_name], func_name))
     return ret
 
 
@@ -122,7 +141,8 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         # if it's in the backend, we can get the dtypes directly
         # if it's in the front end, we need to recurse
         # if it's einops, we need to recurse
-
+        if not getattr(fn, "__module__", None):
+            continue
         if "backend" in fn.__module__:
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
@@ -134,7 +154,9 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             out = merge_fn(f_supported, out)
 
         # skip if it's not a function
-        if not inspect.isfunction(fn) and not inspect.ismethod(fn):
+
+        if not (inspect.isfunction(fn) or inspect.ismethod(fn)):
+
             continue
 
         fl = _get_function_list(fn)
@@ -727,28 +749,26 @@ def result_type(
 
     >>> x = ivy.array([3, 4, 5])
     >>> y = ivy.array([3., 4., 5.])
-    >>> print(ivy.result_type(x, y))
-    float64
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([3., 4, 7.5])
-    >>> y = ivy.native_array([3, 4, 7])
-    >>> print(ivy.result_type(x, y))
-    float64
+    >>> d = ivy.result_type(x, y)
+    >>> print(d)
+    float32
 
     With :class:`ivy.Dtype` input:
 
-    >>> print(ivy.result_type(ivy.uint8, ivy.uint64))
+    >>> d = ivy.result_type(ivy.uint8, ivy.uint64)
+    >>> print(d)
     uint64
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([3, 4, 5]))
-    >>> print(x.a.dtype)
+    >>> d = x.a.dtype
+    >>> print(d)
     int32
 
-    >>> print(ivy.result_type(x, ivy.float64))
+    >>> x = ivy.Container(a = ivy.array([3, 4, 5]))
+    >>> d = ivy.result_type(x, ivy.float64)
+    >>> print(d)
     {
         a: float64
     }
@@ -895,7 +915,7 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> ivy.Nativ
 
 
 def _check_float64(input) -> bool:
-    if ivy.is_native_array(input):
+    if ivy.is_array(input):
         return ivy.dtype(input) == "float64"
     if math.isfinite(input):
         m, e = math.frexp(input)
@@ -1175,11 +1195,10 @@ def default_int_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
-            is_native = lambda x: ivy.is_native_array(x)
             if ivy.nested_argwhere(
                 input,
                 lambda x: ivy.dtype(x) == "uint64"
-                if is_native(x)
+                if ivy.is_array(x)
                 else x > 9223372036854775807 and x != ivy.inf,
                 stop_after_n_found=1,
             ):
@@ -1187,7 +1206,7 @@ def default_int_dtype(
             elif ivy.nested_argwhere(
                 input,
                 lambda x: ivy.dtype(x) == "int64"
-                if is_native(x)
+                if ivy.is_array(x)
                 else x > 2147483647 and x != ivy.inf,
                 stop_after_n_found=1,
             ):
@@ -1600,7 +1619,7 @@ def is_int_dtype(
                 dtype_in,
                 lambda x: (
                     isinstance(x, (int, np.integer))
-                    or (ivy.is_native_array(x) and "int" in ivy.dtype(x))
+                    or (ivy.is_array(x) and "int" in ivy.dtype(x))
                 )
                 and not type(x) == bool,
             )
@@ -1669,7 +1688,7 @@ def is_float_dtype(
             if ivy.nested_argwhere(
                 dtype_in,
                 lambda x: isinstance(x, (float, np.floating))
-                or (ivy.is_native_array(x) and "float" in ivy.dtype(x)),
+                or (ivy.is_array(x) and "float" in ivy.dtype(x)),
             )
             else False
         )
@@ -1927,13 +1946,11 @@ def unset_default_float_dtype():
 
 @handle_exceptions
 def unset_default_int_dtype():
-    """
-
-    Reset the current default int dtype to the previous state.
+    """Resets the current default int dtype to the previous state.
 
     Parameters
     ----------
-    None
+    None-
 
     Examples
     --------
@@ -1944,7 +1961,6 @@ def unset_default_int_dtype():
     >>> ivy.unset_default_int_dtype()
     >>> ivy.default_int_dtype()
     'int32'
-
     """
     global default_int_dtype_stack
     if default_int_dtype_stack:
