@@ -2,20 +2,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
-"""""
-Input:
-- X array or matrix
-- Y array or matrix (optional)
-- bias: divide by (N-1) if false, otherwise divide by N. Default is False
-- dtype: data type of result
-- fweights: 1-D array of frequency weights
-- aweights: 1-D array of observation vector weights
-
-Output:
-Covariance of the input.
-
-"""
-
 
 @to_ivy_arrays_and_back
 def cov(
