@@ -705,6 +705,54 @@ def test_isneginf(
     )
 
 
+# angle
+@handle_test(
+    fn_tree="functional.experimental.angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=['float64'],
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    deg=st.booleans(),
+)
+def test_angle(
+    *,
+    dtype_and_x,
+    deg,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, z = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        z=z[0],
+        deg=deg,
+    )
+
+
 # nan_to_num
 @handle_test(
     fn_tree="functional.experimental.nan_to_num",

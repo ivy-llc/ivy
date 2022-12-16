@@ -12,7 +12,7 @@ def _is_jax_frontend_array(x):
 
 
 def _from_jax_frontend_array_to_ivy_array(x):
-    if isinstance(x, jax_frontend.DeviceArray):
+    if hasattr(x, "ivy_array"):
         return x.ivy_array
     return x
 
