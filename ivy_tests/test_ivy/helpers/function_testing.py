@@ -14,6 +14,7 @@ except ImportError:
 
 # local
 import ivy
+from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy.functional.ivy.gradients import _variable
@@ -77,12 +78,7 @@ def _assert_dtypes_are_valid(input_dtypes: Union[List[ivy.Dtype], List[str]]):
 def test_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    as_variable_flags: List[bool],
-    with_out: bool,
-    num_positional_args: int,
-    native_array_flags: List[bool],
-    container_flags: List[bool],
-    instance_method: bool,
+    test_flags: FunctionTestFlags,
     fw: str,
     fn_name: str,
     rtol_: float = None,
@@ -103,23 +99,6 @@ def test_function(
     ----------
     input_dtypes
         data types of the input arguments in order.
-    as_variable_flags
-        dictates whether the corresponding input argument should be treated
-        as a variable.
-    with_out
-        if True, the function is also tested with the optional out argument.
-    num_positional_args
-        number of input arguments that must be passed as positional
-        arguments.
-    native_array_flags
-        dictates whether the corresponding input argument should be treated
-        as a native array.
-    container_flags
-        dictates whether the corresponding input argument should be treated
-         as an ivy Container.
-    instance_method
-        if True, the function is run as an instance method of the first
-         argument (should be an ivy Array or Container).
     fw
         current backend (framework).
     fn_name
@@ -190,12 +169,17 @@ def test_function(
     _assert_dtypes_are_valid(input_dtypes)
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
+        num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
     )
 
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
+    # TODO temporary, access them directly
+    native_array_flags = test_flags.native_arrays
+    as_variable_flags = test_flags.as_variable
+    container_flags = test_flags.container
 
     # make all lists equal in length
     num_arrays = c_arg_vals + c_kwarg_vals
@@ -210,13 +194,13 @@ def test_function(
 
     # update variable flags to be compatible with float dtype and with_out args
     as_variable_flags = [
-        v if ivy.is_float_dtype(d) and not with_out else False
+        v if ivy.is_float_dtype(d) and not test_flags.with_out else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
 
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
-    instance_method = instance_method and (
+    instance_method = test_flags.instance_method and (
         not native_array_flags[0] or container_flags[0]
     )
 
@@ -272,7 +256,7 @@ def test_function(
             ivy.__dict__[fn_name], *args, **kwargs
         )
     # assert idx of return if the idx of the out array provided
-    if with_out:
+    if test_flags.with_out:
         test_ret = ret
         if isinstance(ret, tuple):
             assert hasattr(ivy.__dict__[fn_name], "out_index")
