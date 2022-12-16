@@ -97,9 +97,7 @@ def matrix_exp(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if ivy.dtype(x) == ivy.bfloat16:
-        x = x.astype(np.float16)
-    return np.exp(x).astype(complex)
+    return np.exp(x)
 
 
 def eig(x: np.ndarray, /) -> Tuple[np.ndarray, ...]:
