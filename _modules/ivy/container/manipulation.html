@@ -1122,6 +1122,7 @@
 <span class="sd">            a: ivy.array([2., 0., 1.]),</span>
 <span class="sd">            b: ivy.array([5., 3., 4.])</span>
 <span class="sd">        }</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_roll</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -1300,10 +1301,39 @@
 <span class="sd">        function, and so the docstring for ivy.stack also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        xs</span>
+<span class="sd">            Container with leaves to join. Each array leavve must have the same shape.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis along which the array leaves will be joined. More details can be found</span>
+<span class="sd">            in the docstring for ivy.stack.</span>
+
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an output container with the results.</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_stack(x,axis = 1)</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_stack(x,axis = 1)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[0, 2],</span>
 <span class="sd">                        [1, 3]]),</span>
@@ -1313,7 +1343,8 @@
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_stack([x,y])</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_stack([x,y])</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[[0, 1],</span>
 <span class="sd">                        [2, 3]],</span>
@@ -1322,7 +1353,11 @@
 <span class="sd">            b: ivy.array([[[4, 5]],</span>
 <span class="sd">                        [[1, 0]]])</span>
 <span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_stack([x,y],axis=1)</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_stack([x,y],axis=1)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[[0, 1],</span>
 <span class="sd">                        [3, 2]],</span>
@@ -1362,6 +1397,34 @@
 <span class="sd">        ivy.Container instance method variant of ivy.stack. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.stack</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Container with leaves to join. Each array leavve must have the same shape.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis along which the array leaves will be joined. More details can be found</span>
+<span class="sd">            in the docstring for ivy.stack.</span>
+
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an output container with the results.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
