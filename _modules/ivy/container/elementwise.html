@@ -1619,7 +1619,7 @@
 
 <div class="viewcode-block" id="ContainerWithElementwise.static_bitwise_invert"><a class="viewcode-back" href="../../../data_classes/container/elementwise/ContainerWithElementwise.html#ivy.container.elementwise.ContainerWithElementwise.static_bitwise_invert">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_bitwise_invert</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>        
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1657,6 +1657,24 @@
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the element-wise results.</span>
 <span class="sd">            The returned array must have the same data type as ``x``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=[False, True, False], b=[True, True, False])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_bitwise_invert(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([True, False, True]),</span>
+<span class="sd">            b: ivy.array([False, False, True])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=[1, 2, 3], b=[4, 5, 6])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_bitwise_invert(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([-2, -3, -4]),</span>
+<span class="sd">            b: ivy.array([-5, -6, -7])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;bitwise_invert&quot;</span><span class="p">,</span>
@@ -1706,6 +1724,24 @@
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the element-wise results.</span>
 <span class="sd">            The returned array must have the same data type as ``self``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=[False, True, False], b=[True, True, False])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.bitwise_invert()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([True, False, True]),</span>
+<span class="sd">            b: ivy.array([False, False, True])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=[1, 2, 3], b=[4, 5, 6])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.bitwise_invert()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([-2, -3, -4]),</span>
+<span class="sd">            b: ivy.array([-5, -6, -7])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_bitwise_invert</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
