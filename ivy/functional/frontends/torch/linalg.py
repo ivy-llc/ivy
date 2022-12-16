@@ -93,4 +93,4 @@ def svdvals(input, *, out=None):
 
 @to_ivy_arrays_and_back
 def eig(input, *, out=None):
-    return ivy.eig(input, out)
+    return ivy.eig(input, out=out)
