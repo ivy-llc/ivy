@@ -122,7 +122,7 @@ def depthwise_conv2d(
     strides,
     padding="SAME",
     data_format="NHWC",
-    dilations=1,
+    dilations=[1, 1],
     name=None,
 ):
     return ivy.depthwise_conv2d(
@@ -133,6 +133,9 @@ def depthwise_conv2d(
         data_format=data_format,
         dilations=dilations,
     )
+
+
+depthwise_conv2d.unsupported_dtypes = ("bfloat16",)
 
 
 @to_ivy_arrays_and_back

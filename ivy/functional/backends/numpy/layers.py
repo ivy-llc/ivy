@@ -263,6 +263,7 @@ def depthwise_conv2d(
 ):
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    filters = np.squeeze(filters, 3) if filters.ndim == 4 else filters
 
     if data_format == "NHWC":
         x = np.transpose(x, (3, 0, 1, 2))

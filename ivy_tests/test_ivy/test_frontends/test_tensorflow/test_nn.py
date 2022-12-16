@@ -86,6 +86,7 @@ def _x_and_filters(
                     helpers.ints(min_value=3, max_value=5),
                     helpers.ints(min_value=1, max_value=3),
                     helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=1),
                 )
             )
         elif not transpose:
@@ -641,10 +642,10 @@ def test_tensorflow_depthwise_conv2d(
         on_device=on_device,
         input=x,
         filter=filters,
-        strides=stride,
+        strides=[stride, stride, stride, stride],
         padding=padding,
         data_format=data_format,
-        dilations=dilation,
+        dilations=[dilation, dilation],
     )
 
 
