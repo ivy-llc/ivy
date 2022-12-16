@@ -86,6 +86,7 @@ def handle_array_like(fn: Callable) -> Callable:
 
 
 def inputs_to_native_arrays(fn: Callable) -> Callable:
+    array_cache: Dict[Any, Any] = {}
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
