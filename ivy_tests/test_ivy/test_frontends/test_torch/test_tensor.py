@@ -1337,14 +1337,9 @@ def test_torch_instance_log(
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(
-        min_value=-1e04,
-        max_value=1e04,
-    ),
 )
 def test_torch_special_add(
     dtype_and_x,
-    alpha,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
@@ -1367,7 +1362,6 @@ def test_torch_special_add(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
-            "alpha": alpha,
         },
         frontend_method_data=frontend_method_data,
         frontend=frontend,
@@ -1426,14 +1420,9 @@ def test_torch_special_long(
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(
-        min_value=-1e04,
-        max_value=1e04,
-    ),
 )
 def test_torch_special_radd(
     dtype_and_x,
-    alpha,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
@@ -1456,7 +1445,6 @@ def test_torch_special_radd(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
-            "alpha": alpha,
         },
         frontend_method_data=frontend_method_data,
         frontend=frontend,
@@ -1475,14 +1463,9 @@ def test_torch_special_radd(
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(
-        min_value=-1e04,
-        max_value=1e04,
-    ),
 )
 def test_torch_special_sub(
     dtype_and_x,
-    alpha,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
@@ -1505,7 +1488,6 @@ def test_torch_special_sub(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
-            "alpha": alpha,
         },
         frontend_method_data=frontend_method_data,
         frontend=frontend,
@@ -1651,11 +1633,9 @@ def test_torch_special_rmul(
         max_value=1e04,
         allow_inf=False,
     ),
-    rounding_mode=st.sampled_from([None, "trunc", "floor"]),
 )
 def test_torch_special_truediv(
     dtype_and_x,
-    rounding_mode,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
@@ -1678,7 +1658,6 @@ def test_torch_special_truediv(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
-            "rounding_mode": rounding_mode,
         },
         frontend_method_data=frontend_method_data,
         frontend=frontend,
