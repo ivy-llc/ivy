@@ -205,8 +205,8 @@ def test_uniform(
     method_tree="GlorotUniform.create_variables",
     ground_truth_backend="numpy",
     var_shape=helpers.get_shape(),
-    fan_in=helpers.ints(min_value=1),
-    fan_out=helpers.ints(min_value=1),
+    fan_in=helpers.ints(min_value=1, max_value=100),
+    fan_out=helpers.ints(min_value=1, max_value=100),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
