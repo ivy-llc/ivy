@@ -1,1 +1,3 @@
-
+|                    | jax                                                                                                                                                                                    |
+|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_array__rand__ | <a href="https://github.com/unifyai/ivy/actions/runs/3713551168/jobs/6296327814" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
