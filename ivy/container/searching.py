@@ -108,8 +108,9 @@ class ContainerWithSearching(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\
-        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]])
+        >>> a = ivy.array([[4., 0., -1.], [2., -3., 6]])
+        >>> b = ivy.array([[1., 2., 3.], [1., 1., 1.]])
+        >>> x = ivy.Container(a=a, b=b)
         >>> y = x.argmax(axis=1, keepdims=True)
         >>> print(y)
         {

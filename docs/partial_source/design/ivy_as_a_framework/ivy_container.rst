@@ -258,15 +258,15 @@ For example, if the container mainly contains arrays (such as the weights of a n
                       'w': ivy.array([[1.5, 2.3, 0.9]])}})
 
    # save and load as hdf5
-   weights.to_disk_as_hdf5('weights.hdf5')
-   loaded = ivy.Container.from_disk_as_hdf5('weights.hdf5')
-   assert ivy.Container.identical(
+   weights.cont_to_disk_as_hdf5('weights.hdf5')
+   loaded = ivy.Container.cont_from_disk_as_hdf5('weights.hdf5')
+   assert ivy.Container.cont_identical(
           [loaded, weights], same_arrays=False)
 
    # save and load as pickled
-   weights.to_disk_as_pickled('weights.pickled')
-   loaded = ivy.Container.from_disk_as_pickled('weights.pickled')
-   assert ivy.Container.identical(
+   weights.cont_to_disk_as_pickled('weights.pickled')
+   loaded = ivy.Container.cont_from_disk_as_pickled('weights.pickled')
+   assert ivy.Container.cont_identical(
           [loaded, weights], same_arrays=False)
 
 Alternatively, if the container mainly stored experiment configuration data, then the following can be used.
@@ -281,7 +281,7 @@ Alternatively, if the container mainly stored experiment configuration data, the
                         'optim': 'ADAM'}})
 
    # save and load as json
-   config.to_disk_as_json('config.json')
+   config.cont_to_disk_as_json('config.json')
 
    # config.json contents -------------#
    # {                                 #
@@ -297,8 +297,8 @@ Alternatively, if the container mainly stored experiment configuration data, the
    # }                                 #
    # ----------------------------------#
 
-   loaded = ivy.Container.from_disk_as_json('config.json')
-   assert (config == loaded).all_true()
+   loaded = ivy.Container.cont_from_disk_as_json('config.json')
+   assert (config == loaded).cont_all_true()
 
 Comparisons
 -----------
@@ -315,7 +315,7 @@ We can then very quickly find conflicting leaves.
     cnt1 = cnt0.cont_deep_copy()
     cnt1.b = ivy.array([0.])
 
-    print(ivy.Container.diff(cnt0, cnt1))
+    print(ivy.Container.cont_diff(cnt0, cnt1))
 
     {
         a: ivy.array([0.]),
@@ -326,7 +326,7 @@ We can then very quickly find conflicting leaves.
     }
 
 Or perhaps we saved JSON configuration files to disk for two different experiment runs, and then want to quickly see their differences.
-The :meth:`ivy.Container.diff` method will also detect differences in the hierarchical structure and key name differences.
+The :meth:`ivy.Container.cont_diff` method will also detect differences in the hierarchical structure and key name differences.
 
 .. code-block:: python
 
@@ -340,7 +340,7 @@ The :meth:`ivy.Container.diff` method will also detect differences in the hierar
             'dropout': 0.5,
             'lr': 0.1})
 
-    print(ivy.Container.diff(config0, config1))
+    print(ivy.Container.cont_diff(config0, config1))
 
     {
         batch_size: {
@@ -355,7 +355,7 @@ The :meth:`ivy.Container.diff` method will also detect differences in the hierar
             diff_0: ADAM
         }
     }
-The :meth:`ivy.Container.diff` method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.
+The :meth:`ivy.Container.cont_diff` method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.
 
 Customized Representations
 -------------------------
@@ -542,7 +542,7 @@ However the recursive methods of the Ivy Container make things even more conveni
 Configuration
 --------------
 
-As briefly alluded to when explaining the :meth:`ivy.Container.diff` method, the container class is also the ideal data type for storing experiment configurations.
+As briefly alluded to when explaining the :meth:`ivy.Container.cont_diff` method, the container class is also the ideal data type for storing experiment configurations.
 Configurations can either first be stored to disk as a JSON file and then loaded into the :class:`ivy.Container` for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.
 
 Data loading

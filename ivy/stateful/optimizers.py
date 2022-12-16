@@ -110,7 +110,7 @@ class Optimizer(abc.ABC):
             Default is ``False``
         """
         if ignore_missing:
-            return v.set_at_keys(self._step(v.at_key_chains(grads), grads))
+            return v.cont_set_at_keys(self._step(v.cont_at_key_chains(grads), grads))
         return self._step(v, grads)
 
     # Public #

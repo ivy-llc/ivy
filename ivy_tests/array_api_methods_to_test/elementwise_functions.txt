@@ -21,7 +21,7 @@ divide
 exp
 expm1
 floor
-floor_divide 
+floor_divide
 greater
 greater_equal
 isfinite
