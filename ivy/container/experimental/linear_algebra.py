@@ -172,6 +172,55 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_matrix_exp(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_static_method(
+            "matrix_exp",
+            x,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+        )
+
+    def matrix_exp(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.diagflat.
+        This method simply wraps the function, and so the docstring for
+        ivy.diagflat also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[[1., 0.],
+                            [0., 1.]],
+                            [[2., 0.],
+                            [0., 2.]]])
+        >>> ivy.matrix_exp(x)
+        ivy.array([[[2.7183, 1.0000],
+                    [1.0000, 2.7183]],
+                    [[7.3891, 1.0000],
+                    [1.0000, 7.3891]]])
+        """
+        return self.static_matrix_exp(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            out=out,
+        )
+        
+    @staticmethod
     def static_eig(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -185,18 +234,15 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         ivy.Container static method variant of ivy.eig.
         This method simply wraps the function, and so the docstring for
         ivy.eig also applies to this method with minimal changes.
-
         Parameters
         ----------
             x
                 container with input arrays.
-
         Returns
         -------
             ret
                 container including tuple of arrays corresponding to
                 eigenvealues and eigenvectors of input array
-
         Examples
         --------
         >>>x = ivy.array([[1,2], [3,4]])
@@ -243,13 +289,11 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         ----------
             x
                 container with input arrays.
-
         Returns
         -------
             ret
                 container including arrays corresponding
                 eigenvealues and eigenvectors of input arrays
-
         Examples
         --------
         >>>x = ivy.array([[1,2], [3,4]])
