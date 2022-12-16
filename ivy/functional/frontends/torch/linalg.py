@@ -79,6 +79,7 @@ def svd(input, /, *, full_matrices=True):
 def svdvals(input, *, out=None):
     return ivy.svdvals(input, out=out)
 
+
 @to_ivy_arrays_and_back
 def inv_ex(input, *, check_errors=False, out=None):
     try:
