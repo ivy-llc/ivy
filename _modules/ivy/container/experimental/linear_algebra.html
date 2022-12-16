@@ -368,26 +368,29 @@
 <span class="sd">        ivy.Container static method variant of ivy.eig.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring for</span>
 <span class="sd">        ivy.eig also applies to this method with minimal changes.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">            x</span>
 <span class="sd">                container with input arrays.</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            ret</span>
 <span class="sd">                container including tuple of arrays corresponding to</span>
 <span class="sd">                eigenvealues and eigenvectors of input array</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt;x = ivy.array([[1,2], [3,4]])</span>
-<span class="sd">        &gt;&gt;&gt;c = ivy.Container({&#39;x&#39;:{&#39;xx&#39;:x}})</span>
-<span class="sd">        &gt;&gt;&gt;ivy.Container.eig(c)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1,2], [3,4]])</span>
+<span class="sd">        &gt;&gt;&gt; c = ivy.Container({&#39;x&#39;:{&#39;xx&#39;:x}})</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.eig(c)</span>
 <span class="sd">        {</span>
 <span class="sd">            x:  {</span>
 <span class="sd">                    xx: (tuple(2), &lt;class ivy.array.array.Array&gt;, shape=[2, 2])</span>
 <span class="sd">                }</span>
 <span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt;ivy.Container.eig(c)[&#39;x&#39;][&#39;xx&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.eig(c)[&#39;x&#39;][&#39;xx&#39;]</span>
 <span class="sd">        (</span>
 <span class="sd">            ivy.array([-0.37228107+0.j,  5.3722816 +0.j]),</span>
 <span class="sd">            ivy.array([</span>
@@ -423,16 +426,18 @@
 <span class="sd">        ----------</span>
 <span class="sd">            x</span>
 <span class="sd">                container with input arrays.</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            ret</span>
 <span class="sd">                container including arrays corresponding</span>
 <span class="sd">                eigenvealues and eigenvectors of input arrays</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt;x = ivy.array([[1,2], [3,4]])</span>
-<span class="sd">        &gt;&gt;&gt;c = ivy.Container({&#39;x&#39;:{&#39;xx&#39;:x}})</span>
-<span class="sd">        &gt;&gt;&gt;c.eig()</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1,2], [3,4]])</span>
+<span class="sd">        &gt;&gt;&gt; c = ivy.Container({&#39;x&#39;:{&#39;xx&#39;:x}})</span>
+<span class="sd">        &gt;&gt;&gt; c.eig()</span>
 <span class="sd">        {</span>
 <span class="sd">            x:  {</span>
 <span class="sd">                    xx: (tuple(2), &lt;class ivy.array.array.Array&gt;, shape=[2, 2])</span>
