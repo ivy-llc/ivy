@@ -1,4 +1,5 @@
 # local
+import math
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
@@ -77,3 +78,17 @@ def svd(input, /, *, full_matrices=True):
 @to_ivy_arrays_and_back
 def svdvals(input, *, out=None):
     return ivy.svdvals(input, out=out)
+
+@to_ivy_arrays_and_back
+def inv_ex(input, *, check_errors=False, out=None):
+    try:
+        inputInv = inv.inv(input, out)
+        info = ivy.zeros([input.shape[i] for i in range(len(input.shape)-2)] + [1])
+        return inputInv, info
+    except RuntimeError as e :
+        if check_errors:
+            raise RuntimeError(e)
+        else:
+            inputInv = input*math.nan
+            info = ivy.ones([input.shape[i] for i in range(len(input.shape)-2)] + [1])
+            return inputInv, info
