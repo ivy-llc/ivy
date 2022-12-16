@@ -115,6 +115,10 @@ class Tensor:
         self._ivy_array = self.atan().ivy_array
         return self
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def atan2(self, other):
+        return torch_frontend.atan2(self._ivy_array, other)
+
     def view(self, shape):
         return torch_frontend.ViewTensor(weakref.ref(self), shape=shape)
 
