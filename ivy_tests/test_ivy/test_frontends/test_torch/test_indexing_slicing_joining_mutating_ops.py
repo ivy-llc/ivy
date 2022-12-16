@@ -346,7 +346,7 @@ def test_torch_stack(
     dim,
     as_variable,
     with_out,
-    num_positional_args,
+    num_positional_args,                                  
     native_array,
     on_device,
     fn_tree,
