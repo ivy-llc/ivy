@@ -4301,7 +4301,7 @@ def test_torch_instance_tril(
     init_tree="torch.tensor",
     method_name="sqrt",
     dtype_x=helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("bfloat16", full=True),
+        available_dtypes=helpers.get_dtypes("bfloat16", full=True),
     ),
 )
 def test_torch_instance_sqrt(
@@ -4311,7 +4311,7 @@ def test_torch_instance_sqrt(
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     frontend,
-    frontend_method_data
+    frontend_method_data,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(

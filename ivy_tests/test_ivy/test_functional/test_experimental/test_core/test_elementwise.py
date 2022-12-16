@@ -709,7 +709,7 @@ def test_isneginf(
 @handle_test(
     fn_tree="functional.experimental.angle",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=['float64'],
+        available_dtypes=["float64"],
         min_value=-5,
         max_value=5,
         max_dim_size=5,
