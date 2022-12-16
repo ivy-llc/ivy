@@ -681,6 +681,50 @@ def isneginf(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def angle(
+    z: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    deg: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Calculates Element-wise the angle for an array of complex numbers(x+yj).
+
+    Parameters
+    ----------
+    z
+        Array-like input.
+    deg
+        optional bool.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns an array of angles for each complex number in the input.
+        If def is False(default), angle is calculated in radian and if
+        def is True, then angle is calculated in degrees.
+
+    Examples
+    --------
+    >>> ivy.set_backend('tensorflow')
+    >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
+    >>> z
+    ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
+    >>> ivy.angle(z)
+    ivy.array([ 2.35619449,  2.35619449, -0.78539816])
+    >>> ivy.set_backend('numpy')
+    >>> ivy.angle(z,deg=True)
+    ivy.array([135., 135., -45.])
+    """
+    return ivy.current_backend(z).angle(z, deg=deg, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def nan_to_num(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -847,6 +891,8 @@ def diff(
     return ivy.current_backend().diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
+@handle_nestable
+@to_native_arrays_and_back
 @handle_exceptions
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
@@ -897,19 +943,19 @@ def allclose(
     >>> x2 = ivy.array([1.00001e10, 1e-8])
     >>> y = ivy.allclose(x1, x2)
     >>> print(y)
-    False
+    ivy.array(False)
 
     >>> x1 = ivy.array([1.0, ivy.nan])
     >>> x2 = ivy.array([1.0, ivy.nan])
     >>> y = ivy.allclose(x1, x2, equal_nan=True)
     >>> print(y)
-    True
+    ivy.array(True)
 
     >>> x1 = ivy.array([1e-10, 1e-10])
     >>> x2 = ivy.array([1.00001e-10, 1e-10])
     >>> y = ivy.allclose(x1, x2, rtol=0.005, atol=0.0)
     >>> print(y)
-    True
+    ivy.array(True)
 
     """
     return ivy.current_backend().allclose(

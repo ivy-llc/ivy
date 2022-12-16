@@ -192,7 +192,7 @@ class ContainerBase(dict, abc.ABC):
         cont0 = conts[0]
         # Get the function with the name fn_name, enabling containers to specify
         # their backends irrespective of global ivy's backend
-        fn = cont0.ivy.__dict__[fn_name]
+        fn = cont0.cont_ivy.__dict__[fn_name]
 
         def map_fn(vals, _):
             if with_out:
@@ -273,7 +273,9 @@ class ContainerBase(dict, abc.ABC):
         """
         container0 = containers[0]
         if not ivy.exists(config):
-            config = container0.config if isinstance(container0, ivy.Container) else {}
+            config = (
+                container0.cont_config if isinstance(container0, ivy.Container) else {}
+            )
 
         if isinstance(container0, ivy.Container):
             return_dict = dict()
@@ -306,7 +308,9 @@ class ContainerBase(dict, abc.ABC):
         """
         container0 = containers[0]
         if not ivy.exists(config):
-            config = container0.config if isinstance(container0, ivy.Container) else {}
+            config = (
+                container0.cont_config if isinstance(container0, ivy.Container) else {}
+            )
 
         if isinstance(container0, ivy.Container):
             return_dict = dict()
@@ -389,7 +393,7 @@ class ContainerBase(dict, abc.ABC):
         if not ivy.exists(config):
             # noinspection PyUnresolvedReferences
             config = (
-                container_rightmost.config
+                container_rightmost.cont_config
                 if isinstance(container_rightmost, ivy.Container)
                 else {}
             )
@@ -467,7 +471,9 @@ class ContainerBase(dict, abc.ABC):
         num_containers = len(containers)
         container0 = containers[0]
         if not ivy.exists(config):
-            config = container0.config if isinstance(container0, ivy.Container) else {}
+            config = (
+                container0.cont_config if isinstance(container0, ivy.Container) else {}
+            )
         if not isinstance(container0, dict):
             equal_mat = ivy.all_equal(*containers, equality_matrix=True)
             if not detect_value_diffs:
@@ -664,7 +670,9 @@ class ContainerBase(dict, abc.ABC):
             message="No containers found in the inputs to ivy.Container.cont_multi_map",
         )
         if not ivy.exists(config):
-            config = container0.config if isinstance(container0, ivy.Container) else {}
+            config = (
+                container0.cont_config if isinstance(container0, ivy.Container) else {}
+            )
         return_dict = dict()
         for key in container0.keys():
             values = [
@@ -1000,7 +1008,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         ivy.assertions.check_greater(len(containers), 1)
-        configs = [cont.config for cont in containers]
+        configs = [cont.cont_config for cont in containers]
         config0 = configs[0]
         for k, v in config0.items():
             if not min([config[k] == v for config in configs]):
@@ -1234,7 +1242,9 @@ class ContainerBase(dict, abc.ABC):
         """
         container0 = containers[0]
         if not ivy.exists(config):
-            config = container0.config if isinstance(container0, ivy.Container) else {}
+            config = (
+                container0.cont_config if isinstance(container0, ivy.Container) else {}
+            )
 
         if isinstance(container0, ivy.Container):
             return_dict = dict()
@@ -3293,11 +3303,11 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
-        total_depth = self.max_depth
+        total_depth = self.cont_max_depth
         copy = self.cont_copy()
 
         def _maybe_cutoff(cont, kc):
-            if total_depth - copy[kc].max_depth < depth_cutoff:
+            if total_depth - copy[kc].cont_max_depth < depth_cutoff:
                 return cont
             if inplace:
                 cont.clear()
@@ -3322,7 +3332,7 @@ class ContainerBase(dict, abc.ABC):
         copy = self.cont_copy()
 
         def _maybe_cutoff(cont, kc):
-            if copy[kc].max_depth > height_cutoff:
+            if copy[kc].cont_max_depth > height_cutoff:
                 return cont
             if inplace:
                 cont.clear()
@@ -3359,7 +3369,7 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
-        top_depth = self.max_depth
+        top_depth = self.cont_max_depth
         if all_depths:
             if isinstance(key_slice, dict):
                 first_slice = list(key_slice.values())[0]
@@ -4052,31 +4062,31 @@ class ContainerBase(dict, abc.ABC):
         return self._cont_get_shapes()
 
     @property
-    def dev(self):
+    def cont_dev(self):
         """The device to which the arrays in the container belong, with None returned if
         the devices are not consistent.
         """
         return self._cont_get_dev()
 
     @property
-    def dev_str(self):
+    def cont_dev_str(self):
         """The device to which the arrays in the container belong, with None returned if
         the devices are not consistent.
         """
         return self._cont_get_dev()
 
     @property
-    def ivy(self):
+    def cont_ivy(self):
 
         return self._cont_ivy
 
     @property
-    def config(self):
+    def cont_config(self):
 
         return self._config
 
     @property
-    def max_depth(self):
+    def cont_max_depth(self):
 
         kcs = [kc for kc in self.cont_to_iterator_keys(include_empty=True)]
         if not kcs:

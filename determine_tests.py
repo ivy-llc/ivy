@@ -38,6 +38,23 @@ def get_all_tests():
     return test_names
 
 
+def get_tests(_tests_file, _line):
+    tests_file_line = set()
+    if 0 <= _line < len(_tests_file):
+        tests_file_line = _tests_file[_line]
+    return set() if len(tests_file_line) >= MAX_TESTS else tests_file_line
+
+
+def determine_tests_line(_tests_file, _line, _tests_to_run):
+    tests_file_line = get_tests(_tests_file, _line)
+    tests_file_prev = get_tests(_tests_file, _line - 1)
+    tests_file_next = get_tests(_tests_file, _line + 1)
+    _tests_to_run.update(tests_file_line)
+    _tests_to_run.update(tests_file_prev)
+    _tests_to_run.update(tests_file_next)
+    return _tests_to_run
+
+
 MAX_TESTS = 10
 if __name__ == "__main__":
     tests = bz2.BZ2File("tests.pbz2", "rb")
@@ -67,12 +84,9 @@ if __name__ == "__main__":
             updated = added.intersection(deleted)
             added = added.difference(updated)
             deleted = deleted.difference(updated)
-            # Now Update the Tests and compute the tests to run
+            # Now Update the Mapping and compute the tests to run
             for line in deleted:
-                tests_file_line = tests_file[line]
-                if len(tests_file_line) >= MAX_TESTS:
-                    continue
-                tests_to_run.update(tests_file_line)
+                tests_to_run = determine_tests_line(tests_file, line, tests_to_run)
             for line in sorted(deleted, reverse=True):
                 if line < len(tests_file):
                     del tests_file[line]
@@ -94,15 +108,9 @@ if __name__ == "__main__":
             tests[file_name] = tests_file
             # Now Compute the Tests to Run
             for line in updated:
-                tests_file_line = tests_file[line]
-                if len(tests_file_line) >= MAX_TESTS:
-                    continue
-                tests_to_run.update(tests_file_line)
+                tests_to_run = determine_tests_line(tests_file, line, tests_to_run)
             for line in added:
-                tests_file_line = tests_file[line]
-                if len(tests_file_line) >= MAX_TESTS:
-                    continue
-                tests_to_run.update(tests_file_line)
+                tests_to_run = determine_tests_line(tests_file, line, tests_to_run)
         break
 
     if len(sys.argv) >= 2 and sys.argv[1] == "extra":
