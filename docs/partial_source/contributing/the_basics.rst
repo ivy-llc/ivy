@@ -53,7 +53,7 @@ We make extensive use of `ToDo list issues <https://github.com/unifyai/ivy/issue
 
 We have a clear process for contributors to engage with such ToDo lists:
 
-a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments.
+a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: `function reformatting <https://lets-unify.ai/ivy/contributing/open_tasks.html#function-formatting>`_, `frontend APIs <https://lets-unify.ai/ivy/contributing/open_tasks.html#frontend-apis>`_ and `ivy API extensions <https://lets-unify.ai/ivy/contributing/open_tasks.html#ivy-api-extensions>`_.
 
 b. Create a new issue with the title being just the name of the sub-task you would like to work on.
 
@@ -62,14 +62,14 @@ c. comment on the ToDo list issue with a reference to this issue like so:
    :code:`- [ ] #Issue_number`
 
    Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
-   No need to wait for this to happen before progressing to the next stage.
+   No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should    be kept clean with comments only as described above. 
 
 d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following comment in the PR:
 
    :code:`Close #Issue_number`
 
-   This is important, so that the merging of your PR will automatically close the associated issue.
-   If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
+   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is the 
+   first comment on the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you        through the process of getting it working 🙂
 
 e. Wait for us to review your PR.
    Once we have reviewed your PR we will either merge or request changes.

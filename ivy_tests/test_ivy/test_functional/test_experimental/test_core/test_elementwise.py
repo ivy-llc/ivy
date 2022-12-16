@@ -1,10 +1,11 @@
 # global
+import numpy as np
 from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
-import numpy as np
+
 
 # Helpers #
 # ------- #
@@ -187,7 +188,6 @@ def test_fmax(
 
 
 # trapz
-# TODO: add container methods
 @st.composite
 def _either_x_dx(draw):
     rand = (draw(st.integers(min_value=0, max_value=1)),)
@@ -357,6 +357,48 @@ def test_exp2(
     )
 
 
+# copysign
+@handle_test(
+    fn_tree="functional.experimental.copysign",
+    dtype_x1_x2=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=0,
+        allow_nan=False,
+        shared_dtype=True,
+    ),
+)
+def test_copysign(
+    dtype_x1_x2,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    (x1_dtype, x2_dtype), (x1, x2) = dtype_x1_x2
+    helpers.test_function(
+        input_dtypes=[x1_dtype, x2_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        on_device=on_device,
+        ground_truth_backend="torch",
+        fw=backend_fw,
+        fn_name=fn_name,
+        test_values=True,
+        x1=x1,
+        x2=x2,
+    )
+
+
 @st.composite
 def _get_dtype_values_axis_for_count_nonzero(
     draw,
@@ -386,8 +428,8 @@ def _get_dtype_values_axis_for_count_nonzero(
 @handle_test(
     fn_tree="functional.experimental.count_nonzero",
     dtype_values_axis=_get_dtype_values_axis_for_count_nonzero(
-        in_available_dtypes="numeric",
-        out_available_dtypes="numeric",
+        in_available_dtypes="integer",
+        out_available_dtypes="integer",
         min_num_dims=1,
         max_num_dims=10,
         min_dim_size=1,
@@ -420,10 +462,10 @@ def test_count_nonzero(
         fw=backend_fw,
         ground_truth_backend="tensorflow",
         fn_name="count_nonzero",
-        a=a,
+        a=a[0],
         axis=axis,
         keepdims=keepdims,
-        dtype=i_o_dtype[1],
+        dtype=i_o_dtype[1][0],
     )
 
 
@@ -441,6 +483,7 @@ def test_count_nonzero(
         valid_axis=True,
         allow_neg_axes=False,
         min_axes_size=1,
+        allow_nan=True,
     ),
     keep_dims=st.booleans(),
 )
@@ -659,6 +702,54 @@ def test_isneginf(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# angle
+@handle_test(
+    fn_tree="functional.experimental.angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float64"],
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    deg=st.booleans(),
+)
+def test_angle(
+    *,
+    dtype_and_x,
+    deg,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, z = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        z=z[0],
+        deg=deg,
     )
 
 
@@ -889,6 +980,50 @@ def test_nextafter(
     )
 
 
+# diff
+@handle_test(
+    fn_tree="functional.experimental.diff",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+)
+def test_diff(
+    *,
+    dtype_and_x,
+    with_out,
+    num_positional_args,
+    as_variable,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # zeta
 @handle_test(
     fn_tree="functional.experimental.zeta",
@@ -927,4 +1062,52 @@ def test_zeta(
         atol_=1e-03,
         x=x[0],
         q=x[1],
+    )
+
+
+# gradient
+@handle_test(
+    fn_tree="functional.experimental.gradient",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=("float32", "float16", "float64"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=4,
+    ),
+    spacing=helpers.ints(
+        min_value=-3,
+        max_value=3,
+    ),
+)
+def test_gradient(
+    *,
+    dtype_and_x,
+    spacing,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=[False],
+        instance_method=False,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        x=x[0],
+        spacing=spacing,
     )

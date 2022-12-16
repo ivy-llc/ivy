@@ -6,12 +6,14 @@ from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
+    handle_numpy_dtype,
 )
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def ceil(
     x,
     /,
@@ -39,9 +41,10 @@ def fix(
     return ivy.where(where, ivy.floor(x, out=out), ivy.ceil(x, out=out), out=out)
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def trunc(
     x,
     /,

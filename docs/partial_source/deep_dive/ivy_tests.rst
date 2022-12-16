@@ -53,6 +53,8 @@ Ivy Tests
 .. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
 .. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
 .. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
+.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html#ci-pipeline
+.. _`setting up`: https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing
 
 
 On top of the Array API `test suite`_, which is included as a submodule mapped to the folder :code:`test_array_api`, there is also a collection of Ivy tests, located in subfolder `test_ivy`_.
@@ -723,6 +725,16 @@ So when should :func:`test_array_function` be used?
 
 The rule is simple, if the test should not pass any arrays in the input, then we should not use the helper :func:`test_array_function`.
 For example, :func:`ivy.num_gpus` does not receive any arrays in the input, and so we should not make us of :func:`test_array_function` in the test implementation.
+
+Running Ivy Tests
+-----------------
+
+The CI Pipeline runs the entire collection of Ivy Tests for the module that is being updated on every push to the repo.
+
+You will need to make sure the Ivy Test is passing for each Ivy function you introduce/modify.
+If a test fails on the CI, you can see details about the failure under `Details -> Run Ivy <module> Tests` as shown in `CI Pipeline`_.
+
+You can also run the tests locally before making a PR. See the relevant `setting up`_ section for instructions on how to do so.
 
 Re-Running Failed Ivy Tests
 ---------------------------

@@ -123,10 +123,11 @@ def test_layer_norm(
         rtol_=0.5,
         atol_=0.5,
         test_gradients=True,
+        xs_grad_idxs=[[0, 0]],
         x=x[0],
         normalize_axis=normalize_axis,
         epsilon=epsilon,
-        weight=weight,
-        bias=bias,
+        weight=weight[0],
+        bias=bias[0],
         new_std=new_std,
     )

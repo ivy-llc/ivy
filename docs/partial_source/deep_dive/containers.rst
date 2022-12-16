@@ -3,14 +3,14 @@ Containers
 
 .. _`ivy.Container`: https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/container.py#L25
 .. _`dict`: https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/base.py#L56
-.. _`ivy.Container.map`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L4030
-.. _`ivy.Container.all_true`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L1490
-.. _`ivy.Container.to_iterator`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L3019
+.. _`ivy.Container.cont_map`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L4030
+.. _`ivy.Container.cont_all_true`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L1490
+.. _`ivy.Container.cont_to_iterator`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L3019
 .. _`ContainerBase`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56
-.. _`ivy.Container.multi_map`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593
-.. _`ivy.Container.diff`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L396
-.. _`ivy.Container.common_key_chains`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L663
-.. _`ivy.Container.multi_map_in_static_method`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167
+.. _`ivy.Container.cont_multi_map`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593
+.. _`ivy.Container.cont_diff`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L396
+.. _`ivy.Container.cont_common_key_chains`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L663
+.. _`ivy.Container.cont_multi_map_in_static_method`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167
 .. _`ivy.Container.static_add`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L71
 .. _`ivy.Container.static_tan`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1240
 .. _`ivy.Container.static_roll`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L135
@@ -60,7 +60,7 @@ Container Instance Methods
 --------------------------
 
 Container instance methods are methods which are specific to the container itself.
-A few examples include `ivy.Container.map`_ which is used for mapping a function to all leaves of the container, `ivy.Container.all_true`_ which determines if all container leaves evaluate to boolean `True`, and `ivy.Container.to_iterator`_ which returns an iterator for traversing the leaves of the container.
+A few examples include `ivy.Container.cont_map`_ which is used for mapping a function to all leaves of the container, `ivy.Container.cont_all_true`_ which determines if all container leaves evaluate to boolean `True`, and `ivy.Container.cont_to_iterator`_ which returns an iterator for traversing the leaves of the container.
 
 There are many more examples, check out the abstract `ContainerBase`_ class to see some more!
 
@@ -70,7 +70,7 @@ Container Static Methods
 Container static methods are also methods which are specific to containers, but which generally operate across *multiple* containers rather than a single container.
 This underpins the decision to not bind these method to a single container instance, and instead implement them as *static* methods.
 
-A few examples include `ivy.Container.multi_map`_ which is used for mapping a function to all leaves of *multiple* containers with the same nested structure, `ivy.Container.diff`_ which displays the difference in nested structure between multiple containers, and `ivy.Container.common_key_chains`_ which returns the nested structure that is common to all containers.
+A few examples include `ivy.Container.cont_multi_map`_ which is used for mapping a function to all leaves of *multiple* containers with the same nested structure, `ivy.Container.cont_diff`_ which displays the difference in nested structure between multiple containers, and `ivy.Container.cont_common_key_chains`_ which returns the nested structure that is common to all containers.
 
 There are many more examples, check out the abstract `ContainerBase`_ class to see some more!
 
@@ -84,9 +84,9 @@ To recap, what this means is that every function can arbitrarily accept :class:`
 When multiple containers are passed, this mapping is only applied to their shared nested structure, with the mapping applied to each of these leaves.
 
 In such cases, the function in the functional API defers to this *static* :class:`ivy.Container` implementation.
-Under the hood, `ivy.Container.multi_map_in_static_method`_ enables us to pass in arbitrary combinations of containers and non-containers, and perform the correct mapping across the leaves.
-Internally, :meth:`ivy.Container.multi_map_in_static_method` calls `ivy.Container.multi_map`_.
-In cases where there are no containers passed, `ivy.Container.multi_map_in_static_method`_ will simply call the function once on the non-container arguments provided.
+Under the hood, `ivy.Container.cont_multi_map_in_static_method`_ enables us to pass in arbitrary combinations of containers and non-containers, and perform the correct mapping across the leaves.
+Internally, :meth:`ivy.Container.cont_multi_map_in_static_method` calls `ivy.Container.multi_map`_.
+In cases where there are no containers passed, `ivy.Container.cont_multi_map_in_static_method`_ will simply call the function once on the non-container arguments provided.
 
 A few examples of :class:`ivy.Container` API static methods are `ivy.Container.static_add`_, `ivy.Container.static_tan`_ and `ivy.Container.static_roll`_.
 
@@ -290,6 +290,7 @@ The functions :func:`ivy.clip`, :func:`ivy.log`, :func:`ivy.sum` and :func:`ivy.
 Therefore, our approach is to **not** wrap any compositional functions which are already *implicitly nestable* as a result of the *nestable* functions called internally.
 
 There may be some compositional functions which are not implicitly nestable for some reason, and in such cases adding the explicit `handle_nestable <https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407>`_ wrapping may be necessary.
+One such example is the :func:`ivy.linear` function which is not implicitly nestable despite being compositional. This is because of the use of special functions like :func:`__len__` which is not nestable and shouldn't be made nestable.
 But we should try to avoid this, in order to make the flow of computation as intuitive to the user as possible.
 
 When compiling the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.

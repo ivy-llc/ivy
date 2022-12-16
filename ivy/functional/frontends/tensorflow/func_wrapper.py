@@ -9,15 +9,51 @@ import ivy
 import ivy.functional.frontends.tensorflow as frontend
 
 
+def to_ivy_dtype(dtype):
+    if not dtype or isinstance(dtype, str):
+        return dtype
+    if dtype in (int, float, bool) or ivy.is_native_dtype(dtype):
+        return ivy.as_ivy_dtype(dtype)
+    return frontend.as_dtype(dtype)._ivy_dtype
+
+
+def handle_tf_dtype(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, dtype=None, **kwargs):
+        if len(args) > (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            kwargs = {
+                **dict(
+                    zip(
+                        list(inspect.signature(fn).parameters.keys())[
+                            dtype_pos + 1 : len(args)
+                        ],
+                        args[dtype_pos + 1 :],
+                    )
+                ),
+                **kwargs,
+            }
+            args = args[:dtype_pos]
+        elif len(args) == (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            args = args[:-1]
+        dtype = to_ivy_dtype(dtype)
+        return fn(*args, dtype=dtype, **kwargs)
+
+    dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
+    new_fn.handle_tf_dtype = True
+    return new_fn
+
+
 def _tf_frontend_array_to_ivy(x):
-    if isinstance(x, frontend.EagerTensor):
-        return x.data
+    if hasattr(x, "ivy_array"):
+        return x.ivy_array
     return x
 
 
 def ivy_array_to_tensorflow(x):
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return frontend.EagerTensor(x.data)
+        return frontend.EagerTensor(x)
     return x
 
 
@@ -59,8 +95,12 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             has_out = True
 
         # convert all arrays in the inputs to ivy.Array instances
-        ivy_args = ivy.nested_map(args, _to_ivy_array, include_derived=True)
-        ivy_kwargs = ivy.nested_map(kwargs, _to_ivy_array, include_derived=True)
+        ivy_args = ivy.nested_map(
+            args, _to_ivy_array, include_derived=True, shallow=False
+        )
+        ivy_kwargs = ivy.nested_map(
+            kwargs, _to_ivy_array, include_derived=True, shallow=False
+        )
         if has_out:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)

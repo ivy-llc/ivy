@@ -1,5 +1,6 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List
 import numpy as np
+import numpy.typing as npt
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -114,6 +115,20 @@ exp2.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+def copysign(
+    x1: npt.ArrayLike,
+    x2: npt.ArrayLike,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.copysign(x1, x2, out=out)
+
+
+copysign.support_native_out = True
+
+
+@_scalar_output_to_0d_array
 def count_nonzero(
     x: np.ndarray,
     /,
@@ -125,9 +140,10 @@ def count_nonzero(
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
-    if dtype is None:
-        return np.count_nonzero(x, axis=axis, keepdims=keepdims)
-    return np.array(np.count_nonzero(x, axis=axis, keepdims=keepdims), dtype=dtype)
+    ret = np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    if np.isscalar(ret):
+        return np.array(ret, dtype=dtype)
+    return ret.astype(dtype)
 
 
 count_nonzero.support_native_out = False
@@ -137,7 +153,7 @@ def nansum(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int], int]] = None,
     dtype: Optional[np.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
@@ -201,6 +217,20 @@ def isneginf(
 isneginf.support_native_out = True
 
 
+def angle(
+    z: np.ndarray,
+    /,
+    *,
+    deg: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    return np.angle(z, deg=deg)
+
+
+angle.support_native_out = False
+
+
 def nan_to_num(
     x: np.ndarray,
     /,
@@ -242,6 +272,21 @@ def signbit(
 signbit.support_native_out = True
 
 
+def diff(
+    x: Union[np.ndarray, int, float, list, tuple],
+    /,
+    *,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
+    append: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
+) -> np.ndarray:
+    return np.diff(x, n=n, axis=axis, prepend=prepend, append=append)
+
+
+diff.support_native_out = False
+
+
 def allclose(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -252,7 +297,7 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> bool:
-    return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return np.array(np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan))
 
 
 isclose.support_native_out = False
@@ -303,3 +348,16 @@ def zeta(
 
 
 zeta.support_native_out = False
+
+
+def gradient(
+    x: np.ndarray,
+    /,
+    *,
+    spacing: Optional[Union[int, list, tuple]] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+    edge_order: Optional[int] = 1,
+) -> Union[np.ndarray, List[np.ndarray]]:
+    if type(spacing) in (int, float):
+        return np.gradient(x, spacing, axis=axis, edge_order=edge_order)
+    return np.gradient(x, *spacing, axis=axis, edge_order=edge_order)

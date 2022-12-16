@@ -47,6 +47,30 @@ class ArrayWithSearching(abc.ABC):
             containing the indices of the maximum values. The returned array must have
             the default array index data type.
 
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.argmax()
+        >>> print(y)
+        ivy.array(2)
+
+        >>> x = ivy.array([[1., -0., -1.], [-2., 3., 2.]])
+        >>> y = x.argmax(axis=1)
+        >>> print(y)
+        ivy.array([0, 1])
+
+        >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
+        >>> y = x.argmax(axis=1, keepdims=True)
+        >>> print(y)
+        ivy.array([[0], [2]])
+
+        >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
+        >>> y = x.argmax(axis=1, output_dtype=ivy.int64)
+        >>> print(y, y.dtype)
+        ivy.array([0, 2]) int64
+
         """
         return ivy.argmax(
             self._data, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
@@ -58,7 +82,7 @@ class ArrayWithSearching(abc.ABC):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
-        dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
+        output_dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -78,7 +102,7 @@ class ArrayWithSearching(abc.ABC):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
-        dtype
+        output_dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
         out
             if axis is None, a zero-dimensional array containing the index of the first
@@ -92,9 +116,25 @@ class ArrayWithSearching(abc.ABC):
             Array containing the indices of the minimum values across the specified
             axis.
 
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 1., -1.])
+        >>> y = x.argmin()
+        >>> print(y)
+        ivy.array(2)
+
+        >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
+        >>> y= ivy.zeros((1,3), dtype=ivy.int64)
+        >>> x.argmin(axis=1, keepdims=True, out=y)
+        >>> print(y)
+        ivy.array([[2],
+                   [0],
+                   [1]])
         """
         return ivy.argmin(
-            self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+            self._data, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
         )
 
     def nonzero(
@@ -168,6 +208,15 @@ class ArrayWithSearching(abc.ABC):
         ret
             An array with elements from self where condition is True, and elements from
             x2 otherwise.
+
+        Examples
+        --------
+        >>> condition = ivy.array([[True, False], [True, True]])
+        >>> x1 = ivy.array([[1, 2], [3, 4]])
+        >>> x2 = ivy.array([[5, 6], [7, 8]])
+        >>> res = x1.where(condition,x2)
+        >>> print(res)
+        ivy.array([[1, 6], [3, 4]])
 
         """
         return ivy.where(self._data, x1._data, x2._data, out=out)

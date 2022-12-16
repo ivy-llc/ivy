@@ -103,10 +103,10 @@ def top_k(
         indices = np.argsort(x, axis=axis)
         indices = np.take(indices, np.arange(k), axis=axis)
     else:
-        x *= -1
+        x = -x
         indices = np.argsort(x, axis=axis)
         indices = np.take(indices, np.arange(k), axis=axis)
-        x *= -1
+        x = -x
     topk_res = NamedTuple("top_k", [("values", np.ndarray), ("indices", np.ndarray)])
     val = np.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)
@@ -232,6 +232,10 @@ def dsplit(
     return np.dsplit(ary, indices_or_sections)
 
 
+def atleast_1d(*arys: Union[np.ndarray, bool, Number]) -> List[np.ndarray]:
+    return np.atleast_1d(*arys)
+
+
 def dstack(
     arrays: Sequence[np.ndarray],
     /,
@@ -243,6 +247,10 @@ def dstack(
 
 def atleast_2d(*arys: np.ndarray) -> List[np.ndarray]:
     return np.atleast_2d(*arys)
+
+
+def atleast_3d(*arys: Union[np.ndarray, bool, Number]) -> List[np.ndarray]:
+    return np.atleast_3d(*arys)
 
 
 @_scalar_output_to_0d_array
@@ -260,6 +268,16 @@ def take_along_axis(
             + f" got {arr.shape} vs {indices.shape}"
         )
     return np.take_along_axis(arr, indices, axis)
+
+
+def hsplit(
+    ary: np.ndarray,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.hsplit(ary, indices_or_sections)
 
 
 take_along_axis.support_native_out = False

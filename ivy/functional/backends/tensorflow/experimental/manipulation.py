@@ -1,4 +1,5 @@
 from typing import Union, Optional, Sequence, Tuple, NamedTuple, List
+from numbers import Number
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import tensorflow as tf
@@ -82,13 +83,13 @@ def top_k(
         )
         indices = tf.dtypes.cast(indices, tf.int32)
     else:
-        x *= -1
+        x = -x
         indices = tf.experimental.numpy.argsort(x, axis=axis)
         indices = tf.experimental.numpy.take(
             indices, tf.experimental.numpy.arange(k), axis=axis
         )
         indices = tf.dtypes.cast(indices, tf.int32)
-        x *= -1
+        x = -x
     topk_res = NamedTuple("top_k", [("values", tf.Tensor), ("indices", tf.Tensor)])
     val = tf.experimental.numpy.take_along_axis(x, indices, axis=axis)
     indices = tf.dtypes.cast(indices, tf.int64)
@@ -134,6 +135,12 @@ def dsplit(
     return tf.experimental.numpy.dsplit(ary, indices_or_sections)
 
 
+def atleast_1d(
+    *arys: Union[tf.Tensor, tf.Variable, bool, Number],
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    return tf.experimental.numpy.atleast_1d(*arys)
+
+
 def dstack(
     arrays: Union[Sequence[tf.Tensor], Sequence[tf.Variable]],
     /,
@@ -147,6 +154,12 @@ def atleast_2d(
     *arys: Union[tf.Tensor, tf.Variable],
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.atleast_2d(*arys)
+
+
+def atleast_3d(
+    *arys: Union[tf.Tensor, tf.Variable, bool, Number],
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    return tf.experimental.numpy.atleast_3d(*arys)
 
 
 def take_along_axis(
@@ -164,3 +177,13 @@ def take_along_axis(
         )
     indices = tf.dtypes.cast(indices, tf.int32)
     return tf.experimental.numpy.take_along_axis(arr, indices, axis)
+
+
+def hsplit(
+    ary: Union[tf.Tensor, tf.Variable],
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.hsplit(ary, indices_or_sections)

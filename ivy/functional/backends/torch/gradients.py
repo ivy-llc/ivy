@@ -4,16 +4,15 @@
 import torch
 import warnings
 from typing import Optional, Callable
-import numpy as np
 
 # local
 import ivy
 from ivy.functional.ivy.gradients import (
-    _arrays_to_float_variables,
-    _get_required_native_variables,
-    _get_native_variables_and_indices,
-    _remove_zeros_and_nones,
-    _stop_grad_and_index,
+    _get_required_float_variables,
+    _get_y_and_ret_idxs,
+    _get_native_y,
+    _set_duplicates,
+    _process_func_ret_and_grads,
 )
 
 
@@ -31,103 +30,102 @@ def variable_data(x, /):
     return x.data
 
 
-# noinspection PyShadowingNames
-def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
-):
-    xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
-    func_ret = func(xs)
-    xs = _get_required_native_variables(xs, xs_grad_idxs)
-    ret_idxs, ret_values = _get_native_variables_and_indices(
-        func_ret,
-        idxs=ret_grad_idxs,
-        create_var=True,
+def _grad_func(y, xs, retain_grads):
+    """Gradient calculation function."""
+    # Creating a zero gradient nest for the case where no gradients are computed
+    grads_ = ivy.nested_map(
+        xs,
+        lambda x: ivy.to_native(ivy.zeros_like(x)),
+        include_derived=True,
+        shallow=False,
     )
-    if ret_values is None or (isinstance(ret_values, list) and len(ret_values) == 0):
-        return func_ret, {}
-    if isinstance(ret_values, list) and len(ret_values) == 1 and ret_grad_idxs is None:
-        y = ret_values[0]
-    else:
-        y = ret_values
 
-    def grad_func(y):
-        grads_ = ivy.nested_map(
-            xs, lambda x: ivy.to_native(ivy.zeros_like(x)), include_derived=True
+    # Gradient calculation
+    if isinstance(xs, ivy.NativeArray):
+        grads = torch.autograd.grad(
+            y,
+            xs,
+            retain_graph=True,
+            create_graph=retain_grads,
+            allow_unused=True,
+        )[0]
+        grads = grads_ if grads is None else grads
+    elif isinstance(xs, ivy.Container):
+        grads = xs.cont_from_flat_list(
+            list(
+                torch.autograd.grad(
+                    [y],
+                    [v for k, v in xs.cont_to_iterator()],
+                    retain_graph=True,
+                    create_graph=retain_grads,
+                    allow_unused=True,
+                )
+            )
         )
-        if isinstance(xs, ivy.NativeArray):
-            grads = torch.autograd.grad(
+        # Returning zeros if no gradients are computed for consistent results
+        if isinstance(grads, ivy.Container):
+            grads = ivy.nested_map(
+                grads, lambda x: 0 if x is None else x, include_derived=True
+            )
+            grads += grads_
+        else:
+            grads = grads_ if grads is None else grads
+    else:
+
+        def grad_(x):
+            grad = torch.autograd.grad(
                 y,
-                xs,
+                x,
                 retain_graph=True,
                 create_graph=retain_grads,
                 allow_unused=True,
             )[0]
-            grads = grads_ if grads is None else grads
-        elif isinstance(xs, ivy.Container):
-            grads = xs.from_flat_list(
-                list(
-                    torch.autograd.grad(
-                        [y],
-                        [v for k, v in xs.to_iterator()],
-                        retain_graph=True,
-                        create_graph=retain_grads,
-                        allow_unused=True,
-                    )
-                )
-            )
-            if isinstance(grads, ivy.Container):
-                grads = ivy.nested_map(
-                    grads, lambda x: 0 if x is None else x, include_derived=True
-                )
-                grads += grads_
-            else:
-                grads = grads_ if grads is None else grads
-        else:
+            return grad if grad is not None else 0
 
-            def grad_(x):
-                grad = torch.autograd.grad(
-                    y,
-                    x,
-                    retain_graph=True,
-                    create_graph=retain_grads,
-                    allow_unused=True,
-                )[0]
-                return grad if grad is not None else ivy.zeros_like(x)
+        grads = ivy.nested_map(xs, grad_, include_derived=True, shallow=False)
+        grads = ivy.nested_multi_map(lambda x, _: (x[0] + x[1]), [grads, grads_])
+    return grads
 
-            grads = ivy.nested_map(
-                xs,
-                grad_,
-                include_derived=True,
-            )
-        return grads
+
+def execute_with_gradients(
+    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
+):
+    # Conversion of required arrays to float variables and duplicate index chains
+    xs, xs1, required_duplicate_index_chains, _ = _get_required_float_variables(
+        xs, xs_grad_idxs
+    )
+
+    func_ret = func(xs)
+    xs = xs1
+
+    # Getting the relevant outputs from the function return for gradient calculation
+    y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=True)
 
     if isinstance(y, ivy.NativeArray):
-        grads = grad_func(torch.clone(y))
+        # Gradient calculation for a single output
+        grads = _set_duplicates(
+            _grad_func(torch.clone(y), xs, retain_grads),
+            required_duplicate_index_chains,
+        )
     else:
+        # Gradient calculation for multiple outputs
         # ToDo: use functorch.jacrev if it fixes the issue with broken memory reference
-        array_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
-        if (
-            not isinstance(array_idxs, list)
-            or np.asarray(array_idxs, "object").size == 0
-        ):
-            y = []
-        else:
-            y = ivy.multi_index_nest(y, array_idxs)
-
+        y = _get_native_y(y)
         grad_arr_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
         grad_arr_values = ivy.multi_index_nest(y, grad_arr_idxs)
-        grads_ = [grad_func(torch.clone(arr_value)) for arr_value in grad_arr_values]
+        grads_ = [
+            _grad_func(torch.clone(arr_value), xs, retain_grads)
+            for arr_value in grad_arr_values
+        ]
         grads = grads_
         if isinstance(ret_idxs, list) and len(ret_idxs):
-            grads = {ret_idxs[i]: grad for i, grad in enumerate(grads_)}
-    grads = ivy.nested_map(
-        grads,
-        lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
-        include_derived=True,
-    )
-    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads)
-    grads = ivy.to_ivy(grads)
-    return func_ret, grads
+            grads = {
+                ret_idxs[i]: _set_duplicates(grad, required_duplicate_index_chains)
+                for i, grad in enumerate(grads_)
+            }
+
+    # Stop further gradient propagation if not retaining gradients
+    return _process_func_ret_and_grads(func_ret, grads, retain_grads)
 
 
 def value_and_grad(func):
@@ -145,14 +143,9 @@ def value_and_grad(func):
                 else ivy.to_native(ivy.zeros_like(ivy.to_ivy(x)))
             )
             grad = ivy.to_ivy(grad)
-            grad = _remove_zeros_and_nones(grad, grad)
             return grad
 
-        grads = ivy.nested_map(
-            xs,
-            autograd_fn,
-            include_derived=True,
-        )
+        grads = ivy.nested_map(xs, autograd_fn, include_derived=True, shallow=False)
         y = ivy.to_ivy(y)
         return y, grads
 

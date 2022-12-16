@@ -12,9 +12,9 @@ from ivy.exceptions import handle_exceptions
 
 def _reduce_loss(red, loss, axis, out):
     if red == "sum":
-        return ivy.negative(ivy.sum(loss, axis=axis, out=out), out=out)
+        return ivy.negative(ivy.sum(loss, axis=axis), out=out)
     elif red == "mean":
-        return ivy.negative(ivy.mean(loss, axis=axis, out=out), out=out)
+        return ivy.negative(ivy.mean(loss, axis=axis), out=out)
     else:
         return ivy.negative(loss, out=out)
 
@@ -177,7 +177,7 @@ def binary_cross_entropy(
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     return _reduce_loss(
         reduction,
-        ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out),
+        ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true)),
         None,
         out,
     )

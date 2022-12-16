@@ -64,8 +64,8 @@ def _array_and_axes_permute_helper(
             max_dim_size=max_dim_size,
         )
     )
-    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
-    array = draw(helpers.array_values(dtype=dtype, shape=shape))
+    dtype = draw(helpers.array_dtypes(num_arrays=1))
+    array = draw(helpers.array_values(dtype=dtype[0], shape=shape))
     axes = draw(
         st.one_of(
             st.none(),
@@ -87,22 +87,73 @@ def _array_and_axes_permute_helper(
 
 # noinspection PyShadowingNames
 def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
+    # TODO: this is a hack to get around, but not sure if it is efficient way to do it.
     where = kwargs["where"]
-    kwargs["where"] = None
+    if kwargs["frontend"] == "numpy":
+        kwargs["where"] = True
+    else:
+        kwargs["where"] = None
     kwargs["test_values"] = False
     values = helpers.test_frontend_function(*args, **kwargs)
     if values is None:
         return
     ret, frontend_ret = values
-    ret_flat = [
-        np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["fw"])
-    ]
+    # set backend to frontend to flatten the frontend array
+    ivy.set_backend(kwargs["frontend"])
+    try:
+        # get flattened arrays from returned value
+        if ivy.isscalar(frontend_ret):
+            frontend_ret_np_flat = [np.asarray(frontend_ret)]
+        else:
+            if not isinstance(frontend_ret, tuple):
+                frontend_ret = (frontend_ret,)
+            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
+            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+    except Exception as e:
+        ivy.unset_backend()
+        raise e
+    # set backend back to original
+    ivy.unset_backend()
+
+    # get flattened arrays from returned value
+    ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])
+
+    # handling where size
+    where = np.asarray(where)
+    if where.ndim == 0:
+        where = np.array([where])
+    elif where.ndim > 1:
+        where = where.flatten()
+    # handling ret size
+
+    first_el = ret_np_flat[0]
+    # change where to match the shape of the first element of ret_np_flat
+    if first_el.size == 1:
+        where = where[:1]
+    else:
+        where = np.repeat(where, first_el.size)
+        where = where[: first_el.size]
+        where = where.reshape(first_el.shape)
+
+    ret_flat = [np.where(where, x, np.zeros_like(x)) for x in ret_np_flat]
     frontend_ret_flat = [
-        np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw_and_to_np(ret=frontend_ret, fw=kwargs["frontend"])
+        np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
     ]
-    helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
+    if "rtol" in kwargs.keys():
+        rtol = kwargs["rtol"]
+    else:
+        rtol = 1e-4
+    if "atol" in kwargs.keys():
+        atol = kwargs["atol"]
+    else:
+        atol = 1e-6
+    helpers.value_test(
+        ret_np_flat=ret_flat,
+        ret_np_from_gt_flat=frontend_ret_flat,
+        rtol=rtol,
+        atol=atol,
+    )
 
 
 # noinspection PyShadowingNames
@@ -120,8 +171,9 @@ def test_frontend_function(*args, where=None, **kwargs):
 
 # noinspection PyShadowingNames
 def handle_where_and_array_bools(where, input_dtype, as_variable, native_array):
-    if isinstance(where, list):
-        input_dtype += ["bool"]
+    if isinstance(where, list) or isinstance(where, tuple):
+        input_dtype = list(input_dtype) + ["bool"]
+        where = where[0]
         return where, as_variable + [False], native_array + [False]
     return where, as_variable, native_array
 
@@ -159,8 +211,66 @@ def handle_dtype_and_casting(
 
 
 @st.composite
+def _get_safe_casting_dtype(draw, *, dtypes):
+    target_dtype = dtypes[0]
+    for dtype in dtypes[1:]:
+        if ivy.can_cast(target_dtype, dtype):
+            target_dtype = dtype
+    if ivy.is_float_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["float64", None]))
+    elif ivy.is_uint_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["uint64", None]))
+    elif ivy.is_int_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["int64", None]))
+    else:
+        dtype = draw(st.sampled_from(["bool", None]))
+    return dtype
+
+
+@st.composite
+def dtypes_values_casting_dtype(
+    draw,
+    *,
+    arr_func,
+    get_dtypes_kind="valid",
+    get_dtypes_index=0,
+    get_dtypes_none=True,
+    get_dtypes_key=None,
+    special=False,
+):
+    dtypes, values = [], []
+    casting = draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
+    for func in arr_func:
+        typ, val = draw(func())
+        dtypes += typ if isinstance(typ, list) else [typ]
+        values += val if isinstance(val, list) else [val]
+
+    if casting in ["no", "equiv"] and len(dtypes) > 0:
+        dtypes = [dtypes[0]] * len(dtypes)
+
+    if special:
+        dtype = draw(st.sampled_from(["bool", None]))
+    elif casting in ["no", "equiv"]:
+        dtype = draw(st.just(None))
+    elif casting in ["safe", "same_kind"]:
+        dtype = draw(_get_safe_casting_dtype(dtypes=dtypes))
+    else:
+        dtype = draw(
+            helpers.get_dtypes(
+                get_dtypes_kind,
+                index=get_dtypes_index,
+                full=False,
+                none=get_dtypes_none,
+                key=get_dtypes_key,
+            )
+        )[0]
+    return dtypes, values, casting, dtype
+
+
+@st.composite
 def get_dtype_and_values_and_casting(
     draw,
+    *,
     get_dtypes_kind="valid",
     get_dtypes_index=0,
     get_dtypes_none=True,
@@ -172,7 +282,7 @@ def get_dtype_and_values_and_casting(
     if casting in ["no", "equiv"]:
         dtype = input_dtype[0]
         input_dtype = [dtype for x in input_dtype]
-        return input_dtype, [dtype], x, casting
+        return dtype, input_dtype, x, casting
     dtype = draw(
         helpers.get_dtypes(
             get_dtypes_kind,
@@ -193,4 +303,4 @@ def get_dtype_and_values_and_casting(
                     key=get_dtypes_key,
                 )
             )
-    return input_dtype, dtype, x, casting
+    return dtype[0], input_dtype, x, casting
