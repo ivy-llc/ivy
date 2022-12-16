@@ -1,5 +1,6 @@
 # local
 import ivy
+import ivy.functional.frontends.torch as torch_frontend
 
 
 def can_cast(from_, to):
@@ -15,3 +16,7 @@ def can_cast(from_, to):
     if "bool" in to_str:
         return from_str == to_str
     return True
+
+
+def promote_types(type1, type2, /):
+    return torch_frontend.promote_types_torch(type1, type2)
