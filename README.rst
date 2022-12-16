@@ -55,6 +55,7 @@ Status
 * `Jax Frontend Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/jax_frontend_dashboard.md>`_
 * `Tensorflow Frontend Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/tf_frontend_dashboard.md>`_
 * `Numpy Frontend Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/numpy_frontend_dashboard.md>`_
+* `Miscellaneous Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/misc_test_dashboard.md>`_
 
 These are higher level Submodule specific dashboards, for more fine grained individual test dashboards click on the badges✅ inside these submodules.
 
