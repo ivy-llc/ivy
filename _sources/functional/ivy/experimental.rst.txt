@@ -35,6 +35,7 @@ Experimental
    experimental/quantile.rst
    experimental/diagflat.rst
    experimental/kron.rst
+   experimental/matrix_exp.rst
    experimental/eig.rst
    experimental/triu_indices.rst
    experimental/vorbis_window.rst

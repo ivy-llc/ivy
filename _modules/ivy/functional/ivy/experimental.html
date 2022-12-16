@@ -1867,6 +1867,46 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="matrix_exp"><a class="viewcode-back" href="../../../../functional/ivy/experimental/matrix_exp/matrix_exp_functional.html#ivy.functional.ivy.experimental.matrix_exp">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">matrix_exp</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the matrix exponential of a square matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a</span>
+<span class="sd">        Square matrix.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        the matrix exponential of the input.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[[1., 0.],</span>
+<span class="sd">                            [0., 1.]],</span>
+<span class="sd">                            [[2., 0.],</span>
+<span class="sd">                            [0., 2.]]])</span>
+<span class="sd">        &gt;&gt;&gt; ivy.matrix_exp(x)</span>
+<span class="sd">        ivy.array([[[2.7183, 1.0000],</span>
+<span class="sd">                    [1.0000, 2.7183]],</span>
+<span class="sd">                    [[7.3891, 1.0000],</span>
+<span class="sd">                    [1.0000, 7.3891]]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_exp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="eig"><a class="viewcode-back" href="../../../../functional/ivy/experimental/eig/eig_functional.html#ivy.functional.ivy.experimental.eig">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -1876,31 +1916,23 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Computes eigenvalies and eigenvectors of x. Returns a tuple with two elements:</span>
 <span class="sd">     first is the set of eigenvalues, second is the set of eigenvectors.</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        An array of shape (..., N, N).</span>
-
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        A tuple with two elements: first is the set of eigenvalues,</span>
 <span class="sd">        second is the set of eigenvectors</span>
-
-
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
-
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
-
 <span class="sd">    Functional Examples</span>
 <span class="sd">    ------------------</span>
-
 <span class="sd">    With :class:`ivy.Array` inputs:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,2], [3,4]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.eig(x)</span>
 <span class="sd">    (</span>
@@ -1908,7 +1940,6 @@
 <span class="sd">    ivy.array([[-0.82456484+0.j, -0.41597356+0.j],</span>
 <span class="sd">               [ 0.56576746+0.j, -0.90937671+0.j]])</span>
 <span class="sd">    )</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1,2], [3,4]], [[5,6], [5,6]]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.eig(x)</span>
 <span class="sd">    (</span>

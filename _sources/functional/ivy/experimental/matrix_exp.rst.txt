@@ -1,0 +1,41 @@
+matrix_exp
+==========
+
+.. autofunction:: ivy.functional.ivy.experimental.matrix_exp
+
+.. autofunction:: ivy.array.array_methods.matrix_exp
+
+.. autofunction:: ivy.container.container_methods.static_matrix_exp
+
+.. autofunction:: ivy.container.container_methods.matrix_exp
+|
+| **Supported Frameworks:**
+
+|jax_logo| |tf_logo| |pytorch_logo| |mxnet_logo| |numpy_logo|
+
+.. |jax_logo| image:: ../../../logos/supported/jax_logo.png
+   :target: https://jax.readthedocs.io
+
+.. |tf_logo| image:: ../../../logos/supported/tensorflow_logo.png
+   :target: https://www.tensorflow.org
+
+.. |pytorch_logo| image:: ../../../logos/supported/pytorch_logo.png
+   :target: https://pytorch.org
+
+.. |mxnet_logo| image:: ../../../logos/supported/mxnet_logo.png
+   :target: https://mxnet.apache.org
+
+.. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
+   :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: matrix_exp
+
+   matrix_exp/matrix_exp_functional.rst
+   matrix_exp/matrix_exp_array.rst
+   matrix_exp/matrix_exp_container.rst
+   matrix_exp/static_matrix_exp_container.rst
+
