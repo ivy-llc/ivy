@@ -29,6 +29,10 @@ class Tensor:
     def dtype(self):
         return self._ivy_array.dtype
 
+    @property
+    def shape(self):
+        return self._ivy_array.shape
+
     # Setters #
     # --------#
 
