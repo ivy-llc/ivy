@@ -972,7 +972,7 @@ def bitwise_and(
 @handle_exceptions
 @handle_array_like
 def bitwise_invert(
-    x: Union[int, bool, ivy.Array, ivy.NativeArray],
+    x: Union[int, bool, ivy.Array, ivy.NativeArray, ivy.Container],
     /,
     *,
     out: Optional[ivy.Array] = None,
@@ -1005,11 +1005,36 @@ def bitwise_invert(
 
     Examples
     --------
+    With :class:`ivy.Array` input:
+
     >>> x = ivy.array([1, 6, 9])
     >>> y = ivy.bitwise_invert(x)
     >>> print(y)
     ivy.array([-2, -7, -10])
 
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=[False, True, False], b=[True, True, False])
+    >>> y = ivy.bitwise_invert(x)
+    >>> print(y)
+    {
+        a: ivy.array([True, False, True]),
+        b: ivy.array([False, False, True])
+    }
+
+    With :class:`int` input:
+
+    >>> x = -8
+    >>> y = ivy.bitwise_invert(x)
+    >>> print(y)
+    ivy.array(7)
+
+    With :class:`bool` input:
+
+    >>> x = False
+    >>> y = ivy.bitwise_invert(x)
+    >>> print(y)
+    ivy.array(True)
     """
     return ivy.current_backend(x).bitwise_invert(x, out=out)
 
