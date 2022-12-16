@@ -433,8 +433,8 @@ class Tensor:
     # -------------------#
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
-    def __add__(self, other, *, alpha=1):
-        return torch_frontend.add(self._ivy_array, other, alpha=alpha)
+    def __add__(self, other):
+        return torch_frontend.add(self._ivy_array, other)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __mod__(self, other):
@@ -447,10 +447,8 @@ class Tensor:
         ret = ivy.get_item(self._ivy_array, query)
         return torch_frontend.tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
-    def __radd__(self, other, *, alpha=1):
-        return torch_frontend.add(
-            torch_frontend.mul(other, alpha), self._ivy_array, alpha=1
-        )
+    def __radd__(self, other):
+        return torch_frontend.add(other, self._ivy_array)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __mul__(self, other):
@@ -461,14 +459,14 @@ class Tensor:
         return torch_frontend.mul(other, self._ivy_array)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
-    def __sub__(self, other, *, alpha=1):
-        return torch_frontend.subtract(self._ivy_array, other, alpha=alpha)
+    def __sub__(self, other):
+        return torch_frontend.subtract(self._ivy_array, other)
 
-    def __truediv__(self, other, *, rounding_mode=None):
-        return torch_frontend.div(self._ivy_array, other, rounding_mode=rounding_mode)
+    def __truediv__(self, other):
+        return torch_frontend.div(self._ivy_array, other)
 
-    def __iadd__(self, other, *, alpha=1):
-        self._ivy_array = self.__add__(other, alpha=alpha).ivy_array
+    def __iadd__(self, other):
+        self._ivy_array = self.__add__(other).ivy_array
         return self
 
     def __imod__(self, other):
@@ -479,12 +477,12 @@ class Tensor:
         self._ivy_array = self.__mul__(other).ivy_array
         return self
 
-    def __isub__(self, other, *, alpha=1):
-        self._ivy_array = self.__sub__(other, alpha=alpha).ivy_array
+    def __isub__(self, other):
+        self._ivy_array = self.__sub__(other).ivy_array
         return self
 
-    def __itruediv__(self, other, *, rounding_mode=None):
-        self._ivy_array = self.__truediv__(other, rounding_mode=rounding_mode).ivy_array
+    def __itruediv__(self, other):
+        self._ivy_array = self.__truediv__(other).ivy_array
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
