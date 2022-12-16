@@ -14,6 +14,7 @@ except ImportError:
 
 # local
 import ivy
+from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy.functional.ivy.gradients import _variable
@@ -77,7 +78,7 @@ def _assert_dtypes_are_valid(input_dtypes: Union[List[ivy.Dtype], List[str]]):
 def test_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    test_flags: pf.FunctionTestFlags,
+    test_flags: FunctionTestFlags,
     fw: str,
     fn_name: str,
     rtol_: float = None,
@@ -175,6 +176,7 @@ def test_function(
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
 
+    # TODO temporary, access them directly
     native_array_flags = test_flags.native_arrays
     as_variable_flags = test_flags.as_variable
     container_flags = test_flags.container
@@ -183,12 +185,12 @@ def test_function(
     num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
-    if len(test_flags.as_variable) < num_arrays:
-        as_variable_flags = [test_flags.as_variable[0] for _ in range(num_arrays)]
-    if len(test_flags.native_arrays) < num_arrays:
-        native_array_flags = [test_flags.native_arrays[0] for _ in range(num_arrays)]
-    if len(test_flags.container) < num_arrays:
-        container_flags = [test_flags.container[0] for _ in range(num_arrays)]
+    if len(as_variable_flags) < num_arrays:
+        as_variable_flags = [as_variable_flags[0] for _ in range(num_arrays)]
+    if len(native_array_flags) < num_arrays:
+        native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
+    if len(container_flags) < num_arrays:
+        container_flags = [container_flags[0] for _ in range(num_arrays)]
 
     # update variable flags to be compatible with float dtype and with_out args
     as_variable_flags = [
