@@ -3,15 +3,14 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_method
 
 
 # at
-@handle_frontend_test(
-    fn_tree="numpy.ufunc.at",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
+@handle_frontend_method(
+    init_name="at",
+    init_tree="numpy.ufunc",
+    method_tree="numpy.ufunc.methods.ufunc.at"
 )
 def test_numpy_ufunc_at(
     dtype_and_x,
