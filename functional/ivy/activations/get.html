@@ -167,7 +167,7 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With :str: input:</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">str</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;sigmoid&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sigmoid</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">)</span>
@@ -180,7 +180,7 @@
 <span class="go">&lt;function linear at XXXXXXXXXXXXXX&gt;</span>
 </pre></div>
 </div>
-<p>With :str and dict: input:</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">str</span></code> and <code class="code docutils literal notranslate"><span class="pre">dict</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;custom_fn&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">objects</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;custom_fn&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">custom_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">custom_objects</span><span class="o">=</span><span class="n">objects</span><span class="p">)</span>
