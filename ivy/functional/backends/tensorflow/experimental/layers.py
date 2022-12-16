@@ -243,7 +243,7 @@ def dropout1d(
 
 def interpolate(
     x: Union[tf.Tensor, tf.Variable],
-    size: Sequence[int],
+    size: Union[Sequence[int], int],
     /,
     *,
     mode: Union[Literal["linear", "bilinear"]] = "linear",

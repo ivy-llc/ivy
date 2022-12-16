@@ -517,7 +517,7 @@ def dct(
 @handle_nestable
 def interpolate(
     x: Union[ivy.Array, ivy.NativeArray],
-    size: Sequence[int],
+    size: Union[Sequence[int], int],
     /,
     *,
     mode: Optional[Literal["linear", "bilinear"]] = "bilinear",

@@ -1,5 +1,8 @@
 # global
 from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
+import ivy
+from ivy.functional.backends.jax import JaxArray
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
@@ -351,7 +354,7 @@ def dropout1d(
 
 def interpolate(
     x: JaxArray,
-    size: int,
+    size: Union[Sequence[int], int],
     /,
     *,
     mode: Union[Literal["linear", "bilinear"]] = "linear",

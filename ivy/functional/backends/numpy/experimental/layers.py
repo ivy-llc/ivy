@@ -2,7 +2,7 @@
 
 import math
 import numpy as np
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 
 # local
 import ivy
@@ -527,7 +527,7 @@ def dropout1d(
 
 def interpolate(
     x: np.ndarray,
-    size: int,
+    size: Union[Sequence[int], int],
     /,
     *,
     mode: Union[Literal["linear", "bilinear"]] = "linear",

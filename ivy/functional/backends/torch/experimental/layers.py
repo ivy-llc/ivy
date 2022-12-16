@@ -413,7 +413,7 @@ def fft(
 
 def interpolate(
     x: torch.Tensor,
-    size: Sequence[int],
+    size: Union[Sequence[int], int],
     /,
     *,
     mode: Optional[Literal["linear", "bilinear"]] = "linear",
