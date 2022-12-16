@@ -138,8 +138,8 @@ def test_ones(
     power=helpers.floats(min_value=1.0, max_value=3.0),
     gain=helpers.floats(min_value=1.0, max_value=10.0),
     var_shape=helpers.get_shape(),
-    fan_in=helpers.ints(min_value=1),
-    fan_out=helpers.ints(min_value=1),
+    fan_in=helpers.ints(min_value=1, max_value=100),
+    fan_out=helpers.ints(min_value=1, max_value=100),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
