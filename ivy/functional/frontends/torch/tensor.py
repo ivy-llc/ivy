@@ -455,6 +455,9 @@ class Tensor:
     def __sub__(self, other, *, alpha=1):
         return torch_frontend.subtract(self._ivy_array, other, alpha=alpha)
 
+    def __rsub__(self, other, *, alpha=1):
+        return torch_frontend.subtract(other, self._ivy_array, alpha=alpha)
+
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self._ivy_array, other, rounding_mode=rounding_mode)
 
