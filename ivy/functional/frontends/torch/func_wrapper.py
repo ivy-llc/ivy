@@ -8,7 +8,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 
 def _from_torch_frontend_tensor_to_ivy_array(x):
-    if isinstance(x, torch_frontend.Tensor):
+    if hasattr(x, "ivy_array"):
         return x.ivy_array
     return x
 
