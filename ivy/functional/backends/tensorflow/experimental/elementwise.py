@@ -308,14 +308,14 @@ def diff(
 @with_unsupported_dtypes(
     {
         "2.9.1 and below": (
-            "uint8", 
+            "uint8",
             "uint16",
             "uint32",
             "uint64",
             "bfloat16",
             "int32",
         )
-    }, 
+    },
     backend_version,
 )
 def angle(
