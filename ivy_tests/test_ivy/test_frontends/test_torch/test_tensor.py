@@ -147,7 +147,7 @@ def test_torch_instance_chunk(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
     alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
 def test_torch_instance_add(
@@ -607,7 +607,7 @@ def test_torch_instance_cos(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
 )
 def test_torch_instance_cos_(
     dtype_and_x,
@@ -1336,7 +1336,7 @@ def test_torch_instance_log(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
     alpha=st.floats(
         min_value=-1e04,
         max_value=1e04,
@@ -1474,7 +1474,7 @@ def test_torch_special_radd(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
     alpha=st.floats(
         min_value=-1e04,
         max_value=1e04,
@@ -1523,7 +1523,7 @@ def test_torch_special_sub(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
 )
 def test_torch_special_mul(
     dtype_and_x,
@@ -1606,7 +1606,7 @@ def test_torch_special_rsub(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
 )
 def test_torch_special_rmul(
     dtype_and_x,
@@ -2534,7 +2534,7 @@ def test_torch_instance_unfold(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
 )
 def test_torch_special_mod(
     dtype_and_x,
@@ -2744,7 +2744,7 @@ def test_torch_instance_bitwise_and(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
 )
 def test_torch_instance_add_(
     init_num_positional_args: pf.NumPositionalArgFn,
@@ -3867,7 +3867,7 @@ def test_torch_instance_sort(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
 )
 def test_torch_special_eq(
     dtype_and_x,
@@ -4341,7 +4341,7 @@ def test_torch_instance_tril(
     init_tree="torch.tensor",
     method_name="sqrt",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bfloat16", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_torch_instance_sqrt(
@@ -4424,7 +4424,7 @@ def test_torch_instance_index_select(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
 )
 def test_torch_special_gt(
     dtype_and_x,
@@ -4467,7 +4467,7 @@ def test_torch_special_gt(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
 )
 def test_torch_special_ne(
     dtype_and_x,
@@ -4510,7 +4510,7 @@ def test_torch_special_ne(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
 )
 def test_torch_special_lt(
     dtype_and_x,
@@ -4553,7 +4553,7 @@ def test_torch_special_lt(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ),
 )
 def test_torch_special_or(
     dtype_and_x,
