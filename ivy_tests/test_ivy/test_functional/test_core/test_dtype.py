@@ -314,7 +314,7 @@ def test_finfo(
     type=_array_or_type("int"),
     with_out=st.just(False),
     as_variable=st.just([False]),
-    native_array_flags=st.just([False]),
+    native_arrays=st.just([False]),
     container_flags=st.just([False]),
     instance_method=st.just(False),
 )
@@ -529,6 +529,7 @@ def test_dtype(
     fn_tree="functional.ivy.dtype_bits",
     input_dtype=helpers.get_dtypes("valid", full=False),
     instance_method=st.just(False),
+    container_flags=st.just([False]),
 )
 def test_dtype_bits(
     *,

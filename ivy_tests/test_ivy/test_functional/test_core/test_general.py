@@ -1385,15 +1385,14 @@ def test_inplace_increment(x_val_and_dtypes, tensor_fn, on_device):
     ),
     exclusive=st.booleans(),
     ground_truth_backend="numpy",
+    as_variable=st.just([False]),
+    with_out=st.just(False),
 )
 def test_is_ivy_array(
     *,
     x_val_and_dtypes,
     exclusive,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1401,17 +1400,12 @@ def test_is_ivy_array(
 ):
     dtype, x = x_val_and_dtypes
     # as_variable=False as the result can't be consistent across backends
-    if container_flags[0]:
+    if test_flags.container_flags[0]:
         # container instance methods should also not be tested
-        instance_method = False
+        test_flags.instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=[False],
-        with_out=False,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
@@ -1428,15 +1422,14 @@ def test_is_ivy_array(
         available_dtypes=helpers.get_dtypes("valid")
     ),
     exclusive=st.booleans(),
+    container_flags=st.just([False]),
+    with_out=st.just(False),
 )
 def test_is_native_array(
     *,
     x_val_and_dtypes,
+    test_flags,
     exclusive,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
@@ -1444,17 +1437,12 @@ def test_is_native_array(
 ):
     dtype, x = x_val_and_dtypes
     # as_variable=False as the result can't be consistent across backends
-    if container_flags[0]:
+    if test_flags.container_flags[0]:
         # container instance methods should also not be tested
-        instance_method = False
+        test_flags.instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=[False],
-        with_out=False,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
@@ -1471,14 +1459,13 @@ def test_is_native_array(
         available_dtypes=helpers.get_dtypes("valid")
     ),
     exclusive=st.booleans(),
+    container_flags=st.just([False]),
+    with_out=st.just(False),
 )
 def test_is_array(
     x_val_and_dtypes,
     exclusive,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1486,17 +1473,12 @@ def test_is_array(
 ):
     dtype, x = x_val_and_dtypes
     # as_variable=False as the result can't be consistent across backends
-    if container_flags[0]:
+    if test_flags.container_flags[0]:
         # container instance methods should also not be tested
-        instance_method = False
+        test_flags.instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=[False],
-        with_out=False,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
@@ -1544,14 +1526,12 @@ def test_is_ivy_container(
         min_num_dims=1,
     ),
     equality_matrix=st.booleans(),
+    with_out=st.just(False),
 )
 def test_all_equal(
     dtypes_and_xs,
     equality_matrix,
-    as_variable,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1563,15 +1543,10 @@ def test_all_equal(
     for x_ in arrays:
         kw["x{}".format(i)] = x_
         i += 1
-    num_positional_args = len(arrays)
+    test_flags.num_positional_args = len(arrays)
     helpers.test_function(
         input_dtypes=dtypes,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=False,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
@@ -1922,6 +1897,7 @@ def test_stable_pow(
     input_dtype_min_base, min_base = dtype_and_min_base
     assume(all(["bfloat16" not in x for x in dtypes + input_dtype_min_base]))
     helpers.test_function(
+        input_dtypes=input_dtype_min_base,
         test_flags=test_flags,
         ground_truth_backend=ground_truth_backend,
         on_device=on_device,
