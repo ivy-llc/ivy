@@ -1,6 +1,8 @@
 # global
 from hypothesis import strategies as st
 
+import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -695,22 +697,6 @@ def test_torch_std_mean(
             key="shape",
         ),
     ).filter(lambda x: "bfloat16" not in x[0] and "float16" not in x[0]),
-    dim=helpers.get_axis(
-        allow_none=True,
-        unique=True,
-        shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=5,
-                min_dim_size=1,
-                max_dim_size=5,
-            ),
-            key="shape",
-        ),
-        min_size=1,
-        max_size=1,
-        force_int=True,
-    ),
     sorted=st.booleans(),
     return_inverse=st.booleans(),
     return_counts=st.booleans(),
@@ -718,7 +704,6 @@ def test_torch_std_mean(
 def test_torch_unique(
     *,
     dtype_and_values,
-    dim,
     sorted,
     return_inverse,
     return_counts,
@@ -731,7 +716,7 @@ def test_torch_unique(
     frontend,
 ):
     input_dtype, x = dtype_and_values
-    helpers.test_frontend_function(
+    ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -740,9 +725,50 @@ def test_torch_unique(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        test_values=False,
         input=x[0],
         sorted=sorted,
         return_inverse=return_inverse,
         return_counts=return_counts,
-        dim=dim,
+        dim=None,
     )
+
+    ivy.set_backend(frontend)
+
+    def _sort_inverse_indices(unique_values):
+        _inverse_indices = ivy.zeros_like(x[0])
+        for idx, val in enumerate(unique_values):
+            _inverse_indices[x[0] == val] = idx
+
+        return _inverse_indices
+
+    def _sort_output_tuple(unique_tuple):
+        values_sorted_idx = ivy.argsort(unique_tuple[0])
+        output = [ivy.take_along_axis(unique_tuple[0], values_sorted_idx, -1)]
+
+        for idx in range(1, len(unique_tuple)):
+            item = unique_tuple[idx]
+
+            if values_sorted_idx.shape == item.shape:
+                output.append(ivy.take_along_axis(item, values_sorted_idx, -1))
+            else:
+                output.append(_sort_inverse_indices(output[0]))
+
+        return tuple(output)
+
+    assert len(ret) == len(ret_gt)
+
+    x[0] = ivy.array(x[0])
+    ret = [ivy.array(r) for r in ret]
+    ret_gt = [ivy.array(r) for r in ret_gt]
+
+    if not sorted:
+        # manually sort both tuples so to check their equality
+        ret = _sort_output_tuple(ret)
+        ret_gt = _sort_output_tuple(ret_gt)
+
+    for i in range(len(ret)):
+        helpers.assert_same_type_and_shape([ret[i], ret_gt[i]])
+        helpers.assert_all_close(ret[i], ret_gt[i])
+
+    ivy.unset_backend()

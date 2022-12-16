@@ -135,11 +135,18 @@ def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
 @to_ivy_arrays_and_back
 def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
     if dim is None:
-        input_subset = input
-        values, indices, inverse_indices, counts = ivy.unique_all(input_subset)
+        values, _, inverse_indices, counts = ivy.unique_all(input)
 
         if sorted:
-            values = ivy.sort(values)
+            values_sorted_idx = ivy.argsort(values)
+            values = ivy.take_along_axis(values, values_sorted_idx, -1)
+            counts = ivy.take_along_axis(counts, values_sorted_idx, -1)
+
+            _inverse_indices = ivy.zeros_like(inverse_indices)
+            for idx, val in enumerate(values):
+                _inverse_indices[input == val] = idx
+
+            inverse_indices = _inverse_indices
 
         if return_inverse is True and return_counts is True:
             return values, inverse_indices, counts
@@ -150,7 +157,7 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
         elif return_counts is False and return_inverse is True:
             return values, inverse_indices
 
-        return values
+        return (values,)
 
     else:
-        raise NotImplementedError()
+        raise NotImplementedError("Parameter dim is not yet implemented.")
