@@ -477,6 +477,7 @@ def test_torch_eig(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+    )
 
 
 # svdvals
