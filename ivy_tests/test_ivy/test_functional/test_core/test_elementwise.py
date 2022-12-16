@@ -754,7 +754,6 @@ def test_floor_divide(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1484,11 +1483,11 @@ def test_remainder(
     assume(not np.any(np.isclose(x[1], 0)))
     # jax raises inconsistent gradients for negative numbers in x1
     if (np.any(x[0] < 0) or np.any(x[1] < 0)) and ivy.current_backend_str() == "jax":
-        test_gradients = False
+        test_flags.gradient = False
+    test_flags.as_variable = [test_flags.as_variable, False]
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=[as_variable, False],
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,

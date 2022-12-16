@@ -85,7 +85,7 @@ def test_unset_with_grads(grads):
     fn_tree="functional.ivy.stop_gradient",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     preserve_type=st.booleans(),
-    instance_method=st.just(False)
+    instance_method=st.just(False),
 )
 def test_stop_gradient(
     *,
@@ -119,7 +119,7 @@ def test_stop_gradient(
         max_value=100,
     ),
     retain_grads=st.booleans(),
-    instance_method=st.just(False)
+    instance_method=st.just(False),
 )
 def test_execute_with_gradients(
     *,
@@ -266,7 +266,7 @@ def test_grad(x, dtype, func, backend_fw):
         min_size=3,
         max_size=3,
     ),
-    test_gradients=st.just(True),
+    gradient=st.just(True),
 )
 def test_adam_step(
     *,
@@ -307,7 +307,7 @@ def test_adam_step(
     fn_tree="functional.ivy.optimizer_update",
     dtype_n_ws_n_effgrad_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     stop_gradients=st.booleans(),
-    test_gradients=st.just(True),
+    gradient=st.just(True),
 )
 def test_optimizer_update(
     *,
@@ -339,7 +339,7 @@ def test_optimizer_update(
     fn_tree="functional.ivy.gradient_descent_update",
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     stop_gradients=st.booleans(),
-    test_gradients=st.just(True),
+    gradient=st.just(True),
 )
 def test_gradient_descent_update(
     *,
@@ -374,7 +374,7 @@ def test_gradient_descent_update(
     ),
     decay_lambda=helpers.floats(min_value=1e-2, max_value=1),
     stop_gradients=st.booleans(),
-    test_gradients=st.just(True),
+    gradient=st.just(True),
 )
 def test_lars_update(
     *,
@@ -423,7 +423,7 @@ def test_lars_update(
         max_size=3,
     ),
     stopgrad=st.booleans(),
-    test_gradients=st.just(True),
+    gradient=st.just(True),
 )
 def test_adam_update(
     *,
@@ -482,7 +482,7 @@ def test_adam_update(
         st.floats(min_value=1e-2, max_value=10, exclude_min=True),
     ),
     stopgrad=st.booleans(),
-    test_gradients=st.just(True),
+    gradient=st.just(True),
 )
 def test_lamb_update(
     *,

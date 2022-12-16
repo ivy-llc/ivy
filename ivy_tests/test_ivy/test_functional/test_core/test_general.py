@@ -221,7 +221,7 @@ def array_and_boolean_mask(
         array_and_boolean_mask(array_dtypes=helpers.get_dtypes("valid")),
     ),
     with_out=st.just(False),
-    test_gradients=st.just(False),
+    gradient=st.just(False),
 )
 def test_get_item(
     dtype_x_indices,
@@ -636,7 +636,7 @@ def test_scatter_flat(
             if k > len(grad_support_version):
                 break
             if number < grad_support_version[k]:
-                test_gradients = False
+                test_flags.gradient = False
             k += 1
     (val_dtype, vals), (ind_dtype, ind), size = x
     helpers.test_function(
@@ -1419,7 +1419,6 @@ def test_is_ivy_array(
         x=x[0],
         exclusive=exclusive,
     )
-
 
 
 # is_native_array

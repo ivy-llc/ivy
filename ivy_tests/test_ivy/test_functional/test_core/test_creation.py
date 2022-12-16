@@ -161,8 +161,8 @@ def test_logspace(
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     container_flags=st.just([False]),
-    as_variable_flags=st.just([False]),
-    native_arrays_flags=st.just(False),
+    as_variable=st.just([False]),
+    native_arrays=st.just([False]),
     instance_method=st.just(False),
 )
 def test_arange(
@@ -315,7 +315,7 @@ def test_empty_like(
     dtype, x = dtype_and_x
     ret = helpers.test_function(
         input_dtypes=dtype,
-        test_flag=test_flags,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -389,7 +389,7 @@ def test_eye(
         max_dim_size=5,
     ),
     container_flags=st.just([False]),
-    as_variable_flags=st.just([False]),     # can't convert variables
+    as_variable=st.just([False]),  # can't convert variables
 )
 def test_from_dlpack(
     *,
@@ -519,16 +519,15 @@ def test_full_like(
     ),
     sparse=st.booleans(),
     indexing=st.sampled_from(["xy", "ij"]),
+    container_flags=st.just([False]),
+    instance_method=st.just(False),
 )
 def test_meshgrid(
     *,
     dtype_and_arrays,
+    test_flags,
     sparse,
     indexing,
-    as_variable,
-    num_positional_args,
-    native_array,
-    with_out,
     backend_fw,
     fn_name,
     on_device,
@@ -540,17 +539,10 @@ def test_meshgrid(
     for x_ in arrays:
         kw["x{}".format(i)] = x_
         i += 1
-
-    num_positional_args = len(arrays)
-
+    test_flags.num_positional_args = len(arrays)
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=[False],
-        instance_method=False,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -794,7 +786,6 @@ def test_copy_array(
     *,
     dtype_and_x,
     on_device,
-    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     # smoke test
