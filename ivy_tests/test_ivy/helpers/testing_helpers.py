@@ -11,6 +11,14 @@ import ivy
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
+from ivy_tests.test_ivy.helpers.test_parameter_flags import (
+    BuiltInstanceStrategy,
+    BuiltAsVariableStrategy,
+    BuiltNativeArrayStrategy,
+    BuiltGradientStrategy,
+    BuiltContainerStrategy,
+    BuiltWithOutStrategy,
+)
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import (
     available_frameworks,
@@ -179,11 +187,32 @@ possible_fixtures = ["backend_fw", "on_device"]
 
 
 def handle_test(
-    *, fn_tree: str, ground_truth_backend: str = ground_truth, **_given_kwargs
+    *,
+    fn_tree: str,
+    ground_truth_backend: str = ground_truth,
+    number_positional_args=None,
+    test_instance_method=BuiltInstanceStrategy,
+    test_with_out=BuiltWithOutStrategy,
+    test_gradient=BuiltGradientStrategy,
+    as_variable_flags=BuiltAsVariableStrategy,
+    native_array_flags=BuiltNativeArrayStrategy,
+    container_flags=BuiltContainerStrategy,
+    **_given_kwargs,
 ):
     fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
-    given_kwargs = _given_kwargs
+    if is_hypothesis_test:
+        if number_positional_args is None:
+            number_positional_args = num_positional_args(fn_name=fn_tree)
+        test_flags = pf.function_flags(
+            num_positional_args=number_positional_args,
+            instance_method=test_instance_method,
+            with_out=test_with_out,
+            gradient=test_gradient,
+            as_variable=as_variable_flags,
+            native_arrays=native_array_flags,
+            container_flags=container_flags,
+        )
 
     def test_wrapper(test_fn):
         callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
@@ -192,16 +221,8 @@ def handle_test(
 
         # No Hypothesis @given is used
         if is_hypothesis_test:
-            _given_kwargs = _generate_shared_test_flags(
-                param_names, given_kwargs, fn_tree
-            )
-            possible_flags = {
-                "container_flags": pf.BuiltContainerStrategy,
-                "instance_method": pf.BuiltInstanceStrategy,
-                "test_gradients": pf.BuiltGradientStrategy,
-            }
-            for k in set(param_names).intersection(possible_flags.keys()):
-                _given_kwargs[k] = possible_flags[k]
+            if "test_flags" in param_names:
+                _given_kwargs["test_flags"] = test_flags
             wrapped_test = given(**_given_kwargs)(test_fn)
             possible_arguments = {
                 "fn_name": fn_name,
@@ -315,6 +336,8 @@ def handle_method(
                         _given_kwargs[k] = num_positional_args(
                             fn_name=class_name + ".__init__"
                         )
+                elif v is pf.BuiltGradientStrategy:
+                    _given_kwargs[k] = v
 
             wrapped_test = given(**_given_kwargs)(test_fn)
             possible_arguments = {

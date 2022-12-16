@@ -988,6 +988,7 @@ class ContainerWithManipulation(ContainerBase):
             a: ivy.array([2., 0., 1.]),
             b: ivy.array([5., 3., 4.])
         }
+
         """
         return self.static_roll(
             self,
@@ -1166,10 +1167,39 @@ class ContainerWithManipulation(ContainerBase):
         function, and so the docstring for ivy.stack also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        xs
+            Container with leaves to join. Each array leavve must have the same shape.
+        axis
+            axis along which the array leaves will be joined. More details can be found
+            in the docstring for ivy.stack.
+
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output container with the results.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
-        >>> ivy.Container.static_stack(x,axis = 1)
+        >>> z = ivy.Container.static_stack(x,axis = 1)
+        >>> print(z)
         {
             a: ivy.array([[0, 2],
                         [1, 3]]),
@@ -1179,7 +1209,8 @@ class ContainerWithManipulation(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
-        >>> ivy.Container.static_stack([x,y])
+        >>> z = ivy.Container.static_stack([x,y])
+        >>> print(z)
         {
             a: ivy.array([[[0, 1],
                         [2, 3]],
@@ -1188,7 +1219,11 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([[[4, 5]],
                         [[1, 0]]])
         }
-        >>> ivy.Container.static_stack([x,y],axis=1)
+
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> z = ivy.Container.static_stack([x,y],axis=1)
+        >>> print(z)
         {
             a: ivy.array([[[0, 1],
                         [3, 2]],
@@ -1228,6 +1263,34 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.stack. This method
         simply wraps the function, and so the docstring for ivy.stack
         also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container with leaves to join. Each array leavve must have the same shape.
+        axis
+            axis along which the array leaves will be joined. More details can be found
+            in the docstring for ivy.stack.
+
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output container with the results.
 
         Examples
         --------

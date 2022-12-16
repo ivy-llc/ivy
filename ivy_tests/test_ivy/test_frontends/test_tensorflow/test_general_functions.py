@@ -262,6 +262,45 @@ def test_tensorflow_einsum(
 
 
 @st.composite
+def _reshape_helper(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    reshape_shape = draw(helpers.reshape_shapes(shape=shape))
+    dtype = draw(helpers.array_dtypes(num_arrays=1))
+    x = draw(helpers.array_values(dtype=dtype[0], shape=shape))
+    return x, dtype, reshape_shape
+
+
+# reshape
+@handle_frontend_test(
+    fn_tree="tensorflow.reshape",
+    input_x_shape=_reshape_helper(),
+)
+def test_tensorflow_reshape(
+    *,
+    input_x_shape,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x, x_dtype, shape = input_x_shape
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x,
+        shape=shape,
+    )
+
+
+@st.composite
 def _x_cast_dtype_shape(draw):
     x_dtype = draw(helpers.get_dtypes("valid", full=False))
     x_dtype, x = draw(
@@ -405,6 +444,36 @@ def test_tensorflow_ones_like(
         on_device=on_device,
         input=x[0],
         dtype=dtype[0],
+    )
+
+
+# identity
+@handle_frontend_test(
+    fn_tree="tensorflow.identity",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+    ),
+)
+def test_tensorflow_identity(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
     )
 
 
