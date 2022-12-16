@@ -1485,7 +1485,7 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_bitwise_invert(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],        
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1523,6 +1523,24 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results.
             The returned array must have the same data type as ``x``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[False, True, False], b=[True, True, False])
+        >>> y = ivy.Container.static_bitwise_invert(x)
+        >>> print(y)
+        {
+            a: ivy.array([True, False, True]),
+            b: ivy.array([False, False, True])
+        }
+
+        >>> x = ivy.Container(a=[1, 2, 3], b=[4, 5, 6])
+        >>> y = ivy.Container.static_bitwise_invert(x)
+        >>> print(y)
+        {
+            a: ivy.array([-2, -3, -4]),
+            b: ivy.array([-5, -6, -7])
+        }
         """
         return ContainerBase.cont_multi_map_in_static_method(
             "bitwise_invert",
@@ -1572,6 +1590,24 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results.
             The returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[False, True, False], b=[True, True, False])
+        >>> y = x.bitwise_invert()
+        >>> print(y)
+        {
+            a: ivy.array([True, False, True]),
+            b: ivy.array([False, False, True])
+        }
+
+        >>> x = ivy.Container(a=[1, 2, 3], b=[4, 5, 6])
+        >>> y = x.bitwise_invert()
+        >>> print(y)
+        {
+            a: ivy.array([-2, -3, -4]),
+            b: ivy.array([-5, -6, -7])
+        }
         """
         return self.static_bitwise_invert(
             self,
