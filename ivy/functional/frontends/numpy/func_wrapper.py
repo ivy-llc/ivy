@@ -219,7 +219,7 @@ def _set_order(args, order):
     )
     if order in ["K", "A", None]:
         check_order = ivy.nested_map(
-            args, _check_C_order, include_derived={tuple: True}
+            args, _check_C_order, include_derived={tuple: True}, shallow=False
         )
         if all(v is None for v in check_order) or any(
             ivy.multi_index_nest(check_order, ivy.all_nested_indices(check_order))
