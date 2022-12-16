@@ -328,4 +328,3 @@ def hard_silu(x):
 def hard_sigmoid(x):
     dtype = _batch_promotion(x, default_dtype="float64")
     return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6).astype(dtype)
-

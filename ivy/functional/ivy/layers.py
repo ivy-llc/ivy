@@ -1205,7 +1205,7 @@ def conv3d(
     >>> filters = ivy.ones((3, 5, 5, 1, 3)).astype(ivy.float32) #DHWIO
 
     >>> result = ivy.conv3d(x, filters, 1, 'SAME')
-    >>> print(result.shapes)
+    >>> print(result.cont_shapes)
     {
         a: [1,3,5,5,3],
         b: [1,5,32,32,3],
