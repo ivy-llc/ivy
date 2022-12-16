@@ -108,16 +108,21 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         """
         if not ivy.get_array_mode():
             return fn(*args, **kwargs)
-        if not any(isinstance(arg, ivy.Array) for arg in args) and not any(isinstance(arg, ivy.Array) for arg in kwargs.values()):
-            return fn(*args, **kwargs)
-        # use pop on out from keywords 
-        out = kwargs.pop("out", None)
+        # check if kwargs contains an out argument, and if so, remove it
+        has_out = False
+        out = None
+        if "out" in kwargs:
+            out = kwargs["out"]
+            del kwargs["out"]
+            has_out = True
         # convert all arrays in the inputs to ivy.NativeArray instances
-        args, kwargs = ivy.args_to_native(*args, **kwargs, include_derived={tuple: True},cache=array_cache)
+        new_args, new_kwargs = ivy.args_to_native(
+            *args, **kwargs, include_derived={tuple: True}
+        )
         # add the original out argument back to the keyword arguments
-        if out is not None:
-            kwargs["out"] = out
-        return fn(*args, **kwargs)
+        if has_out:
+            new_kwargs["out"] = out
+        return fn(*new_args, **new_kwargs)
 
     new_fn.inputs_to_native_arrays = True
     return new_fn
