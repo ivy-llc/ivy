@@ -220,6 +220,49 @@ def test_kron(
     )
 
 
+# matrix_exp
+@handle_test(
+    fn_tree="functional.experimental.matrix_exp",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=(ivy.double, ivy.complex64, ivy.complex128),
+        min_num_dims=2,
+        max_num_dims=10,
+        min_dim_size=2,
+        max_dim_size=50,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+        shared_dtype=True
+    ),
+)
+def test_matrix_exp(
+    dtype_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x = dtype_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+    )
+
+
 @handle_test(
     fn_tree="functional.experimental.eig",
     dtype_x=helpers.dtype_and_values(

@@ -7,9 +7,7 @@ import ivy
 
 
 class NestedArray(abc.ABC):
-    """
-    Base class for nested array objects.
-    """
+    """Base class for nested array objects."""
 
     def __init__(self, data, dtype, device, internal=False):
         if not internal:

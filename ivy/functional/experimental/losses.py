@@ -76,8 +76,8 @@ def binary_cross_entropy_with_logits(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1, 1, 0]),b=ivy.array([0, 0, 1]))
-    >>> y = ivy.Container(a=ivy.array([3.6, 1.2, 5.3]),b=ivy.array([1.8, 2.2, 1.2]))
+    >>> x = ivy.Container(a=ivy.array([1, 1, 0]), b=ivy.array([0, 0, 1]))
+    >>> y = ivy.Container(a=ivy.array([3.6, 1.2, 5.3]), b=ivy.array([1.8, 2.2, 1.2]))
     >>> z = ivy.binary_cross_entropy_with_logits(x, y)
     >>> print(z)
     {
