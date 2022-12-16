@@ -151,36 +151,10 @@
                 <span class="s2">&quot;Please use one of the factory methods instead&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_genearate_shape</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_shape</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_device</span> <span class="o">=</span> <span class="n">device</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pre_repr</span> <span class="o">=</span> <span class="s2">&quot;ivy.&quot;</span></div>
-
-    <span class="k">def</span> <span class="nf">_genearate_shape</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="n">final_shape</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)]</span>
-        <span class="n">shapes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="n">ndims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
-            <span class="n">shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-            <span class="n">ndims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ndims</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">ndims</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndims</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;All arrays in a nested array must have the same number of dimensions.&quot;</span>
-            <span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndims</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">same_shape</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">current_shape</span> <span class="o">=</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">final_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="k">if</span> <span class="n">shapes</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">current_shape</span><span class="p">:</span>
-                    <span class="n">same_shape</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="k">break</span>
-            <span class="k">if</span> <span class="n">same_shape</span><span class="p">:</span>
-                <span class="n">final_shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_shape</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">final_shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">final_shape</span>
 
 <div class="viewcode-block" id="NestedArray.nested_array"><a class="viewcode-back" href="../../../nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.nested_array">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">nested_array</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -218,6 +192,49 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">row_split</span><span class="p">)):</span>
             <span class="n">row_lengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row_split</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">row_split</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_row_lengths</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">row_lengths</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_generate_shape</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">final_shape</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)]</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">ndims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+            <span class="n">shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">ndims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ndims</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">ndims</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndims</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;All arrays in a nested array must have the same number of dimensions.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndims</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">same_shape</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">current_shape</span> <span class="o">=</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">final_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">shapes</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">current_shape</span><span class="p">:</span>
+                    <span class="n">same_shape</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">same_shape</span><span class="p">:</span>
+                <span class="n">final_shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_shape</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">final_shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">final_shape</span>
+
+<div class="viewcode-block" id="NestedArray.unbind"><a class="viewcode-back" href="../../../nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.unbind">[docs]</a>    <span class="k">def</span> <span class="nf">unbind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NestedArray.reshape"><a class="viewcode-back" href="../../../nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.reshape">[docs]</a>    <span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;batch dimension is not changeable&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">new_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">new_shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">new_shape</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_shape</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="c1"># Properties #</span>
     <span class="c1"># ---------- #</span>
