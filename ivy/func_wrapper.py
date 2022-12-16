@@ -105,6 +105,8 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with native arrays passed in the arguments.
         """
+        if not ivy.get_array_mode():
+            return fn(*args, **kwargs)
         if not any(isinstance(arg, ivy.Array) for arg in args) and not any(isinstance(arg, ivy.Array) for arg in kwargs.values()):
             return fn(*args, **kwargs)
         # use pop on out from keywords 
