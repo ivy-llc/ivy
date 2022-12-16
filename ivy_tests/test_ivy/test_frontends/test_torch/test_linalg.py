@@ -75,6 +75,7 @@ def test_torch_inv(
         input=x[0],
     )
 
+
 # inv_ex
 @handle_frontend_test(
     fn_tree="torch.linalg.inv_ex",
@@ -110,6 +111,7 @@ def test_torch_inv_ex(
         rtol=1e-03,
         input=x[0],
     )
+
 
 # pinv
 @handle_frontend_test(
