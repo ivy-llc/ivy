@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_test
     n_rows=helpers.ints(min_value=0, max_value=10),
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
     k=helpers.ints(min_value=-10, max_value=10),
+    instance_method=st.just(False),
 )
 def test_triu_indices(
     *,

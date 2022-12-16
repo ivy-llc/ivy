@@ -133,6 +133,7 @@ def test_fmax(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -140,7 +141,7 @@ def test_fmax(
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
-        ground_truth_backend="tensorflow",
+        ground_truth_backend=ground_truth_backend,
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],
@@ -196,6 +197,7 @@ def test_trapz(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, y, axis = dtype_values_axis
     rand, either_x_dx = rand_either
@@ -211,7 +213,7 @@ def test_trapz(
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
-        ground_truth_backend="tensorflow",
+        ground_truth_backend=ground_truth_backend,
         fn_name=fn_name,
         y=np.asarray(y[0], dtype=input_dtype[0]),
         x=x,
@@ -241,13 +243,14 @@ def test_float_power(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="tensorflow",
+        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,
         x1=np.asarray(x[0], dtype=input_dtype[0]),
@@ -274,13 +277,14 @@ def test_exp2(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="tensorflow",
+        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,
         x=np.asarray(x[0], dtype=input_dtype[0]),
@@ -362,6 +366,7 @@ def test_count_nonzero(
     test_flags,
     on_device,
     backend_fw,
+    ground_truth_backend,
 ):
     i_o_dtype, a, axis = dtype_values_axis
     helpers.test_function(
@@ -369,7 +374,7 @@ def test_count_nonzero(
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
-        ground_truth_backend="tensorflow",
+        ground_truth_backend=ground_truth_backend,
         fn_name="count_nonzero",
         a=a[0],
         axis=axis,
@@ -404,11 +409,13 @@ def test_nansum(
     on_device,
     fn_name,
     backend_fw,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
@@ -439,10 +446,12 @@ def test_gcd(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        ground_truth_backend=ground_truth_backend,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -481,12 +490,14 @@ def test_isclose(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
+        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,
         a=x[0],
@@ -516,10 +527,12 @@ def test_isposinf(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        ground_truth_backend=ground_truth_backend,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -544,6 +557,7 @@ def test_isneginf(
     *,
     dtype_and_x,
     test_flags,
+    ground_truth_backend,
     backend_fw,
     fn_name,
     on_device,
@@ -551,6 +565,7 @@ def test_isneginf(
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        ground_truth_backend=ground_truth_backend,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -587,10 +602,12 @@ def test_nan_to_num(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        ground_truth_backend=ground_truth_backend,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -624,10 +641,12 @@ def test_logaddexp2(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        ground_truth_backend=ground_truth_backend,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -652,7 +671,6 @@ def test_logaddexp2(
     rtol=st.floats(min_value=1e-5, max_value=1e-5),
     atol=st.floats(min_value=1e-5, max_value=1e-5),
     equal_nan=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="allclose"),
 )
 def test_allclose(
     dtype_and_x,
@@ -661,10 +679,12 @@ def test_allclose(
     equal_nan,
     test_flags,
     backend_fw,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        ground_truth_backend=ground_truth_backend,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name="allclose",
@@ -692,9 +712,11 @@ def test_fix(
     test_flags,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -720,9 +742,11 @@ def test_nextafter(
     dtype_and_x,
     test_flags,
     backend_fw,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -753,9 +777,11 @@ def test_diff(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -781,13 +807,15 @@ def test_diff(
 def test_zeta(
     dtype_and_x,
     test_flags,
-    fw,
+    ground_truth_backend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=fw,
+        fw=backend_fw,
         fn_name="zeta",
         rtol_=1e-03,
         atol_=1e-03,
@@ -810,6 +838,7 @@ def test_zeta(
         min_value=-3,
         max_value=3,
     ),
+    with_out=st.just(False),
 )
 def test_gradient(
     *,
