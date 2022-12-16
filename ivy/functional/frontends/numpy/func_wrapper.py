@@ -163,7 +163,7 @@ def handle_numpy_casting_special(fn: Callable) -> Callable:
 
 
 def _numpy_frontend_to_ivy(x: Any) -> Any:
-    if isinstance(x, ndarray):
+    if hasattr(x, "ivy_array"):
         return x.ivy_array
     else:
         return x
