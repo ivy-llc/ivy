@@ -1,0 +1,3 @@
+|                        | tensorflow                                                                                                                                                                         |
+|:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_torch_manual_seed | <a href="https://github.com/unifyai/ivy/actions/runs/3710881944/jobs/6290780930" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
