@@ -30,7 +30,6 @@ def _isin_data_generation_helper(draw):
 @handle_test(
     fn_tree="functional.experimental.isin",
     assume_unique_and_dtype_and_x=_isin_data_generation_helper(),
-    num_positional_args=helpers.num_positional_args(fn_name="isin"),
     invert=st.booleans(),
     with_out=st.just(False),
 )
