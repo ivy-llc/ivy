@@ -1,3 +1,3 @@
 |                | numpy                                                                                                                                                                              |
 |:---------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| test_numpy_svd | <a href="https://github.com/unifyai/ivy/actions/runs/3699284057/jobs/6266482636" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
+| test_numpy_svd | <a href="https://github.com/unifyai/ivy/actions/runs/3709219182/jobs/6287613466" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
