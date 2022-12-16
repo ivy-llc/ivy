@@ -253,7 +253,7 @@ def _get_dtype_and_vector(draw):
 @handle_test(
     fn_tree="functional.ivy.vector_to_skew_symmetric_matrix",
     dtype_x=_get_dtype_and_vector(),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_vector_to_skew_symmetric_matrix(
     *,
@@ -286,7 +286,7 @@ def test_vector_to_skew_symmetric_matrix(
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ),
     n=helpers.ints(min_value=-6, max_value=6),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_matrix_power(
     *,
@@ -319,7 +319,7 @@ def test_matrix_power(
     fn_tree="functional.ivy.matmul",
     x=_get_first_matrix_and_dtype(transpose=True),
     y=_get_second_matrix_and_dtype(transpose=True),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_matmul(
     *,
@@ -358,7 +358,7 @@ def test_matmul(
         max_value=5,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_det(
     *,
@@ -388,7 +388,7 @@ def test_det(
     fn_tree="functional.ivy.eigh",
     dtype_x=_get_dtype_and_matrix(symmetric=True),
     UPLO=st.sampled_from(("L", "U")),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_eigh(
     *,
@@ -492,7 +492,7 @@ def test_eigvalsh(
         min_num_dims=1,
         max_num_dims=1,
     ),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_inner(
     *,
@@ -528,7 +528,7 @@ def test_inner(
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     adjoint=st.booleans(),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_inv(
     *,
@@ -559,7 +559,7 @@ def test_inv(
 @handle_test(
     fn_tree="functional.ivy.matrix_transpose",
     dtype_x=_get_first_matrix_and_dtype(),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_matrix_transpose(
     *,
@@ -593,7 +593,7 @@ def test_matrix_transpose(
         min_num_dims=1,
         max_num_dims=1,
     ),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_outer(
     *,
@@ -629,8 +629,8 @@ def test_outer(
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ),
-    gradient=st.just(True),
-    with_out=st.just(False),
+    test_gradient=st.just(True),
+    test_with_out=st.just(False),
 )
 def test_slogdet(
     *,
@@ -712,7 +712,7 @@ def _get_second_matrix(draw):
     fn_tree="functional.ivy.solve",
     x=_get_first_matrix(),
     y=_get_second_matrix(),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_solve(
     *,
@@ -749,7 +749,7 @@ def test_solve(
         max_value=50,
         min_num_dims=2,
     ),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_svdvals(
     *,
@@ -784,7 +784,7 @@ def test_svdvals(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_tensordot(
     *,
@@ -833,7 +833,7 @@ def test_tensordot(
     offset=st.integers(min_value=0, max_value=0),
     axis1=st.integers(min_value=0, max_value=0),
     axis2=st.integers(min_value=1, max_value=1),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_trace(
     *,
@@ -877,7 +877,7 @@ def test_trace(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_vecdot(
     *,
@@ -918,7 +918,7 @@ def test_vecdot(
     ),
     kd=st.booleans(),
     ord=helpers.ints(min_value=1, max_value=2),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_vector_norm(
     *,
@@ -962,7 +962,7 @@ def test_vector_norm(
         safety_factor_scale="log",
     ),
     rtol=st.floats(1e-5, 1e-3),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_pinv(
     *,
@@ -994,7 +994,7 @@ def test_pinv(
     fn_tree="functional.ivy.qr",
     dtype_x=_get_dtype_and_matrix(),
     mode=st.sampled_from(("reduced", "complete")),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_qr(
     *,
@@ -1052,7 +1052,7 @@ def test_qr(
     ),
     fm=st.booleans(),
     uv=st.booleans(),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_svd(
     *,
@@ -1142,7 +1142,7 @@ def test_svd(
     kd=st.booleans(),
     axis=st.just((-2, -1)),
     ord=helpers.ints(min_value=1, max_value=2) | st.sampled_from(("fro", "nuc")),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_matrix_norm(
     *,
@@ -1237,7 +1237,7 @@ def test_matrix_rank(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ),
     upper=st.booleans(),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_cholesky(
     *,
@@ -1282,7 +1282,7 @@ def test_cholesky(
         large_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_cross(
     *,
@@ -1323,7 +1323,7 @@ def test_cross(
     axes=st.lists(
         helpers.ints(min_value=-2, max_value=1), min_size=2, max_size=2, unique=True
     ).filter(lambda axes: axes[0] % 2 != axes[1] % 2),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_diagonal(
     *,
@@ -1377,7 +1377,7 @@ def _diag_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.diag",
     dtype_x_k=_diag_helper(),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_diag(
     *,
@@ -1415,7 +1415,7 @@ def test_diag(
     ),
     N=st.integers(min_value=1, max_value=10) | st.none(),
     increasing=st.booleans(),
-    gradient=st.just(True),
+    test_gradient=st.just(True),
 )
 def test_vander(
     *,

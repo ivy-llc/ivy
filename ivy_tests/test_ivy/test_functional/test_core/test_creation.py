@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helpe
 @handle_test(
     fn_tree="functional.ivy.native_array",
     dtype_and_x_and_cast_dtype=astype_helper(),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
     container_flags=st.just([False]),
 )
 def test_native_array(
@@ -63,7 +63,7 @@ def test_native_array(
     num=helpers.ints(min_value=1, max_value=5),
     axis=st.none(),
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_linspace(
     *,
@@ -117,7 +117,7 @@ def test_linspace(
     base=helpers.floats(min_value=0.1, max_value=3.0),
     axis=st.none(),
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_logspace(
     *,
@@ -161,9 +161,9 @@ def test_logspace(
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     container_flags=st.just([False]),
-    as_variable=st.just([False]),
-    native_arrays=st.just([False]),
-    instance_method=st.just(False),
+    as_variable_flags=st.just([False]),
+    native_array_flags=st.just([False]),
+    test_instance_method=st.just(False),
 )
 def test_arange(
     *,
@@ -206,9 +206,9 @@ def test_arange(
         shared_dtype=True,
     ),
     as_list=st.booleans(),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_asarray(
     *,
@@ -257,7 +257,7 @@ def test_asarray(
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_empty(
     *,
@@ -346,7 +346,7 @@ def test_empty_like(
     dtype=helpers.get_dtypes("valid", full=False),
     fn_tree="functional.ivy.eye",
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_eye(
     *,
@@ -389,7 +389,7 @@ def test_eye(
         max_dim_size=5,
     ),
     container_flags=st.just([False]),
-    as_variable=st.just([False]),  # can't convert variables
+    as_variable_flags=st.just([False]),  # can't convert variables
 )
 def test_from_dlpack(
     *,
@@ -436,7 +436,7 @@ def _fill_value(draw):
     fill_value=_fill_value(),
     dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_full(
     *,
@@ -520,7 +520,7 @@ def test_full_like(
     sparse=st.booleans(),
     indexing=st.sampled_from(["xy", "ij"]),
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_meshgrid(
     *,
@@ -566,7 +566,7 @@ def test_meshgrid(
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_ones(
     *,
@@ -714,7 +714,7 @@ def test_triu(
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_zeros(
     *,
@@ -751,7 +751,7 @@ def test_zeros(
         max_dim_size=5,
     ),
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_zeros_like(
     *,

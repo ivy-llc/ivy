@@ -77,7 +77,7 @@ def _empty_dir(path, recreate=False):
         size_bounds=[1, 3],
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
-    as_variable=st.booleans(),
+    as_variable_flags=st.booleans(),
 )
 def test_dev(
     *,

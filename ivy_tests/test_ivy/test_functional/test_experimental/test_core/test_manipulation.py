@@ -555,7 +555,7 @@ def _pad_helper(draw):
     ground_truth_backend="numpy",
     dtype_and_input_and_other=_pad_helper(),
     reflect_type=st.sampled_from(["even", "odd"]),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_pad(
     *,
@@ -677,7 +677,7 @@ def test_dsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_atleast_1d(
     dtype_and_x,
@@ -745,7 +745,7 @@ def test_dstack(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_atleast_2d(
     *,
@@ -778,7 +778,7 @@ def test_atleast_2d(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_atleast_3d(
     dtype_and_x,

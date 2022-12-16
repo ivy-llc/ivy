@@ -619,7 +619,7 @@ def _get_splits(draw):
     ),
     with_remainder=st.booleans(),
     num_or_size_splits=_get_splits(),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_split(
     *,
@@ -765,7 +765,7 @@ def test_zero_pad(
         max_axis=4,
     ),
     keepdims=st.booleans(),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_unstack(
     *,

@@ -141,7 +141,7 @@ def broadcastable_arrays(draw, dtypes):
     fn_tree="functional.ivy.broadcast_arrays",
     arrays=broadcastable_arrays(dtypes_shared("num_arrays")),
     input_dtypes=dtypes_shared("num_arrays"),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_broadcast_arrays(
     *,
@@ -220,7 +220,7 @@ def test_broadcast_to(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=1
     ),
     to_dtype=helpers.get_dtypes("valid", full=False),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_can_cast(
     *,
@@ -269,11 +269,11 @@ def _array_or_type(draw, float_or_int):
 @handle_test(
     fn_tree="functional.ivy.finfo",
     type=_array_or_type("float"),
-    with_out=st.just(False),
-    as_variable=st.just([False]),
-    native_arrays=st.just([False]),
+    test_with_out=st.just(False),
+    as_variable_flags=st.just([False]),
+    native_array_flags=st.just([False]),
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_finfo(
     *,
@@ -312,11 +312,11 @@ def test_finfo(
 @handle_test(
     fn_tree="functional.ivy.iinfo",
     type=_array_or_type("int"),
-    with_out=st.just(False),
-    as_variable=st.just([False]),
-    native_arrays=st.just([False]),
+    test_with_out=st.just(False),
+    as_variable_flags=st.just([False]),
+    native_array_flags=st.just([False]),
     container_flags=st.just([False]),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_iinfo(
     *,
@@ -359,7 +359,7 @@ def test_iinfo(
         num_arrays=st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays"),
         shared_dtype=False,
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_result_type(
     *,
@@ -488,8 +488,8 @@ def test_default_dtype(
     ),
     input_dtype=dtype_shared,
     as_native=st.booleans(),
-    with_out=st.just(False),
-    instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_dtype(
     *,
@@ -528,7 +528,7 @@ def test_dtype(
 @handle_test(
     fn_tree="functional.ivy.dtype_bits",
     input_dtype=helpers.get_dtypes("valid", full=False),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
     container_flags=st.just([False]),
 )
 def test_dtype_bits(
@@ -562,7 +562,7 @@ def test_dtype_bits(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_is_bool_dtype(
     *,
@@ -591,7 +591,7 @@ def test_is_bool_dtype(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_is_float_dtype(
     *,
@@ -620,7 +620,7 @@ def test_is_float_dtype(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_is_int_dtype(
     *,
@@ -649,7 +649,7 @@ def test_is_int_dtype(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_is_uint_dtype(
     *,
@@ -681,8 +681,8 @@ def test_is_uint_dtype(
         num_arrays=2,
         shared_dtype=False,
     ),
-    with_out=st.just(False),
-    instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_promote_types(
     *,
@@ -718,7 +718,7 @@ def test_promote_types(
         num_arrays=2,
         shared_dtype=False,
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
     container_flags=st.just([False]),
 )
 def test_type_promote_arrays(

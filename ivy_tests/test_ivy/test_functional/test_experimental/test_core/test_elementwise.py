@@ -54,7 +54,7 @@ def test_sinc(
         max_value=100,
         allow_nan=False,
     ),
-    gradient=st.just(False),
+    test_gradient=st.just(False),
 )
 def test_lcm(
     dtype_and_x,
@@ -886,7 +886,7 @@ def test_zeta(
         min_value=-3,
         max_value=3,
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_gradient(
     *,

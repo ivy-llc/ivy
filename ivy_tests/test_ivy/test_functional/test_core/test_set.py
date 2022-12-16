@@ -52,7 +52,7 @@ def test_unique_values(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_unique_all(
     *,
@@ -87,7 +87,7 @@ def test_unique_all(
         min_dim_size=2,
         max_dim_size=5,
     ),
-    with_out=st.just(False)
+    test_with_out=st.just(False),
 )
 def test_unique_counts(
     *,
@@ -122,7 +122,7 @@ def test_unique_counts(
         min_dim_size=2,
         max_dim_size=5,
     ),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_unique_inverse(
     *,

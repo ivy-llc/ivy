@@ -125,7 +125,7 @@ def test_argmin(
     as_tuple=st.booleans(),
     size=st.integers(min_value=1, max_value=5),
     fill_value=st.one_of(st.integers(0, 5), helpers.floats()),
-    with_out=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_nonzero(
     *,

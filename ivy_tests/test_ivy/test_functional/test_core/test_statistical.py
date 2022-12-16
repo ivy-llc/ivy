@@ -390,7 +390,7 @@ def test_cumprod(
             ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
         ]
     ),
-    instance_method=st.just(False),
+    test_instance_method=st.just(False),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_einsum(

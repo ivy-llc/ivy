@@ -191,11 +191,11 @@ def handle_test(
     fn_tree: str,
     ground_truth_backend: str = ground_truth,
     number_positional_args=None,
-    instance_method=BuiltInstanceStrategy,
-    with_out=BuiltWithOutStrategy,
-    gradient=BuiltGradientStrategy,
-    as_variable=BuiltAsVariableStrategy,
-    native_arrays=BuiltNativeArrayStrategy,
+    test_instance_method=BuiltInstanceStrategy,
+    test_with_out=BuiltWithOutStrategy,
+    test_gradient=BuiltGradientStrategy,
+    as_variable_flags=BuiltAsVariableStrategy,
+    native_array_flags=BuiltNativeArrayStrategy,
     container_flags=BuiltContainerStrategy,
     **_given_kwargs,
 ):
@@ -206,11 +206,11 @@ def handle_test(
             number_positional_args = num_positional_args(fn_name=fn_tree)
         test_flags = pf.function_flags(
             num_positional_args=number_positional_args,
-            instance_method=instance_method,
-            with_out=with_out,
-            gradient=gradient,
-            as_variable=as_variable,
-            native_arrays=native_arrays,
+            instance_method=test_instance_method,
+            with_out=test_with_out,
+            gradient=test_gradient,
+            as_variable=as_variable_flags,
+            native_arrays=native_array_flags,
             container_flags=container_flags,
         )
 
