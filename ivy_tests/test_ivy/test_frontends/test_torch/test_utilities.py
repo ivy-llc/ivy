@@ -26,7 +26,9 @@ def test_torch_result_type(
     fn_tree,
     frontend,
 ):
+
     input_dtype, x, axis= dtype_x_axis
+    axis = axis if axis is None or isinstance(axis, int) else axis[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
