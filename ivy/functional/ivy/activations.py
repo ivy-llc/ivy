@@ -431,14 +431,14 @@ def deserialize(
 
     Examples
     --------
-    With :str: input:
+    With :code:`str` input:
 
     >>> name = "sigmoid"
     >>> sigmoid = ivy.deserialize(name)
     >>> print(sigmoid)
     <function sigmoid at XXXXXXXXXXXXXX>
 
-    With :str and dict: input:
+    With :code:`str` and :code:`dict` input:
 
     >>> name = "custom_fn"
     >>> objects = {"custom_fn": lambda x: x}
@@ -505,7 +505,7 @@ def get(
 
     Examples
     --------
-    With :str: input:
+    With :code:`str` input:
 
     >>> name = "sigmoid"
     >>> sigmoid = ivy.get(name)
@@ -517,7 +517,7 @@ def get(
     >>> print(linear)
     <function linear at XXXXXXXXXXXXXX>
 
-    With :str and dict: input:
+    With :code:`str` and :code:`dict` input:
 
     >>> name = "custom_fn"
     >>> objects = {"custom_fn": lambda x: x}

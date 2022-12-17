@@ -356,8 +356,8 @@ def test_matrix_rank(
         rtol=rtol,
         atol=atol,
     )
-    
-    
+
+
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky",
     dtype_and_x=_get_dtype_and_square_matrix(),
@@ -392,8 +392,8 @@ def test_torch_cholesky(
         input=x,
         upper=upper,
     )
-    
-    
+
+
 # svd
 @handle_frontend_test(
     fn_tree="torch.linalg.svd",

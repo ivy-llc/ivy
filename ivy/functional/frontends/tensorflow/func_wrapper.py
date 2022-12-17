@@ -95,8 +95,12 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             has_out = True
 
         # convert all arrays in the inputs to ivy.Array instances
-        ivy_args = ivy.nested_map(args, _to_ivy_array, include_derived=True)
-        ivy_kwargs = ivy.nested_map(kwargs, _to_ivy_array, include_derived=True)
+        ivy_args = ivy.nested_map(
+            args, _to_ivy_array, include_derived=True, shallow=False
+        )
+        ivy_kwargs = ivy.nested_map(
+            kwargs, _to_ivy_array, include_derived=True, shallow=False
+        )
         if has_out:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
