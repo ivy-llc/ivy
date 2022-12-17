@@ -541,15 +541,15 @@ def separable_conv2d(
         x = np.transpose(x, (0, 2, 3, 1))
 
     if padding == 'SAME':
-        x = np.pad(x, ((1,1),(1,1),(0,0)), mode='constant')
+        x = np.pad(x, ((1, 1), (1, 1), (0, 0)), mode='constant')
 
     res = np.empty(x.shape)
 
     for i in range(x.shape[2]):
-        res[:,:,i] = convolve(x[:,:,i], depthwise_filter, mode='valid')
+        res[:, :, i] = convolve(x[:, :, i], depthwise_filter, mode='valid')
 
     if padding == 'SAME':
-        res = res[1:-1,1:-1,:]
+        res = res[1:-1, 1:-1, :]
 
     res = np.matmul(res, pointwise_filter)
 

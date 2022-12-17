@@ -361,7 +361,8 @@ def separable_conv2d(
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
-    res = jlax.conv_general_dilated(x, depthwise_filter, pointwise_filter, strides, padding)
+    res = jlax.conv_general_dilated(x, depthwise_filter, 
+                                    pointwise_filter, strides, padding)
 
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))

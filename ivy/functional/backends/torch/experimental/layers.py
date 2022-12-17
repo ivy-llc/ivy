@@ -469,7 +469,8 @@ def separable_conv2d(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     
-    res = torch.nn.functional.DepthwiseSeparableConv2d(x, depthwise_filter, pointwise_filter, strides, 0)
+    res = torch.nn.functional.DepthwiseSeparableConv2d(x, depthwise_filter, 
+                                                    pointwise_filter, strides, 0)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res

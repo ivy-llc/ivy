@@ -255,7 +255,8 @@ def separable_conv2d(
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
 
-    res = tf.nn.separable_conv2d(x, depthwise_filter, pointwise_filter, strides, padding)
+    res = tf.nn.separable_conv2d(x, depthwise_filter, 
+                                pointwise_filter, strides, padding)
 
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))

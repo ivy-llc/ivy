@@ -1028,9 +1028,9 @@ class ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of `ivy.separable_conv2d`. This method simply
-        wraps the function, and so the docstring for `ivy.separable_conv2d` also applies
-        to this method with minimal changes.
+        """ivy.Container instance method variant of `ivy.separable_conv2d`. 
+        This method simply wraps the function, and so the docstring for 
+        `ivy.separable_conv2d` also applies to this method with minimal changes.
 
         Parameters
         ----------

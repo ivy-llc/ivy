@@ -688,4 +688,5 @@ def separable_conv2d(
 
             [[46, 47]]]])
     """
-    return ivy.current_backend(x).separable_conv2d(x, depthwise_filter, pointwise_filter, strides, padding, out=out)
+    return ivy.current_backend(x).separable_conv2d(x, depthwise_filter, 
+                                            pointwise_filter, strides, padding, out=out)
