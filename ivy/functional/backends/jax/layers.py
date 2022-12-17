@@ -125,7 +125,7 @@ def depthwise_conv2d(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
-    strides = [strides[0], strides[1]] if len(strides) == 4 else strides
+    strides = [strides[1], strides[2]] if len(strides) == 4 else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filters = jnp.squeeze(filters, 3) if filters.ndim == 4 else filters
     cn = filters.shape[-1]

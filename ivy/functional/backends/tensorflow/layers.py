@@ -162,7 +162,8 @@ def depthwise_conv2d(
         )
     if tf.rank(filters) == 3:
         filters = tf.expand_dims(filters, -1)
-    strides = [1, strides[0], strides[1], 1]
+    if len(strides) == 2:
+        strides = [1, strides[0], strides[1], 1]
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     res = tf.nn.depthwise_conv2d(x, filters, strides, padding, "NHWC", dilations)

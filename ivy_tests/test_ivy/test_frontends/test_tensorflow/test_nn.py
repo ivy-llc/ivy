@@ -631,8 +631,7 @@ def test_tensorflow_depthwise_conv2d(
     on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
-    if dilation > 1:
-        stride = 1
+    stride = 1 if dilation > 1 else stride
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
