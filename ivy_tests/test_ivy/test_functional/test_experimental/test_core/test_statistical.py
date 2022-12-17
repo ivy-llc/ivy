@@ -245,7 +245,6 @@ def test_quantile(
     #q=st.floats(min_value=0, max_value=1),
     keepdims=st.booleans(),
     #interpolation=st.data(),
-    num_positional_args=helpers.num_positional_args(fn_name="nanquantile"),
 )
 def test_nanquantile(
     *,
