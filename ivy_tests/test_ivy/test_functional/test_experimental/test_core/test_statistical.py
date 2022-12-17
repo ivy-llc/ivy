@@ -234,3 +234,51 @@ def test_quantile(
         interpolation=interpolation[0],
         keepdims=keep_dims,
     )
+
+
+# nanquantile
+
+@handle_test(
+    fn_tree="functional.experimental.nanquantile",
+    dtype_x_axis=statistical_dtype_values(function="quantile"),
+    q=st.floats(min_value=0, max_value=1),
+    keepdims=st.booleans(),
+    interpolation=st.data(),
+)
+def test_nanquantile(
+    *,
+    q,
+    dtype_x_axis,
+    keepdims,
+    interpolation,
+    ground_truth_backend,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x, axis, interpolation, q = dtype_x_axis,
+    helpers.test_function(
+        ground_truth_backend= ground_truth_backend,
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=False,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=np.asarray(x, dtype=input_dtype[0]),
+        q=q,
+        axis=axis,
+        keepdims=keepdims,
+        interpolation='linear',
+    )
+    
