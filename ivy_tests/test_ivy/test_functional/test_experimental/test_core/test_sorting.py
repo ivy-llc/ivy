@@ -18,12 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 )
 def test_msort(
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -33,12 +28,7 @@ def test_msort(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
