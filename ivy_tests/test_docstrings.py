@@ -257,6 +257,8 @@ def test_docstrings(backend):
         "unique_all",
         "total_mem_on_dev",
         "supports_inplace_updates",
+        "get",
+        "deserialize",
     ]
     # the temp skip list consists of functions which have an issue with their
     # implementation

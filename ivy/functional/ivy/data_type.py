@@ -749,28 +749,26 @@ def result_type(
 
     >>> x = ivy.array([3, 4, 5])
     >>> y = ivy.array([3., 4., 5.])
-    >>> print(ivy.result_type(x, y))
-    float64
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([3., 4, 7.5])
-    >>> y = ivy.native_array([3, 4, 7])
-    >>> print(ivy.result_type(x, y))
-    float64
+    >>> d = ivy.result_type(x, y)
+    >>> print(d)
+    float32
 
     With :class:`ivy.Dtype` input:
 
-    >>> print(ivy.result_type(ivy.uint8, ivy.uint64))
+    >>> d = ivy.result_type(ivy.uint8, ivy.uint64)
+    >>> print(d)
     uint64
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([3, 4, 5]))
-    >>> print(x.a.dtype)
+    >>> d = x.a.dtype
+    >>> print(d)
     int32
 
-    >>> print(ivy.result_type(x, ivy.float64))
+    >>> x = ivy.Container(a = ivy.array([3, 4, 5]))
+    >>> d = ivy.result_type(x, ivy.float64)
+    >>> print(d)
     {
         a: float64
     }
