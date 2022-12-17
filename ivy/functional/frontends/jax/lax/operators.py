@@ -4,6 +4,7 @@ from typing import Any
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.jax.numpy import can_cast
 
 
 @to_ivy_arrays_and_back
@@ -117,7 +118,10 @@ def conv_transpose(
 
 @to_ivy_arrays_and_back
 def convert_element_type(operand, new_dtype):
-    return ivy.astype(operand, new_dtype)
+    assert can_cast(ivy.dtype(operand), new_dtype), "Cannot cast from {} to {}".format(
+        ivy.dtype(operand), new_dtype
+    )
+    return ivy.astype(operand, new_dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -150,10 +154,10 @@ def div(x, y):
 
 @to_ivy_arrays_and_back
 def dot(lhs, rhs, precision=None, preferred_element_type=None):
+    ret = ivy.matmul(lhs, rhs)
     if preferred_element_type:
-        lhs = ivy.astype(lhs, dtype=preferred_element_type)
-        rhs = ivy.astype(rhs, dtype=preferred_element_type)
-    return ivy.tensordot(lhs, rhs)
+        ret = ivy.astype(ret, preferred_element_type, copy=False)
+    return ret
 
 
 @to_ivy_arrays_and_back
@@ -357,3 +361,8 @@ def asinh(x):
 @to_ivy_arrays_and_back
 def atanh(x):
     return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
+def select(pred, on_true, on_false):
+    return ivy.where(pred, on_true, on_false)

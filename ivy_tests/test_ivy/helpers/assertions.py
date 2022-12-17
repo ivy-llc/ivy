@@ -45,7 +45,7 @@ def assert_all_close(
         )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
-        ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_gt_np])
+        ivy.Container.cont_multi_map(assert_all_close, [ret_np, ret_from_gt_np])
     else:
         if ret_np.dtype == "bfloat16" or ret_from_gt_np.dtype == "bfloat16":
             ret_np = ret_np.astype("float64")

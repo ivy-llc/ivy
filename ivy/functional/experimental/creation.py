@@ -76,41 +76,34 @@ def triu_indices(
     (ivy.array([0, 0, 0, 0, 1, 1, 1, 2, 2, 3]),
     ivy.array([0, 1, 2, 3, 1, 2, 3, 2, 3, 3]))
 
-    --------
     >>> x = ivy.triu_indices(4,4,1)
     >>> print(x)
     (ivy.array([0, 0, 0, 1, 1, 2]),
     ivy.array([1, 2, 3, 2, 3, 3]))
 
-    --------
     >>> x = ivy.triu_indices(4,4,-2)
     >>> print(x)
     (ivy.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3]),
     ivy.array([0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3]))
 
-    --------
     >>> x = ivy.triu_indices(4,2,0)
     >>> print(x)
     (ivy.array([0, 0, 1]),
     ivy.array([0, 1, 1]))
 
-    --------
     >>> x = ivy.triu_indices(2,4,0)
     >>> print(x)
     (ivy.array([0, 0, 0, 0, 1, 1, 1]),
     ivy.array([0, 1, 2, 3, 1, 2, 3]))
 
-    --------
     >>> x = ivy.triu_indices(4,-4,0)
     >>> print(x)
     (ivy.array([]), ivy.array([]))
 
-    --------
     >>> x = ivy.triu_indices(4,4,100)
     >>> print(x)
     (ivy.array([]), ivy.array([]))
 
-    --------
     >>> x = ivy.triu_indices(2,4,-100)
     >>> print(x)
     (ivy.array([0, 0, 0, 0, 1, 1, 1, 1]), ivy.array([0, 1, 2, 3, 0, 1, 2, 3]))

@@ -61,7 +61,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                           [[16., 17., 18., 19.]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "max_pool1d",
             x,
             kernel,
@@ -193,7 +193,7 @@ class ContainerWithLayersExperimental(ContainerBase):
             b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "max_pool2d",
             x,
             kernel,
@@ -328,7 +328,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                              [46, 47]]]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "max_pool3d",
             x,
             kernel,
@@ -463,7 +463,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                           [[14., 15., 16., 17.]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "avg_pool1d",
             x,
             kernel,
@@ -595,7 +595,7 @@ class ContainerWithLayersExperimental(ContainerBase):
             b: (<class ivy.array.array.Array> shape=[2, 3, 2, 2])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "avg_pool2d",
             x,
             kernel,
@@ -728,7 +728,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                              [36., 37.]]]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "avg_pool3d",
             x,
             kernel,
@@ -875,7 +875,7 @@ class ContainerWithLayersExperimental(ContainerBase):
             b: ivy.array([242., -253., 286., -515., 467.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "dct",
             x,
             type=type,
