@@ -115,6 +115,8 @@ def test_linear_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        rtol_=1e-02,
+        atol_=1e-02,
     )
 
 
