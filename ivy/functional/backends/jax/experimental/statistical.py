@@ -58,3 +58,22 @@ def quantile(
     return jnp.quantile(
         a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
     )
+
+
+def nanquantile(
+    a: JaxArray,
+    q: Union[int, float],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    overwrite_input: Optional[bool] = False,
+    keepdims: Optional[bool] = False,
+    interpolation: str = 'linear',
+    out: Optional[JaxArray] = None,
+
+) -> JaxArray:
+    return jnp.nanquantile(
+        a, q, axis=axis, overwrite_input=overwrite_input,
+        keepdims=keepdims, interpolation=interpolation, out=out
+    )
+    
