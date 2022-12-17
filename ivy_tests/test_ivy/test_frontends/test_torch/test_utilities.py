@@ -26,7 +26,7 @@ def test_torch_result_type(
     fn_tree,
     frontend,
 ):
-    input_dtype, x, axis= dtype_x_axis,
+    input_dtype, x, axis= dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
