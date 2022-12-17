@@ -568,3 +568,36 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+        
+        
+    @staticmethod
+    def static_nanquantile(
+        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: bool = False,
+        interpolation: str = 'linear',
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_static_method(
+            "nanquantile", a, q, axis=axis,
+            keepdims=keepdims, interpolation=interpolation, out=out
+        )
+
+    def nanquantile(
+        self: ivy.Container,
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: bool = False,
+        interpolation: str = 'linear',
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.static_nanquantile(
+            self, q, axis=axis,
+            keepdims=keepdims, interpolation=interpolation, out=out
+        )
+    
