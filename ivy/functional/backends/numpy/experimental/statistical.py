@@ -63,7 +63,6 @@ def quantile(
     ).astype(a.dtype)
 
 
-@_scalar_output_to_0d_array
 def nanquantile(
     a: np.ndarray,
     q: Union[float, np.ndarray],
