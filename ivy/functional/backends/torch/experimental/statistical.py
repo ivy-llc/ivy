@@ -100,3 +100,26 @@ def quantile(
         return a
 
     return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
+
+
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
+)
+def nanquantile(
+    a: torch.Tensor,
+    q: Union[torch.tensor, float],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    interpolation: str = None,
+    out: Optional[torch.tensor] = None,
+) -> torch.Tensor:
+    return torch.nanquantile(
+        a,
+        q=q,
+        dim=axis,
+        keepdim=keepdims,
+        interpolation=interpolation,
+        )
+        
