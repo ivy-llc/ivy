@@ -439,3 +439,37 @@ def dropout1d(
         return res
     else:
         return x
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
+def separable_conv2d(
+    x: torch.Tensor,
+    depthwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+    pointwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if isinstance(strides, int):
+        strides = (strides, strides)
+    elif len(strides) == 1:
+        strides = (strides[0], strides[0])
+
+    if data_format == "NHWC":
+        x = x.permute(0, 3, 1, 2)
+    
+    res = torch.nn.functional.DepthwiseSeparableConv2d(x, depthwise_filter, pointwise_filter, strides, 0)
+    if data_format == "NHWC":
+        return res.permute(0, 2, 3, 1)
+    return res

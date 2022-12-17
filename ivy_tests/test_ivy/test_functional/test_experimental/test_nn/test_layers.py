@@ -336,3 +336,32 @@ def test_dropout1d(
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
+
+
+@handle_test(
+    fn_tree="functional.experimental.separable_conv2d",
+    ground_truth_backend="jax",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+)
+def test_separable_conv2d(
+    *,
+    x_k_s_p,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x, kernel, stride, pad = x_k_s_p
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x[0],
+        kernel=kernel,
+        strides=stride,
+        padding=pad,
+    )

@@ -239,3 +239,24 @@ def dropout1d(
         return res
     else:
         return x
+
+
+def separable_conv2d(
+    x: Union[tf.Tensor, tf.Variable],
+    depthwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+    pointwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+
+    res = tf.nn.separable_conv2d(x, depthwise_filter, pointwise_filter, strides, padding)
+
+    if data_format == "NCHW":
+        return tf.transpose(res, (0, 3, 1, 2))
+    return res

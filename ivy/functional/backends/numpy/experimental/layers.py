@@ -3,6 +3,7 @@
 import math
 import numpy as np
 from typing import Optional, Union, Tuple, Literal
+from scipy.signal import convolve
 
 # local
 import ivy
@@ -523,3 +524,36 @@ def dropout1d(
         return res
     else:
         return x
+
+
+def separable_conv2d(
+    x: np.ndarray,
+    depthwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+    pointwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if data_format == "NCHW":
+        x = np.transpose(x, (0, 2, 3, 1))
+
+    if padding == 'SAME':
+        x = np.pad(x, ((1,1),(1,1),(0,0)), mode='constant')
+
+    res = np.empty(x.shape)
+
+    for i in range(x.shape[2]):
+        res[:,:,i] = convolve(x[:,:,i], depthwise_filter, mode='valid')
+
+    if padding == 'SAME':
+        res = res[1:-1,1:-1,:]
+
+    res = np.matmul(res, pointwise_filter)
+
+    if data_format == "NCHW":
+        return np.transpose(res, (0, 3, 1, 2))
+
+    return res

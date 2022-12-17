@@ -345,3 +345,25 @@ def dropout1d(
         return res
     else:
         return x
+
+
+def separable_conv2d(
+    x: JaxArray,
+    depthwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+    pointwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if data_format == "NCHW":
+        x = jnp.transpose(x, (0, 2, 3, 1))
+
+    res = jlax.conv_general_dilated(x, depthwise_filter, pointwise_filter, strides, padding)
+
+    if data_format == "NCHW":
+        return jnp.transpose(res, (0, 3, 1, 2))
+
+    return res

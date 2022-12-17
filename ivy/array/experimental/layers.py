@@ -443,3 +443,75 @@ class ArrayWithLayersExperimental(abc.ABC):
             norm=norm,
             out=out,
         )
+
+    def separable_conv2d(
+        self: ivy.Array,
+        depthwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+        pointwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NHWC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Performs a depthwise convolution that acts separately on channels followed 
+        by a pointwise convolution that mixes channels. Note that this is separability 
+        between dimensions [1, 2] and 3, not spatial separability between 
+        dimensions 1 and 2.
+
+        Parameters
+        ----------
+        self
+            Input volume *[batch_size,d,h,w,d_in]*.
+        kernel
+            Convolution filters *[d,h,w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            NHWC" or "NCHW". Defaults to "NDHWC".
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A 4-D Tensor with shape according to 'data_format'. 
+            For example, with data_format="NHWC".
+
+        Examples
+        --------
+        >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
+        >>> print(x.separable_conv2d(2, 2, 'VALID'))
+        ivy.array([[[[[ 7.,  8.]]]],
+
+
+
+               [[[[31., 32.]]]]])
+        >>> print(x.separable_conv2d(2, 2, 'SAME'))
+        ivy.array([[[[[ 7.,  8.]]],
+
+
+                [[[19., 20.]]]],
+
+
+
+               [[[[31., 32.]]],
+
+
+                [[[43., 44.]]]]])
+        """
+        return ivy.separable_conv2d(
+            self,
+            depthwise_filter,
+            pointwise_filter,
+            strides,
+            padding,
+            data_format=data_format,
+            out=out,
+        )

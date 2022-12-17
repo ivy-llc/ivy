@@ -619,3 +619,73 @@ def dropout1d(
     return ivy.current_backend(x).dropout1d(
         x, prob, training=training, data_format=data_format, out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def separable_conv2d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    depthwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+    pointwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Performs a depthwise convolution that acts separately on channels followed 
+    by a pointwise convolution that mixes channels. Note that this is separability 
+    between dimensions [1, 2] and 3, not spatial separability between 
+    dimensions 1 and 2.
+
+    Parameters
+    ----------
+    x
+        Input image *[batch_size,h,w,d_in]*.
+    kernel
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[h,w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimensio paddings.
+    data_format
+        NHWC" or "NCHW". Defaults to "NHWC".
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        A 4-D Tensor with shape according to 'data_format'. 
+        For example, with data_format="NHWC".
+
+    Examples
+    --------
+    >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
+    >>> print(ivy.separable_conv2d(x, (2, 2), (1, 1), 'SAME'))
+    ivy.array([[[[ 2,  3],
+             [ 4,  5],
+             [ 4,  5]]],
+
+
+           [[[ 8,  9],
+             [10, 11],
+             [10, 11]]]])
+
+    >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
+    >>> print(ivy.separable_conv2d(x, 3, 1, 'VALID'))
+    ivy.array([[[[16, 17]],
+
+            [[22, 23]]],
+
+
+           [[[40, 41]],
+
+            [[46, 47]]]])
+    """
+    return ivy.current_backend(x).separable_conv2d(x, depthwise_filter, pointwise_filter, strides, padding, out=out)
