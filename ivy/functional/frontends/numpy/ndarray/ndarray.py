@@ -25,6 +25,9 @@ class ndarray:
     def __repr__(self):
         return "ivy.frontends.numpy.ndarray(" + str(ivy.to_list(self._ivy_array)) + ")"
 
+    def __str__(self):
+        return str(self._ivy_array)
+
     # Properties #
     # ---------- #
 
