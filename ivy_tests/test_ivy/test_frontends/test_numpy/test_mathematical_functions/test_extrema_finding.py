@@ -276,6 +276,7 @@ def test_numpy_maximum(
         subok=True,
     )
 
+
 # nanmax
 @handle_frontend_test(
     fn_tree="numpy.nanmax",
