@@ -589,7 +589,9 @@ class Module(abc.ABC):
             if not with_grads:
                 v = v.stop_gradient()
             self.v = (
-                Container(v, **v.config) if isinstance(v, Container) else Container(v)
+                Container(v, **v.cont_config)
+                if isinstance(v, Container)
+                else Container(v)
             )
             ret = self._forward_with_tracking(*args, **kwargs)
             self.v = v_orig

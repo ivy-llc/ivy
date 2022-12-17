@@ -298,6 +298,13 @@ class ArrayWithManipulation(abc.ABC):
         >>> y = x.roll(1)
         >>> print(y)
         ivy.array([2., 0., 1.])
+
+        >>> x = ivy.array([[0., 1., 2.],
+        ...                [3., 4., 5.]])
+        >>> y = x.roll(2, axis=-1)
+        >>> print(y)
+        ivy.array([[1., 2., 0.],
+                    [4., 5., 3.]])
         """
         return ivy.roll(self._data, shift=shift, axis=axis, out=out)
 

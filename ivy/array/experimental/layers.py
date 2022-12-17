@@ -107,7 +107,7 @@ class ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
         >>> print(x.max_pool2d((2, 2), (1, 1), 'SAME'))
         ivy.array([[[[ 2,  3],
                  [ 4,  5],
@@ -118,7 +118,7 @@ class ArrayWithLayersExperimental(abc.ABC):
                  [10, 11],
                  [10, 11]]]])
 
-        >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
         >>> print(x.max_pool2d(3, 1, 'VALID'))
         ivy.array([[[[16, 17]],
 
@@ -305,7 +305,7 @@ class ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
         >>> print(x.max_pool2d((2, 2), (1, 1), 'SAME'))
         ivy.array([[[[ 2,  3],
         [ 4,  5],
@@ -314,7 +314,7 @@ class ArrayWithLayersExperimental(abc.ABC):
         [10, 11],
         [10, 11]]]])
 
-        >>> x = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
         >>> print(x.max_pool2d(3, 1, 'VALID'))
         ivy.array([[[[16, 17]],
         [[22, 23]]],

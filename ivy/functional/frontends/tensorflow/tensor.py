@@ -71,7 +71,7 @@ class EagerTensor:
                 )
 
     def numpy(self):
-        return ivy.to_numpy(self._ivy_array)
+        return array(self._ivy_array)
 
     def __add__(self, y, name="add"):
         return y.__radd__(self._ivy_array)
