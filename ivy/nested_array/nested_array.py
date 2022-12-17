@@ -17,36 +17,10 @@ class NestedArray(abc.ABC):
                 "Please use one of the factory methods instead"
             )
         self._data = data
-        self._shape = self._genearate_shape()
+        self._shape = self._generate_shape()
         self._dtype = dtype
         self._device = device
         self._pre_repr = "ivy."
-
-    def _genearate_shape(
-        self,
-    ):
-        final_shape = [len(self._data)]
-        shapes = list()
-        ndims = list()
-        for arr in self._data:
-            shapes.append(arr.shape)
-            ndims.append(arr.ndim)
-        if ndims.count(ndims[0]) != len(ndims):
-            raise RuntimeError(
-                "All arrays in a nested array must have the same number of dimensions."
-            )
-        for i in range(ndims[0]):
-            same_shape = True
-            current_shape = shapes[0][i]
-            for j in range(final_shape[0]):
-                if shapes[j][i] != current_shape:
-                    same_shape = False
-                    break
-            if same_shape:
-                final_shape.append(current_shape)
-            else:
-                final_shape.append(None)
-        return final_shape
 
     @classmethod
     def nested_array(cls, data, dtype=None, device=None):
@@ -84,6 +58,49 @@ class NestedArray(abc.ABC):
         for i in range(1, len(row_split)):
             row_lengths.append(row_split[i] - row_split[i - 1])
         return cls.from_row_lengths(values, row_lengths)
+
+    def _generate_shape(
+        self,
+    ):
+        final_shape = [len(self._data)]
+        shapes = list()
+        ndims = list()
+        for arr in self._data:
+            shapes.append(arr.shape)
+            ndims.append(arr.ndim)
+        if ndims.count(ndims[0]) != len(ndims):
+            raise RuntimeError(
+                "All arrays in a nested array must have the same number of dimensions."
+            )
+        for i in range(ndims[0]):
+            same_shape = True
+            current_shape = shapes[0][i]
+            for j in range(final_shape[0]):
+                if shapes[j][i] != current_shape:
+                    same_shape = False
+                    break
+            if same_shape:
+                final_shape.append(current_shape)
+            else:
+                final_shape.append(None)
+        return final_shape
+
+    def unbind(self):
+        return tuple(self._data)
+
+    def reshape(self, shape):
+        assert shape[0] == self._shape[0], "batch dimension is not changeable"
+        for i in range(0, shape[0]):
+            new_shape = list()
+            for j in range(1, len(shape)):
+                if shape[j] == -1:
+                    new_shape.append(self._data[i].shape[j - 1])
+                else:
+                    new_shape.append(shape[j])
+            self._data[i] = self._data[i].reshape(new_shape)
+            print(self._data[i].shape)
+        self._shape = self._generate_shape()
+        return self
 
     # Properties #
     # ---------- #
