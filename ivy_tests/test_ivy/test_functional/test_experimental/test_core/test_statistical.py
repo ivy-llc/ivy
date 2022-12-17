@@ -238,12 +238,14 @@ def test_quantile(
 
 # nanquantile
 
+
 @handle_test(
     fn_tree="functional.experimental.nanquantile",
     dtype_x_axis=statistical_dtype_values(function="quantile"),
     q=st.floats(min_value=0, max_value=1),
     keepdims=st.booleans(),
     interpolation=st.data(),
+    num_positional_args=helpers.num_positional_args(fn_name="quantile"),
 )
 def test_nanquantile(
     *,
