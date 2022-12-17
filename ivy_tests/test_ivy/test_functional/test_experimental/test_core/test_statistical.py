@@ -253,7 +253,7 @@ def test_nanquantile(
     dtype_x_axis,
     keepdims,
     #interpolation,
-    as_variable,
+    #as_variable,
     ground_truth_backend,
     num_positional_args,
     with_out,
@@ -268,7 +268,7 @@ def test_nanquantile(
     helpers.test_function(
         ground_truth_backend= ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
+        #as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
