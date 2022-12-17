@@ -251,3 +251,11 @@ def minimum(x1, x2):
 @to_ivy_arrays_and_back
 def heaviside(x1, x2):
     return ivy.heaviside(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def square(
+    x,
+    /,
+):
+    return ivy.square(x)
