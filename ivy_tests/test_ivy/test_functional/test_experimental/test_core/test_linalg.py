@@ -212,7 +212,7 @@ def test_kron(
         min_value=-100,
         max_value=100,
         allow_nan=False,
-        shared_dtype=True
+        shared_dtype=True,
     ),
 )
 def test_matrix_exp(
