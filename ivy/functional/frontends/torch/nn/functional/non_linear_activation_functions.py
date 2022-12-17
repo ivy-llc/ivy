@@ -404,3 +404,45 @@ def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
     )
 
     return ret
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def batch_norm(
+    input,
+    running_mean,
+    running_var,
+    weight=None,
+    bias=None,
+    training=False,
+    momentum=0.1,
+    eps=1e-5,
+):
+    if training:
+        dim = 0 if len(input.shape) == 2 else (0, 2, 3)
+        current_mean = ivy.mean(input, axis=dim)
+        current_var = ivy.var(input, axis=dim)
+    else:
+        current_mean = running_mean
+        current_var = running_var
+
+    for channel in range(input.shape[1]):
+        input[:, channel, ...] -= current_mean[channel]
+        input[:, channel, ...] /= ivy.sqrt(current_var[channel] + eps)
+        if weight is not None:
+            input[:, channel, ...] *= weight[channel]
+        if bias is not None:
+            input[:, channel, ...] += bias[channel]
+
+    # updating running mean & var is useless in functional API?
+    running_mean = (1.0 - momentum) * running_mean + momentum * current_mean
+    running_var = (1.0 - momentum) * running_var + momentum * current_var
+    return input
