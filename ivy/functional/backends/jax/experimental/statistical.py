@@ -71,8 +71,6 @@ def nanquantile(
     interpolation: str = 'linear',
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if isinstance(axis, list):
-        axis = tuple(axis)
     return jnp.nanquantile(
         a, q, axis=axis, overwrite_input=overwrite_input,
         keepdims=keepdims, interpolation=interpolation, out=out
