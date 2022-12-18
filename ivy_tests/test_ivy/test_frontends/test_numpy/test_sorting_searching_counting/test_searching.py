@@ -20,6 +20,18 @@ def _broadcastable_trio(draw):
     return cond, x1, x2, (dtype * 2)
 
 
+@st.composite
+def _broadcastable(draw):
+    dtype = draw(helpers.get_dtypes("valid", full=False))
+    shapes_st = draw(
+        hnp.mutually_broadcastable_shapes(num_shapes=2)
+    )
+    a_shape, cond_shape = shapes_st.input_shapes
+    a = draw(helpers.array_values(dtype=dtype[0], shape=a_shape))
+    cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
+    return a, cond
+
+
 # where
 @handle_frontend_test(
     fn_tree="numpy.where",
@@ -331,4 +343,33 @@ def test_numpy_nanargmin(
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
+    )
+
+    
+# extract
+@handle_frontend_test(
+    fn_tree="numpy.extract",
+    broadcastables=_broadcastable(),
+)
+def test_numpy_extract(
+    broadcastables,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    a, cond = broadcastables
+    helpers.test_frontend_function(
+        input_dtypes=["float", "bool"],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a,
+        cond=cond,
     )
