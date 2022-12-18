@@ -146,6 +146,40 @@ class ArrayWithManipulation(abc.ABC):
         wraps the function, and so the docstring for ivy.permute_dims also applies
         to this method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array.
+        axes
+            tuple containing a permutation of (0, 1, ..., N-1) where N is
+            the number of axes (dimensions) of x.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the axes permutation. The returned array
+            must have the same data type as x.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+        >>> y = x.permute_dims(axes=(1, 0))
+        >>> print(y)
+        ivy.array([[1, 4],
+                   [2, 5],
+                   [3, 6]])
+
+        >>> x = ivy.zeros((2, 3))
+        >>> y = x.permute_dims(axes=(1, 0))
+        >>> print(y)
+        ivy.array([[0., 0.],
+                   [0., 0.],
+                   [0., 0.]])
         """
         return ivy.permute_dims(self._data, axes, out=out)
 
@@ -264,6 +298,13 @@ class ArrayWithManipulation(abc.ABC):
         >>> y = x.roll(1)
         >>> print(y)
         ivy.array([2., 0., 1.])
+
+        >>> x = ivy.array([[0., 1., 2.],
+        ...                [3., 4., 5.]])
+        >>> y = x.roll(2, axis=-1)
+        >>> print(y)
+        ivy.array([[1., 2., 0.],
+                    [4., 5., 3.]])
         """
         return ivy.roll(self._data, shift=shift, axis=axis, out=out)
 
@@ -304,20 +345,41 @@ class ArrayWithManipulation(abc.ABC):
         wraps the function, and so the docstring for ivy.stack also applies
         to this method with minimal changes.
 
+        Parameters
+        ----------
+        arrays
+            input arrays to join. Each array must have the same shape.
+        axis
+            axis along which the arrays will be joined. More details can be found in
+            the ``ivy.stack`` documentation.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            output array made by joining the input arrays along the specified axis.
+
         Examples
         --------
-        >>> x = ivy.array([ivy.array([1,2]),ivy.native_array([3,4])])
-        >>> y = ivy.array([ivy.array([5,6]),ivy.array([7,8])])
-        >>> x.stack([y],axis=1)
-        ivy.array([[1, 3, 5, 7],
-            [2, 4, 6, 8]])
+        >>> x = ivy.array([1, 2])
+        >>> y = ivy.array([5, 6])
+        >>> print(x.stack(y, axis=1))
+        ivy.array([[1, 5],
+                [2, 6]])
+
         >>> x.stack([y],axis=0)
-        ivy.array([[1, 2],
-            [3, 4],
-            [5, 6],
-            [7, 8]])
+        ivy.array([[[1, 2]],
+                [[5, 6]]])
         """
-        return ivy.stack(self.concat(arrays), axis=axis, out=out)
+        if not isinstance(arrays, (tuple, list)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data,) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.stack(x, axis=axis, out=out)
 
     def clip(
         self: ivy.Array,

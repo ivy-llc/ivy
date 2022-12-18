@@ -13,34 +13,30 @@ class matrix:
     def _init_data(self, data, dtype):
         if isinstance(data, str):
             self._process_str_data(data, dtype)
-        elif isinstance(data, list) or ivy.is_array(data):
-            data = (
-                ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
-            )
-            ivy.assertions.check_equal(len(ivy.shape(data)), 2)
+        elif isinstance(data, (list, np.ndarray)) or ivy.is_array(data):
+            if ivy.is_array(data) and dtype is None:
+                dtype = data.dtype
+            data = ivy.array(data, dtype=dtype)
             self._data = data
         else:
-            raise ivy.exceptions.IvyException("data must be a 2D array, list, or str")
+            raise ivy.exceptions.IvyException("data must be an array, list, or str")
+        ivy.assertions.check_equal(
+            len(ivy.shape(self._data)), 2, message="data must be 2D"
+        )
         self._dtype = self._data.dtype
         self._shape = ivy.shape(self._data)
 
     def _process_str_data(self, data, dtype):
         is_float = "." in data
         data = data.split(";")
-        ivy.assertions.check_equal(
-            len(data), 2, message="only one semicolon should exist for rows splitting"
-        )
-        for i in range(2):
-            data[i] = data[i].split(",") if "," in data[i] else data[i].split()
-            data[i] = [
-                float(x.strip()) if is_float else int(x.strip()) for x in data[i]
-            ]
-        ivy.assertions.check_equal(
-            len(data[0]), len(data[1]), message="elements in each row is unequal"
-        )
-        self._data = (
-            ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
-        )
+        for i, row in enumerate(data):
+            row = row.strip().split(" ")
+            data[i] = row
+            for j, elem in enumerate(row):
+                data[i][j] = np.float64(elem) if is_float else np.int64(elem)
+        if dtype is None:
+            dtype = ivy.float64 if is_float else ivy.int64
+        self._data = ivy.array(data, dtype=dtype)
 
     # Properties #
     # ---------- #
@@ -56,6 +52,8 @@ class matrix:
     # flake8: noqa: E743, E741
     @property
     def I(self):
+        if ivy.is_int_dtype(self._data):
+            return ivy.inv(self._data.astype(ivy.float64))
         return ivy.inv(self._data)
 
     @property
@@ -64,7 +62,7 @@ class matrix:
 
     @property
     def data(self):
-        return hex(id(self._data))
+        return memoryview(ivy.to_numpy(self._data).tobytes())
 
     @property
     def dtype(self):
@@ -81,25 +79,6 @@ class matrix:
     @property
     def size(self):
         return self._shape[0] * self._shape[1]
-
-    # Getters #
-    # ------- #
-
-    @A.getter
-    def getA(self):
-        return self.A
-
-    @A1.getter
-    def getA1(self):
-        return self.A1
-
-    @I.getter
-    def getI(self):
-        return self.I
-
-    @T.getter
-    def getT(self):
-        return self.T
 
     # Setters #
     # ------- #

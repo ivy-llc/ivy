@@ -407,6 +407,11 @@ def floor_divide(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if ivy.exists(out):
+        if not ivy.is_float_dtype(out):
+            return ivy.inplace_update(
+                out, torch.floor(torch.div(x1, x2)).type(x1.dtype)
+            )
     return torch.floor(torch.div(x1, x2), out=out).type(x1.dtype)
 
 
@@ -593,7 +598,12 @@ def remainder(
         res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
-        return torch.round(torch.mul(diff, x2, out=out), out=out).to(x1.dtype)
+        if ivy.exists(out):
+            if out.dtype != x2.dtype:
+                return ivy.inplace_update(
+                    out, torch.round(torch.mul(diff, x2)).to(x1.dtype)
+                )
+        return torch.round(torch.mul(diff, x2), out=out).to(x1.dtype)
     return torch.remainder(x1, x2, out=out).to(x1.dtype)
 
 

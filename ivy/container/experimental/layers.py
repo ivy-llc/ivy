@@ -61,7 +61,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                           [[16., 17., 18., 19.]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "max_pool1d",
             x,
             kernel,
@@ -193,7 +193,7 @@ class ContainerWithLayersExperimental(ContainerBase):
             b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "max_pool2d",
             x,
             kernel,
@@ -254,7 +254,7 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool2d(2, 2), (1, 1), "SAME"))
+        >>> print(x.max_pool2d((2, 2), (1, 1), "SAME"))
         {
             a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
             b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
@@ -328,7 +328,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                              [46, 47]]]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "max_pool3d",
             x,
             kernel,
@@ -463,7 +463,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                           [[14., 15., 16., 17.]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "avg_pool1d",
             x,
             kernel,
@@ -595,7 +595,7 @@ class ContainerWithLayersExperimental(ContainerBase):
             b: (<class ivy.array.array.Array> shape=[2, 3, 2, 2])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "avg_pool2d",
             x,
             kernel,
@@ -656,8 +656,8 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> x = ivy.Container({'a': a, 'b': b})
         >>> print(x.avg_pool2d((2, 2), (1, 1), "SAME"))
         {
-            a: ivy.array([], shape=(2, 0, 2, 2)),
-            b: (<class ivy.array.array.Array> shape=[2, 3, 2, 2])
+            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
         return self.static_avg_pool2d(
@@ -728,7 +728,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                              [36., 37.]]]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "avg_pool3d",
             x,
             kernel,
@@ -790,10 +790,10 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> print(x.max_pool3d(2, 1, "VALID"))
         {
             a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[10., 11.],
-                             [12., 13.]]]],
-                       [[[[34., 35.],
-                             [36., 37.]]]]])
+            b: ivy.array([[[[[20, 21],
+                             [22, 23]]]],
+                       [[[[44, 45],
+                             [46, 47]]]]])
         }
         """
         return self.static_avg_pool3d(
@@ -875,7 +875,7 @@ class ContainerWithLayersExperimental(ContainerBase):
             b: ivy.array([242., -253., 286., -515., 467.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "dct",
             x,
             type=type,

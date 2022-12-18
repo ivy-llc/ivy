@@ -452,7 +452,7 @@ Ubuntu
 For windows users, the file path should be entered with "/" (forward-slashes), for other OS it would be the regular "\\" (back-slashes).
 
 GitHub Codespaces
------------------
+*******
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs.
 Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`.
@@ -464,7 +464,7 @@ How cool is that ?!
 **Important Note**
 
 There are several versions of GitHub.
-If you are using the free one you will not have access to GitHub Codespaces, to use Codespaces you have to have access to one of the paid versions which GitHub offers.
+If you are using the free one you will have *limited* access to GitHub Codespaces, you can read the exact quotas available `here <https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces#monthly-included-storage-and-core-hours-for-personal-accounts>`_.
 
 **Pre-requisites**
 

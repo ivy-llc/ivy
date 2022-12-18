@@ -46,6 +46,7 @@ def update_test_results():
     collection.update_one(
         {"_id": test_configs[workflow][1]},
         {"$set": {backend + "." + submodule: res}},
+        upsert=True,
     )
     return
 

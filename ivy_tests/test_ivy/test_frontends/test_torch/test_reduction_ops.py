@@ -339,6 +339,7 @@ def test_torch_mean(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-04,
         input=x[0],
         dim=axis,
         keepdim=keepdims,
@@ -423,7 +424,7 @@ def test_torch_std(
         max_axes_size=1,
         force_int_axis=True,
     ),
-    dtype=helpers.get_dtypes("numeric", none=True),
+    dtype=helpers.get_dtypes("numeric", none=True, full=False),
     keepdims=st.booleans(),
 )
 def test_torch_prod(
@@ -451,7 +452,7 @@ def test_torch_prod(
         on_device=on_device,
         input=x[0],
         dim=axis,
-        dtype=dtype,
+        dtype=dtype[0],
         keepdim=keepdims,
     )
 

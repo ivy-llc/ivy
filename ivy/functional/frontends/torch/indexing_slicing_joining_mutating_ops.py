@@ -74,10 +74,22 @@ def reshape(input, shape):
 
 
 @to_ivy_arrays_and_back
+def as_strided(input, size, stride, storage_offset=None):
+    ind = ivy.array([0], dtype=ivy.int64)
+    for i, (size_i, stride_i) in enumerate(zip(size, stride)):
+        r_size = [1] * len(stride)
+        r_size[i] = -1
+        ind = ind + ivy.reshape(ivy.arange(size_i), r_size) * stride_i
+    if storage_offset:
+        ind = ind + storage_offset
+    return ivy.gather(ivy.flatten(input), ind)
+
+
+@to_ivy_arrays_and_back
 def squeeze(input, dim):
-    if isinstance(dim, int):
+    if isinstance(dim, int) and input.ndim > 0:
         if input.shape[dim] > 1:
-            return input if ivy.is_ivy_array(input) else ivy.array(input)
+            return input
     return ivy.squeeze(input, dim)
 
 
@@ -133,6 +145,11 @@ def movedim(input, source, destination):
 @to_ivy_arrays_and_back
 def hstack(tensors, *, out=None):
     return ivy.hstack(tensors, out=out)
+
+
+@to_ivy_arrays_and_back
+def index_select(input, dim, index, *, out=None):
+    return ivy.gather(input, index, axis=dim, out=out)
 
 
 @to_ivy_arrays_and_back

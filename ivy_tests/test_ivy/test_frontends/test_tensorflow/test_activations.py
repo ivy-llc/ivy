@@ -476,7 +476,7 @@ def get_callable_functions(
         ]
     ),
     dtype_and_data=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
@@ -494,7 +494,7 @@ def test_tensorflow_deserialize(
         fn_name=fn_name,
         x=data[0],
         frontend=frontend,
-        fn_tree=fn_tree,
+        fn_str="deserialize",
         dtype_data=dtype_data[0],
         rtol_=1e-01,
         atol_=1e-01,

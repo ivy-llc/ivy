@@ -7,17 +7,16 @@ import jaxlib
 from jaxlib.xla_extension import Buffer
 from ivy.functional.backends.jax import JaxArray
 from typing import Optional, Callable
-from itertools import chain
 
 
 # local
 import ivy
 from ivy.functional.ivy.gradients import (
-    _arrays_to_float_variables,
-    _get_required_native_variables,
+    _get_required_float_variables,
+    _get_y_and_ret_idxs,
     _get_native_variables_and_indices,
-    _remove_zeros_and_nones,
-    _stop_grad_and_index,
+    _set_duplicates,
+    _process_func_ret_and_grads,
 )
 
 
@@ -38,29 +37,35 @@ def variable_data(x, /):
     return x
 
 
-def _set_duplicates(xs, duplicate_key_chains):
-    originals = [
-        [key_chains[0]] * (len(key_chains) - 1) for key_chains in duplicate_key_chains
-    ]
-    originals = ivy.multi_index_nest(xs, list(chain(*originals)))
-    duplicates = [list(key_chains[1:]) for key_chains in duplicate_key_chains]
-    nullifying_key_chains = [
-        keychains.split("/") for keychains in list(chain(*duplicates))
-    ]
-    ivy.set_nest_at_indices(xs, nullifying_key_chains, originals)
-    return xs
-
-
 def _forward_fn(
-    xs, x, func, duplicate_key_chains, xs_grad_idxs=None, ret_grad_idxs=None
+    xs, x, func, duplicate_index_chains, xs_grad_idxs=None, ret_grad_idxs=None
 ):
+    """Forward function for gradient calculation."""
+    # Setting x(relevant variables) into xs(all variables)
+    x = ivy.nested_map(x, ivy.to_ivy, include_derived=True)
+    x_arr_idxs = ivy.nested_argwhere(x, ivy.is_array)
+    x_arr_values = ivy.multi_index_nest(x, x_arr_idxs)
     if xs_grad_idxs is not None:
-        ivy.set_nest_at_indices(xs, xs_grad_idxs, x)
-    else:
+        xs_grad_arr_idxs = []
+        for grad_idx in xs_grad_idxs:
+            xs_grad_arr_idx = ivy.nested_argwhere(
+                ivy.index_nest(xs, grad_idx), ivy.is_array
+            )
+            for idx in xs_grad_arr_idx:
+                xs_grad_arr_idxs.append(grad_idx + idx)
+        ivy.set_nest_at_indices(xs, xs_grad_arr_idxs, x_arr_values)
+    elif ivy.is_array(xs):
         xs = x
-    if isinstance(xs, ivy.Container):
-        xs = _set_duplicates(xs, duplicate_key_chains)
+    else:
+        xs_arr_idxs = ivy.nested_argwhere(xs, lambda x: ivy.is_array(x))
+        ivy.set_nest_at_indices(xs, xs_arr_idxs, x_arr_values)
+
+    # Setting duplicates to ensure same references as in the original input
+    if not ivy.is_array(xs):
+        xs = _set_duplicates(xs, duplicate_index_chains)
     ret = func(xs)
+
+    # Getting the relevant outputs from the function return for gradient calculation
     _, ret_values = _get_native_variables_and_indices(ret, idxs=ret_grad_idxs)
     if isinstance(ret_values, list) and len(ret_values) == 1 and ret_grad_idxs is None:
         ret_values = ret_values[0]
@@ -70,41 +75,40 @@ def _forward_fn(
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
-    xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
+    # Conversion of required arrays to float variables and duplicate index chains
+    (
+        xs,
+        xs_required,
+        required_duplicate_index_chains,
+        duplicate_index_chains,
+    ) = _get_required_float_variables(xs, xs_grad_idxs)
+
     func_ret = func(xs)
-    xs_required = _get_required_native_variables(ivy.copy_nest(xs), xs_grad_idxs)
-    xs = ivy.to_native(xs)
-    ret_idxs, ret_values = _get_native_variables_and_indices(
-        func_ret, idxs=ret_grad_idxs
-    )
-    if ret_values is None or (isinstance(ret_values, list) and len(ret_values) == 0):
-        return func_ret, {}
-    if isinstance(ret_values, list) and len(ret_values) == 1 and ret_grad_idxs is None:
-        y = ret_values[0]
-    else:
-        y = ret_values
-    duplicate_key_chains = ()
-    if isinstance(xs, ivy.Container):
-        duplicate_key_chains = xs.duplicate_array_keychains()
+
+    # Getting the relevant outputs from the function return for gradient calculation
+    y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs)
+
     if isinstance(y, ivy.NativeArray):
+        # Gradient calculation for a single output
         grad_fn = jax.grad(
             lambda x: _forward_fn(
                 xs,
                 x,
                 func,
-                duplicate_key_chains,
+                duplicate_index_chains,
                 xs_grad_idxs=xs_grad_idxs,
                 ret_grad_idxs=ret_grad_idxs,
             )
         )
-        grads = grad_fn(xs_required)
+        grads = _set_duplicates(grad_fn(xs_required), required_duplicate_index_chains)
     else:
+        # Gradient calculation for multiple outputs
         grad_fn = jax.jacrev(
             lambda x: _forward_fn(
                 xs,
                 x,
                 func,
-                duplicate_key_chains,
+                duplicate_index_chains,
                 xs_grad_idxs=xs_grad_idxs,
                 ret_grad_idxs=ret_grad_idxs,
             )
@@ -112,17 +116,12 @@ def execute_with_gradients(
         grads_ = grad_fn(xs_required)
         grads = grads_
         if isinstance(ret_idxs, list) and len(ret_idxs):
-            grads = {ret_idxs[i]: grad for i, grad in enumerate(grads_)}
-    if isinstance(xs, ivy.Container):
-        grads = _set_duplicates(grads, duplicate_key_chains)
-    grads = ivy.nested_map(
-        grads,
-        lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
-        include_derived=True,
-    )
-    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads)
-    grads = ivy.to_ivy(grads)
-    return func_ret, grads
+            grads = {
+                ret_idxs[i]: _set_duplicates(grad, required_duplicate_index_chains)
+                for i, grad in enumerate(grads_)
+            }
+
+    return _process_func_ret_and_grads(func_ret, grads, retain_grads)
 
 
 def value_and_grad(func):
@@ -131,7 +130,6 @@ def value_and_grad(func):
     def callback_fn(xs):
         xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
         value, grad = jax.value_and_grad(grad_fn)(xs)
-        grad = _remove_zeros_and_nones(grad, grad)
         return ivy.to_ivy(value), ivy.to_ivy(grad)
 
     return callback_fn

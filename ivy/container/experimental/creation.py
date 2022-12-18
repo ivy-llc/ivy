@@ -21,7 +21,7 @@ class ContainerWithCreationExperimental(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[Tuple[ivy.Array]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "triu_indices",
             n_rows,
             n_cols,
@@ -106,7 +106,7 @@ class ContainerWithCreationExperimental(ContainerBase):
             b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "hann_window",
             window_length,
             periodic,
@@ -205,7 +205,7 @@ class ContainerWithCreationExperimental(ContainerBase):
             a: ivy.array([0.0367, 0.7753, 0.7753]),
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "kaiser_window",
             window_length,
             periodic,
@@ -322,7 +322,7 @@ class ContainerWithCreationExperimental(ContainerBase):
             b: ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208]),
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "kaiser_bessel_derived_window",
             x,
             periodic,
@@ -443,7 +443,7 @@ class ContainerWithCreationExperimental(ContainerBase):
             b: ivy.array([-1.8000, -0.4180,  1.8180,  1.8180, -0.4180])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "hamming_window",
             x,
             key_chains=key_chains,
@@ -553,7 +553,7 @@ class ContainerWithCreationExperimental(ContainerBase):
                           1., 0.98877142, 0.85631905, 0.51644717, 0.14943586])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "vorbis_window",
             x,
             key_chains=key_chains,

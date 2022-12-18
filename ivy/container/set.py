@@ -17,7 +17,7 @@ class ContainerWithSet(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unique_all",
             x,
             key_chains=key_chains,
@@ -95,11 +95,11 @@ class ContainerWithSet(ContainerBase):
         >>> y = ivy.static_unique_counts(x)
         >>> print(y)
         {
-            a: (list[2],<classivy.array.Array>shape=[4]),
-            b: (list[2],<classivy.array.Array>shape=[4])
+            a:[values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])],
+            b:[values=ivy.array([1,2,3,4]),counts=ivy.array([3,1,2,1])]
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unique_counts",
             x,
             key_chains=key_chains,
@@ -161,9 +161,8 @@ class ContainerWithSet(ContainerBase):
         >>> y = x.unique_counts()
         >>> print(y)
         {
-            a: (list[2],<classivy.array.array.Array>shape=[4]),
-            b: (list[2],<classivy.array.array.Array>shape=[4])
-        }
+            a:[values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])],
+            b:[values=ivy.array([1,2,3,4]),counts=ivy.array([3,1,2,1])]}
         """
         return self.static_unique_counts(
             self,
@@ -184,7 +183,7 @@ class ContainerWithSet(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unique_values",
             x,
             key_chains=key_chains,
@@ -223,7 +222,7 @@ class ContainerWithSet(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unique_inverse",
             x,
             key_chains=key_chains,
@@ -283,10 +282,9 @@ class ContainerWithSet(ContainerBase):
         ...                   b=ivy.array([7,6,4,5,6,3,2]))
         >>> y = x.unique_inverse()
         >>> print(y)
-             {
-               a: (list[2], <class ivy.array.array.Array> shape=[5]),
-               b: (list[2], <class ivy.array.array.Array> shape=[6])
-             }
+        {
+            a:[values=ivy.array([3.,4.,5.,8.,9.]),inverse_indices=ivy.array([1,3,0,2,4,1])],
+            b:[values=ivy.array([2,3,4,5,6,7]),inverse_indices=ivy.array([5,4,2,3,4,1,0])]}
 
         """
         return self.static_unique_inverse(
