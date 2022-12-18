@@ -12,7 +12,9 @@ class Tensor:
         )
 
     def __repr__(self):
-        return "ivy.frontends.torch.Tensor(" + str(ivy.to_list(self._ivy_array)) + ")"
+        return str(self._ivy_array.__repr__()).replace(
+            "ivy.array", "ivy.frontends.torch.Tensor"
+        )
 
     # Properties #
     # ---------- #
@@ -31,7 +33,7 @@ class Tensor:
 
     @property
     def shape(self):
-        return self._ivy_array.shape
+        return "torch.Size(" + str(list(self._ivy_array.shape)) + ")"
 
     # Setters #
     # --------#
