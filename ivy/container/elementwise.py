@@ -1485,7 +1485,7 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_bitwise_invert(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],        
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -4514,14 +4514,14 @@ class ContainerWithElementwise(ContainerBase):
         Using :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
-                              b=ivy.array([-0., -4, float('+inf')]),\
+                              b=ivy.array([-0.0, -4., float('+inf')]),\
                               c=ivy.array([4., 4.4, 1.]))
         >>> y = ivy.Container.static_log2(x)
         >>> print(y)
         {
             a: ivy.array([-inf, nan]),
             b: ivy.array([-inf, nan, inf]),
-            c: ivy.array([2., 2.1375, 0.])
+            c: ivy.array([2., 2.138, 0.])
         }
         """
         return ContainerBase.cont_multi_map_in_static_method(
@@ -4578,14 +4578,14 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :code:`ivy.Container` instance method:
         >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
-                              b=ivy.array([-0., -3.9, float('+inf')]), \
-                              c=ivy.array([9.8, 1.1, 1.]))
+                              b=ivy.array([-0.0, -3.9, float('+inf')]), \
+                              c=ivy.array([3.3, 1.1, 1.]))
         >>> y = x.log2(x)
         >>> print(y)
         {
             a: ivy.array([-inf, nan]),
             b: ivy.array([-inf, nan, inf]),
-            c: ivy.array([3.293, 0.1375, 0.])
+            c: ivy.array([1.722, 0.138, 0.])
         }
         """
         return self.static_log2(

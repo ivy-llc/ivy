@@ -3159,9 +3159,8 @@ def log2(
     >>> x = ivy.array([4.0, 1, -0.0, -5.0])
     >>> y = ivy.log2(x)
     >>> print(y)
-
-
     ivy.array([2.0, 0, -inf, nan])
+
     >>> x = ivy.array([[float('nan'), 1, 7.0, float('+inf')],\
                        [+0, -1.0, -5, float('-inf')]])
     >>> y = ivy.log2(x)
