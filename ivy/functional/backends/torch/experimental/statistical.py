@@ -115,8 +115,8 @@ def nanquantile(
     interpolation: str = None,
     out: Optional[torch.tensor] = None,
 ) -> torch.Tensor:
-    return torch.nanquantile(
-        if axis is None:
+    #return torch.nanquantile(
+    if axis is None:
         return torch.quantile(a, q, keepdim=keepdims, interpolation=interpolation)
 
     if isinstance(axis, list) or isinstance(axis, tuple):
@@ -143,7 +143,7 @@ def nanquantile(
 
         return a
 
-    #return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
+    return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
      #   a,
      #   q=q,
      #   dim=axis,
