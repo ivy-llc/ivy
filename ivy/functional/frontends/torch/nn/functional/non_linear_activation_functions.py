@@ -434,6 +434,7 @@ def batch_norm(
         current_mean = running_mean
         current_var = running_var
 
+    input = ivy.swapaxes(input, 1, -1)
     input -= current_mean
     input /= ivy.sqrt(current_var + eps)
     if weight is not None:
