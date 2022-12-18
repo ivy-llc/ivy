@@ -433,7 +433,7 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
         else:
             res = [linspace_method(start, stp, num, device=device) for stp in stop]
     else:
-        return linspace_method(start, stop, num, dtype=torch.float64, device=device)
+        return linspace_method(start, stop, num, dtype=dtype, device=device)
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
         res = torch.transpose(res, axis, -1)
