@@ -376,10 +376,3 @@ def test_jax_numpy_eye(
         k=k,
         dtype=dtypes[0],
     )
-
-
-# triu
-@handle_numpy_dtype
-@to_ivy_arrays_and_back
-def triu(m, k=0, dtype=None):
-    return ivy.triu(m, k=k)
