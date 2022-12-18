@@ -258,7 +258,7 @@ def test_nanquantile(
     fn_name,
     ground_truth_backend,
 ):
-    input_dtype, x, axis, interpolation, q = dtype_x_axis, x, axis, interpolation, q
+    input_dtype, axis, interpolation, q = dtype_x_axis, axis, interpolation, q
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
