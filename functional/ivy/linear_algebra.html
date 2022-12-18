@@ -2274,13 +2274,13 @@ instances in place of any of the arguments.</p>
 vector norms. If an n-tuple, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axes (dimensions) along
 which to compute batched vector norms. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the vector norm must be
 computed over all array values (i.e., equivalent to computing the vector norm of
-a flattened array). Negative indices must be supported. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+a flattened array). Negative indices are also supported. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be included in the (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 result as singleton dimensions, and, accordingly, the result must be compatible
 with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the
 axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must not be included in the result.
 Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>ord</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[inf, -inf]]) – <p>order of the norm. The following mathematical norms must be supported: (default: <code class="docutils literal notranslate"><span class="pre">2</span></code>)</p>
+<li><p><strong>ord</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[inf, -inf]]) – <p>order of the norm. The following mathematical norms are supported: (default: <code class="docutils literal notranslate"><span class="pre">2</span></code>)</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 39%" />
@@ -2306,7 +2306,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </tr>
 </tbody>
 </table>
-<p>The following non-mathematical “norms” must be supported:</p>
+<p>The following non-mathematical “norms” are also supported:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 36%" />
@@ -2320,12 +2320,6 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 <tbody>
 <tr class="row-even"><td><p>0</p></td>
 <td><p>sum(a != 0)</p></td>
-</tr>
-<tr class="row-odd"><td><p>-1</p></td>
-<td><p>1./sum(1./abs(a))</p></td>
-</tr>
-<tr class="row-even"><td><p>-2</p></td>
-<td><p>1./sqrt(sum(1./abs(a)**2))</p></td>
 </tr>
 <tr class="row-odd"><td><p>-inf</p></td>
 <td><p>min(abs(a))</p></td>
