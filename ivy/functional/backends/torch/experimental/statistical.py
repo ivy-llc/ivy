@@ -113,7 +113,7 @@ def nanquantile(
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
     interpolation: str = None,
-    out: Optional[torch.tensor] = None,
+    out: Optional[Union[torch.tensor]] = None,
 ) -> torch.Tensor:
     return torch.nanquantile(
         a,
