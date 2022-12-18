@@ -121,5 +121,6 @@ def nanquantile(
         dim=axis,
         keepdim=keepdims,
         interpolation=interpolation,
+        out=out,
         )
         
