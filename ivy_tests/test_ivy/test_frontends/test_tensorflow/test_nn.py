@@ -33,6 +33,20 @@ def _x_and_filters(
         stride = dilations
     else:
         stride = draw(helpers.ints(min_value=stride_min, max_value=stride_max))
+
+    # Infer type from data_format if it is passed as None
+    if type is None:
+        type_data_format_mapping = {
+            "1d": ["NWC", "NHC"],
+            "2d": ["NHWC", "NWHC"],
+            "3d": ["NDHWC", "NDWHC", "NHDWC", "NHWDC", "NWDHC", "NWHDC"],
+        }
+        type = [
+            typ
+            for typ in type_data_format_mapping
+            if data_format in type_data_format_mapping[typ]
+        ][0]
+
     if type == "1d":
         if not transpose:
             filter_shape = draw(
@@ -1003,4 +1017,57 @@ def test_tensorflow_bias_add(
         value=value[0],
         bias=bias,
         data_format=data_format,
+    )
+
+
+# convolution
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.convolution",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(
+            [
+                "NWC",
+                "NHC",
+                "NHWC",
+                "NWHC",
+                "NDHWC",
+                "NDWHC",
+                "NHDWC",
+                "NHWDC",
+                "NWDHC",
+                "NWHDC",
+            ]
+        ),
+        padding=st.sampled_from(["SAME", "VALID"]),
+        atrous=st.sampled_from([True, False]),
+        type=None,
+    ),
+)
+def test_tensorflow_convolution(
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        filters=filters[0],
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
     )
