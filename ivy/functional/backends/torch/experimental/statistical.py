@@ -110,11 +110,11 @@ def nanquantile(
     q: Union[torch.tensor, float],
     /,
     *,
-    axis: Optional[Union[Sequence[int], int]] = None,
+    axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
     interpolation: str = None,
-    out: Optional[Union[torch.tensor]] = None,
-) -> torch.Tensor:
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
     return torch.nanquantile(
         a,
         q=q,
