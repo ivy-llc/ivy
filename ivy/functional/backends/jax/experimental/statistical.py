@@ -65,14 +65,18 @@ def nanquantile(
     q: Union[float, JaxArray],
     /,
     *,
-    axis: Optional[Union[Tuple[int], int]] = None,
-    overwrite_input: Optional[bool] = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    #overwrite_input: Optional[bool] = False,
     keepdims: Optional[bool] = False,
     interpolation: str = 'linear',
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    
+    if isinstance(axis, list):
+        axis = tuple(axis)
+        
     return jnp.nanquantile(
-        a, q, axis=axis, overwrite_input=overwrite_input,
+        a, q, axis=axis,
         keepdims=keepdims, interpolation=interpolation, out=out
     )
     
