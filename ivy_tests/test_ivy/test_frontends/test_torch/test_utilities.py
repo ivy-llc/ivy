@@ -32,7 +32,6 @@ def test_torch_result_type(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        tensor1=tensor1,
-        tensor2=tensor2,
+        tensor1=x[0],
+        tensor2=x[1],
     )
