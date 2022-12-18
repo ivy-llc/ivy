@@ -62,10 +62,10 @@ def quantile(
 
 def nanquantile(
     a: JaxArray,
-    q: Union[int, float],
+    q: Union[float, JaxArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     overwrite_input: Optional[bool] = False,
     keepdims: Optional[bool] = False,
     interpolation: str = 'linear',
