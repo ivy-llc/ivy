@@ -91,6 +91,15 @@ def kron(
 kron.support_native_out = False
 
 
+def matrix_exp(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.exp(x)
+
+
 def eig(x: np.ndarray, /) -> Tuple[np.ndarray, ...]:
     if ivy.dtype(x) == ivy.float16:
         x = x.astype(np.float32)

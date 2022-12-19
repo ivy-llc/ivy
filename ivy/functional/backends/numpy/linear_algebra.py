@@ -396,17 +396,21 @@ def vector_norm(
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if axis is None:
         np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
-
     else:
-        np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)
-
-    if np_normalized_vector.shape == tuple():
-        ret = np.expand_dims(np_normalized_vector, 0)
-    else:
-        ret = np_normalized_vector
-    return ret
+        if isinstance(ord, int) and ord != 0:
+            np_normalized_vector = np.sum(
+                np.abs(x) ** ord, axis=axis, keepdims=keepdims
+            ) ** (1.0 / ord)
+        else:
+            np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)
+    if np_normalized_vector.shape == ():
+        np_normalized_vector = np.expand_dims(np_normalized_vector, 0)
+    np_normalized_vector = np_normalized_vector.astype(x.dtype)
+    return np_normalized_vector
 
 
 # Extra #

@@ -217,6 +217,20 @@ def isneginf(
 isneginf.support_native_out = True
 
 
+def angle(
+    z: np.ndarray,
+    /,
+    *,
+    deg: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    return np.angle(z, deg=deg)
+
+
+angle.support_native_out = False
+
+
 def nan_to_num(
     x: np.ndarray,
     /,
@@ -283,7 +297,7 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> bool:
-    return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return np.array(np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan))
 
 
 isclose.support_native_out = False
