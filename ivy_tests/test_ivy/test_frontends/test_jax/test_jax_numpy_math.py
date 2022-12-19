@@ -1105,7 +1105,6 @@ def dtypes_values_casting_dtype(
     return dtypes, values, casting, dtype
 
 
-
 # matmul
 @handle_frontend_test(
     fn_tree="jax.numpy.matmul",
