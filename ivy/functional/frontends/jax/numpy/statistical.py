@@ -152,6 +152,10 @@ amax = max
 @to_ivy_arrays_and_back
 def average(a, axis, weights = None,returned = False, keepdims = False, dtype=None):
     assert ivy.is_array(a)
+
+    if dtype is None:
+        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
+    
     if weights is None: 
         ret = ivy.mean(a, axis=axis, keepdims=keepdims)
         if axis is None:
@@ -195,10 +199,12 @@ def average(a, axis, weights = None,returned = False, keepdims = False, dtype=No
     
     weighted_sum = ivy.sum(weights,axis=axis)
     ret = ivy.sum(a * weights, axis=axis, keepdims=keepdims) / weighted_sum
+    ret = ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
     if returned:
       if ret.shape != weights_sum.shape:
         weights_sum = ivy.broadcast_to(weights_sum, shape=ret.shape)
+        weights_sum = ivy.astype(weights_sum, ivy.as_ivy_dtype(dtype), copy=False)
       return ret, weights_sum
 
     return ret
