@@ -61,6 +61,26 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
         """
         return ivy.kron(self._data, b, out=out)
 
+    def matrix_exp(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.kron.
+        This method simply wraps the function, and so the docstring for
+        ivy.matrix_exp also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[[1., 0.],
+                            [0., 1.]],
+                            [[2., 0.],
+                            [0., 2.]]])
+        >>> ivy.matrix_exp(x)
+        ivy.array([[[2.7183, 1.0000],
+                    [1.0000, 2.7183]],
+                    [[7.3891, 1.0000],
+                    [1.0000, 7.3891]]])
+        """
+        return ivy.matrix_exp(self._data, out=out)
+
     def eig(
         self: ivy.Array,
         /,
@@ -72,7 +92,7 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Examples
         --------
-         >>> x = ivy.array([[1,2], [3,4]])
+        >>> x = ivy.array([[1,2], [3,4]])
         >>> x.eig()
         (
         ivy.array([-0.37228132+0.j,  5.37228132+0.j]),

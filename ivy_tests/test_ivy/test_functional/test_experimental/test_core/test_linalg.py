@@ -140,12 +140,7 @@ def _generate_diag_args(draw):
 )
 def test_diagflat(
     *,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     args_packet,
@@ -160,12 +155,7 @@ def test_diagflat(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=x_dtype + ["int64"] + padding_value_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
@@ -193,6 +183,40 @@ def test_diagflat(
 )
 def test_kron(
     dtype_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x = dtype_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        a=x[0],
+        b=x[1],
+    )
+
+
+# matrix_exp
+@handle_test(
+    fn_tree="functional.experimental.matrix_exp",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=(ivy.double, ivy.complex64, ivy.complex128),
+        min_num_dims=2,
+        max_num_dims=10,
+        min_dim_size=2,
+        max_dim_size=50,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+        shared_dtype=True,
+    ),
+)
+def test_matrix_exp(
+    dtype_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -215,8 +239,7 @@ def test_kron(
         instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,
-        a=x[0],
-        b=x[1],
+        x=x[0],
     )
 
 
@@ -235,11 +258,7 @@ def test_kron(
 )
 def test_eig(
     dtype_x,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     ground_truth_backend,
@@ -248,12 +267,7 @@ def test_eig(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         test_values=False,
