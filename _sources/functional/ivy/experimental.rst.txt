@@ -43,6 +43,7 @@ Experimental
    experimental/kaiser_window.rst
    experimental/kaiser_bessel_derived_window.rst
    experimental/hamming_window.rst
+   experimental/tril_indices.rst
    experimental/is_native_dtype.rst
    experimental/flatten.rst
    experimental/moveaxis.rst

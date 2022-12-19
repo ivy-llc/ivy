@@ -2345,6 +2345,107 @@
                 <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
             <span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="tril_indices"><a class="viewcode-back" href="../../../../functional/ivy/experimental/tril_indices/tril_indices_functional.html#ivy.functional.ivy.experimental.tril_indices">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<span class="nd">@infer_device</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">tril_indices</span><span class="p">(</span>
+    <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the indices of the lower triangular part of a row by col matrix in a</span>
+<span class="sd">    2-by-N shape (tuple of two N dimensional arrays), where the first row contains</span>
+<span class="sd">    row coordinates of all indices and the second row contains column coordinates.</span>
+<span class="sd">    Indices are ordered based on rows and then columns.  The lower triangular part</span>
+<span class="sd">    of the matrix is defined as the elements on and below the diagonal.  The argument</span>
+<span class="sd">    k controls which diagonal to consider. If k = 0, all elements on and below the main</span>
+<span class="sd">    diagonal are retained. A positive value excludes just as many diagonals below the</span>
+<span class="sd">    main diagonal, and similarly a negative value includes just as many diagonals</span>
+<span class="sd">    above the main diagonal. The main diagonal are the set of indices</span>
+<span class="sd">    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Primary purpose of this function is to slice an array of shape (n,m). See</span>
+<span class="sd">    https://numpy.org/doc/stable/reference/generated/numpy.tril_indices.html</span>
+<span class="sd">    for examples</span>
+
+<span class="sd">    Tensorflow does not support slicing 2-D tensor with tuple of tensor of indices</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_rows</span>
+<span class="sd">       number of rows in the 2-d matrix.</span>
+<span class="sd">    n_cols</span>
+<span class="sd">       number of columns in the 2-d matrix. If None n_cols will be the same as n_rows</span>
+<span class="sd">    k</span>
+<span class="sd">       number of shifts from the main diagonal. k = 0 includes main diagonal,</span>
+<span class="sd">       k &gt; 0 moves downward and k &lt; 0 moves upward</span>
+<span class="sd">    device</span>
+<span class="sd">       device on which to place the created array. Default: ``None``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an 2xN shape, tuple of two N dimensional, where first subarray (i.e. ret[0])</span>
+<span class="sd">        contains row coordinates of all indices and the second subarray (i.e ret[1])</span>
+<span class="sd">        contains columns indices.</span>
+
+<span class="sd">    Function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(4,4,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 1, 1, 2, 2, 2, 3, 3, 3, 3]),</span>
+<span class="sd">    ivy.array([0, 0, 1, 0, 1, 2, 0, 1, 2, 3]))</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(4,4,1)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]),</span>
+<span class="sd">    ivy.array([0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(4,4,-2)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([2, 3, 3]), ivy.array([0, 0, 1]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(4,2,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 1, 1, 2, 2, 3, 3]),</span>
+<span class="sd">    ivy.array([0, 0, 1, 0, 1, 0, 1]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(2,4,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 1, 1]), ivy.array([0, 0, 1]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(4,-4,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([]), ivy.array([]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(4,4,100)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]),</span>
+<span class="sd">    ivy.array([0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(2,4,-100)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([]), ivy.array([]))</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">tril_indices</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
+
 <span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
