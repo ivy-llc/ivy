@@ -179,6 +179,12 @@ def multiply(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def matmul(a, b, *, precision=None):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.matmul(a, b)
+
+
+@to_ivy_arrays_and_back
 def log10(x):
     return ivy.log10(x)
 
