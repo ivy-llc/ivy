@@ -405,6 +405,9 @@ class Tensor:
     def index_select(self, dim, index):
         return torch_frontend.index_select(self._ivy_array, dim, index)
 
+    def std(self, dim, unbiased, keepdim=False):
+        return torch_frontend.std(self._ivy_array, dim, unbiased, keepdim=keepdim)
+
     # Special Methods #
     # -------------------#
 
