@@ -467,7 +467,15 @@ def test_torch_eig(
     on_device,
 ):
     input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
+    # make symmetric positive definite beforehand
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    # need to cast float32 case to float64 because ivy.eig returns only
+    # complex128 while torch.linalg.eig return complex64 for float32 and
+    # complex128 for float64
+    if x.dtype == ivy.float32:
+        x = x.astype("float64")
+        input_dtype = [ivy.float64]
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         native_array_flags=native_array,
         as_variable_flags=as_variable,
