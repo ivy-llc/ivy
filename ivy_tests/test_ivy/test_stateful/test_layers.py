@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy
@@ -54,6 +54,7 @@ def _input_channels_and_dtype_and_values(draw):
             min_value=0,
             max_value=1,
             small_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
     return input_channels, dtype, vals
@@ -376,8 +377,8 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float", full=True),
             shape=x_shape,
-            large_abs_safety_factor=20,
-            small_abs_safety_factor=20,
+            min_value=0,
+            max_value=1,
         ).filter(lambda x: x[0] != ["float16"])
     )
     if transpose:
@@ -513,6 +514,13 @@ def test_conv1d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
+    assume(
+        not (
+            ivy.current_backend_str() == "tensorflow"
+            and on_device == "cpu"
+            and dilations > 1
+        )
+    )
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
@@ -540,6 +548,8 @@ def test_conv1d_transpose_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        rtol_=1e-02,
+        atol_=1e-02,
     )
 
 
@@ -605,6 +615,8 @@ def test_conv2d_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        rtol_=1e-02,
+        atol_=1e-02,
     )
 
 
@@ -652,6 +664,13 @@ def test_conv2d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
+    assume(
+        not (
+            ivy.current_backend_str() == "tensorflow"
+            and on_device == "cpu"
+            and dilations > 1
+        )
+    )
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
@@ -679,6 +698,8 @@ def test_conv2d_transpose_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        rtol_=1e-02,
+        atol_=1e-02,
     )
 
 
@@ -722,6 +743,11 @@ def test_depthwise_conv2d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
+    assume(
+        not (
+            ivy.current_backend_str() == "tensorflow" and dilations > 1 and strides > 1
+        )
+    )
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
@@ -747,6 +773,8 @@ def test_depthwise_conv2d_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        rtol_=1e-02,
+        atol_=1e-02,
     )
 
 
@@ -813,6 +841,8 @@ def test_conv3d_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        rtol_=1e-02,
+        atol_=1e-02,
     )
 
 
@@ -860,6 +890,13 @@ def test_conv3d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
+    assume(
+        not (
+            ivy.current_backend_str() == "tensorflow"
+            and on_device == "cpu"
+            and dilations > 1
+        )
+    )
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
@@ -887,6 +924,8 @@ def test_conv3d_transpose_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        rtol_=1e-02,
+        atol_=1e-02,
     )
 
 
@@ -962,6 +1001,8 @@ def test_lstm_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        rtol_=1e-01,
+        atol_=1e-01,
     )
 
 
