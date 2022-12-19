@@ -414,8 +414,8 @@ class Tensor:
     def clone(self, memory_format=None):
         return torch_frontend.tensor(ivy.array(self._ivy_array, copy=True))
 
-    def std(self):
-        return torch_frontend.std()
+    def std(self, dim, unbiased, keepdim=False):
+        return torch_frontend.std(self._ivy_array, dim, unbiased, keepdim=keepdim)
 
     # Special Methods #
     # -------------------#
