@@ -126,15 +126,7 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
 
 
 @to_ivy_arrays_and_back
-def cov(
-    x,
-    y=None,
-    bias=False,
-    dtype=None,
-    fweights=None,
-    aweights=None,
-    ddof=None
-):
+def cov(x, y=None, bias=False, dtype=None, fweights=None, aweights=None, ddof=None):
     # check if inputs are valid
     input_check = ivy.valid_dtype(dtype) and x.ndim in [0, 1]
 
@@ -158,7 +150,7 @@ def cov(
             # if w exists, use weighted average
             xw = x.multiply(w)
             w_sum = ivy.sum(w)
-            average = ivy.stable_divide(ivy.sum(xw, axis=1) , w_sum)
+            average = ivy.stable_divide(ivy.sum(xw, axis=1), w_sum)
         else:
             # else compute arithmetic average
             average = ivy.mean(x, axis=1)
@@ -184,3 +176,32 @@ def cov(
         c = ivy.stable_divide(ivy.matmul(x, x_t), norm).astype(dtype)
 
         return c
+
+
+@to_ivy_arrays_and_back
+def nanvar(a, axis=None, dtype=None, out=None, ddof=0.0, keepdims=False, *, where=True):
+    is_nan = ivy.isnan(a)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    if not ivy.any(is_nan):
+        if dtype:
+            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+
+        ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            where = ivy.array(where, dtype=ivy.bool)
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    else:
+        a = [i for i in a if ivy.isnan(i) is False]
+
+        if dtype:
+            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+        ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            where = ivy.array(where, dtype=ivy.bool)
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    return ret
