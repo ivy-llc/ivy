@@ -459,6 +459,18 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results.
             The returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 6, 9])
+        >>> y = x.bitwise_invert()
+        >>> print(y)
+        ivy.array([-2, -7, -10])
+
+        >>> x = ivy.array([False, True])
+        >>> y = x.bitwise_invert()
+        >>> print(y)
+        ivy.array([True, False])
         """
         return ivy.bitwise_invert(self._data, out=out)
 
@@ -1799,7 +1811,7 @@ class ArrayWithElementwise(abc.ABC):
         --------
         With :class:`ivy.Array` input:
 
-         >>> x = ivy.array([2, 3 ,5, 7])
+        >>> x = ivy.array([2, 3 ,5, 7])
         >>> y = x.negative()
         >>> print(y)
         ivy.array([-2, -3, -5, -7])

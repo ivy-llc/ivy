@@ -1058,3 +1058,43 @@ def test_torch_cross(
         other=other,
         dim=dim,
     )
+
+
+# gcd
+@handle_frontend_test(
+    fn_tree="torch.gcd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_torch_gcd(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=True,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        other=x[1],
+    )
