@@ -1,0 +1,3 @@
+|                     | numpy                                                                                                                                                                              |
+|:--------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_numpy_swapaxes | <a href="https://github.com/unifyai/ivy/actions/runs/3728734852/jobs/6323997666" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
