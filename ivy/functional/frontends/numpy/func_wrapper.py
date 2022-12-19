@@ -275,6 +275,8 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
            The return of the function, with ivy arrays as numpy arrays.
         """
         # handle order and call unmodified function
+        ivy.set_default_int_dtype("int64")
+        ivy.set_default_float_dtype("float64")
         if contains_order:
             if len(args) >= (order_pos + 1):
                 order = args[order_pos]
@@ -283,6 +285,8 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
             ret = fn(*args, order=order, **kwargs)
         else:
             ret = fn(*args, **kwargs)
+        ivy.unset_default_int_dtype()
+        ivy.unset_default_float_dtype()
         if not ivy.get_array_mode():
             return ret
         # convert all returned arrays to `ndarray` instances
