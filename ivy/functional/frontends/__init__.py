@@ -8,8 +8,8 @@ versions = {
 # flake8: noqa
 import importlib
 
-from . import jax
 from . import numpy
+from . import jax
 from . import tensorflow
 from . import torch
 
@@ -69,12 +69,11 @@ def set_frontend_to_specific_version(frontend):
     ----------
     frontend
         the frontend module for which we provide the version support
+
     Returns
+    -------
         The function doesn't return anything and updates the frontend __dict__
         to make the original function name to point to the version specific one
-
-    -------
-
     """
     f = str(frontend.__name__)
     f = f[f.index("frontends") + 10 :]

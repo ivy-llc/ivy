@@ -77,7 +77,13 @@ def std(input, dim, unbiased, keepdim=False, *, out=None):
     },
     "torch",
 )
-def prod(input, dim, keepdim=False, *, dtype=None):
+# TODO: the original torch.prod places * right before `dtype`
+def prod(input, dim, *, keepdim=False, dtype=None):
+    if not dtype:
+        if "int" in input.dtype:
+            dtype = ivy.int64
+        elif "float" in input.dtype:
+            dtype = ivy.float32
     return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 
 

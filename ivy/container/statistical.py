@@ -80,7 +80,7 @@ class ContainerWithStatistical(ContainerBase):
         }
         """
         return self.cont_handle_inplace(
-            self.map(
+            self.cont_map(
                 lambda x_, _: ivy.min(x_, axis=axis, keepdims=keepdims)
                 if ivy.is_array(x_)
                 else x_,
@@ -159,7 +159,7 @@ class ContainerWithStatistical(ContainerBase):
         }
         """
         return self.cont_handle_inplace(
-            self.map(
+            self.cont_map(
                 lambda x_, _: ivy.max(x_, axis=axis, keepdims=keepdims)
                 if ivy.is_array(x_)
                 else x_,
@@ -292,7 +292,7 @@ class ContainerWithStatistical(ContainerBase):
 
         """
         return self.cont_handle_inplace(
-            self.map(
+            self.cont_map(
                 lambda x_, _: ivy.mean(x_, axis=axis, keepdims=keepdims)
                 if ivy.is_array(x_)
                 else x_,
@@ -409,7 +409,7 @@ class ContainerWithStatistical(ContainerBase):
 
         """
         return self.cont_handle_inplace(
-            self.map(
+            self.cont_map(
                 lambda x_, _: ivy.var(
                     x_, axis=axis, correction=correction, keepdims=keepdims
                 )
@@ -1478,7 +1478,7 @@ class ContainerWithStatistical(ContainerBase):
 
         """
         return self.cont_handle_inplace(
-            self.map(
+            self.cont_map(
                 lambda x_, _: ivy.einsum(equation, x_) if ivy.is_array(x_) else x_,
                 key_chains,
                 to_apply,

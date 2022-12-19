@@ -1646,7 +1646,7 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
         }
 
-        scatter into a container.
+        With scatter into a container.
 
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
         ...                         b=ivy.array([[2],[3],[4]]))

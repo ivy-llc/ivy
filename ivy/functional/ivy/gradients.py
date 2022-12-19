@@ -29,7 +29,7 @@ def _get_duplicate_index_chains(xs):
     """
     duplicate_index_chains = ()
     if isinstance(xs, ivy.Container):
-        duplicate_index_chains = xs.duplicate_array_keychains()
+        duplicate_index_chains = xs.cont_duplicate_array_keychains()
     elif isinstance(xs, (list, tuple, dict)):
         duplicate_index_chains = ivy.duplicate_array_index_chains(xs)
     return duplicate_index_chains
@@ -50,11 +50,13 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
         return x
 
     # Convert all required arrays to float variables
-    map_fn = lambda x: ivy.nested_map(x, fn=inner_fn, include_derived=True)
+    map_fn = lambda x: ivy.nested_map(
+        x, fn=inner_fn, include_derived=True, shallow=False
+    )
     if xs_grad_idxs is not None:
         ivy.map_nest_at_indices(xs, xs_grad_idxs, map_fn)
         return xs
-    return ivy.nested_map(xs, map_fn, include_derived=True)
+    return ivy.nested_map(xs, map_fn, include_derived=True, shallow=False)
 
 
 def _get_required_native_variables(xs, xs_grad_idxs):
@@ -84,7 +86,7 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     xs = (
         xs
         if ivy.is_array(xs)
-        else xs.prune_empty()
+        else xs.cont_prune_empty()
         if isinstance(xs, ivy.Container)
         else ivy.prune_empty(xs)
     )
@@ -227,7 +229,10 @@ _idxs_to_str = lambda idxs: [
 
 
 _to_ivy = lambda xs: ivy.nested_map(
-    xs, lambda x: ivy.to_ivy(x) if ivy.is_array(x) else x, include_derived=True
+    xs,
+    lambda x: ivy.to_ivy(x) if ivy.is_array(x) else x,
+    include_derived=True,
+    shallow=False,
 )
 
 
@@ -235,6 +240,7 @@ _non_finite_to_zero = lambda xs: ivy.nested_map(
     xs,
     lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
     include_derived=True,
+    shallow=False,
 )
 
 
@@ -244,7 +250,9 @@ _non_finite_to_zero = lambda xs: ivy.nested_map(
 
 def _variable(x):
     x = ivy.to_native(x, nested=True)
-    ret = ivy.nested_map(x, current_backend(x).variable, include_derived=True)
+    ret = ivy.nested_map(
+        x, current_backend(x).variable, include_derived=True, shallow=False
+    )
     return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
@@ -254,6 +262,7 @@ def _is_variable(x, exclusive=False) -> bool:
         x,
         lambda x: current_backend(x).is_variable(x, exclusive=exclusive),
         include_derived=True,
+        shallow=False,
     )
 
 
@@ -400,7 +409,7 @@ def unset_with_grads():
     >>> ivy.set_with_grads(True)
     >>> ivy.unset_with_grads()
     >>> print(ivy.with_grads(with_grads=None))
-    False
+    True
 
     >>> ivy.set_with_grads(True)
     >>> ivy.unset_with_grads()

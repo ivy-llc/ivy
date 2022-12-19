@@ -113,7 +113,8 @@ def asarray(
                 return obj
             if dtype is None and not isinstance(obj, tf.Tensor):
                 try:
-                    return tf.convert_to_tensor(obj)
+                    dtype = ivy.default_dtype(item=obj, as_native=True)
+                    return tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                     return tf.convert_to_tensor(

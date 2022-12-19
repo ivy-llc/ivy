@@ -583,6 +583,48 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.isneginf(self._data, out=out)
 
+    def angle(
+        self: ivy.Array,
+        /,
+        *,
+        deg: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.angle. This method simply
+        wraps the function, and so the docstring for ivy.angle also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        z
+            Array-like input.
+        deg
+            optional bool.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns an array of angles for each complex number in the input.
+            If def is False(default), angle is calculated in radian and if
+            def is True, then angle is calculated in degrees.
+
+        Examples
+        --------
+        >>> ivy.set_backend('tensorflow')
+        >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
+        >>> z
+        ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
+        >>> ivy.angle(z)
+        ivy.array([ 2.35619449,  2.35619449, -0.78539816])
+        >>> ivy.set_backend('numpy')
+        >>> ivy.angle(z,deg=True)
+        ivy.array([135., 135., -45.])
+        """
+        return ivy.angle(self._data, deg=deg, out=out)
+
     def nan_to_num(
         self: ivy.Array,
         /,
@@ -746,19 +788,19 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         >>> x2 = ivy.array([1.00001e10, 1e-8])
         >>> y = x1.allclose(x2)
         >>> print(y)
-        False
+        ivy.array(False)
 
         >>> x1 = ivy.array([1.0, ivy.nan])
         >>> x2 = ivy.array([1.0, ivy.nan])
         >>> y = x1.allclose(x2, equal_nan=True)
         >>> print(y)
-        True
+        ivy.array(True)
 
         >>> x1 = ivy.array([1e-10, 1e-10])
         >>> x2 = ivy.array([1.00001e-10, 1e-10])
         >>> y = x1.allclose(x2, rtol=0.005, atol=0.0)
         >>> print(y)
-
+        ivy.array(True)
         """
         return ivy.allclose(
             self._data, x2, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
