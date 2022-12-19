@@ -61,12 +61,7 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
         """
         return ivy.kron(self._data, b, out=out)
 
-    def matrix_exp(
-        self: ivy.Array,
-        /,
-        *,
-        out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def matrix_exp(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.kron.
         This method simply wraps the function, and so the docstring for
