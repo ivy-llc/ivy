@@ -10,6 +10,7 @@ from ivy.functional.ivy.gradients import _variable
 from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers import handle_method
 
@@ -290,7 +291,7 @@ def test_multi_head_attention_layer(
         with_to_kv_fn,
         with_to_out_fn,
     ) = dtype_mha
-    helpers.test_method(
+    ret_np_flat, ret_np_from_gt_flat = helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
@@ -322,7 +323,10 @@ def test_multi_head_attention_layer(
         method_with_v=method_with_v,
         rtol_=1e-2,
         atol_=1e-2,
+        test_values=False,
+        return_flat_np_arrays=True,
     )
+    assert_same_type_and_shape([ret_np_flat, ret_np_from_gt_flat])
 
 
 # Convolutions #
