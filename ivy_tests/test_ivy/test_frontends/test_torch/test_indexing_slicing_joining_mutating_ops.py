@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st, assume
 import math
+
 try:
     import exceptions
 except ImportError:
@@ -396,7 +397,7 @@ def test_torch_as_strided(
             storage_offset=offset,
         )
     except exceptions.RuntimeError as e:
-        if 'out of bounds for storage of size' in e.message:
+        if "out of bounds for storage of size" in e.message:
             assume(False)
 
 

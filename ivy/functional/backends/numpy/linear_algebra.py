@@ -402,13 +402,16 @@ def vector_norm(
         np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
     else:
         if isinstance(ord, int) and ord != 0:
-            np_normalized_vector = np.sum(np.abs(x) ** ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
+            np_normalized_vector = np.sum(
+                np.abs(x) ** ord, axis=axis, keepdims=keepdims
+            ) ** (1.0 / ord)
         else:
             np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)
     if np_normalized_vector.shape == ():
         np_normalized_vector = np.expand_dims(np_normalized_vector, 0)
     np_normalized_vector = np_normalized_vector.astype(x.dtype)
     return np_normalized_vector
+
 
 # Extra #
 # ----- #

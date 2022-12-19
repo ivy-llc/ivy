@@ -1485,7 +1485,7 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_bitwise_invert(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],        
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,

@@ -405,7 +405,7 @@ def i0(x, out=None):
 
 
 def rad2deg(input, *, out=None):
-    return ivy.rad2deg(input, out=out) 
+    return ivy.rad2deg(input, out=out)
 
 
 @to_ivy_arrays_and_back

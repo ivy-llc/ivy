@@ -219,7 +219,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
             to_apply=to_apply,
             out=out,
         )
-        
+
     @staticmethod
     def static_eig(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
