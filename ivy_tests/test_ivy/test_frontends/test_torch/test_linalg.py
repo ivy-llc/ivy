@@ -454,7 +454,7 @@ def test_torch_svd(
 # eig
 @handle_frontend_test(
     fn_tree="torch.linalg.eig",
-    dtype_and_input=_get_dtype_and_matrix(),
+    dtype_and_input=_get_dtype_and_square_matrix(),
 )
 def test_torch_eig(
     *,
