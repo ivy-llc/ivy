@@ -429,6 +429,7 @@ def vecdot(
 vecdot.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("integer",)}, backend_version)
 def vector_norm(
     x: torch.Tensor,
     /,
@@ -438,12 +439,7 @@ def vector_norm(
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
-    if py_normalized_vector.shape == ():
-        ret = torch.unsqueeze(py_normalized_vector, 0)
-    else:
-        ret = py_normalized_vector
-    return ret
+    return torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
 
 
 vector_norm.support_native_out = True
