@@ -4,6 +4,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_dtype
+from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
@@ -145,3 +146,58 @@ def max(a, axis=None, out=None, keepdims=False, where=None):
 
 
 amax = max
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def average(a, axis, weights = None,returned = False, keepdims = False):
+    assert ivy.is_array(a)
+    if weights is None: 
+        avg = ivy.mean(a, axis=axis, keepdims=keepdims)
+        if axis is None:
+            weights_sum = ivy.full(shape=(),fill_value=a.size,dtype=avg.dtype)
+        else:
+            if isinstance(axis, tuple):
+                # prod with axis has dtype Sequence[int]
+                fill_value = 1
+                for d in axis:
+                    fill_value *= a.shape[d]
+            else:
+                fill_value = a.shape[axis]
+            weights_sum = ivy.full_like(x=avg,fill_value=fill_value)
+    else:
+        a, weights = promote_types_of_jax_inputs(a, weights)
+
+        a_shape = ivy.shape(a)
+        a_ndim = len(a_shape)
+        weights_shape = ivy.shape(weights)
+        
+        # here canonicalize_axis in jax is skipped 
+        # and assume either no axis without negative value
+        # or the ivy functions below accept axis with negative value
+
+        # Make sure the dimensions work out
+        if a_shape != weights_shape:
+            if len(weights_shape) != 1:
+                raise ValueError("1D weights expected when shapes of a and "
+                                  "weights differ.")
+            if axis is None:
+                raise ValueError("Axis must be specified when shapes of a and "
+                                  "weights differ.")
+            elif isinstance(axis, tuple):
+                raise ValueError("Single axis expected when shapes of a and weights differ")
+            elif not weights.shape[0] == a.shape[axis]:
+                raise ValueError("Length of weights not "
+                                  "compatible with specified axis.")
+        
+        weights = ivy.broadcast_to(weights, shape=(a_ndim - 1) * (1,) + weights_shape)
+        weights = ivy.moveaxis(weights,source=-1,destination=axis)
+    
+    weighted_sum = ivy.sum(weights,axis=axis)
+    avg = ivy.sum(a * weights, axis=axis, keepdims=keepdims) / weighted_sum
+
+    if returned:
+      if avg.shape != weights_sum.shape:
+        weights_sum = ivy.broadcast_to(weights_sum, shape=avg.shape)
+      return avg, weights_sum
+    return avg
