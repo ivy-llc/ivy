@@ -110,6 +110,15 @@ def kron(
 kron.support_native_out = True
 
 
+def matrix_exp(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.exp(x)
+
+
 def eig(x: torch.Tensor, /) -> Tuple[torch.Tensor, ...]:
     if not torch.is_complex(x):
         ret = torch.linalg.eig(x.to(torch.complex128))

@@ -12,6 +12,7 @@ submodules = (
     "test_torch",
     "test_jax",
     "test_numpy",
+    "test_misc",
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -23,6 +24,7 @@ db_dict = {
     "test_jax": ["jax", 16],
     "test_tensorflow": ["tensorflow", 17],
     "test_numpy": ["numpy", 18],
+    "test_misc": ["misc", 19],
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",

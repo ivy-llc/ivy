@@ -1,6 +1,7 @@
 # global
 import numpy as np
 from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -21,12 +22,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 def test_unique_values(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -38,12 +34,7 @@ def test_unique_values(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -61,15 +52,12 @@ def test_unique_values(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    test_with_out=st.just(False),
 )
 def test_unique_all(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -81,12 +69,7 @@ def test_unique_all(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=False,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -104,15 +87,12 @@ def test_unique_all(
         min_dim_size=2,
         max_dim_size=5,
     ),
+    test_with_out=st.just(False),
 )
 def test_unique_counts(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -124,12 +104,7 @@ def test_unique_counts(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=False,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -147,15 +122,12 @@ def test_unique_counts(
         min_dim_size=2,
         max_dim_size=5,
     ),
+    test_with_out=st.just(False),
 )
 def test_unique_inverse(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -167,12 +139,7 @@ def test_unique_inverse(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=False,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
