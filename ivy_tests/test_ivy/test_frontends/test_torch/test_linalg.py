@@ -484,9 +484,27 @@ def test_torch_eig(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        test_values=False,
+        input=x,
     )
 
+    # the gradients of eig() are not always numerically stable. Furthermore,
+    # if the distance between any two eigenvalues is close to zero, the
+    # gradient will be numerically unstable. For that reason we set
+    # `test_values=False` and post process the return values of the test.
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    l, v = ret
+    front_l, front_v = frontend_ret
+
+    assert_all_close(
+        ret_np=v @ np.diag(l) @ np.linalg.inv(v),
+        ret_from_gt_np=front_v @ np.diag(front_l) @ np.linalg.inv(front_v),
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )
 
 # svdvals
 @handle_frontend_test(
