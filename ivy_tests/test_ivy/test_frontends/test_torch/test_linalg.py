@@ -506,6 +506,7 @@ def test_torch_eig(
         ground_truth_backend=frontend,
     )
 
+
 # svdvals
 @handle_frontend_test(
     fn_tree="torch.linalg.svdvals",
