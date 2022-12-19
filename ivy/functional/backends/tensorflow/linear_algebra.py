@@ -637,8 +637,14 @@ def vecdot(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("float16", "bfloat16", "integer",)},
-    backend_version
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+            "integer",
+        )
+    },
+    backend_version,
 )
 def vector_norm(
     x: Union[tf.Tensor, tf.Variable],
@@ -656,7 +662,9 @@ def vector_norm(
     elif ord == 0:
         tn_normalized_vector = tf.reduce_sum(tf.cast(x != 0, x.dtype), axis, keepdims)
     else:
-        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (1.0 / ord)
+        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
+            1.0 / ord
+        )
     return tn_normalized_vector
 
 
