@@ -815,6 +815,13 @@ def test_conv3d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
+    assume(
+        not (
+            ivy.current_backend_str() == "tensorflow"
+            and on_device == "cpu"
+            and dilations > 1
+        )
+    )
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
