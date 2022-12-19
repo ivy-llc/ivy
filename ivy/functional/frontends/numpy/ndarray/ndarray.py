@@ -23,7 +23,9 @@ class ndarray:
             self._f_contiguous = False
 
     def __repr__(self):
-        return "ivy.frontends.numpy.ndarray(" + str(ivy.to_list(self._ivy_array)) + ")"
+        return str(self._ivy_array.__repr__()).replace(
+            "ivy.array", "ivy.frontends.numpy.ndarray"
+        )
 
     # Properties #
     # ---------- #

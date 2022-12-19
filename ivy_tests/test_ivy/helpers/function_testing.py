@@ -833,6 +833,7 @@ def test_method(
     ret_grad_idxs=None,
     ground_truth_backend: str,
     device_: str = "cpu",
+    return_flat_np_arrays: bool = False,
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
     by comparing the result with numpy.
@@ -897,6 +898,9 @@ def test_method(
         Ground Truth Backend to compare the result-values.
     device_
         The device on which to create arrays.
+    return_flat_np_arrays
+        If test_values is False, this flag dictates whether the original returns are
+        returned, or whether the flattened numpy arrays are returned.
 
     Returns
     -------
@@ -1137,6 +1141,8 @@ def test_method(
 
     # assuming value test will be handled manually in the test function
     if not test_values:
+        if return_flat_np_arrays:
+            return ret_np_flat, ret_np_from_gt_flat
         return ret, ret_from_gt
     # value test
 
