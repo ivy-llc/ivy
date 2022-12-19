@@ -579,7 +579,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         axis: Optional[Union[Tuple[int], int]] = None,
         keepdims: bool = False,
         interpolation: str = 'linear',
-        key_chains: bool = Optional[Union[List[str], Dict[str, str]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
