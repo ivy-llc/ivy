@@ -1021,11 +1021,14 @@ def default_float_dtype(
             ):
                 ret = ivy.float64
             else:
-                def_dtype = default_dtype()
-                if ivy.is_float_dtype(def_dtype):
-                    ret = def_dtype
+                if not default_float_dtype_stack:
+                    def_dtype = default_dtype()
+                    if ivy.is_float_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "float32"
                 else:
-                    ret = ivy.float32
+                    ret = default_float_dtype_stack[-1]
         elif isinstance(input, Number):
             if _check_float64(input):
                 ret = ivy.float64
@@ -1216,11 +1219,14 @@ def default_int_dtype(
             ):
                 ret = ivy.int64
             else:
-                def_dtype = ivy.default_dtype()
-                if ivy.is_int_dtype(def_dtype):
-                    ret = def_dtype
+                if not default_int_dtype_stack:
+                    def_dtype = ivy.default_dtype()
+                    if ivy.is_int_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "int32"
                 else:
-                    ret = ivy.int32
+                    ret = default_int_dtype_stack[-1]
         elif isinstance(input, Number):
             if (
                 input > 9223372036854775807
@@ -1315,11 +1321,14 @@ def default_uint_dtype(
             ):
                 ret = ivy.uint64
             else:
-                def_dtype = ivy.default_dtype()
-                if ivy.is_uint_dtype(def_dtype):
-                    ret = def_dtype
+                if default_uint_dtype_stack:
+                    ret = default_uint_dtype_stack[-1]
                 else:
-                    ret = ivy.uint32
+                    def_dtype = ivy.default_dtype()
+                    if ivy.is_uint_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "uint32"
         elif isinstance(input, Number):
             if input > 4294967295 and input != ivy.inf and ivy.backend != "torch":
                 ret = ivy.uint64
