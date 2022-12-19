@@ -1,0 +1,3 @@
+|                   | torch                                                                                                                                                                                  |
+|:------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_numpy_repeat | <a href="https://github.com/unifyai/ivy/actions/runs/3734185233/jobs/6335930551" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
