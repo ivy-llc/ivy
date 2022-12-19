@@ -182,9 +182,11 @@ def eig(
 
     Returns
     -------
-    ret
-        A tuple with two elements: first is the set of eigenvalues,
-        second is the set of eigenvectors
+    w
+        Not necessarily ordered array(..., N) of eigenvalues in complex type.
+    v
+        An array(..., N, N) of normalized (unit “length”) eigenvectors,
+        the column v[:,i] is the eigenvector corresponding to the eigenvalue w[i].
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_.
@@ -197,14 +199,11 @@ def eig(
     With :class:`ivy.Array` inputs:
     >>> x = ivy.array([[1,2], [3,4]])
     >>> ivy.eig(x)
-    (
     ivy.array([-0.37228132+0.j,  5.37228132+0.j]),
     ivy.array([[-0.82456484+0.j, -0.41597356+0.j],
                [ 0.56576746+0.j, -0.90937671+0.j]])
-    )
     >>> x = ivy.array([[[1,2], [3,4]], [[5,6], [5,6]]])
     >>> ivy.eig(x)
-    (
     ivy.array(
         [
             [-3.72281323e-01+0.j,  5.37228132e+00+0.j],
@@ -219,6 +218,5 @@ def eig(
                 [-0.76822128+0.j, -0.70710678+0.j], [0.6401844 +0.j, -0.70710678+0.j]
             ]
         ])
-    )
     """
     return current_backend(x).eig(x)
