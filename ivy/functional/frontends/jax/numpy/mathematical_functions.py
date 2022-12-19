@@ -164,6 +164,11 @@ def sqrt(x, /):
 
 
 @to_ivy_arrays_and_back
+def square(x, /):
+    return ivy.square(x)
+
+
+@to_ivy_arrays_and_back
 def arctanh(x):
     return ivy.atanh(x)
 
