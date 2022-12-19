@@ -395,7 +395,9 @@ def vector_norm(
         jnp_normalized_vector = jnp.linalg.norm(jnp.ravel(x), ord, axis, keepdims)
     else:
         if isinstance(ord, int) and ord != 0:
-            jnp_normalized_vector = jnp.sum(jnp.abs(x) ** ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
+            jnp_normalized_vector = jnp.sum(
+                jnp.abs(x) ** ord, axis=axis, keepdims=keepdims
+            ) ** (1.0 / ord)
         else:
             jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
     return jnp_normalized_vector
