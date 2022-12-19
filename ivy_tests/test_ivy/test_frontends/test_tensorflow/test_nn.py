@@ -958,3 +958,49 @@ def test_tensorflow_moments(
         axes=axis,
         keepdims=keepdims,
     )
+
+
+@st.composite
+def _generate_bias_data(draw):
+    data_format = draw(st.sampled_from(["NC...", "N...C", None]))
+    channel_dim = 1 if data_format == "NC..." else -1
+    dtype, value, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=3,
+            ret_shape=True,
+        )
+    )
+    channel_size = shape[channel_dim]
+    bias = draw(helpers.array_values(dtype=dtype[0], shape=(channel_size,)))
+    return data_format, dtype, value, bias
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.bias_add",
+    data=_generate_bias_data(),
+)
+def test_tensorflow_bias_add(
+    *,
+    data,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    data_format, dtype, value, bias = data
+    helpers.test_frontend_function(
+        input_dtypes=dtype * 2,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=value[0],
+        bias=bias,
+        data_format=data_format,
+    )

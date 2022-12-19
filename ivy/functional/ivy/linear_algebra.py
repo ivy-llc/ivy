@@ -687,8 +687,6 @@ def eigvalsh(
     >>> print(y)
     ivy.array([[-1.,  3.]])
 
-    Using out
-
     >>> x = ivy.array([[[3.0,2.0],[2.0,3.0]]])
     >>> y = ivy.zeros([1,2])
     >>> ivy.eigvalsh(x, out=y)
@@ -699,8 +697,6 @@ def eigvalsh(
     >>> ivy.eigvalsh(x, out=x)
     >>> print(x)
     ivy.array([[1., 5.]])
-
-    Using UPLO
 
     >>> x = ivy.array([[[2.0,3.0,6.0],[3.0,4.0,5.0],[6.0,5.0,9.0]],
     ... [[1.0,1.0,1.0],[1.0,2.0,2.0],[1.0,2.0,2.0]]])
@@ -2354,7 +2350,7 @@ def vector_norm(
         vector norms. If an n-tuple, ``axis`` specifies the axes (dimensions) along
         which to compute batched vector norms. If ``None``, the vector norm must be
         computed over all array values (i.e., equivalent to computing the vector norm of
-        a flattened array). Negative indices must be supported. Default: ``None``.
+        a flattened array). Negative indices are also supported. Default: ``None``.
     keepdims
         If ``True``, the axes (dimensions) specified by ``axis`` must be included in the
         result as singleton dimensions, and, accordingly, the result must be compatible
@@ -2362,7 +2358,7 @@ def vector_norm(
         axes (dimensions) specified by ``axis`` must not be included in the result.
         Default: ``False``.
     ord
-        order of the norm. The following mathematical norms must be supported:
+        order of the norm. The following mathematical norms are supported:
 
         +------------------+----------------------------+
         | ord              | description                |
@@ -2376,16 +2372,12 @@ def vector_norm(
         | (int,float >= 1) | p-norm                     |
         +------------------+----------------------------+
 
-        The following non-mathematical "norms" must be supported:
+        The following non-mathematical "norms" are also supported:
 
         +------------------+--------------------------------+
         | ord              | description                    |
         +==================+================================+
         | 0                | sum(a != 0)                    |
-        +------------------+--------------------------------+
-        | -1               | 1./sum(1./abs(a))              |
-        +------------------+--------------------------------+
-        | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   |
         +------------------+--------------------------------+
         | -inf             | min(abs(a))                    |
         +------------------+--------------------------------+

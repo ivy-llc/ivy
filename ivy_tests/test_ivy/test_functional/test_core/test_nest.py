@@ -76,12 +76,16 @@ def test_index_nest(nest, index):
 @pytest.mark.parametrize(
     "index", [("a", 0, 0), ("a", 1, 0), ("b", "c", 0), ("b", "c", 1, 0)]
 )
-@pytest.mark.parametrize("value", [1])
-def test_set_nest_at_index(nest, index, value):
+@pytest.mark.parametrize("value", [-1])
+@pytest.mark.parametrize("shallow", [True, False])
+def test_set_nest_at_index(nest, index, value, shallow):
     nest_copy = copy.deepcopy(nest)
-    ivy.set_nest_at_index(nest, index, value)
+    result = ivy.set_nest_at_index(nest, index, value, shallow=shallow)
     _snai(nest_copy, index, value)
-    assert nest == nest_copy
+
+    assert result == nest_copy
+    if shallow:
+        assert nest == nest_copy
 
 
 # map_nest_at_index
@@ -91,12 +95,16 @@ def test_set_nest_at_index(nest, index, value):
 @pytest.mark.parametrize(
     "index", [("a", 0, 0), ("a", 1, 0), ("b", "c", 0, 0, 0), ("b", "c", 1, 0, 0)]
 )
-@pytest.mark.parametrize("fn", [lambda x: x + 2, lambda x: x**2])
-def test_map_nest_at_index(nest, index, fn):
+@pytest.mark.parametrize("fn", [lambda x: x + 2])
+@pytest.mark.parametrize("shallow", [True, False])
+def test_map_nest_at_index(nest, index, fn, shallow):
     nest_copy = copy.deepcopy(nest)
-    ivy.map_nest_at_index(nest, index, fn)
+    result = ivy.map_nest_at_index(nest, index, fn, shallow=shallow)
     _mnai(nest_copy, index, fn)
-    assert nest == nest_copy
+
+    assert result == nest_copy
+    if shallow:
+        assert nest == nest_copy
 
 
 # multi_index_nest
@@ -125,16 +133,19 @@ def test_multi_index_nest(nest, multi_indices):
     "indices", [(("a", 0, 0), ("a", 1, 0)), (("b", "c", 0), ("b", "c", 1, 0))]
 )
 @pytest.mark.parametrize("values", [(1, 2)])
-def test_set_nest_at_indices(nest, indices, values):
+@pytest.mark.parametrize("shallow", [False, True])
+def test_set_nest_at_indices(nest, indices, values, shallow):
     nest_copy = copy.deepcopy(nest)
-    ivy.set_nest_at_indices(nest, indices, values)
+    result = ivy.set_nest_at_indices(nest, indices, values, shallow=shallow)
 
     def snais(n, idxs, vs):
         [_snai(n, index, value) for index, value in zip(idxs, vs)]
 
     snais(nest_copy, indices, values)
 
-    assert nest == nest_copy
+    assert result == nest_copy
+    if shallow:
+        assert nest == nest_copy
 
 
 # map_nest_at_indices
@@ -145,16 +156,19 @@ def test_set_nest_at_indices(nest, indices, values):
     "indices", [(("a", 0, 0), ("a", 1, 0)), (("b", "c", 0, 0, 0), ("b", "c", 1, 0, 0))]
 )
 @pytest.mark.parametrize("fn", [lambda x: x + 2, lambda x: x**2])
-def test_map_nest_at_indices(nest, indices, fn):
+@pytest.mark.parametrize("shallow", [True, False])
+def test_map_nest_at_indices(nest, indices, fn, shallow):
     nest_copy = copy.deepcopy(nest)
-    ivy.map_nest_at_indices(nest, indices, fn)
+    result = ivy.map_nest_at_indices(nest, indices, fn, shallow)
 
     def mnais(n, idxs, vs):
-        [_mnai(n, index, fn) for index in idxs]
+        [_mnai(n, index, vs) for index in idxs]
 
     mnais(nest_copy, indices, fn)
 
-    assert nest == nest_copy
+    assert result == nest_copy
+    if shallow:
+        assert nest == nest_copy
 
 
 # nested_argwhere
@@ -402,12 +416,17 @@ def test_insert_into_nest_at_indices(nest, indices, values):
 # nested_map
 @pytest.mark.parametrize("x", [{"a": [[0, 1], [2, 3]], "b": {"c": [[0], [1]]}}])
 @pytest.mark.parametrize("fn", [lambda x: x**2])
-def test_nested_map(x, fn):
+@pytest.mark.parametrize("shallow", [True, False])
+def test_nested_map(x, fn, shallow):
     x_copy = copy.deepcopy(x)
-    x = ivy.nested_map(x, fn)
+    result = ivy.nested_map(x, fn, shallow=shallow)
     map_nested_dicts(x_copy, fn)
 
-    assert x_copy == x
+    assert result == x_copy
+    if shallow:
+        assert x == x_copy
+    else:
+        assert x != x_copy
 
 
 # nested_map_w_extra_nest_types
