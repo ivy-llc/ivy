@@ -1,3 +1,3 @@
-|                    | jax                                                                                                                                                                                |
-|:-------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| test_stop_gradient | <a href="https://github.com/unifyai/ivy/actions/runs/3684559408/jobs/6234440296" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
+|                    | jax                                                                                                                                                                                    |
+|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_stop_gradient | <a href="https://github.com/unifyai/ivy/actions/runs/3733755649/jobs/6334975123" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
