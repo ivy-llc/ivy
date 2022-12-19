@@ -303,7 +303,7 @@ def map_nest_at_index(
     }
 
     """
-    nest_type = type(nest)
+    nest_type = type(nest) if isinstance(nest, tuple) else lambda x: x
     if _result is None:
         if shallow:
             _result = nest_type(nest)
@@ -476,7 +476,7 @@ def set_nest_at_indices(
     >>> print(nest)
     ivy.array([[1., 11., 3.], [4., 5., 22.]])
     """
-    nest_type = type(nest)
+    nest_type = type(nest) if isinstance(nest, tuple) else lambda x: x
     if shallow:
         result = nest_type(nest)
     else:
