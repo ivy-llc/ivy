@@ -153,6 +153,25 @@ amax = max
 def average(a, axis, weights = None,returned = False, keepdims = False, dtype=None):
     assert ivy.is_array(a)
 
+    # canonicalize_axis to ensure axis or the values in axis > 0
+    if axis is None:
+        pass
+    elif isinstance(axis,int):
+        pass
+    elif isinstance(axis,tuple) or isinstance(axis,list):
+        a_ndim = len(ivy.shape(a))
+        new_axis = [0]*len(axis)
+        for i,v in enumerate(axis):
+            if not -a_ndim <= v < a_ndim:
+                raise ValueError(f"axis {v} is out of bounds for array of dimension {a_ndim}")
+            if v < 0:
+                new_axis[i] = v + a_ndim
+            else:
+                new_axis[i] = v
+        axis = tuple(new_axis)
+    else:
+        raise TypeError("Argument 'axis' only support following int/tuple/list")
+
     if dtype is None:
         dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
     
@@ -175,10 +194,6 @@ def average(a, axis, weights = None,returned = False, keepdims = False, dtype=No
         a_shape = ivy.shape(a)
         a_ndim = len(a_shape)
         weights_shape = ivy.shape(weights)
-        
-        # here canonicalize_axis in jax is skipped 
-        # and assume either no axis without negative value
-        # or the ivy functions below accept axis with negative value
 
         # Make sure the dimensions work out
         if a_shape != weights_shape:
