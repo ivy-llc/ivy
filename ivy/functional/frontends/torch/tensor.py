@@ -435,6 +435,9 @@ class Tensor:
     def acosh(self):
         return torch_frontend.acosh(self._ivy_array)
     
+    def real(self):
+        return torch_frontend.real(self._ivy_array)
+    
     # Special Methods #
     # -------------------#
 
