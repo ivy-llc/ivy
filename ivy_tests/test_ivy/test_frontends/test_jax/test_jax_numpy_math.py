@@ -1136,7 +1136,7 @@ def test_jax_numpy_matmul(
         a=x[0],
         b=x[1],
         precision=None,
-)
+    )
 
 
 # trapz
