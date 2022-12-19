@@ -150,12 +150,12 @@ amax = max
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-def average(a, axis, weights = None,returned = False, keepdims = False):
+def average(a, axis, weights = None,returned = False, keepdims = False, dtype=None):
     assert ivy.is_array(a)
     if weights is None: 
-        avg = ivy.mean(a, axis=axis, keepdims=keepdims)
+        ret = ivy.mean(a, axis=axis, keepdims=keepdims)
         if axis is None:
-            weights_sum = ivy.full(shape=(),fill_value=a.size,dtype=avg.dtype)
+            weights_sum = ivy.full(shape=(),fill_value=a.size,dtype=ret.dtype)
         else:
             if isinstance(axis, tuple):
                 # prod with axis has dtype Sequence[int]
@@ -164,7 +164,7 @@ def average(a, axis, weights = None,returned = False, keepdims = False):
                     fill_value *= a.shape[d]
             else:
                 fill_value = a.shape[axis]
-            weights_sum = ivy.full_like(x=avg,fill_value=fill_value)
+            weights_sum = ivy.full_like(x=ret,fill_value=fill_value)
     else:
         a, weights = promote_types_of_jax_inputs(a, weights)
 
@@ -194,10 +194,11 @@ def average(a, axis, weights = None,returned = False, keepdims = False):
         weights = ivy.moveaxis(weights,source=-1,destination=axis)
     
     weighted_sum = ivy.sum(weights,axis=axis)
-    avg = ivy.sum(a * weights, axis=axis, keepdims=keepdims) / weighted_sum
+    ret = ivy.sum(a * weights, axis=axis, keepdims=keepdims) / weighted_sum
 
     if returned:
-      if avg.shape != weights_sum.shape:
-        weights_sum = ivy.broadcast_to(weights_sum, shape=avg.shape)
-      return avg, weights_sum
-    return avg
+      if ret.shape != weights_sum.shape:
+        weights_sum = ivy.broadcast_to(weights_sum, shape=ret.shape)
+      return ret, weights_sum
+
+    return ret
