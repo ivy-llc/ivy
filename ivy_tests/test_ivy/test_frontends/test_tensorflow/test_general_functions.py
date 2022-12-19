@@ -700,7 +700,7 @@ def test_tensorflow_shape_n(
         input=input,
         out_type=output_dtype,
     )
-    
+
 
 # range
 @handle_frontend_test(
