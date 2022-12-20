@@ -1,0 +1,3 @@
+|                        | torch                                                                                                                                                                              |
+|:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_torch_result_type | <a href="https://github.com/unifyai/ivy/actions/runs/3742355424/jobs/6353206326" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
