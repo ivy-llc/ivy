@@ -307,53 +307,6 @@ def random_normal(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@infer_device
-@infer_dtype
-@handle_nestable
-@handle_exceptions
-def random_geometric(
-    p: Union[float, ivy.NativeArray, ivy.Array],
-    /,
-    *,
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    seed: Optional[int] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Draws samples from a geometric distribution.
-
-    Parameters
-    ----------
-    p
-        The probability of an event occurring.
-    shape
-        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn.
-        Can only be specified when ``p`` is a numeric value, else exception will be raised.
-        Default is ``None``, where a single value is returned.
-    dtype
-        output array data type. If ``dtype`` is ``None``, the output array data
-        type will be the default floating-point data type. Default ``None``
-    seed
-        A python integer. Used to create a random seed distribution
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-        (Default value = None).
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-     ret
-        Drawn samples from the parameterized geometric distribution.
-    """
-    return ivy.current_backend().random_geometric(
-        p=p, shape=shape, dtype=dtype, seed=seed, device=device, out=out
-    )
 
 
 @to_native_arrays_and_back
