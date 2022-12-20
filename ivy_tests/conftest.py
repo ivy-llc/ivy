@@ -90,7 +90,7 @@ def pytest_configure(config):
     settings.register_profile(
         "ivy_profile",
         **profile_settings,
-        suppress_health_check=(HealthCheck(3), HealthCheck(2)),
+        suppress_health_check=(HealthCheck(3), HealthCheck(2), HealthCheck(1)),
         print_blob=True,
     )
     settings.load_profile("ivy_profile")
