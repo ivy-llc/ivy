@@ -19,6 +19,60 @@ def lower_of_two(x, y):
     return x if x < y else y
 
 
+def higher_of_two(x, y):
+    return x if x > y else y
+
+
+def make_len_equal(x, y):
+    if len(x) < len(y):
+        x = list(x)
+        while len(x) != len(y):
+            x.append("0")
+        return (tuple(x), y)
+    else:
+        y = list(y)
+        while len(y) != len(x):
+            y.append("0")
+        return (x, tuple(y))
+
+
+def inti(a):
+    try:
+        return int(a)
+    except:
+        return a
+
+
+def higher_or_lower(x, y, operator, operator1):
+    acceptable_version = None
+    if len(x) != len(y):
+        x, y = make_len_equal(x, y)
+    x = tuple(map(inti, x))
+    y = tuple(map(inti, y))
+    if string_dict[operator](x, y):
+        if operator in lower:
+            acceptable_version = lower_of_two(x, y)
+        else:
+            acceptable_version = higher_of_two(x, y)
+
+    if string_dict[operator1](y, x):
+        if operator1 in lower:
+            if acceptable_version:
+                acceptable_version = higher_of_two(
+                    acceptable_version, lower_of_two(y, x)
+                )
+            else:
+                acceptable_version = lower_of_two(y, x)
+        else:
+            if acceptable_version:
+                acceptable_version = higher_of_two(
+                    acceptable_version, higher_of_two(y, x)
+                )
+            else:
+                acceptable_version = higher_of_two(y, x)
+    return acceptable_version
+
+
 string_dict = {
     "~=": tilde,
     ">=": operator.ge,
@@ -27,6 +81,8 @@ string_dict = {
     "<": operator.lt,
     "==": operator.eq,
 }
+
+lower = ["<=", "<"]
 
 
 def get_version_from_string(s):
@@ -60,28 +116,19 @@ def resolution(conflict_keys, dic1, dic2):
     for i in conflict_keys:
         for j in dic1[i]:
             for k in dic2[i]:
-
-                if getattr(resolution, i, None):
-                    if string_dict[j.keys()[0]](
-                        k[list(k.keys())[0]], j[list(j.keys())[0]]
-                    ) and string_dict[list(k.keys())[0]](
-                        j[list(j.keys())[0]], k[list(list(j.keys()))[0]]
-                    ):
-                        resolution[i] = lower_of_two(
-                            resolution[i][1],
-                            lower_of_two(k[list(k.keys())[0]], j[list(j.keys())[0]]),
-                        )
-                else:
-                    resolution[i] = lower_of_two(
-                        k[list(k.keys())[0]], j[list(j.keys())[0]]
-                    )
+                resolution[i] = higher_or_lower(
+                    k[list(k.keys())[0]],
+                    j[list(j.keys())[0]],
+                    list(j.keys())[0],
+                    list(k.keys())[0],
+                )
 
     return resolution
 
 
 def package_conflicts(pkg1, pkg2=None):
-    data_1 = requests.get(url + str(pkg1) + "/json").json()
-    data_2 = requests.get(url + str(pkg2) + "/json").json()
+    data_1 = get_package_requirements(pkg1)
+    data_2 = get_package_requirements(pkg2)
     if not data_1 or not data_2:
         return None
     data_1_dic = (
@@ -97,6 +144,10 @@ def package_conflicts(pkg1, pkg2=None):
         ["python " + data_1["info"]["requires_python"]] + data_2_dic
     )
     return resolution(data_1_dic.keys() & data_2_dic.keys(), data_1_dic, data_2_dic)
+
+
+def get_package_requirements(pkg):
+    return requests.get(url + str(pkg) + "/json").json()
 
 
 # example usage
