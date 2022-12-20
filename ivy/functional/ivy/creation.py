@@ -1154,9 +1154,7 @@ def meshgrid(
     ivy.array([[1, 2, 3]])
 
     >>> print(yv)
-    ivy.array([[4],
-            [5],
-            [6]])
+    ivy.array([[4], [5], [6]])
 
     With :class:`ivy.NativeArray` input:
 
