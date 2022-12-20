@@ -492,8 +492,8 @@ def test_torch_eig(
     # if the distance between any two eigenvalues is close to zero, the
     # gradient will be numerically unstable. For that reason we set
     # `test_values=False` and post process the return values of the test.
-    ret = [ivy.to_numpy(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
+    ret = [ivy.to_numpy(x).astype("float64") for x in ret]
+    frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
     l, v = ret
     front_l, front_v = frontend_ret
