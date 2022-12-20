@@ -21,12 +21,12 @@ def _broadcastable_trio(draw):
 
 
 @st.composite
-def _broadcastable(draw):
+def _broadcastable_duo(draw):
     dtype = draw(helpers.get_dtypes("valid", full=False))
     shapes_st = draw(
         hnp.mutually_broadcastable_shapes(num_shapes=2)
     )
-    a_shape, cond_shape = shapes_st.input_shapes
+    cond_shape, a_shape = shapes_st.input_shapes
     a = draw(helpers.array_values(dtype=dtype[0], shape=a_shape))
     cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
     return a, cond, dtype
@@ -349,7 +349,7 @@ def test_numpy_nanargmin(
 # extract
 @handle_frontend_test(
     fn_tree="numpy.extract",
-    broadcastables=_broadcastable(),
+    broadcastables=_broadcastable_duo(),
 )
 def test_numpy_extract(
     broadcastables,
