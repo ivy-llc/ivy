@@ -85,8 +85,8 @@ def nonzero(
 
 def where(
     condition: torch.Tensor,
-    x1: torch.Tensor,
-    x2: torch.Tensor,
+    x1: Union[float, int, torch.Tensor],
+    x2: Union[float, int, torch.Tensor],
     /,
     *,
     out: Optional[torch.Tensor] = None,

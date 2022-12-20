@@ -70,3 +70,17 @@ def kaiser_window(
         return jnp.array(jnp.kaiser(M=window_length, beta=beta), dtype=dtype)
     else:
         return jnp.array(jnp.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
+
+
+def tril_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: Optional[int] = 0,
+    /,
+    *,
+    device: jaxlib.xla_extension.Device,
+) -> Tuple[JaxArray, ...]:
+    return _to_device(
+        jnp.tril_indices(n=n_rows, k=k, m=n_cols),
+        device=device,
+    )

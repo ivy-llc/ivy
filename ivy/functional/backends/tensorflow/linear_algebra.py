@@ -4,6 +4,7 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
 import tensorflow as tf
+from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
@@ -637,18 +638,27 @@ def vecdot(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("float16", "bfloat16", "integer",)},
-    backend_version
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+            "integer",
+        )
+    },
+    backend_version,
 )
 def vector_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    keepdims: Optional[bool] = False,
+    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    dtype: Optional[DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if dtype and x.dtype != dtype:
+        x = tf.cast(x, dtype)
     if ord == -float("inf"):
         tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
     elif ord == float("inf"):
@@ -656,7 +666,9 @@ def vector_norm(
     elif ord == 0:
         tn_normalized_vector = tf.reduce_sum(tf.cast(x != 0, x.dtype), axis, keepdims)
     else:
-        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (1.0 / ord)
+        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
+            1.0 / ord
+        )
     return tn_normalized_vector
 
 

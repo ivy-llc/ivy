@@ -145,6 +145,7 @@ def kron(a, b):
 
 @to_ivy_arrays_and_back
 def lcm(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.lcm(x1, x2)
 
 
@@ -164,6 +165,11 @@ def sqrt(x, /):
 
 
 @to_ivy_arrays_and_back
+def square(x, /):
+    return ivy.square(x)
+
+
+@to_ivy_arrays_and_back
 def arctanh(x):
     return ivy.atanh(x)
 
@@ -171,6 +177,12 @@ def arctanh(x):
 @to_ivy_arrays_and_back
 def multiply(x1, x2):
     return ivy.multiply(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def matmul(a, b, *, precision=None):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.matmul(a, b)
 
 
 @to_ivy_arrays_and_back
