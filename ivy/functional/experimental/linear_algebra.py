@@ -171,7 +171,7 @@ def matrix_exp(
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-) -> Tuple[ivy.Array, ...]:
+) -> Tuple[ivy.Array]:
     """Computes eigenvalies and eigenvectors of x. Returns a tuple with two elements:
      first is the set of eigenvalues, second is the set of eigenvectors.
 
