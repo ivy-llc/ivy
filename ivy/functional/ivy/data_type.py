@@ -1004,6 +1004,7 @@ def default_float_dtype(
     >>> ivy.default_float_dtype(input=x)
     'float16'
     """
+    global default_float_dtype_stack
     if ivy.exists(float_dtype):
         if as_native is True:
             return ivy.as_native_dtype(float_dtype)
@@ -1020,22 +1021,27 @@ def default_float_dtype(
             ):
                 ret = ivy.float64
             else:
-                def_dtype = default_dtype()
-                if ivy.is_float_dtype(def_dtype):
-                    ret = def_dtype
+                if not default_float_dtype_stack:
+                    def_dtype = default_dtype()
+                    if ivy.is_float_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "float32"
                 else:
-                    ret = ivy.float32
+                    ret = default_float_dtype_stack[-1]
         elif isinstance(input, Number):
             if _check_float64(input):
                 ret = ivy.float64
             else:
-                def_dtype = default_dtype()
-                if ivy.is_float_dtype(def_dtype):
-                    ret = def_dtype
+                if not default_float_dtype_stack:
+                    def_dtype = default_dtype()
+                    if ivy.is_float_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "float32"
                 else:
-                    ret = ivy.float32
+                    ret = default_float_dtype_stack[-1]
     else:
-        global default_float_dtype_stack
         if not default_float_dtype_stack:
             def_dtype = default_dtype()
             if ivy.is_float_dtype(def_dtype):
@@ -1184,6 +1190,7 @@ def default_int_dtype(
     >>> ivy.default_int_dtype(input=x)
     'int32'
     """
+    global default_int_dtype_stack
     if ivy.exists(int_dtype):
         if as_native is True:
             return ivy.as_native_dtype(int_dtype)
@@ -1212,11 +1219,14 @@ def default_int_dtype(
             ):
                 ret = ivy.int64
             else:
-                def_dtype = ivy.default_dtype()
-                if ivy.is_int_dtype(def_dtype):
-                    ret = def_dtype
+                if not default_int_dtype_stack:
+                    def_dtype = ivy.default_dtype()
+                    if ivy.is_int_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "int32"
                 else:
-                    ret = ivy.int32
+                    ret = default_int_dtype_stack[-1]
         elif isinstance(input, Number):
             if (
                 input > 9223372036854775807
@@ -1227,13 +1237,15 @@ def default_int_dtype(
             elif input > 2147483647 and input != ivy.inf:
                 ret = ivy.int64
             else:
-                def_dtype = ivy.default_dtype()
-                if ivy.is_int_dtype(def_dtype):
-                    ret = def_dtype
+                if not default_int_dtype_stack:
+                    def_dtype = ivy.default_dtype()
+                    if ivy.is_int_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "int32"
                 else:
-                    ret = ivy.int32
+                    ret = default_int_dtype_stack[-1]
     else:
-        global default_int_dtype_stack
         if not default_int_dtype_stack:
             def_dtype = ivy.default_dtype()
             if ivy.is_int_dtype(def_dtype):
@@ -1287,6 +1299,7 @@ def default_uint_dtype(
     >>> ivy.default_uint_dtype(input=x)
     'uint32'
     """
+    global default_uint_dtype_stack
     if ivy.exists(uint_dtype):
         if as_native is True:
             return ivy.as_native_dtype(uint_dtype)
@@ -1308,22 +1321,27 @@ def default_uint_dtype(
             ):
                 ret = ivy.uint64
             else:
-                def_dtype = ivy.default_dtype()
-                if ivy.is_uint_dtype(def_dtype):
-                    ret = def_dtype
+                if default_uint_dtype_stack:
+                    ret = default_uint_dtype_stack[-1]
                 else:
-                    ret = ivy.uint32
+                    def_dtype = ivy.default_dtype()
+                    if ivy.is_uint_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "uint32"
         elif isinstance(input, Number):
             if input > 4294967295 and input != ivy.inf and ivy.backend != "torch":
                 ret = ivy.uint64
             else:
-                def_dtype = ivy.default_dtype()
-                if ivy.is_uint_dtype(def_dtype):
-                    ret = def_dtype
+                if default_uint_dtype_stack:
+                    ret = default_uint_dtype_stack[-1]
                 else:
-                    ret = ivy.uint32
+                    def_dtype = ivy.default_dtype()
+                    if ivy.is_uint_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "uint32"
     else:
-        global default_uint_dtype_stack
         if default_uint_dtype_stack:
             ret = default_uint_dtype_stack[-1]
         else:

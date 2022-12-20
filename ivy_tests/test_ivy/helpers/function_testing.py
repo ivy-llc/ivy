@@ -572,7 +572,7 @@ def test_frontend_function(
                 first_array = ivy.func_wrapper._get_first_array(
                     *copy_args, **copy_kwargs
                 )
-                ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_args)
+                ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
                 if ivy.native_inplace_support:
                     assert ret_.data is first_array.data
                 assert first_array is ret_
@@ -634,10 +634,20 @@ def test_frontend_function(
             )
 
             # compute the return via the frontend framework
-            frontend_fw = importlib.import_module(fn_tree[25 : fn_tree.rfind(".")])
-            frontend_ret = frontend_fw.__dict__[fn_name](
-                *args_frontend, **kwargs_frontend
-            )
+            module_name = fn_tree[25 : fn_tree.rfind(".")]
+            frontend_fw = importlib.import_module(module_name)
+            try:
+                frontend_ret = frontend_fw.__dict__[fn_name](
+                    *args_frontend, **kwargs_frontend
+                )
+            except KeyError:
+                # catch cases where the alias belongs to a higher-level module
+                # e.g. torch.inverse tested as an alias to torch.linalg.inv
+                module_name = module_name[: module_name.rfind(".")]
+                frontend_fw = importlib.import_module(module_name)
+                frontend_ret = frontend_fw.__dict__[fn_name](
+                    *args_frontend, **kwargs_frontend
+                )
 
             if ivy.isscalar(frontend_ret):
                 frontend_ret_np_flat = [np.asarray(frontend_ret)]

@@ -1,11 +1,14 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_first_matrix_and_dtype,
+    _get_second_matrix_and_dtype,
     _get_dtype_value1_value2_axis_for_tensordot,
 )
 
@@ -1044,6 +1047,98 @@ def test_jax_numpy_logaddexp2(
     )
 
 
+# matmul
+@st.composite
+def _get_safe_casting_dtype(draw, *, dtypes):
+    target_dtype = dtypes[0]
+    for dtype in dtypes[1:]:
+        if ivy.can_cast(target_dtype, dtype):
+            target_dtype = dtype
+    if ivy.is_float_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["float64", None]))
+    elif ivy.is_uint_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["uint64", None]))
+    elif ivy.is_int_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["int64", None]))
+    else:
+        dtype = draw(st.sampled_from(["bool", None]))
+    return dtype
+
+
+@st.composite
+def dtypes_values_casting_dtype(
+    draw,
+    *,
+    arr_func,
+    get_dtypes_kind="valid",
+    get_dtypes_index=0,
+    get_dtypes_none=True,
+    get_dtypes_key=None,
+    special=False,
+):
+    dtypes, values = [], []
+    casting = draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
+    for func in arr_func:
+        typ, val = draw(func())
+        dtypes += typ if isinstance(typ, list) else [typ]
+        values += val if isinstance(val, list) else [val]
+
+    if casting in ["no", "equiv"] and len(dtypes) > 0:
+        dtypes = [dtypes[0]] * len(dtypes)
+
+    if special:
+        dtype = draw(st.sampled_from(["bool", None]))
+    elif casting in ["no", "equiv"]:
+        dtype = draw(st.just(None))
+    elif casting in ["safe", "same_kind"]:
+        dtype = draw(_get_safe_casting_dtype(dtypes=dtypes))
+    else:
+        dtype = draw(
+            helpers.get_dtypes(
+                get_dtypes_kind,
+                index=get_dtypes_index,
+                full=False,
+                none=get_dtypes_none,
+                key=get_dtypes_key,
+            )
+        )[0]
+    return dtypes, values, casting, dtype
+
+
+# matmul
+@handle_frontend_test(
+    fn_tree="jax.numpy.matmul",
+    dtypes_values_casting=dtypes_values_casting_dtype(
+        arr_func=[_get_first_matrix_and_dtype, _get_second_matrix_and_dtype],
+        get_dtypes_kind="numeric",
+    ),
+)
+def test_jax_numpy_matmul(
+    dtypes_values_casting,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtypes, x, casting, dtype = dtypes_values_casting
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        b=x[1],
+        precision=None,
+    )
+
+
 # trapz
 @st.composite
 def _either_x_dx(draw):
@@ -1131,6 +1226,35 @@ def test_jax_numpy_trapz(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_sqrt(
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# square
+@handle_frontend_test(
+    fn_tree="jax.numpy.square",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
+def test_jax_numpy_square(
     *,
     dtype_and_x,
     as_variable,

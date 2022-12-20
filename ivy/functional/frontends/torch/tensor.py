@@ -387,7 +387,7 @@ class Tensor:
 
     def bool(self, memory_format=None):
         return ivy.astype(self._ivy_array, ivy.bool)
-    
+
     def type(self, dtype=None, non_blocking=False, **kwargs):
         if ivy.exists(dtype):
             return ivy.astype(self._ivy_array, dtype)
@@ -437,7 +437,7 @@ class Tensor:
     
     def real(self):
         return torch_frontend.real(self._ivy_array)
-    
+
     # Special Methods #
     # -------------------#
 
