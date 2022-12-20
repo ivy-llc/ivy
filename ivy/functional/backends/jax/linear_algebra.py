@@ -385,16 +385,19 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    keepdims: Optional[bool] = False,
+    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if dtype and x.dtype != dtype:
+        x = x.astype(dtype)
     if isinstance(axis, list):
         axis = tuple(axis)
     if axis is None:
         jnp_normalized_vector = jnp.linalg.norm(jnp.ravel(x), ord, axis, keepdims)
     else:
-        if isinstance(ord, int) and ord != 0:
+        if isinstance(ord, (int, float)) and ord != 0:
             jnp_normalized_vector = jnp.sum(
                 jnp.abs(x) ** ord, axis=axis, keepdims=keepdims
             ) ** (1.0 / ord)
