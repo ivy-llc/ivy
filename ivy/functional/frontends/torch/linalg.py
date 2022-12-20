@@ -83,10 +83,10 @@ def svdvals(input, *, out=None):
 @to_ivy_arrays_and_back
 def inv_ex(input, *, check_errors=False, out=None):
     try:
-        inputInv = inv.inv(input, out)
+        inputInv = ivy.inv(input, out=out)
         info = ivy.zeros([input.shape[i] for i in range(len(input.shape) - 2)] + [1])
         return inputInv, info
-    except RuntimeError as e :
+    except RuntimeError as e:
         if check_errors:
             raise RuntimeError(e)
         else:
