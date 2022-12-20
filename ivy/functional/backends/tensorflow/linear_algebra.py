@@ -636,7 +636,16 @@ def vecdot(
     return tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+            "integer",
+        )
+    },
+    backend_version,
+)
 def vector_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -648,23 +657,15 @@ def vector_norm(
 ) -> Union[tf.Tensor, tf.Variable]:
     if ord == -float("inf"):
         tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
-    elif ord == -2:
-        tn_normalized_vector = 1.0 / tf.sqrt(
-            tf.reduce_sum(1.0 / tf.abs(x) ** 2, axis, keepdims)
-        )
-    elif ord == -1:
-        tn_normalized_vector = 1.0 / tf.reduce_sum(1.0 / tf.abs(x), axis, keepdims)
+    elif ord == float("inf"):
+        tn_normalized_vector = tf.reduce_max(tf.abs(x), axis, keepdims)
     elif ord == 0:
         tn_normalized_vector = tf.reduce_sum(tf.cast(x != 0, x.dtype), axis, keepdims)
-    elif ord < 1:
-        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord) ** (1.0 / ord)
     else:
-        tn_normalized_vector = tf.linalg.norm(x, ord, axis, keepdims)
-    if tn_normalized_vector.shape == tuple():
-        ret = tf.expand_dims(tn_normalized_vector, 0)
-    else:
-        ret = tn_normalized_vector
-    return ret
+        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
+            1.0 / ord
+        )
+    return tn_normalized_vector
 
 
 # Extra #
