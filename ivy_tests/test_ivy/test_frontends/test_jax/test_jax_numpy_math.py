@@ -1490,7 +1490,7 @@ def test_jax_numpy_negative(
 @handle_frontend_test(
     fn_tree="jax.numpy.rad2deg",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
     ),
 )
 def test_jax_numpy_rad2deg(
