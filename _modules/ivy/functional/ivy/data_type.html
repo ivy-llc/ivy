@@ -1138,6 +1138,7 @@
 <span class="sd">    &gt;&gt;&gt; ivy.default_float_dtype(input=x)</span>
 <span class="sd">    &#39;float16&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">default_float_dtype_stack</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">float_dtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">as_native</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span><span class="n">float_dtype</span><span class="p">)</span>
@@ -1154,22 +1155,27 @@
             <span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float64</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">default_float_dtype_stack</span><span class="p">:</span>
+                    <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;float32&quot;</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float32</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">default_float_dtype_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">_check_float64</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float64</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">default_float_dtype_stack</span><span class="p">:</span>
+                    <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;float32&quot;</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float32</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">default_float_dtype_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">global</span> <span class="n">default_float_dtype_stack</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">default_float_dtype_stack</span><span class="p">:</span>
             <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
@@ -1318,6 +1324,7 @@
 <span class="sd">    &gt;&gt;&gt; ivy.default_int_dtype(input=x)</span>
 <span class="sd">    &#39;int32&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">default_int_dtype_stack</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">as_native</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">)</span>
@@ -1346,11 +1353,14 @@
             <span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int64</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">default_int_dtype_stack</span><span class="p">:</span>
+                    <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;int32&quot;</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int32</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">default_int_dtype_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="nb">input</span> <span class="o">&gt;</span> <span class="mi">9223372036854775807</span>
@@ -1361,13 +1371,15 @@
             <span class="k">elif</span> <span class="nb">input</span> <span class="o">&gt;</span> <span class="mi">2147483647</span> <span class="ow">and</span> <span class="nb">input</span> <span class="o">!=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int64</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">default_int_dtype_stack</span><span class="p">:</span>
+                    <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;int32&quot;</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int32</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">default_int_dtype_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">global</span> <span class="n">default_int_dtype_stack</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">default_int_dtype_stack</span><span class="p">:</span>
             <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
@@ -1421,6 +1433,7 @@
 <span class="sd">    &gt;&gt;&gt; ivy.default_uint_dtype(input=x)</span>
 <span class="sd">    &#39;uint32&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">default_uint_dtype_stack</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">uint_dtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">as_native</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span><span class="n">uint_dtype</span><span class="p">)</span>
@@ -1442,22 +1455,27 @@
             <span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">uint64</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_uint_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                <span class="k">if</span> <span class="n">default_uint_dtype_stack</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">default_uint_dtype_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">uint32</span>
+                    <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_uint_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;uint32&quot;</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">input</span> <span class="o">&gt;</span> <span class="mi">4294967295</span> <span class="ow">and</span> <span class="nb">input</span> <span class="o">!=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inf</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backend</span> <span class="o">!=</span> <span class="s2">&quot;torch&quot;</span><span class="p">:</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">uint64</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_uint_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                <span class="k">if</span> <span class="n">default_uint_dtype_stack</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">default_uint_dtype_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">uint32</span>
+                    <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_uint_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;uint32&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">global</span> <span class="n">default_uint_dtype_stack</span>
         <span class="k">if</span> <span class="n">default_uint_dtype_stack</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="n">default_uint_dtype_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
