@@ -232,7 +232,11 @@ def test_jax_numpy_tanh(
 # sinh
 @handle_frontend_test(
     fn_tree="jax.numpy.sinh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
 )
 def test_jax_numpy_sinh(
     *,
@@ -626,7 +630,11 @@ def test_jax_numpy_arcsin(
 # arcsinh
 @handle_frontend_test(
     fn_tree="jax.numpy.arcsinh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
 )
 def test_jax_numpy_arcsinh(
     *,
