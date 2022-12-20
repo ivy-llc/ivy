@@ -29,7 +29,7 @@ def _broadcastable(draw):
     a_shape, cond_shape = shapes_st.input_shapes
     a = draw(helpers.array_values(dtype=dtype[0], shape=a_shape))
     cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
-    return a, cond
+    return a, cond, dtype
 
 
 # where
@@ -360,9 +360,9 @@ def test_numpy_extract(
     fn_tree,
     on_device,
 ):
-    a, cond = broadcastables
+    a, cond, dtype = broadcastables
     helpers.test_frontend_function(
-        input_dtypes=["float", "bool"],
+        input_dtypes=[dtype, "bool"],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -371,5 +371,5 @@ def test_numpy_extract(
         fn_tree=fn_tree,
         on_device=on_device,
         a=a,
-        cond=cond,
+        condition=cond,
     )
