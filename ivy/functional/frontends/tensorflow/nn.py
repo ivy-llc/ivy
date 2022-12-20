@@ -237,3 +237,16 @@ def moments(x, axes, shift=None, keepdims=False, name=None):
     return ivy.mean(x, axis=axes, keepdims=keepdims), ivy.var(
         x, axis=axes, keepdims=keepdims
     )
+
+
+@to_ivy_arrays_and_back
+def bias_add(value, bias, data_format=None, name=None):
+    if data_format is None:
+        data_format = "N...C"
+
+    if data_format == "N...C":
+        return ivy.add(value, bias)
+    else:
+        value = ivy.swapaxes(value, 1, -1)
+        res = ivy.add(value, bias)
+        return ivy.swapaxes(res, 1, -1)
