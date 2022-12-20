@@ -142,48 +142,6 @@
              
   <section id="mytfmodule">
 <h1>MyTFModule<a class="headerlink" href="#mytfmodule" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="ivy.stateful.module.MyTFModule">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.module.</span></span><span class="sig-name descname"><span class="pre">MyTFModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/module.html#MyTFModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.module.MyTFModule" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.stateful.module.MyTFModule.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ivy_module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/module.html#MyTFModule.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.module.MyTFModule.__init__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.stateful.module.MyTFModule.call">
-<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/module.html#MyTFModule.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.module.MyTFModule.call" title="Permalink to this definition"></a></dt>
-<dd><p>Calls the model on new inputs and returns the outputs as tensors.</p>
-<p>In this case <cite>call()</cite> just reapplies
-all ops in the graph to the new inputs
-(e.g. build a new computational graph from the provided inputs).</p>
-<p>Note: This method should not be called directly. It is only meant to be
-overridden when subclassing <cite>tf.keras.Model</cite>.
-To call a model on an input, always use the <cite>__call__()</cite> method,
-i.e. <cite>model(inputs)</cite>, which relies on the underlying <cite>call()</cite> method.</p>
-<dl>
-<dt>Args:</dt><dd><p>inputs: Input tensor, or dict/list/tuple of input tensors.
-training: Boolean or boolean scalar tensor, indicating whether to run</p>
-<blockquote>
-<div><p>the <cite>Network</cite> in training mode or inference mode.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>mask: A mask or list of masks. A mask can be either a boolean tensor or</dt><dd><dl class="simple">
-<dt>None (no mask). For more details, check the guide</dt><dd><p>[here](<a class="reference external" href="https://www.tensorflow.org/guide/keras/masking_and_padding">https://www.tensorflow.org/guide/keras/masking_and_padding</a>).</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><p>A tensor if there is a single output, or
-a list of tensors if there are more than one outputs.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
