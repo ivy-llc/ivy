@@ -21,10 +21,10 @@ def test_torch_result_type(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    tensor1_dtype, tensor = input_dtype[0], x[0]
-    tensor2_dtype, other = input_dtype[1], x[1]
+    tensor_dtype, tensor = input_dtype[0], x[0]
+    other_dtype, other = input_dtype[1], x[1]
     helpers.test_frontend_function(
-        input_dtypes=[tensor1_dtype, tensor2_dtype],
+        input_dtypes=[tensor_dtype, other_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
