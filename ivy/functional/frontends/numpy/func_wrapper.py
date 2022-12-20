@@ -29,13 +29,11 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
         elif len(args) == (dtype_pos + 1):
             dtype = args[dtype_pos]
             args = args[:-1]
-        if not dtype:
+        if not dtype or isinstance(dtype, str):
             return fn(*args, dtype=dtype, **kwargs)
         if isinstance(dtype, np_frontend.dtype):
             return fn(*args, dtype=dtype._ivy_dtype, **kwargs)
-        if dtype in np_frontend.numpy_str_to_type_table:
-            dtype = np_frontend.numpy_str_to_type_table[dtype]._ivy_dtype
-        return fn(*args, dtype=ivy.as_ivy_dtype(dtype), **kwargs)
+        return fn(*args, dtype=np_frontend.to_ivy_dtype(dtype), **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
     new_fn.handle_numpy_dtype = True
