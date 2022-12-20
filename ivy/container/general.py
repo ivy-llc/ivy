@@ -1231,6 +1231,20 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with the final dimension expanded of arrays at its leaves,
             and the encodings stored in this channel.
+
+            
+        Examples
+        --------
+        >>> x = ivy.array([1,2,3])
+        >>> y = 1.5
+        >>> z = ivy.fourier_encode(x,y)
+        >>> print(z)
+
+
+        >>> x = ivy.array([1,2,3,10,15,25])
+        >>> y = 2.5
+        >>> z = ivy.fourier_encode(x,y,3)
+        >>> print(z)
         """
         return self.static_fourier_encode(
             self,
