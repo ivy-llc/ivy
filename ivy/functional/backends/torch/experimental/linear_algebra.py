@@ -2,7 +2,7 @@
 import math
 
 import torch
-from typing import Optional
+from typing import Optional, Tuple
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -108,3 +108,16 @@ def kron(
 
 
 kron.support_native_out = True
+
+
+def matrix_exp(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.exp(x)
+
+
+def eig(x: torch.Tensor, /) -> Tuple[torch.Tensor]:
+    return torch.linalg.eig(x)

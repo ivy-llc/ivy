@@ -214,3 +214,18 @@ def nll_loss(
     ret = reduct(loss)
 
     return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def soft_margin_loss(
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = ivy.log1p(ivy.exp(-input * target))
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+    return ret

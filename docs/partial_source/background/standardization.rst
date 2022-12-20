@@ -70,6 +70,7 @@ This is a promising sign in the pursuit of unification.
    :align: center
    :width: 60%
 
+
 Clearly a lot of time, thought and careful attention has gone into creating the `first version <https://data-apis.org/array-api/latest/>`_ of the standard, such that it simplifies compatibility as much as possible for all ML frameworks.
 
 We are very excited to be working with them on this standard, and bringing Ivy into compliance, with the hope that in due time others also follow-suit!

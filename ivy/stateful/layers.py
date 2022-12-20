@@ -1173,12 +1173,12 @@ class Conv3DTranspose(Module):
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
-        self._w_shape = (
-            filter_shape + [input_channels, output_channels]
+        self._w_shape = filter_shape + [input_channels, output_channels]
+        self._b_shape = (
+            (1, 1, 1, 1, output_channels)
             if data_format == "NDHWC"
-            else [input_channels, output_channels] + filter_shape
+            else (1, output_channels, 1, 1, 1)
         )
-        self._b_shape = (1, 1, 1, 1, output_channels)
         self._w_init = weight_initializer
         self._b_init = bias_initializer
         self._output_shape = output_shape

@@ -23,7 +23,9 @@ class ndarray:
             self._f_contiguous = False
 
     def __repr__(self):
-        return "ivy.frontends.numpy.ndarray(" + str(ivy.to_list(self._ivy_array)) + ")"
+        return str(self._ivy_array.__repr__()).replace(
+            "ivy.array", "ivy.frontends.numpy.ndarray"
+        )
 
     # Properties #
     # ---------- #
@@ -188,6 +190,14 @@ class ndarray:
             axis=axis,
             dtype=dtype,
             out=out,
+        )
+
+    def diagonal(self, *, offset=0, axis1=0, axis2=1):
+        return np_frontend.diagonal(
+            self._ivyArray,
+            offset=offset,
+            axis1=axis1,
+            axis2=axis2,
         )
 
     def sort(self, *, axis=-1, kind=None, order=None):

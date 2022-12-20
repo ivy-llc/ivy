@@ -10,9 +10,8 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 )
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+
 # accumulate_n
-
-
 @handle_frontend_test(
     fn_tree="tensorflow.math.accumulate_n",
     dtype_and_x=helpers.dtype_and_values(
@@ -1352,4 +1351,38 @@ def test_tensorflow_argmin(
         input=x[0],
         axis=axis,
         output_type=output_type,
+    )
+
+
+# equal
+@handle_frontend_test(
+    fn_tree="tensorflow.math.equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_equal(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
     )

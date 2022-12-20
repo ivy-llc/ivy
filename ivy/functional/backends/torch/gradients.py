@@ -34,7 +34,10 @@ def _grad_func(y, xs, retain_grads):
     """Gradient calculation function."""
     # Creating a zero gradient nest for the case where no gradients are computed
     grads_ = ivy.nested_map(
-        xs, lambda x: ivy.to_native(ivy.zeros_like(x)), include_derived=True
+        xs,
+        lambda x: ivy.to_native(ivy.zeros_like(x)),
+        include_derived=True,
+        shallow=False,
     )
 
     # Gradient calculation
@@ -48,11 +51,11 @@ def _grad_func(y, xs, retain_grads):
         )[0]
         grads = grads_ if grads is None else grads
     elif isinstance(xs, ivy.Container):
-        grads = xs.from_flat_list(
+        grads = xs.cont_from_flat_list(
             list(
                 torch.autograd.grad(
                     [y],
-                    [v for k, v in xs.to_iterator()],
+                    [v for k, v in xs.cont_to_iterator()],
                     retain_graph=True,
                     create_graph=retain_grads,
                     allow_unused=True,
@@ -79,11 +82,7 @@ def _grad_func(y, xs, retain_grads):
             )[0]
             return grad if grad is not None else 0
 
-        grads = ivy.nested_map(
-            xs,
-            grad_,
-            include_derived=True,
-        )
+        grads = ivy.nested_map(xs, grad_, include_derived=True, shallow=False)
         grads = ivy.nested_multi_map(lambda x, _: (x[0] + x[1]), [grads, grads_])
     return grads
 
@@ -146,11 +145,7 @@ def value_and_grad(func):
             grad = ivy.to_ivy(grad)
             return grad
 
-        grads = ivy.nested_map(
-            xs,
-            autograd_fn,
-            include_derived=True,
-        )
+        grads = ivy.nested_map(xs, autograd_fn, include_derived=True, shallow=False)
         y = ivy.to_ivy(y)
         return y, grads
 

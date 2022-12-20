@@ -339,10 +339,6 @@ def promote_numpy_dtypes(
     type2: Union[ivy.Dtype, ivy.NativeDtype],
     /,
 ):
-    if isinstance(type1, dtype):
-        type1 = type1._ivy_dtype
-    if isinstance(type2, dtype):
-        type2 = type2._ivy_dtype
     type1, type2 = ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)
     try:
         return numpy_promotion_table[(type1, type2)]

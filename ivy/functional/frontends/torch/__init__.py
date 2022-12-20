@@ -51,6 +51,7 @@ from numbers import Number
 from typing import Union, Tuple, Iterable
 
 # type aliases
+char = int8
 short = int16
 int = int32
 long = int64
