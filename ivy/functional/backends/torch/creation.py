@@ -135,8 +135,6 @@ def asarray(
         # if `obj` is a list of specifically tensors or
         # a multidimensional list which contains a tensor
         if isinstance(obj[0], torch.Tensor) or contain_tensor:
-            if len(obj) == 1:
-                dtype = obj[0].dtype
             if copy is True:
                 return (
                     torch.stack([torch.as_tensor(i, dtype=dtype) for i in obj])
