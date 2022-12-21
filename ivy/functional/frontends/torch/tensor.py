@@ -438,6 +438,9 @@ class Tensor:
     def acosh(self):
         return torch_frontend.acosh(self._ivy_array)
 
+    def masked_fill(self, mask, value):
+        return ivy.where(mask, value, self._ivy_array)
+
     # Special Methods #
     # -------------------#
 
