@@ -3094,8 +3094,6 @@ class ContainerBase(dict, abc.ABC):
         inplace
             Whether to apply the mapping inplace, or return a new container.
             Default is ``False``.
-        map_sequences
-            Whether to also map to sequences (lists and tuples). Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
 
@@ -3122,7 +3120,9 @@ class ContainerBase(dict, abc.ABC):
                 if not inplace:
                     return_dict[key] = ret
             elif isinstance(value, (list, tuple)) and map_sequences:
-                ret = ivy.nested_map(value, lambda x: func(x, None), True)
+                ret = ivy.nested_map(
+                    value, lambda x: func(x, None), True, shallow=False
+                )
                 if prune_unapplied and not ret:
                     continue
                 return_dict[key] = ret
