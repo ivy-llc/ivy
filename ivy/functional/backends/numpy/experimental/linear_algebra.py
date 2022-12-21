@@ -110,8 +110,8 @@ def eig(x: np.ndarray, /) -> Tuple[np.ndarray]:
 eig.support_native_out = False
 
 
-def eivalsg(x: np.ndarray, /) -> np.ndarray:
+def eigvals(x: np.ndarray, /) -> np.ndarray:
     if ivy.dtype(x) == ivy.float16:
         x = x.astype(np.float32)
-    e = np.linalg.eivalsg(x)
+    e = np.linalg.eigvals(x)
     return e.astype(complex)

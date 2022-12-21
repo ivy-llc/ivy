@@ -120,16 +120,8 @@ def matrix_exp(
 
 
 def eig(x: torch.Tensor, /) -> Tuple[torch.Tensor, ...]:
-    if not torch.is_complex(x):
-        ret = torch.linalg.eig(x.to(torch.complex128))
-    else:
-        ret = torch.linalg.eig(x)
-    return tuple(ret)
+    return torch.linalg.eig(x)
 
 
 def eigvals(x: torch.Tensor, /) -> torch.Tensor:
-    if not torch.is_complex(x):
-        ret = torch.linalg.eigvals(x.to(torch.complex128))
-    else:
-        ret = torch.linalg.eigvals(x)
-    return ret
+    return torch.linalg.eigvals(x)
