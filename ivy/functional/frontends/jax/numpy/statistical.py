@@ -158,10 +158,11 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
         pass
     elif isinstance(axis, tuple) or isinstance(axis, list):
         a_ndim = len(ivy.shape(a))
-        new_axis = [0]* len(axis)
+        new_axis = [0] * len(axis)
         for i, v in enumerate(axis):
             if not -a_ndim <= v < a_ndim:
-                raise ValueError(f"axis {v} is out of bounds for array of dimension {a_ndim}")
+                raise ValueError(f"axis {v} is out of bounds for array of \
+                    dimension {a_ndim}")
             if v < 0:
                 new_axis[i] = v + a_ndim
             else:
@@ -203,12 +204,16 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
                 raise ValueError("Axis must be specified when shapes of a and "
                                   "weights differ.")
             elif isinstance(axis, tuple):
-                raise ValueError("Single axis expected when shapes of a and weights differ")
+                raise ValueError("Single axis expected when shapes of a and \
+                    weights differ") 
             elif not weights.shape[0] == a.shape[axis]:
                 raise ValueError("Length of weights not "
                                   "compatible with specified axis.")
         
-            weights = ivy.broadcast_to(weights, shape=(a_ndim - 1) * (1,) + weights_shape)
+            weights = ivy.broadcast_to(
+                weights, 
+                shape=(a_ndim - 1) * (1,) + weights_shape
+            ) ###
             weights = ivy.moveaxis(weights, -1, axis)
     
         weights_sum = ivy.sum(weights, axis=axis)
