@@ -916,7 +916,7 @@ def test_vecdot(
     kd=st.booleans(),
     ord=st.one_of(
         helpers.ints(min_value=1, max_value=2),
-        helpers.floats(min_value=1., max_value=2.)
+        helpers.floats(min_value=1.0, max_value=2.0),
     ),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
     test_gradient=st.just(True),
