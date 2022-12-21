@@ -12,7 +12,9 @@ class Tensor:
         )
 
     def __repr__(self):
-        return "ivy.frontends.torch.Tensor(" + str(ivy.to_list(self._ivy_array)) + ")"
+        return str(self._ivy_array.__repr__()).replace(
+            "ivy.array", "ivy.frontends.torch.Tensor"
+        )
 
     # Properties #
     # ---------- #
@@ -20,6 +22,18 @@ class Tensor:
     @property
     def ivy_array(self):
         return self._ivy_array
+
+    @property
+    def device(self):
+        return ivy.dev(self._ivy_array)
+
+    @property
+    def dtype(self):
+        return self._ivy_array.dtype
+
+    @property
+    def shape(self):
+        return "torch.Size(" + str(list(self._ivy_array.shape)) + ")"
 
     # Setters #
     # --------#
@@ -32,12 +46,27 @@ class Tensor:
 
     # Instance Methods #
     # ---------------- #
-    def reshape(self, shape):
-        return torch_frontend.reshape(self._ivy_array, shape)
+    def reshape(self, *args, shape=None):
+        if args and shape:
+            raise TypeError("reshape() got multiple values for argument 'shape'")
+        if shape is not None:
+            return torch_frontend.reshape(self._ivy_array, shape)
+        if args:
+            if isinstance(args[0], tuple):
+                shape = args[0]
+                return torch_frontend.reshape(self._ivy_array, shape)
+            else:
+                return torch_frontend.reshape(self._ivy_array, args)
+        return torch_frontend.reshape(self._ivy_array)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self._ivy_array, other, alpha=alpha)
 
+    def chunk(self, chunks, dim=0):
+        return torch_frontend.chunk(self._ivy_array, chunks, dim=dim)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add_(self, other, *, alpha=1):
         self._ivy_array = self.add(other, alpha=alpha).ivy_array
         return self
@@ -50,7 +79,7 @@ class Tensor:
         return self
 
     def sum(self):
-        return torch_frontend.sum(self._ivyArray)
+        return torch_frontend.sum(self._ivy_array)
 
     def sin(self):
         return torch_frontend.sin(self._ivy_array)
@@ -69,6 +98,7 @@ class Tensor:
     def cos(self):
         return torch_frontend.cos(self._ivy_array)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def cos_(self):
         self._ivy_array = self.cos().ivy_array
         return self
@@ -93,6 +123,10 @@ class Tensor:
     def atan_(self):
         self._ivy_array = self.atan().ivy_array
         return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def atan2(self, other):
+        return torch_frontend.atan2(self._ivy_array, other)
 
     def view(self, shape):
         return torch_frontend.ViewTensor(weakref.ref(self), shape=shape)
@@ -285,17 +319,14 @@ class Tensor:
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self._ivy_array, dim=dim, keepdim=keepdim)
 
-    def device(self):
-        return ivy.dev(self._ivy_array)
-
     def is_cuda(self):
         return "gpu" in ivy.dev(self._ivy_array)
 
-    def pow(self, other):
-        return ivy.pow(self._ivy_array, other)
+    def pow(self, exponent):
+        return ivy.pow(self._ivy_array, exponent)
 
-    def pow_(self, other):
-        self._ivy_array = self.pow(other).ivy_array
+    def pow_(self, exponent):
+        self._ivy_array = self.pow(exponent).data
         return self
 
     def size(self, dim=None):
@@ -311,11 +342,14 @@ class Tensor:
                     "but got {}".format(len(shape), len(shape) - 1, dim)
                 )
 
-    def matmul(self, tensor2):
-        return torch_frontend.matmul(self._ivy_array, tensor2)
+    def matmul(self, other):
+        return torch_frontend.matmul(self._ivy_array, other)
 
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self._ivy_array, dim=dim, keepdim=keepdim)
+
+    def argmin(self, dim=None, keepdim=False):
+        return torch_frontend.argmin(self._ivy_array, dim=dim, keepdim=keepdim)
 
     def ceil(self):
         return torch_frontend.ceil(self._ivy_array)
@@ -342,12 +376,73 @@ class Tensor:
     def cumsum(self, dim, dtype):
         return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
 
+    def inverse(self):
+        return torch_frontend.inverse(self._ivy_array)
+
+    def neg(self):
+        return torch_frontend.negative(self._ivy_array)
+
+    def int(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.int32)
+
+    def bool(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.bool)
+
+    def type(self, dtype=None, non_blocking=False, **kwargs):
+        if ivy.exists(dtype):
+            return ivy.astype(self._ivy_array, dtype)
+        else:
+            return str(self._ivy_array.dtype)
+
+    def type_as(self, other):
+        if self.dtype == other.dtype:
+            return self._ivy_array
+        else:
+            return ivy.astype(self._ivy_array, other.dtype)
+
+    def byte(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.uint8)
+
+    def ne(self, other):
+        return torch_frontend.ne(self._ivy_array, other)
+
+    def squeeze(self, dim):
+        return torch_frontend.squeeze(self._ivy_array, dim)
+
+    def flip(self, dims):
+        return torch_frontend.flip(self._ivy_array, dims)
+
+    def sort(self, dim=-1, descending=False):
+        return torch_frontend.sort(self._ivy_array, dim=dim, descending=descending)
+
+    def tril(self, diagonal=0):
+        return torch_frontend.tril(self._ivy_array, diagonal=diagonal)
+
+    def index_select(self, dim, index):
+        return torch_frontend.index_select(self._ivy_array, dim, index)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def sqrt(self):
+        return torch_frontend.sqrt(self._ivy_array)
+
+    def where(self, condition, other):
+        return ivy.where(condition, self._ivy_array, other)
+
+    def clone(self, memory_format=None):
+        return torch_frontend.tensor(ivy.array(self._ivy_array, copy=True))
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def acosh(self):
+        return torch_frontend.acosh(self._ivy_array)
+
     # Special Methods #
     # -------------------#
 
-    def __add__(self, other, *, alpha=1):
-        return torch_frontend.add(self._ivy_array, other, alpha=alpha)
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __add__(self, other):
+        return torch_frontend.add(self._ivy_array, other)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __mod__(self, other):
         return torch_frontend.remainder(self._ivy_array, other)
 
@@ -358,25 +453,26 @@ class Tensor:
         ret = ivy.get_item(self._ivy_array, query)
         return torch_frontend.tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
-    def __radd__(self, other, *, alpha=1):
-        return torch_frontend.add(
-            torch_frontend.mul(other, alpha), self._ivy_array, alpha=1
-        )
+    def __radd__(self, other):
+        return torch_frontend.add(other, self._ivy_array)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __mul__(self, other):
         return torch_frontend.mul(self._ivy_array, other)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __rmul__(self, other):
         return torch_frontend.mul(other, self._ivy_array)
 
-    def __sub__(self, other, *, alpha=1):
-        return torch_frontend.subtract(self._ivy_array, other, alpha=alpha)
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __sub__(self, other):
+        return torch_frontend.subtract(self._ivy_array, other)
 
-    def __truediv__(self, other, *, rounding_mode=None):
-        return torch_frontend.div(self._ivy_array, other, rounding_mode=rounding_mode)
+    def __truediv__(self, other):
+        return torch_frontend.div(self._ivy_array, other)
 
-    def __iadd__(self, other, *, alpha=1):
-        self._ivy_array = self.__add__(other, alpha=alpha).ivy_array
+    def __iadd__(self, other):
+        self._ivy_array = self.__add__(other).ivy_array
         return self
 
     def __imod__(self, other):
@@ -387,13 +483,40 @@ class Tensor:
         self._ivy_array = self.__mul__(other).ivy_array
         return self
 
-    def __isub__(self, other, *, alpha=1):
-        self._ivy_array = self.__sub__(other, alpha=alpha).ivy_array
+    def __isub__(self, other):
+        self._ivy_array = self.__sub__(other).ivy_array
         return self
 
-    def __itruediv__(self, other, *, rounding_mode=None):
-        self._ivy_array = self.__truediv__(other, rounding_mode=rounding_mode).ivy_array
+    def __itruediv__(self, other):
+        self._ivy_array = self.__truediv__(other).ivy_array
         return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __eq__(self, other):
+        return ivy.equal(self._ivy_array, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __gt__(self, other):
+        return torch_frontend.greater(self._ivy_array, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __ne__(self, other):
+        return torch_frontend.ne(self._ivy_array, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __rsub__(self, other):
+        return torch_frontend.subtract(other, self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __lt__(self, other):
+        return torch_frontend.less(self._ivy_array, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __or__(self, other):
+        return torch_frontend.bitwise_or(self._ivy_array, other)
+
+    def __invert__(self):
+        return torch_frontend.bitwise_not(self._ivy_array)
 
     # Method aliases
     absolute, absolute_ = abs, abs_

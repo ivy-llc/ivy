@@ -1,5 +1,6 @@
 # local
 import ivy
+import math
 from ivy.func_wrapper import with_unsupported_dtypes
 
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
@@ -66,12 +67,35 @@ def _rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
     return ret
 
 
+def kernels(ind, outd):
+    def start_index(a, b, c):
+        return math.floor((float(a) * float(c)) / b)
+
+    def end_index(a, b, c):
+        return math.ceil((float(a + 1) * float(c)) / b)
+
+    results = []
+    for ow in range(outd):
+        start = start_index(ow, outd, ind)
+        end = end_index(ow, outd, ind)
+        sz = end - start
+        results.append((start, sz))
+    return results
+
+
+def kernel_indexes(ind, out):
+    startsLengths = kernels(ind, out)
+    return [list(range(start, start + length)) for (start, length) in startsLengths]
+
+
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def sigmoid(input):
     return ivy.sigmoid(input)
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def leaky_relu(input, negative_slope=0.01, inplace=False):
     ret = ivy.leaky_relu(input, alpha=negative_slope)
     if inplace:
@@ -81,6 +105,7 @@ def leaky_relu(input, negative_slope=0.01, inplace=False):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def softmax(input, dim=None, _stacklevel=3, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
@@ -88,6 +113,15 @@ def softmax(input, dim=None, _stacklevel=3, dtype=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def gelu(
     input,
 ):  # , *, approximate="none"): ToDo: approximate is added in in PyTorch 1.12.1
@@ -99,16 +133,27 @@ def gelu(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def tanh(input):
     return ivy.tanh(input)
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def logsigmoid(input):
     return ivy.negative(ivy.softplus(ivy.negative(input)))
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def softmin(input, dim=None, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
@@ -230,6 +275,7 @@ def softshrink(input, lambd=0.5):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def silu(input, inplace=False):
     ret = ivy.multiply(input, ivy.sigmoid(input))
     if inplace:
@@ -245,6 +291,7 @@ def glu(input, dim=-1):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def log_softmax(input, dim=None, _stacklevel=3, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
@@ -254,11 +301,13 @@ def log_softmax(input, dim=None, _stacklevel=3, dtype=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def tanhshrink(input):
     return ivy.subtract(input, ivy.tanh(input))
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def leaky_relu_(input, negative_slope=0.01):
     ret = ivy.leaky_relu(input, alpha=negative_slope)
     ivy.inplace_update(input, ret)
@@ -323,12 +372,29 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def softplus(input, beta=1, threshold=20):
     return ivy.softplus(input, beta=beta, threshold=threshold)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
     shape = ivy.shape(input)
     assert shape[1] % num_groups == 0
@@ -360,3 +426,82 @@ def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
     )
 
     return ret
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def batch_norm(
+    input,
+    running_mean,
+    running_var,
+    weight=None,
+    bias=None,
+    training=False,
+    momentum=0.1,
+    eps=1e-5,
+):
+    if training:
+        dim = 0 if len(input.shape) == 2 else (0, 2, 3)
+        current_mean = ivy.mean(input, axis=dim)
+        current_var = ivy.var(input, axis=dim)
+    else:
+        current_mean = running_mean
+        current_var = running_var
+
+    input = ivy.swapaxes(input, 1, -1)
+    input -= current_mean
+    input /= ivy.sqrt(current_var + eps)
+    if weight is not None:
+        input *= weight
+    if bias is not None:
+        input += bias
+
+    # updating running mean & var is useless in functional API?
+    running_mean = (1.0 - momentum) * running_mean + momentum * current_mean
+    running_var = (1.0 - momentum) * running_var + momentum * current_var
+
+    return ivy.swapaxes(input, 1, -1)
+
+
+# Refrence: https://stackoverflow.com/a/63603993
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def adaptive_avg_pool1d(input, output_size):
+    squeeze = False
+    if len(input.shape) == 2:
+        input = ivy.expand_dims(input, axis=0)
+        squeeze = True
+    input_size = input.shape[-1]
+    if input_size % output_size == 0:
+        stride = input_size // output_size
+        kernel_size = input_size - (output_size - 1) * stride
+        pooled_output = ivy.avg_pool1d(
+            input, kernel_size, stride, "VALID", data_format="NCW"
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output
+    else:
+        kernels = kernel_indexes(input_size, output_size)
+        pooled_output = ivy.stack(
+            [sum([input[:, :, x] for x in xs]) / len(xs) for xs in kernels], axis=-1
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output

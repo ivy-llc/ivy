@@ -94,3 +94,30 @@ def hann_window(
     return tf.signal.hann_window(
         window_length, periodic=periodic, dtype=dtype, name=None
     )
+
+
+def tril_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: Optional[int] = 0,
+    /,
+    *,
+    device: str,
+) -> Tuple[Union[tf.Tensor, tf.Variable], ...]:
+    n_cols = n_rows if n_cols is None else n_cols
+
+    if n_rows < 0 or n_cols < 0:
+        n_rows, n_cols = 0, 0
+
+    ret = [[], []]
+
+    for i in range(-min(k, 0), n_rows, 1):
+        for j in range(0, min(n_cols, k + i + 1), 1):
+            ret[0].append(i)
+            ret[1].append(j)
+
+    if device is not None:
+        with tf.device(ivy.as_native_dev(device)):
+            return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
+
+    return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))

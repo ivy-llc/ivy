@@ -4,6 +4,7 @@ from typing import Any
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.jax.numpy import can_cast
 
 
 @to_ivy_arrays_and_back
@@ -117,7 +118,10 @@ def conv_transpose(
 
 @to_ivy_arrays_and_back
 def convert_element_type(operand, new_dtype):
-    return ivy.astype(operand, new_dtype)
+    assert can_cast(ivy.dtype(operand), new_dtype), "Cannot cast from {} to {}".format(
+        ivy.dtype(operand), new_dtype
+    )
+    return ivy.astype(operand, new_dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -131,17 +135,16 @@ def cosh(x):
 
 
 @to_ivy_arrays_and_back
-def cumprod(operand, axis=0, reverse=False):
-    if reverse:
-        return ivy.flip(ivy.cumprod(ivy.flip(operand), axis, dtype=operand.dtype))
-    return ivy.cumprod(operand, axis, dtype=operand.dtype)
+def cumprod(operand, axis=None, reverse=False):
+    dtype = ivy.dtype(operand)
+    return ivy.cumprod(operand, axis=axis, reverse=reverse).astype(dtype)
 
 
 @to_ivy_arrays_and_back
-def cumsum(operand, axis=0, reverse=False):
+def cumsum(operand, axis=None, reverse=False):
     if reverse:
-        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis, dtype=operand.dtype))
-    return ivy.cumsum(operand, axis, dtype=operand.dtype)
+        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis=axis, dtype=operand.dtype))
+    return ivy.cumsum(operand, axis=axis, dtype=operand.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -151,10 +154,10 @@ def div(x, y):
 
 @to_ivy_arrays_and_back
 def dot(lhs, rhs, precision=None, preferred_element_type=None):
+    ret = ivy.matmul(lhs, rhs)
     if preferred_element_type:
-        lhs = ivy.astype(lhs, dtype=preferred_element_type)
-        rhs = ivy.astype(rhs, dtype=preferred_element_type)
-    return ivy.tensordot(lhs, rhs)
+        ret = ivy.astype(ret, preferred_element_type, copy=False)
+    return ret
 
 
 @to_ivy_arrays_and_back
@@ -277,8 +280,17 @@ def rev(operand, dimensions):
 
 
 @to_ivy_arrays_and_back
-def round(x):
-    return ivy.round(x)
+def round(x, rounding_method=1):
+    if rounding_method == 0:
+        ret = ivy.where(
+            ivy.less(x, 0),
+            ivy.ceil(x) - (ivy.ceil(x) - ivy.floor(x)),
+            ivy.ceil(x),
+        )
+    elif rounding_method == 1:
+        ret = ivy.ceil(x)
+        ret = ivy.where(ivy.remainder(ret, 2) == 0, ret, ret - 1)
+    return ivy.where(ivy.abs(x - ivy.floor(x) - 0.5) < 1e-7, ret, ivy.round(x))
 
 
 @to_ivy_arrays_and_back
@@ -349,3 +361,8 @@ def asinh(x):
 @to_ivy_arrays_and_back
 def atanh(x):
     return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
+def select(pred, on_true, on_false):
+    return ivy.where(pred, on_true, on_false)

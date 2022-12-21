@@ -8,9 +8,9 @@ from operator import mul
 
 # local
 import ivy
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtypes
 from . import general_helpers as gh
 from . import dtype_helpers, number_helpers
-import ivy.functional.backends.numpy as ivy_np  # ToDo should be removed.
 
 
 @st.composite
@@ -83,7 +83,7 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
 def dtype_and_values(
     draw,
     *,
-    available_dtypes=ivy_np.valid_dtypes,
+    available_dtypes=get_dtypes("valid"),
     num_arrays=1,
     abs_smallest_val=None,
     min_value=None,
@@ -400,7 +400,7 @@ def array_indices_axis(
     draw,
     *,
     array_dtypes,
-    indices_dtypes=ivy_np.valid_int_dtypes,
+    indices_dtypes=get_dtypes("valid"),
     disable_random_axis=False,
     axis_zero=False,
     allow_inf=False,
@@ -882,7 +882,7 @@ def arrays_for_pooling(draw, min_dims, max_dims, min_side, max_side):
     )
     dtype, x = draw(
         dtype_and_values(
-            available_dtypes=dtype_helpers.get_dtypes("float"),
+            available_dtypes=get_dtypes("float"),
             shape=in_shape,
             num_arrays=1,
             max_value=100,

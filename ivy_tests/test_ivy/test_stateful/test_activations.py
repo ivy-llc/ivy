@@ -13,7 +13,10 @@ import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 @handle_method(
     method_tree="stateful.activations.GELU.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
     approximate=st.booleans(),
     method_num_positional_args=helpers.num_positional_args(fn_name="GELU._forward"),
@@ -29,6 +32,7 @@ def test_gelu(
     method_as_variable: pf.AsVariableFlags,
     method_native_array: pf.NativeArrayFlags,
     method_container: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     method_name,
     class_name,
     ground_truth_backend,
@@ -49,6 +53,9 @@ def test_gelu(
         method_all_as_kwargs_np={"x": x[0]},
         class_name=class_name,
         method_name=method_name,
+        atol_=1e-2,
+        rtol_=1e-2,
+        test_gradients=test_gradients,
     )
 
 
@@ -58,8 +65,8 @@ def test_gelu(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
     num_positional_args_method=helpers.num_positional_args(fn_name="GEGLU._forward"),
@@ -72,6 +79,7 @@ def test_geglu(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     class_name,
     method_name,
     ground_truth_backend,
@@ -91,5 +99,7 @@ def test_geglu(
         method_all_as_kwargs_np={"inputs": x[0]},
         class_name=class_name,
         method_name=method_name,
-        atol_=1e-3,
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=test_gradients,
     )

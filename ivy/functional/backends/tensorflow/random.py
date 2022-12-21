@@ -75,9 +75,6 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ivy.assertions.check_true(
-        replace, message="TensorFlow does not support multinomial without replacement"
-    )
     with tf.device(device):
         if probs is None:
             probs = (
@@ -89,11 +86,41 @@ def multinomial(
                 )
                 / population_size
             )
+
+        # We set the global seed, but not the operation seeds below. In this way, we
+        # get different results for every random op call but the same sequence for
+        # every re-run of the program
         if seed:
             tf.random.set_seed(seed)
-        if len(probs.numpy().shape) == 1:
-            probs = tf.expand_dims(probs, axis=0)
-        return tf.random.categorical(tf.math.log(probs), num_samples, seed=seed)
+
+        if not replace:
+            orig_probs_shape = list(probs.shape)
+            probs_flat = tf.reshape(probs, (-1, orig_probs_shape[-1]))
+            probs_flat = probs_flat / tf.math.reduce_sum(
+                probs_flat, axis=-1, keepdims=True
+            )
+            probs_stack = tf.split(probs_flat, probs_flat.shape[0])
+            samples_stack = []
+            for prob in probs_stack:
+                logits = tf.dtypes.cast(tf.math.log(prob), tf.float64)
+                # Gumbel-max trick
+                # https://github.com/tensorflow/tensorflow/issues/9260
+                z = tf.dtypes.cast(
+                    -tf.math.log(
+                        -tf.math.log(tf.random.uniform(tf.shape(logits), 0, 1))
+                    ),
+                    tf.float64,
+                )
+                _, indices = tf.nn.top_k(logits + z, k=num_samples)
+                samples_stack.append(indices)
+            samples_flat = tf.stack(samples_stack)
+            return tf.convert_to_tensor(
+                tf.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples])
+            )
+        else:
+            if len(probs.numpy().shape) == 1:
+                probs = tf.expand_dims(probs, axis=0)
+            return tf.random.categorical(tf.math.log(probs), num_samples)
 
 
 def randint(
