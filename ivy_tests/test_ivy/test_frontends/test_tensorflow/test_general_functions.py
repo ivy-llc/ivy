@@ -998,7 +998,7 @@ def _get_perm_helper(draw):
     perm=_get_perm_helper(),
     conjugate=st.booleans(),
 )
-def test_tensorflow_general_functions_transpose(
+def test_tensorflow_transpose(
     *,
     dtype_and_x,
     perm,
