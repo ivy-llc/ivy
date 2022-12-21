@@ -115,40 +115,15 @@ def nanquantile(
     interpolation: str = None,
     out: Optional[torch.tensor] = None,
 ) -> torch.Tensor:
-    #return torch.nanquantile(
     if axis is None:
-        return torch.quantile(a, q, keepdim=keepdims, interpolation=interpolation)
-
+        return torch.nanquantile(a, q, keepdim=keepdims, interpolation=interpolation)
     if isinstance(axis, list) or isinstance(axis, tuple):
-        """
-        In Tensorflow, Jax, and Numpy backends when multiple axes are provided, first
-        the tensor/array gets flatten along those axes such that it preserves the size
-        of the remaining axes. Afterwards, it compute the quantile(s) along axis = 0.
-
-        In Torch backend, it is not possible to provide multiple axes. Therefore it is
-        needed to mimic same procedure to reach desired shape of tensor/array and
-        compute quantile(s) along axis=0.
-        """
-
         desired_shape = []
         current_shape = a.size()
-
         for i in range(len(current_shape)):
             if i not in axis:
                 desired_shape += [current_shape[i]]
-
         a = a.reshape((-1,) + tuple(desired_shape))
-
-        a = torch.quantile(a, q, dim=0, keepdim=keepdims, interpolation=interpolation)
-
+        a = torch.nanquantile(a, q, dim=0, keepdim=keepdims, interpolation=interpolation)
         return a
-
-    return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
-     #   a,
-     #   q=q,
-     #   dim=axis,
-     #   keepdim=keepdims,
-     #   interpolation=interpolation,
-     #   out=out,
-     #   )
-        
+    return torch.nanquantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
