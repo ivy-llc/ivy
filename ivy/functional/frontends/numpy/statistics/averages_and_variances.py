@@ -126,15 +126,7 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
 
 
 @to_ivy_arrays_and_back
-def cov(
-    x,
-    y=None,
-    bias=False,
-    dtype=None,
-    fweights=None,
-    aweights=None,
-    ddof=None
-):
+def cov(x, y=None, bias=False, dtype=None, fweights=None, aweights=None, ddof=None):
     # check if inputs are valid
     input_check = ivy.valid_dtype(dtype) and x.ndim in [0, 1]
 
@@ -158,7 +150,7 @@ def cov(
             # if w exists, use weighted average
             xw = x.multiply(w)
             w_sum = ivy.sum(w)
-            average = ivy.stable_divide(ivy.sum(xw, axis=1) , w_sum)
+            average = ivy.stable_divide(ivy.sum(xw, axis=1), w_sum)
         else:
             # else compute arithmetic average
             average = ivy.mean(x, axis=1)

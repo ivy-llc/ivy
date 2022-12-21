@@ -363,13 +363,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
                 }
         }
         >>> ivy.Container.eigvals(c)['x']['xx']
-        (
-            ivy.array([-0.37228107+0.j,  5.3722816 +0.j]),
-            ivy.array([
-                    [-0.8245648 +0.j, -0.41597357+0.j],
-                    [0.56576747+0.j, -0.9093767 +0.j]
-                ])
-        )
+        ivy.array([-0.37228107+0.j,  5.3722816 +0.j])
         """
         return ContainerBase.cont_multi_map_in_static_method(
             "eigvals",
@@ -388,6 +382,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.eigvals.
@@ -420,6 +415,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         """
         return self.static_eigvals(
             self,
+            out=out,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

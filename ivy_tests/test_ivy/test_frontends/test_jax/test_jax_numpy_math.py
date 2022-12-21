@@ -232,7 +232,11 @@ def test_jax_numpy_tanh(
 # sinh
 @handle_frontend_test(
     fn_tree="jax.numpy.sinh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
 )
 def test_jax_numpy_sinh(
     *,
@@ -626,7 +630,11 @@ def test_jax_numpy_arcsin(
 # arcsinh
 @handle_frontend_test(
     fn_tree="jax.numpy.arcsinh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
 )
 def test_jax_numpy_arcsinh(
     *,
@@ -934,8 +942,8 @@ def test_jax_numpy_i0(
     fn_tree="jax.numpy.kron",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=3,
+        min_num_dims=2,
+        max_num_dims=2,
         min_dim_size=1,
         max_dim_size=3,
         num_arrays=2,
@@ -972,8 +980,8 @@ def test_jax_numpy_kron(
     fn_tree="jax.numpy.lcm",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=2,
         shared_dtype=True,
+        num_arrays=2,
         min_num_dims=1,
         max_num_dims=3,
         min_value=-100,
@@ -992,6 +1000,11 @@ def test_jax_numpy_lcm(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    value_test = True
+    # Skip Tensorflow backend value test for lcm
+    # https://github.com/tensorflow/tensorflow/issues/58955
+    if ivy.current_backend_str() == "tensorflow":
+        value_test = False
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1003,6 +1016,7 @@ def test_jax_numpy_lcm(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        test_values=value_test,
     )
 
 
@@ -1482,7 +1496,7 @@ def test_jax_numpy_negative(
 @handle_frontend_test(
     fn_tree="jax.numpy.rad2deg",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
     ),
 )
 def test_jax_numpy_rad2deg(

@@ -3,6 +3,9 @@ import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
+from ivy.functional.frontends.jax.numpy import (
+    promote_types_of_jax_inputs as promote_jax_arrays,
+)
 
 
 @to_ivy_arrays_and_back
@@ -55,6 +58,7 @@ def not_equal(x1, x2):
 
 @to_ivy_arrays_and_back
 def less(x1, x2):
+    x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.less(x1, x2)
 
 

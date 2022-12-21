@@ -387,7 +387,7 @@ class Tensor:
 
     def bool(self, memory_format=None):
         return ivy.astype(self._ivy_array, ivy.bool)
-    
+
     def type(self, dtype=None, non_blocking=False, **kwargs):
         if ivy.exists(dtype):
             return ivy.astype(self._ivy_array, dtype)
@@ -434,7 +434,7 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh(self):
         return torch_frontend.acosh(self._ivy_array)
-    
+
     # Special Methods #
     # -------------------#
 

@@ -145,6 +145,7 @@ def kron(a, b):
 
 @to_ivy_arrays_and_back
 def lcm(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.lcm(x1, x2)
 
 
