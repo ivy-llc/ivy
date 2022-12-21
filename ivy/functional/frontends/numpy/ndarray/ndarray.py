@@ -23,7 +23,7 @@ class ndarray:
             self._f_contiguous = False
 
     def __repr__(self):
-        return "ivy.frontends.numpy.ndarray(" + str(ivy.to_list(self._ivy_array)) + ")"
+        return "ivy.frontends.numpy.ndarray(" + self.__str__() + ")"
 
     # Properties #
     # ---------- #
@@ -337,7 +337,7 @@ class ndarray:
         return ivy.array(ivy.reshape(self._ivy_array, -1), dtype=ivy.float64)[0]
 
     def __str__(self):
-        return self._ivy_array.__str__()
+        return str(ivy.to_list(self._ivy_array))
 
     def __contains__(self, key, /):
         return key in ivy.reshape(self._ivy_array, -1)
