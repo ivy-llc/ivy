@@ -2,6 +2,7 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
@@ -100,6 +101,7 @@ def matrix_power(a, n):
 
 @to_ivy_arrays_and_back
 def tensorsolve(a, b, axes=None):
+    a, b = promote_types_of_jax_inputs(a, b)
     return ivy.tensorsolve(a, b, axes=axes)
 
 
