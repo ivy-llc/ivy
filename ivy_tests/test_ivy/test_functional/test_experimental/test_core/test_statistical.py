@@ -244,7 +244,6 @@ def test_quantile(
     dtype_x_axis=statistical_dtype_values(function="quantile"),
     q=st.floats(min_value=0, max_value=1),
     keepdims=st.booleans(),
-    interpolation=st.data(),
 )
 def test_nanquantile(
     *,
