@@ -143,3 +143,29 @@ def test_numpy_isscalar(
         on_device=on_device,
         element=element,
     )
+
+@handle_frontend_test(
+    fn_tree="numpy.iscomplex",
+    element=st.booleans() | st.floats() | st.integers() | st.strings(),
+)
+def test_numpy_iscomplex(
+    *,
+    element,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.all_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        element=element,
+    )
