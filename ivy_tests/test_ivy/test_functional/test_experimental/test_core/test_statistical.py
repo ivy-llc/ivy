@@ -242,12 +242,10 @@ def test_quantile(
 @handle_test(
     fn_tree="functional.experimental.nanquantile",
     dtype_x_axis=statistical_dtype_values(function="quantile"),
-    q=st.floats(min_value=0, max_value=1),
     keepdims=st.booleans(),
 )
 def test_nanquantile(
     *,
-    q,
     dtype_x_axis,
     keepdims,
     test_flags,
