@@ -441,6 +441,10 @@ class Tensor:
     def masked_fill(self, mask, value):
         return ivy.where(mask, value, self._ivy_array)
 
+    def masked_fill_(self, mask, value):
+        self._ivy_array = self.masked_fill(mask, value).ivy_array
+        return self
+
     # Special Methods #
     # -------------------#
 
