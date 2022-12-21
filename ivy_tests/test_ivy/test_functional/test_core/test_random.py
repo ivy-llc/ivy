@@ -1,7 +1,7 @@
 """Collection of tests for unified reduction functions."""
 
 # global
-from hypothesis import assume, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy
@@ -164,7 +164,6 @@ def _pop_size_num_samples_replace_n_probs(draw):
     fn_tree="functional.ivy.multinomial",
     everything=_pop_size_num_samples_replace_n_probs(),
     seed=helpers.ints(min_value=0, max_value=100),
-    ground_truth_backend="numpy",
 )
 def test_multinomial(
     *,
@@ -177,9 +176,6 @@ def test_multinomial(
     ground_truth_backend,
 ):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
-    # tensorflow does not support multinomial without replacement
-    if backend_fw == ivy.functional.backends.tensorflow:
-        assume(replace)
 
     def call():
         return helpers.test_function(
@@ -213,6 +209,7 @@ def test_multinomial(
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
+        assert u.shape == v.shape
 
 
 @st.composite
