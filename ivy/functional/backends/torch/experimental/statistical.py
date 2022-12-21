@@ -115,15 +115,4 @@ def nanquantile(
     interpolation: str = None,
     out: Optional[torch.tensor] = None,
 ) -> torch.Tensor:
-    if axis is None:
-        return torch.quantile(a, q, keepdim=keepdims, interpolation=interpolation)
-    if isinstance(axis, list) or isinstance(axis, tuple):
-        desired_shape = []
-        current_shape = a.size()
-        for i in range(len(current_shape)):
-            if i not in axis:
-                desired_shape += [current_shape[i]]
-        a = a.reshape((-1,) + tuple(desired_shape))
-        a = torch.quantile(a, q, dim=0, keepdim=keepdims, interpolation=interpolation)
-        return a
     return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
