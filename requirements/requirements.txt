@@ -1,7 +1,7 @@
-numpy==1.23.0
-einops==0.4.1
-psutil==5.9.1
-termcolor==1.1.0
-colorama==0.4.5
-packaging==21.3
+numpy
+einops                         # experimenting with the versions, not specifying here 
+psutil                         # so that the best version for the current library is installed automatically by pip
+termcolor                      # you should not be seeing this message in master, if you are...well someone screwed up
+colorama
+packaging
 nvidia-ml-py<=11.495.46 # mod_name=pynvml
