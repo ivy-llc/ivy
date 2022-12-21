@@ -944,7 +944,7 @@ class ContainerWithLayersExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_seperable_conv2d(
+    def static_separable_conv2d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         depthwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],
         pointwise_filter: Union[int, Tuple[int], Tuple[int, int, int]],

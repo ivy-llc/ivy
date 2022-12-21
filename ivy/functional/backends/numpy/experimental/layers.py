@@ -3,7 +3,6 @@
 import math
 import numpy as np
 from typing import Optional, Union, Tuple, Literal
-from scipy.signal import convolve
 
 # local
 import ivy
@@ -543,15 +542,11 @@ def separable_conv2d(
     if padding == 'SAME':
         x = np.pad(x, ((1, 1), (1, 1), (0, 0)), mode='constant')
 
-    res = np.empty(x.shape)
+    depthwise_conv = np.tensordot(x, depthwise_filter, axes=([3], [2]))
 
-    for i in range(x.shape[2]):
-        res[:, :, i] = convolve(x[:, :, i], depthwise_filter, mode='valid')
+    pointwise_conv = np.tensordot(depthwise_conv, pointwise_filter, axes=([3], [2]))
 
-    if padding == 'SAME':
-        res = res[1:-1, 1:-1, :]
-
-    res = np.matmul(res, pointwise_filter)
+    res = pointwise_conv
 
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
