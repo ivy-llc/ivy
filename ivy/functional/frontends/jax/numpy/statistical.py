@@ -4,7 +4,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_dtype
-from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
+from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs, promote_types_jax
 
 
 @to_ivy_arrays_and_back
@@ -148,10 +148,8 @@ def max(a, axis=None, out=None, keepdims=False, where=None):
 amax = max
 
 
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def average(a, axis, weights = None,returned = False, keepdims = False, dtype=None):
-    assert ivy.is_array(a)
+def average(a, axis, weights = None,returned = False, keepdims = False):
 
     # canonicalize_axis to ensure axis or the values in axis > 0
     if axis is None:
@@ -171,14 +169,12 @@ def average(a, axis, weights = None,returned = False, keepdims = False, dtype=No
         axis = tuple(new_axis)
     else:
         raise TypeError("Argument 'axis' only support following int/tuple/list")
-
-    if dtype is None:
-        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
     
     if weights is None: 
         ret = ivy.mean(a, axis=axis, keepdims=keepdims)
         if axis is None:
-            weights_sum = ivy.full(shape=(),fill_value=a.size,dtype=ret.dtype)
+            fill_value = int(a.size) if ivy.is_int_dtype(ret) else float(a.size)
+            weights_sum = ivy.full(shape=(),fill_value=fill_value,dtype=ret.dtype)
         else:
             if isinstance(axis, tuple):
                 # prod with axis has dtype Sequence[int]
@@ -187,8 +183,11 @@ def average(a, axis, weights = None,returned = False, keepdims = False, dtype=No
                     fill_value *= a.shape[d]
             else:
                 fill_value = a.shape[axis]
-            weights_sum = ivy.full_like(x=ret,fill_value=fill_value)
+            fill_value = int(fill_value) if ivy.is_int_dtype(ret) else float(fill_value)
+            weights_sum = ivy.full_like(ret,fill_value=fill_value)
     else:
+        a = ivy.asarray(a, copy=False)
+        weights = ivy.asarray(weights,copy=False)
         a, weights = promote_types_of_jax_inputs(a, weights)
 
         a_shape = ivy.shape(a)
@@ -209,17 +208,15 @@ def average(a, axis, weights = None,returned = False, keepdims = False, dtype=No
                 raise ValueError("Length of weights not "
                                   "compatible with specified axis.")
         
-        weights = ivy.broadcast_to(weights, shape=(a_ndim - 1) * (1,) + weights_shape)
-        weights = ivy.moveaxis(weights,source=-1,destination=axis)
+            weights = ivy.broadcast_to(weights, shape=(a_ndim - 1) * (1,) + weights_shape)
+            weights = ivy.moveaxis(weights,-1,axis)
     
-    weighted_sum = ivy.sum(weights,axis=axis)
-    ret = ivy.sum(a * weights, axis=axis, keepdims=keepdims) / weighted_sum
-    ret = ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
+        weights_sum = ivy.sum(weights,axis=axis)
+        ret = ivy.sum(a * weights, axis=axis, keepdims=keepdims) / weights_sum
 
     if returned:
       if ret.shape != weights_sum.shape:
         weights_sum = ivy.broadcast_to(weights_sum, shape=ret.shape)
-        weights_sum = ivy.astype(weights_sum, ivy.as_ivy_dtype(dtype), copy=False)
       return ret, weights_sum
 
     return ret
