@@ -108,7 +108,7 @@ def test_torch_inv_ex(
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-03,
-        A=x[0],
+        input=x[0],
     )
 
 
