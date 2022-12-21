@@ -108,5 +108,5 @@ def inv_ex(input, *, check_errors=False, out=None):
             raise RuntimeError(e)
         else:
             inputInv = input * math.nan
-            info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
+            info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
             return inputInv, info
