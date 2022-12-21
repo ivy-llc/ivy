@@ -357,8 +357,9 @@ def Shape(*, input, output_type=ivy.int32, name="Shape"):
     return ivy.astype(ivy.shape(input, as_array=True), output_type, copy=False)
 
 
-ShapeN = to_ivy_arrays_and_back(map_raw_ops_alias(
-    tf_frontend.general_functions.shape_n))
+ShapeN = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.general_functions.shape_n)
+)
 
 
 @to_ivy_arrays_and_back
