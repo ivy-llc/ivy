@@ -11,4 +11,3 @@ def msort(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.sort(a, axis=0)
-
