@@ -285,7 +285,14 @@ def test_eig(
 @handle_test(
     fn_tree="functional.experimental.eigvals",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=(ivy.float32, ivy.float64, ivy.int32, ivy.int64),
+        available_dtypes=(
+            ivy.float32,
+            ivy.float64,
+            ivy.int32,
+            ivy.int64,
+            ivy.complex64,
+            ivy.complex128,
+        ),
         min_num_dims=2,
         max_num_dims=3,
         min_dim_size=10,
