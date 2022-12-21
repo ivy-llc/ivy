@@ -82,7 +82,7 @@ def test_torch_inv(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_value=0,
-        max_value=25,
+        max_value=20,
         shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
 )
@@ -102,14 +102,13 @@ def test_torch_inv_ex(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        all_aliases=["inverse"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-03,
-        input=x[0],
+        A=x[0],
     )
 
 
