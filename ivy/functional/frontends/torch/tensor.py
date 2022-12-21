@@ -344,6 +344,9 @@ class Tensor:
 
     def matmul(self, other):
         return torch_frontend.matmul(self._ivy_array, other)
+    
+    def argwhere(self):
+        return torch_frontend.argwhere(self._ivy_array)
 
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self._ivy_array, dim=dim, keepdim=keepdim)
