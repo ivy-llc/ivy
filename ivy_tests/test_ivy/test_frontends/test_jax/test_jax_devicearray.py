@@ -262,7 +262,7 @@ def test_jax_special_rpow(
 
 # __all__
 @handle_frontend_test(
-    fn_tree="numpy.ndarray",  # dummy fn_tree
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
