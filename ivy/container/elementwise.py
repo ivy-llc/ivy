@@ -1523,6 +1523,24 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results.
             The returned array must have the same data type as ``x``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[False, True, False], b=[True, True, False])
+        >>> y = ivy.Container.static_bitwise_invert(x)
+        >>> print(y)
+        {
+            a: ivy.array([True, False, True]),
+            b: ivy.array([False, False, True])
+        }
+
+        >>> x = ivy.Container(a=[1, 2, 3], b=[4, 5, 6])
+        >>> y = ivy.Container.static_bitwise_invert(x)
+        >>> print(y)
+        {
+            a: ivy.array([-2, -3, -4]),
+            b: ivy.array([-5, -6, -7])
+        }
         """
         return ContainerBase.cont_multi_map_in_static_method(
             "bitwise_invert",
@@ -1572,6 +1590,24 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results.
             The returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[False, True, False], b=[True, True, False])
+        >>> y = x.bitwise_invert()
+        >>> print(y)
+        {
+            a: ivy.array([True, False, True]),
+            b: ivy.array([False, False, True])
+        }
+
+        >>> x = ivy.Container(a=[1, 2, 3], b=[4, 5, 6])
+        >>> y = x.bitwise_invert()
+        >>> print(y)
+        {
+            a: ivy.array([-2, -3, -4]),
+            b: ivy.array([-5, -6, -7])
+        }
         """
         return self.static_bitwise_invert(
             self,
@@ -4860,35 +4896,32 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using 'ivy.Container' instance
 
-        >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
+        >>> a = ivy.Container(a=ivy.array([True, False, True, False]))
+        >>> b = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> w = ivy.Container.static_logical_and(a, b)
+        >>> print(w)
+        {
+            a:ivy.array([True,False,False,False])
+        }
+
         >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> m = ivy.array([False, True, False, True])
+        >>> x = ivy.Container.static_logical_and(j, m)
+        >>> print(x)
+        {
+            a:ivy.array([False,True,False,False])
+        }
+
+
         >>> k = ivy.Container(a=ivy.array([True, False, True]),
         ...                   b=ivy.array([True, False, False]))
         >>> l = ivy.Container(a=ivy.array([True, True, True]),
         ...                   b=ivy.array([False, False, False]))
-        >>> m = ivy.array([False, True, False, True])
-        >>> n = ivy.array([True, False, True, False])
-
-        >>> w = ivy.Container.static_logical_and(i, j)
-        >>> x = ivy.Container.static_logical_and(j, m)
-        >>> y = ivy.Container.static_logical_and(m, n)
         >>> z = ivy.Container.static_logical_and(k, l)
-        {
-            a: ivy.array([True, False, False, False])
-        }
-
-        >>> print(x)
-        {
-            a: ivy.array([False, True, False, False])
-        }
-
-        >>> print(y)
-        ivy.array([False, False, False, False])
-
         >>> print(z)
         {
-            a: ivy.array([True, False, True]),
-            b: ivy.array([False, False, False])
+            a:ivy.array([True,False,True]),
+            b:ivy.array([False,False,False])
         }
         """
         return ContainerBase.cont_multi_map_in_static_method(
@@ -4951,33 +4984,27 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using 'ivy.Container' instance
 
-        >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
-        >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
-        >>> k = ivy.Container(a=ivy.array([True, False, True]),
-        ...                   b=ivy.array([True, False, False]))
-        >>> l = ivy.Container(a=ivy.array([True, True, True]),
-        ...                   b=ivy.array([False, False, False]))
-        >>> m = ivy.array([False, True, False, True])
-        >>> n = ivy.array([True, False, True, False])
-
-        >>> w = i.logical_and(j)
-        >>> x = j.logical_and(m)
-        >>> y = m.logical_and(n)
-        >>> z = k.logical_and(l)
-
+        >>> a = ivy.Container(a=ivy.array([True, False, True, False]))
+        >>> b = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> w = a.logical_and(b)
         >>> print(w)
         {
             a:ivy.array([True,False,False,False])
         }
 
+        >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> m = ivy.array([False, True, False, True])
+        >>> x = j.logical_and(m)
         >>> print(x)
         {
             a:ivy.array([False,True,False,False])
         }
 
-        >>> print(y)
-        ivy.array([False, False, False, False])
-
+        >>> k = ivy.Container(a=ivy.array([True, False, True]),
+        ...                   b=ivy.array([True, False, False]))
+        >>> l = ivy.Container(a=ivy.array([True, True, True]),
+        ...                   b=ivy.array([False, False, False]))
+        >>> z = k.logical_and(l)
         >>> print(z)
         {
             a:ivy.array([True,False,True]),
