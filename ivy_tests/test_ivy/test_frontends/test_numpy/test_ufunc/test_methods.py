@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_method
 CLASS_TREE = "ivy.functional.frontends.numpy.ufunc"
 
 
-#at
+# at
 @handle_frontend_method(
     method_name="at",
     init_tree="numpy.ufunc",
