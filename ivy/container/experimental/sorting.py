@@ -140,24 +140,3 @@ class ContainerWithSortingExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-
-    def lexsort(
-        self: ivy.Container,
-        /,
-        *,
-        axis: int = -1,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        return self.static_lexsort(
-            self,
-            axis=axis,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
