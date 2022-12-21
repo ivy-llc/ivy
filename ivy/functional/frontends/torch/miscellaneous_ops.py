@@ -150,8 +150,15 @@ def renorm(input, p, dim, maxnorm, *, out=None):
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("float16", "bfloat16", "integer",)},
-    "torch")
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+            "integer",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def logcumsumexp(input, dim, *, out=None):
     if len(input.shape) == 0:

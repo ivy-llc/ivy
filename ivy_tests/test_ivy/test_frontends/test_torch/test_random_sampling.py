@@ -84,7 +84,7 @@ def test_torch_manual_seed(
     frontend,
 ):
     # just test calling the function
-    frontend_fw = importlib.import_module(fn_tree[25: fn_tree.rfind(".")])
+    frontend_fw = importlib.import_module(fn_tree[25 : fn_tree.rfind(".")])
     split_index = fn_tree.rfind(".")
-    fn_mod, fn_name = fn_tree[:split_index], fn_tree[split_index + 1:]
+    _, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
     frontend_fw.__dict__[fn_name](seed)
