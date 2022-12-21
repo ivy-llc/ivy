@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import numpy as np
 
 
@@ -41,3 +41,23 @@ def unravel_index(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.unravel_index(indices, shape)
+
+
+def quantile(
+    a: np.ndarray,
+    q: Union[float, np.ndarray],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    interpolation: str = "linear",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    # quantile method in numpy backend, always return an array with dtype=float64.
+    # in other backends, the output is the same dtype as the input.
+
+    tuple(axis) if isinstance(axis, list) else axis
+
+    return np.quantile(
+        a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
+    ).astype(a.dtype)

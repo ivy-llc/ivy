@@ -8,7 +8,6 @@ from typing import Optional
 # local
 from ivy.func_wrapper import _wrap_function
 
-
 backend_stack = []
 implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
@@ -259,12 +258,15 @@ def set_backend(backend: str):
     backend_stack.append(backend)
     set_backend_to_specific_version(backend)
     for k, v in ivy_original_dict.items():
+        compositional = k not in backend.__dict__
         if k not in backend.__dict__:
             if k in backend.invalid_dtypes and k in ivy.__dict__:
                 del ivy.__dict__[k]
                 continue
             backend.__dict__[k] = v
-        ivy.__dict__[k] = _wrap_function(key=k, to_wrap=backend.__dict__[k], original=v)
+        ivy.__dict__[k] = _wrap_function(
+            key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
+        )
 
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
@@ -357,17 +359,17 @@ def unset_backend():
 
     Examples
     --------
-    Torch is the last set backend hence is the backend backend used here:
+    Torch is the last set backend hence is the backend used in the first examples.
+    However, as seen in the example after, if `unset_backend` is called before
+    `ivy.native_array` then tensorflow will become the current backend and any
+    torch backend implementations in the Ivy dict will be swapped with the
+    tensorflow implementation::
 
     >>> ivy.set_backend("tensorflow")
     >>> ivy.set_backend("torch")
     >>> x = ivy.native_array([1])
     >>> print(type(x))
     <class 'torch.Tensor'>
-
-    However if `unset_backend` is called before `ivy.native_array` then tensorflow
-    will become the current backend and any torch backend implementations in the
-    Ivy dict will be swapped with the tensorflow implementation:
 
     >>> ivy.set_backend("tensorflow")
     >>> ivy.set_backend("torch")

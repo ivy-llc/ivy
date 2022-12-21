@@ -21,7 +21,6 @@ from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 
 
-@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -137,7 +136,8 @@ def flatten(
           [ 4, 19, 16, 17],
           [ 2, 12,  8, 14]]]))
     """
-    x = ivy.reshape(x, (1, -1))[0, :]  # if it's 0-d convert to 1-d
+    if x.shape == ():
+        x = ivy.reshape(x, (1, -1))[0, :]
     if start_dim == end_dim:
         return x
     if start_dim not in range(-len(x.shape), len(x.shape)):
@@ -164,6 +164,9 @@ def flatten(
     for i in range(end_dim + 1, len(x.shape)):
         lst.insert(i, x.shape[i])
     return ivy.reshape(x, tuple(lst), order=order)
+
+
+flatten.mixed_function = True
 
 
 @to_native_arrays_and_back
@@ -730,13 +733,15 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
     if right_length is None or max_length < right_length:
         right_length = max_length
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
-    left_chunk = padded[left_slice]
-    left_stat = stat_func(ivy.array(left_chunk), axis=axis, keepdims=True)
+    left_chunk = ivy.array(padded[left_slice])
+    left_stat = stat_func(left_chunk, axis=axis, keepdims=True).astype(left_chunk.dtype)
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
-    right_chunk = padded[right_slice]
-    right_stat = stat_func(ivy.array(right_chunk), axis=axis, keepdims=True)
+    right_chunk = ivy.array(padded[right_slice])
+    right_stat = stat_func(right_chunk, axis=axis, keepdims=True).astype(
+        right_chunk.dtype
+    )
     return left_stat, right_stat
 
 
@@ -1055,7 +1060,7 @@ def pad(
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> padding = ((1, 1), (2, 2))
-    >>> y = ivy.pad(x, padding, mode="constant")
+    >>> y = ivy.pad(x, padding, mode="constant", constant_values=0)
     >>> print(y)
     ivy.array([[0, 0, 0, 0, 0, 0, 0],
                [0, 0, 1, 2, 3, 0, 0],
@@ -1384,6 +1389,52 @@ def atleast_2d(
     [ivy.array([[6]]), ivy.array([[7]]), ivy.array([[8]])]
     """
     return ivy.current_backend().atleast_2d(*arys)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def atleast_3d(
+    *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
+) -> List[ivy.Array]:
+    """Convert inputs to arrays with at least three dimension.
+    Scalar inputs are converted to 3-dimensional arrays, whilst
+    higher-dimensional inputs are preserved.
+
+    Parameters
+    ----------
+    arys
+        One or more array-like sequences. Non-array inputs are
+        converted to arrays. Arrays that already have three or more
+        dimensions are preserved.
+
+    Returns
+    -------
+    ret
+        An array, or list of arrays, each with a.ndim >= 3. Copies
+        are avoided where possible, and views with three or more
+        dimensions are returned. For example, a 1-D array of shape
+        (N,) becomes a view of shape (1, N, 1), and a 2-D array of
+        shape (M, N) becomes a view of shape (M, N, 1).
+
+    Examples
+    --------
+    >>> ary1 = ivy.array([5,6])
+    >>> ivy.atleast_3d(ary1)
+    ivy.array([[[5],
+            [6]]])
+    >>> ary2 = ivy.array([[[3,4]]])
+    >>> ivy.atleast_3d(ary2)
+    ivy.array([[[3, 4]]])
+    >>> ary3 = ivy.array([[3,4],[9,10]])
+    >>> ivy.atleast_3d(6,7,ary3)
+    [ivy.array([[[6]]]), ivy.array([[[7]]]), ivy.array([[[ 3],
+            [ 4]],
+
+           [[ 9],
+            [10]]])]
+    """
+    return ivy.current_backend().atleast_3d(*arys)
 
 
 @to_native_arrays_and_back

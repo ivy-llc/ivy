@@ -64,7 +64,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: (7, 6, 2)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "moveaxis",
             a,
             source,
@@ -159,7 +159,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([1.0, 1.0])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "heaviside",
             x1,
             x2,
@@ -251,7 +251,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([3, 2, 1, 0])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "flipud",
             m,
             key_chains=key_chains,
@@ -333,8 +333,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
                         [[1, 0]]])
         }
         """
-        new_xs = xs.copy()
-        new_xs.insert(0, self.copy())
+        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
+        new_xs.insert(0, self.cont_copy())
         return self.static_vstack(
             new_xs,
             key_chains=key_chains,
@@ -377,7 +377,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                           [2]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "vstack",
             xs,
             key_chains=key_chains,
@@ -417,8 +417,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([[4, 5, 1, 0]])
         }
         """
-        new_xs = xs.copy()
-        new_xs.insert(0, self.copy())
+        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
+        new_xs.insert(0, self.cont_copy())
         return self.static_hstack(
             new_xs,
             key_chains=key_chains,
@@ -456,7 +456,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             a: ivy.array([1, 2, 3, 0, 0, 0])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "hstack",
             xs,
             key_chains=key_chains,
@@ -527,7 +527,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                           [1, 7]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "rot90",
             m,
             k=k,
@@ -676,7 +676,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             ]
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "top_k",
             x,
             k,
@@ -820,7 +820,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                           [6, 5, 4]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "fliplr",
             m,
             key_chains=key_chains,
@@ -908,7 +908,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array(11.30192195)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "i0",
             x,
             key_chains=key_chains,
@@ -1017,7 +1017,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([9, 13, 11, 15, 10, 14, 12, 16])
         }]
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "flatten",
             x,
             key_chains=key_chains,
@@ -1131,7 +1131,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         wraps the function, and so the docstring for ivy.pad also applies to
         this method with minimal changes.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "pad",
             input,
             pad_width,
@@ -1264,7 +1264,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "vsplit",
             ary,
             indices_or_sections=indices_or_sections,
@@ -1396,7 +1396,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "dsplit",
             ary,
             indices_or_sections=indices_or_sections,
@@ -1513,7 +1513,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             c: ivy.array([[3]]),
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "atleast_1d",
             *arys,
             key_chains=key_chains,
@@ -1618,8 +1618,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
                            [[5, 0]]])
         }
         """
-        new_xs = xs.copy()
-        new_xs.insert(0, self.copy())
+        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
+        new_xs.insert(0, self.cont_copy())
         return self.static_dstack(
             new_xs,
             key_chains=key_chains,
@@ -1661,7 +1661,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([[0, 1, 2])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "dstack",
             xs,
             key_chains=key_chains,
@@ -1717,7 +1717,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             c: ivy.array([[3]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "atleast_2d",
             *arys,
             key_chains=key_chains,
@@ -1789,6 +1789,130 @@ class ContainerWithManipulationExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_atleast_3d(
+        *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> List[ivy.Container]:
+        """
+        ivy.Container static method variant of ivy.atleast_3d. This method simply wraps
+        the function, and so the docstring for ivy.atleast_3d also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        arys
+            one or more container with array inputs.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            container or list of container where each elements within container is
+            atleast 3D. Copies are made only if necessary. For example, a 1-D array
+            of shape (N,) becomes a view of shape (1, N, 1), and a 2-D array of shape
+            (M, N) becomes a view of shape (M, N, 1).
+
+        Examples
+        --------
+        >>> ary = ivy.Container(a=ivy.array(1), b=ivy.array([3,4,5]),\
+                        c=ivy.array([[3]]))
+        >>> ivy.Container.static_atleast_3d(ary)
+        {
+            a: ivy.array([[[1]]]),
+            b: ivy.array([[[3],
+                           [4],
+                           [5]]]),
+            c: ivy.array([[[3]]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_static_method(
+            "atleast_3d",
+            *arys,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def atleast_3d(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> List[ivy.Container]:
+        """ivy.Container instance method variant of ivy.atleast_3d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_3d also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with array inputs.
+        arys
+            one or more container with array inputs.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            container or list of container where each elements within container is
+            atleast 3D. Copies are made only if necessary. For example, a 1-D array
+            of shape (N,) becomes a view of shape (1, N, 1), and a 2-D array of shape
+            (M, N) becomes a view of shape (M, N, 1).
+
+        Examples
+        --------
+        >>> ary1 = ivy.Container(a=ivy.array(1), b=ivy.array([3,4]),\
+                            c=ivy.array([[5]]))
+        >>> ary2 = ivy.Container(a=ivy.array(9), b=ivy.array(2),\
+                            c=ivy.array(3))
+        >>> ary1.atleast_3d(ary2)
+        [{
+            a: ivy.array([[[1]]]),
+            b: ivy.array([[[3],
+                           [4]]]),
+            c: ivy.array([[[5]]])
+        }, {
+            a: ivy.array([[[9]]]),
+            b: ivy.array([[[2]]]),
+            c: ivy.array([[[3]]])
+        }]
+        """
+        return self.static_atleast_3d(
+            self,
+            *arys,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_take_along_axis(
         arr: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1846,7 +1970,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                           [8, 7]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "take_along_axis",
             arr,
             indices,
@@ -1996,7 +2120,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                         [14., 15.]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "hsplit",
             ary,
             indices_or_sections=indices_or_sections,

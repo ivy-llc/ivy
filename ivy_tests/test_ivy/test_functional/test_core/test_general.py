@@ -3,19 +3,49 @@
 # global
 import time
 import math
-import jax.numpy as jnp
+from types import SimpleNamespace
+
+try:
+    import tensorflow as tf
+except ImportError:
+    tf = SimpleNamespace()
+    tf.__version__ = None
+
+
+try:
+    import jax.numpy as jnp
+except ImportError:
+    jnp = SimpleNamespace()
+
 import pytest
 from hypothesis import given, assume, strategies as st
 import numpy as np
 from collections.abc import Sequence
-import torch.multiprocessing as multiprocessing
+
+try:
+    import torch.multiprocessing as multiprocessing
+except ImportError:
+    multiprocessing = SimpleNamespace()
 
 # local
 import threading
 import ivy
-import ivy.functional.backends.jax
-import ivy.functional.backends.tensorflow
-import ivy.functional.backends.torch
+
+try:
+    import ivy.functional.backends.jax
+except ImportError:
+    ivy.functional.backends.jax = SimpleNamespace()
+
+try:
+    import ivy.functional.backends.tensorflow
+except ImportError:
+    ivy.functional.backends.tensorflow = SimpleNamespace()
+
+try:
+    import ivy.functional.backends.torch
+except ImportError:
+    ivy.functional.backends.torch = SimpleNamespace()
+
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
@@ -121,15 +151,11 @@ def test_get_referrers_recursive():
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ),
+    test_with_out=st.just(False),
 )
 def test_array_equal(
     dtypes_and_xs,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -138,12 +164,8 @@ def test_array_equal(
     dtypes, arrays = dtypes_and_xs
     helpers.test_function(
         input_dtypes=dtypes,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -198,35 +220,25 @@ def array_and_boolean_mask(
         ),
         array_and_boolean_mask(array_dtypes=helpers.get_dtypes("valid")),
     ),
+    test_with_out=st.just(False),
+    test_gradient=st.just(False),
 )
 def test_get_item(
     dtype_x_indices,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtypes, x, indices = dtype_x_indices
     helpers.test_function(
         input_dtypes=dtypes,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=test_gradients,
-        xs_grad_idxs=[["0", "0"]],
         x=x,
         query=indices,
     )
@@ -239,17 +251,13 @@ def test_get_item(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
     copy=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_to_numpy(
     *,
     dtype_x,
     copy,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -261,12 +269,8 @@ def test_to_numpy(
         return
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -286,15 +290,11 @@ def test_to_numpy(
         max_dim_size=1,
         large_abs_safety_factor=20,
     ),
+    test_with_out=st.just(False),
 )
 def test_to_scalar(
     x0_n_x1_n_res,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -303,12 +303,8 @@ def test_to_scalar(
     dtype, x = x0_n_x1_n_res
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -323,15 +319,11 @@ def test_to_scalar(
         available_dtypes=helpers.get_dtypes("valid"),
         large_abs_safety_factor=20,
     ),
+    test_with_out=st.just(False),
 )
 def test_to_list(
     x0_n_x1_n_res,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -340,12 +332,8 @@ def test_to_list(
     dtype, x = x0_n_x1_n_res
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -361,30 +349,24 @@ def test_to_list(
         available_dtypes=helpers.get_dtypes("valid")
     ),
     as_array=st.booleans(),
+    test_with_out=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_shape(
     x0_n_x1_n_res,
     as_array,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
     dtype, x = x0_n_x1_n_res
+    # instance_method=False because the shape property would overwrite the shape method
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -400,16 +382,12 @@ def test_shape(
         available_dtypes=helpers.get_dtypes("valid")
     ),
     as_array=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_get_num_dims(
     x0_n_x1_n_res,
     as_array,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -418,12 +396,8 @@ def test_get_num_dims(
     dtype, x = x0_n_x1_n_res
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -438,8 +412,9 @@ def _vector_norm_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
             min_num_dims=1,
-            large_abs_safety_factor=4,
-            small_abs_safety_factor=4,
+            min_value=-100,
+            max_value=100,
+            abs_smallest_val=1e-2,
             safety_factor_scale="log",
         )
     )
@@ -452,17 +427,13 @@ def _vector_norm_helper(draw):
         max_p = math.log(max_val) / math.log(max_x)
     else:
         max_p = math.log(max_val)
-    p = draw(
-        helpers.floats(
-            small_abs_safety_factor=2, safety_factor_scale="log", max_value=max_p
-        )
-    )
+    p = draw(helpers.floats(abs_smallest_val=1e-2, min_value=-max_p, max_value=max_p))
     max_norm_val = math.log(max_val / max_x)
     max_norm = draw(
         helpers.floats(
-            small_abs_safety_factor=2,
+            large_abs_safety_factor=4,
             safety_factor_scale="log",
-            min_value=0,
+            min_value=1e-2,
             max_value=max_norm_val,
         )
     )
@@ -477,33 +448,22 @@ def _vector_norm_helper(draw):
 def test_clip_vector_norm(
     *,
     dtype_x_max_norm_p,
-    as_variable,
-    num_positional_args,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtype, x, max_norm, p = dtype_x_max_norm_p
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-1,
         atol_=1e-1,
-        test_gradients=test_gradients,
         x=x[0],
         max_norm=max_norm,
         p=p,
@@ -651,35 +611,39 @@ def values_and_ndindices(
                 max_num_dims=1,
                 min_dim_size=n,
                 max_dim_size=n,
-            ).filter(lambda l: len(set(l[1][0])) == len(l[1][0])),
+            ).filter(lambda d_n_v: len(set(d_n_v[1][0])) == len(d_n_v[1][0])),
             st.integers(min_value=n, max_value=n),
         )
     ),
     reduction=st.sampled_from(["sum", "min", "max", "replace"]),
+    ground_truth_backend="torch",
 )
 def test_scatter_flat(
     x,
     reduction,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
+    # scatter_flat throws an error while computing gradients for tensorflow
+    # this has been fixed in the newer versions of tensorflow (2.10.0 onwards)
+    if "tensorflow" in backend_fw.__name__:
+        grad_support_version = [2, 10, 0]
+        k = 0
+        for number in [int(s) for s in tf.__version__.split(".") if s.isdigit()]:
+            if k > len(grad_support_version):
+                break
+            if number < grad_support_version[k]:
+                test_flags.gradient = False
+            k += 1
     (val_dtype, vals), (ind_dtype, ind), size = x
     helpers.test_function(
         input_dtypes=ind_dtype + val_dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        xs_grad_idxs=[[0, 1]],
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -706,12 +670,7 @@ def test_scatter_flat(
 def test_scatter_nd(
     x,
     reduction,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -721,12 +680,8 @@ def test_scatter_nd(
     shape = vals.shape
     helpers.test_function(
         input_dtypes=[ind_dtype, update_dtype],
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -751,32 +706,21 @@ def test_scatter_nd(
 )
 def test_gather(
     params_indices_others,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtypes, params, indices, axis, batch_dims = params_indices_others
     helpers.test_function(
         input_dtypes=dtypes,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=test_gradients,
-        xs_grad_idxs=[["0", "0"]],
+        xs_grad_idxs=[[0, 0]],
         params=params,
         indices=indices,
         axis=axis,
@@ -877,32 +821,21 @@ def ndindices_with_bounds(
 )
 def test_gather_nd(
     params_n_ndindices_batch_dims,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtypes, params, ndindices, batch_dims = params_n_ndindices_batch_dims
     helpers.test_function(
         input_dtypes=dtypes,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=test_gradients,
-        xs_grad_idxs=[["0", "0"]],
+        xs_grad_idxs=[[0, 0]],
         params=params,
         indices=ndindices,
         batch_dims=batch_dims,
@@ -1209,32 +1142,21 @@ def test_explicit_ivy_framework_handles():
 def test_einops_rearrange(
     dtype_x,
     pattern_and_axes_lengths,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=test_gradients,
         x=x[0],
         pattern=pattern,
         **axes_lengths,
@@ -1272,12 +1194,7 @@ def test_einops_reduce(
     pattern_and_axes_lengths,
     floattypes,
     reduction,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1289,12 +1206,8 @@ def test_einops_reduce(
         dtype = ["float32"]
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1331,16 +1244,10 @@ def test_einops_repeat(
     *,
     dtype_x,
     pattern_and_axes_lengths,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     pattern, axes_lengths = pattern_and_axes_lengths
@@ -1348,16 +1255,11 @@ def test_einops_repeat(
     assume("uint16" not in dtype)
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=test_gradients,
         x=x[0],
         pattern=pattern,
         **axes_lengths,
@@ -1482,35 +1384,32 @@ def test_inplace_increment(x_val_and_dtypes, tensor_fn, on_device):
         available_dtypes=helpers.get_dtypes("valid")
     ),
     exclusive=st.booleans(),
+    ground_truth_backend="numpy",
+    as_variable_flags=st.just([False]),
+    test_with_out=st.just(False),
 )
 def test_is_ivy_array(
     *,
     x_val_and_dtypes,
     exclusive,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
     dtype, x = x_val_and_dtypes
+    # as_variable=False as the result can't be consistent across backends
+    if test_flags.container[0]:
+        # container instance methods should also not be tested
+        test_flags.instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        ground_truth_backend="numpy",
         x=x[0],
         exclusive=exclusive,
     )
@@ -1523,31 +1422,28 @@ def test_is_ivy_array(
         available_dtypes=helpers.get_dtypes("valid")
     ),
     exclusive=st.booleans(),
+    container_flags=st.just([False]),
+    test_with_out=st.just(False),
 )
 def test_is_native_array(
     *,
     x_val_and_dtypes,
+    test_flags,
     exclusive,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
     dtype, x = x_val_and_dtypes
+    # as_variable=False as the result can't be consistent across backends
+    if test_flags.container[0]:
+        # container instance methods should also not be tested
+        test_flags.instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1563,30 +1459,27 @@ def test_is_native_array(
         available_dtypes=helpers.get_dtypes("valid")
     ),
     exclusive=st.booleans(),
+    container_flags=st.just([False]),
+    test_with_out=st.just(False),
 )
 def test_is_array(
     x_val_and_dtypes,
     exclusive,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
     dtype, x = x_val_and_dtypes
+    # as_variable=False as the result can't be consistent across backends
+    if test_flags.container[0]:
+        # container instance methods should also not be tested
+        test_flags.instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1601,15 +1494,12 @@ def test_is_array(
     x_val_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid")
     ),
+    test_with_out=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_is_ivy_container(
     x_val_and_dtypes,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1618,12 +1508,8 @@ def test_is_ivy_container(
     dtype, x = x_val_and_dtypes
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1640,15 +1526,12 @@ def test_is_ivy_container(
         min_num_dims=1,
     ),
     equality_matrix=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_all_equal(
     dtypes_and_xs,
     equality_matrix,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1660,15 +1543,11 @@ def test_all_equal(
     for x_ in arrays:
         kw["x{}".format(i)] = x_
         i += 1
-    num_positional_args = len(arrays)
+    test_flags.num_positional_args = len(arrays)
     helpers.test_function(
         input_dtypes=dtypes,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1697,33 +1576,22 @@ def test_clip_matrix_norm(
     dtype_x,
     max_norm,
     p,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=test_gradients,
         x=x[0],
         max_norm=max_norm,
         p=p,
@@ -1741,17 +1609,13 @@ def test_clip_matrix_norm(
         allow_inf=True,
     ),
     include_infs=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_value_is_nan(
     *,
     val_dtype,
     include_infs,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1760,12 +1624,8 @@ def test_value_is_nan(
     dtype, val = val_dtype
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1783,17 +1643,13 @@ def test_value_is_nan(
         allow_inf=True,
     ),
     include_infs=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_has_nans(
     *,
     x_val_and_dtypes,
     include_infs,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1802,12 +1658,8 @@ def test_has_nans(
     dtype, x = x_val_and_dtypes
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1983,35 +1835,25 @@ def test_set_min_base(x):
         large_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
+    test_with_out=st.just(False),
 )
 def test_stable_divide(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=test_gradients,
         numerator=x[0],
         denominator=x[1],
         min_denominator=x[2],
@@ -2039,40 +1881,30 @@ def _get_valid_numeric_no_unsigned(draw):
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_stable_pow(
     *,
     dtypes_and_xs,
     dtype_and_min_base,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtypes, xs = dtypes_and_xs
     input_dtype_min_base, min_base = dtype_and_min_base
     assume(all(["bfloat16" not in x for x in dtypes + input_dtype_min_base]))
     helpers.test_function(
-        input_dtypes=dtypes + input_dtype_min_base,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        input_dtypes=input_dtype_min_base,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        rtol_=1e-2,
-        atol_=1e-2,
-        test_gradients=test_gradients,
+        rtol_=1e-1,
+        atol_=1e-1,
         base=xs[0][0],
         exponent=np.abs(xs[1]),
         min_base=min_base[0],
@@ -2129,15 +1961,11 @@ def test_set_tmp_dir():
     x_val_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid")
     ),
+    test_with_out=st.just(False),
 )
 def test_supports_inplace_updates(
     x_val_and_dtypes,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -2146,12 +1974,8 @@ def test_supports_inplace_updates(
     dtype, x = x_val_and_dtypes
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -2165,15 +1989,12 @@ def test_supports_inplace_updates(
     x_val_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid")
     ),
+    ground_truth_backend="numpy",
+    test_with_out=st.just(False),
 )
 def test_assert_supports_inplace(
     x_val_and_dtypes,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -2185,16 +2006,11 @@ def test_assert_supports_inplace(
     assume("bfloat16" not in dtype)
     helpers.test_function(
         input_dtypes=dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        ground_truth_backend="numpy",
         x=x[0],
     )
 

@@ -1,7 +1,8 @@
 import sys
 
+
 run = int(sys.argv[1])
-backends = ["numpy", "torch", "jax", "tensorflow"]
+backends = ["numpy", "jax", "tensorflow", "torch"]
 submodules = [
     "activations",
     "layers",

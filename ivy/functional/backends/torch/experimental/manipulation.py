@@ -1,4 +1,5 @@
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
+from numbers import Number
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import torch
@@ -90,13 +91,13 @@ def top_k(
         "top_k", [("values", torch.Tensor), ("indices", torch.Tensor)]
     )
     if not largest:
-        indices = torch.argsort(x, dim=axis, stable=True)
-        indices = torch.take(indices, torch.arange(k), dim=axis)
+        indices = torch.argsort(x, dim=axis)
+        indices = torch.index_select(indices, axis, torch.arange(k))
     else:
-        x *= -1
-        indices = torch.argsort(x, dim=axis, stable=True)
-        indices = torch.take(indices, torch.arange(k), dim=axis)
-        x *= -1
+        x = -x
+        indices = torch.argsort(x, dim=axis)
+        indices = torch.index_select(indices, axis, torch.arange(k))
+        x = -x
     val = torch.gather(x, axis, indices)
     return topk_res(val, indices)
 
@@ -181,6 +182,13 @@ def dstack(
 
 def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
     transformed = torch.atleast_2d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed
+
+
+def atleast_3d(*arys: Union[torch.Tensor, bool, Number]) -> List[torch.Tensor]:
+    transformed = torch.atleast_3d(*arys)
     if isinstance(transformed, tuple):
         return list(transformed)
     return transformed

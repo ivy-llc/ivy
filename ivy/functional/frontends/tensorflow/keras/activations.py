@@ -100,7 +100,7 @@ elu.supported_dtypes = {
 def selu(x):
     alpha = 1.6732632423543772848170429916717
     scale = ivy.astype(ivy.array(1.0507009873554804934193349852946), ivy.dtype(x))
-    return ivy.multiply(scale, elu(x=x, alpha=alpha))
+    return ivy.multiply(scale, elu(x=x, alpha=alpha).ivy_array)
 
 
 selu.supported_dtypes = {
