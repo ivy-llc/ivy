@@ -32,6 +32,7 @@ def test_gelu(
     method_as_variable: pf.AsVariableFlags,
     method_native_array: pf.NativeArrayFlags,
     method_container: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     method_name,
     class_name,
     ground_truth_backend,
@@ -54,6 +55,7 @@ def test_gelu(
         method_name=method_name,
         atol_=1e-2,
         rtol_=1e-2,
+        test_gradients=test_gradients,
     )
 
 
@@ -77,6 +79,7 @@ def test_geglu(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     class_name,
     method_name,
     ground_truth_backend,
@@ -98,4 +101,5 @@ def test_geglu(
         method_name=method_name,
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=test_gradients,
     )

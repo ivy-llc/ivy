@@ -1492,6 +1492,124 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_isneginf(self, out=out)
 
     @staticmethod
+    def static_angle(
+        z: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        deg: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.angle. This method simply wraps
+        the function, and so the docstring for ivy.angle also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        z
+            Array-like input.
+        deg
+            optional bool.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns an array of angles for each complex number in the input.
+            If def is False(default), angle is calculated in radian and if
+            def is True, then angle is calculated in degrees.
+
+        Examples
+        --------
+        >>> ivy.set_backend('tensorflow')
+        >>> x = ivy.Container(a=ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]),
+                                b=ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]))
+        >>> x
+        {
+            a: ivy.array([-2.25+4.75j, 3.25+5.75j]),
+            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+        }
+        >>> ivy.Container.static_angle(x)
+        {
+            a: ivy.array([2.01317055, 1.05634501]),
+            b: ivy.array([2.01317055, 1.05634501])
+        }
+        >>> ivy.set_backend('numpy')
+        >>> ivy.Container.static_angle(x,deg=True)
+        {
+            a: ivy.array([115.3461759, 60.524111]),
+            b: ivy.array([115.3461759, 60.524111])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_static_method(
+            "angle",
+            z,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            deg=deg,
+            out=out,
+        )
+
+    def angle(
+        self: ivy.Container,
+        /,
+        *,
+        deg: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.angle. This method simply
+        wraps the function, and so the docstring for ivy.angle also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        z
+            Array-like input.
+        deg
+            optional bool.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns an array of angles for each complex number in the input.
+            If def is False(default), angle is calculated in radian and if
+            def is True, then angle is calculated in degrees.
+
+        Examples
+        --------
+        >>> ivy.set_backend('tensorflow')
+        >>> x = ivy.Container(a=ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]),
+                                b=ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]))
+        >>> x
+        {
+            a: ivy.array([-2.25+4.75j, 3.25+5.75j]),
+            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+        }
+        >>> x.angle()
+        {
+            a: ivy.array([2.01317055, 1.05634501]),
+            b: ivy.array([2.01317055, 1.05634501])
+        }
+        >>> ivy.set_backend('numpy')
+        >>> x.angle(deg=True)
+        {
+            a: ivy.array([115.3461759, 60.524111]),
+            b: ivy.array([115.3461759, 60.524111])
+        }
+        """
+        return self.static_angle(self, deg=deg, out=out)
+
+    @staticmethod
     def static_nan_to_num(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1603,12 +1721,14 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3, nan]),\
-                               b=ivy.array([1, 2, 3, inf]))
-        >>> x.nan_to_num(posinf=5e+100)
+        >>> a = ivy.array([1., 2, 3, ivy.nan], dtype="float64")
+        >>> b = ivy.array([1., 2, 3, ivy.inf], dtype="float64")
+        >>> x = ivy.Container(a=a, b=b)
+        >>> ret = x.nan_to_num(posinf=5e+100)
+        >>> print(ret)
         {
-            a: ivy.array([1.,  1.,  3.,  0.0])
-            b: ivy.array([1., 2., 1.,  5e+100])
+            a: ivy.array([1., 2., 3., 0.]),
+            b: ivy.array([1.e+000, 2.e+000, 3.e+000, 5.e+100])
         }
         """
         return self.static_nan_to_num(
@@ -1853,8 +1973,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = ivy.Container.static_allclose(x1, x2)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
 
         >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -1864,8 +1984,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = ivy.Container.static_allclose(x1, x2, rtol=1e-3)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
         """
         return ContainerBase.cont_multi_map_in_static_method(
@@ -1942,8 +2062,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = x1.allclose(x2)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
 
         >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -1953,8 +2073,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = x1.allclose(x2, rtol=1e-3)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
         """
         return self.static_allclose(
@@ -1990,7 +2110,6 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ----------
         x
             input container with array-like items.
-        
         out
             optional output container, for writing the result to.
 
@@ -2034,7 +2153,6 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ----------
         self
             input container with array-like items.
-        
         out
             optional output container, for writing the result to.
 

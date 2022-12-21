@@ -963,8 +963,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-        ``MxN`` matrices. Should have a floating-point data type.
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form``MxN`` matrices. Should have a floating-point
+            data type.
         rtol
             relative tolerance for small singular values approximately less
             than or equal to ``rtol * largest_singular_value`` are set to zero.
@@ -982,23 +983,21 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        x = ivy.Container(a= ivy.array([[1., 2.],
-        ...                             [3., 4.]]))
-        y = pinv(x, None, None)
-        print(y)
+        >>> x = ivy.Container(a= ivy.array([[1., 2.], [3., 4.]]))
+        >>> y = ivy.Container.static_pinv(x)
+        >>> print(y)
         {
             a: ivy.array([[-2., 1.],
-        ...               [1.5, -0.5]])
+                          [1.5, -0.5]])
         }
 
-        x = ivy.Container(a=ivy.array([[1., 2.],
-        ...                            [3., 4.]]))
-        out = ivy.Container(a=ivy.array())
-        pinv(x, 0, out)
-        print(out)
+        >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))
+        >>> out = ivy.Container(a=ivy.zeros((2, 2)))
+        >>> ivy.Container.static_pinv(x, 0, out=out)
+        >>> print(out)
         {
             a: ivy.array([[0.0426, 0.0964],
-        ...               [0.0605, 0.1368]])
+                          [0.0605, 0.1368]])
         }
         """
         return ContainerBase.cont_multi_map_in_static_method(
@@ -1023,11 +1022,12 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-            ``MxN`` matrices. Should have a floating-point data type.
+            input array having shape ``(..., M, N)`` and whose innermost
+            two dimensions form``MxN`` matrices. Should have a floating-point
+            data type.
         rtol
-        relative tolerance for small singular values approximately less than or equal to
-            ``rtol * largest_singular_value`` are set to zero.
+            relative tolerance for small singular values approximately less
+            than or equal to ``rtol * largest_singular_value`` are set to zero.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -1043,25 +1043,22 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        x = ivy.Container(a= ivy.array([[1., 2.],
-        ...                             [3., 4.]]))
-        y = pinv(x, None, None)
-        print(y)
+        >>> x = ivy.Container(a= ivy.array([[1., 2.], [3., 4.]]))
+        >>> y = ivy.pinv(x)
+        >>> print(y)
         {
             a: ivy.array([[-2., 1.],
-        ...               [1.5, -0.5]])
+                          [1.5, -0.5]])
         }
 
-        x = ivy.Container(a=ivy.array([[1., 2.],
-        ...                            [3., 4.]]))
-        out = ivy.Container(a=ivy.array())
-        pinv(x, 0, out)
-        print(out)
+        >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))
+        >>> out = ivy.Container(a=ivy.array())
+        >>> ivy.pinv(x, 0., out=out)
+        >>> print(out)
         {
             a: ivy.array([[0.0426, 0.0964],
-        ...               [0.0605, 0.1368]])
+                          [0.0605, 0.1368]])
         }
-
         """
         return self.static_pinv(
             self,
@@ -2220,8 +2217,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
-        ord: Union[int, float, Literal[inf, -inf]] = 2,
+        keepdims: Optional[bool] = False,
+        ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2285,6 +2283,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
             +------------------+--------------------------------+
 
             Default: ``2``.
+        dtype
+            data type that may be used to perform the computation more precisely. The
+            input array ``x`` gets cast to ``dtype`` before the function's computations.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -2309,6 +2310,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             axis=axis,
             keepdims=keepdims,
             ord=ord,
+            dtype=dtype,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2321,8 +2323,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
-        ord: Union[int, float, Literal[inf, -inf]] = 2,
+        keepdims: Optional[bool] = False,
+        ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2385,6 +2388,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
             +------------------+--------------------------------+
 
             Default: ``2``.
+        dtype
+            data type that may be used to perform the computation more precisely. The
+            input array ``x`` gets cast to ``dtype`` before the function's computations.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -2407,6 +2413,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             axis=axis,
             keepdims=keepdims,
             ord=ord,
+            dtype=dtype,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

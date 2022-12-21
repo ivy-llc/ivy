@@ -108,6 +108,67 @@ class ArrayWithLayers(abc.ABC):
         mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.scaled_dot_product_attention.
+        This method simply wraps the function, and so the docstring for
+        ivy.scaled_dot_product_attention also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The queries input array. The shape of queries input array should be in
+            *[batch_shape,num_queries,feat_dim]*. The queries input array should
+            have the same size as keys and values.
+        k
+            The keys input array. The shape of keys input array should be in
+            *[batch_shape,num_keys,feat_dim]*. The keys input array should have
+            the same size as queries and values.
+        v
+            The values input array. The shape of values input should be in
+            *[batch_shape,num_keys,feat_dim]*. The values input array should
+            have the same size as queries and keys.
+        scale
+            The scale float value.
+            The scale float value is used to scale the query-key pairs before softmax.
+        mask
+            The mask input array. The mask to apply to the query-key values.
+            Default is None. The shape of mask input should be in
+            *[batch_shape,num_queries,num_keys]*.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The output following application of scaled dot-product attention.
+            The output array is the weighted sum produced by the attention score
+            and value. The shape of output array is
+            *[batch_shape,num_queries,feat_dim]* .
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
+        >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
+        >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
+        >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
+        >>> result = q.scaled_dot_product_attention(k, v, 1, mask=mask)
+        >>> print(result)
+        ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+
+        >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
+        >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
+        >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
+        >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
+        >>> out = ivy.zeros(shape=(1, 3, 2))
+        >>> q.scaled_dot_product_attention(k, v, 1, mask=mask, out=out)
+        >>> print(out)
+        ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+
+        """
         return ivy.scaled_dot_product_attention(
             self._data,
             k,
