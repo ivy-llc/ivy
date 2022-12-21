@@ -265,9 +265,6 @@ def dtypes_values_casting_dtype(
                 key=get_dtypes_key,
             )
         )[0]
-    # skipping uint64 just as not supported by torch backend
-    if dtype == "uint64":
-        dtype = draw(st.sampled_from(["int64", None]))
     return dtypes, values, casting, dtype
 
 
