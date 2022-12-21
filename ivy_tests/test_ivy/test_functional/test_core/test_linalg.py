@@ -914,7 +914,11 @@ def test_vecdot(
         max_value=1e04,
     ),
     kd=st.booleans(),
-    ord=helpers.ints(min_value=1, max_value=2),
+    ord=st.one_of(
+        helpers.ints(min_value=1, max_value=2),
+        helpers.floats(min_value=1.0, max_value=2.0),
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     test_gradient=st.just(True),
 )
 def test_vector_norm(
@@ -922,16 +926,17 @@ def test_vector_norm(
     dtype_values_axis,
     kd,
     ord,
+    dtype,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, axis = dtype_values_axis
+    x_dtype, x, axis = dtype_values_axis
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
+        input_dtypes=x_dtype,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -940,6 +945,7 @@ def test_vector_norm(
         axis=axis,
         keepdims=kd,
         ord=ord,
+        dtype=dtype[0],
     )
 
 
