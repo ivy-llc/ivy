@@ -10,8 +10,8 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_dtype
 @handle_numpy_casting
 def equal(
     x1,
@@ -43,8 +43,8 @@ def array_equal(a1, a2, equal_nan=False):
     return ivy.array(ivy.array_equal(a1 * ~a1nan, a2 * ~a2nan))
 
 
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_dtype
 @handle_numpy_casting
 def greater(
     x1,
@@ -65,8 +65,8 @@ def greater(
     return ret
 
 
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_dtype
 @handle_numpy_casting
 def greater_equal(
     x1,
@@ -87,8 +87,8 @@ def greater_equal(
     return ret
 
 
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_dtype
 @handle_numpy_casting
 def less(
     x1,
@@ -109,8 +109,8 @@ def less(
     return ret
 
 
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_dtype
 @handle_numpy_casting
 def less_equal(
     x1,
@@ -131,8 +131,8 @@ def less_equal(
     return ret
 
 
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_dtype
 @handle_numpy_casting
 def not_equal(
     x1,
