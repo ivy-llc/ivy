@@ -144,4 +144,4 @@ def var_mean(input, dim, unbiased, keepdim=False, *, out=None):
         input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
     )
     temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
-    return temp_var, temp_mean
+    return (temp_var, temp_mean)
