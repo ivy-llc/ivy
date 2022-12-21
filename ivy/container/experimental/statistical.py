@@ -53,7 +53,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             b: (7, 6, 2)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "median",
             input,
             axis=axis,
@@ -163,7 +163,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             y: 1.8
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nanmean",
             input,
             axis=axis,
@@ -270,7 +270,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             b: (ivy.array([5, 0], ivy.array([0, 2])))
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unravel_index",
             indices,
             shape=shape,
@@ -431,7 +431,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             y: ivy.array([1., 3.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "quantile",
             a,
             q,

@@ -94,6 +94,7 @@ RUN ln -s $(which python3) /usr/local/bin/python
 
 # For MXNet #
 # ----------#
+# TODO: MXNet is not supported, should modify this without breaking the docker build
 
 # Install NCCL
 RUN apt-get install -y wget

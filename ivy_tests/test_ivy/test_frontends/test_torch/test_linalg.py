@@ -3,9 +3,15 @@ import sys
 import numpy as np
 from hypothesis import strategies as st
 
+
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import assert_all_close
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (
+    dtype_value1_value2_axis,
+)
 
 
 # helpers
@@ -135,6 +141,37 @@ def test_torch_det(
     )
 
 
+# qr
+@handle_frontend_test(
+    fn_tree="torch.linalg.qr",
+    dtype_and_input=_get_dtype_and_matrix(),
+)
+def test_torch_qr(
+    *,
+    dtype_and_input,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-02,
+        atol=1e-05,
+        input=x[0],
+    )
+
+
 # slogdet
 @handle_frontend_test(
     fn_tree="torch.linalg.slogdet",
@@ -230,6 +267,48 @@ def test_torch_matrix_power(
     )
 
 
+# cross
+@handle_frontend_test(
+    fn_tree="torch.linalg.cross",
+    dtype_input_other_dim=dtype_value1_value2_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=-1e3,
+        max_value=1e3,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+)
+def test_torch_cross(
+    dtype_input_other_dim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    dtype, input, other, dim = dtype_input_other_dim
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        rtol=1e-2,
+        atol=1e-3,
+        input=input,
+        other=other,
+        dim=dim,
+    )
+
+
 @st.composite
 def _matrix_rank_helper(draw):
     dtype_x = draw(
@@ -276,4 +355,128 @@ def test_matrix_rank(
         input=x[0],
         rtol=rtol,
         atol=atol,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.cholesky",
+    dtype_and_x=_get_dtype_and_square_matrix(),
+    upper=st.booleans(),
+)
+def test_torch_cholesky(
+    *,
+    dtype_and_x,
+    upper,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x = dtype_and_x
+    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        all_aliases=["cholesky"],
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        input=x,
+        upper=upper,
+    )
+
+
+# svd
+@handle_frontend_test(
+    fn_tree="torch.linalg.svd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+    full_matrices=st.booleans(),
+)
+def test_torch_svd(
+    *,
+    dtype_and_x,
+    full_matrices,
+    with_out,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=dtype[0])
+    # make symmetric positive definite beforehand
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        atol=1e-03,
+        rtol=1e-05,
+        input=x,
+        full_matrices=full_matrices,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    u, s, vh = ret
+    frontend_u, frontend_s, frontend_vh = frontend_ret
+
+    assert_all_close(
+        ret_np=u @ np.diag(s) @ vh,
+        ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )
+
+
+# svdvals
+@handle_frontend_test(
+    fn_tree="torch.linalg.svdvals",
+    dtype_and_x=_get_dtype_and_square_matrix(),
+)
+def test_torch_svdvals(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        all_aliases=["svdvals"],
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
     )

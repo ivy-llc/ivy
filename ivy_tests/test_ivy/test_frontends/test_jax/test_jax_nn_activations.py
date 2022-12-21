@@ -375,9 +375,11 @@ def test_jax_nn_softplus(
     fn_tree="jax.nn.log_sigmoid",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=-1,
-        max_value=1,
-        safety_factor_scale="linear",
+        min_value=-100,
+        max_value=100,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
 )
 def test_jax_nn_log_sigmoid(
@@ -821,4 +823,37 @@ def test_jax_nn_hard_sigmoid(
         fn_tree=fn_tree,
         on_device=on_device,
         x=xs[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.nn.selu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
+    ),
+)
+def test_jax_nn_selu(
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )

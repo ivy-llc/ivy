@@ -77,23 +77,21 @@ def _empty_dir(path, recreate=False):
         size_bounds=[1, 3],
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
+    as_variable_flags=st.booleans(),
 )
 def test_dev(
     *,
     array_shape,
     dtype,
-    as_variable,
+    test_flags,
     backend_fw,
-    with_out,
-    on_device,
-    fn_name,
 ):
     assume(not (backend_fw == "torch" and "int" in dtype))
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype[0])
 
     for device in _get_possible_devices():
         x = ivy.array(x, device=device)
-        if as_variable and ivy.is_float_dtype(dtype[0]):
+        if test_flags.as_variable and ivy.is_float_dtype(dtype[0]):
             x = _variable(x)
 
         ret = ivy.dev(x)
@@ -125,7 +123,7 @@ def test_as_ivy_dev(
     *,
     array_shape,
     dtype,
-    as_variable,
+    test_flags,
     backend_fw,
 ):
     assume(not (backend_fw == "torch" and "int" in dtype))
@@ -134,7 +132,7 @@ def test_as_ivy_dev(
 
     for device in _get_possible_devices():
         x = ivy.array(x, device=device)
-        if as_variable and ivy.is_float_dtype(dtype[0]):
+        if test_flags.as_variable and ivy.is_float_dtype(dtype[0]):
             x = _variable(x)
 
         native_device = ivy.dev(x, as_native=True)
@@ -162,7 +160,7 @@ def test_as_native_dev(
     *,
     array_shape,
     dtype,
-    as_variable,
+    test_flags,
     on_device,
 ):
     # TODO: should be replaced with the helpers.dtype_values function
@@ -170,7 +168,7 @@ def test_as_native_dev(
 
     for device in _get_possible_devices():
         x = ivy.asarray(x, device=on_device)
-        if as_variable:
+        if test_flags.as_variable:
             x = _variable(x)
 
         device = ivy.as_native_dev(on_device)
@@ -228,8 +226,7 @@ def test_to_device(
     array_shape,
     dtype,
     stream,
-    as_variable,
-    with_out,
+    test_flags,
     backend_fw,
     on_device,
 ):
@@ -237,19 +234,21 @@ def test_to_device(
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype[0])
     x = ivy.asarray(x)
-    if as_variable and ivy.is_float_dtype(dtype[0]):
+    if test_flags.as_variable and ivy.is_float_dtype(dtype[0]):
         x = _variable(x)
 
     # create a dummy array for out that is broadcastable to x
     out = (
-        ivy.zeros(ivy.shape(x), device=on_device, dtype=dtype[0]) if with_out else None
+        ivy.zeros(ivy.shape(x), device=on_device, dtype=dtype[0])
+        if test_flags.with_out
+        else None
     )
 
     device = ivy.dev(x)
     x_on_dev = ivy.to_device(x, on_device, stream=stream, out=out)
     dev_from_new_x = ivy.dev(x_on_dev)
 
-    if with_out:
+    if test_flags.with_out:
         # should be the same array test
         assert np.allclose(ivy.to_numpy(x_on_dev), ivy.to_numpy(out))
 
@@ -308,7 +307,7 @@ def test_split_func_call(
     dtype,
     chunk_size,
     axis,
-    as_variable,
+    test_flags,
 ):
     # inputs
     shape = tuple(array_shape)
@@ -316,7 +315,7 @@ def test_split_func_call(
     x2 = np.random.uniform(size=shape).astype(dtype[0])
     x1 = ivy.asarray(x1)
     x2 = ivy.asarray(x2)
-    if as_variable and ivy.is_float_dtype(dtype[0]):
+    if test_flags.as_variable and ivy.is_float_dtype(dtype[0]):
         x1 = _variable(x1)
         x2 = _variable(x2)
 
@@ -353,10 +352,10 @@ def test_split_func_call(
 def test_split_func_call_with_cont_input(
     *,
     array_shape,
+    test_flags,
     dtype,
     chunk_size,
     axis,
-    as_variable,
     on_device,
 ):
     shape = tuple(array_shape)
@@ -366,7 +365,7 @@ def test_split_func_call_with_cont_input(
     x2 = ivy.asarray(x2, device=on_device)
     # inputs
 
-    if as_variable and ivy.is_float_dtype(dtype[0]):
+    if test_flags.as_variable and ivy.is_float_dtype(dtype[0]):
         in0 = ivy.Container(cont_key=_variable(x1))
         in1 = ivy.Container(cont_key=_variable(x2))
     else:

@@ -227,7 +227,7 @@ def test_from_backend_module(bs_ic_oc, from_class_and_args):
     # cardinality test
     assert loss.shape == ()
     # value test
-    assert (abs(grads).max() > 0).all_true()
+    assert (abs(grads).max() > 0).cont_all_true()
 
 
 @pytest.mark.parametrize("bs_ic_oc", [([2, 3], 10, 5)])

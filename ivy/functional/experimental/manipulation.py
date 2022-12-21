@@ -739,7 +739,9 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
     right_chunk = ivy.array(padded[right_slice])
-    right_stat = stat_func(right_chunk, axis=axis, keepdims=True).astype(right_chunk.dtype)
+    right_stat = stat_func(right_chunk, axis=axis, keepdims=True).astype(
+        right_chunk.dtype
+    )
     return left_stat, right_stat
 
 
@@ -1058,7 +1060,7 @@ def pad(
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> padding = ((1, 1), (2, 2))
-    >>> y = ivy.pad(x, padding, mode="constant")
+    >>> y = ivy.pad(x, padding, mode="constant", constant_values=0)
     >>> print(y)
     ivy.array([[0, 0, 0, 0, 0, 0, 0],
                [0, 0, 1, 2, 3, 0, 0],

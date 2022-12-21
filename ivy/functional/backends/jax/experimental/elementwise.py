@@ -189,9 +189,15 @@ def allclose(
 
 
 def diff(
-    x: Union[JaxArray, int, float, list, tuple], /, *, out: Optional[JaxArray] = None
+    x: Union[JaxArray, int, float, list, tuple],
+    /,
+    *,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[JaxArray, int, float, list, tuple]] = None,
+    append: Optional[Union[JaxArray, int, float, list, tuple]] = None,
 ) -> JaxArray:
-    return jnp.diff(x, out=out)
+    return jnp.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
 def fix(
@@ -211,6 +217,16 @@ def nextafter(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.nextafter(x1, x2)
+
+
+def angle(
+    z: JaxArray,
+    /,
+    *,
+    deg: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.angle(z, deg=deg)
 
 
 def zeta(
