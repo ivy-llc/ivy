@@ -1,0 +1,3 @@
+|                    | torch                                                                                                                                                                                  |
+|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_fn_array_spec | <a href="https://github.com/unifyai/ivy/actions/runs/3749743334/jobs/6368564713" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
