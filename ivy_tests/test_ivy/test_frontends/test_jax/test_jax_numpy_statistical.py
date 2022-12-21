@@ -486,3 +486,44 @@ def test_jax_numpy_max(
         keepdims=keepdims,
         where=where,
     )
+
+
+# average
+@handle_frontend_test(
+    fn_tree="jax.numpy.average",
+    dtype_x_axis=statistical_dtype_values(function="average"),
+    returned=st.booleans(),
+)
+def test_jax_numpy_average(
+    *,
+    dtype_x_axis,
+    returned,
+    num_positional_args,
+    with_out,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtype, x, axis = dtype_x_axis
+    
+    if isinstance(axis, tuple):
+        axis = axis[0]
+
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable, 
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array, 
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-2,
+        rtol=1e-2,
+        a=x[0],
+        axis=axis,
+        weights=None,
+        returned=returned,
+    )
