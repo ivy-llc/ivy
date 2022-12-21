@@ -416,5 +416,3 @@ from . import statistical
 from .statistical import *
 from . import searching_sorting
 from .searching_sorting import *
-
-from .._src.numpy.lax_numpy import _rewriting_take
