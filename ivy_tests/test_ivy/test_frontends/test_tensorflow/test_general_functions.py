@@ -984,8 +984,8 @@ def test_tensorflow_gather_nd(
 @st.composite
 def _get_perm_helper(draw):
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="shape"))
-    dimension = [x for x in range(len(shape))]
-    perm = draw(st.permutations(dimension))
+    dimensions = [x for x in range(len(shape))]
+    perm = draw(st.permutations(dimensions))
     return perm
 
 
