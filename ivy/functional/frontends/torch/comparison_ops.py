@@ -68,11 +68,6 @@ def argsort(input, dim=-1, descending=False):
 
 
 @to_ivy_arrays_and_back
-def lexsort(input, dim=-1, descending=False):
-    return ivy.lexsort(input, axis=dim, descending=descending)
-
-
-@to_ivy_arrays_and_back
 def greater_equal(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.greater_equal(input, other, out=out)

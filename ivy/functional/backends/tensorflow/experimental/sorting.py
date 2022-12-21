@@ -12,13 +12,3 @@ def msort(
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.sort(a, axis=0)
 
-
-# lexsort
-def lexsort(
-    x: Union[tf.Tensor, tf.Variable, list, tuple],
-    /,
-    *,
-    axis: int = -1,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.lexsort(x, axis)
