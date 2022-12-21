@@ -2406,40 +2406,34 @@
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    (ivy.array([0, 1, 1, 2, 2, 2, 3, 3, 3, 3]),</span>
 <span class="sd">    ivy.array([0, 0, 1, 0, 1, 2, 0, 1, 2, 3]))</span>
-<span class="sd">    --------</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(4,4,1)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    (ivy.array([0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]),</span>
 <span class="sd">    ivy.array([0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3]))</span>
 
-<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(4,4,-2)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    (ivy.array([2, 3, 3]), ivy.array([0, 0, 1]))</span>
 
-<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(4,2,0)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    (ivy.array([0, 1, 1, 2, 2, 3, 3]),</span>
 <span class="sd">    ivy.array([0, 0, 1, 0, 1, 0, 1]))</span>
 
-<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(2,4,0)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    (ivy.array([0, 1, 1]), ivy.array([0, 0, 1]))</span>
 
-<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(4,-4,0)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    (ivy.array([]), ivy.array([]))</span>
 
-<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(4,4,100)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]),</span>
 <span class="sd">    ivy.array([0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3]))</span>
 
-<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.tril_indices(2,4,-100)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    (ivy.array([]), ivy.array([]))</span>
