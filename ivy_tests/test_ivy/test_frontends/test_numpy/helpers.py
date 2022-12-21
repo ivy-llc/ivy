@@ -254,6 +254,7 @@ def dtypes_values_casting_dtype(
         dtype = draw(st.just(None))
     elif casting in ["safe", "same_kind"]:
         dtype = draw(_get_safe_casting_dtype(dtypes=dtypes))
+
     else:
         dtype = draw(
             helpers.get_dtypes(
@@ -264,6 +265,9 @@ def dtypes_values_casting_dtype(
                 key=get_dtypes_key,
             )
         )[0]
+    # skipping uint64 just as not supported by torch backend
+    if dtype == "uint64":
+        dtype = draw(st.sampled_from(["int64", None]))
     return dtypes, values, casting, dtype
 
 

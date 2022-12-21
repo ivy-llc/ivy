@@ -27,6 +27,7 @@ def equal(
 ):
     ret = ivy.equal(x1, x2, out=out)
     if ivy.is_array(where):
+        where = ivy.asarray(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
@@ -36,9 +37,10 @@ def array_equal(a1, a2, equal_nan=False):
     if not equal_nan:
         return ivy.array(ivy.array_equal(a1, a2))
     a1nan, a2nan = ivy.isnan(a1), ivy.isnan(a2)
+
     if not (a1nan == a2nan).all():
         return False
-    return ivy.array(ivy.array_equal(a1[~a1nan], a2[~a2nan]))
+    return ivy.array(ivy.array_equal(a1 * ~a1nan, a2 * ~a2nan))
 
 
 @handle_numpy_dtype
@@ -58,6 +60,7 @@ def greater(
 ):
     ret = ivy.greater(x1, x2, out=out)
     if ivy.is_array(where):
+        where = ivy.asarray(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
@@ -79,6 +82,7 @@ def greater_equal(
 ):
     ret = ivy.greater_equal(x1, x2, out=out)
     if ivy.is_array(where):
+        where = ivy.asarray(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
@@ -100,6 +104,7 @@ def less(
 ):
     ret = ivy.less(x1, x2, out=out)
     if ivy.is_array(where):
+        where = ivy.asarray(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
@@ -121,6 +126,7 @@ def less_equal(
 ):
     ret = ivy.less_equal(x1, x2, out=out)
     if ivy.is_array(where):
+        where = ivy.asarray(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
@@ -142,6 +148,7 @@ def not_equal(
 ):
     ret = ivy.not_equal(x1, x2, out=out)
     if ivy.is_array(where):
+        where = ivy.asarray(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
