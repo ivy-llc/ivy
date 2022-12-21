@@ -250,7 +250,6 @@ def test_nanquantile(
     q,
     dtype_x_axis,
     keepdims,
-    interpolation,
     test_flags,
     backend_fw,
     fn_name,
