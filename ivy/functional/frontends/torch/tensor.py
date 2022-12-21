@@ -344,6 +344,9 @@ class Tensor:
 
     def matmul(self, other):
         return torch_frontend.matmul(self._ivy_array, other)
+    
+    def argwhere(self):
+        return torch_frontend.argwhere(self._ivy_array)
 
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self._ivy_array, dim=dim, keepdim=keepdim)
@@ -434,6 +437,13 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh(self):
         return torch_frontend.acosh(self._ivy_array)
+
+    def masked_fill(self, mask, value):
+        return ivy.where(mask, value, self._ivy_array)
+
+    def masked_fill_(self, mask, value):
+        self._ivy_array = self.masked_fill(mask, value).ivy_array
+        return self
 
     # Special Methods #
     # -------------------#
