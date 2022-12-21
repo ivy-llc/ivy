@@ -37,6 +37,7 @@ def _grad_func(y, xs, xs_required, tape):
         xs_required,
         lambda x: ivy.to_native(ivy.zeros_like(x)),
         include_derived=True,
+        shallow=False,
     )
 
     # Gradient calculation
@@ -47,7 +48,9 @@ def _grad_func(y, xs, xs_required, tape):
         grads = grads_ if grads is None else grads
     else:
         grads = ivy.nested_map(
-            grads, lambda x: 0 if x is None else x, include_derived=True
+            grads,
+            lambda x: 0 if x is None else x,
+            include_derived=True,
         )
         if isinstance(grads, ivy.Container):
             grads += grads_
@@ -82,7 +85,10 @@ def execute_with_gradients(
         # Gradient calculation for multiple outputs
         y = _get_native_y(y)
         grads_ = ivy.nested_map(
-            y, lambda x: _grad_func(x, xs, xs_required, tape), include_derived=True
+            y,
+            lambda x: _grad_func(x, xs, xs_required, tape),
+            include_derived=True,
+            shallow=False,
         )
         grads = grads_
         if isinstance(ret_idxs, list) and len(ret_idxs):
@@ -101,7 +107,9 @@ def execute_with_gradients(
 
 def value_and_grad(func):
     def grad_fn(xs):
-        grads = ivy.nested_map(xs, lambda x: ivy.zeros_like(x), include_derived=True)
+        grads = ivy.nested_map(
+            xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
+        )
         with tf.GradientTape(watch_accessed_variables=False) as tape:
             xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
             tape.watch(xs)

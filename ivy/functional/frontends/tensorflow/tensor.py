@@ -18,12 +18,12 @@ class EagerTensor:
 
     def __repr__(self):
         return (
-            "ivy.frontends.tensorflow.EagerTensor("
-            + str(ivy.to_list(self._ivy_array))
-            + ",shape="
+            repr(self._ivy_array).replace(
+                "ivy.array", "ivy.frontends.tensorflow.EagerTensor"
+            )[:-1]
+            + ", shape="
             + str(self._ivy_array.shape)
-            + ","
-            + "dtype="
+            + ", dtype="
             + str(self._ivy_array.dtype)
             + ")"
         )
@@ -71,7 +71,7 @@ class EagerTensor:
                 )
 
     def numpy(self):
-        return ivy.to_numpy(self._ivy_array)
+        return array(self._ivy_array)
 
     def __add__(self, y, name="add"):
         return y.__radd__(self._ivy_array)

@@ -613,3 +613,53 @@ class ContainerWithCreationExperimental(ContainerBase):
             dtype=dtype,
             out=out,
         )
+
+    @staticmethod
+    def static_tril_indices(
+        n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        /,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "tril_indices",
+            n_rows,
+            n_cols,
+            k,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            device=device,
+        )
+
+    def tril_indices(
+        self: ivy.Container,
+        n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        /,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Container:
+        return self.static_tril_indices(
+            self,
+            n_rows,
+            n_cols,
+            k,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            device=device,
+        )

@@ -1,3 +1,6 @@
+# global
+from hypothesis import settings
+
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -9,6 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_test
     fn_tree="functional.experimental.is_native_dtype",
     input_dtype=helpers.get_dtypes("valid", full=False),
 )
+@settings(max_examples=200)
 def test_is_native_dtype(
     input_dtype,
 ):

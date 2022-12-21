@@ -243,20 +243,18 @@ def dev(
 
     Parameters
     ----------
-    x
-        array for which to get the device handle.
-
-    as_native
-        Whether or not to return the dev in native format. Default is ``False``.
+        x
+            array for which to get the device handle.
+        as_native
+            Whether or not to return the dev in native format. Default is ``False``.
 
     Returns
     -------
-    ret
-        Device handle for the array, in native framework format.
+        ret
+            Device handle for the array.
 
-    Functional Examples
-    --------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3, 1, 4, 5])
@@ -291,6 +289,11 @@ def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
     ret
         Device string e.g. 'cuda:0'.
 
+    Examples
+    --------
+    >>> y = ivy.as_ivy_dev('cuda:0')
+    >>> print(y)
+    cuda:0
     """
     return ivy.current_backend().as_ivy_dev(device)
 
@@ -305,6 +308,11 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
         The device string to convert to native device handle.
         A native device handle can be passed in instead - in this case
         the unmodified parameter is returned.
+
+    Returns
+    -------
+    ret
+        Native device handle.
 
     Examples
     --------
@@ -324,14 +332,10 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
     >>> device = torch.device("cuda")
     >>> device
     device(type='cuda')
+
     >>> ivy.as_native_dev(device)
     device(type='cuda')
 
-
-    Returns
-    -------
-    ret
-        Native device handle.
     """
     return ivy.current_backend().as_native_dev(device)
 
@@ -414,7 +418,7 @@ def used_mem_on_dev(
         The device string to convert to native device handle.
     process_specific
         Whether to check the memory used by this python process alone. Default is
-        False. Currently is only supported for cpu.
+        False. Currently, it is only supported for cpu.
 
     Returns
     -------
@@ -547,7 +551,6 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     >>> ivy.dev_util('cpu')
     84.2
 
-
     """
     if device == "cpu":
         return psutil.cpu_percent()
@@ -619,8 +622,6 @@ def num_gpus() -> int:
     Examples
     --------
     >>> print(ivy.num_gpus())
-    0
-    >>> print(ivy.num_gpus())
     1
 
     """
@@ -681,14 +682,19 @@ def default_device(
     --------
     >>> ivy.default_device()
     device(type='cpu')
+
     >>> ivy.default_device("gpu:0")
     'gpu:0'
+
     >>> ivy.default_device(item=[], as_native=False)
     'cpu'
+
     >>> ivy.default_device(item=(), as_native=True)
     device(type='cpu')
+
     >>> ivy.default_device(item={"a": 1}, as_native=True)
     device(type='cpu')
+
     >>> x = ivy.array([1., 2., 3.])
     >>> x = ivy.to_device(x, 'gpu:0')
     >>> ivy.default_device(item=x, as_native=True)
@@ -810,7 +816,8 @@ def to_device(
     --------
     >>> x = ivy.array([1., 2., 3.])
     >>> x = ivy.to_device(x, 'cpu')
-
+    >>> print(x.device)
+    cpu
     """
     return ivy.current_backend(x).to_device(x, device)
 
@@ -871,30 +878,30 @@ def set_split_factor(
 
     Examples
     --------
-    >>> ivy.default_device()
-    'cpu'
+    >>> print(ivy.default_device())
+    cpu
     >>> ivy.set_split_factor(0.5)
-    >>> ivy.split_factors
+    >>> print(ivy.split_factors)
     {'cpu': 0.5}
 
     >>> import torch
     >>> ivy.set_backend("torch")
     >>> device = torch.device("cuda")
     >>> ivy.set_split_factor(0.3,device)
-    >>> ivy.split_factors
+    >>> print(ivy.split_factors)
     {device(type='cuda'): 0.3}
 
     >>> ivy.set_split_factor(0.4,"tpu")
-    >>> ivy.split_factors
+    >>> print(ivy.split_factors)
     {'tpu': 0.4}
 
     >>> import torch
     >>> ivy.set_backend("torch")
     >>> device = torch.device("cuda")
     >>> ivy.set_split_factor(0.2)
-    >>> ivy.set_split_factor(0.3,'gpu')
-    >>> ivy.set_split_factor(0.4,device)
-    {'cpu': 0.2, 'gpu': 0.3, device(type='cuda'): 0.4}
+    >>> ivy.set_split_factor(0.3, device='gpu')
+    >>> print(ivy.split_factors)
+    {'cpu': 0.2, 'gpu': 0.3}
     """
     ivy.assertions.check_less(0, factor, allow_equal=True)
     global split_factors
@@ -1098,7 +1105,13 @@ def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
     Returns
     -------
     ret
-        The supported devices of the function
+        Tuple containing the supported devices of the function
+
+    Examples
+    --------
+    >>> import ivy
+    >>> print(ivy.function_supported_devices(ivy.ones))
+    ('cpu', 'gpu')
     """
     ivy.assertions.check_true(
         _is_valid_devices_attributes(fn),
@@ -1130,7 +1143,13 @@ def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
     Returns
     -------
     ret
-        The unsupported devices of the function
+        Tuple containing the unsupported devices of the function
+
+    Examples
+    --------
+    >>> import ivy
+    >>> print(ivy.function_unsupported_devices(ivy.ones))
+    ()
     """
     ivy.assertions.check_true(
         _is_valid_devices_attributes(fn),
