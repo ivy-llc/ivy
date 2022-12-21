@@ -83,7 +83,7 @@ def pytest_configure(config):
         )
 
     if max_examples:
-        profile_settings["max_examples"] = max_examples
+        profile_settings["max_examples"] = 100
     if deadline:
         profile_settings["deadline"] = deadline
 
