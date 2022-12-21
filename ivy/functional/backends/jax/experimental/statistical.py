@@ -65,7 +65,7 @@ def nanquantile(
     q: Union[float, JaxArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[Tuple[int], int]] = None,
     keepdims: Optional[bool] = False,
     interpolation: str = 'linear',
     out: Optional[JaxArray] = None,
