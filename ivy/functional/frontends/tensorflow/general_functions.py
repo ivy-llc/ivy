@@ -82,6 +82,11 @@ def einsum(equation, *inputs, **kwargs):
 
 
 @to_ivy_arrays_and_back
+def reshape(tensor, shape, name=None):
+    return ivy.reshape(tensor, shape=shape)
+
+
+@to_ivy_arrays_and_back
 def rank(input, **kwargs):
     return ivy.astype(ivy.array(input.ndim), ivy.int32)
 
@@ -122,6 +127,15 @@ def shape(input, out_type=ivy.int32, name=None):
         return ivy.array(ivy.shape(input), dtype="int64")
 
 
+@to_ivy_arrays_and_back
+def shape_n(input, out_type=ivy.int32, name=None):
+    out_type = to_ivy_dtype(out_type)
+    if out_type in ["int32", "int64"]:
+        return [ivy.array(ivy.shape(i), dtype=out_type) for i in input]
+    else:
+        return [ivy.array(ivy.shape(i), dtype="int64") for i in input]
+
+
 @with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
@@ -152,6 +166,10 @@ def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
 
 
 @to_ivy_arrays_and_back
+def identity(input, name=None):
+    return ivy.copy_array(input)
+
+
 def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
 
