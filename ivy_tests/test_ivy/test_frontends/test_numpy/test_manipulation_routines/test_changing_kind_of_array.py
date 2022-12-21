@@ -8,6 +8,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="numpy.asanyarray",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    order=helpers.dtype_values_axis(order=None),
+    like=helpers.dtype_values_axis(like=None),
 )
 def test_numpy_asanyarray(
     *,
