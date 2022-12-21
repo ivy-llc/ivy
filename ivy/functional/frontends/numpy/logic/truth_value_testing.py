@@ -43,8 +43,8 @@ def isscalar(element):
     
 @to_ivy_arrays_and_back   
 def iscomplex(element):
-    ax = ivy.is_array(x)
-    if issubclass(ax.dtype.type, _nx.complexfloating):
+    ax = ivy.is_array(element)
+    if issubclass(ax.dtype.type, ax.complexfloating):
         return ax.imag != 0
-    res = zeros(ax.shape, bool)
+    res = ivy.zeros(ax.shape, bool)
     return res[()]   
