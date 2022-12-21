@@ -119,7 +119,7 @@ def matrix_exp(
     return torch.exp(x)
 
 
-def eig(x: torch.Tensor, /) -> Tuple[torch.Tensor, ...]:
+def eig(x: torch.Tensor, /) -> Tuple[torch.Tensor]:
     return torch.linalg.eig(x)
 
 
