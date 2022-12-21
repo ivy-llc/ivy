@@ -517,11 +517,7 @@ def test_torch_eig(
     on_device,
 ):
     input_dtype, x = dtype_and_input
-    # make symmetric positive definite beforehand
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    # need to cast float32 case to float64 because ivy.eig returns only
-    # complex128 while torch.linalg.eig return complex64 for float32 and
-    # complex128 for float64
     if x.dtype == ivy.float32:
         x = x.astype("float64")
         input_dtype = [ivy.float64]
@@ -537,11 +533,6 @@ def test_torch_eig(
         test_values=False,
         input=x,
     )
-
-    # the gradients of eig() are not always numerically stable. Furthermore,
-    # if the distance between any two eigenvalues is close to zero, the
-    # gradient will be numerically unstable. For that reason we set
-    # `test_values=False` and post process the return values of the test.
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 

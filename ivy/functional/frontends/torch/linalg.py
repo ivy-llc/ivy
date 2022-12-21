@@ -88,8 +88,8 @@ def cholesky(input, *, upper=False, out=None):
 def svd(A, /, *, full_matrices=True, driver=None, out=None):
     # TODO: add handling for driver and out
     return ivy.svd(A, compute_uv=True, full_matrices=full_matrices)
-  
-  
+
+
 def svdvals(A, *, driver=None, out=None):
     # TODO: add handling for driver
     return ivy.svdvals(A, out=out)
