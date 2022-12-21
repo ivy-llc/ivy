@@ -229,6 +229,23 @@ def is_ivy_container(x: Any, /) -> bool:
     return isinstance(x, ivy.Container)
 
 
+def is_ivy_nested_array(x: Any, /) -> bool:
+    """Determines whether the input x is an Ivy Nested Array.
+
+    Parameters
+    ----------
+    x
+        The input to check
+
+    Returns
+    -------
+    ret
+        Boolean, whether or not x is an ivy nested array.
+
+    """
+    return isinstance(x, ivy.NestedArray)
+
+
 @handle_exceptions
 def set_array_mode(mode: bool) -> None:
     """Set the mode of whether to convert inputs to ivy.NativeArray, then convert

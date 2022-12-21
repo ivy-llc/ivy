@@ -70,6 +70,25 @@ class NestedArrayBase(abc.ABC):
                 final_shape.append(None)
         return final_shape
 
+    @staticmethod
+    def nested_multi_map_in_static_method(fn_name, *args, **kwargs):
+        arg_nest_idxs = ivy.nested_argwhere(
+            args, ivy.is_ivy_nested_array, to_ignore=ivy.Container
+        )
+        kwarg_nest_idxs = ivy.nested_argwhere(
+            kwargs, ivy.is_ivy_nested_array, to_ignore=ivy.Container
+        )
+        # retrieve all the nested_array in args and kwargs
+        arg_nest = ivy.multi_index_nest(args, arg_nest_idxs)
+        kwarg_nest = ivy.multi_index_nest(kwargs, kwarg_nest_idxs)
+        num_nest = len(arg_nest) + len(kwarg_nest)
+        fn = ivy.__dict__[fn_name]
+
+        if num_nest == 1:
+            return ivy.nested_map(
+                fn,
+            )
+
     def unbind(self):
         return tuple(ivy.copy_nest(self._data))
 
