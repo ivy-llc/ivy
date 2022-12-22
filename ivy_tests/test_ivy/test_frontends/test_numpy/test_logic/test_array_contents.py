@@ -11,7 +11,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 @handle_frontend_test(
     fn_tree="numpy.isneginf",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_value=-np.inf,
         max_value=np.inf,
     ),
@@ -43,7 +43,7 @@ def test_numpy_isneginf(
 @handle_frontend_test(
     fn_tree="numpy.isposinf",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_value=-np.inf,
         max_value=np.inf,
     ),
@@ -75,7 +75,8 @@ def test_numpy_isposinf(
 @handle_frontend_test(
     fn_tree="numpy.allclose",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
     ),
     equal_nan=st.booleans(),
 )
@@ -100,8 +101,6 @@ def test_numpy_allclose(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-05,
-        atol=1e-08,
         a=x[0],
         b=x[1],
         equal_nan=equal_nan,
@@ -111,7 +110,8 @@ def test_numpy_allclose(
 @handle_frontend_test(
     fn_tree="numpy.isclose",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
     ),
     equal_nan=st.booleans(),
 )
@@ -136,8 +136,6 @@ def test_numpy_isclose(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-05,
-        atol=1e-08,
         a=x[0],
         b=x[1],
         equal_nan=equal_nan,
