@@ -2,6 +2,7 @@
 import functools
 from typing import Callable, Any
 import inspect
+import platform
 
 # local
 import ivy
@@ -275,14 +276,28 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
            The return of the function, with ivy arrays as numpy arrays.
         """
         # handle order and call unmodified function
+        # ToDo: Remove this default dtype setting
+        #  once frontend specific backend setting is added
+        ivy.set_default_int_dtype(
+            "int64"
+        ) if platform.system() != "Windows" else ivy.set_default_int_dtype("int32")
+        ivy.set_default_float_dtype("float64")
         if contains_order:
             if len(args) >= (order_pos + 1):
                 order = args[order_pos]
                 args = args[:-1]
             order = _set_order(args, order)
-            ret = fn(*args, order=order, **kwargs)
+            try:
+                ret = fn(*args, order=order, **kwargs)
+            finally:
+                ivy.unset_default_int_dtype()
+                ivy.unset_default_float_dtype()
         else:
-            ret = fn(*args, **kwargs)
+            try:
+                ret = fn(*args, **kwargs)
+            finally:
+                ivy.unset_default_int_dtype()
+                ivy.unset_default_float_dtype()
         if not ivy.get_array_mode():
             return ret
         # convert all returned arrays to `ndarray` instances

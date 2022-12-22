@@ -476,6 +476,7 @@ def conv_general_dilated(
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -552,6 +553,9 @@ def conv_general_dilated(
         # B x OH x OW x O
         res.append(np.sum(mult, tuple([i for i in range(dims + 1, dims * 2 + 2)])))
     res = np.concatenate(res, axis=-1)
+
+    if bias is not None:
+        res = np.add(res, bias)
 
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
