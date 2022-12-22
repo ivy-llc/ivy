@@ -53,7 +53,7 @@ def _get_dtype_and_matrix(draw):
     ),
     kd=st.booleans(),
     ord=helpers.ints(min_value=1, max_value=2),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("valid"),
 )
 def test_torch_vector_norm(
     *,
