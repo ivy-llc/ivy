@@ -673,12 +673,13 @@ def test_tensorflow_global_norm(
         t_list=x,
     )
 
+
 # expm
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.expm",
     dtype_and_x=_get_dtype_and_matrix(),
 )
-def test_tensorflow_slogdet(
+def test_tensorflow_expm(
     *,
     dtype_and_x,
     num_positional_args,

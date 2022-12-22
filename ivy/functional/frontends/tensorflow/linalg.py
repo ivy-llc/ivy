@@ -8,7 +8,8 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     handle_tf_dtype,
 )
 
-from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
+from ivy.functional.frontends.tensorflow import\
+    promote_types_of_tensorflow_inputs
 import ivy.functional.frontends.tensorflow as tf_frontend
 
 
@@ -170,6 +171,7 @@ global_norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
 
 @to_ivy_arrays_and_back
 def expm(input, name=None):
