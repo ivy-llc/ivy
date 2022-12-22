@@ -74,8 +74,9 @@ def test_numpy_isposinf(
 @handle_frontend_test(
     fn_tree="numpy.allclose",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        shared_dtype=True,
     ),
     equal_nan=st.booleans(),
 )
@@ -109,8 +110,9 @@ def test_numpy_allclose(
 @handle_frontend_test(
     fn_tree="numpy.isclose",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        shared_dtype=True,
     ),
     equal_nan=st.booleans(),
 )
