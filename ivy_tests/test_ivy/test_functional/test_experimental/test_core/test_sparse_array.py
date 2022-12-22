@@ -99,32 +99,37 @@ def _sparse_bsc_indices_values_shape(draw):
     dim1 = draw(helpers.ints(min_value=2, max_value=5))
     dim2 = draw(helpers.ints(min_value=3, max_value=5))
 
-    num_elem = draw(helpers.ints(min_value=2, max_value=dim2))
-
     value_dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
+
+    ccol_indices, row_indices, values = (
+        [0],
+        [],
+        [
+            [
+                [],
+            ],
+        ],
+    )
+    for _ in range(dim2):
+        index = draw(
+            helpers.ints(
+                min_value=max(ccol_indices[-1] + 1, 1),
+                max_value=ccol_indices[-1] + dim1,
+            )
+        )
+        cur_num_elem = index - ccol_indices[-1]
+        row_indices += list(range(cur_num_elem))
+        ccol_indices.append(index)
+
+    shape = (dim1 * nblockrows, dim2 * nblockcols)
     values = draw(
         helpers.array_values(
-            dtype=value_dtype, shape=(num_elem, nblockrows, nblockcols)
+            dtype=value_dtype,
+            shape=(ccol_indices[-1], nblockrows, nblockcols),
+            min_value=0,
         )
     )
 
-    indices, row_indices = [num_elem], []
-    for _ in range(dim2 - 2, -1, -1):
-        if indices[-1]:
-            index = draw(helpers.ints(min_value=1, max_value=min(indices[-1], dim1)))
-            row_indices += list(range(index))
-        else:
-            index = 0
-        indices.append(indices[-1] - index)
-
-    if indices[-1]:
-        row_indices += list(range(indices[-1]))
-
-    row_indices.reverse()
-    indices.reverse()
-    ccol_indices = [0] + indices
-    print(type(ccol_indices), row_indices)
-    shape = (dim1 * nblockrows, dim2 * nblockcols)
     return ccol_indices, row_indices, value_dtype, values, shape
 
 
