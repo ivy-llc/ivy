@@ -13,8 +13,7 @@ def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
         keepdims=keepdim,
         ord=ord,
         out=out,
-        dtype=dtype
-        )
+        dtype=dtype)
 
 
 @to_ivy_arrays_and_back
