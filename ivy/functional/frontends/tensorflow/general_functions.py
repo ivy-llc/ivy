@@ -182,3 +182,13 @@ def gather(params, indices, axis=None, batch_dims=0, name=None):
 @to_ivy_arrays_and_back
 def gather_nd(params, indices, batch_dims=0, name=None):
     return ivy.gather_nd(params, indices, batch_dims=batch_dims)
+
+
+@to_ivy_arrays_and_back
+def transpose(a, perm=None, conjugate=False, name="transpose"):
+    # handle conjugate when ivy supports complex numbers
+    if perm is not None:
+        return ivy.permute_dims(a, axes=perm)
+    n = a.ndim
+    perm = ivy.arange(n - 1, -1, -1)
+    return ivy.permute_dims(a, axes=perm)
