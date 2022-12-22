@@ -764,7 +764,7 @@ class ArrayWithGeneral(abc.ABC):
         --------
         >>> x = ivy.array([1,2,3])
         >>> y = 1.5
-        >>> z = ivy.fourier_encode(x,y)
+        >>> z = x.fourier_encode(y)
         >>> print(z)
 
 
