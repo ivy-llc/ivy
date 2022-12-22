@@ -690,6 +690,7 @@ def test_torch_unsqueeze(
         dim=dim,
     )
 
+
 @handle_frontend_test(
     fn_tree="torch.argwhere",
     dtype_and_values=helpers.dtype_and_values(
@@ -719,6 +720,7 @@ def test_torch_argwhere(
         on_device=on_device,
         input=input[0],
     )
+
 
 # movedim
 @handle_frontend_test(
