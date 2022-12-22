@@ -119,7 +119,7 @@ def native_sparse_array(
             dense_shape=dense_shape,
         )
         logging.warning(
-            "Tensorflow does not support CSC sparse array natively. None is returned."
+            "Tensorflow does not support BSC sparse array natively. None is returned."
         )
     return None
 
