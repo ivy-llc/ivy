@@ -397,7 +397,7 @@ def _train_tasks(
 
 # First Order
 
-
+ 
 @handle_exceptions
 def fomaml_step(
     batch: ivy.Container,
@@ -481,6 +481,54 @@ def fomaml_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
+        
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.]), b=ivy.array([1.]))
+    >>> y = ivy.fomaml_step(ivy.Container,Callable,Callable,ivy.Container,8,6.0)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.5574077, -2.1850398]),
+        b: ivy.array([-0.14254655, 1.1578213, -3.380515]) 
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0.]), b=ivy.array([1.]))
+    >>> y = ivy.fomaml_step(ivy.Container,Callable,Callable,ivy.Container,1,4.0,Callable,Callable,Callable,True,False,ivy.Container,False,ivy.Container,False,str,6,False)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.5574077, -2.1850398]),
+        b: ivy.array([-0.14254655, 1.1578213, -3.380515]) 
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0.]), b=ivy.array([1.]))
+    >>> y = ivy.fomaml_step(ivy.Container,Callable,Callable,ivy.Container,2,6.0,Callable,Callable,Callable,True,False,ivy.Container,False,ivy.Container,False,str,4,True)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.5574077, -2.1850398]),
+        b: ivy.array([-0.14254655, 1.1578213, -3.380515]) 
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0.]), b=ivy.array([1.]))
+    >>> y = ivy.fomaml_step(ivy.Container,Callable,Callable,ivy.Container,2,5.0,Callable,Callable,Callable,False,True,ivy.Container,True,ivy.Container,True,True,7,True)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.5574077, -2.1850398]),
+        b: ivy.array([-0.14254655, 1.1578213, -3.380515]) 
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0.]), b=ivy.array([1.]))
+    >>> y = ivy.fomaml_step(ivy.Container,Callable,Callable,ivy.Container,3,7.0,Callable,Callable,Callable,False,True,ivy.Container,True,ivy.Container,True,False,2,True)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.5574077, -2.1850398]),
+        b: ivy.array([-0.14254655, 1.1578213, -3.380515]) 
+    }
 
     """
     if num_tasks is None:
