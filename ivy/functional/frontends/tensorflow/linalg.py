@@ -170,3 +170,7 @@ global_norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
+@to_ivy_arrays_and_back
+def expm(input, name=None):
+    return ivy.expm(input)

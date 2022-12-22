@@ -672,3 +672,31 @@ def test_tensorflow_global_norm(
         on_device=on_device,
         t_list=x,
     )
+
+# expm
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.expm",
+    dtype_and_x=_get_dtype_and_matrix(),
+)
+def test_tensorflow_slogdet(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
