@@ -67,24 +67,44 @@ def _rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
     return ret
 
 
-def kernels(ind, outd):
-    def start_index(a, b, c):
-        return math.floor((float(a) * float(c)) / b)
+def _krnl_start_index(a, b, c):
+    return math.floor((float(a) * float(c)) / b)
 
-    def end_index(a, b, c):
-        return math.ceil((float(a + 1) * float(c)) / b)
 
+def _krnl_end_index(a, b, c):
+    return math.ceil((float(a + 1) * float(c)) / b)
+
+
+def kernels_1d(ind, outd):
     results = []
     for ow in range(outd):
-        start = start_index(ow, outd, ind)
-        end = end_index(ow, outd, ind)
+        start = _krnl_start_index(ow, outd, ind)
+        end = _krnl_end_index(ow, outd, ind)
         sz = end - start
         results.append((start, sz))
     return results
 
 
-def kernel_indexes(ind, out):
-    startsLengths = kernels(ind, out)
+def kernels_2d(ind, outd):
+    results = []
+    for out in outd:
+        res = []
+        for ow in range(out):
+            start = _krnl_start_index(ow, out, ind)
+            end = _krnl_end_index(ow, out, ind)
+            sz = end - start
+            res.append((start, sz))
+        results.append(res)
+    return results
+
+
+def kernel_indexes_1d(ind, out):
+    startsLengths = kernels_1d(ind, out)
+    return [list(range(start, start + length)) for (start, length) in startsLengths]
+
+
+def kernel_indexes_2d(ind, out):
+    startsLengths = kernels_2d(ind, out)
     return [list(range(start, start + length)) for (start, length) in startsLengths]
 
 
@@ -487,6 +507,10 @@ def adaptive_avg_pool1d(input, output_size):
     if len(input.shape) == 2:
         input = ivy.expand_dims(input, axis=0)
         squeeze = True
+    elif len(input.shape) != 3:
+        raise ivy.exceptions.IvyException(
+            f"Got {len(input.shape)}D input, but only 2D and 3D inputs are supported.",
+        )
     input_size = input.shape[-1]
     if input_size % output_size == 0:
         stride = input_size // output_size
@@ -498,10 +522,58 @@ def adaptive_avg_pool1d(input, output_size):
             return ivy.squeeze(pooled_output, axis=0)
         return pooled_output
     else:
-        kernels = kernel_indexes(input_size, output_size)
+        kernels = kernel_indexes_1d(input_size, output_size)
         pooled_output = ivy.stack(
             [sum([input[:, :, x] for x in xs]) / len(xs) for xs in kernels], axis=-1
         )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def adaptive_avg_pool2d(input, output_size):
+    squeeze = False
+    if len(input.shape) == 3:
+        input = ivy.expand_dims(input, axis=0)
+        squeeze = True
+    elif len(input.shape) != 4:
+        raise ivy.exceptions.IvyException(
+            f"Got {len(input.shape)}D input, but only 3D and 4D inputs are supported.",
+        )
+    input_size = input.shape[-2:]
+    if all(i_s % o_s == 0 for i_s, o_s in zip(input_size, output_size)):
+        stride = tuple(i_s // o_s for i_s, o_s in zip(input_size, output_size))
+        kernel_size = tuple(
+            i_s - (o_s - 1) * st
+            for i_s, o_s, st in zip(input_size, output_size, stride)
+        )
+        pooled_output = ivy.avg_pool2d(
+            input, kernel_size, stride, "VALID", data_format="NCW"
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output
+    else:
+        kernels = kernel_indexes_2d(input_size, output_size)
+        pooled_output_d1 = ivy.stack(
+            [sum([input[:, :, x, :] for x in xs]) / len(xs) for xs in kernels[0]],
+            axis=-1,
+        )
+        pooled_output_d2 = ivy.stack(
+            [sum([input[:, :, :, x] for x in xs]) / len(xs) for xs in kernels[1]],
+            axis=-1,
+        )
+        pooled_output = ivy.stack(pooled_output_d1, pooled_output_d2)
         if squeeze:
             return ivy.squeeze(pooled_output, axis=0)
         return pooled_output
