@@ -581,6 +581,7 @@ def conv_general_transpose(
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
+    bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -631,7 +632,7 @@ def conv_general_transpose(
         res = torch.nn.functional.conv_transpose1d(
             x,
             filters,
-            None,
+            bias,
             strides,
             padding_list,
             dilation=dilations,
@@ -644,7 +645,7 @@ def conv_general_transpose(
         res = torch.nn.functional.conv_transpose2d(
             x,
             filters,
-            None,
+            bias,
             strides,
             padding_list,
             dilation=dilations,
@@ -659,7 +660,7 @@ def conv_general_transpose(
         res = torch.nn.functional.conv_transpose3d(
             x,
             filters,
-            None,
+            bias,
             strides,
             padding_list,
             dilation=dilations,

@@ -1406,7 +1406,7 @@ def conv_general_dilated(
         "channel_first" or "channel_last" Defaults to "channel_last"
     feature_group_count
          split input into groups, d_in should be divisible by the number of groups.
-         Default: 1
+         (Default value = 1)
     x_dilations
         The dilation factor for each dimension of input. (Default value = 1)
     dilations
@@ -1454,6 +1454,7 @@ def conv_general_transpose(
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
+    bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D
@@ -1476,6 +1477,8 @@ def conv_general_transpose(
         "channel_first" or "channel_last" Defaults to "channel_last"
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1495,6 +1498,7 @@ def conv_general_transpose(
         data_format=data_format,
         dilations=dilations,
         feature_group_count=feature_group_count,
+        bias=bias,
         out=out,
     )
 
@@ -1516,6 +1520,7 @@ def conv(
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     if transpose:
@@ -1530,6 +1535,7 @@ def conv(
             data_format=data_format,
             dilations=dilations,
             feature_group_count=feature_group_count,
+            bias=bias,
             out=out,
         )
     else:
@@ -1543,6 +1549,7 @@ def conv(
             feature_group_count=feature_group_count,
             x_dilations=x_dilations,
             dilations=dilations,
+            bias=bias,
             out=out,
         )
 
