@@ -554,9 +554,7 @@ def conv_general_dilated(
         res.append(np.sum(mult, tuple([i for i in range(dims + 1, dims * 2 + 2)])))
     res = np.concatenate(res, axis=-1)
 
-    if bias is not None:
-        res = np.add(res, bias)
-
+    res = np.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
@@ -574,6 +572,7 @@ def conv_general_transpose(
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
+    bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
 
@@ -646,6 +645,7 @@ def conv_general_transpose(
         ],
         axis=-1,
     )
+    res = np.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
