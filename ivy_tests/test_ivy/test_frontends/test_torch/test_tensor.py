@@ -4408,13 +4408,13 @@ def _get_clamp_inputs(draw):
         max = draw(st.booleans())
         min = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=-25, max_value=0
+                dtype=x_dtype[0], shape=shape, min_value=0, max_value=25
             )
         )
         max = (
             draw(
                 helpers.array_values(
-                    dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+                    dtype=x_dtype[0], shape=shape, min_value=26, max_value=50
                 )
             )
             if max
@@ -4424,7 +4424,7 @@ def _get_clamp_inputs(draw):
         min = None
         max = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+                dtype=x_dtype[0], shape=shape, min_value=26, max_value=50
             )
         )
     return x_dtype, x, min, max
