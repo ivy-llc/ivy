@@ -253,6 +253,59 @@ def dropout(
                [0., 0. ],
                [0., 8.7]])
 
+    With :class:`ivy.Container` input:
+
+    With default `scale: bool = True`:
+
+    >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], \
+                                       [4., 5., 6.]]), \
+                          b=ivy.array([7., 8., 9.]))
+    >>> y = ivy.dropout(x,0.3)
+    >>> print(y)
+    {
+    a: ivy.array([[0., 0., 4.28571415], 
+                  [5.71428585, 7.14285755, 0.]]),
+    b: ivy.array([0., 11.4285717, 12.8571434])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
+                                       [11., 22., 33.]]), \
+                          b=ivy.array([[1.245, 0.278, 4.105], \
+                                       [7., 13., 17.]]))
+    >>> y = ivy.dropout(x,0.5)
+    >>> print(y)
+    {
+    a: ivy.array([[0., 4.4000001, 6.5999999], 
+                  [22., 44., 0.]]),
+    b: ivy.array([[2.49000001, 0.55599999, 8.21000004], 
+                  [14., 0., 0.]])
+    }
+
+    With default `scale: bool = False`:
+
+    >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], \
+                                       [4., 5., 6.]]), \
+                          b=ivy.array([7., 8., 9.]))
+    >>> y = ivy.dropout(x,0.3)
+    >>> print(y)
+    {
+    a: ivy.array([[0., 0., 3.], 
+                  [4., 5., 0.]]),
+    b: ivy.array([0., 8., 9.])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
+                                       [11., 22., 33.]]), \
+                          b=ivy.array([[1.245, 0.278, 4.105], \
+                                       [7., 13., 17.]]))
+    >>> y = ivy.dropout(x,0.5)
+    >>> print(y)
+    {
+    a: ivy.array([[0., 2.2, 3.3], 
+                  [11., 22., 0.]]),
+    b: ivy.array([[1.245, 0.278, 4.105], 
+                  [7., 0., 0.]])
+    }
     """
     x = ivy.where(
         ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
