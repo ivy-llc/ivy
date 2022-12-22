@@ -221,7 +221,7 @@ numpy_type_to_str_and_num_table = {
     "complex256": ("G", 16),
 }
 
-scalar_to_dtype = {
+numpy_scalar_to_dtype = {
     bool_: ivy.bool,
     number: ivy.float64,
     integer: ivy.int64,
@@ -247,6 +247,8 @@ scalar_to_dtype = {
     complex_: ivy.complex128,
     clongfloat: ivy.complex256,
 }
+
+numpy_dtype_to_scalar = {v: k for k, v in numpy_scalar_to_dtype.items()}
 
 numpy_casting_rules = {
     ivy.bool: [

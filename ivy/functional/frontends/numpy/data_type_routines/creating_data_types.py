@@ -15,7 +15,7 @@ def to_ivy_dtype(dtype_in):
     if dtype_in in (int, float, bool):
         return {int: ivy.int64, float: ivy.float64, bool: ivy.bool}[dtype_in]
     if issubclass(dtype_in, np_frontend.generic):
-        return np_frontend.scalar_to_dtype[dtype_in]
+        return np_frontend.numpy_scalar_to_dtype[dtype_in]
     else:
         ivy.as_ivy_dtype(dtype_in)
 
@@ -78,6 +78,10 @@ class dtype:
             )
 
         return self < other or self == other
+
+    @property
+    def type(self):
+        return np_frontend.numpy_dtype_to_scalar[self._ivy_dtype]
 
     @property
     def alignment(self):

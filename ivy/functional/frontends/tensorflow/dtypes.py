@@ -122,7 +122,9 @@ def as_dtype(type_value):
         return DType(tf_frontend.tensorflow_type_to_enum[type_value._ivy_dtype])
     if issubclass(type_value, np_frontend.generic):
         return DType(
-            tf_frontend.tensorflow_type_to_enum[np_frontend.scalar_to_dtype[type_value]]
+            tf_frontend.tensorflow_type_to_enum[
+                np_frontend.numpy_scalar_to_dtype[type_value]
+            ]
         )
     raise ivy.exceptions.IvyException(
         f"Cannot convert the argument 'type_value': {type_value!r} "
