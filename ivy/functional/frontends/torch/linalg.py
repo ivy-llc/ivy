@@ -5,6 +5,10 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
+def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
+    return ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord, out=out, dtype=dtype)
+
+
 @to_ivy_arrays_and_back
 def diagonal(A, *, offset=0, dim1=-2, dim2=-1):
     return torch_frontend.diagonal(A, offset=offset, dim1=dim1, dim2=dim2)
