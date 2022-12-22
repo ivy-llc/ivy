@@ -260,7 +260,7 @@ def test_nanquantile(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=x[0],
         q=q,
         axis=axis,
         keepdims=keepdims,
