@@ -1,4 +1,5 @@
 import ivy
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 try:
@@ -20,6 +21,22 @@ def manual_seed(seed: int):
     return Generator().manual_seed(seed)
 
 
+@with_supported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def multinomial(input, num_samples, replacement=False, *, generator=None, out=None):
-    return ivy.multinomial(input, num_samples, replace=replacement, out=out)
+    return ivy.multinomial(
+        num_samples + 1,  # doesn't matter because `probs` is provided, but should be
+        # greater than the number of samples
+        num_samples,
+        probs=input,
+        replace=replacement,
+        out=out,
+    )
