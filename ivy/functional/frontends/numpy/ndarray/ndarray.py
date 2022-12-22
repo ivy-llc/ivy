@@ -356,6 +356,9 @@ class ndarray:
     def __iand__(self, value, /):
         return np_frontend.logical_and(self._ivy_array, value)
 
+    def __itruediv__(self, value, /):
+        return np_frontend.true_divide(self._ivy_array, value)
+
     def __ior__(self, value, /):
         return np_frontend.logical_or(self._ivy_array, value)
 
