@@ -132,7 +132,9 @@ class Tensor:
         return torch_frontend.ViewTensor(weakref.ref(self), shape=shape)
 
     def float(self, memory_format=None):
-        return ivy.astype(self._ivy_array, ivy.float32)
+        cast_tensor = self.clone()
+        cast_tensor.ivy.array = ivy.astype(self._ivy_array, ivy.float32)
+        return cast_tensor
 
     def asinh(self):
         return torch_frontend.asinh(self._ivy_array)
@@ -170,7 +172,7 @@ class Tensor:
         return self
 
     def log(self):
-        return ivy.log(self._ivy_array)
+        return torch_frontend.log(self._ivy_array)
 
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self._ivy_array, dim=dim, keepdim=keepdim)
@@ -204,21 +206,34 @@ class Tensor:
     def to(self, *args, **kwargs):
         if len(args) > 0:
             if isinstance(args[0], ivy.Dtype):
-                return ivy.asarray(self._ivy_array, dtype=args[0], copy=False)
+                if self.dtype == args[0]:
+                    return self
+                else:
+                    cast_tensor = self.clone()
+                    cast_tensor.ivy.array = ivy.asarray(self._ivy_array, dtype=args[0])
+                    return cast_tensor
             else:
-                return ivy.asarray(
-                    self._ivy_array,
-                    dtype=args[0].dtype,
-                    device=args[0].device,
-                    copy=False,
-                )
+                if self.dtype == args[0].dtype and self.device == args[0].device:
+                    return self
+                else:
+                    cast_tensor = self.clone()
+                    cast_tensor.ivy.array = ivy.asarray(
+                        self._ivy_array,
+                        dtype=args[0].dtype,
+                        device=args[0].device,
+                    )
+                    return cast_tensor
         else:
-            return ivy.asarray(
-                self._ivy_array,
-                device=kwargs["device"],
-                dtype=kwargs["dtype"],
-                copy=False,
-            )
+            if self.dtype == kwargs["dtype"] and self.device == kwargs["device"]:
+                return self
+            else:
+                cast_tensor = self.clone()
+                cast_tensor.ivy.array = ivy.asarray(
+                    self._ivy_array,
+                    device=kwargs["device"],
+                    dtype=kwargs["dtype"],
+                )
+                return cast_tensor
 
     def arctan(self):
         return torch_frontend.atan(self._ivy_array)
@@ -261,10 +276,12 @@ class Tensor:
         return self.view(other.shape)
 
     def expand(self, *sizes):
-        return ivy.broadcast_to(self._ivy_array, shape=sizes)
+        return torch_frontend.tensor(ivy.broadcast_to(self._ivy_array, shape=sizes))
 
     def detach(self):
-        return ivy.stop_gradient(self._ivy_array, preserve_type=False)
+        return torch_frontend.tensor(
+            ivy.stop_gradient(self._ivy_array, preserve_type=False)
+        )
 
     def unsqueeze(self, dim):
         return torch_frontend.unsqueeze(self, dim)
@@ -311,10 +328,12 @@ class Tensor:
         slices = []
         for i in range(0, self._ivy_array.shape[dimension] - size + 1, step):
             slices.append(self._ivy_array[i : i + size])
-        return ivy.stack(slices)
+        return torch_frontend.stack(slices)
 
     def long(self, memory_format=None):
-        return ivy.astype(self._ivy_array, ivy.int64)
+        cast_tensor = self.clone()
+        cast_tensor.ivy.array = ivy.astype(self._ivy_array, ivy.int64)
+        return cast_tensor
 
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self._ivy_array, dim=dim, keepdim=keepdim)
@@ -323,7 +342,7 @@ class Tensor:
         return "gpu" in ivy.dev(self._ivy_array)
 
     def pow(self, exponent):
-        return ivy.pow(self._ivy_array, exponent)
+        return torch_frontend.pow(self._ivy_array, exponent)
 
     def pow_(self, exponent):
         self._ivy_array = self.pow(exponent).data
@@ -344,6 +363,9 @@ class Tensor:
 
     def matmul(self, other):
         return torch_frontend.matmul(self._ivy_array, other)
+
+    def argwhere(self):
+        return torch_frontend.argwhere(self._ivy_array)
 
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self._ivy_array, dim=dim, keepdim=keepdim)
@@ -383,25 +405,33 @@ class Tensor:
         return torch_frontend.negative(self._ivy_array)
 
     def int(self, memory_format=None):
-        return ivy.astype(self._ivy_array, ivy.int32)
+        cast_tensor = self.clone()
+        cast_tensor.ivy.array = ivy.astype(self._ivy_array, ivy.int32)
+        return cast_tensor
 
     def bool(self, memory_format=None):
-        return ivy.astype(self._ivy_array, ivy.bool)
+        cast_tensor = self.clone()
+        cast_tensor.ivy.array = ivy.astype(self._ivy_array, ivy.bool)
+        return cast_tensor
 
     def type(self, dtype=None, non_blocking=False, **kwargs):
         if ivy.exists(dtype):
-            return ivy.astype(self._ivy_array, dtype)
+            self._ivy_array = ivy.astype(self._ivy_array, dtype)
+            return self
         else:
             return str(self._ivy_array.dtype)
 
     def type_as(self, other):
-        if self.dtype == other.dtype:
-            return self._ivy_array
+        if self.dtype != other.dtype:
+            self._ivy_array = ivy.astype(self._ivy_array, other.dtype)
+            return self
         else:
-            return ivy.astype(self._ivy_array, other.dtype)
+            pass
 
     def byte(self, memory_format=None):
-        return ivy.astype(self._ivy_array, ivy.uint8)
+        cast_tensor = self.clone()
+        cast_tensor.ivy.array = ivy.astype(self._ivy_array, ivy.uint8)
+        return cast_tensor
 
     def ne(self, other):
         return torch_frontend.ne(self._ivy_array, other)
@@ -426,7 +456,8 @@ class Tensor:
         return torch_frontend.sqrt(self._ivy_array)
 
     def where(self, condition, other):
-        return ivy.where(condition, self._ivy_array, other)
+        # TODO: replace with torch_frontend.where when it's added
+        return torch_frontend.tensor(ivy.where(condition, self._ivy_array, other))
 
     def clone(self, memory_format=None):
         return torch_frontend.tensor(ivy.array(self._ivy_array, copy=True))
@@ -434,6 +465,14 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh(self):
         return torch_frontend.acosh(self._ivy_array)
+
+    def masked_fill(self, mask, value):
+        # TODO: replace with torch_frontend.where when it's added
+        return torch_frontend.tensor(ivy.where(mask, value, self._ivy_array))
+
+    def masked_fill_(self, mask, value):
+        self._ivy_array = self.masked_fill(mask, value).ivy_array
+        return self
 
     # Special Methods #
     # -------------------#
@@ -493,7 +532,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __eq__(self, other):
-        return ivy.equal(self._ivy_array, other)
+        return torch_frontend.equal(self._ivy_array, other)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __gt__(self, other):
