@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st
 import numpy as np
+import random
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1023,4 +1024,71 @@ def test_tensorflow_transpose(
         a=x[0],
         perm=perm,
         conjugate=conjugate,
+    )
+
+
+@st.composite
+def _strided_slice_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            ret_shape=True,
+        ),
+    )
+    masks = draw(
+        st.lists(
+            st.integers(min_value=0, max_value=2 ** len(shape) - 1),
+            min_size=5,
+            max_size=5,
+        )
+    )
+    begin, end, strides = [], [], []
+    sub_shape = tuple([i for i in shape if random.randint(0, 1)])
+    if len(sub_shape) < 1:
+        sub_shape = shape
+    for i in sub_shape:
+        begin += [draw(st.integers(min_value=0, max_value=i - 1))]
+        end += [draw(st.integers(min_value=0, max_value=i - 1))]
+        if begin[-1] < end[-1]:
+            strides += [draw(st.integers(min_value=1))]
+        else:
+            strides += [draw(st.integers(max_value=-1))]
+    return dtype, x, np.array(begin), np.array(end), np.array(strides), masks
+
+
+# strided_slice
+@handle_frontend_test(
+    fn_tree="tensorflow.strided_slice",
+    dtype_x_params=_strided_slice_helper(),
+)
+def test_tensorflow_strided_slice(
+    *,
+    dtype_x_params,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x, begin, end, strides, masks = dtype_x_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype + 3 * ["int64"] + 5 * ["int32"],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input_=x[0],
+        begin=begin,
+        end=end,
+        strides=strides,
+        begin_mask=masks[0],
+        end_mask=masks[1],
+        ellipsis_mask=masks[2],
+        new_axis_mask=masks[3],
+        shrink_axis_mask=masks[4],
     )

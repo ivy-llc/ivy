@@ -192,3 +192,43 @@ def transpose(a, perm=None, conjugate=False, name="transpose"):
     n = a.ndim
     perm = ivy.arange(n - 1, -1, -1)
     return ivy.permute_dims(a, axes=perm)
+
+
+@to_ivy_arrays_and_back
+def strided_slice(
+    input_,
+    begin,
+    end,
+    strides=None,
+    begin_mask=0,
+    end_mask=0,
+    ellipsis_mask=0,
+    new_axis_mask=0,
+    shrink_axis_mask=0,
+    var=None,
+    name=None,
+):
+    full_slice = ()
+    need_ellipsis = False
+    if len(input_.shape) - len(begin.shape) > 0:
+        need_ellipsis = True
+    for i, _ in enumerate(begin.shape):
+        if need_ellipsis and int(bin(ellipsis_mask)[-i]):
+            full_slice += (...,)
+            need_ellipsis = False
+        else:
+            if int(bin(new_axis_mask)[-i]):
+                full_slice += (ivy.newaxis,)
+            else:
+                if int(bin(begin_mask)[-i]):
+                    begin_i = None
+                else:
+                    begin_i = int(begin[i])
+                if int(bin(end_mask)[-i]):
+                    end_i = None
+                else:
+                    end_i = int(end[i])
+                if int(bin(shrink_axis_mask)[-i]):
+                    end_i = begin_i
+                full_slice += (slice(begin_i, end_i, int(strides[i])),)
+    return input_[full_slice]
