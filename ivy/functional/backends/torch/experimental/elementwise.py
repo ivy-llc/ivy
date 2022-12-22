@@ -1,8 +1,11 @@
 # global
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List
+from numbers import Number
+from math import pi
 import torch
 
 # local
+import ivy
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
@@ -91,10 +94,9 @@ def float_power(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.tensor(torch.float_power(x1, x2, out=out), dtype=x1.dtype)
-
-
-float_power.support_native_out = True
+    # Native out is supported but with restrictions leading
+    # to failures hence letting ivy handle it.
+    return torch.float_power(x1, x2).to(x1.dtype)
 
 
 def exp2(
@@ -107,6 +109,19 @@ def exp2(
 
 
 exp2.support_native_out = True
+
+
+def copysign(
+    x1: Union[torch.Tensor, Number],
+    x2: Union[torch.Tensor, Number],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.copysign(torch.as_tensor(x1), x2, out=out)
+
+
+copysign.support_native_out = True
 
 
 def count_nonzero(
@@ -124,7 +139,9 @@ def count_nonzero(
     def _dtype_count_nonzero(a, axis, dtype):
         if dtype is None:
             return torch.count_nonzero(a, dim=axis)
-        return torch.tensor(torch.count_nonzero(a, dim=axis), dtype=dtype)
+        return torch.tensor(
+            torch.count_nonzero(a, dim=axis), dtype=ivy.as_native_dtype(dtype)
+        )
 
     x = _dtype_count_nonzero(a, axis, dtype)
     if not keepdims:
@@ -209,6 +226,22 @@ def isneginf(
 isneginf.support_native_out = True
 
 
+def angle(
+    input: torch.Tensor,
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if deg:
+        return torch.angle(input, out=out) * (180 / pi)
+    else:
+        return torch.angle(input, out=out)
+
+
+angle.support_native_out = True
+
+
 def nan_to_num(
     x: torch.Tensor,
     /,
@@ -242,6 +275,24 @@ def logaddexp2(
 logaddexp2.support_native_out = True
 
 
+def diff(
+    x: Union[torch.Tensor, int, float, list, tuple],
+    /,
+    *,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
+    append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
+) -> torch.Tensor:
+    x = x if type(x) == torch.Tensor else torch.Tensor(x)
+    prepend = prepend if type(prepend) == torch.Tensor else torch.Tensor(prepend)
+    append = append if type(append) == torch.Tensor else torch.Tensor(append)
+    return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
+
+
+gcd.support_native_out = False
+
+
 def signbit(
     x: Union[torch.Tensor, float, int, list, tuple],
     /,
@@ -264,7 +315,8 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> bool:
-    return torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    ret = torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return torch.tensor(ret)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
@@ -304,3 +356,24 @@ def zeta(
 
 
 zeta.support_native_out = False
+
+
+def gradient(
+    x: torch.Tensor,
+    /,
+    *,
+    spacing: Optional[Union[int, list, tuple]] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+    edge_order: Optional[int] = 1,
+) -> Union[torch.Tensor, List[torch.Tensor]]:
+    if axis is None:
+        axis = tuple(range(len(x.shape)))
+    if type(axis) == int:
+        axis = (axis,)
+    if type(spacing) == int:
+        spacing = [spacing] * len(axis)
+
+    grad = torch.gradient(x, spacing=spacing, dim=axis, edge_order=edge_order)
+    if len(grad) == 1:
+        return grad[0]
+    return grad

@@ -34,21 +34,18 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    dtype: Optional[np.dtype] = np.int64,
+    output_dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.argmin(x, axis=axis, keepdims=keepdims, out=out)
+    ret = np.array(np.argmin(x, axis=axis, keepdims=keepdims, out=out))
     # The returned array must have the default array index data type.
-    if dtype is not None:
-        if dtype not in (np.int32, np.int64):
-            return np.array(ret, dtype=np.int32)
+    if output_dtype is not None:
+        output_dtype = ivy.as_native_dtype(output_dtype)
+        if output_dtype not in (np.int32, np.int64):
+            return np.array(ret, dtype=np.int64)
         else:
-            return np.array(ret, dtype=dtype)
-    else:
-        if ret.dtype not in (np.int32, np.int64):
-            return np.array(ret, dtype=np.int32)
-        else:
-            return np.array(ret, dtype=ret.dtype)
+            return np.array(ret, dtype=output_dtype)
+    return np.array(ret, dtype=np.int64)
 
 
 argmin.support_native_out = True

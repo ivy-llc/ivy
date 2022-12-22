@@ -7,7 +7,6 @@ Inplace Updates
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
 .. _`tf.math.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`jax.numpy.tan`: https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.tan.html?highlight=tan
-.. _`mx.nd.tan`: https://mxnet.apache.org/versions/1.6/api/r/docs/api/mx.nd.tan.html
 .. _`presence of this attribute`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L341
 .. _`by the backend function`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L372
 .. _`by the wrapper`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L377
@@ -153,7 +152,7 @@ As explained in the :ref:`Function Wrapping` section, this wrapping is applied t
 
 In the case of *primary* functions, `handle_out_argument`_ does not handle the backend-specific inplace updates in cases where the backend function being wrapped supports them directly, such as `torch.tan`_ and `numpy.tan`_, which both support the :code:`out` argument directly.
 When implementing backend-specific functions, the attribute :code:`support_native_out` should be added to all functions which wrap a function in the backend supporting inplace updates directly.
-`tf.math.tan`_, `jax.numpy.tan`_ and `mx.nd.tan`_ for example do **not** support inplace updates, and so the :code:`support_native_out` attribute should **not** be added to the :code:`tan` implementations.
+`tf.math.tan`_ and `jax.numpy.tan`_ for example do **not** support inplace updates, and so the :code:`support_native_out` attribute should **not** be added to the :code:`tan` implementations.
 
 The implementations of :func:`ivy.tan` for each backend are as follows.
 

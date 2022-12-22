@@ -22,7 +22,7 @@ config.update("jax_enable_x64", True)
 
 register_pytree_node(
     ivy.Container,
-    lambda c: tree_flatten(c.to_dict()),
+    lambda c: tree_flatten(c.cont_to_dict()),
     lambda a, c: ivy.Container(tree_unflatten(a, c)),
 )
 
@@ -150,8 +150,6 @@ from . import activations
 from .activations import *
 from . import compilation
 from .compilation import *
-from . import converters
-from .converters import *
 from . import creation
 from .creation import *
 from . import data_type

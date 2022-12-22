@@ -8,11 +8,6 @@ import numpy as np
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
-try:
-    from scipy.special import erf
-except (ImportError, ModuleNotFoundError):
-    erf = None
-
 
 @_scalar_output_to_0d_array
 def relu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
@@ -32,15 +27,10 @@ def leaky_relu(
 def gelu(
     x, /, *, approximate: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    ivy.assertions.check_exists(
-        erf,
-        message="scipy must be installed in order to call ivy.gelu with a \
-        numpy backend.",
-    )
     if approximate:
         ret = 0.5 * x * (1 + np.tanh(x * 0.7978845608 * (1 + 0.044715 * x * x)))
     else:
-        ret = 0.5 * x * (1 + erf(x / np.sqrt(2)))
+        ret = 0.5 * x * (1 + ivy.erf(x / np.sqrt(2)))
     return ivy.astype(ret, x.dtype, copy=False)
 
 

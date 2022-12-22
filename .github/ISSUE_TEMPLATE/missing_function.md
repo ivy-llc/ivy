@@ -1,5 +1,5 @@
 ---
-name: Missing Function Suggestion
+name: 🔍 Missing Function Suggestion
 about: Request the implementation of a function in the Ivy functional API.
 title: "ivy.<FUNC_NAME>"
 labels: Ivy API, Ivy API Experimental, Next Release, Suggestion
@@ -17,4 +17,3 @@ Because 3+ of the native frameworks have it, and it's a complex function.
 - [PyTorch](<FUNC_URL_DOCS>)
 - [TensorFlow](<FUNC_URL_DOCS>)
 - [NumPy](<FUNC_URL_DOCS>)
-- [MXNet](<FUNC_URL_DOCS>)

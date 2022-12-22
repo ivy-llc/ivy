@@ -138,8 +138,8 @@ def test_ones(
     power=helpers.floats(min_value=1.0, max_value=3.0),
     gain=helpers.floats(min_value=1.0, max_value=10.0),
     var_shape=helpers.get_shape(),
-    fan_in=helpers.ints(min_value=1),
-    fan_out=helpers.ints(min_value=1),
+    fan_in=helpers.ints(min_value=1, max_value=100),
+    fan_out=helpers.ints(min_value=1, max_value=100),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
@@ -205,8 +205,8 @@ def test_uniform(
     method_tree="GlorotUniform.create_variables",
     ground_truth_backend="numpy",
     var_shape=helpers.get_shape(),
-    fan_in=helpers.ints(min_value=1),
-    fan_out=helpers.ints(min_value=1),
+    fan_in=helpers.ints(min_value=1, max_value=100),
+    fan_out=helpers.ints(min_value=1, max_value=100),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
@@ -353,12 +353,20 @@ def test_siren(
 
 @handle_method(
     method_tree="KaimingNormal.create_variables",
-    mean=helpers.floats(large_abs_safety_factor=4, small_abs_safety_factor=4),
+    mean=helpers.floats(
+        min_value=-1e5,
+        max_value=1e5,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
     fan_mode=st.sampled_from(["fan_in", "fan_out", "fan_sum", "fan_avg"]),
     var_shape=helpers.get_shape(),
-    fan_in=helpers.ints(min_value=1, safety_factor=4),
-    fan_out=helpers.ints(min_value=1, safety_factor=4),
-    negative_slope=helpers.floats(min_value=0.0, max_value=5.0),
+    fan_in=helpers.ints(min_value=1, safety_factor=8, safety_factor_scale="log"),
+    fan_out=helpers.ints(min_value=1, safety_factor=8, safety_factor_scale="log"),
+    negative_slope=helpers.floats(
+        min_value=1e-5,
+        max_value=5.0,
+    ),
     # should be replaced with helpers.get_dtypes() but somehow it causes inconsistent data generation # noqa
     dtype=st.sampled_from([None, "float64", "float32", "float16"]),
     init_with_v=st.booleans(),

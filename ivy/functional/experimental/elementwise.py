@@ -1,5 +1,6 @@
 # local
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List
+from numbers import Number
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -347,6 +348,50 @@ def exp2(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+def copysign(
+    x1: Union[ivy.Array, ivy.NativeArray, Number],
+    x2: Union[ivy.Array, ivy.NativeArray, Number],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """Change the signs of x1 to match x2
+    x1 and x2 must be broadcastable to a common shape
+
+    Parameters
+    ----------
+    x1
+        Array or scalar to change the sign of
+    x2
+        Array or scalar from which the new signs are applied
+        Unsigned zeroes are considered positive.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        x1 with the signs of x2.
+        This is a scalar if both x1 and x2 are scalars.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([-1, 0, 23, 2])
+    >>> x2 = ivy.array([1, -1, -10, 44])
+    >>> ivy.copysign(x1, x2)
+    ivy.array([  1.,  -0., -23.,   2.])
+    >>> ivy.copysign(x1, -1)
+    ivy.array([ -1.,  -0., -23.,  -2.])
+    >>> ivy.copysign(-10, 1)
+    ivy.array(10.)
+    """
+    return ivy.current_backend().copysign(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def count_nonzero(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -636,6 +681,50 @@ def isneginf(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def angle(
+    z: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    deg: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Calculates Element-wise the angle for an array of complex numbers(x+yj).
+
+    Parameters
+    ----------
+    z
+        Array-like input.
+    deg
+        optional bool.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns an array of angles for each complex number in the input.
+        If def is False(default), angle is calculated in radian and if
+        def is True, then angle is calculated in degrees.
+
+    Examples
+    --------
+    >>> ivy.set_backend('tensorflow')
+    >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
+    >>> z
+    ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
+    >>> ivy.angle(z)
+    ivy.array([ 2.35619449,  2.35619449, -0.78539816])
+    >>> ivy.set_backend('numpy')
+    >>> ivy.angle(z,deg=True)
+    ivy.array([135., 135., -45.])
+    """
+    return ivy.current_backend(z).angle(z, deg=deg, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def nan_to_num(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -761,8 +850,49 @@ def signbit(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+def diff(
+    x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    /,
+    *,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+    append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+) -> ivy.Array:
+    """Returns the n-th discrete difference along the given axis.
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    n
+        The number of times values are differenced. If zero, the input is returned
+        as-is.
+    axis
+        The axis along which the difference is taken, default is the last axis.
+    prepend,append
+        Values to prepend/append to x along given axis prior to performing the
+        difference. Scalar values are expanded to arrays with length 1 in the direction
+        of axis and the shape of the input array in along all other axes. Otherwise the
+        dimension and shape must match a except along axis.
+
+    Returns
+    -------
+    ret
+        Rreturns the n-th discrete difference along the given axis.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 4, 7, 0])
+    >>> ivy.diff(x)
+    ivy.array([ 1,  2,  3, -7])
+    """
+    return ivy.current_backend().diff(x, n=n, axis=axis, prepend=prepend, append=append)
+
+
+@handle_nestable
+@to_native_arrays_and_back
 @handle_exceptions
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
@@ -813,19 +943,19 @@ def allclose(
     >>> x2 = ivy.array([1.00001e10, 1e-8])
     >>> y = ivy.allclose(x1, x2)
     >>> print(y)
-    False
+    ivy.array(False)
 
     >>> x1 = ivy.array([1.0, ivy.nan])
     >>> x2 = ivy.array([1.0, ivy.nan])
     >>> y = ivy.allclose(x1, x2, equal_nan=True)
     >>> print(y)
-    True
+    ivy.array(True)
 
     >>> x1 = ivy.array([1e-10, 1e-10])
     >>> x2 = ivy.array([1.00001e-10, 1e-10])
     >>> y = ivy.allclose(x1, x2, rtol=0.005, atol=0.0)
     >>> print(y)
-    True
+    ivy.array(True)
 
     """
     return ivy.current_backend().allclose(
@@ -944,3 +1074,80 @@ def zeta(
     ivy.array([0.0369, 0.2021])
     """
     return ivy.current_backend(x, q).zeta(x, q, out=out)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def gradient(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    spacing: Optional[Union[int, list, tuple]] = 1,
+    edge_order: Optional[int] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+) -> Union[ivy.Array, List[ivy.Array]]:
+    """Calculates gradient of x with respect to (w.r.t.) spacing
+
+    Parameters
+    ----------
+    x
+        input array representing outcomes of the function
+    spacing
+        if not given, indices of x will be used
+        if scalar indices of x will be scaled with this value
+        if array gradient of x w.r.t. spacing
+    edge_order
+        1 or 2, for 'frist order' and 'second order' estimation
+        of boundary values of gradient respectively.
+        Note: jax supports edge_order=1 case only
+    axis
+        dimension(s) to approximate the gradient over
+        by default partial gradient is computed in every dimention
+
+    Returns
+    -------
+    ret
+        Array with values computed from gradient function from
+        inputs
+
+    Examples
+    --------
+    >>> spacing = (ivy.array([-2., -1., 1., 4.]),)
+    >>> x = ivy.array([4., 1., 1., 16.], )
+    >>> ivy.gradient(x, spacing=spacing)
+    ivy.array([-3., -2.,  2.,  5.])
+
+    >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+    >>> ivy.gradient(x)
+    [ivy.array([[ 9., 18., 36., 72.],
+       [ 9., 18., 36., 72.]]), ivy.array([[ 1. ,  1.5,  3. ,  4. ],
+       [10. , 15. , 30. , 40. ]])]
+
+    >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+    >>> ivy.gradient(x, spacing=2.0)
+    [ivy.array([[ 4.5,  9. , 18. , 36. ],
+       [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],
+       [ 5.  ,  7.5 , 15.  , 20.  ]])]
+
+    >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+    >>> ivy.gradient(x, axis=1)
+    ivy.array([[ 1. ,  1.5,  3. ,  4. ],
+       [10. , 15. , 30. , 40. ]])
+
+    >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+    >>> ivy.gradient(x, spacing=[3., 2.])
+    [ivy.array([[ 3.,  6., 12., 24.],
+       [ 3.,  6., 12., 24.]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],
+       [ 5.  ,  7.5 , 15.  , 20.  ]])]
+
+    >>> spacing = (ivy.array([0, 2]), ivy.array([0, 3, 6, 9]))
+    >>> ivy.gradient(x, spacing=spacing)
+    [ivy.array([[ 4.5,  9. , 18. , 36. ],
+       [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.33333333, 0.5,  1., 1.33333333],
+       [ 3.33333333,  5.        , 10.        , 13.33333333]])]
+
+    """
+    return ivy.current_backend(x).gradient(
+        x, spacing=spacing, edge_order=edge_order, axis=axis
+    )

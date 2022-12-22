@@ -105,8 +105,8 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
     order: Optional[str] = "C",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
@@ -179,6 +179,7 @@ def squeeze(
     return ret
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def stack(
     arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     /,

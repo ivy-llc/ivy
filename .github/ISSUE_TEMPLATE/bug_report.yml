@@ -1,4 +1,4 @@
-name: Bug Report
+name: 🐛 Bug Report
 description: File a bug report.
 title: "[Bug]: <TITLE>"
 labels: "Bug Report"
@@ -44,7 +44,6 @@ body:
         - label: TensorFlow
         - label: PyTorch
         - label: JAX
-        - label: MXNet
   - type: input
     id: device
     attributes:

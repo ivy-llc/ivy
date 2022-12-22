@@ -1,11 +1,5 @@
 # global
-from typing import (
-    Optional,
-    Union,
-    List,
-    Dict,
-    Tuple,
-)
+from typing import Optional, Union, List, Dict, Tuple, Sequence
 
 # local
 import ivy
@@ -59,7 +53,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             b: (7, 6, 2)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "median",
             input,
             axis=axis,
@@ -169,7 +163,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             y: 1.8
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nanmean",
             input,
             axis=axis,
@@ -276,7 +270,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             b: (ivy.array([5, 0], ivy.array([0, 2])))
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unravel_index",
             indices,
             shape=shape,
@@ -324,3 +318,253 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         }
         """
         return self.static_unravel_index(self, shape, out=out)
+
+    @staticmethod
+    def static_quantile(
+        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[Sequence[int], int]] = None,
+        keepdims: bool = False,
+        interpolation: str = "linear",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.quantile.
+        This method simply wraps the function, and so the docstring
+        for ivy.quantile also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        a
+            Input container including arrays.
+        q
+            Quantile or sequence of quantiles to compute, which must be
+            between 0 and 1 inclusive.
+        axis
+            Axis or axes along which the quantiles are computed. The default
+            is to compute the quantile(s) along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original array a.
+        interpolation
+            {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value:
+            'linear'.
+            This specifies the interpolation method to use when the desired quantile
+            lies between two data points i < j:
+            - linear: i + (j - i) * fraction, where fraction is the fractional part of
+            the index surrounded by i and j.
+            - lower: i.
+            - higher: j.
+            - nearest: i or j, whichever is nearest.
+            - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
+            integer dtypes.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container with (rank(q) + N - len(axis)) dimensional arrays of same dtype
+            as input arrays in the container, or, if axis is None, rank(q) arrays. The
+            first rank(q) dimensions index quantiles for different values of q.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+                              y=ivy.array([1., 2., 3., 4.]))
+        >>> q = 0.5
+        >>> b = ivy.Container.static_quantile(a, q)
+        >>> print(b)
+        {
+            x: 3.5,
+            y: 2.5
+        }
+
+        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+                              y=ivy.array([1., 2., 3., 4.]))
+        >>> q = ivy.array([0.5, 0.75])
+        >>> b = ivy.Container.static_quantile(a, q)
+        >>> print(b)
+        {
+            x: ivy.array([3.5, 6.25]),
+            y: ivy.array([2.5, 3.25])
+        }
+
+        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+                              y=ivy.array([1., 2., 3., 4.]))
+        >>> q = ivy.array([0.5, 0.75])
+        >>> b = ivy.Container.static_quantile(a, q, axis = 0)
+        >>> print(b)
+        {
+            x: ivy.array([[6.5, 4.5, 2.5],
+                        [8.25, 5.75, 3.25]]),
+            y: ivy.array([2.5, 3.25])
+        }
+
+        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]))
+        >>> b = ivy.Container.static_quantile(a, q, axis = 1, keepdims=True)
+        >>> print(b)
+        {
+            x: ivy.array([[[7.],
+                    [2.]],
+                    [[8.5],
+                    [2.5]]])
+        }
+
+        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+                              y=ivy.array([1., 2., 3., 4.]))
+        >>> q = ivy.array([0.3, 0.7])
+        >>> b = ivy.Container.static_quantile(a, q, axis = 0, interpolation="lower")
+        >>> print(b)
+        {
+            x: ivy.array([[3., 2., 1.],
+                        [3., 2., 1.]]),
+            y: ivy.array([1., 3.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_static_method(
+            "quantile",
+            a,
+            q,
+            axis=axis,
+            keepdims=keepdims,
+            interpolation=interpolation,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def quantile(
+        self: ivy.Container,
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[Sequence[int], int]] = None,
+        keepdims: bool = False,
+        interpolation: str = "linear",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.quantile.
+        This method simply wraps the function, and so the docstring
+        for ivy.quantile also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        a
+            Input container including arrays.
+        q
+            Quantile or sequence of quantiles to compute, which must be
+            between 0 and 1 inclusive.
+        axis
+            Axis or axes along which the quantiles are computed. The default
+            is to compute the quantile(s) along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original array a.
+        interpolation
+            {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value:
+            'linear'.
+            This specifies the interpolation method to use when the desired quantile
+            lies between two data points i < j:
+            - linear: i + (j - i) * fraction, where fraction is the fractional part of
+            the index surrounded by i and j.
+            - lower: i.
+            - higher: j.
+            - nearest: i or j, whichever is nearest.
+            - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
+            integer dtypes.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container with (rank(q) + N - len(axis)) dimensional arrays of same dtype
+            as input arrays in the container, or, if axis is None, rank(q) arrays. The 
+            first rank(q) dimensions index quantiles for different values of q.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),\
+                              y=ivy.array([1., 2., 3., 4.]))
+        >>> q = 0.5
+        >>> b = a.quantile(q)
+        >>> print(b)
+        {
+            x: 3.5,
+            y: 2.5
+        }
+
+        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+                              y=ivy.array([1., 2., 3., 4.]))
+        >>> q = ivy.array([0.5, 0.75])
+        >>> b = a.quantile(q)
+        >>> print(b)
+        {
+            x: ivy.array([3.5, 6.25]),
+            y: ivy.array([2.5, 3.25])
+        }
+
+        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+                              y=ivy.array([1., 2., 3., 4.]))
+        >>> q = ivy.array([0.5, 0.75])
+        >>> b = a.quantile(q, axis = 0)
+        >>> print(b)
+        {
+            x: ivy.array([[6.5, 4.5, 2.5], 
+                        [8.25, 5.75, 3.25]]),
+            y: ivy.array([2.5, 3.25])
+        }
+
+        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]))
+        >>> b = a.quantile(q, axis = 1, keepdims=True)
+        >>> print(b)
+        {
+            x: ivy.array([[[7.], 
+                    [2.]], 
+                    [[8.5], 
+                    [2.5]]])
+        }
+
+        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+                              y=ivy.array([1., 2., 3., 4.]))
+        >>> q = ivy.array([0.3, 0.7])
+        >>> b = a.quantile(q, axis = 0, interpolation="lower")
+        >>> print(b)
+        {
+            x: ivy.array([[3., 2., 1.], 
+                        [3., 2., 1.]]),
+            y: ivy.array([1., 3.])
+        }   
+        """
+        return self.static_quantile(
+            self,
+            q,
+            axis=axis,
+            keepdims=keepdims,
+            interpolation=interpolation,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
