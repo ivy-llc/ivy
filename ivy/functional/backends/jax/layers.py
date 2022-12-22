@@ -298,6 +298,7 @@ def conv_general_dilated(
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -324,7 +325,7 @@ def conv_general_dilated(
             )
         padding = [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)]
     df = ivy.get_x_data_format(dims, data_format)
-    return jlax.conv_general_dilated(
+    res = jlax.conv_general_dilated(
         x,
         filters,
         strides,
@@ -334,6 +335,11 @@ def conv_general_dilated(
         (df, filter_df, df),
         feature_group_count,
     )
+    if bias is not None:
+        if data_format == "channel_last":
+            return jnp.add(res, bias)
+        return jnp.add(res, bias[(None,) + (...,) + (None,) * dims])
+    return res
 
 
 def conv_general_transpose(

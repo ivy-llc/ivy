@@ -501,6 +501,7 @@ def conv_general_dilated(
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -544,15 +545,15 @@ def conv_general_dilated(
     )
     if dims == 1:
         res = torch.nn.functional.conv1d(
-            x, filters, None, strides, "valid", dilations, feature_group_count
+            x, filters, bias, strides, "valid", dilations, feature_group_count
         )
     elif dims == 2:
         res = torch.nn.functional.conv2d(
-            x, filters, None, strides, "valid", dilations, feature_group_count
+            x, filters, bias, strides, "valid", dilations, feature_group_count
         )
     else:
         res = torch.nn.functional.conv3d(
-            x, filters, None, strides, "valid", dilations, feature_group_count
+            x, filters, bias, strides, "valid", dilations, feature_group_count
         )
     if data_format == "channel_last":
         return res.permute(0, *range(2, dims + 2), 1)
