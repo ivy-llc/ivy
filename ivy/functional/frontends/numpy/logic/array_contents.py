@@ -31,23 +31,3 @@ def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
 def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     a, b = promote_types_of_numpy_inputs(a, b)
     return ivy.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-
-
-# TODO: datetime dtypes not supported by ivy yet
-def isnat(
-    x,
-    /,
-    out=None,
-    *,
-    where=True,
-    casting="same_kind",
-    order="K",
-    dtype=None,
-    subok=True,
-):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.isnat(x, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
