@@ -3094,8 +3094,6 @@ class ContainerBase(dict, abc.ABC):
         inplace
             Whether to apply the mapping inplace, or return a new container.
             Default is ``False``.
-        map_sequences
-            Whether to also map to sequences (lists and tuples). Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
 
