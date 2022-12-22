@@ -13,8 +13,8 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @st.composite
 def statistical_dtype_values(draw, *, function):
-    large_abs_safety_factor = 20
-    small_abs_safety_factor = 20
+    large_abs_safety_factor = 42
+    small_abs_safety_factor = 42
     if function in ["mean", "median", "std", "var"]:
         large_abs_safety_factor = 24
         small_abs_safety_factor = 24
