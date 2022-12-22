@@ -929,19 +929,17 @@ class ContainerWithCreation(ContainerBase):
 
         Parameters
         ----------
-        self
-            Container for first value in the range in log space. base ** start is the
-            starting value in the sequence. Can be an array or a float.
+        start
+            Container for first value in the range in log space.
         stop
-            Container for last value in the range in log space. base ** stop is the final
-            value in the sequence. Can be an array or a float.
+            Container for last value in the range in log space.
         num
             Number of values to generate.
         base
             The base of the log space. Default is 10.0
         axis
-            Axis along which the operation is performed. Relevant only if start or stop
-            are array-like. Default is 0.
+            Axis along which the operation is performed. Relevant only if values in start
+            or stop containers are array-like. Default is 0.
         endpoint
             If True, stop is the last sample. Otherwise, it is not included. Default is
             True.
@@ -953,13 +951,13 @@ class ContainerWithCreation(ContainerBase):
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default is
             None.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to. Default is None.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to. Default is None.
 
         Returns
         -------
         ret
-            a container having the same shape as ``self`` and filled with tensor of
+            a container having the same shape as ``start`` and filled with tensor of
             evenly-spaced values in log space.
 
         Examples
@@ -1030,18 +1028,16 @@ class ContainerWithCreation(ContainerBase):
         Parameters
         ----------
         self
-            Container for first value in the range in log space. base ** start is the
-            starting value in the sequence. Can be an array or a float.
+            Container for first value in the range in log space.
         stop
-            Container for last value in the range in log space. base ** stop is the final
-            value in the sequence. Can be an array or a float.
+            Container for last value in the range in log space.
         num
             Number of values to generate.
         base
             The base of the log space. Default is 10.0
         axis
-            Axis along which the operation is performed. Relevant only if start or stop
-            are array-like. Default is 0.
+            Axis along which the operation is performed. Relevant only if values in start
+            or stop containers are array-like. Default is 0.
         endpoint
             If True, stop is the last sample. Otherwise, it is not included. Default is
             True.
@@ -1053,8 +1049,8 @@ class ContainerWithCreation(ContainerBase):
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default is
             None.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to. Default is None.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to. Default is None.
 
         Returns
         -------
