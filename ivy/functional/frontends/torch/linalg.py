@@ -90,7 +90,12 @@ def svd(A, /, *, full_matrices=True, driver=None, out=None):
     return ivy.svd(A, compute_uv=True, full_matrices=full_matrices)
 
 
-@to_ivy_arrays_and_back
 def svdvals(A, *, driver=None, out=None):
     # TODO: add handling for driver
     return ivy.svdvals(A, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def eig(input, *, out=None):
+    return ivy.eig(input, out=out)
