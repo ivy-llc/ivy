@@ -607,7 +607,7 @@ def subtract(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
-    return np.subtract(x1, x2)
+    return np.subtract(x1, x2, out=out)
 
 
 subtract.support_native_out = True
