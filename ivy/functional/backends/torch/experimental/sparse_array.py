@@ -115,14 +115,12 @@ def native_sparse_array(
             values=values,
             dense_shape=dense_shape,
         )
-        print("SHAPE", bsc_ccol_indices.shape, bsc_row_indices.shape)
         return torch.sparse_bsc_tensor(
             ccol_indices=bsc_ccol_indices,
             row_indices=bsc_row_indices,
             values=values,
             size=dense_shape,
         )
-        print("alo")
 
 
 def native_sparse_array_to_indices_values_and_shape(x):
