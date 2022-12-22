@@ -103,8 +103,7 @@ def svdvals(A, *, driver=None, out=None):
 
 
 @to_ivy_arrays_and_back
-def inv_ex(A, *, check_errors=False, out=None):
-    input = A
+def inv_ex(input, *, check_errors=False, out=None):
     try:
         inputInv = ivy.inv(input, out=out)
         info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
