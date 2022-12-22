@@ -26,7 +26,7 @@ def any(
     out=None,
     keepdims=False,
     *,
-    where=True,
+    where=None,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
     ret = ivy.any(a, axis=axis, keepdims=keepdims, out=out)
