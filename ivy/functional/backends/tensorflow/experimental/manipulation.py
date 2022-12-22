@@ -187,3 +187,18 @@ def hsplit(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.hsplit(ary, indices_or_sections)
+
+
+def broadcast_shapes(
+    *shapes: Union[List[int], List[Tuple]],
+) -> Tuple[int, ...]:
+    if len(shapes) > 1:
+        desired_shape = tf.broadcast_dynamic_shape(shapes[0], shapes[1])
+        if len(shapes) > 2:
+            for i in range(2, len(shapes)):
+                desired_shape = tf.broadcast_dynamic_shape(
+                    desired_shape, shapes[i]
+                )
+    else:
+        return [shapes[0]]
+    return tuple(desired_shape.numpy().tolist())

@@ -223,3 +223,8 @@ def hsplit(
 
 
 take_along_axis.support_native_out = True
+
+
+def broadcast_shapes(*shapes: Tuple[int]) -> Tuple[int]:
+    return tuple(torch.broadcast_shapes(*shapes))
+

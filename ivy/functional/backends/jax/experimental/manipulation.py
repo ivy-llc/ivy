@@ -282,3 +282,7 @@ def hsplit(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.hsplit(ary, indices_or_sections)
+
+
+def broadcast_shapes(*shapes: Tuple[int]) -> Tuple[int]:
+    return jnp.broadcast_shapes(*shapes)

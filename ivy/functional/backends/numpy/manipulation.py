@@ -236,3 +236,8 @@ def clip(
 
 
 clip.support_native_out = True
+
+
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]
+                     ) -> List[int]:
+    return np.broadcast_shapes(*shapes)

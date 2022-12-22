@@ -181,6 +181,7 @@ def get_shape(
     max_num_dims=5,
     min_dim_size=1,
     max_dim_size=10,
+    num_examples=None,
 ):
     """Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size]
      of size drawn from min_num_dims to max_num_dims. Useful for randomly
@@ -201,31 +202,56 @@ def get_shape(
         minimum value of each integer in the tuple.
     max_dim_size
         maximum value of each integer in the tuple.
-
+    num_examples
+        number of examples to draw. If set to None, will draw 1 example returned
+        as a tuple. If set to an integer, will draw num_examples examples returned
+        as a list.
     Returns
     -------
     A strategy that draws a tuple.
     """
-    if allow_none:
-        shape = draw(
-            st.none()
-            | st.lists(
-                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
-                min_size=min_num_dims,
-                max_size=max_num_dims,
+    if not num_examples:
+        if allow_none:
+            shape = draw(
+                st.none()
+                | st.lists(
+                    number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
+                    min_size=min_num_dims,
+                    max_size=max_num_dims,
+                )
             )
-        )
+        else:
+            shape = draw(
+                st.lists(
+                    number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
+                    min_size=min_num_dims,
+                    max_size=max_num_dims,
+                )
+            )
+        if shape is None:
+            return shape
+        return tuple(shape)
     else:
-        shape = draw(
-            st.lists(
-                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
-                min_size=min_num_dims,
-                max_size=max_num_dims,
-            )
-        )
-    if shape is None:
-        return shape
-    return tuple(shape)
+        if allow_none:
+            shape = [draw(
+                st.none()
+                | st.lists(
+                    st.integers(min_value=min_dim_size, max_value=max_dim_size),
+                    min_size=min_num_dims,
+                    max_size=max_num_dims,
+                )
+            ) for _ in range(num_examples)]
+        else:
+            shape = [draw(
+                st.lists(
+                    st.integers(min_value=min_dim_size, max_value=max_dim_size),
+                    min_size=min_num_dims,
+                    max_size=max_num_dims,
+                )
+            ) for _ in range(num_examples)]
+        if shape is None:
+            return shape
+        return list(map(tuple, shape))
 
 
 @st.composite

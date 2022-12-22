@@ -876,3 +876,40 @@ def test_hsplit(
         x=x[0],
         indices_or_sections=indices_or_sections,
     )
+
+
+# dstack
+@handle_test(
+    fn_tree="functional.experimental.broadcast_shapes",
+    shapes=helpers.get_shape(
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        num_examples=4),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False)
+    )
+def test_broadcast_shapes(
+    *,
+    shapes,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    kw = {}
+    i = 0
+    for x_ in shapes:
+        kw["x{}".format(i)] = x_
+        i += 1
+    test_flags.num_positional_args = len(shapes)+1
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=['int64'],
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        **kw)

@@ -1531,3 +1531,27 @@ def hsplit(
     return ivy.current_backend(ary).hsplit(
         ary, indices_or_sections=indices_or_sections, out=out
     )
+
+
+@handle_exceptions
+def broadcast_shapes(*shapes: Tuple):
+    """Broadcasts shapes.
+
+    Parameters
+    ----------
+    shapes
+        The shapes to broadcast.
+
+    Returns
+    -------
+    ret
+        The broadcasted shape.
+
+    Examples
+    --------
+    >>> print(ivy.broadcast_shapes((2, 3),(3, 1)))
+    (3, 3)
+    >>> print(ivy.broadcast_shapes((2, 3),(3, 1),(1, 3)))
+    (3, 3)
+    """
+    return ivy.current_backend().broadcast_shapes(*shapes)
