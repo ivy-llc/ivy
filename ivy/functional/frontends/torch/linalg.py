@@ -98,7 +98,7 @@ def svdvals(A, *, driver=None, out=None):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
-def tensorinv(input, ind=2):
+def tensorinv(input, ind=2, *, out=None):
     input_shape = ivy.shape(input)
     if ind > 0:
         shape_ind_end = input_shape[:ind]
@@ -116,11 +116,11 @@ def tensorinv(input, ind=2):
             if len(ivy.shape(input)) > 1:
                 inverse_tensor = ivy.inv(input)
             else:
-                return ivy.reshape(input, shape=inverse_shape_tuple)
+                return ivy.reshape(input, shape=inverse_shape_tuple, out=out)
         else:
             raise ValueError(
                             "Tensor shape must satisfy prod"
                             "(A.shape[:ind]) == prod(A.shape[ind:])")
     else:
         raise ValueError("Expected a strictly positive integer for 'ind'")
-    return ivy.reshape(inverse_tensor, shape=inverse_shape_tuple)
+    return ivy.reshape(inverse_tensor, shape=inverse_shape_tuple, out=out)
