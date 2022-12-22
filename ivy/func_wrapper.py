@@ -415,7 +415,8 @@ def handle_out_argument(fn: Callable) -> Callable:
         # compute return, and then handle the inplace update explicitly
 
         ret = fn(*args, **kwargs)
-        return ivy.inplace_update(out, ret)
+        return ivy.inplace_update(out, ivy.astype(ret, out.dtype))
+        # return output matches the dtype of the out array to match numpy and torch
 
     new_fn.handle_out_argument = True
     return new_fn
