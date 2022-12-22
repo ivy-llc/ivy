@@ -355,8 +355,7 @@ def conv_general_dilated(
             ],
             axis=-1,
         )
-    if bias is not None:
-        res = tf.math.add(res, bias)
+    res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
@@ -375,6 +374,7 @@ def conv_general_transpose(
     output_shape=None,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "channel_first":
@@ -433,6 +433,7 @@ def conv_general_transpose(
             ],
             axis=-1,
         )
+    res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res

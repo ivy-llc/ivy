@@ -354,6 +354,7 @@ def conv_general_transpose(
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
+    bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -398,6 +399,7 @@ def conv_general_transpose(
         ],
         axis=-1,
     )
+    res = jnp.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         return jnp.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
