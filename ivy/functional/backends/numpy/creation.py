@@ -135,7 +135,7 @@ def full(
 def full_like(
     x: np.ndarray,
     /,
-    fill_value: float,
+    fill_value: Number,
     *,
     dtype: np.dtype,
     device: str,
@@ -214,6 +214,9 @@ def zeros(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.zeros(shape, dtype), device=device)
+
+
+zeros.support_native_out = True
 
 
 def zeros_like(

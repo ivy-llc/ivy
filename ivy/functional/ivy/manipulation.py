@@ -258,8 +258,8 @@ def flip(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3, 4, 5])
@@ -293,13 +293,6 @@ def flip(
                 [ 3,  2,  1]],
                [[12, 11, 10],
                 [ 9,  8,  7]]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.flip(x)
-    >>> print(y)
-    ivy.array([2., 1., 0.])
 
     """
     return current_backend(x).flip(x, axis=axis, out=out)
@@ -336,6 +329,16 @@ def permute_dims(
         an array containing the axes permutation. The returned array must have the same
         data type as x.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.permute_dims.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -360,40 +363,26 @@ def permute_dims(
     >>> y = ivy.permute_dims(x, axes=(1, 0))
     >>> print(y)
     {
-    a: ivy.array([[0.],
-                  [1.],
-                  [2.]]),
-    b: ivy.array([[3.],
-                  [4.],
-                  [5.]])
+        a: ivy.array([[0.],
+                      [1.],
+                      [2.]]),
+        b: ivy.array([[3.],
+                      [4.],
+                      [5.]])
     }
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b = ivy.array([[3., 4., 5.]]))
     >>> y = ivy.permute_dims(x, axes=(1, 0), out=x)
     >>> print(y)
     {
-    a: ivy.array([[0.],
-                  [1.],
-                  [2.]]),
-    b: ivy.array([[3.],
-                  [4.],
-                  [5.]])
+        a: ivy.array([[0.],
+                      [1.],
+                      [2.]]),
+        b: ivy.array([[3.],
+                      [4.],
+                      [5.]])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
-    >>> y = x.permute_dims( axes=(1, 0))
-    >>> print(y)
-    {a:ivy.array([[0.],[1.],[2.]]),b:ivy.array([[3.],[4.],[5.]])}
-
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.permute_dims.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
     """
     return current_backend(x).permute_dims(x, axes, out=out)
 
@@ -625,23 +614,6 @@ def roll(
         b: ivy.array([4., 5., 3.])
     }
 
-    Instance Method Examples
-    ------------------------
-    >>> x = ivy.array([[0., 1., 2.],
-    ...                [3., 4., 5.]])
-    >>> y = x.roll(2, axis=-1)
-    >>> print(y)
-    ivy.array([[1., 2., 0.],
-                [4., 5., 3.]])
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
-    ...                   b=ivy.array([3., 4., 5.]))
-    >>> y = x.roll(1)
-    >>> print(y)
-    {
-        a: ivy.array([2., 0., 1.]),
-        b: ivy.array([5., 3., 4.])
-    }
     """
     return current_backend(x).roll(x, shift, axis=axis, out=out)
 
@@ -796,25 +768,6 @@ def stack(
 
     With :code: `ivy.Array` input and different `axis` :
 
-    >>> ivy.stack((x,y),axis=1)
-    ivy.array([[ 0.,  6.],
-        [ 1.,  7.],
-        [ 2.,  8.],
-        [ 3.,  9.],
-        [ 4., 10.]])
-
-    With :code: `ivy.native_array` input:
-
-    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
-    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
-    >>> ivy.stack((x,y))
-    ivy.array([[ 0.,  1.,  2.,  3.,  4.],
-        [ 6.,  7.,  8.,  9., 10.]])
-
-    With :code: `ivy.native_array` input and different `axis` :
-
-    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
-    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
     >>> ivy.stack((x,y),axis=1)
     ivy.array([[ 0.,  6.],
         [ 1.,  7.],
