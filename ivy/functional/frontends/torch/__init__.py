@@ -1,5 +1,17 @@
 # flake8: noqa
 
+from ivy import (
+    uint8,
+    int8,
+    int16,
+    int32,
+    int64,
+    float16,
+    float32,
+    float64,
+    bfloat16,
+    bool,
+)
 from . import nn
 from . import tensor
 from .view_tensor import ViewTensor
@@ -10,6 +22,8 @@ from . import comparison_ops
 from .comparison_ops import *
 from . import creation_ops
 from .creation_ops import *
+from . import dtype
+from .dtype import *
 from . import indexing_slicing_joining_mutating_ops
 from .indexing_slicing_joining_mutating_ops import *
 from . import locally_disabling_gradient_computation
@@ -29,34 +43,21 @@ from .tensor_functions import *
 from . import utilities
 from .utilities import *
 from . import linalg
-from .linalg import *
 import ivy
-from ivy import (
-    uint8,
-    int8,
-    int16,
-    int32,
-    int64,
-    float16,
-    float32,
-    float64,
-    bfloat16,
-    bool,
-)
-from ivy import (
-    int16 as short,
-    int32 as int,
-    int64 as long,
-    float16 as half,
-    float32 as float,
-    float64 as double,
-)
 from ivy.exceptions import handle_exceptions
 
 # global
 from numbers import Number
 from typing import Union, Tuple, Iterable
 
+# type aliases
+char = int8
+short = int16
+int = int32
+long = int64
+half = float16
+float = float32
+double = float64
 
 # data type promotion
 torch_promotion_table = {
@@ -205,18 +206,18 @@ def promote_types_of_torch_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
-    if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
-        not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
-    ):
+    type1 = ivy.default_dtype(item=x1).strip("u123456789")
+    type2 = ivy.default_dtype(item=x2).strip("u123456789")
+    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
+        x1 = ivy.asarray(x1)
+        x2 = ivy.asarray(x2, dtype=x1.dtype)
+    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
+        x1 = ivy.asarray(x1, dtype=x2.dtype)
+        x2 = ivy.asarray(x2)
+    else:
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
         promoted = promote_types_torch(x1.dtype, x2.dtype)
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
-    elif hasattr(x1, "dtype"):
-        x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2, dtype=x1.dtype)
-    else:
-        x1 = ivy.asarray(x1, dtype=x2.dtype)
-        x2 = ivy.asarray(x2)
     return x1, x2

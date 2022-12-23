@@ -476,6 +476,7 @@ def conv_general_dilated(
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -553,6 +554,7 @@ def conv_general_dilated(
         res.append(np.sum(mult, tuple([i for i in range(dims + 1, dims * 2 + 2)])))
     res = np.concatenate(res, axis=-1)
 
+    res = np.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
@@ -570,6 +572,7 @@ def conv_general_transpose(
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
+    bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
 
@@ -642,30 +645,7 @@ def conv_general_transpose(
         ],
         axis=-1,
     )
+    res = np.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
-
-
-def dropout1d(
-    x: np.ndarray,
-    prob: float,
-    /,
-    *,
-    training: bool = True,
-    data_format: str = "NWC",
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if training:
-        if data_format == "NCW":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
-            x = np.transpose(x, perm)
-        noise_shape = list(x.shape)
-        noise_shape[-2] = 1
-        mask = np.random.binomial(1, 1 - prob, noise_shape)
-        res = np.where(mask, x / (1 - prob), 0)
-        if data_format == "NCW":
-            res = np.transpose(res, perm)
-        return res
-    else:
-        return x

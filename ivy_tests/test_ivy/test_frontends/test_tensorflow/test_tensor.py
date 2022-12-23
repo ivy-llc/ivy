@@ -1256,9 +1256,11 @@ def test_tensorflow_instance_rmatmul(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_tensorflow_instance_array(
     dtype_and_x,
+    dtype,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
@@ -1276,10 +1278,12 @@ def test_tensorflow_instance_array(
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=[],
+        method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=[],
-        method_all_as_kwargs_np={},
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "dtype": dtype[0],
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )

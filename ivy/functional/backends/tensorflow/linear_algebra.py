@@ -4,6 +4,7 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
 import tensorflow as tf
+from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
@@ -78,7 +79,26 @@ def diagonal(
     axis2: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
+    return tf.experimental.numpy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+def eig(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[Union[tf.Tensor, tf.Variable]]:
+
+    result_tuple = NamedTuple(
+        "eig",
+        [
+            ("eigenvalues", Union[tf.Tensor, tf.Variable]),
+            ("eigenvectors", Union[tf.Tensor, tf.Variable]),
+        ],
+    )
+    eigenvalues, eigenvectors = tf.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
@@ -145,6 +165,7 @@ def eigvalsh(
 def inner(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -418,6 +439,7 @@ def matrix_rank(
 )
 def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -428,6 +450,7 @@ def matrix_transpose(
 def outer(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -488,6 +511,7 @@ def slogdet(
 def solve(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -554,6 +578,7 @@ def svd(
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def svdvals(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -612,35 +637,39 @@ def vecdot(
     return tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+            "integer",
+        )
+    },
+    backend_version,
+)
 def vector_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    keepdims: Optional[bool] = False,
+    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    dtype: Optional[DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if dtype and x.dtype != dtype:
+        x = tf.cast(x, dtype)
     if ord == -float("inf"):
         tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
-    elif ord == -2:
-        tn_normalized_vector = 1.0 / tf.sqrt(
-            tf.reduce_sum(1.0 / tf.abs(x) ** 2, axis, keepdims)
-        )
-    elif ord == -1:
-        tn_normalized_vector = 1.0 / tf.reduce_sum(1.0 / tf.abs(x), axis, keepdims)
+    elif ord == float("inf"):
+        tn_normalized_vector = tf.reduce_max(tf.abs(x), axis, keepdims)
     elif ord == 0:
         tn_normalized_vector = tf.reduce_sum(tf.cast(x != 0, x.dtype), axis, keepdims)
-    elif ord < 1:
-        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord) ** (1.0 / ord)
     else:
-        tn_normalized_vector = tf.linalg.norm(x, ord, axis, keepdims)
-    if tn_normalized_vector.shape == tuple():
-        ret = tf.expand_dims(tn_normalized_vector, 0)
-    else:
-        ret = tn_normalized_vector
-    return ret
+        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
+            1.0 / ord
+        )
+    return tn_normalized_vector
 
 
 # Extra #
@@ -688,6 +717,7 @@ def vander(
 )
 def vector_to_skew_symmetric_matrix(
     vector: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

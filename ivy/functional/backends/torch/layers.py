@@ -501,6 +501,7 @@ def conv_general_dilated(
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -544,15 +545,15 @@ def conv_general_dilated(
     )
     if dims == 1:
         res = torch.nn.functional.conv1d(
-            x, filters, None, strides, "valid", dilations, feature_group_count
+            x, filters, bias, strides, "valid", dilations, feature_group_count
         )
     elif dims == 2:
         res = torch.nn.functional.conv2d(
-            x, filters, None, strides, "valid", dilations, feature_group_count
+            x, filters, bias, strides, "valid", dilations, feature_group_count
         )
     else:
         res = torch.nn.functional.conv3d(
-            x, filters, None, strides, "valid", dilations, feature_group_count
+            x, filters, bias, strides, "valid", dilations, feature_group_count
         )
     if data_format == "channel_last":
         return res.permute(0, *range(2, dims + 2), 1)
@@ -580,6 +581,7 @@ def conv_general_transpose(
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
+    bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -630,7 +632,7 @@ def conv_general_transpose(
         res = torch.nn.functional.conv_transpose1d(
             x,
             filters,
-            None,
+            bias,
             strides,
             padding_list,
             dilation=dilations,
@@ -643,7 +645,7 @@ def conv_general_transpose(
         res = torch.nn.functional.conv_transpose2d(
             x,
             filters,
-            None,
+            bias,
             strides,
             padding_list,
             dilation=dilations,
@@ -658,7 +660,7 @@ def conv_general_transpose(
         res = torch.nn.functional.conv_transpose3d(
             x,
             filters,
-            None,
+            bias,
             strides,
             padding_list,
             dilation=dilations,
@@ -674,31 +676,3 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.permute(0, *range(2, dims + 2), 1)
     return res
-
-
-conv_general_transpose.unsupported_dtypes = ("float16", "bfloat16")
-
-
-def dropout1d(
-    x: torch.Tensor,
-    prob: float,
-    /,
-    *,
-    training: bool = True,
-    data_format: str = "NWC",
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if training:
-        if data_format == "NWC":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
-            x = torch.permute(x, perm)
-        # ToDo: switch to native dropout1d once torch version is updated.
-        noise_shape = list(x.shape)
-        noise_shape[-1] = 1
-        mask = torch.rand(noise_shape) > prob
-        res = torch.where(mask, x / (1 - prob), torch.zeros_like(x))
-        if data_format == "NWC":
-            res = torch.permute(res, perm)
-        return res
-    else:
-        return x

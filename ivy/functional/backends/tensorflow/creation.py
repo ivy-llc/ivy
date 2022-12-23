@@ -113,7 +113,8 @@ def asarray(
                 return obj
             if dtype is None and not isinstance(obj, tf.Tensor):
                 try:
-                    return tf.convert_to_tensor(obj)
+                    dtype = ivy.default_dtype(item=obj, as_native=True)
+                    return tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                     return tf.convert_to_tensor(
@@ -237,7 +238,7 @@ def full(
 def full_like(
     x: Union[tf.Tensor, tf.Variable],
     /,
-    fill_value: Union[int, float],
+    fill_value: Number,
     *,
     dtype: tf.DType,
     device: str,
@@ -283,6 +284,7 @@ def linspace(
         return tf.cast(ans, dtype)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bool",)}, backend_version)
 def meshgrid(
     *arrays: Union[tf.Tensor, tf.Variable],
     sparse: bool = False,
@@ -337,6 +339,7 @@ def tril(
     return tf.experimental.numpy.tril(x, k)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bool",)}, backend_version)
 def triu(
     x: Union[tf.Tensor, tf.Variable],
     /,

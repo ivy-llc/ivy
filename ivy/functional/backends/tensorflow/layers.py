@@ -8,7 +8,7 @@ from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_devices
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
@@ -170,8 +170,7 @@ def depthwise_conv2d(
     return res
 
 
-@with_unsupported_devices({"2.9.1 and below": ("cpu",)}, backend_version)
-# noinspection PyDefaultArgument
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def conv3d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -262,6 +261,7 @@ def conv_general_dilated(
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(x_dilations, int):
@@ -355,6 +355,7 @@ def conv_general_dilated(
             ],
             axis=-1,
         )
+    res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
@@ -373,6 +374,7 @@ def conv_general_transpose(
     output_shape=None,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "channel_first":
@@ -431,32 +433,7 @@ def conv_general_transpose(
             ],
             axis=-1,
         )
+    res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
-
-
-conv_general_transpose.unsupported_dtypes = ("bfloat16",)
-
-
-def dropout1d(
-    x: Union[tf.Tensor, tf.Variable],
-    prob: float,
-    /,
-    *,
-    training: bool = True,
-    data_format: str = "NWC",
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if training:
-        if data_format == "NCW":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
-            x = tf.transpose(x, perm)
-        noise_shape = list(x.shape)
-        noise_shape[-2] = 1
-        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
-        if data_format == "NCW":
-            res = tf.transpose(res, perm)
-        return res
-    else:
-        return x
