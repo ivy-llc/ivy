@@ -34,7 +34,6 @@ def test_tensorflow_keras_layers_concatenate(
         frontend="tensorflow",
         fn_name="concatenate",
         values=xs,
-        axis=unique_idx,
-        
+        axis=unique_idx,   
     )
      
