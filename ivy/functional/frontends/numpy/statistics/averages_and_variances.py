@@ -123,23 +123,15 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
         return avg.astype(dtype), weights_sum
     else:
         return avg.astype(dtype)
-    
-    
+
+
 @from_zero_dim_arrays_to_float
 def nanstd(
-        a,
-        /,
-        *,
-        axis=None, 
-        dtype=None, 
-        out=None, 
-        ddof=0, 
-        keepdims=False,
-        where=True
-):        
+    a, /, *, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=True
+):
     a = a[~ivy.isnan(a)]
     axis = tuple(axis) if isinstance(axis, list) else axis
-    
+
     if dtype:
         a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
 

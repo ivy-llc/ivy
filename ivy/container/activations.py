@@ -61,7 +61,7 @@ class ContainerWithActivations(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "relu",
             x,
             key_chains=key_chains,
@@ -185,7 +185,7 @@ class ContainerWithActivations(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "leaky_relu",
             x,
             alpha=alpha,
@@ -312,7 +312,7 @@ class ContainerWithActivations(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "gelu",
             x,
             approximate=approximate,
@@ -436,7 +436,7 @@ class ContainerWithActivations(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "sigmoid",
             x,
             key_chains=key_chains,
@@ -558,7 +558,7 @@ class ContainerWithActivations(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "softmax",
             x,
             axis=axis,
@@ -695,7 +695,7 @@ class ContainerWithActivations(ContainerBase):
             a: ivy.array([0.948, 2.63, 4.25])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "softplus",
             x,
             beta=beta,
@@ -839,7 +839,7 @@ class ContainerWithActivations(ContainerBase):
             b: ivy.array([-0.371, -1.17])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "log_softmax",
             x,
             axis=axis,

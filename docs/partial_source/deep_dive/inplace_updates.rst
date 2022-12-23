@@ -232,6 +232,36 @@ Here we still have the :attr:`support_native_out` attribute since we want to tak
 However, in the :code:`else` statement, the last operation is :func:`torch.transpose` which does not support the :code:`out` argument, and so the native inplace update can't be performed by torch here.
 This is why we need to call :func:`ivy.inplace_update` explicitly here, to ensure the native inplace update is performed, as well as the :class:`ivy.Array` inplace update.
 
+Another case where we need to use :func:`ivy.inplace_update`_ with a function that has :attr:`support_native_out` is for the example of the :code:`torch` backend implementation of the :func:`ivy.remainder` function
+
+.. code-block:: python
+
+    def remainder(
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    /,
+    *,
+    modulus: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if not modulus:
+        res = x1 / x2
+        res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
+        diff = res - res_floored
+        diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+        if ivy.exists(out):
+            if out.dtype != x2.dtype:
+                return ivy.inplace_update(
+                    out, torch.round(torch.mul(diff, x2)).to(x1.dtype)
+                )
+        return torch.round(torch.mul(diff, x2), out=out).to(x1.dtype)
+    return torch.remainder(x1, x2, out=out).to(x1.dtype)
+
+Here, even though the :func:`torch.round` function natively supports the :code:`out` argument, in case the :code:`dtype` of the :code:`out` argument is different
+from the :code:`dtype` of the result of the function, we need to use :func:`ivy.inplace_update`, while still trying to utilize the native :code:`out` argument whenever
+the :code:`dtype` is the same for maximum possible extent of the native inplace update.
+
 **Compositional Functions**
 
 For *compositional* functions, the :code:`out` argument should **always** be handled in the compositional implementation, with no wrapping applied at all.
