@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 def statistical_dtype_values(draw, *, function):
     large_abs_safety_factor = 2
     small_abs_safety_factor = 2
-    if function in ["mean", "median", "std", "var"]:
+    if function in ["mean", "median", "std", "var", "quantile"]:
         large_abs_safety_factor = 24
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
