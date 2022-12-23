@@ -2578,6 +2578,8 @@ def isinf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    detect_positive: bool = True,
+    detect_negative: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Tests each element x_i of the input array x to determine if equal to positive or
@@ -2662,7 +2664,9 @@ def isinf(
         b: ivy.array([True, False, False])
     }
     """
-    return ivy.current_backend(x).isinf(x, out=out)
+    return ivy.current_backend(x).isinf(
+        x, detect_positive=detect_positive, detect_negative=detect_negative, out=out
+    )
 
 
 @integer_arrays_to_float
