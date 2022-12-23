@@ -1692,7 +1692,7 @@ def logspace(
     endpoint: bool = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
@@ -1700,8 +1700,8 @@ def logspace(
     Parameters
     ----------
     start
-        First value in the range in log space. base ** start is the starting value in the
-        sequence. Can be an array or a float.
+        First value in the range in log space. base ** start is the starting value in
+        the sequence. Can be an array or a float.
     stop
         Last value in the range in log space. base ** stop is the final value in the
         sequence. Can be an array or a float.
@@ -1713,7 +1713,8 @@ def logspace(
         Axis along which the operation is performed. Relevant only if start or stop are
         array-like. Default is 0.
     endpoint
-        If True, stop is the last sample. Otherwise, it is not included. Default is True.
+        If True, stop is the last sample. Otherwise, it is not included. Default is
+        True.
     dtype
         The data type of the output tensor. If None, the dtype of on_value is used or if
         that is None, the dtype of off_value is used, or if that is None, defaults to
@@ -1734,7 +1735,7 @@ def logspace(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-        Functional Examples
+    Functional Examples
     -------------------
     With float input:
 
@@ -1797,5 +1798,13 @@ def logspace(
                [1.e+03, 1.e+04],
                [1.e+04, 1.e+05])
     """
-    return base ** linspace(start, stop, num, endpoint=endpoint, axis=axis, dtype=dtype,
-                            device=device, out=out)
+    return base ** linspace(
+        start,
+        stop,
+        num,
+        endpoint=endpoint,
+        axis=axis,
+        dtype=dtype,
+        device=device,
+        out=out,
+    )

@@ -938,18 +938,18 @@ class ContainerWithCreation(ContainerBase):
         base
             The base of the log space. Default is 10.0
         axis
-            Axis along which the operation is performed. Relevant only if values in start
-            or stop containers are array-like. Default is 0.
+            Axis along which the operation is performed. Relevant only if values in
+            start or stop containers are array-like. Default is 0.
         endpoint
             If True, stop is the last sample. Otherwise, it is not included. Default is
             True.
         dtype
-            The data type of the output tensor. If None, the dtype of on_value is used or
-            if that is None, the dtype of off_value is used, or if that is None, defaults
-            to float32. Default is None.
+            The data type of the output tensor. If None, the dtype of on_value is used
+            or if that is None, the dtype of off_value is used, or if that is None,
+            defaults to float32. Default is None.
         device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default is
-            None.
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default
+            is None.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to. Default is None.
@@ -1000,7 +1000,7 @@ class ContainerWithCreation(ContainerBase):
             map_sequences=map_sequences,
             dtype=dtype,
             device=device,
-            out=out
+            out=out,
         )
 
     def logspace(
@@ -1018,7 +1018,7 @@ class ContainerWithCreation(ContainerBase):
         map_sequences: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.logspace. This method simply
@@ -1036,18 +1036,18 @@ class ContainerWithCreation(ContainerBase):
         base
             The base of the log space. Default is 10.0
         axis
-            Axis along which the operation is performed. Relevant only if values in start
-            or stop containers are array-like. Default is 0.
+            Axis along which the operation is performed. Relevant only if values in
+            start or stop containers are array-like. Default is 0.
         endpoint
             If True, stop is the last sample. Otherwise, it is not included. Default is
             True.
         dtype
-            The data type of the output tensor. If None, the dtype of on_value is used or
-            if that is None, the dtype of off_value is used, or if that is None, defaults
-            to float32. Default is None.
+            The data type of the output tensor. If None, the dtype of on_value is used
+            or if that is None, the dtype of off_value is used, or if that is None,
+            defaults to float32. Default is None.
         device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default is
-            None.
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default
+            is None.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to. Default is None.
@@ -1103,7 +1103,7 @@ class ContainerWithCreation(ContainerBase):
             map_sequences=map_sequences,
             dtype=dtype,
             device=device,
-            out=out
+            out=out,
         )
 
     @staticmethod

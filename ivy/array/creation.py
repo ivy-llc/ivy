@@ -492,16 +492,18 @@ class ArrayWithCreation(abc.ABC):
         endpoint: bool = True,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Array:
-        """Generates a certain number of evenly-spaced values in log space along a given
-        axis.
+        """
+        ivy.Array instance method variant of ivy.logspace. This method simply wraps the
+        function, and so the docstring for ivy.logspace also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
         self
-            First value in the range in log space. base ** start is the starting value in
-            the sequence. Can be an array or a float.
+            First value in the range in log space. base ** start is the starting value
+            in the sequence. Can be an array or a float.
         stop
             Last value in the range in log space. base ** stop is the final value in the
             sequence. Can be an array or a float.
@@ -516,15 +518,15 @@ class ArrayWithCreation(abc.ABC):
             If True, stop is the last sample. Otherwise, it is not included. Default is
             True.
         dtype
-            The data type of the output tensor. If None, the dtype of on_value is used or
-            if that is None, the dtype of off_value is used, or if that is None, defaults
-            to float32. Default is None.
+            The data type of the output tensor. If None, the dtype of on_value is used
+            or if that is None, the dtype of off_value is used, or if that is None,
+            defaults to float32. Default is None.
         device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default is
-            None.
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default
+            is None.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to. Default is None.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to. Default is None.
 
         Returns
         -------
@@ -582,5 +584,5 @@ class ArrayWithCreation(abc.ABC):
             endpoint=endpoint,
             dtype=dtype,
             device=device,
-            out=out
+            out=out,
         )
