@@ -6,7 +6,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 
 @handle_test(
-    fn_tree="functional.experimental.triu_indices",
+    fn_tree="functional.ivy.experimental.triu_indices",
     n_rows=helpers.ints(min_value=0, max_value=10),
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
     k=helpers.ints(min_value=-10, max_value=10),
@@ -39,7 +39,7 @@ def test_triu_indices(
 
 # vorbis_window
 @handle_test(
-    fn_tree="functional.experimental.vorbis_window",
+    fn_tree="functional.ivy.experimental.vorbis_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -70,7 +70,7 @@ def test_vorbis_window(
 
 # hann_window
 @handle_test(
-    fn_tree="functional.experimental.hann_window",
+    fn_tree="functional.ivy.experimental.hann_window",
     window_length=helpers.ints(min_value=1, max_value=10),
     input_dtype=helpers.get_dtypes("integer"),
     periodic=st.booleans(),
@@ -103,7 +103,7 @@ def test_hann_window(
 
 # kaiser_window
 @handle_test(
-    fn_tree="functional.experimental.kaiser_window",
+    fn_tree="functional.ivy.experimental.kaiser_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=(1, 1),
@@ -143,7 +143,7 @@ def test_kaiser_window(
 
 # kaiser_bessel_derived_window
 @handle_test(
-    fn_tree="functional.experimental.kaiser_bessel_derived_window",
+    fn_tree="functional.ivy.experimental.kaiser_bessel_derived_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=(1, 1),
@@ -183,7 +183,7 @@ def test_kaiser_bessel_derived_window(
 
 # hamming_window
 @handle_test(
-    fn_tree="functional.experimental.hamming_window",
+    fn_tree="functional.ivy.experimental.hamming_window",
     window_length=helpers.ints(min_value=1, max_value=10),
     input_dtype=helpers.get_dtypes("integer"),
     periodic=st.booleans(),
@@ -221,7 +221,7 @@ def test_hamming_window(
 
 
 @handle_test(
-    fn_tree="functional.experimental.tril_indices",
+    fn_tree="functional.ivy.experimental.tril_indices",
     n_rows=helpers.ints(min_value=0, max_value=10),
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
     k=helpers.ints(min_value=-11, max_value=11),

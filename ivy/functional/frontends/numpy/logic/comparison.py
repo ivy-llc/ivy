@@ -7,12 +7,14 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_numpy_casting,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
 )
 
 
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def equal(
     x1,
     x2,
@@ -33,6 +35,7 @@ def equal(
 
 
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def array_equal(a1, a2, equal_nan=False):
     if not equal_nan:
         return ivy.array(ivy.array_equal(a1, a2))
@@ -46,6 +49,7 @@ def array_equal(a1, a2, equal_nan=False):
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def greater(
     x1,
     x2,
@@ -68,6 +72,7 @@ def greater(
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def greater_equal(
     x1,
     x2,
@@ -90,6 +95,7 @@ def greater_equal(
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def less(
     x1,
     x2,
@@ -112,6 +118,7 @@ def less(
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def less_equal(
     x1,
     x2,
@@ -134,6 +141,7 @@ def less_equal(
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def not_equal(
     x1,
     x2,
@@ -154,6 +162,7 @@ def not_equal(
 
 
 @inputs_to_ivy_arrays
+@from_zero_dim_arrays_to_scalar
 def array_equiv(a1, a2):
     if len(ivy.shape(a1)) < len(ivy.shape(a2)):
         a1 = ivy.broadcast_to(a1, ivy.shape(a2))

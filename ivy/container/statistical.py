@@ -484,7 +484,7 @@ class ContainerWithStatistical(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "var",
             x,
             key_chains=key_chains,
@@ -624,7 +624,7 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array([27., 64.])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "prod",
             x,
             axis=axis,
@@ -789,7 +789,7 @@ class ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "sum",
             x,
             axis=axis,
@@ -1107,7 +1107,7 @@ class ContainerWithStatistical(ContainerBase):
                           [10, 10]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "cumsum",
             x,
             axis=axis,
@@ -1355,7 +1355,7 @@ class ContainerWithStatistical(ContainerBase):
                           [1, 5]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "cumprod",
             x,
             axis=axis,
