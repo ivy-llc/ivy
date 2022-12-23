@@ -16,6 +16,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy.functional.frontends.numpy import ndarray
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.test_miscellaneous import (  # noqa
+    _get_clip_inputs,
+)
 
 
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
@@ -595,13 +598,10 @@ def test_numpy_ndarray_argmin(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="clip",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-    ),
+    input_and_ranges=_get_clip_inputs(),
 )
 def test_numpy_instance_clip(
-    dtype_and_x,
+    input_and_ranges,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
@@ -609,7 +609,7 @@ def test_numpy_instance_clip(
     frontend_method_data,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         method_input_dtypes=input_dtype,
@@ -622,7 +622,10 @@ def test_numpy_instance_clip(
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_all_as_kwargs_np={"a_min": 0, "a_max": 1},
+        method_all_as_kwargs_np={
+            "min": min,
+            "max": max,
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )

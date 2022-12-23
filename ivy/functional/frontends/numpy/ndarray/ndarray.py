@@ -153,21 +153,21 @@ class ndarray:
 
     def clip(
         self,
-        a_min,
-        a_max,
+        min,
+        max,
         /,
         out=None,
         *,
         where=True,
         casting="same_kind",
-        order="k",
+        order="K",
         dtype=None,
         subok=True,
     ):
         return np_frontend.clip(
             self._ivy_array,
-            a_min,
-            a_max,
+            min,
+            max,
             out=out,
             where=where,
             casting=casting,
