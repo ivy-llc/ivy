@@ -493,29 +493,22 @@ This function requires us to create extra functions for generating :code:`shape`
 Testing Without Using Tests Values
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-There are some places where we cannot test using hypothesis, as some functions have multiple solutions and all those
-solutions can be correct. The values would be different which would cause the tests to fail using hypothesis. What we
-would do in this case is we would set :code:`test_values=False` and test that by reconstructing the output. An example
-is shown below.
+While even using hypothesis, there are some cases in which we do :code:`test_values=False` for example, we have a
+function add_noise() and we call it on x and we try to assert (we interally use assert np.all_close) that the result
+from torch backend matches tensorflow the test will always fail, because the function add_noise() depends on a random
+seed internally that we have no control over, what we change is only how we test for equality, in which in that case
+we can not and we have to reconstruct the output as shown in the example below.
 
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_torch/test_linalg.py
     @handle_frontend_test(
-        fn_tree="torch.linalg.svd",
-        dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            min_value=0,
-            max_value=10,
-            shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-        ),
-        full_matrices=st.booleans(),
+    fn_tree="torch.linalg.qr",
+    dtype_and_input=_get_dtype_and_matrix(),
     )
-    def test_torch_svd(
+    def test_torch_qr(
         *,
-        dtype_and_x,
-        full_matrices,
-        with_out,
+        dtype_and_input,
         num_positional_args,
         as_variable,
         native_array,
@@ -523,40 +516,34 @@ is shown below.
         fn_tree,
         on_device,
     ):
-        dtype, x = dtype_and_x
-        x = np.asarray(x[0], dtype=dtype[0])
-        # make symmetric positive definite beforehand
-        x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+        input_dtype, x = dtype_and_input
         ret, frontend_ret = helpers.test_frontend_function(
-            input_dtypes=dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
+            input_dtypes=input_dtype,
             native_array_flags=native_array,
+            as_variable_flags=as_variable,
+            with_out=False,
+            num_positional_args=num_positional_args,
             frontend=frontend,
             fn_tree=fn_tree,
             on_device=on_device,
+            input=x[0],
             test_values=False,
-            atol=1e-03,
-            rtol=1e-05,
-            input=x,
-            full_matrices=full_matrices,
         )
         ret = [ivy.to_numpy(x) for x in ret]
         frontend_ret = [np.asarray(x) for x in frontend_ret]
 
-        u, s, vh = ret
-        frontend_u, frontend_s, frontend_vh = frontend_ret
+        q, r = ret
+        frontend_q, frontend_r = frontend_ret
 
         assert_all_close(
-            ret_np=u @ np.diag(s) @ vh,
-            ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
+            ret_np=q @ r,
+            ret_from_gt_np=frontend_q @ frontend_r,
             rtol=1e-2,
             atol=1e-2,
             ground_truth_backend=frontend,
         )
 
-* The parameter :code:`test_values=False` is explicitly set to "False" as there can be multiple solutions for this and those multiple solutions can all be correct.
+* The parameter :code:`test_values=False` is explicitly set to "False" as there can be multiple solutions for this and those multiple solutions can all be correct, so we have to test with reconstructing the output.
 
 Alias functions
 ^^^^^^^^^^^^^^^
