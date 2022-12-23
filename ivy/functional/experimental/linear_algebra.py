@@ -11,6 +11,13 @@ from ivy.func_wrapper import (
 )
 from ivy.exceptions import handle_exceptions
 
+# Helpers #
+# ------- #
+
+
+def _check_valid_dimension_size(std):
+    ivy.assertions.check_dimensions(std)
+
 
 @to_native_arrays_and_back
 @handle_out_argument
@@ -185,7 +192,7 @@ def eig(
     w
         Not necessarily ordered array(..., N) of eigenvalues in complex type.
     v
-        An array(..., N, N) of normalized (unit “length”) eigenvectors,
+        An array(..., N, N) of normalized (unit "length") eigenvectors,
         the column v[:,i] is the eigenvector corresponding to the eigenvalue w[i].
 
     This function conforms to the `Array API Standard
@@ -223,3 +230,41 @@ def eig(
     ])
     """
     return current_backend(x).eig(x)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def adjoint(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the complex conjugate transpose of x.
+
+    Parameters
+    ----------
+    x
+        An array with more than one dimension.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        the complex conjugate transpose of the input.
+
+    Examples
+    --------
+        >>> x = np.array([[1.-1.j, 2.+2.j],
+                          [3.+3.j, 4.-4.j]])
+        >>> x = ivy.array(x)
+        >>> ivy.adjoint(x)
+        ivy.array([[1.+1.j, 3.-3.j],
+                   [2.-2.j, 4.+4.j]])
+    """
+    return current_backend(x).adjoint(x, out=out)
+

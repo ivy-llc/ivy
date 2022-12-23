@@ -101,3 +101,28 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
         """
         return ivy.eig(self._data)
+
+    def adjoint(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.adjoint.
+        This method simply wraps the function, and so the docstring for
+        ivy.adjoint also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = np.array([[1.-1.j, 2.+2.j],
+                          [3.+3.j, 4.-4.j]])
+        >>> x = ivy.array(x)
+        >>> x.adjoint()
+        ivy.array([[1.+1.j, 3.-3.j],
+                   [2.-2.j, 4.+4.j]])
+        """
+        return ivy.adjoint(
+            self._data,
+            out=out,
+        )
