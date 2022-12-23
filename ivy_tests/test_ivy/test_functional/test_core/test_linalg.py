@@ -908,16 +908,17 @@ def test_vecdot(
 @handle_test(
     fn_tree="functional.ivy.vector_norm",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=2,
-        max_dim_size=5,
-        min_axis=-2,
-        max_axis=1,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        valid_axis=True,
+        min_value=-1e04,
+        max_value=1e04,
     ),
     kd=st.booleans(),
-    ord=helpers.ints(min_value=1, max_value=2),
+    ord=st.one_of(
+        helpers.ints(min_value=1, max_value=2),
+        helpers.floats(min_value=1.0, max_value=2.0),
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     test_gradient=st.just(True),
 )
 def test_vector_norm(
@@ -925,26 +926,26 @@ def test_vector_norm(
     dtype_values_axis,
     kd,
     ord,
+    dtype,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, axis = dtype_values_axis
+    x_dtype, x, axis = dtype_values_axis
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
+        input_dtypes=x_dtype,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
         x=x[0],
         axis=axis,
         keepdims=kd,
         ord=ord,
+        dtype=dtype[0],
     )
 
 

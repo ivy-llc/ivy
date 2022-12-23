@@ -212,7 +212,7 @@ def test_kron(
         min_value=-100,
         max_value=100,
         allow_nan=False,
-        shared_dtype=True
+        shared_dtype=True,
     ),
 )
 def test_matrix_exp(
@@ -246,7 +246,14 @@ def test_matrix_exp(
 @handle_test(
     fn_tree="functional.experimental.eig",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=(ivy.float32, ivy.float64, ivy.int32, ivy.int64),
+        available_dtypes=(
+            ivy.float32,
+            ivy.float64,
+            ivy.int32,
+            ivy.int64,
+            ivy.complex64,
+            ivy.complex128,
+        ),
         min_num_dims=2,
         max_num_dims=3,
         min_dim_size=10,
