@@ -585,7 +585,12 @@
         <span class="c1"># if any of the arguments or keyword arguments passed to the function contains</span>
         <span class="c1"># a container, get the container&#39;s version of the function and call it using</span>
         <span class="c1"># the passed arguments.</span>
-        <span class="n">cont_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="s2">&quot;static_&quot;</span> <span class="o">+</span> <span class="n">fn_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="s2">&quot;static_&quot;</span> <span class="o">+</span> <span class="n">fn_name</span><span class="p">):</span>
+            <span class="n">cont_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="s2">&quot;static_&quot;</span> <span class="o">+</span> <span class="n">fn_name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cont_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_multi_map_in_function</span><span class="p">(</span>
+                <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_nestable_mode</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">nested_any</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">,</span> <span class="n">check_nests</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_any</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">,</span> <span class="n">check_nests</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -597,6 +602,45 @@
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_nestable</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">new_fn</span></div>
+
+
+<div class="viewcode-block" id="custom_handle_nestable"><a class="viewcode-back" href="../../func_wrapper/custom_handle_nestable.html#ivy.func_wrapper.custom_handle_nestable">[docs]</a><span class="k">def</span> <span class="nf">custom_handle_nestable</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_nestable_mode</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">nested_any</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">,</span> <span class="n">check_nests</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_any</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">,</span> <span class="n">check_nests</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">arg_cont_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span>
+                <span class="n">args</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">,</span> <span class="n">to_ignore</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span>
+            <span class="p">)</span>
+            <span class="n">kwarg_cont_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span>
+                <span class="n">kwargs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">,</span> <span class="n">to_ignore</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span>
+            <span class="p">)</span>
+            <span class="n">arg_conts</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">arg_cont_idxs</span><span class="p">)</span>
+            <span class="n">num_arg_conts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg_conts</span><span class="p">)</span>
+            <span class="n">kwarg_conts</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">kwarg_cont_idxs</span><span class="p">)</span>
+            <span class="n">conts</span> <span class="o">=</span> <span class="n">arg_conts</span> <span class="o">+</span> <span class="n">kwarg_conts</span>
+
+            <span class="k">def</span> <span class="nf">map_fn</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+                <span class="n">arg_vals</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[:</span><span class="n">num_arg_conts</span><span class="p">]</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">set_nest_at_indices</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">arg_cont_idxs</span><span class="p">,</span> <span class="n">arg_vals</span><span class="p">)</span>
+                <span class="n">kwarg_vals</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="n">num_arg_conts</span><span class="p">:]</span>
+                <span class="n">kw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_nest</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">set_nest_at_indices</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="n">kwarg_cont_idxs</span><span class="p">,</span> <span class="n">kwarg_vals</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_multi_map</span><span class="p">(</span><span class="n">map_fn</span><span class="p">,</span> <span class="n">conts</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                            <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">cont_unstack_conts</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ret</span>
+        <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 

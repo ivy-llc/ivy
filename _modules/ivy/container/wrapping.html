@@ -195,7 +195,7 @@
                 <span class="n">ivy</span><span class="o">.</span><span class="n">insert_into_nest_at_index</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">data_idx</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># return function multi-mapped across the corresponding leaves of the containers</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_function</span><span class="p">(</span>
             <span class="n">function_name</span><span class="p">,</span>
             <span class="o">*</span><span class="n">args</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>

@@ -292,9 +292,9 @@
     <span class="c1"># Class Methods #</span>
     <span class="c1"># --------------#</span>
 
-<div class="viewcode-block" id="ContainerBase.cont_multi_map_in_static_method"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_multi_map_in_static_method">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">cont_multi_map_in_static_method</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="p">,</span>
+<div class="viewcode-block" id="ContainerBase.cont_multi_map_in_function"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_multi_map_in_function">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cont_multi_map_in_function</span><span class="p">(</span>
+        <span class="n">fn</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -303,6 +303,8 @@
         <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">fn_temp</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span>
         <span class="n">arg_cont_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span>
             <span class="n">args</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">,</span> <span class="n">to_ignore</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span>
         <span class="p">)</span>
@@ -315,7 +317,7 @@
         <span class="n">kwarg_conts</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">kwarg_cont_idxs</span><span class="p">)</span>
         <span class="c1"># Combine the retrieved containers from args and kwargs into a single list</span>
         <span class="n">with_out</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">])</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">fn_temp</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="ow">and</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">with_out</span><span class="p">:</span>
@@ -324,9 +326,10 @@
             <span class="n">conts</span> <span class="o">=</span> <span class="n">arg_conts</span> <span class="o">+</span> <span class="n">kwarg_conts</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span><span class="n">conts</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;no containers found in arguments&quot;</span><span class="p">)</span>
         <span class="n">cont0</span> <span class="o">=</span> <span class="n">conts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">cont0</span><span class="o">.</span><span class="n">cont_ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span>
         <span class="c1"># Get the function with the name fn_name, enabling containers to specify</span>
         <span class="c1"># their backends irrespective of global ivy&#39;s backend</span>
-        <span class="n">fn</span> <span class="o">=</span> <span class="n">cont0</span><span class="o">.</span><span class="n">cont_ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">]</span>
 
         <span class="k">def</span> <span class="nf">map_fn</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">with_out</span><span class="p">:</span>
