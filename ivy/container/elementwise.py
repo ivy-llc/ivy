@@ -3693,6 +3693,8 @@ class ContainerWithElementwise(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        detect_positive: bool = True,
+        detect_negative: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -3746,6 +3748,8 @@ class ContainerWithElementwise(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "isinf",
             x,
+            detect_positive=detect_positive,
+            detect_negative=detect_negative,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -3756,6 +3760,8 @@ class ContainerWithElementwise(ContainerBase):
     def isinf(
         self: ivy.Container,
         *,
+        detect_positive: bool = True,
+        detect_negative: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -3808,6 +3814,8 @@ class ContainerWithElementwise(ContainerBase):
         """
         return self.static_isinf(
             self,
+            detect_positive=detect_positive,
+            detect_negative=detect_negative,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
