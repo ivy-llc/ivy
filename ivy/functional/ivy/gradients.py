@@ -792,7 +792,7 @@ def adam_step(
     step = float(step)
     mw = ivy.add(beta1 * mw, (1 - beta1) * dcdw)
     dcdw_sqrd = dcdw**2
-    vw = ivy.add(beta2 * vw, (1 - beta2) * dcdw_sqrd)
+    vw = ivy.add(ivy.multiply(beta2, vw), (1 - beta2) * dcdw_sqrd)
     vw_sqrt = ivy.maximum(vw, 0.0) ** 0.5
     beta1_pow = beta1**step
     beta2_pow = beta2**step
