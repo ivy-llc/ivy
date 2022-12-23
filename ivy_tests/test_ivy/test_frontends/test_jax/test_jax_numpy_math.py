@@ -1697,3 +1697,4 @@ def test_jax_numpy_log(
         atol=1e-02,
         x=x[0],
     )
+
