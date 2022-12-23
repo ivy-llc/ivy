@@ -209,8 +209,8 @@ def test_numpy_average(
         assume(False)
     except AssertionError:
         assume(False)
-        
-        
+
+
 # nanstd
 @handle_frontend_test(
     fn_tree="numpy.nanstd",
@@ -245,7 +245,7 @@ def test_numpy_nanstd(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,  
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
