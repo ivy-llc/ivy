@@ -300,7 +300,7 @@ When implementing backend-specific functions, the attribute <code class="code do
 <span class="n">tan</span><span class="o">.</span><span class="n">support_native_out</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 </div>
-<p>It’s very important to ensure the <code class="code docutils literal notranslate"><span class="pre">support_native_out</span></code> attribute is not added to backend implementations that do not handle the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, as the <a class="reference external" href="https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L341">presence of this attribute</a> dictates whether the argument should be handled <a class="reference external" href="https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L372">by the backend function</a> or <a href="#id4"><span class="problematic" id="id5">`by the wrapper`_</span></a>.</p>
+<p>It’s very important to ensure the <code class="code docutils literal notranslate"><span class="pre">support_native_out</span></code> attribute is not added to backend implementations that do not handle the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, as the <a class="reference external" href="https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L341">presence of this attribute</a> dictates whether the argument should be handled <a class="reference external" href="https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L372">by the backend function</a> or <a href="#id6"><span class="problematic" id="id7">`by the wrapper`_</span></a>.</p>
 <p>This distinction only concerns how the inplace update is applied to the native array, which is operated upon directly by the backend.
 If <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified in an Ivy function, then an inplace update is always <strong>also</strong> performed on the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance itself, which is how <code class="code docutils literal notranslate"><span class="pre">out</span></code> is provided to the function originally.
 The inplace update of this <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> is always <a class="reference external" href="https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L373">handled by the wrapper</a>.</p>
@@ -331,6 +331,43 @@ The inplace update of this <code class="xref py py-class docutils literal notran
 <p>Here we still have the <code class="xref py py-attr docutils literal notranslate"><span class="pre">support_native_out</span></code> attribute since we want to take advantage of the native inplace update enabled by <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.linalg.cholesky()</span></code> in the first condition.
 However, in the <code class="code docutils literal notranslate"><span class="pre">else</span></code> statement, the last operation is <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.transpose()</span></code> which does not support the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, and so the native inplace update can’t be performed by torch here.
 This is why we need to call <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.inplace_update()</span></code> explicitly here, to ensure the native inplace update is performed, as well as the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inplace update.</p>
+<p>Another case where we need to use <a href="#id1"><span class="problematic" id="id2">:func:`ivy.inplace_update`_</span></a> with a function that has <code class="xref py py-attr docutils literal notranslate"><span class="pre">support_native_out</span></code> is for the example of the <code class="code docutils literal notranslate"><span class="pre">torch</span></code> backend implementation of the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.remainder()</span></code> function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">remainder</span><span class="p">(</span>
+<span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+<span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+<span class="o">/</span><span class="p">,</span>
+<span class="o">*</span><span class="p">,</span>
+<span class="n">modulus</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</pre></div>
+</div>
+<dl>
+<dt>) -&gt; torch.Tensor:</dt><dd><p>x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+if not modulus:</p>
+<blockquote>
+<div><p>res = x1 / x2
+res_floored = torch.where(res &gt;= 0, torch.floor(res), torch.ceil(res))
+diff = res - res_floored
+diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+if ivy.exists(out):</p>
+<blockquote>
+<div><dl>
+<dt>if out.dtype != x2.dtype:</dt><dd><dl class="simple">
+<dt>return ivy.inplace_update(</dt><dd><p>out, torch.round(torch.mul(diff, x2)).to(x1.dtype)</p>
+</dd>
+</dl>
+<p>)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>return torch.round(torch.mul(diff, x2), out=out).to(x1.dtype)</p>
+</div></blockquote>
+<p>return torch.remainder(x1, x2, out=out).to(x1.dtype)</p>
+</dd>
+</dl>
+<p>Here, even though the <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.round()</span></code> function natively supports the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, in case the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is different
+from the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> of the result of the function, we need to use <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.inplace_update()</span></code>, while still trying to utilize the native <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument whenever
+the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is the same for maximum possible extent of the native inplace update.</p>
 <p><strong>Compositional Functions</strong></p>
 <p>For <em>compositional</em> functions, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should <strong>always</strong> be handled in the compositional implementation, with no wrapping applied at all.
 This is for a few reasons:</p>
