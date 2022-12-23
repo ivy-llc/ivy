@@ -267,6 +267,9 @@ class ndarray:
     def __truediv__(self, value, /):
         return np_frontend.true_divide(self._ivy_array, value)
 
+    def __floordiv__(self, value, /):
+        return np_frontend.floor_divide(self._ivy_array, value)
+    
     def __and__(self, value, /):
         return np_frontend.logical_and(self._ivy_array, value)
 
