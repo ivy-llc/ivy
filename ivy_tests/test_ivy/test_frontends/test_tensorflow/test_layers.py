@@ -1,4 +1,4 @@
-from pydoc import Helper
+# from pydoc import Helper
 from hypothesis import given
 import numpy as np
 from ivy_tests.test_ivy import helpers
@@ -10,7 +10,7 @@ given(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
-    ),
+),
     # xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     # as_variable=Helper.array_bools(),
 
