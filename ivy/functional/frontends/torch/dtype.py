@@ -1,5 +1,6 @@
 # local
 import ivy
+import ivy.functional.frontends.torch as torch_frontend
 
 
 def can_cast(from_, to):
@@ -15,3 +16,30 @@ def can_cast(from_, to):
     if "bool" in to_str:
         return from_str == to_str
     return True
+
+
+def promote_types(type1, type2, /):
+    return torch_frontend.promote_types_torch(type1, type2)
+
+
+_default_dtype = torch_frontend.float32
+
+
+def set_default_dtype(d):
+    ivy.assertions.check_elem_in_list(
+        d,
+        [
+            torch_frontend.float64,
+            torch_frontend.float32,
+            torch_frontend.float16,
+            torch_frontend.bfloat16,
+        ],
+        message="only floating-point types are supported as the default type",
+    )
+    global _default_dtype
+    _default_dtype = d
+    return
+
+
+def get_default_dtype():
+    return _default_dtype

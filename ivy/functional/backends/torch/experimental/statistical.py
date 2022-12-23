@@ -43,7 +43,7 @@ def nanmean(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nanmean(a, axis=axis, keepdim=keepdims, dtype=dtype, out=out)
+    return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
 
 
 nanmean_support_native_out = True

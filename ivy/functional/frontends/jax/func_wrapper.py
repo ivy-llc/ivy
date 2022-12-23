@@ -12,14 +12,16 @@ def _is_jax_frontend_array(x):
 
 
 def _from_jax_frontend_array_to_ivy_array(x):
-    if isinstance(x, jax_frontend.DeviceArray):
+    if hasattr(x, "ivy_array"):
         return x.ivy_array
     return x
 
 
 def _from_ivy_array_to_jax_frontend_array(x, nested=False, include_derived=None):
     if nested:
-        return ivy.nested_map(x, _from_ivy_array_to_jax_frontend_array, include_derived)
+        return ivy.nested_map(
+            x, _from_ivy_array_to_jax_frontend_array, include_derived, shallow=False
+        )
     elif isinstance(x, ivy.Array):
         return jax_frontend.DeviceArray(x)
     return x
@@ -46,9 +48,11 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             del kwargs["out"]
             has_out = True
         # convert all arrays in the inputs to ivy.Array instances
-        new_args = ivy.nested_map(args, _to_ivy_array, include_derived={tuple: True})
+        new_args = ivy.nested_map(
+            args, _to_ivy_array, include_derived={tuple: True}, shallow=False
+        )
         new_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived={tuple: True}
+            kwargs, _to_ivy_array, include_derived={tuple: True}, shallow=False
         )
         # add the original out argument back to the keyword arguments
         if has_out:
@@ -62,7 +66,18 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         # call unmodified function
-        ret = fn(*args, **kwargs)
+        # ToDo: Remove this default dtype setting
+        #  once frontend specific backend setting is added
+        if jax_frontend.config.jax_enable_x64:
+            ivy.set_default_int_dtype("int64")
+            ivy.set_default_float_dtype("float64")
+            try:
+                ret = fn(*args, **kwargs)
+            finally:
+                ivy.unset_default_int_dtype()
+                ivy.unset_default_float_dtype()
+        else:
+            ret = fn(*args, **kwargs)
         # convert all arrays in the return to `jax_frontend.DeviceArray` instances
         return _from_ivy_array_to_jax_frontend_array(
             ret, nested=True, include_derived={tuple: True}

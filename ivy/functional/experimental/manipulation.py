@@ -1060,7 +1060,7 @@ def pad(
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> padding = ((1, 1), (2, 2))
-    >>> y = ivy.pad(x, padding, mode="constant")
+    >>> y = ivy.pad(x, padding, mode="constant", constant_values=0)
     >>> print(y)
     ivy.array([[0, 0, 0, 0, 0, 0, 0],
                [0, 0, 1, 2, 3, 0, 0],
