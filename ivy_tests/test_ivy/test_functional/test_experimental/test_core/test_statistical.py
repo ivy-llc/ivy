@@ -239,7 +239,7 @@ def test_quantile(
 # nanquantile
 
 @handle_test(
-    fn_tree="functional.experimental.nanquantile",
+    fn_tree="functional.ivy.experimental.nanquantile",
     dtype_x_axis=statistical_dtype_values(function="quantile"),
     keepdims=st.booleans(),
 )
