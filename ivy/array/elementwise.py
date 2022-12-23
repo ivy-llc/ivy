@@ -1074,6 +1074,10 @@ class ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a real-valued data type.
+        detect_positive
+            if ``True``, positive infinity is detected.
+        detect_negative
+            if ``True``, negative infinity is detected.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
