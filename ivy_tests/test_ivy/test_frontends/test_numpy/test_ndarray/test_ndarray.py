@@ -16,6 +16,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy.functional.frontends.numpy import ndarray
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.test_miscellaneous import (  # noqa
+    _get_clip_inputs,
+)
 
 
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
@@ -99,13 +102,18 @@ def test_numpy_ndarray_property_T(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="argmax",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
     ),
+    keep_dims=st.booleans(),
 )
 def test_numpy_ndarray_argmax(
-    dtype_and_x,
+    dtype_x_axis,
+    keep_dims,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
@@ -113,7 +121,7 @@ def test_numpy_ndarray_argmax(
     frontend_method_data,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -126,7 +134,10 @@ def test_numpy_ndarray_argmax(
         method_as_variable_flags=as_variable,
         method_native_array_flags=native_array,
         method_num_positional_args=method_num_positional_args,
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdims": keep_dims,
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
@@ -354,13 +365,10 @@ def test_numpy_ndarray_any(
     init_tree="numpy.array",
     method_name="all",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         valid_axis=True,
+        max_axes_size=1,
         force_int_axis=True,
-        allow_neg_axes=True,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
@@ -491,6 +499,8 @@ def test_numpy_ndarray_mean(
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
 
 
@@ -545,7 +555,7 @@ def test_numpy_instance_min(
     init_tree="numpy.array",
     method_name="argmin",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
@@ -588,13 +598,10 @@ def test_numpy_ndarray_argmin(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="clip",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-    ),
+    input_and_ranges=_get_clip_inputs(),
 )
 def test_numpy_instance_clip(
-    dtype_and_x,
+    input_and_ranges,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
@@ -602,7 +609,7 @@ def test_numpy_instance_clip(
     frontend_method_data,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         method_input_dtypes=input_dtype,
@@ -615,7 +622,10 @@ def test_numpy_instance_clip(
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_all_as_kwargs_np={"a_min": 0, "a_max": 1},
+        method_all_as_kwargs_np={
+            "min": min,
+            "max": max,
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
