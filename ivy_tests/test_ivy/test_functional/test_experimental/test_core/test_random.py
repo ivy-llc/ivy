@@ -13,7 +13,7 @@ import ivy
 
 # dirichlet
 @handle_test(
-    fn_tree="functional.experimental.dirichlet",
+    fn_tree="functional.ivy.experimental.dirichlet",
     dtype_and_alpha=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=2),
         shape=st.tuples(
@@ -70,7 +70,7 @@ def test_dirichlet(
 
 # beta
 @handle_test(
-    fn_tree="functional.experimental.beta",
+    fn_tree="functional.ivy.experimental.beta",
     dtype_and_alpha_beta=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -124,7 +124,7 @@ def test_beta(
 
 # gamma
 @handle_test(
-    fn_tree="functional.experimental.gamma",
+    fn_tree="functional.ivy.experimental.gamma",
     dtype_and_alpha_beta=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
