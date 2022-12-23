@@ -496,6 +496,8 @@ def test_numpy_ndarray_mean(
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
 
 
