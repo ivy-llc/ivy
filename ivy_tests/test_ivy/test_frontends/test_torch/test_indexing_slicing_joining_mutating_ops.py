@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st, assume
 import math
+
 try:
     import exceptions
 except ImportError:
@@ -396,7 +397,7 @@ def test_torch_as_strided(
             storage_offset=offset,
         )
     except exceptions.RuntimeError as e:
-        if 'out of bounds for storage of size' in e.message:
+        if "out of bounds for storage of size" in e.message:
             assume(False)
 
 
@@ -687,6 +688,37 @@ def test_torch_unsqueeze(
         on_device=on_device,
         input=value[0],
         dim=dim,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.argwhere",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_argwhere(
+    *,
+    dtype_and_values,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, input = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
     )
 
 

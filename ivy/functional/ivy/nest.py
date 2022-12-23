@@ -188,13 +188,14 @@ def set_nest_at_index(
         b: ivy.array([3., 4.])
     }
     """
-    nest_type = type(nest)
+    is_tuple = isinstance(nest, tuple)
+    nest_type = type(nest) if is_tuple else lambda x: x
     if _result is None:
         if shallow:
             _result = nest_type(nest)
         else:
             _result = copy_nest(nest)
-    _result = list(_result) if isinstance(nest, tuple) else _result
+    _result = list(_result) if is_tuple else _result
     if len(index) == 1:
         if shallow:
             try:
@@ -303,13 +304,14 @@ def map_nest_at_index(
     }
 
     """
-    nest_type = type(nest)
+    is_tuple = isinstance(nest, tuple)
+    nest_type = type(nest) if is_tuple else lambda x: x
     if _result is None:
         if shallow:
             _result = nest_type(nest)
         else:
             _result = copy_nest(nest)
-    _result = list(_result) if isinstance(nest, tuple) else _result
+    _result = list(_result) if is_tuple else _result
     if len(index) == 1:
         ret = fn(nest[index[0]])
         if shallow:
@@ -476,12 +478,13 @@ def set_nest_at_indices(
     >>> print(nest)
     ivy.array([[1., 11., 3.], [4., 5., 22.]])
     """
-    nest_type = type(nest)
+    is_tuple = isinstance(nest, tuple)
+    nest_type = type(nest) if is_tuple else lambda x: x
     if shallow:
         result = nest_type(nest)
     else:
         result = copy_nest(nest)
-    result = list(result) if isinstance(result, tuple) else result
+    result = list(result) if is_tuple else result
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
     for index, value in zip(indices, values):
@@ -578,12 +581,13 @@ def map_nest_at_indices(
     >>> print(nest)
     ivy.array([[-9., 8., -17.], [11., -3., 5.]])
     """
-    nest_type = type(nest)
+    is_tuple = isinstance(nest, tuple)
+    nest_type = type(nest) if is_tuple else lambda x: x
     if shallow:
         result = nest_type(nest)
     else:
         result = copy_nest(nest)
-    result = list(result) if isinstance(result, tuple) else result
+    result = list(result) if is_tuple else result
     for i, index in enumerate(indices):
         result = map_nest_at_index(nest, index, fn, _result=result, shallow=shallow)
     result = nest_type(result)

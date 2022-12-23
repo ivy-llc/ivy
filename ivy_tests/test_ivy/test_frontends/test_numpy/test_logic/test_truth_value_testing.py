@@ -12,15 +12,10 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="numpy.all",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        min_value=0,
-        max_value=1,
-        allow_inf=False,
-        min_axis=0,
-        max_axis=0,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
@@ -39,8 +34,9 @@ def test_numpy_all(
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
+    axis = axis if axis is None or isinstance(axis, int) else axis[0]
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=[where[0][0]] if isinstance(where, list) else where,
+        where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
@@ -59,7 +55,6 @@ def test_numpy_all(
         out=None,
         keepdims=keepdims,
         where=where,
-        test_values=False,
     )
 
 
@@ -67,15 +62,10 @@ def test_numpy_all(
 @handle_frontend_test(
     fn_tree="numpy.any",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        min_value=0,
-        max_value=1,
-        allow_inf=False,
-        min_axis=0,
-        max_axis=0,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
@@ -94,8 +84,9 @@ def test_numpy_any(
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
+    axis = axis if axis is None or isinstance(axis, int) else axis[0]
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=[where[0][0]] if isinstance(where, list) else where,
+        where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
@@ -114,7 +105,6 @@ def test_numpy_any(
         out=None,
         keepdims=keepdims,
         where=where,
-        test_values=False,
     )
 
 
