@@ -1,20 +1,20 @@
 # local
 import ivy
-import ivy.functional.frontends.tensorflow as tensorflow_frontend
+import ivy.functional.frontends.tensorflow as tf_frontend
 import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
 class DType:
     def __init__(self, dtype_int):
-        self._ivy_dtype = tensorflow_frontend.tensorflow_enum_to_type[dtype_int]
+        self._ivy_dtype = tf_frontend.tensorflow_enum_to_type[dtype_int]
 
     def __repr__(self):
         return "ivy.frontends.tensorflow." + self._ivy_dtype
 
     @property
     def as_datatype_enum(self):
-        return tensorflow_frontend.tensorflow_type_to_enum[self._ivy_dtype]
+        return tf_frontend.tensorflow_type_to_enum[self._ivy_dtype]
 
     @property
     def as_numpy_dtype(self):
@@ -112,12 +112,20 @@ class DType:
 def as_dtype(type_value):
     if isinstance(type_value, DType):
         return type_value
-    if type_value in tensorflow_frontend.tensorflow_type_to_enum:
-        return DType(tensorflow_frontend.tensorflow_type_to_enum[type_value])
-    if isinstance(type_value, np_frontend.dtype):
-        return DType(tensorflow_frontend.tensorflow_type_to_enum[type_value._ivy_dtype])
-    if type_value in tensorflow_frontend.tensorflow_enum_to_type:
+    if ivy.is_native_dtype(type_value):
+        return DType(tf_frontend.tensorflow_type_to_enum[ivy.as_ivy_dtype(type_value)])
+    if type_value in tf_frontend.tensorflow_enum_to_type:
         return DType(type_value)
+    if type_value in tf_frontend.tensorflow_type_to_enum:
+        return DType(tf_frontend.tensorflow_type_to_enum[type_value])
+    if isinstance(type_value, np_frontend.dtype):
+        return DType(tf_frontend.tensorflow_type_to_enum[type_value._ivy_dtype])
+    if issubclass(type_value, np_frontend.generic):
+        return DType(
+            tf_frontend.tensorflow_type_to_enum[
+                np_frontend.numpy_scalar_to_dtype[type_value]
+            ]
+        )
     raise ivy.exceptions.IvyException(
         f"Cannot convert the argument 'type_value': {type_value!r} "
         "to a TensorFlow Dtype"
