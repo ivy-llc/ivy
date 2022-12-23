@@ -68,6 +68,7 @@ def nanmean(
     return ret
 
 
+@to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def std(
     x,
@@ -91,8 +92,8 @@ def std(
     return ret
 
 
-# @from_zero_dim_arrays_to_float
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
     axis = tuple(axis) if isinstance(axis, list) else axis
     global avg
@@ -125,6 +126,7 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
         return avg.astype(dtype)
 
 
+@to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def nanstd(
     a, /, *, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=True

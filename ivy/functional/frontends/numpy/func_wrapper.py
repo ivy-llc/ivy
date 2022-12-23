@@ -348,7 +348,6 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        data = ret.data
         if "out" in ivy.arg_names(fn):
             # get out arg index
             out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
@@ -362,6 +361,10 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
 
         out_kwargs = ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs
         if out_args and out_kwargs:
+            if isinstance(ret, tuple):
+                data = tuple(ivy.native_array(ret))
+            else:
+                data = ret.data
             if isinstance(data, tuple):
                 # converting every scalar element of the tuple to float
                 data = ivy.copy_nest(data, to_mutable=True)
@@ -376,7 +379,7 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                     raise ivy.exceptions.IvyException(
                         "Casting to specified type is unsupported"
                     )
-                return data
+                return tuple(data)
             else:
                 # converting the scalar to float
                 if _is_zero_dim_array(data):

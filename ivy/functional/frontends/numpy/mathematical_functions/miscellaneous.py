@@ -218,6 +218,7 @@ def heaviside(
 
 
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     ret = ivy.array(x, copy=copy)
     bounds = ivy.finfo(x)
@@ -239,6 +240,7 @@ def real_if_close(a, tol=100):
 
 
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False
