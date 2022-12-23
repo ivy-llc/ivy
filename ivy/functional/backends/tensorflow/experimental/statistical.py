@@ -70,3 +70,30 @@ def quantile(
         a, q, axis=axis, interpolation=interpolation, keepdims=keepdims
     )
     return result
+
+
+def nanquantile(
+    a: Union[tf.Tensor, tf.Variable],
+    q: Union[int, float],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    interpolation: Optional[str] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    count = 0
+    for i in a:
+        if tf.math.is_nan:
+            continue
+        count += 1
+    if count % 2 == 0:
+        ((count + 1) / 2)
+    else:
+        (a[((count + 1) // 2) - 1])
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    q = q * 100
+    result = tfp.stats.percentile(
+        a, q, axis=axis, interpolation=interpolation, keepdims=keepdims
+    )
+    return result
