@@ -3187,7 +3187,7 @@ class ContainerWithGeneral(ContainerBase):
             ivy.Container with each array having einops.rearrange applied.
 
         Examples
-        ------------------
+        --------
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3],
                                           [-4, -5, -6]]),
         ...                 b=ivy.array([[7, 8, 9],
@@ -3195,11 +3195,11 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x.einops_rearrange("height width -> width height")
         >>> print(y)
         {
-            a: ivy.array([[1, -4], 
-                        [2, -5], 
+            a: ivy.array([[1, -4],
+                        [2, -5],
                         [3, -6]]),
-            b: ivy.array([[7, 10], 
-                        [8, 11], 
+            b: ivy.array([[7, 10],
+                        [8, 11],
                         [9, 12]])
         }
 

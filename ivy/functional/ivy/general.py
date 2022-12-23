@@ -1659,7 +1659,7 @@ def einops_rearrange(
         New array with einops.rearrange having been applied.
 
     Examples
-    ------------------
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[1, 2, 3],
@@ -1751,6 +1751,7 @@ def einops_reduce(
         a: ivy.array([-2.29, 10.5]),
         b: ivy.array([-1.4, 6.21])
     }
+
     """
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)

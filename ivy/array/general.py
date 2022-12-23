@@ -326,7 +326,7 @@ class ArrayWithGeneral(abc.ABC):
             New array with einops.rearrange having been applied.
 
         Examples
-        ------------------
+        --------
         With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([[1, 2, 3],
