@@ -1030,13 +1030,15 @@ def test_tensorflow_is_strictly_increasing(
 @handle_frontend_test(
     fn_tree="tensorflow.math.count_nonzero",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float")
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     keepdims=st.booleans(),
+    dtype=helpers.get_dtypes("numeric"),
 )
 def test_tensorflow_count_nonzero(
     *,
     dtype_x_axis,
+    dtype,
     keepdims,
     num_positional_args,
     as_variable,
@@ -1058,7 +1060,7 @@ def test_tensorflow_count_nonzero(
         input=x,
         axis=axis,
         keepdims=keepdims,
-        dtype=input_dtype,
+        dtype=dtype,
     )
 
 
