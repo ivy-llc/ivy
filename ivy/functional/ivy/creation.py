@@ -1757,8 +1757,8 @@ def logspace(
     ivy.array([ 10., 21.5443469, 46.41588834, 100.])
 
     With :class:`ivy.Array` input:
-    >>> x = ivy.array([1,2])
-    >>> y = ivy.array([4,5])
+    >>> x = ivy.array([1, 2])
+    >>> y = ivy.array([4, 5])
     >>> ivy.logspace(x, y, 4)
     ivy.array([[1.e+01, 1.e+02],
                [1.e+02, 1.e+03],
@@ -1769,7 +1769,7 @@ def logspace(
     ivy.array([[[1.e+01, 1.e+02, 1.e+03, 1.e+04],
                [1.e+02, 1.e+03, 1.e+04, 1.e+05]]])
 
-    >>> x = ivy.array([1,2])
+    >>> x = ivy.array([1, 2])
     >>> y = ivy.array([4])      # Broadcasting example
     >>> ivy.logspace(x, y, 4)
     ivy.array([[10., 100.]
@@ -1777,7 +1777,7 @@ def logspace(
                [1000., 2154.43469003]
                [10000., 10000.]])
 
-    >>> x = ivy.array([1,2])
+    >>> x = ivy.array([1, 2])
     >>> y1 = ivy.array([4])
     >>> y2 = ivy.array([4, 4])
     >>> y3 = 4
