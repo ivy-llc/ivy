@@ -17,4 +17,6 @@ def uniform(
     seed=None,
     name=None
 ):
+    if str(dtype) == "<dtype: 'float32'>": # added this as currently to_ivy_dtype is unable to handed tf.float32 
+        dtype = ivy.float32
     return ivy.random_uniform(low=minval, high=maxval, shape=shape, device=ivy.default_device(), dtype=to_ivy_dtype(dtype), seed=seed)
