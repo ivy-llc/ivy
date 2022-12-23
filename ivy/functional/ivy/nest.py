@@ -4,6 +4,7 @@
 from builtins import map as _map
 from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, Sequence
 import copy
+from collections import UserDict
 
 # local
 import ivy
@@ -725,7 +726,9 @@ def nested_argwhere(
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
-    elif isinstance(nest, dict) and not isinstance(nest, to_ignore):
+    elif (isinstance(nest, dict) or isinstance(nest, UserDict)) and not isinstance(
+        nest, to_ignore
+    ):
         n = 0
         _indices = []
         for k, v in nest.items():
