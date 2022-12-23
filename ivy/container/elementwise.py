@@ -3710,6 +3710,10 @@ class ContainerWithElementwise(ContainerBase):
         ----------
         x
             input container. Should have a real-valued data type.
+        detect_positive
+            if ``True``, positive infinity is detected.
+        detect_negative
+            if ``True``, negative infinity is detected.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -3777,6 +3781,10 @@ class ContainerWithElementwise(ContainerBase):
         ----------
         self
             input container. Should have a real-valued data type.
+        detect_positive
+            if ``True``, positive infinity is detected.
+        detect_negative
+            if ``True``, negative infinity is detected.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
