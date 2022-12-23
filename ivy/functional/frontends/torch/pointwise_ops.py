@@ -405,9 +405,14 @@ def i0(x, out=None):
 
 
 def rad2deg(input, *, out=None):
-    return ivy.rad2deg(input, out=out) 
+    return ivy.rad2deg(input, out=out)
 
 
 @to_ivy_arrays_and_back
 def positive(input, *, out=None):
     return ivy.positive(input, out=out)
+
+
+@to_ivy_arrays_and_back
+def frac(input, *, out=None):
+    return input - ivy.sign(input) * ivy.floor(ivy.abs(input))

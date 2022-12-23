@@ -135,8 +135,6 @@ def asarray(
         # if `obj` is a list of specifically tensors or
         # a multidimensional list which contains a tensor
         if isinstance(obj[0], torch.Tensor) or contain_tensor:
-            if len(obj) == 1:
-                dtype = obj[0].dtype
             if copy is True:
                 return (
                     torch.stack([torch.as_tensor(i, dtype=dtype) for i in obj])
@@ -331,7 +329,9 @@ def linspace(
         axis = -1
     if not endpoint:
         if dtype is not None:
-            ans = linspace_helper(start, stop, num + 1, axis, dtype=dtype, device=device)
+            ans = linspace_helper(
+                start, stop, num + 1, axis, dtype=dtype, device=device
+            )
         else:
             ans = linspace_helper(start, stop, num + 1, axis, device=device)
         if axis < 0:

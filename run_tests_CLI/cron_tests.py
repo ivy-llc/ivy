@@ -27,9 +27,9 @@ for test_name in test_names_without_backend:
 
 test_names = list(set(test_names))
 
-# We run 10 tests in each iteration of the cron job
+# We run 50 tests in each iteration of the cron job
 num_tests = len(test_names)
-tests_per_run = 10
+tests_per_run = 50
 start = run_iter * tests_per_run
 end = (run_iter + 1) * tests_per_run
 with open("tests_to_run", "w") as f:

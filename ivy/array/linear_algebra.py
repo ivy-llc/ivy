@@ -633,12 +633,13 @@ class ArrayWithLinearAlgebra(abc.ABC):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
-        ord: Union[int, float, Literal[inf, -inf]] = 2,
+        keepdims: Optional[bool] = False,
+        ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.vector_norm(
-            self._data, axis=axis, keepdims=keepdims, ord=ord, out=out
+            self._data, axis=axis, keepdims=keepdims, ord=ord, dtype=dtype, out=out
         )
 
     def vector_to_skew_symmetric_matrix(
