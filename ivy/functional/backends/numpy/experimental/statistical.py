@@ -61,3 +61,25 @@ def quantile(
     return np.quantile(
         a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
     ).astype(a.dtype)
+
+
+def nanquantile(
+    a: np.ndarray,
+    q: Union[float, np.ndarray],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    overwrite_input: Optional[bool] = False,
+    keepdims: bool = False,
+    interpolation: str = "linear",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nanquantile(
+        a,
+        q,
+        axis=axis,
+        overwrite_input=overwrite_input,
+        keepdims=keepdims,
+        interpolation=interpolation,
+        out=out
+    ).astype(a.dtype)
