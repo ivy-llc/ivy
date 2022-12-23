@@ -100,3 +100,33 @@ def quantile(
         return a
 
     return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
+
+
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
+)
+def nanquantile(
+    a: torch.Tensor,
+    q: Union[torch.tensor, float],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    interpolation: str = None,
+    out: Optional[torch.tensor] = None,
+) -> torch.Tensor:
+    if axis is None:
+        return torch.nanquantile(
+            a, q, keepdim=keepdims, interpolation=interpolation)
+    if isinstance(axis, list) or isinstance(axis, tuple):
+        desired_shape = []
+        current_shape = a.size()
+        for i in range(len(current_shape)):
+            if i not in axis:
+                desired_shape += [current_shape[i]]
+        a = a.reshape((-1,) + tuple(desired_shape))
+        a = torch.nanquantile(
+            a, q, dim=0, keepdim=keepdims, interpolation=interpolation)
+        return a
+    return torch.nanquantile(
+        a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
