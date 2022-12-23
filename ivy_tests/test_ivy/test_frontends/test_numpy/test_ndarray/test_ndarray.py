@@ -99,13 +99,18 @@ def test_numpy_ndarray_property_T(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="argmax",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
     ),
+    keep_dims=st.booleans(),
 )
 def test_numpy_ndarray_argmax(
-    dtype_and_x,
+    dtype_x_axis,
+    keep_dims,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
@@ -113,7 +118,7 @@ def test_numpy_ndarray_argmax(
     frontend_method_data,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -126,7 +131,10 @@ def test_numpy_ndarray_argmax(
         method_as_variable_flags=as_variable,
         method_native_array_flags=native_array,
         method_num_positional_args=method_num_positional_args,
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdims": keep_dims,
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
