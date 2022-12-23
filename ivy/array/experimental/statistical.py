@@ -214,3 +214,23 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             interpolation=interpolation,
             out=out,
         )
+
+    def nanquantile(
+        self: ivy.Array,
+        q: float,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: bool = False,
+        interpolation: str = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.nanquantile(
+            self._data,
+            q,
+            axis=axis,
+            keepdims=keepdims,
+            interpolation=interpolation,
+            out=out,
+        )
+    
