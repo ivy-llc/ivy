@@ -10,7 +10,8 @@ given(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
-),    # xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    ),  
+      # xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
       # as_variable=Helper.array_bools(),
 
     num_positional_args=helpers.num_positional_args(
