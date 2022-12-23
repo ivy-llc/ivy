@@ -27,6 +27,7 @@ def statistical_dtype_values(draw, *, function):
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=2,
+            max_dim_size=5,
             valid_axis=True,
             allow_neg_axes=False,
             min_axes_size=1,
