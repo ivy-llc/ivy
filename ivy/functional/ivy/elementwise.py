@@ -2465,7 +2465,7 @@ def multiply(
     >>> y = ivy.multiply(x1, x2)
     >>> print(y)
     ivy.array([ 8., 12., 21.])
-    
+
     With :code:`ivy.Container` inputs:
 
     >>> x1 = ivy.Container(a=ivy.array([12.,4.,6.]), b=ivy.array([3.,1.,5.]))
