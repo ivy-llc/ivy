@@ -568,3 +568,60 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_nanquantile(
+        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: bool = False,
+        interpolation: str = 'linear',
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "nanquantile", 
+            a, 
+            q, 
+            axis=axis,
+            keepdims=keepdims, 
+            interpolation=interpolation,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def nanquantile(
+        self: ivy.Container,
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: bool = False,
+        interpolation: str = 'linear',
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.static_nanquantile(
+            self, 
+            q, 
+            axis=axis,
+            keepdims=keepdims, 
+            interpolation=interpolation,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out
+        )
+    
