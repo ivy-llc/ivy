@@ -3,7 +3,6 @@ import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.tensorflow import math
-import ivy.functional.frontends.tensorflow as tf_frontend
 
 
 @to_ivy_arrays_and_back
@@ -260,23 +259,30 @@ def _convolution_broadcast_helper(
     if arg is None:
         return [1] * num_spatial_dims
     else:
-        # Broadcast to rcorrect dimensions
-        arg = list(arg)
+        if isinstance(arg, int):
+            arg = [arg]
+        else:
+            arg = list(arg)
         len_arg = len(arg)
+
+        if len_arg == num_spatial_dims + 2:
+            return arg
+
+        # Broadcast to rcorrect dimensions
         if len_arg == 1:
-            return arg * num_spatial_dims
-        elif len_arg == num_spatial_dims:
-            # Add dimensions for batch and channel
-            if channel_index == 1:
-                return [1, 1] + arg
-            else:
-                return [1] + arg + [1]
-        elif len_arg != num_spatial_dims + 2:
+            arg = arg * num_spatial_dims
+        elif len_arg != num_spatial_dims:
             raise ValueError(
                 f"{name} should be of length 1, "
                 f"{num_spatial_dims} or {num_spatial_dims + 2}. "
                 f"Received: {name}={arg} of length {len_arg}."
             )
+
+    # Add dimensions for batch and channel
+    if channel_index == 1:
+        return [1, 1] + arg
+    else:
+        return [1] + arg + [1]
 
 
 @to_ivy_arrays_and_back
@@ -289,38 +295,21 @@ def convolution(
     dilations=None,
     name=None,
 ):
-
-    DATA_FORMATS = frozenset(
-        {
-            "NWC",
-            "NHC",
-            "NHWC",
-            "NWHC",
-            "NDHWC",
-            "NDWHC",
-            "NHDWC",
-            "NHWDC",
-            "NWDHC",
-            "NWHDC",
-        }
-    )
+    # Tensorflow backend doesn't support NCW, NCHW or NCDHW on CPU
+    DATA_FORMATS = ["NWC", "NHWC", "NDHWC"]
     ALLOWED_NUM_SPATIAL_DIMS = [1, 2, 3]
     PADDINGS = ["VALID", "SAME"]
 
     # Perform necessary assertions first
-    input_depth = ivy.shape(input)[-1]
-    filters_depth = ivy.shape(filters)[-2]
 
-    # Inconsistent input and filter depths
-    if input_depth != filters_depth:
-        raise ValueError(
-            f"`input` and `filter` must have the same depth: "
-            f"{input_depth} vs {filters_depth}."
-        )
+    # Figure out input dims N
+    input_rank = input.ndim
+    filters_rank = filters.ndim
 
-    # Figure out N
-    input_rank = tf_frontend.rank(input).numpy()
-    num_spatial_dims = input_rank - 2
+    if filters_rank:
+        num_spatial_dims = int(filters_rank - 2)
+    elif input_rank:
+        num_spatial_dims = int(input_rank - 2)
 
     # Incompatible N-D convolution
     if num_spatial_dims not in ALLOWED_NUM_SPATIAL_DIMS:
@@ -336,7 +325,10 @@ def convolution(
         )
 
     # The number of dimensions corresponding to num_batches
-    num_batch_dims = input_rank - num_spatial_dims - 1
+    if input_rank:
+        num_batch_dims = int(input_rank - num_spatial_dims - 1)
+    elif filters_rank:
+        num_batch_dims = 1
 
     # Figure out the channel_index
     if data_format is None or data_format in DATA_FORMATS:
@@ -344,120 +336,31 @@ def convolution(
     else:
         channel_index = num_batch_dims
 
-    # Dilations
-    dilations = _convolution_broadcast_helper(
-        dilations, num_spatial_dims, channel_index, name="dilations"
-    )
+    input_shape = ivy.array(ivy.shape(input))
+    filters_shape = ivy.array(ivy.shape(filters))
+    input_depth = input_shape[channel_index]
+    filters_depth = filters_shape[-2]
 
-    # Strides
-    strides = _convolution_broadcast_helper(
-        strides, num_spatial_dims, channel_index, name="strides"
-    )
-
-    if channel_index == 1:
-        strides = strides[2:]
-        dilations = dilations[2:]
-    else:
-        strides = strides[1:-1]
-        dilations = dilations[1:-1]
-
-    # Flag for atrous convolution
-    is_atrous_conv = any(i != 1 for i in dilations)
-
-    # Output shape
-    if padding == "SAME":
-        output_shape = ivy.ceil(list(input.shape[2:]) / strides)
-    elif padding == "VALID":
-        output_shape = ivy.ceil(
-            (list(input.shape[2:]) - (list(filter.shape[:-2]) - 1) * dilations)
-            / strides
+    # Inconsistent input and filter depths
+    if input_depth != filters_depth:
+        raise ValueError(
+            f"`input` and `filter` must have the same depth: "
+            f"{input_depth} vs {filters_depth}."
         )
 
-    # Transpose convolutions
     if data_format.startswith("NC"):
-        input = ivy.permute_dims(
-            input, axes=[0] + [*range(2, num_spatial_dims + 2)] + [1]
-        )
-
-        # conv1d_transpose
-        if num_spatial_dims == 1:
-            output = tf_frontend.nn.conv1d_transpose(
-                input,
-                filters,
-                output_shape,
-                strides,
-                padding=padding,
-                data_format=data_format,
-                dilations=dilations,
-                name=name,
-            )
-        # atrous_conv2d_transpose
-        elif num_spatial_dims == 2 and is_atrous_conv:
-            output = tf_frontend.nn.atrous_conv2d_transpose(
-                input, filters, output_shape, dilations, padding
-            )
-        # conv2d_transpose
-        elif num_spatial_dims == 2 and not is_atrous_conv:
-            output = tf_frontend.nn.conv2d_transpose(
-                input,
-                filters,
-                output_shape,
-                strides=strides,
-                padding=padding,
-                data_format=data_format,
-                dilations=dilations,
-                name=name,
-            )
-        # conv3d_transpose
-        elif num_spatial_dims == 3:
-            output = tf_frontend.nn.conv3d_transpose(
-                input,
-                filters,
-                output_shape,
-                strides=strides,
-                padding=padding,
-                data_format=data_format,
-                dilations=dilations,
-                name=name,
-            )
-        output = ivy.permute_dims(
-            output, axes=[0, num_spatial_dims + 1] + [*range(1, num_spatial_dims + 1)]
-        )
+        data_format = "channel_first"
     else:
-        # conv1d
-        if num_spatial_dims == 1:
-            output = tf_frontend.nn.conv1d(
-                input,
-                filters,
-                strides,
-                padding=padding,
-                data_format=data_format,
-                dilations=dilations,
-                name=name,
-            )
-        # atrous_conv2d
-        elif num_spatial_dims == 2 and is_atrous_conv:
-            output = tf_frontend.nn.atrous_conv2d(input, filters, dilations, padding)
-        # conv2d
-        elif num_spatial_dims == 2 and not is_atrous_conv:
-            output = tf_frontend.nn.conv2d(
-                input,
-                filters,
-                strides=strides,
-                padding=padding,
-                data_format=data_format,
-                dilations=dilations,
-                name=name,
-            )
-        # conv3d
-        elif num_spatial_dims == 3:
-            output = tf_frontend.nn.conv3d(
-                input,
-                filters,
-                strides=strides,
-                padding=padding,
-                data_format=data_format,
-                dilations=dilations,
-                name=name,
-            )
+        data_format = "channel_last"
+
+    output = ivy.conv_general_dilated(
+        input,
+        filters,
+        strides,
+        padding,
+        dims=num_spatial_dims,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
     return output

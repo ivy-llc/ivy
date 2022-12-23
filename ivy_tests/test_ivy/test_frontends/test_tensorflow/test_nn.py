@@ -37,9 +37,9 @@ def _x_and_filters(
     # Infer type from data_format if it is passed as None
     if type is None:
         type_data_format_mapping = {
-            "1d": ["NWC", "NHC"],
-            "2d": ["NHWC", "NWHC"],
-            "3d": ["NDHWC", "NDWHC", "NHDWC", "NHWDC", "NWDHC", "NWHDC"],
+            "1d": ["NWC", "NCW"],
+            "2d": ["NHWC", "NCHW"],
+            "3d": ["NDHWC", "NCDHW"],
         }
         type = [
             typ
@@ -201,7 +201,7 @@ def _x_and_filters(
                     helpers.ints(min_value=1, max_value=5),
                     helpers.ints(min_value=d_in, max_value=d_in),
                     helpers.ints(min_value=min_x_depth, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=min_x_height, max_value=100),
                     helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
@@ -1025,23 +1025,13 @@ def test_tensorflow_bias_add(
     fn_tree="tensorflow.nn.convolution",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(
-            [
-                "NWC",
-                "NHC",
-                "NHWC",
-                "NWHC",
-                "NDHWC",
-                "NDWHC",
-                "NHDWC",
-                "NHWDC",
-                "NWDHC",
-                "NWHDC",
-            ]
-        ),
+        data_format=st.sampled_from(["NWC", "NHWC", "NDHWC"]),
         padding=st.sampled_from(["SAME", "VALID"]),
-        atrous=st.sampled_from([True, False]),
+        # Tensorflow backprop doesn't support dilations more than 1 on CPU
+        dilation_min=1,
+        dilation_max=1,
         type=None,
+        transpose=False,
     ),
 )
 def test_tensorflow_convolution(
@@ -1064,8 +1054,8 @@ def test_tensorflow_convolution(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        filters=filters[0],
+        input=x,
+        filters=filters,
         strides=stride,
         padding=padding,
         data_format=data_format,
