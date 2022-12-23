@@ -65,6 +65,23 @@ def fmax(
     return ret
 
 
+def fmin(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    temp = tf.constant(float("nan"))
+    tf.dtypes.cast(x1, tf.float64)
+    tf.dtypes.cast(x2, tf.float64)
+    x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
+    x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
+    tf.experimental.numpy.experimental_enable_numpy_behavior()
+    ret = tf.experimental.numpy.minimum(x1, x2)
+    return ret
+
+
 def trapz(
     y: Union[tf.Tensor, tf.Variable],
     /,
