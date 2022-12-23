@@ -2,8 +2,7 @@ from pydoc import Helper
 from hypothesis import given
 import numpy as np
 from ivy_tests.test_ivy import helpers
-from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops 
-import _arrays_idx_n_dtypes
+from .test_raw_ops import _arrays_idx_n_dtypes
 
 # layer_concatenate
 given(
