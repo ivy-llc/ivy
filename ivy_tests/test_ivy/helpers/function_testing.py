@@ -14,9 +14,11 @@ except ImportError:
 
 # local
 import ivy
+from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy.functional.ivy.gradients import _variable
+from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
@@ -76,12 +78,7 @@ def _assert_dtypes_are_valid(input_dtypes: Union[List[ivy.Dtype], List[str]]):
 def test_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    as_variable_flags: List[bool],
-    with_out: bool,
-    num_positional_args: int,
-    native_array_flags: List[bool],
-    container_flags: List[bool],
-    instance_method: bool,
+    test_flags: FunctionTestFlags,
     fw: str,
     fn_name: str,
     rtol_: float = None,
@@ -102,23 +99,6 @@ def test_function(
     ----------
     input_dtypes
         data types of the input arguments in order.
-    as_variable_flags
-        dictates whether the corresponding input argument should be treated
-        as a variable.
-    with_out
-        if True, the function is also tested with the optional out argument.
-    num_positional_args
-        number of input arguments that must be passed as positional
-        arguments.
-    native_array_flags
-        dictates whether the corresponding input argument should be treated
-        as a native array.
-    container_flags
-        dictates whether the corresponding input argument should be treated
-         as an ivy Container.
-    instance_method
-        if True, the function is run as an instance method of the first
-         argument (should be an ivy Array or Container).
     fw
         current backend (framework).
     fn_name
@@ -131,6 +111,12 @@ def test_function(
         if True, test for the correctness of the resulting values.
     test_gradients
         if True, test for the correctness of gradients.
+    xs_grad_idxs
+        Indices of the input arrays to compute gradients with respect to. If None,
+        gradients are returned with respect to all input arrays. (Default value = None)
+    ret_grad_idxs
+        Indices of the returned arrays for which to return computed gradients. If None,
+        gradients are returned for all returned arrays. (Default value = None)
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     on_device
@@ -183,12 +169,17 @@ def test_function(
     _assert_dtypes_are_valid(input_dtypes)
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
+        num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
     )
 
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
+    # TODO temporary, access them directly
+    native_array_flags = test_flags.native_arrays
+    as_variable_flags = test_flags.as_variable
+    container_flags = test_flags.container
 
     # make all lists equal in length
     num_arrays = c_arg_vals + c_kwarg_vals
@@ -203,13 +194,13 @@ def test_function(
 
     # update variable flags to be compatible with float dtype and with_out args
     as_variable_flags = [
-        v if ivy.is_float_dtype(d) and not with_out else False
+        v if ivy.is_float_dtype(d) and not test_flags.with_out else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
 
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
-    instance_method = instance_method and (
+    instance_method = test_flags.instance_method and (
         not native_array_flags[0] or container_flags[0]
     )
 
@@ -265,7 +256,7 @@ def test_function(
             ivy.__dict__[fn_name], *args, **kwargs
         )
     # assert idx of return if the idx of the out array provided
-    if with_out:
+    if test_flags.with_out:
         test_ret = ret
         if isinstance(ret, tuple):
             assert hasattr(ivy.__dict__[fn_name], "out_index")
@@ -309,14 +300,18 @@ def test_function(
         ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
             ivy.__dict__[fn_name], *args, **kwargs
         )
+        if test_flags.with_out:
+            test_ret_from_gt = ret_from_gt
+            if isinstance(ret, tuple):
+                test_ret_from_gt = ret[getattr(ivy.__dict__[fn_name], "out_index")]
+            out_from_gt = ivy.zeros_like(test_ret_from_gt)
+            ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
+                ivy.__dict__[fn_name], *args, **kwargs, out=out_from_gt
+            )
     except Exception as e:
         ivy.unset_backend()
         raise e
-    hasattr_unsupported_gradients = hasattr(fn, "unsupported_gradients")
-    if hasattr_unsupported_gradients:
-        fw_list = fn.unsupported_gradients
-    else:
-        fw_list = None
+    fw_list = gradient_unsupported_dtypes(fn=ivy.__dict__[fn_name])
     ivy.unset_backend()
     # gradient test
     fw = ivy.current_backend_str()
@@ -326,7 +321,7 @@ def test_function(
         and not instance_method
         and "bool" not in input_dtypes
     ):
-        if hasattr_unsupported_gradients and fw in fw_list:
+        if fw in fw_list:
             if ivy.nested_argwhere(
                 all_as_kwargs_np,
                 lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
@@ -334,7 +329,7 @@ def test_function(
                 pass
             else:
                 gradient_test(
-                    fn_name=fn_name,
+                    fn=fn_name,
                     all_as_kwargs_np=all_as_kwargs_np,
                     args_np=args_np,
                     kwargs_np=kwargs_np,
@@ -351,7 +346,7 @@ def test_function(
 
         else:
             gradient_test(
-                fn_name=fn_name,
+                fn=fn_name,
                 all_as_kwargs_np=all_as_kwargs_np,
                 args_np=args_np,
                 kwargs_np=kwargs_np,
@@ -585,7 +580,7 @@ def test_frontend_function(
                 first_array = ivy.func_wrapper._get_first_array(
                     *copy_args, **copy_kwargs
                 )
-                ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_args)
+                ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
                 if ivy.native_inplace_support:
                     assert ret_.data is first_array.data
                 assert first_array is ret_
@@ -602,10 +597,12 @@ def test_frontend_function(
         args_np = ivy.nested_map(
             args_ivy,
             lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+            shallow=False,
         )
         kwargs_np = ivy.nested_map(
             kwargs_ivy,
             lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+            shallow=False,
         )
 
         # temporarily set frontend framework as backend
@@ -619,10 +616,12 @@ def test_frontend_function(
                 else ivy.as_native_dtype(x)
                 if isinstance(x, ivy.Dtype)
                 else x,
+                shallow=False,
             )
             kwargs_frontend = ivy.nested_map(
                 kwargs_np,
                 lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+                shallow=False,
             )
 
             # change ivy dtypes to native dtypes
@@ -643,10 +642,20 @@ def test_frontend_function(
             )
 
             # compute the return via the frontend framework
-            frontend_fw = importlib.import_module(fn_tree[25 : fn_tree.rfind(".")])
-            frontend_ret = frontend_fw.__dict__[fn_name](
-                *args_frontend, **kwargs_frontend
-            )
+            module_name = fn_tree[25 : fn_tree.rfind(".")]
+            frontend_fw = importlib.import_module(module_name)
+            try:
+                frontend_ret = frontend_fw.__dict__[fn_name](
+                    *args_frontend, **kwargs_frontend
+                )
+            except KeyError:
+                # catch cases where the alias belongs to a higher-level module
+                # e.g. torch.inverse tested as an alias to torch.linalg.inv
+                module_name = module_name[: module_name.rfind(".")]
+                frontend_fw = importlib.import_module(module_name)
+                frontend_ret = frontend_fw.__dict__[fn_name](
+                    *args_frontend, **kwargs_frontend
+                )
 
             if ivy.isscalar(frontend_ret):
                 frontend_ret_np_flat = [np.asarray(frontend_ret)]
@@ -721,7 +730,7 @@ def test_frontend_function(
 
 def gradient_test(
     *,
-    fn_name,
+    fn,
     all_as_kwargs_np,
     args_np,
     kwargs_np,
@@ -736,8 +745,12 @@ def gradient_test(
     ground_truth_backend: str,
 ):
     def grad_fn(all_args):
-        args, kwargs = all_args
-        ret = ivy.__dict__[fn_name](*args, **kwargs)
+        args, kwargs, i = all_args
+        ret = (
+            ivy.__dict__[fn](*args, **kwargs)
+            if isinstance(fn, str)
+            else fn[i](*args, **kwargs)
+        )
         return ivy.nested_map(ret, ivy.mean, include_derived=True)
 
     # extract all arrays from the arguments and keyword arguments
@@ -757,14 +770,17 @@ def gradient_test(
         container_flags=container_flags,
     )
     _, grads = ivy.execute_with_gradients(
-        grad_fn, [args, kwargs], xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+        grad_fn,
+        [args, kwargs, 0],
+        xs_grad_idxs=xs_grad_idxs,
+        ret_grad_idxs=ret_grad_idxs,
     )
     grads_np_flat = flatten_and_to_np(ret=grads)
 
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     test_unsupported = check_unsupported_dtype(
-        fn=ivy.__dict__[fn_name],
+        fn=ivy.__dict__[fn] if isinstance(fn, str) else fn[1],
         input_dtypes=input_dtypes,
         all_as_kwargs_np=all_as_kwargs_np,
     )
@@ -783,7 +799,10 @@ def gradient_test(
         container_flags=container_flags,
     )
     _, grads_from_gt = ivy.execute_with_gradients(
-        grad_fn, [args, kwargs], xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+        grad_fn,
+        [args, kwargs, 1],
+        xs_grad_idxs=xs_grad_idxs,
+        ret_grad_idxs=ret_grad_idxs,
     )
     grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
     ivy.unset_backend()
@@ -828,8 +847,11 @@ def test_method(
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
     test_gradients: bool = False,
+    xs_grad_idxs=None,
+    ret_grad_idxs=None,
     ground_truth_backend: str,
     device_: str = "cpu",
+    return_flat_np_arrays: bool = False,
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
     by comparing the result with numpy.
@@ -882,10 +904,21 @@ def test_method(
     test_values
         can be a bool or a string to indicate whether correctness of values should be
         tested. If the value is `with_v`, shapes are tested but not values.
+    test_gradients
+        if True, test for the correctness of gradients.
+    xs_grad_idxs
+        Indices of the input arrays to compute gradients with respect to. If None,
+        gradients are returned with respect to all input arrays. (Default value = None)
+    ret_grad_idxs
+        Indices of the returned arrays for which to return computed gradients. If None,
+        gradients are returned for all returned arrays. (Default value = None)
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     device_
         The device on which to create arrays.
+    return_flat_np_arrays
+        If test_values is False, this flag dictates whether the original returns are
+        returned, or whether the flattened numpy arrays are returned.
 
     Returns
     -------
@@ -1067,9 +1100,67 @@ def test_method(
     ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
         ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
     )
+    fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
+    fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
+    for k, v in fw_list2.items():
+        if k not in fw_list:
+            fw_list[k] = []
+        fw_list[k].extend(v)
+
     ivy.unset_backend()
+    # gradient test
+    fw = ivy.current_backend_str()
+    if test_gradients and not fw == "numpy" and "bool" not in method_input_dtypes:
+        if fw in fw_list:
+            if ivy.nested_argwhere(
+                method_all_as_kwargs_np,
+                lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
+            ):
+                pass
+            else:
+                gradient_test(
+                    fn=[
+                        ins.__getattribute__(method_name),
+                        ins_gt.__getattribute__(method_name),
+                    ],
+                    all_as_kwargs_np=method_all_as_kwargs_np,
+                    args_np=args_np_method,
+                    kwargs_np=kwargs_np_method,
+                    input_dtypes=method_input_dtypes,
+                    as_variable_flags=method_as_variable_flags,
+                    native_array_flags=method_native_array_flags,
+                    container_flags=method_container_flags,
+                    rtol_=rtol_,
+                    atol_=atol_,
+                    xs_grad_idxs=xs_grad_idxs,
+                    ret_grad_idxs=ret_grad_idxs,
+                    ground_truth_backend=ground_truth_backend,
+                )
+
+        else:
+            gradient_test(
+                fn=[
+                    ins.__getattribute__(method_name),
+                    ins_gt.__getattribute__(method_name),
+                ],
+                all_as_kwargs_np=method_all_as_kwargs_np,
+                args_np=args_np_method,
+                kwargs_np=kwargs_np_method,
+                input_dtypes=method_input_dtypes,
+                as_variable_flags=method_as_variable_flags,
+                native_array_flags=method_native_array_flags,
+                container_flags=method_container_flags,
+                rtol_=rtol_,
+                atol_=atol_,
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+                ground_truth_backend=ground_truth_backend,
+            )
+
     # assuming value test will be handled manually in the test function
     if not test_values:
+        if return_flat_np_arrays:
+            return ret_np_flat, ret_np_from_gt_flat
         return ret, ret_from_gt
     # value test
 
@@ -1275,18 +1366,22 @@ def test_frontend_method(
     args_constructor_np = ivy.nested_map(
         args_constructor_ivy,
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        shallow=False,
     )
     kwargs_constructor_np = ivy.nested_map(
         kwargs_constructor_ivy,
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        shallow=False,
     )
     args_method_np = ivy.nested_map(
         args_method_ivy,
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        shallow=False,
     )
     kwargs_method_np = ivy.nested_map(
         kwargs_method_ivy,
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        shallow=False,
     )
 
     ivy_frontend_creation_fn = getattr(
@@ -1305,10 +1400,12 @@ def test_frontend_method(
     args_constructor_frontend = ivy.nested_map(
         args_constructor_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+        shallow=False,
     )
     kwargs_constructor_frontend = ivy.nested_map(
         kwargs_constructor_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+        shallow=False,
     )
     args_method_frontend = ivy.nested_map(
         args_method_np,
@@ -1319,10 +1416,12 @@ def test_frontend_method(
         else ivy.as_native_dev(x)
         if isinstance(x, ivy.Device)
         else x,
+        shallow=False,
     )
     kwargs_method_frontend = ivy.nested_map(
         kwargs_method_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+        shallow=False,
     )
 
     # change ivy dtypes to native dtypes
@@ -1615,6 +1714,31 @@ def gradient_incompatible_function(*, fn):
         and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
     )
+
+
+def gradient_unsupported_dtypes(*, fn):
+    visited = set()
+    to_visit = [fn]
+    out, res = {}, {}
+    while to_visit:
+        fn = to_visit.pop()
+        if fn in visited:
+            continue
+        visited.add(fn)
+        unsupported_grads = (
+            fn.unsupported_gradients if hasattr(fn, "unsupported_gradients") else {}
+        )
+        for k, v in unsupported_grads.items():
+            if k not in out:
+                out[k] = []
+            out[k].extend(v)
+        # skip if it's not a function
+        if not (inspect.isfunction(fn) or inspect.ismethod(fn)):
+            continue
+        fl = _get_function_list(fn)
+        res = _get_functions_from_string(fl, __import__(fn.__module__))
+        to_visit.extend(res)
+    return out
 
 
 def _is_frontend_array(x):

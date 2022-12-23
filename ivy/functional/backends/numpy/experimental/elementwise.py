@@ -193,28 +193,18 @@ def isclose(
 isclose.support_native_out = False
 
 
-def isposinf(
-    x: Union[np.ndarray, float, list, tuple],
+def angle(
+    z: np.ndarray,
     /,
     *,
+    deg: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.isposinf(x, out=out)
+
+    return np.angle(z, deg=deg)
 
 
-isposinf.support_native_out = True
-
-
-def isneginf(
-    x: Union[np.ndarray, float, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.isneginf(x, out=out)
-
-
-isneginf.support_native_out = True
+angle.support_native_out = False
 
 
 def nan_to_num(
@@ -283,7 +273,7 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> bool:
-    return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return np.array(np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan))
 
 
 isclose.support_native_out = False

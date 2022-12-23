@@ -74,4 +74,4 @@ def test_jax_numpy_promote_types(
         type2=type2[0],
         test_values=False,
     )
-    assert ret._ivy_dtype == frontend_ret[0].name
+    assert str(ret._ivy_dtype) == frontend_ret[0].name

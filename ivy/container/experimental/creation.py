@@ -21,7 +21,7 @@ class ContainerWithCreationExperimental(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[Tuple[ivy.Array]] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "triu_indices",
             n_rows,
             n_cols,
@@ -106,7 +106,7 @@ class ContainerWithCreationExperimental(ContainerBase):
             b: ivy.array([0.0000, 0.3455, 0.9045, 0.9045, 0.3455])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "hann_window",
             window_length,
             periodic,
@@ -205,7 +205,7 @@ class ContainerWithCreationExperimental(ContainerBase):
             a: ivy.array([0.0367, 0.7753, 0.7753]),
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "kaiser_window",
             window_length,
             periodic,
@@ -322,7 +322,7 @@ class ContainerWithCreationExperimental(ContainerBase):
             b: ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208]),
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "kaiser_bessel_derived_window",
             x,
             periodic,
@@ -443,7 +443,7 @@ class ContainerWithCreationExperimental(ContainerBase):
             b: ivy.array([-1.8000, -0.4180,  1.8180,  1.8180, -0.4180])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "hamming_window",
             x,
             key_chains=key_chains,
@@ -553,7 +553,7 @@ class ContainerWithCreationExperimental(ContainerBase):
                           1., 0.98877142, 0.85631905, 0.51644717, 0.14943586])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "vorbis_window",
             x,
             key_chains=key_chains,
@@ -612,4 +612,54 @@ class ContainerWithCreationExperimental(ContainerBase):
             map_sequences=map_sequences,
             dtype=dtype,
             out=out,
+        )
+
+    @staticmethod
+    def static_tril_indices(
+        n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        /,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "tril_indices",
+            n_rows,
+            n_cols,
+            k,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            device=device,
+        )
+
+    def tril_indices(
+        self: ivy.Container,
+        n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        /,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Container:
+        return self.static_tril_indices(
+            self,
+            n_rows,
+            n_cols,
+            k,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            device=device,
         )

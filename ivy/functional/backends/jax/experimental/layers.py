@@ -210,11 +210,9 @@ def avg_pool3d(
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
 
     res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
-    div_shape = res.shape[:-1] + (1,)
-    if len(div_shape) - 2 == len(kernel):
-        div_shape = (1,) + div_shape[1:]
+
     res = res / general_pool(
-        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones_like(x, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
     )
 
     if data_format == "NCDHW":

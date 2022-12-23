@@ -375,9 +375,11 @@ def test_jax_nn_softplus(
     fn_tree="jax.nn.log_sigmoid",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=-1,
-        max_value=1,
-        safety_factor_scale="linear",
+        min_value=-100,
+        max_value=100,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
 )
 def test_jax_nn_log_sigmoid(
@@ -831,7 +833,6 @@ def test_jax_nn_hard_sigmoid(
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
- 
     ),
 )
 def test_jax_nn_selu(

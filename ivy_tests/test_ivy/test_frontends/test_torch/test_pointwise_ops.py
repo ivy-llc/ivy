@@ -1704,6 +1704,8 @@ def test_torch_flipud(
     fn_tree="torch.deg2rad",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1000,
+        max_value=1000,
     ),
 )
 def test_torch_deg2rad(
@@ -1807,6 +1809,8 @@ def test_torch_floor(
     fn_tree="torch.log1p",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1e4,
+        max_value=1e4,
     ),
 )
 def test_torch_log1p(
@@ -1879,9 +1883,8 @@ def test_torch_addcdiv(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
-        safety_factor_scale="log",
+        min_value=-1e4,
+        max_value=1e4,
         shared_dtype=True,
     ),
     value=st.floats(min_value=-10, max_value=10),
@@ -1957,7 +1960,12 @@ def test_torch_pow(
 @handle_frontend_test(
     fn_tree="torch.logaddexp",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        min_value=-100,
+        max_value=100,
+        shared_dtype=True,
     ),
 )
 def test_torch_logaddexp(
@@ -1981,7 +1989,7 @@ def test_torch_logaddexp(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-05,
+        atol=1e-03,
         x1=x[0],
         x2=x[1],
     )
@@ -2119,7 +2127,12 @@ def test_torch_expm1(
 @handle_frontend_test(
     fn_tree="torch.logaddexp2",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        min_value=-100,
+        max_value=100,
+        shared_dtype=True,
     ),
 )
 def test_torch_logaddexp2(
@@ -2143,7 +2156,7 @@ def test_torch_logaddexp2(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-05,
+        atol=1e-03,
         x1=x[0],
         x2=x[1],
     )
@@ -2177,6 +2190,109 @@ def test_torch_i0(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-05,
+        atol=1e-03,
         x=x[0],
+    )
+
+
+# rad2deg
+@handle_frontend_test(
+    fn_tree="torch.rad2deg",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        max_dim_size=3,
+        max_num_dims=3,
+        min_dim_size=1,
+        min_num_dims=1,
+    ),
+)
+def test_torch_rad2deg(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+# negative
+@handle_frontend_test(
+    fn_tree="torch.positive",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+    ),
+)
+def test_torch_positive(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+# frac
+@handle_frontend_test(
+    fn_tree="torch.frac",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_frac(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
     )

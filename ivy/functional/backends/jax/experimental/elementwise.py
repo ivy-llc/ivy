@@ -125,24 +125,6 @@ def isclose(
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-def isposinf(
-    x: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.isposinf(x, out=out)
-
-
-def isneginf(
-    x: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.isneginf(x, out=out)
-
-
 def nan_to_num(
     x: JaxArray,
     /,
@@ -217,6 +199,16 @@ def nextafter(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.nextafter(x1, x2)
+
+
+def angle(
+    z: JaxArray,
+    /,
+    *,
+    deg: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.angle(z, deg=deg)
 
 
 def zeta(

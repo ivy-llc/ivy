@@ -92,5 +92,14 @@ def kron(
     return jnp.kron(a, b)
 
 
-def eig(x: JaxArray, /) -> Tuple[JaxArray, ...]:
-    return tuple(jnp.linalg.eig(x))
+def matrix_exp(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.exp(x)
+
+
+def eig(x: JaxArray, /) -> Tuple[JaxArray]:
+    return jnp.linalg.eig(x)
