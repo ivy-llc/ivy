@@ -8,7 +8,8 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 
-from ivy.functional.experimental.linear_algebra import _check_valid_dimension_size
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+
 
 @with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, backend_version)
 def diagflat(
@@ -132,4 +133,3 @@ def adjoint(
 ) -> torch.Tensor:
     _check_valid_dimension_size(x)
     return torch.adjoint(x).resolve_conj()
-

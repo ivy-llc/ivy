@@ -5,7 +5,8 @@ from ivy.functional.backends.jax import JaxArray
 
 import ivy
 
-from ivy.functional.experimental.linear_algebra import _check_valid_dimension_size
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+
 
 def diagflat(
     x: JaxArray,
@@ -113,7 +114,6 @@ def adjoint(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     _check_valid_dimension_size(x)
-    dims = len(x.shape)
     axes = [x for x in range(len(x.shape))]
     axes[-1], axes[-2] = axes[-2], axes[-1]
     return jnp.conjugate(jnp.transpose(x, axes=axes))

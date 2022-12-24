@@ -3,7 +3,8 @@ import tensorflow as tf
 
 import ivy
 
-from ivy.functional.experimental.linear_algebra import _check_valid_dimension_size
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+
 
 def diagflat(
     x: Union[tf.Tensor, tf.Variable],
@@ -76,5 +77,3 @@ def adjoint(
 ) -> Union[tf.Tensor, tf.Variable]:
     _check_valid_dimension_size(x)
     return tf.linalg.adjoint(x)
-
-

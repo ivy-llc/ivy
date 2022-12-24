@@ -4,7 +4,8 @@ import numpy as np
 
 import ivy
 
-from ivy.functional.experimental.linear_algebra import _check_valid_dimension_size
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+
 
 def diagflat(
     x: np.ndarray,
@@ -118,7 +119,6 @@ def adjoint(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     _check_valid_dimension_size(x)
-    dims = len(x.shape)
     axes = [x for x in range(len(x.shape))]
     axes[-1], axes[-2] = axes[-2], axes[-1]
     return np.conjugate(np.transpose(x, axes=axes))

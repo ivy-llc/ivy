@@ -286,11 +286,11 @@ def test_eig(
     fn_tree="functional.experimental.adjoint",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
-                ivy.float16,
-                ivy.float32,
-                ivy.float64,
-                ivy.complex64,
-                ivy.complex128,
+            ivy.float16,
+            ivy.float32,
+            ivy.float64,
+            ivy.complex64,
+            ivy.complex128,
         ),
         min_num_dims=2,
         max_num_dims=10,

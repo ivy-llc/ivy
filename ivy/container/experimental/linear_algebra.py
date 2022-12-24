@@ -326,7 +326,6 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
             map_sequences=map_sequences,
         )
 
-
     @staticmethod
     def static_adjoint(
         x: ivy.Container,
