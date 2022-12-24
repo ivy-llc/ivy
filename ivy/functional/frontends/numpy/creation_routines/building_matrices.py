@@ -10,3 +10,8 @@ def tril(m, k=0):
 @to_ivy_arrays_and_back
 def diag(v, k=0):
     return ivy.diag(v, k=k)
+
+
+@to_ivy_arrays_and_back
+def diagflat(v, k=0):
+    return ivy.diagflat(v, k=k)
