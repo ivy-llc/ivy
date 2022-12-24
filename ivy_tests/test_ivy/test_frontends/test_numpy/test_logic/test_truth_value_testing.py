@@ -143,7 +143,6 @@ def test_numpy_isscalar(
         on_device=on_device,
         element=element,
     )
-
 @handle_frontend_test(
     fn_tree="numpy.iscomplex",
     element=st.booleans() | st.floats() | st.integers() | st.strings(),

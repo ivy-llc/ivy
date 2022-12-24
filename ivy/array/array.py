@@ -22,7 +22,7 @@ from .linear_algebra import ArrayWithLinearAlgebra
 from .losses import ArrayWithLosses
 from .manipulation import ArrayWithManipulation
 from .norms import ArrayWithNorms
-from .random import ArrayWithRandom
+from .random_1 import ArrayWithRandom
 from .searching import ArrayWithSearching
 from .set import ArrayWithSet
 from .sorting import ArrayWithSorting
