@@ -88,3 +88,32 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
+
+
+def handle_x64(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        if not jax_frontend.config.jax_enable_x64:
+            dtype_replacement_dict = {
+                ivy.int64: ivy.int32,
+                ivy.uint64: ivy.uint32,
+                ivy.float64: ivy.float32,
+                "float64": "float32",
+                "uint64": "uint32",
+                "int64": "int32",
+            }
+            # replace in args and kwargs all 64 bit dtypes with 32 bit dtypes
+
+            new_args = ivy.nested_map(
+                args,
+                lambda x: dtype_replacement_dict[x] if x in dtype_replacement_dict else x
+            )
+            new_kwargs = ivy.nested_map(
+                kwargs,
+                lambda x: dtype_replacement_dict[x] if x in dtype_replacement_dict else x
+            )
+            # call unmodified function
+            return fn(*new_args, **new_kwargs)
+        return fn(*args, **kwargs)
+
+    return new_fn

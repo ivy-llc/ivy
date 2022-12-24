@@ -4,11 +4,13 @@ from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_dtype
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
+    handle_x64,
 )
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_x64
 def array(object, dtype=None, copy=True, order="K", ndmin=0):
     # TODO must ensure the array is created on default device.
     if order is not None and order != "K":
@@ -23,6 +25,7 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_x64
 def zeros_like(a, dtype=None, shape=None):
     if shape:
         return ivy.zeros(shape, dtype=dtype)
@@ -31,12 +34,14 @@ def zeros_like(a, dtype=None, shape=None):
 
 @handle_numpy_dtype
 @outputs_to_frontend_arrays
+@handle_x64
 def arange(start, stop=None, step=1, dtype=None):
     return ivy.arange(start, stop, step=step, dtype=dtype)
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_x64
 def zeros(shape, dtype=None):
     if dtype is None:
         dtype = ivy.float64
@@ -45,12 +50,14 @@ def zeros(shape, dtype=None):
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_x64
 def ones(shape, dtype=None):
     return ivy.ones(shape, dtype=dtype)
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_x64
 def ones_like(a, dtype=None, shape=None):
     if shape:
         return ivy.ones(shape, dtype=dtype)
@@ -59,6 +66,7 @@ def ones_like(a, dtype=None, shape=None):
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_x64
 def asarray(a, dtype=None, order=None):
     return ivy.asarray(a, dtype=dtype)
 
@@ -70,6 +78,7 @@ def uint16(x):
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_x64
 def hstack(tup, dtype=None):
     # TODO: dtype supported in JAX v0.3.20
     return ivy.hstack(tup)
@@ -77,5 +86,6 @@ def hstack(tup, dtype=None):
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_x64
 def eye(N, M=None, k=0, dtype=None):
     return ivy.eye(N, M, k=k, dtype=dtype)

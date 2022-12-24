@@ -8,6 +8,7 @@ from typing import Union, Tuple, Iterable
 import ivy
 from ivy.exceptions import handle_exceptions
 from ivy.functional.frontends.numpy import dtype
+import ivy.functional.frontends.jax as jax_frontend
 
 
 int8 = dtype("int8")
@@ -366,6 +367,21 @@ def promote_types_jax(
     return ret
 
 
+def _handle_x64_promotion(d):
+    dtype_replacement_dict = {
+        ivy.int64: ivy.int32,
+        ivy.uint64: ivy.uint32,
+        ivy.float64: ivy.float32,
+        "float64": "float32",
+        "uint64": "uint32",
+        "int64": "int32",
+    }
+    if not jax_frontend.config.jax_enable_x64:
+        d = dtype_replacement_dict[d] if d in dtype_replacement_dict else d
+
+    return d
+
+
 @handle_exceptions
 def promote_types_of_jax_inputs(
     x1: Union[ivy.Array, Number, Iterable[Number]],
@@ -380,19 +396,21 @@ def promote_types_of_jax_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
+
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
-        x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2, dtype=x1.dtype)
     elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
         x1 = ivy.asarray(x1, dtype=x2.dtype)
-        x2 = ivy.asarray(x2)
     else:
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
-        if x1.dtype != x2.dtype:
-            promoted = promote_types_jax(x1.dtype, x2.dtype)
+        x1_type, x2_type = x1.dtype, x2.dtype
+        if x1_type != x2_type:
+            x1_type = _handle_x64_promotion(x1_type)
+            x2_type = _handle_x64_promotion(x2_type)
+            promoted = _handle_x64_promotion(promote_types_jax(x1_type, x2_type))
             x1 = ivy.asarray(x1, dtype=promoted)
             x2 = ivy.asarray(x2, dtype=promoted)
     return x1, x2
