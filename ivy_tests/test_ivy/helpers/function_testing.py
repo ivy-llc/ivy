@@ -99,6 +99,10 @@ def test_function(
     ----------
     input_dtypes
         data types of the input arguments in order.
+    test_flags
+        FunctionTestFlags object that stores all testing flags, including:
+        num_positional_args, with_out, instance_method, as_variable,
+        native_arrays, container, gradient
     fw
         current backend (framework).
     fn_name
@@ -143,12 +147,16 @@ def test_function(
     >>> native_array_flags = False
     >>> container_flags = False
     >>> instance_method = False
+    >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
+        instance_method,
+        as_variable,
+        native_arrays,
+        container_flags,
+        none)
     >>> fw = "torch"
     >>> fn_name = "abs"
     >>> x = np.array([-1])
-    >>> test_function(input_dtypes, as_variable_flags, with_out,\
-                            num_positional_args, native_array_flags,\
-                            container_flags, instance_method, fw, fn_name, x=x)
+    >>> test_function(input_dtypes, test_flags, fw, fn_name, x=x)
 
     >>> input_dtypes = ['float64', 'float32']
     >>> as_variable_flags = [False, True]
@@ -157,14 +165,17 @@ def test_function(
     >>> native_array_flags = [True, False]
     >>> container_flags = [False, False]
     >>> instance_method = False
+    >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
+        instance_method,
+        as_variable,
+        native_arrays,
+        container_flags,
+        none)
     >>> fw = "numpy"
     >>> fn_name = "add"
     >>> x1 = np.array([1, 3, 4])
     >>> x2 = np.array([-3, 15, 24])
-    >>> test_function(input_dtypes, as_variable_flags, with_out,\
-                            num_positional_args, native_array_flags,\
-                             container_flags, instance_method,\
-                              fw, fn_name, x1=x1, x2=x2)
+    >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
     _assert_dtypes_are_valid(input_dtypes)
     # split the arguments into their positional and keyword components
