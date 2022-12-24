@@ -368,7 +368,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
                           [3.-4.j, 2.-6.j]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "adjoint",
             x,
             out=out,
