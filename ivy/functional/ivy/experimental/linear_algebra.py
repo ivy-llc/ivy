@@ -192,7 +192,7 @@ def eig(
     w
         Not necessarily ordered array(..., N) of eigenvalues in complex type.
     v
-        An array(..., N, N) of normalized (unit "length") eigenvectors,
+        An array(..., N, N) of normalized (unit “length”) eigenvectors,
         the column v[:,i] is the eigenvector corresponding to the eigenvalue w[i].
 
     This function conforms to the `Array API Standard
