@@ -50,11 +50,13 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
         return x
 
     # Convert all required arrays to float variables
-    map_fn = lambda x: ivy.nested_map(x, fn=inner_fn, include_derived=True)
+    map_fn = lambda x: ivy.nested_map(
+        x, fn=inner_fn, include_derived=True, shallow=False
+    )
     if xs_grad_idxs is not None:
         ivy.map_nest_at_indices(xs, xs_grad_idxs, map_fn)
         return xs
-    return ivy.nested_map(xs, map_fn, include_derived=True)
+    return ivy.nested_map(xs, map_fn, include_derived=True, shallow=False)
 
 
 def _get_required_native_variables(xs, xs_grad_idxs):
@@ -227,7 +229,10 @@ _idxs_to_str = lambda idxs: [
 
 
 _to_ivy = lambda xs: ivy.nested_map(
-    xs, lambda x: ivy.to_ivy(x) if ivy.is_array(x) else x, include_derived=True
+    xs,
+    lambda x: ivy.to_ivy(x) if ivy.is_array(x) else x,
+    include_derived=True,
+    shallow=False,
 )
 
 
@@ -235,6 +240,7 @@ _non_finite_to_zero = lambda xs: ivy.nested_map(
     xs,
     lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
     include_derived=True,
+    shallow=False,
 )
 
 
@@ -244,7 +250,9 @@ _non_finite_to_zero = lambda xs: ivy.nested_map(
 
 def _variable(x):
     x = ivy.to_native(x, nested=True)
-    ret = ivy.nested_map(x, current_backend(x).variable, include_derived=True)
+    ret = ivy.nested_map(
+        x, current_backend(x).variable, include_derived=True, shallow=False
+    )
     return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
@@ -254,6 +262,7 @@ def _is_variable(x, exclusive=False) -> bool:
         x,
         lambda x: current_backend(x).is_variable(x, exclusive=exclusive),
         include_derived=True,
+        shallow=False,
     )
 
 
@@ -400,7 +409,7 @@ def unset_with_grads():
     >>> ivy.set_with_grads(True)
     >>> ivy.unset_with_grads()
     >>> print(ivy.with_grads(with_grads=None))
-    False
+    True
 
     >>> ivy.set_with_grads(True)
     >>> ivy.unset_with_grads()
@@ -783,7 +792,7 @@ def adam_step(
     step = float(step)
     mw = ivy.add(beta1 * mw, (1 - beta1) * dcdw)
     dcdw_sqrd = dcdw**2
-    vw = ivy.add(beta2 * vw, (1 - beta2) * dcdw_sqrd)
+    vw = ivy.add(ivy.multiply(beta2, vw), (1 - beta2) * dcdw_sqrd)
     vw_sqrt = ivy.maximum(vw, 0.0) ** 0.5
     beta1_pow = beta1**step
     beta2_pow = beta2**step

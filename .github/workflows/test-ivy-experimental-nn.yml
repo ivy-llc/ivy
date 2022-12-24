@@ -34,7 +34,6 @@ jobs:
            }
            $HasDiff = $SourceDiff.Length -gt 0
            Write-Host "::set-output name=changed::$HasDiff"
-
        - name: Download artifact
          uses: dawidd6/action-download-artifact@v2
          if: github.event_name == 'pull_request' && steps.check_file_changed.outputs.changed == 'True'
@@ -96,7 +95,6 @@ jobs:
          with:
              packages: |
                pymongo[srv]
-
        - name: Update Database
          if: github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.check_file_changed.outputs.changed == 'True'
          env:
@@ -110,4 +108,3 @@ jobs:
        - name: Check on failures
          if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped') && steps.tests.outcome != 'success'
          run: exit 1
-

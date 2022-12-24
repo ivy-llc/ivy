@@ -28,15 +28,20 @@ class ContainerWithDevice(ContainerBase):
             b: cpu
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
-            "dev", x, as_native=as_native
-        )
+        return ContainerBase.cont_multi_map_in_function("dev", x, as_native=as_native)
 
     def dev(self: ivy.Container, as_native: bool = False) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.dev. This method simply
         wraps the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            contaioner of arrays for which to get the device handle.
+        as_native
+            Whether or not to return the dev in native format. Default is ``False``.
 
         Examples
         --------
@@ -101,8 +106,16 @@ class ContainerWithDevice(ContainerBase):
         ret
             input array x placed on the desired device
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),
+        ...                   b=ivy.native_array([[1, 2], [4, 5]]))
+        >>> y = ivy.Container.static_to_device(x, 'cpu')
+        >>> print(y.a.device, y.b.device)
+        cpu cpu
+
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "to_device",
             x,
             device,
@@ -160,6 +173,14 @@ class ContainerWithDevice(ContainerBase):
         -------
         ret
             input array x placed on the desired device
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),
+        ...                   b=ivy.native_array([[1, 2], [4, 5]]))
+        >>> y = x.to_device('cpu')
+        >>> print(y.a.device, y.b.device)
+        cpu cpu
 
         """
         return self.static_to_device(

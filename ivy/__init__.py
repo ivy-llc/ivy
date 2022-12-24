@@ -608,6 +608,7 @@ from .container import (
     Container,
     add_ivy_container_instance_methods,
 )
+from .nested_array import NestedArray
 from .backend_handler import (
     current_backend,
     get_backend,
@@ -621,6 +622,7 @@ from .backend_handler import (
     choose_random_backend,
     clear_backend_stack,
 )
+from .func_wrapper import *
 from . import assertions, backend_handler, func_wrapper, exceptions
 from . import functional
 from .functional import *

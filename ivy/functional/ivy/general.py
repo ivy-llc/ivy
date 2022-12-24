@@ -1827,14 +1827,11 @@ def set_min_denominator(val: float) -> None:
     val
         The value to set the global minimum denominator to.
 
-
     Examples
     --------
     >>> x = ivy.get_min_denominator()
     >>> print(x)
     1e-12
-
-    To set the minimum denominator to 1e-13
 
     >>> ivy.set_min_denominator(1e-13)
     >>> y = ivy.get_min_denominator()
@@ -1875,14 +1872,11 @@ def set_min_base(val: float) -> None:
     val
         The new value to set the minimum base to.
 
-
     Examples
     --------
     >>> x = ivy.get_min_base()
     >>> print(x)
     1e-05
-
-    To set the minimum base to 1e-04
 
     >>> ivy.set_min_base(1e-04)
     >>> y = ivy.get_min_base()
@@ -2614,7 +2608,7 @@ def scatter_nd(
         b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
     }
 
-    With scatter into an array, With :class:`ivy.Container` and :class:`ivy.Array` input:
+    With :class:`ivy.Container` and :class:`ivy.Array` input:
 
     >>> indices = ivy.array([[4],[3],[1]])
     >>> updates = ivy.Container(a=ivy.array([10, 20, 30]),

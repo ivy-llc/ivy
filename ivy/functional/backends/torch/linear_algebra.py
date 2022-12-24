@@ -429,21 +429,23 @@ def vecdot(
 vecdot.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("integer",)}, backend_version)
 def vector_norm(
     x: torch.Tensor,
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    keepdims: Optional[bool] = False,
+    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
-    if py_normalized_vector.shape == ():
-        ret = torch.unsqueeze(py_normalized_vector, 0)
-    else:
-        ret = py_normalized_vector
-    return ret
+    # TODO: remove the as_native_dtype call once there are wrappers that handle dtype
+    #  conversion automatically in the backends
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype and x.dtype != dtype:
+        x = x.type(dtype)
+    return torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
 
 
 vector_norm.support_native_out = True

@@ -41,6 +41,8 @@ def roll(input, shifts, dims=None):
     "torch",
 )
 def cumsum(input, dim, *, dtype=None, out=None):
+    if not dtype and "int" in input.dtype:
+        dtype = ivy.int64
     return ivy.cumsum(input, axis=dim, dtype=dtype, out=out)
 
 
@@ -64,6 +66,8 @@ def tril_indices(row, col, offset=0, *, dtype=ivy.int64, device="cpu", layout=No
 
 @to_ivy_arrays_and_back
 def cumprod(input, dim, *, dtype=None, out=None):
+    if not dtype and "int" in input.dtype:
+        dtype = ivy.int64
     return ivy.cumprod(input, axis=dim, dtype=dtype, out=out)
 
 
@@ -106,6 +110,7 @@ def flatten(input, start_dim=0, end_dim=-1):
     return ivy.flatten(input, start_dim=start_dim, end_dim=end_dim)
 
 
+@with_supported_dtypes({"1.11.0 and below": ("float",)}, "torch")
 @to_ivy_arrays_and_back
 def renorm(input, p, dim, maxnorm, *, out=None):
     # Torch hardcodes this magic number
@@ -144,7 +149,16 @@ def renorm(input, p, dim, maxnorm, *, out=None):
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+            "integer",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def logcumsumexp(input, dim, *, out=None):
     if len(input.shape) == 0:
@@ -286,9 +300,7 @@ def cross(input, other, dim=None, *, out=None):
     if dim is None:
         dim = -1
     input, other = ivy.promote_types_of_inputs(input, other)
-
-    if dim is not None:
-        return ivy.cross(input, other, axisa=-1, axisb=-1, axisc=-1, axis=dim, out=out)
+    return ivy.cross(input, other, axisa=-1, axisb=-1, axisc=-1, axis=dim, out=out)
 
 
 @to_ivy_arrays_and_back

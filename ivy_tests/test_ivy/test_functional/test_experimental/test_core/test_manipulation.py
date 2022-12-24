@@ -14,7 +14,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # moveaxis
 @handle_test(
-    fn_tree="functional.experimental.moveaxis",
+    fn_tree="functional.ivy.experimental.moveaxis",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
@@ -65,12 +65,7 @@ def test_moveaxis(
     dtype_and_a,
     source,
     destination,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -80,12 +75,7 @@ def test_moveaxis(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -97,7 +87,7 @@ def test_moveaxis(
 
 # ndenumerate
 @handle_test(
-    fn_tree="functional.experimental.ndenumerate",
+    fn_tree="functional.ivy.experimental.ndenumerate",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -113,7 +103,7 @@ def test_ndenumerate(dtype_and_x):
 
 # ndindex
 @handle_test(
-    fn_tree="functional.experimental.ndindex",
+    fn_tree="functional.ivy.experimental.ndindex",
     dtype_x_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -128,7 +118,7 @@ def test_ndindex(dtype_x_shape):
 
 # heaviside
 @handle_test(
-    fn_tree="functional.experimental.heaviside",
+    fn_tree="functional.ivy.experimental.heaviside",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
@@ -144,12 +134,7 @@ def test_ndindex(dtype_x_shape):
 def test_heaviside(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -159,12 +144,7 @@ def test_heaviside(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -175,7 +155,7 @@ def test_heaviside(
 
 # flipud
 @handle_test(
-    fn_tree="functional.experimental.flipud",
+    fn_tree="functional.ivy.experimental.flipud",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
@@ -189,12 +169,7 @@ def test_heaviside(
 def test_flipud(
     *,
     dtype_and_m,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -204,12 +179,7 @@ def test_flipud(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -219,7 +189,7 @@ def test_flipud(
 
 # vstack
 @handle_test(
-    fn_tree="functional.experimental.vstack",
+    fn_tree="functional.ivy.experimental.vstack",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -234,12 +204,7 @@ def test_flipud(
 def test_vstack(
     *,
     dtype_and_m,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -249,12 +214,7 @@ def test_vstack(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -264,7 +224,7 @@ def test_vstack(
 
 # hstack
 @handle_test(
-    fn_tree="functional.experimental.hstack",
+    fn_tree="functional.ivy.experimental.hstack",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -278,12 +238,7 @@ def test_vstack(
 )
 def test_hstack(
     dtype_and_m,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -293,12 +248,7 @@ def test_hstack(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -358,7 +308,7 @@ def _get_dtype_values_k_axes_for_rot90(
 
 # rot90
 @handle_test(
-    fn_tree="functional.experimental.rot90",
+    fn_tree="functional.ivy.experimental.rot90",
     dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -369,12 +319,7 @@ def _get_dtype_values_k_axes_for_rot90(
 )
 def test_rot90(
     dtype_m_k_axes,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -384,12 +329,7 @@ def test_rot90(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -401,7 +341,7 @@ def test_rot90(
 
 # top_k
 @handle_test(
-    fn_tree="functional.experimental.top_k",
+    fn_tree="functional.ivy.experimental.top_k",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -421,12 +361,7 @@ def test_top_k(
     axis,
     k,
     largest,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -436,12 +371,7 @@ def test_top_k(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -454,7 +384,7 @@ def test_top_k(
 
 # fliplr
 @handle_test(
-    fn_tree="functional.experimental.fliplr",
+    fn_tree="functional.ivy.experimental.fliplr",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
@@ -463,12 +393,7 @@ def test_top_k(
 def test_fliplr(
     *,
     dtype_and_m,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -478,12 +403,7 @@ def test_fliplr(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -493,7 +413,7 @@ def test_fliplr(
 
 # i0
 @handle_test(
-    fn_tree="functional.experimental.i0",
+    fn_tree="functional.ivy.experimental.i0",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -507,12 +427,7 @@ def test_fliplr(
 def test_i0(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -522,12 +437,7 @@ def test_i0(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -537,7 +447,7 @@ def test_i0(
 
 # flatten
 @handle_test(
-    fn_tree="functional.experimental.flatten",
+    fn_tree="functional.ivy.experimental.flatten",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="flatten_shape"),
@@ -556,12 +466,7 @@ def test_flatten(
     dtype_and_x,
     axes,
     order,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -571,12 +476,7 @@ def test_flatten(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -651,20 +551,17 @@ def _pad_helper(draw):
 
 
 @handle_test(
-    fn_tree="functional.experimental.pad",
+    fn_tree="functional.ivy.experimental.pad",
     ground_truth_backend="numpy",
     dtype_and_input_and_other=_pad_helper(),
     reflect_type=st.sampled_from(["even", "odd"]),
+    test_with_out=st.just(False),
 )
 def test_pad(
     *,
     dtype_and_input_and_other,
     reflect_type,
-    num_positional_args,
-    as_variable,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -682,12 +579,7 @@ def test_pad(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -703,7 +595,7 @@ def test_pad(
 
 # vsplit
 @handle_test(
-    fn_tree="functional.experimental.vsplit",
+    fn_tree="functional.ivy.experimental.vsplit",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -720,12 +612,7 @@ def test_pad(
 def test_vsplit(
     dtype_and_x,
     indices_or_sections,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -736,12 +623,7 @@ def test_vsplit(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
@@ -751,7 +633,7 @@ def test_vsplit(
 
 # dsplit
 @handle_test(
-    fn_tree="functional.experimental.dsplit",
+    fn_tree="functional.ivy.experimental.dsplit",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -768,12 +650,7 @@ def test_vsplit(
 def test_dsplit(
     dtype_and_x,
     indices_or_sections,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    contaienr_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -784,12 +661,7 @@ def test_dsplit(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=contaienr_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -800,18 +672,16 @@ def test_dsplit(
 
 # atleast_1d
 @handle_test(
-    fn_tree="functional.experimental.atleast_1d",
+    fn_tree="functional.ivy.experimental.atleast_1d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
+    test_with_out=st.just(False),
 )
 def test_atleast_1d(
     dtype_and_x,
-    as_variable,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -821,16 +691,11 @@ def test_atleast_1d(
     kw = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
-    num_positional_args = len(kw)
+    test_flags.num_positional_args = len(kw)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -840,7 +705,7 @@ def test_atleast_1d(
 
 # dstack
 @handle_test(
-    fn_tree="functional.experimental.dstack",
+    fn_tree="functional.ivy.experimental.dstack",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -855,12 +720,7 @@ def test_atleast_1d(
 def test_dstack(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -870,12 +730,7 @@ def test_dstack(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -885,19 +740,17 @@ def test_dstack(
 
 # atleast_2d
 @handle_test(
-    fn_tree="functional.experimental.atleast_2d",
+    fn_tree="functional.ivy.experimental.atleast_2d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
+    test_with_out=st.just(False),
 )
 def test_atleast_2d(
     *,
     dtype_and_x,
-    as_variable,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -907,16 +760,11 @@ def test_atleast_2d(
     kw = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
-    num_positional_args = len(kw)
+    test_flags.num_positional_args = len(kw)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -925,18 +773,16 @@ def test_atleast_2d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.atleast_3d",
+    fn_tree="functional.ivy.experimental.atleast_3d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
+    test_with_out=st.just(False),
 )
 def test_atleast_3d(
     dtype_and_x,
-    as_variable,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -946,16 +792,11 @@ def test_atleast_3d(
     kw = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
-    num_positional_args = len(kw)
+    test_flags.num_positional_args = len(kw)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -965,7 +806,7 @@ def test_atleast_3d(
 
 # take_along_axis
 @handle_test(
-    fn_tree="functional.take_along_axis",
+    fn_tree="functional.ivy.experimental.take_along_axis",
     dtype_x_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
@@ -979,12 +820,7 @@ def test_atleast_3d(
 def test_take_along_axis(
     *,
     dtype_x_indices_axis,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -994,12 +830,7 @@ def test_take_along_axis(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -1011,7 +842,7 @@ def test_take_along_axis(
 
 # hsplit
 @handle_test(
-    fn_tree="functional.experimental.hsplit",
+    fn_tree="functional.ivy.experimental.hsplit",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -1028,12 +859,7 @@ def test_take_along_axis(
 def test_hsplit(
     dtype_and_x,
     indices_or_sections,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1044,12 +870,7 @@ def test_hsplit(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         x=x[0],

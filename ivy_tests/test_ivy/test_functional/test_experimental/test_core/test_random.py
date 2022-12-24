@@ -13,7 +13,7 @@ import ivy
 
 # dirichlet
 @handle_test(
-    fn_tree="functional.experimental.dirichlet",
+    fn_tree="functional.ivy.experimental.dirichlet",
     dtype_and_alpha=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=2),
         shape=st.tuples(
@@ -33,12 +33,7 @@ def test_dirichlet(
     dtype_and_alpha,
     size,
     seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -50,12 +45,7 @@ def test_dirichlet(
         return helpers.test_function(
             ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            container_flags=container_flags,
-            instance_method=instance_method,
+            test_flags=test_flags,
             test_values=False,
             fw=backend_fw,
             fn_name=fn_name,
@@ -80,7 +70,7 @@ def test_dirichlet(
 
 # beta
 @handle_test(
-    fn_tree="functional.experimental.beta",
+    fn_tree="functional.ivy.experimental.beta",
     dtype_and_alpha_beta=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -105,6 +95,7 @@ def test_beta(
     fn_name,
     on_device,
     ground_truth_backend,
+    test_flags,
 ):
 
     dtype, alpha_beta = dtype_and_alpha_beta
@@ -113,12 +104,7 @@ def test_beta(
     ret, ret_gt = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         test_values=False,
         fw=backend_fw,
         fn_name=fn_name,
@@ -138,7 +124,7 @@ def test_beta(
 
 # gamma
 @handle_test(
-    fn_tree="functional.experimental.gamma",
+    fn_tree="functional.ivy.experimental.gamma",
     dtype_and_alpha_beta=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -153,12 +139,7 @@ def test_gamma(
     *,
     dtype_and_alpha_beta,
     seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -170,12 +151,7 @@ def test_gamma(
     ret, ret_gt = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         test_values=False,
         fw=backend_fw,
         fn_name=fn_name,

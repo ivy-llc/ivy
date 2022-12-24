@@ -2,6 +2,7 @@
 import functools
 from typing import Callable, Any
 import inspect
+import platform
 
 # local
 import ivy
@@ -29,13 +30,11 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
         elif len(args) == (dtype_pos + 1):
             dtype = args[dtype_pos]
             args = args[:-1]
-        if not dtype:
+        if not dtype or isinstance(dtype, str):
             return fn(*args, dtype=dtype, **kwargs)
         if isinstance(dtype, np_frontend.dtype):
             return fn(*args, dtype=dtype._ivy_dtype, **kwargs)
-        if dtype in np_frontend.numpy_str_to_type_table:
-            dtype = np_frontend.numpy_str_to_type_table[dtype]._ivy_dtype
-        return fn(*args, dtype=ivy.as_ivy_dtype(dtype), **kwargs)
+        return fn(*args, dtype=np_frontend.to_ivy_dtype(dtype), **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
     new_fn.handle_numpy_dtype = True
@@ -163,7 +162,7 @@ def handle_numpy_casting_special(fn: Callable) -> Callable:
 
 
 def _numpy_frontend_to_ivy(x: Any) -> Any:
-    if isinstance(x, ndarray):
+    if hasattr(x, "ivy_array"):
         return x.ivy_array
     else:
         return x
@@ -219,7 +218,7 @@ def _set_order(args, order):
     )
     if order in ["K", "A", None]:
         check_order = ivy.nested_map(
-            args, _check_C_order, include_derived={tuple: True}
+            args, _check_C_order, include_derived={tuple: True}, shallow=False
         )
         if all(v is None for v in check_order) or any(
             ivy.multi_index_nest(check_order, ivy.all_nested_indices(check_order))
@@ -275,14 +274,28 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
            The return of the function, with ivy arrays as numpy arrays.
         """
         # handle order and call unmodified function
+        # ToDo: Remove this default dtype setting
+        #  once frontend specific backend setting is added
+        ivy.set_default_int_dtype(
+            "int64"
+        ) if platform.system() != "Windows" else ivy.set_default_int_dtype("int32")
+        ivy.set_default_float_dtype("float64")
         if contains_order:
             if len(args) >= (order_pos + 1):
                 order = args[order_pos]
                 args = args[:-1]
             order = _set_order(args, order)
-            ret = fn(*args, order=order, **kwargs)
+            try:
+                ret = fn(*args, order=order, **kwargs)
+            finally:
+                ivy.unset_default_int_dtype()
+                ivy.unset_default_float_dtype()
         else:
-            ret = fn(*args, **kwargs)
+            try:
+                ret = fn(*args, **kwargs)
+            finally:
+                ivy.unset_default_int_dtype()
+                ivy.unset_default_float_dtype()
         if not ivy.get_array_mode():
             return ret
         # convert all returned arrays to `ndarray` instances
@@ -308,3 +321,75 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     and return arrays are all converted to `ndarray` instances.
     """
     return outputs_to_numpy_arrays(inputs_to_ivy_arrays(fn))
+
+
+def _is_zero_dim_array(x):
+    return x.shape == () and not ivy.isinf(x) and not ivy.isnan(x)
+
+
+def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Calls the function, and then converts all 0 dimensional array instances in
+        the function to float numbers if out argument is not provided.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with 0 dimensional arrays as float numbers.
+        """
+        # call unmodified function
+        ret = fn(*args, **kwargs)
+        if "out" in ivy.arg_names(fn):
+            # get out arg index
+            out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
+            # check if out is None or out is not present in args and kwargs.
+            out_args = (
+                out_arg_pos < len(args) and args[out_arg_pos] is None
+            ) or out_arg_pos >= len(args)
+        else:
+            # no out argument accepted by the function
+            out_args = True
+
+        out_kwargs = ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs
+        if out_args and out_kwargs:
+            if isinstance(ret, tuple):
+                data = tuple(ivy.native_array(ret))
+            else:
+                data = ret.data
+            if isinstance(data, tuple):
+                # converting every scalar element of the tuple to float
+                data = ivy.copy_nest(data, to_mutable=True)
+                ret_idx = ivy.nested_argwhere(data, lambda x: x.shape == ())
+                try:
+                    ivy.map_nest_at_indices(
+                        data,
+                        ret_idx,
+                        lambda x: np_frontend.numpy_dtype_to_scalar[ivy.dtype(x)](x),
+                    )
+                except KeyError:
+                    raise ivy.exceptions.IvyException(
+                        "Casting to specified type is unsupported"
+                    )
+                return tuple(data)
+            else:
+                # converting the scalar to float
+                if _is_zero_dim_array(data):
+                    try:
+                        return np_frontend.numpy_dtype_to_scalar[ivy.dtype(data)](data)
+                    except KeyError:
+                        raise ivy.exceptions.IvyException(
+                            f"Casting to {ivy.dtype(data)} is unsupported"
+                        )
+        return ret
+
+    new_fn.from_zero_dim_arrays_to_scalar = True
+    return new_fn

@@ -94,7 +94,7 @@ class ContainerWithLayers(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "linear",
             x,
             weight,
@@ -198,7 +198,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "dropout",
             x,
             prob,
@@ -250,7 +250,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "dropout1d",
             x,
             prob,
@@ -386,7 +386,7 @@ class ContainerWithLayers(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "scaled_dot_product_attention",
             q,
             k,
@@ -530,7 +530,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "multi_head_attention",
             x,
             scale,
@@ -648,7 +648,7 @@ class ContainerWithLayers(ContainerBase):
             ...                [-3.25, 10.5, 24.2]]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "conv1d",
             x,
             filters,
@@ -794,7 +794,7 @@ class ContainerWithLayers(ContainerBase):
             b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "conv2d",
             x,
             filters,
@@ -898,7 +898,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "conv1d_transpose",
             x,
             filters,
@@ -962,7 +962,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "conv2d_transpose",
             x,
             filters,
@@ -1068,7 +1068,7 @@ class ContainerWithLayers(ContainerBase):
         >>> print(y.shape)
         [1, 64, 64, 3]
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "depthwise_conv2d",
             x,
             filters,
@@ -1211,7 +1211,7 @@ class ContainerWithLayers(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "conv3d",
             x,
             filters,
@@ -1316,7 +1316,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "conv3d_transpose",
             x,
             filters,
@@ -1381,7 +1381,7 @@ class ContainerWithLayers(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "lstm_update",
             x,
             init_h,

@@ -177,9 +177,9 @@ def GreaterEqual(*, x, y, name="GreaterEqual"):
     return ivy.greater_equal(x, y)
 
 
-@to_ivy_arrays_and_back
-def Identity(*, input, name="Identity"):
-    return ivy.copy_array(input)
+Identity = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.general_functions.identity)
+)
 
 
 @to_ivy_arrays_and_back
@@ -355,6 +355,11 @@ def Round(*, x, name="Round"):
 def Shape(*, input, output_type=ivy.int32, name="Shape"):
     output_type = to_ivy_dtype(output_type)
     return ivy.astype(ivy.shape(input, as_array=True), output_type, copy=False)
+
+
+ShapeN = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.general_functions.shape_n)
+)
 
 
 @to_ivy_arrays_and_back

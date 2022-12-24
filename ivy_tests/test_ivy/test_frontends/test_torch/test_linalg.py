@@ -9,6 +9,9 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import assert_all_close
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (
+    dtype_value1_value2_axis,
+)
 
 
 # helpers
@@ -39,13 +42,59 @@ def _get_dtype_and_matrix(draw):
     )
 
 
+# vector_norm
+@handle_frontend_test(
+    fn_tree="torch.linalg.vector_norm",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        valid_axis=True,
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+    kd=st.booleans(),
+    ord=helpers.ints(min_value=1, max_value=2),
+    dtype=helpers.get_dtypes("valid"),
+)
+def test_torch_vector_norm(
+    *,
+    dtype_values_axis,
+    kd,
+    ord,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ord=ord,
+        dim=axis,
+        keepdim=kd,
+        dtype=dtype[0],
+    )
+
+
 # inv
 @handle_frontend_test(
     fn_tree="torch.linalg.inv",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
-        min_value=0,
-        max_value=25,
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1e4,
+        max_value=1e4,
+        small_abs_safety_factor=3,
         shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
 )
@@ -72,6 +121,7 @@ def test_torch_inv(
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-03,
+        atol=1e-02,
         input=x[0],
     )
 
@@ -79,7 +129,12 @@ def test_torch_inv(
 # pinv
 @handle_frontend_test(
     fn_tree="torch.linalg.pinv",
-    dtype_and_input=_get_dtype_and_matrix(),
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        min_value=-1e4,
+        max_value=1e4,
+    ),
 )
 def test_torch_pinv(
     *,
@@ -102,8 +157,7 @@ def test_torch_pinv(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        atol=1e-15,
-        rtol=1e-15,
+        atol=1e-03,
     )
 
 
@@ -154,7 +208,7 @@ def test_torch_qr(
     on_device,
 ):
     input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         native_array_flags=native_array,
         as_variable_flags=as_variable,
@@ -163,9 +217,21 @@ def test_torch_qr(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-02,
-        atol=1e-05,
         input=x[0],
+        test_values=False,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    q, r = ret
+    frontend_q, frontend_r = frontend_ret
+
+    assert_all_close(
+        ret_np=q @ r,
+        ret_from_gt_np=frontend_q @ frontend_r,
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
     )
 
 
@@ -178,7 +244,6 @@ def test_torch_slogdet(
     *,
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     on_device,
@@ -189,7 +254,7 @@ def test_torch_slogdet(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         all_aliases=["slogdet"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
@@ -200,14 +265,44 @@ def test_torch_slogdet(
     )
 
 
+@st.composite
+def _get_symmetrix_matrix(draw):
+    input_dtype = draw(st.shared(st.sampled_from(draw(helpers.get_dtypes("float")))))
+    random_size = draw(helpers.ints(min_value=2, max_value=4))
+    batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
+    num_independnt_vals = int((random_size**2) / 2 + random_size / 2)
+    array_vals_flat = np.array(
+        draw(
+            helpers.array_values(
+                dtype=input_dtype,
+                shape=tuple(list(batch_shape) + [num_independnt_vals]),
+                min_value=2,
+                max_value=5,
+            )
+        )
+    )
+    array_vals = np.zeros(batch_shape + (random_size, random_size))
+    c = 0
+    for i in range(random_size):
+        for j in range(random_size):
+            if j < i:
+                continue
+            array_vals[..., i, j] = array_vals_flat[..., c]
+            array_vals[..., j, i] = array_vals_flat[..., c]
+            c += 1
+    return [input_dtype], array_vals
+
+
 # eigvalsh
 @handle_frontend_test(
     fn_tree="torch.linalg.eigvalsh",
-    dtype_and_input=_get_dtype_and_matrix(),
+    dtype_x=_get_symmetrix_matrix(),
+    UPLO=st.sampled_from(("L", "U")),
 )
 def test_torch_eigvalsh(
     *,
-    dtype_and_input,
+    dtype_x,
+    UPLO,
     num_positional_args,
     as_variable,
     native_array,
@@ -215,7 +310,7 @@ def test_torch_eigvalsh(
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_input
+    input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         native_array_flags=native_array,
@@ -225,7 +320,10 @@ def test_torch_eigvalsh(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        input=x,
+        UPLO=UPLO,
+        atol=1e-4,
+        rtol=1e-3,
     )
 
 
@@ -261,6 +359,48 @@ def test_torch_matrix_power(
         rtol=1e-01,
         input=x,
         n=n,
+    )
+
+
+# cross
+@handle_frontend_test(
+    fn_tree="torch.linalg.cross",
+    dtype_input_other_dim=dtype_value1_value2_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=-1e3,
+        max_value=1e3,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+)
+def test_torch_cross(
+    dtype_input_other_dim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    dtype, input, other, dim = dtype_input_other_dim
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        rtol=1e-2,
+        atol=1e-3,
+        input=input,
+        other=other,
+        dim=dim,
     )
 
 
@@ -313,6 +453,42 @@ def test_matrix_rank(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.linalg.cholesky",
+    dtype_and_x=_get_dtype_and_square_matrix(),
+    upper=st.booleans(),
+)
+def test_torch_cholesky(
+    *,
+    dtype_and_x,
+    upper,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x = dtype_and_x
+    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        all_aliases=["cholesky"],
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        input=x,
+        upper=upper,
+    )
+
+
 # svd
 @handle_frontend_test(
     fn_tree="torch.linalg.svd",
@@ -352,7 +528,7 @@ def test_torch_svd(
         test_values=False,
         atol=1e-03,
         rtol=1e-05,
-        input=x,
+        A=x,
         full_matrices=full_matrices,
     )
     ret = [ivy.to_numpy(x) for x in ret]
@@ -368,9 +544,56 @@ def test_torch_svd(
         atol=1e-2,
         ground_truth_backend=frontend,
     )
-    
-    
-#svdvals
+
+
+# eig
+@handle_frontend_test(
+    fn_tree="torch.linalg.eig",
+    dtype_and_input=_get_dtype_and_square_matrix(),
+)
+def test_torch_eig(
+    *,
+    dtype_and_input,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    if x.dtype == ivy.float32:
+        x = x.astype("float64")
+        input_dtype = [ivy.float64]
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        input=x,
+    )
+    ret = [ivy.to_numpy(x).astype("float64") for x in ret]
+    frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
+
+    l, v = ret
+    front_l, front_v = frontend_ret
+
+    assert_all_close(
+        ret_np=v @ np.diag(l) @ np.linalg.inv(v),
+        ret_from_gt_np=front_v @ np.diag(front_l) @ np.linalg.inv(front_v),
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )
+
+
+# svdvals
 @handle_frontend_test(
     fn_tree="torch.linalg.svdvals",
     dtype_and_x=_get_dtype_and_square_matrix(),
@@ -391,11 +614,10 @@ def test_torch_svdvals(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        all_aliases=["svdvals"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
+        A=x,
     )

@@ -12,6 +12,7 @@ submodules = (
     "test_torch",
     "test_jax",
     "test_numpy",
+    "test_misc",
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -23,6 +24,7 @@ db_dict = {
     "test_jax": ["jax", 16],
     "test_tensorflow": ["tensorflow", 17],
     "test_numpy": ["numpy", 18],
+    "test_misc": ["misc", 19],
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",
@@ -62,12 +64,10 @@ def update_individual_test_results(collection, id, submod, backend, test, result
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 2:
-        redis_url = sys.argv[1]
-        redis_pass = sys.argv[2]
-        mongo_key = sys.argv[3]
-
-    if sys.argv[4]:
+    redis_url = sys.argv[1]
+    redis_pass = sys.argv[2]
+    mongo_key = sys.argv[3]
+    if len(sys.argv) > 3:
         run_id = sys.argv[4]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/"

@@ -174,24 +174,6 @@ def isclose(
     )
 
 
-def isposinf(
-    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.isposinf(x)
-
-
-def isneginf(
-    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.isneginf(x)
-
-
 def nan_to_num(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -303,6 +285,32 @@ def diff(
     x = tf.experimental.numpy.append(prepend, x, axis=axis)
     x = tf.experimental.numpy.append(x, append, axis=axis)
     return tf.experimental.numpy.diff(x, n=n, axis=axis)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+            "int32",
+        )
+    },
+    backend_version,
+)
+def angle(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if deg:
+        return tf.math.angle(input, name=None) * (180 / tf.experimental.numpy.pi)
+    else:
+        return tf.math.angle(input, name=None)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16, float16,")}, backend_version)

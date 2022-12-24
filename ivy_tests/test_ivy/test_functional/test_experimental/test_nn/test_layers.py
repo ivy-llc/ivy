@@ -8,33 +8,21 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 
 @handle_test(
-    fn_tree="functional.experimental.max_pool2d",
-    ground_truth_backend="jax",
+    fn_tree="functional.ivy.experimental.max_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
 )
 def test_max_pool2d(
     *,
     x_k_s_p,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -47,33 +35,21 @@ def test_max_pool2d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.max_pool1d",
-    ground_truth_backend="jax",
+    fn_tree="functional.ivy.experimental.max_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
 )
 def test_max_pool1d(
     *,
     x_k_s_p,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -86,32 +62,20 @@ def test_max_pool1d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.avg_pool1d",
-    ground_truth_backend="jax",
+    fn_tree="functional.ivy.experimental.avg_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
 )
 def test_avg_pool1d(
     *,
     x_k_s_p,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name="avg_pool1d",
         rtol_=1e-2,
@@ -124,33 +88,21 @@ def test_avg_pool1d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.max_pool3d",
-    ground_truth_backend="jax",
+    fn_tree="functional.ivy.experimental.max_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
 )
 def test_max_pool3d(
     *,
     x_k_s_p,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -163,33 +115,21 @@ def test_max_pool3d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.avg_pool3d",
-    ground_truth_backend="jax",
+    fn_tree="functional.ivy.experimental.avg_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
 )
 def test_avg_pool3d(
     *,
     x_k_s_p,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-1,
@@ -202,32 +142,21 @@ def test_avg_pool3d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.avg_pool2d",
+    fn_tree="functional.ivy.experimental.avg_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
 )
 def test_avg_pool2d(
     *,
     x_k_s_p,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -273,12 +202,7 @@ def valid_dct(draw):
 )
 def test_dct(
     dtype_x_and_args,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     ground_truth_backend,
@@ -287,12 +211,7 @@ def test_dct(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
@@ -329,19 +248,14 @@ def x_and_fft(draw, dtypes):
 
 
 @handle_test(
-    fn_tree="functional.ivy.fft",
+    fn_tree="functional.ivy.experimental.fft",
     d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
     ground_truth_backend="numpy",
 )
 def test_fft(
     *,
     d_x_d_n_n,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     ground_truth_backend,
@@ -350,12 +264,7 @@ def test_fft(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -370,7 +279,7 @@ def test_fft(
 
 # dropout1d
 @handle_test(
-    fn_tree="functional.ivy.dropout1d",
+    fn_tree="functional.ivy.experimental.dropout1d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -391,12 +300,7 @@ def test_dropout1d(
     prob,
     training,
     data_format,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
+    test_flags,
     backend_fw,
     on_device,
     fn_name,
@@ -406,12 +310,7 @@ def test_dropout1d(
     ret, gt_ret = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         test_values=False,
