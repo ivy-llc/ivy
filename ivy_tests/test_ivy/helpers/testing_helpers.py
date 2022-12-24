@@ -183,8 +183,6 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
 # Decorators
 
-possible_fixtures = ["backend_fw", "on_device"]
-
 
 def handle_test(
     *,
@@ -249,9 +247,6 @@ def handle_test(
     return test_wrapper
 
 
-possible_fixtures_frontends = ["on_device", "frontend"]
-
-
 def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
     fn_tree = "ivy.functional.frontends." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
@@ -269,13 +264,12 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
                 fn_tree,
             )
             wrapped_test = given(**_given_kwargs)(test_fn)
-            if "fn_tree" in param_names:
-                _name = wrapped_test.__name__
-                possible_arguments = {"fn_tree": fn_tree}
-                filtered_args = set(param_names).intersection(possible_arguments.keys())
-                partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
-                wrapped_test = partial(wrapped_test, **partial_kwargs)
-                wrapped_test.__name__ = _name
+            _name = wrapped_test.__name__
+            possible_arguments = {"fn_tree": fn_tree}
+            filtered_args = set(param_names).intersection(possible_arguments.keys())
+            partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
+            wrapped_test = partial(wrapped_test, **partial_kwargs)
+            wrapped_test.__name__ = _name
         else:
             wrapped_test = test_fn
 
