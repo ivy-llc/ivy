@@ -1,3 +1,3 @@
 |                         | tensorflow                                                                                                                                                                         |
 |:------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| test_tensorflow_flatten | <a href="https://github.com/unifyai/ivy/actions/runs/3754997724/jobs/6379697158" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
+| test_tensorflow_flatten | <a href="https://github.com/unifyai/ivy/actions/runs/3770400228/jobs/6410212790" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
