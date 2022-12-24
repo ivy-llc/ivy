@@ -1344,16 +1344,16 @@ def test_numpy_instance_pow__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        method_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
-        method_as_variable_flags=as_variable,
-        method_native_array_flags=native_array,
-        method_num_positional_args=method_num_positional_args,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_native_array_flags=native_array,
+        method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={
             "value": power,
         },
