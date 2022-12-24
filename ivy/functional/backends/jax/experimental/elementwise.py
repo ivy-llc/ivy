@@ -125,24 +125,6 @@ def isclose(
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-def isposinf(
-    x: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.isposinf(x, out=out)
-
-
-def isneginf(
-    x: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.isneginf(x, out=out)
-
-
 def nan_to_num(
     x: JaxArray,
     /,

@@ -215,8 +215,21 @@ def isfinite(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isfinite(x)
 
 
-def isinf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.isinf(x)
+def isinf(
+    x: JaxArray,
+    /,
+    *,
+    detect_positive: bool = True,
+    detect_negative: bool = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if detect_positive and detect_negative:
+        return jnp.isinf(x)
+    elif detect_positive:
+        return jnp.isposinf(x)
+    elif detect_negative:
+        return jnp.isneginf(x)
+    return jnp.full_like(x, False, dtype=jnp.bool_)
 
 
 def isnan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

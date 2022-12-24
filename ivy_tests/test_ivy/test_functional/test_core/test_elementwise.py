@@ -862,10 +862,14 @@ def test_isfinite(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    detect_positive=st.booleans(),
+    detect_negative=st.booleans(),
 )
 def test_isinf(
     *,
     dtype_and_x,
+    detect_positive,
+    detect_negative,
     test_flags,
     backend_fw,
     fn_name,
@@ -881,6 +885,8 @@ def test_isinf(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        detect_positive=detect_positive,
+        detect_negative=detect_negative,
     )
 
 
