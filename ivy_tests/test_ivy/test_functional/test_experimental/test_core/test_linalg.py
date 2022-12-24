@@ -283,7 +283,7 @@ def test_eig(
 
 
 @handle_test(
-    fn_tree="functional.experimental.adjoint",
+    fn_tree="functional.ivy.experimental.adjoint",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
             ivy.float16,
