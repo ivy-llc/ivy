@@ -309,9 +309,10 @@ def dropout(
 
     Instance Method Examples
     ------------------------
-        With :class:`ivy.Array` instances:
+    With :class:`ivy.Array` instances:
 
-        With default `scale: bool = True`:
+    With default `scale: bool = True`:
+
     >>> x = ivy.array([[1., 2., 3.], \
                        [4., 5., 6.], \
                        [7., 8., 9.], \
@@ -332,7 +333,8 @@ def dropout(
                [ 0.        ,  0.        ],
                [ 0.        , 17.39999962]])
 
-        With `scale: bool = False`:
+    With `scale: bool = False`:
+
     >>> x = ivy.array([[1., 2., 3.], \
                        [4., 5., 6.], \
                        [7., 8., 9.], \
@@ -355,7 +357,7 @@ def dropout(
 
     With :class:`ivy.Container` instances:
 
-        With default `scale: bool = True`:
+    With default `scale: bool = True`:
 
     >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], \
                                        [4., 5., 6.]]), \
@@ -381,7 +383,7 @@ def dropout(
                   [14., 0., 0.]])
     }
 
-        With default `scale: bool = False`:
+    With default `scale: bool = False`:
 
     >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], \
                                        [4., 5., 6.]]), \
