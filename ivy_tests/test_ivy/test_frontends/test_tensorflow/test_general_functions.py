@@ -895,14 +895,15 @@ def _pad_helper(draw):
             min_num_dims=1,
             min_value=-100,
             max_value=100,
-        ).filter(lambda x: x[0][0] not in ["float16", "bfloat16"])
+        )
     )
     ndim = len(shape)
+    min_dim = min(shape)
     paddings = draw(
         st.lists(
             st.tuples(
-                st.integers(min_value=0, max_value=4),
-                st.integers(min_value=0, max_value=4),
+                st.integers(min_value=0, max_value=min_dim - 1),
+                st.integers(min_value=0, max_value=min_dim - 1),
             ),
             min_size=ndim,
             max_size=ndim,
