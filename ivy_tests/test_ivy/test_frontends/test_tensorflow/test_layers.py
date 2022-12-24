@@ -1,15 +1,20 @@
+import Tensorflow as Tensor
 import numpy as np
 from ivy_tests.test_ivy import helpers
+from .test_raw_ops import _arrays_idx_n_dtypes
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
-# concatenate
-num_positional_args = (
-    helpers.num_positional_args(
+# layer_concatenate
+
+
+@handle_frontend_test(
+    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    available_dtypes=helpers.get_dtypes("valid"),
+    num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.keras.layers.concatenate"
     ),
+    native_array=helpers.array_bools(),
 )
-native_array = (helpers.array_bools(),)
-
-
 def test_tensorflow_keras_layers_concatenate(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
@@ -27,7 +32,8 @@ def test_tensorflow_keras_layers_concatenate(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="concatenate",
+        frontend_class=Tensor,
+        fn_tree="Tensor.concatenate",
         values=xs,
         axis=unique_idx,
     )
