@@ -65,8 +65,8 @@ def slogdet(a, method=None):
 
 
 @to_ivy_arrays_and_back
-def matrix_rank(M):
-    return ivy.matrix_rank(M)
+def matrix_rank(M, tol=None):
+    return ivy.matrix_rank(M, atol=tol).astype("int64")
 
 
 @to_ivy_arrays_and_back
