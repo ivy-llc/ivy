@@ -17,6 +17,57 @@ class ContainerWithSet(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.unique_all. This method simply
+        wraps the function, and so the docstring for ivy.unique_all also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container. If ``x`` has more than one dimension, the function must
+            flatten ``x`` and return the unique elements of the flattened array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            A container of namedtuples ``(values, indices, inverse_indices,
+            counts)``. The details can be found in the docstring
+            for ivy.unique_all.
+
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
+        ...                   b=ivy.array([1,2,1,3,4,1,3]))
+        >>> y = ivy.Container.static_unique_all(x)
+        >>> print(y)
+        {
+            a: [
+                values = ivy.array([0., 1., 2., 3.]),
+                indices = ivy.array([0, 1, 3, 2]),
+                inverse_indices = ivy.array([0, 1, 3, 2, 1, 0]),
+                counts = ivy.array([2, 2, 1, 1])
+            ],
+            b: [
+                values = ivy.array([1, 2, 3, 4]),
+                indices = ivy.array([0, 1, 3, 4]),
+                inverse_indices = ivy.array([0, 1, 0, 2, 3, 0, 2]),
+                counts = ivy.array([3, 1, 2, 1])
+            ]
+        }
+        """
         return ContainerBase.cont_multi_map_in_function(
             "unique_all",
             x,
@@ -35,6 +86,58 @@ class ContainerWithSet(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.unique_all. This method simply
+        wraps the function, and so the docstring for ivy.unique_all also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container. If ``x`` has more than one dimension,
+            the function must flatten ``x`` and return the unique elements of the
+            flattened array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            A container of namedtuples ``(values, indices, inverse_indices,
+            counts)``. The details of each entry can be found in the docstring
+            for ivy.unique_all.
+
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
+        ...                   b=ivy.array([1,2,1,3,4,1,3]))
+        >>> y = x.static_unique_all()
+        >>> print(y)
+        {
+            a: [
+                values = ivy.array([0., 1., 2., 3.]),
+                indices = ivy.array([0, 1, 3, 2]),
+                inverse_indices = ivy.array([0, 1, 3, 2, 1, 0]),
+                counts = ivy.array([2, 2, 1, 1])
+            ],
+            b: [
+                values = ivy.array([1, 2, 3, 4]),
+                indices = ivy.array([0, 1, 3, 4]),
+                inverse_indices = ivy.array([0, 1, 0, 2, 3, 0, 2]),
+                counts = ivy.array([3, 1, 2, 1])
+            ]
+        }
+        """
         return self.static_unique_all(
             self,
             key_chains=key_chains,
