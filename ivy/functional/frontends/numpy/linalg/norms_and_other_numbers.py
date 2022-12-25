@@ -24,7 +24,7 @@ def norm(x, ord=None, axis=None, keepdims=False):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def matrix_rank(A, tol=None, hermitian=False):
-    ret = ivy.matrix_rank(A, rtol=tol)
+    ret = ivy.matrix_rank(A, atol=tol)
     return ivy.array(ret, dtype=ivy.int64)
 
 
