@@ -242,3 +242,8 @@ def strided_slice(
                     end_i = int(end[i])
                 full_slice += (slice(begin_i, end_i, int(strides[i])),)
     return input_[full_slice]
+
+
+@to_ivy_arrays_and_back
+def linspace(start, stop, num, name=None, axis=0):
+    return ivy.linspace(start, stop, num, axis=axis)

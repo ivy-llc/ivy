@@ -1099,3 +1099,46 @@ def test_tensorflow_strided_slice(
         if hasattr(e, 'message'):
             if "only stride 1 allowed on non-range indexing" in e.message:
                 assume(False)
+
+
+# linspace
+@handle_frontend_test(
+    fn_tree="tensorflow.linspace",
+    start=helpers.floats(min_value=-5.0, max_value=5.0),
+    stop=helpers.floats(min_value=-4.0, max_value=10.0),
+    num=helpers.ints(min_value=2, max_value=10),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    # axis=st.none() | helpers.get_axis(
+    #     shape=helpers.get_shape(min_num_dims=1),
+    #     allow_neg=True,
+    #     force_int=True,
+    # ),
+)
+def test_tensorflow_linspace(
+    *,
+    start,
+    stop,
+    num,
+    axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        start=start,
+        stop=stop,
+        num=num,
+        axis=axis,
+        on_device=on_device,
+    )
