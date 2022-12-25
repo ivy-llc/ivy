@@ -226,9 +226,10 @@ def matrix_rank(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if len(x.shape) < 2:
-        ret = torch.tensor(0)
+        ret = torch.any(x != 0)
     else:
         ret = torch.linalg.matrix_rank(x, atol=atol, rtol=rtol, out=out)
+
     return ret.to(dtype=x.dtype)
 
 
