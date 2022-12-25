@@ -1,4 +1,5 @@
 # local
+import math
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
@@ -104,6 +105,20 @@ def svdvals(A, *, driver=None, out=None):
 
 
 @to_ivy_arrays_and_back
+def inv_ex(input, *, check_errors=False, out=None):
+    try:
+        inputInv = ivy.inv(input, out=out)
+        info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
+        return inputInv, info
+    except RuntimeError as e:
+        if check_errors:
+            raise RuntimeError(e)
+        else:
+            inputInv = input * math.nan
+            info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
+            return inputInv, info
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def eig(input, *, out=None):
     return ivy.eig(input, out=out)

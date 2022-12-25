@@ -262,6 +262,7 @@ def test_matrix_exp(
         max_value=1.0e5,
         shared_dtype=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_eig(
     dtype_x,
