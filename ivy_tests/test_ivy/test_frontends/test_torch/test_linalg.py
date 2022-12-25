@@ -457,11 +457,17 @@ def _matrix_rank_helper(draw):
 # matrix_rank
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_rank",
-    dtype_and_x=_matrix_rank_helper(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_value=-1e05,
+        max_value=1e05,
+    ),
     atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
     rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
 )
-def test_matrix_rank(
+def test_torch_matrix_rank(
     dtype_and_x,
     rtol,
     atol,
@@ -478,15 +484,15 @@ def test_matrix_rank(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        all_aliases=["matrix_rank"],
+        # all_aliases=["matrix_rank"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        rtol=rtol,
         atol=atol,
+        rtol=rtol,
     )
 
 
