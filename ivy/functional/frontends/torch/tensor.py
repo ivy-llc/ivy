@@ -473,6 +473,11 @@ class Tensor:
     def masked_fill_(self, mask, value):
         self._ivy_array = self.masked_fill(mask, value).ivy_array
         return self
+    
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def acosh_(self):
+        self._ivy_array = self.acosh().ivy_array
+        return self
 
     # Special Methods #
     # -------------------#
