@@ -99,6 +99,8 @@ def svdvals(A, *, driver=None, out=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def tensorinv(input, ind=2, *, out=None):
+    not_invertible = "Reshaped tensor is not invertible"
+    prod_cond = "Tensor shape must satisfy prod(A.shape[:ind]) == prod(A.shape[ind:])"
     input_shape = ivy.shape(input)
     if ind > 0:
         shape_ind_end = input_shape[:ind]
@@ -113,14 +115,14 @@ def tensorinv(input, ind=2, *, out=None):
             inverse_shape = shape_ind_start + shape_ind_end
             input = ivy.reshape(input, shape=(prod_ind_end, -1))
             inverse_shape_tuple = tuple([*inverse_shape])
-            if len(ivy.shape(input)) > 1:
+            if len(ivy.shape(input)) > 1 and (ivy.inv(input)).any():
+            # TODO: replace ivy.inv(input) with ivy.linalg.cond or torch.linalg.cond
                 inverse_tensor = ivy.inv(input)
             else:
-                return ivy.reshape(input, shape=inverse_shape_tuple, out=out)
+                ret = ivy.reshape(input, shape=inverse_shape_tuple, out=out)
+                return ret if ivy.inv(ret) else not_invertible
         else:
-            raise ValueError(
-                            "Tensor shape must satisfy prod"
-                            "(A.shape[:ind]) == prod(A.shape[ind:])")
+            raise ValueError(f'{prod_cond} or {not_invertible}.')
     else:
         raise ValueError("Expected a strictly positive integer for 'ind'")
     return ivy.reshape(inverse_tensor, shape=inverse_shape_tuple, out=out)
