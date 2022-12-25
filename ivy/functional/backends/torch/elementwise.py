@@ -70,9 +70,22 @@ def isfinite(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch
     return torch.isfinite(x)
 
 
-def isinf(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def isinf(
+    x: torch.Tensor,
+    /,
+    *,
+    detect_positive: bool = True,
+    detect_negative: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    return torch.isinf(x)
+    if detect_negative and detect_positive:
+        return torch.isinf(x)
+    elif detect_negative:
+        return torch.isneginf(x)
+    elif detect_positive:
+        return torch.isposinf(x)
+    return torch.full_like(x, False, dtype=torch.bool)
 
 
 def equal(

@@ -875,7 +875,7 @@ def test_jax_numpy_exp2(
         min_dim_size=1,
         max_dim_size=3,
         num_arrays=2,
-    ),
+    ).filter(lambda x: all([dtype != "uint64" for dtype in x[0]])),
 )
 def test_jax_numpy_gcd(
     *,

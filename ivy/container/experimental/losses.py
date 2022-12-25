@@ -58,7 +58,7 @@ class ContainerWithLossesExperimental(ContainerBase):
             b: ivy.array([1.953, 2.305, 0.263])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "static_binary_cross_entropy_with_logits",
             true,
             pred,

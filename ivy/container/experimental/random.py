@@ -67,7 +67,7 @@ class ContainerWithRandomExperimental(ContainerBase):
                 )
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "dirichlet",
             alpha,
             key_chains=key_chains,
@@ -196,7 +196,7 @@ class ContainerWithRandomExperimental(ContainerBase):
         ret
             A container object, with values drawn from the beta distribution.
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "beta",
             alpha,
             beta,
