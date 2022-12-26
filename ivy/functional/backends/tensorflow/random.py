@@ -15,6 +15,7 @@ from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
     _check_valid_scale,
+    _check_shapes_broadcastable
 )
 from . import backend_version
 
@@ -161,3 +162,23 @@ def shuffle(
     if seed:
         tf.random.set_seed(seed)
     return tf.random.shuffle(x, seed=seed)
+
+
+def poisson(
+    lam: Union[float, tf.Tensor, tf.Variable],
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: str,
+    dtype: DType,
+    seed: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+):
+    lam = tf.cast(lam, "float32")
+    with tf.device(device):
+        if seed:
+            tf.random.set_seed(seed)
+        if shape is None:
+            return tf.random.poisson((), lam, dtype=dtype, seed=seed)
+        _check_shapes_broadcastable(shape, lam.shape)
+        lam = tf.broadcast_to(lam, tuple(shape))
+        return tf.random.poisson((), lam, dtype=dtype, seed=seed)
