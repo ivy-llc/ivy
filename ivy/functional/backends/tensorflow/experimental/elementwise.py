@@ -174,24 +174,6 @@ def isclose(
     )
 
 
-def isposinf(
-    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.isposinf(x)
-
-
-def isneginf(
-    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.isneginf(x)
-
-
 def nan_to_num(
     x: Union[tf.Tensor, tf.Variable],
     /,

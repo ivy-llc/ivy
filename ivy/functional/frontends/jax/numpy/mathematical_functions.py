@@ -28,6 +28,7 @@ def arctan(x):
 
 @to_ivy_arrays_and_back
 def arctan2(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.atan2(x1, x2)
 
 
@@ -54,6 +55,7 @@ def floor(x):
 
 @to_ivy_arrays_and_back
 def mod(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
 
 
@@ -115,6 +117,7 @@ def ceil(x):
 
 @to_ivy_arrays_and_back
 def float_power(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.float_power(x1, x2)
 
 
@@ -130,6 +133,7 @@ def exp2(x):
 
 @to_ivy_arrays_and_back
 def gcd(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.gcd(x1, x2)
 
 
@@ -140,6 +144,7 @@ def i0(x):
 
 @to_ivy_arrays_and_back
 def kron(a, b):
+    a, b = promote_types_of_jax_inputs(a, b)
     return ivy.kron(a, b)
 
 
@@ -151,6 +156,7 @@ def lcm(x1, x2):
 
 @to_ivy_arrays_and_back
 def logaddexp2(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.logaddexp2(x1, x2)
 
 
@@ -176,6 +182,7 @@ def arctanh(x):
 
 @to_ivy_arrays_and_back
 def multiply(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.multiply(x1, x2)
 
 
@@ -192,6 +199,7 @@ def log10(x):
 
 @to_ivy_arrays_and_back
 def logaddexp(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.logaddexp(x1, x2)
 
 
@@ -218,6 +226,7 @@ def rad2deg(
 
 @to_ivy_arrays_and_back
 def tensordot(a, b, axes=2):
+    a, b = promote_types_of_jax_inputs(a, b)
     return ivy.tensordot(a, b, axes=axes)
 
 
@@ -242,6 +251,7 @@ def exp(
 
 @to_ivy_arrays_and_back
 def fmax(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     ret = ivy.where(
         ivy.bitwise_or(ivy.greater(x1, x2), ivy.isnan(x2)),
         x1,
@@ -252,14 +262,17 @@ def fmax(x1, x2):
 
 @to_ivy_arrays_and_back
 def maximum(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.maximum(x1, x2)
 
 
 @to_ivy_arrays_and_back
 def minimum(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.minimum(x1, x2)
 
 
 @to_ivy_arrays_and_back
 def heaviside(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.heaviside(x1, x2)

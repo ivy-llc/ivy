@@ -338,6 +338,8 @@ def test_cumsum(
         exclusive=exclusive,
         reverse=reverse,
         dtype=castable_dtype,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
 
 
@@ -376,6 +378,8 @@ def test_cumprod(
         exclusive=exclusive,
         reverse=reverse,
         dtype=castable_dtype,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
 
 
@@ -420,4 +424,6 @@ def test_einsum(
         on_device=on_device,
         equation=eq,
         **kw,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
