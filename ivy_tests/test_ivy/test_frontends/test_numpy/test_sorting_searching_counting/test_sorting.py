@@ -59,6 +59,7 @@ def test_numpy_sort(
     on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
+    
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -95,6 +96,7 @@ def test_numpy_msort(
     on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
+    
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -119,10 +121,6 @@ def test_numpy_msort(
     ),
 )
 def test_numpy_sort_complex(
-        *,
-        dtype_x_axis,
-        as_variable,
-        with_out=False,
         num_positional_args,
         native_array,
         frontend,
@@ -134,7 +132,7 @@ def test_numpy_sort_complex(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
