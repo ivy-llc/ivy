@@ -418,6 +418,7 @@ def frac(input, *, out=None):
     return input - ivy.sign(input) * ivy.floor(ivy.abs(input))
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def sinc(input, *, out=None):
     return ivy.sinc(input, out=out)
