@@ -83,8 +83,6 @@ def _get_function_list(func):
     for node in ast.walk(tree):
         if isinstance(node, ast.Call):
             nodef = node.func
-            if hasattr(node, "value") and nodef.value.id != "ivy":
-                continue
             if isinstance(nodef, ast.Name):
                 names[nodef.id] = getattr(
                     func,
@@ -96,6 +94,12 @@ def _get_function_list(func):
                     ),
                 )
             elif isinstance(nodef, ast.Attribute):
+                if (
+                    hasattr(nodef, "value")
+                    and hasattr(nodef.value, "id")
+                    and nodef.value.id != "ivy"
+                ):
+                    continue
                 names[nodef.attr] = getattr(
                     func,
                     "__self__",
