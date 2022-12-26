@@ -121,6 +121,9 @@ def test_numpy_msort(
     ),
 )
 def test_numpy_sort_complex(
+        *,
+        dtype_x_axis,
+        as_variable,
         num_positional_args,
         native_array,
         frontend,
