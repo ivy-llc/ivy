@@ -888,8 +888,7 @@ def test_hsplit(
                                              min_side=1,
                                              max_side=5),
     test_instance_method=st.just(False),
-    test_with_out=st.just(False)
-    )
+    test_with_out=st.just(False))
 def test_broadcast_shapes(
     *,
     shapes,
