@@ -8,10 +8,12 @@ from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     handle_nestable,
     to_native_arrays_and_back,
-    handle_array_like
+    handle_array_like,
+    handle_out_argument,
 )
 
 
+@handle_out_argument
 @handle_nestable
 @to_native_arrays_and_back
 @handle_exceptions
