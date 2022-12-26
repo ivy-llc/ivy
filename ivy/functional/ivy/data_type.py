@@ -94,6 +94,12 @@ def _get_function_list(func):
                     ),
                 )
             elif isinstance(nodef, ast.Attribute):
+                if (
+                    hasattr(nodef, "value")
+                    and hasattr(nodef.value, "id")
+                    and nodef.value.id != "ivy"
+                ):
+                    continue
                 names[nodef.attr] = getattr(
                     func,
                     "__self__",
