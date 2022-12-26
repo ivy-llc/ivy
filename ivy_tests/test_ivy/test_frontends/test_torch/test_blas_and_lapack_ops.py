@@ -138,22 +138,22 @@ def _get_dtype_input_and_mat_vec(draw, *, with_input=False):
 
     mat = draw(
         helpers.array_values(
-            dtype=dtype, shape=(dim_size, shared_size), min_value=2, max_value=5
+            dtype=dtype[0], shape=(dim_size, shared_size), min_value=2, max_value=5
         )
     )
     vec = draw(
         helpers.array_values(
-            dtype=dtype, shape=(shared_size,), min_value=2, max_value=5
+            dtype=dtype[0], shape=(shared_size,), min_value=2, max_value=5
         )
     )
     if with_input:
         input = draw(
             helpers.array_values(
-                dtype=dtype, shape=(dim_size,), min_value=2, max_value=5
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
             )
         )
-        return [dtype], input, mat, vec
-    return [dtype], mat, vec
+        return dtype, input, mat, vec
+    return dtype, mat, vec
 
 
 # addbmm
