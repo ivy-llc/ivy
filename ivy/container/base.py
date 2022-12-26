@@ -159,8 +159,8 @@ class ContainerBase(dict, abc.ABC):
     # --------------#
 
     @staticmethod
-    def cont_multi_map_in_static_method(
-        fn_name,
+    def cont_multi_map_in_function(
+        fn,
         *args,
         key_chains=None,
         to_apply=True,
@@ -169,6 +169,9 @@ class ContainerBase(dict, abc.ABC):
         out=None,
         **kwargs,
     ) -> Union[Tuple[ivy.Container, ivy.Container], ivy.Container]:
+        inspect_fn = fn
+        if isinstance(fn, str):
+            inspect_fn = ivy.__dict__[fn]
         arg_cont_idxs = ivy.nested_argwhere(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
@@ -181,7 +184,7 @@ class ContainerBase(dict, abc.ABC):
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
         # Combine the retrieved containers from args and kwargs into a single list
         with_out = (
-            inspect.signature(ivy.__dict__[fn_name]).parameters.get("out") is not None
+            inspect.signature(inspect_fn).parameters.get("out") is not None
             and out is not None
         )
         if with_out:
@@ -190,9 +193,10 @@ class ContainerBase(dict, abc.ABC):
             conts = arg_conts + kwarg_conts
         ivy.assertions.check_exists(conts, message="no containers found in arguments")
         cont0 = conts[0]
+        if isinstance(fn, str):
+            fn = cont0.cont_ivy.__dict__[fn]
         # Get the function with the name fn_name, enabling containers to specify
         # their backends irrespective of global ivy's backend
-        fn = cont0.cont_ivy.__dict__[fn_name]
 
         def map_fn(vals, _):
             if with_out:
