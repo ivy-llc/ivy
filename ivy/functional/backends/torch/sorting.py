@@ -68,6 +68,9 @@ def searchsorted(
         )
         sorter = sorter.to(torch.int64)
     ret_dtype = ivy.as_native_dtype(ret_dtype)
+    func_out = out
+    if ivy.exists(out) and out.dtype != ret_dtype:
+        func_out = None
     if ret_dtype is torch.int64:
         return torch.searchsorted(
             x,
@@ -75,7 +78,7 @@ def searchsorted(
             sorter=sorter,
             side=side,
             out_int32=False,
-            out=out.to(torch.int64) if ivy.exists(out) else None,
+            out=func_out,
         )
     elif ret_dtype is torch.int32:
         return torch.searchsorted(
@@ -84,7 +87,7 @@ def searchsorted(
             sorter=sorter,
             side=side,
             out_int32=True,
-            out=out.to(torch.int32) if ivy.exists(out) else None,
+            out=func_out,
         )
     if ivy.exists(out):
         return ivy.inplace_update(
