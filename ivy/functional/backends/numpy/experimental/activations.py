@@ -1,6 +1,5 @@
 import numpy as np
-from typing import Optional, Union
-import ivy
+from typing import Optional
 
 
 def logit(x: np.ndarray,
