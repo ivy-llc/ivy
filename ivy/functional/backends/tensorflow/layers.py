@@ -160,8 +160,10 @@ def depthwise_conv2d(
             "depthwise_conv2d does not support dilations greater than 1 and"
             "strides greater than 1 when device is cpu for tensorflow"
         )
-    filters = tf.expand_dims(filters, -1)
-    strides = [1, strides[0], strides[1], 1]
+    if tf.rank(filters) == 3:
+        filters = tf.expand_dims(filters, -1)
+    if len(strides) == 2:
+        strides = [1, strides[0], strides[1], 1]
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     res = tf.nn.depthwise_conv2d(x, filters, strides, padding, "NHWC", dilations)

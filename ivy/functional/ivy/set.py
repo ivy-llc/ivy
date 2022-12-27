@@ -211,15 +211,13 @@ def unique_inverse(
     >>> y = ivy.unique_inverse(x)
     >>> print(y)
     Results(values=ivy.array([1, 2, 3, 4, 5]),
-    inverse_indices=ivy.array([3, 4, 2, 1, 3, 0, 2]))
+            inverse_indices=ivy.array([3, 4, 2, 1, 3, 0, 2]))
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0.5,0.3,0.8,0.2,1.2,2.4,0.3])
+    >>> x = ivy.array([0.5,0.3,0.8,0.2,1.2,2.4,0.3])
     >>> y = ivy.ivy.unique_inverse(x)
     >>> print(y)
     Results(values=ivy.array([0.2, 0.3, 0.5, 0.8, 1.2, 2.4]),
-    inverse_indices=ivy.array([2, 1, 3, 0, 4, 5, 1]))
+            inverse_indices=ivy.array([2, 1, 3, 0, 4, 5, 1]))
 
     With :class:`ivy.Container` input:
 
@@ -231,9 +229,6 @@ def unique_inverse(
         a: (list[2], <class ivy.array.array.Array> shape=[5]),
         b: (list[2], <class ivy.array.array.Array> shape=[6])
     }
-
-
-
     """
     return ivy.current_backend(x).unique_inverse(x)
 
@@ -375,21 +370,20 @@ def unique_counts(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1,2,1,3,4,1,3])
-    >>> y = unique_counts(x)
-    >>> print(y)
-    Tuple([1,2,3,4],[3,1,2,1])
-
-    >>> x = ivy.asarray([1,2,3,4],[2,3,4,5],[3,4,5,6])
-    >>> y = unique_counts(x)
-    >>> print(y)
-    Tuple([1,2,3,4,5,6],[1,2,3,3,2,1])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
     >>> y = ivy.unique_counts(x)
     >>> print(y)
-    Tuple([0.2,0.3,0.4,1.4,2.3],[3,1,1,1,1]
+    Results(values=ivy.array([1, 2, 3, 4]), counts=ivy.array([3, 1, 2, 1]))
+
+    >>> x = ivy.asarray([[1,2,3,4],[2,3,4,5],[3,4,5,6]])
+    >>> y = ivy.unique_counts(x)
+    >>> print(y)
+    Results(values=ivy.array([1, 2, 3, 4, 5, 6]), counts=ivy.array([1, 2, 3, 3, 2, 1]))
+
+    >>> x = ivy.array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
+    >>> y = ivy.unique_counts(x)
+    >>> print(y)
+    Results(values=ivy.array([0.2       , 0.30000001, 0.40000001, 1.39999998, 2.29999995]),
+            counts=ivy.array([3, 1, 1, 1, 1]))
 
     With :class:`ivy.Container` input:
 

@@ -94,6 +94,12 @@ def _get_function_list(func):
                     ),
                 )
             elif isinstance(nodef, ast.Attribute):
+                if (
+                    hasattr(nodef, "value")
+                    and hasattr(nodef.value, "id")
+                    and nodef.value.id != "ivy"
+                ):
+                    continue
                 names[nodef.attr] = getattr(
                     func,
                     "__self__",
@@ -1126,7 +1132,9 @@ def default_dtype(
         return ivy.as_ivy_dtype(dtype)
     as_native = ivy.default(as_native, False)
     if ivy.exists(item):
-        if isinstance(item, (list, tuple, dict)) and len(item) == 0:
+        if hasattr(item, "override_dtype_check"):
+            return item.override_dtype_check()
+        elif isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_float_dtype(item):
             return ivy.default_float_dtype(input=item, as_native=as_native)
