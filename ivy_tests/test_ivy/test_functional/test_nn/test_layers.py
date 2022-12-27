@@ -93,6 +93,7 @@ def test_linear(
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_dropout(
     *,
