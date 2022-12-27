@@ -768,7 +768,6 @@ class ContainerWithCreation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "meshgrid",
@@ -779,7 +778,6 @@ class ContainerWithCreation(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
-            out,
         )
 
     def meshgrid(
@@ -792,21 +790,15 @@ class ContainerWithCreation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_handle_inplace(
-            self.cont_map(
-                lambda x_: ivy.meshgrid([x_._data] + list(arrays))
-                if ivy.is_array(x_)
-                else x_,
-                sparse,
-                indexing,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        return self.static_meshgrid(
+            tuple([self] + list(arrays)),
+            sparse,
+            indexing,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
         )
 
     @staticmethod

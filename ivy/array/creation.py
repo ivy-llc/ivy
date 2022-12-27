@@ -291,7 +291,6 @@ class ArrayWithCreation(abc.ABC):
         sparse=False,
         indexing: str = "xy",
     ) -> List[ivy.Array]:
-        list_arrays = [self._data] + list(arrays)
         """
         ivy.Array instance method variant of ivy.meshgrid. This method simply wraps the
         function, and so the docstring for ivy.meshgrid also applies to this method
@@ -316,9 +315,9 @@ class ArrayWithCreation(abc.ABC):
             list of N arrays, where ``N`` is the number of provided one-dimensional
             input arrays. Each returned array must have rank ``N``. For ``N``
             one-dimensional arrays having lengths ``Ni = len(xi)``.
-        
+
         """
-        return ivy.meshgrid(*list_arrays, sparse, indexing=indexing)
+        return ivy.meshgrid(*tuple([self] + arrays), sparse, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,
