@@ -137,7 +137,7 @@ def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=Fal
     if ivy.is_array(x):
         return [], map_fn(x)
 
-    x = ivy.nested_map(x, map_fn, include_derived=True)
+    x = ivy.nested_map(x, map_fn, include_derived=True, shallow=False)
     arr_idxs = ivy.nested_argwhere(x, lambda x: ivy.is_native_array(x))
     if _check_if_empty(arr_idxs):
         return arr_idxs, []
