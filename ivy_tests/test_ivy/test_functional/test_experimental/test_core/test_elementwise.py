@@ -19,6 +19,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
+    test_gradients=st.just(False),
 )
 def test_sinc(
     *,
@@ -54,7 +55,7 @@ def test_sinc(
         max_value=100,
         allow_nan=False,
     ),
-    test_gradient=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_lcm(
     dtype_and_x,
@@ -90,6 +91,7 @@ def test_lcm(
         min_dim_size=1,
         max_dim_size=3,
     ),
+    test_gradients=st.just(False),
 )
 def test_fmod(
     dtype_and_x,
@@ -126,6 +128,7 @@ def test_fmod(
         max_dim_size=3,
         allow_nan=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_fmax(
     dtype_and_x,
@@ -189,6 +192,7 @@ def _either_x_dx(draw):
         force_int_axis=True,
     ),
     rand_either=_either_x_dx(),
+    test_gradients=st.just(False),
 )
 def test_trapz(
     dtype_values_axis,
@@ -236,6 +240,7 @@ def test_trapz(
         min_dim_size=1,
         max_dim_size=3,
     ),
+    test_gradients=st.just(False),
 )
 def test_float_power(
     dtype_and_x,
@@ -270,6 +275,7 @@ def test_float_power(
         min_dim_size=1,
         max_dim_size=3,
     ),
+    test_gradients=st.just(False),
 )
 def test_exp2(
     dtype_and_x,
@@ -301,6 +307,7 @@ def test_exp2(
         allow_nan=False,
         shared_dtype=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_copysign(
     dtype_x1_x2,
@@ -359,6 +366,7 @@ def _get_dtype_values_axis_for_count_nonzero(
         max_dim_size=10,
     ),
     keepdims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_count_nonzero(
     dtype_values_axis,
@@ -400,6 +408,7 @@ def test_count_nonzero(
         allow_nan=True,
     ),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_nansum(
     *,
@@ -438,6 +447,7 @@ def test_nansum(
         max_value=100,
         allow_nan=False,
     ),
+    test_gradients=st.just(False),
 )
 def test_gcd(
     *,
@@ -479,6 +489,7 @@ def test_gcd(
     rtol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True),
     atol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True),
     equal_nan=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_isclose(
     *,
@@ -523,6 +534,7 @@ def test_isclose(
         allow_nan=False,
     ),
     deg=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_angle(
     *,
@@ -572,6 +584,7 @@ def test_angle(
     nan=st.floats(min_value=0.0, max_value=100),
     posinf=st.floats(min_value=5e100, max_value=5e100),
     neginf=st.floats(min_value=-5e100, max_value=-5e100),
+    test_gradients=st.just(False),
 )
 def test_nan_to_num(
     *,
@@ -615,6 +628,7 @@ def test_nan_to_num(
         max_value=100,
         allow_nan=False,
     ),
+    test_gradients=st.just(False),
 )
 def test_logaddexp2(
     *,
@@ -653,6 +667,7 @@ def test_logaddexp2(
     rtol=st.floats(min_value=1e-5, max_value=1e-5),
     atol=st.floats(min_value=1e-5, max_value=1e-5),
     equal_nan=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_allclose(
     dtype_and_x,
@@ -688,6 +703,7 @@ def test_allclose(
         min_dim_size=1,
         max_dim_size=3,
     ),
+    test_gradients=st.just(False),
 )
 def test_fix(
     dtype_and_x,
@@ -719,6 +735,7 @@ def test_fix(
         min_num_dims=1,
         max_num_dims=3,
     ),
+    test_gradients=st.just(False),
 )
 def test_nextafter(
     dtype_and_x,
@@ -751,6 +768,7 @@ def test_nextafter(
         max_value=100,
         allow_nan=False,
     ),
+    test_gradients=st.just(False),
 )
 def test_diff(
     *,
@@ -785,6 +803,7 @@ def test_diff(
         min_num_dims=1,
         max_num_dims=3,
     ),
+    test_gradients=st.just(False),
 )
 def test_zeta(
     dtype_and_x,
@@ -821,6 +840,7 @@ def test_zeta(
         max_value=3,
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_gradient(
     *,
