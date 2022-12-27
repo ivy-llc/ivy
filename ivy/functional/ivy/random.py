@@ -79,6 +79,7 @@ def _check_valid_scale(std):
         std, 0, allow_equal=True, message="std must be non-negative"
     )
 
+
 def _check_shapes_broadcastable(out, inp):
     if out is not None:
         ivy.assertions.check_shapes_broadcastable(out, inp)

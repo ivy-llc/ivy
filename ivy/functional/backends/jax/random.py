@@ -202,8 +202,8 @@ def poisson(
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
     return (
-            to_device(
-                jax.random.poisson(rng_input, lam, shape=shape),
-                device,
-            )
+        to_device(
+            jax.random.poisson(rng_input, lam, shape=shape),
+            device,
+        )
     )

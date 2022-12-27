@@ -223,4 +223,3 @@ def check_shapes_broadcastable(var, data):
                 data, var
             )
         )
-        

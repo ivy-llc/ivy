@@ -45,8 +45,8 @@ def multinomial(input, num_samples, replacement=False, *, generator=None, out=No
 @with_supported_dtypes(
     {
         "1.11.0 and below": (
-                "float32",
-                "float64",
+            "float32",
+            "float64",
         )
     },
     "torch",
