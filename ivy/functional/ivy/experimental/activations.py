@@ -26,14 +26,35 @@ def logit(
     out: Optional['ivy.Array'] = None,
 ) -> ivy.Array:
     """
-    Logit function.
+    Computes the logit of x, i.e. logit(x) = log(x / (1 - x)).
+
     Parameters
     ----------
     x
         Input data.
     eps
-        A small positive number to avoid division by zero.
+        When eps is None the function outpus NaN where x < 0 or x > 1.
+        and inf or -inf where x = 1 or x = 0, respectively.
+        Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
     out
         Optional output array.
+
+    Returns
+    -------
+    ret
+        Array containing elementwise logits of x.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 0, 0.9])
+    >>> z = ivy.logit(x)
+    >>> print(z)
+    ivy.array([       inf,       -inf, 2.19722438])
+
+    >>> x = ivy.array([1, 2, -0.9])
+    >>> z = ivy.logit(x, eps=0.2)
+    >>> print(z)
+    ivy.array([ 1.38629448,  1.38629448, -1.38629436])
+
     """
     return current_backend(x).logit(x, eps=eps, out=out)
