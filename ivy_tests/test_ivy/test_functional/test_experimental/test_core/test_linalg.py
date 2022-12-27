@@ -137,6 +137,7 @@ def _generate_diag_args(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.diagflat",
     args_packet=_generate_diag_args(),
+    test_gradients=st.just(False),
 )
 def test_diagflat(
     *,
@@ -180,6 +181,7 @@ def test_diagflat(
         num_arrays=2,
         shared_dtype=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_kron(
     dtype_x,
@@ -214,6 +216,7 @@ def test_kron(
         allow_nan=False,
         shared_dtype=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_matrix_exp(
     dtype_x,
@@ -263,6 +266,7 @@ def test_matrix_exp(
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_eig(
     dtype_x,
