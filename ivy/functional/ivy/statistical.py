@@ -1260,17 +1260,3 @@ def einsum(
 
     """
     return current_backend(operands[0]).einsum(equation, *operands, out=out)
-
-
-def percentile(
-        a: Union[ivy.Array, ivy.NativeArray],
-        q: Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
-        out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    """
-    return current_backend(a).percentile(a, axis=axis, keepdims=keepdims, out=out)
