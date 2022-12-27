@@ -136,3 +136,12 @@ def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
     )
     temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
     return temp_std, temp_mean
+
+
+@to_ivy_arrays_and_back
+def var_mean(input, dim, unbiased, keepdim=False, *, out=None):
+    temp_var = ivy.var(
+        input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
+    )
+    temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
+    return (temp_var, temp_mean)

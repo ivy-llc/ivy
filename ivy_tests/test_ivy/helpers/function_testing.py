@@ -99,6 +99,10 @@ def test_function(
     ----------
     input_dtypes
         data types of the input arguments in order.
+    test_flags
+        FunctionTestFlags object that stores all testing flags, including:
+        num_positional_args, with_out, instance_method, as_variable,
+        native_arrays, container, gradient
     fw
         current backend (framework).
     fn_name
@@ -143,12 +147,16 @@ def test_function(
     >>> native_array_flags = False
     >>> container_flags = False
     >>> instance_method = False
+    >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
+        instance_method,
+        as_variable,
+        native_arrays,
+        container_flags,
+        none)
     >>> fw = "torch"
     >>> fn_name = "abs"
     >>> x = np.array([-1])
-    >>> test_function(input_dtypes, as_variable_flags, with_out,\
-                            num_positional_args, native_array_flags,\
-                            container_flags, instance_method, fw, fn_name, x=x)
+    >>> test_function(input_dtypes, test_flags, fw, fn_name, x=x)
 
     >>> input_dtypes = ['float64', 'float32']
     >>> as_variable_flags = [False, True]
@@ -157,14 +165,17 @@ def test_function(
     >>> native_array_flags = [True, False]
     >>> container_flags = [False, False]
     >>> instance_method = False
+    >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
+        instance_method,
+        as_variable,
+        native_arrays,
+        container_flags,
+        none)
     >>> fw = "numpy"
     >>> fn_name = "add"
     >>> x1 = np.array([1, 3, 4])
     >>> x2 = np.array([-3, 15, 24])
-    >>> test_function(input_dtypes, as_variable_flags, with_out,\
-                            num_positional_args, native_array_flags,\
-                             container_flags, instance_method,\
-                              fw, fn_name, x1=x1, x2=x2)
+    >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
     _assert_dtypes_are_valid(input_dtypes)
     # split the arguments into their positional and keyword components
@@ -300,6 +311,14 @@ def test_function(
         ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
             ivy.__dict__[fn_name], *args, **kwargs
         )
+        if test_flags.with_out:
+            test_ret_from_gt = ret_from_gt
+            if isinstance(ret, tuple):
+                test_ret_from_gt = ret[getattr(ivy.__dict__[fn_name], "out_index")]
+            out_from_gt = ivy.zeros_like(test_ret_from_gt)
+            ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
+                ivy.__dict__[fn_name], *args, **kwargs, out=out_from_gt
+            )
     except Exception as e:
         ivy.unset_backend()
         raise e
@@ -572,7 +591,7 @@ def test_frontend_function(
                 first_array = ivy.func_wrapper._get_first_array(
                     *copy_args, **copy_kwargs
                 )
-                ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_args)
+                ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
                 if ivy.native_inplace_support:
                     assert ret_.data is first_array.data
                 assert first_array is ret_
@@ -634,10 +653,20 @@ def test_frontend_function(
             )
 
             # compute the return via the frontend framework
-            frontend_fw = importlib.import_module(fn_tree[25 : fn_tree.rfind(".")])
-            frontend_ret = frontend_fw.__dict__[fn_name](
-                *args_frontend, **kwargs_frontend
-            )
+            module_name = fn_tree[25 : fn_tree.rfind(".")]
+            frontend_fw = importlib.import_module(module_name)
+            try:
+                frontend_ret = frontend_fw.__dict__[fn_name](
+                    *args_frontend, **kwargs_frontend
+                )
+            except KeyError:
+                # catch cases where the alias belongs to a higher-level module
+                # e.g. torch.inverse tested as an alias to torch.linalg.inv
+                module_name = module_name[: module_name.rfind(".")]
+                frontend_fw = importlib.import_module(module_name)
+                frontend_ret = frontend_fw.__dict__[fn_name](
+                    *args_frontend, **kwargs_frontend
+                )
 
             if ivy.isscalar(frontend_ret):
                 frontend_ret_np_flat = [np.asarray(frontend_ret)]

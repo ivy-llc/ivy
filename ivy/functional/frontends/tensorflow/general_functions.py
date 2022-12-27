@@ -127,6 +127,15 @@ def shape(input, out_type=ivy.int32, name=None):
         return ivy.array(ivy.shape(input), dtype="int64")
 
 
+@to_ivy_arrays_and_back
+def shape_n(input, out_type=ivy.int32, name=None):
+    out_type = to_ivy_dtype(out_type)
+    if out_type in ["int32", "int64"]:
+        return [ivy.array(ivy.shape(i), dtype=out_type) for i in input]
+    else:
+        return [ivy.array(ivy.shape(i), dtype="int64") for i in input]
+
+
 @with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
@@ -173,3 +182,13 @@ def gather(params, indices, axis=None, batch_dims=0, name=None):
 @to_ivy_arrays_and_back
 def gather_nd(params, indices, batch_dims=0, name=None):
     return ivy.gather_nd(params, indices, batch_dims=batch_dims)
+
+
+@to_ivy_arrays_and_back
+def transpose(a, perm=None, conjugate=False, name="transpose"):
+    # handle conjugate when ivy supports complex numbers
+    if perm is not None:
+        return ivy.permute_dims(a, axes=perm)
+    n = a.ndim
+    perm = ivy.arange(n - 1, -1, -1)
+    return ivy.permute_dims(a, axes=perm)

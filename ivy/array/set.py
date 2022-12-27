@@ -49,6 +49,39 @@ class ArrayWithSet(abc.ABC):
     def unique_all(
         self: ivy.Array,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.unique_all. This method simply
+        wraps the function, and so the docstring for ivy.unique_all also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. If ``self`` has more than one dimension, the function
+            must flatten ``self`` and return the unique elements of the
+            flattened array.
+
+        Returns
+        -------
+        ret
+            a namedtuple ``(values, indices, inverse_indices, counts)``.
+            The details can be found in the docstring for ivy.unique_all.
+
+            .. note::
+               The order of unique elements is not specified and may vary between
+               implementations.
+
+        Examples
+        --------
+        >>> x = ivy.randint(0, 10, shape=(2, 2), seed=0)
+        >>> z = x.unique_all()
+        >>> print(z)
+        Results(values=ivy.array([1, 2, 5, 9]),
+                indices=ivy.array([3, 2, 1, 0]),
+                inverse_indices=ivy.array([[3, 2], [1, 0]]),
+               counts=ivy.array([1, 1, 1, 1]))
+
+        """
         return ivy.unique_all(self._data)
 
     def unique_inverse(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
@@ -83,7 +116,7 @@ class ArrayWithSet(abc.ABC):
         >>> y = x.unique_inverse()
         >>> print(y)
         Results(values=ivy.array([0.2, 0.3, 0.4, 0.5, 0.7, 0.8]),
-        inverse_indices=ivy.array([1, 2, 4, 2, 0, 5, 3]))
+                inverse_indices=ivy.array([1, 2, 4, 2, 0, 5, 3]))
 
         """
         return ivy.unique_inverse(self._data)

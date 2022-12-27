@@ -371,3 +371,11 @@ Instead of coding a conditional block and raising an exception if the conditions
 This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
 
 If you have any questions, please feel free to reach out on `discord`_ in the `exception handling channel`_ or in the `exception handling forum`_!
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/eTc24eG9P_s" class="video">
+    </iframe>

@@ -4,23 +4,11 @@ from ivy.exceptions import handle_exceptions
 from typing import Union, Iterable, Tuple
 from numbers import Number
 from .data_type_routines import dtype
+from . import ndarray
+from .ndarray import *
+from . import scalars
+from .scalars import *
 
-int8 = dtype("int8")
-int16 = dtype("int16")
-int32 = dtype("int32")
-int64 = dtype("int64")
-uint8 = dtype("uint8")
-uint16 = dtype("uint16")
-uint32 = dtype("uint32")
-uint64 = dtype("uint64")
-bfloat16 = dtype("bfloat16")
-float16 = dtype("float16")
-float32 = dtype("float32")
-float64 = dtype("float64")
-complex64 = dtype("complex64")
-complex128 = dtype("complex128")
-complex256 = dtype("complex256")
-bool = dtype("bool")
 
 numpy_promotion_table = {
     (ivy.bool, ivy.bool): ivy.bool,
@@ -196,22 +184,22 @@ numpy_promotion_table = {
 }
 
 numpy_str_to_type_table = {
-    "b": int8,
-    "h": int16,
-    "i": int32,
-    "l": int64,
-    "B": uint8,
-    "H": uint16,
-    "I": uint32,
-    "L": uint64,
-    "e": float16,
-    "f": float32,
-    "d": float64,
-    "?": bool,
-    "E": bfloat16,
-    "F": complex64,
-    "D": complex128,
-    "G": complex256,
+    "b": "int8",
+    "h": "int16",
+    "i": "int32",
+    "l": "int64",
+    "B": "uint8",
+    "H": "uint16",
+    "I": "uint32",
+    "L": "uint64",
+    "e": "float16",
+    "f": "float32",
+    "d": "float64",
+    "?": "bool",
+    "E": "bfloat16",
+    "F": "complex64",
+    "D": "complex128",
+    "G": "complex256",
 }
 
 numpy_type_to_str_and_num_table = {
@@ -232,6 +220,35 @@ numpy_type_to_str_and_num_table = {
     "complex128": ("D", 15),
     "complex256": ("G", 16),
 }
+
+numpy_scalar_to_dtype = {
+    bool_: ivy.bool,
+    number: ivy.float64,
+    integer: ivy.int64,
+    signedinteger: ivy.int64,
+    byte: ivy.int8,
+    short: ivy.int16,
+    intc: ivy.int32,
+    longlong: ivy.int64,
+    int_: ivy.int64,
+    unsignedinteger: ivy.uint64,
+    ubyte: ivy.uint8,
+    ushort: ivy.uint16,
+    uintc: ivy.uint32,
+    ulonglong: ivy.uint64,
+    uint: ivy.uint64,
+    inexact: ivy.float64,
+    floating: ivy.float64,
+    half: ivy.float16,
+    single: ivy.float32,
+    float_: ivy.float64,
+    complexfloating: ivy.complex128,
+    csingle: ivy.complex64,
+    complex_: ivy.complex128,
+    clongfloat: ivy.complex256,
+}
+
+numpy_dtype_to_scalar = {v: k for k, v in numpy_scalar_to_dtype.items()}
 
 numpy_casting_rules = {
     ivy.bool: [
@@ -360,20 +377,20 @@ def promote_types_of_numpy_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
-    if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
-        not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
-    ):
+    type1 = ivy.default_dtype(item=x1).strip("u123456789")
+    type2 = ivy.default_dtype(item=x2).strip("u123456789")
+    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
+        x1 = ivy.asarray(x1)
+        x2 = ivy.asarray(x2, dtype=x1.dtype)
+    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
+        x1 = ivy.asarray(x1, dtype=x2.dtype)
+        x2 = ivy.asarray(x2)
+    else:
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
         promoted = promote_numpy_dtypes(x1.dtype, x2.dtype)
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
-    elif hasattr(x1, "dtype"):
-        x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2, dtype=x1.dtype)
-    else:
-        x1 = ivy.asarray(x1, dtype=x2.dtype)
-        x2 = ivy.asarray(x2)
     return x1, x2
 
 
@@ -393,8 +410,6 @@ from . import sorting_searching_counting
 from .sorting_searching_counting import *
 from . import statistics
 from .statistics import *
-from . import ndarray
-from .ndarray import *
 from . import matrix
 from .matrix import *
 from . import random

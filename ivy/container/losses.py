@@ -85,7 +85,7 @@ class ContainerWithLosses(ContainerBase):
             b: ivy.array(1.60943794)
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "cross_entropy",
             true,
             pred,
@@ -249,7 +249,7 @@ class ContainerWithLosses(ContainerBase):
             b: ivy.array([1.61, 0.511, 1.2])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "binary_cross_entropy",
             true,
             pred,
@@ -410,7 +410,7 @@ class ContainerWithLosses(ContainerBase):
             b: ivy.array([0.511, 0.511, 1.61])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "sparse_cross_entropy",
             true,
             pred,
