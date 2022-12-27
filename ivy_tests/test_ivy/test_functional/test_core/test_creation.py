@@ -1,7 +1,7 @@
 """Collection of tests for creation functions."""
 
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy
@@ -533,6 +533,7 @@ def test_meshgrid(
     on_device,
     ground_truth_backend,
 ):
+    assume(not test_flags.with_out)
     dtype, arrays = dtype_and_arrays
     kw = {}
     i = 0
