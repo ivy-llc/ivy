@@ -530,6 +530,7 @@ def test_dtype(
     input_dtype=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_with_out=st.just(False),
 )
 def test_dtype_bits(
     *,

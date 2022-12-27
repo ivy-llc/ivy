@@ -521,6 +521,7 @@ def test_full_like(
     indexing=st.sampled_from(["xy", "ij"]),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_meshgrid(
     *,
