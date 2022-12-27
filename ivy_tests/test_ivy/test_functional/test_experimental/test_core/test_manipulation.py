@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import hypothesis.extra.numpy as nph
 
 # local
 import numpy as np
@@ -876,3 +877,33 @@ def test_hsplit(
         x=x[0],
         indices_or_sections=indices_or_sections,
     )
+
+
+# dstack
+@handle_test(
+    fn_tree="functional.ivy.experimental.broadcast_shapes",
+    shapes=nph.mutually_broadcastable_shapes(num_shapes=4,
+                                             min_dims=1,
+                                             max_dims=5,
+                                             min_side=1,
+                                             max_side=5),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False))
+def test_broadcast_shapes(
+    *,
+    shapes,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    shapes, _ = shapes
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=['int64'],
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        shapes=shapes)
