@@ -341,14 +341,14 @@ def test_shuffle(
 @handle_test(
     fn_tree="functional.ivy.poisson",
     dtype_and_lam=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", full=False),
         min_value=0,
         max_value=100,
-        min_num_dims=1,
+        min_num_dims=0,
         max_num_dims=10,
         min_dim_size=1,
     ),
-    dtype=helpers.get_dtypes("float", full=True, index=1),
+    dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
 )
 def test_poisson(

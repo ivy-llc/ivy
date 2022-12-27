@@ -164,6 +164,7 @@ def shuffle(
     return tf.random.shuffle(x, seed=seed)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, tf.Tensor, tf.Variable],
     *,

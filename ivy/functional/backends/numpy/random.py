@@ -127,6 +127,7 @@ def shuffle(
     return np.random.permutation(x)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, np.ndarray],
     *,

@@ -134,6 +134,7 @@ def shuffle(
 shuffle.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, torch.Tensor],
     *,

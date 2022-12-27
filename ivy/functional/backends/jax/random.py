@@ -93,7 +93,7 @@ def random_normal(
     )
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -184,6 +184,7 @@ def shuffle(
     return jax.random.shuffle(rng_input, x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def poisson(
     lam: Union[float, JaxArray],
     *,
