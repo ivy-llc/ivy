@@ -30,15 +30,16 @@ class ContainerWithActivations(ContainerBase):
         x
             input container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -51,15 +52,16 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = ivy.Container.static_relu(x)
         >>> print(y)
         {
-            a: ivy.array([1., 0., 1.])
+            a: ivy.array([1., 0.]),
+            b: ivy.array([0.40000001, 0.])
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "relu",
             x,
             key_chains=key_chains,
@@ -89,15 +91,16 @@ class ContainerWithActivations(ContainerBase):
         self
             input container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -110,11 +113,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = x.relu()
         >>> print(y)
         {
-            a: ivy.array([1., 0., 1.])
+            a: ivy.array([1., 0.]),
+            b: ivy.array([0.40000001, 0.])
         }
 
         """
@@ -132,7 +136,7 @@ class ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        alpha: Optional[ivy.Container] = 0.2,
+        alpha: ivy.Container = 0.2,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -151,15 +155,16 @@ class ContainerWithActivations(ContainerBase):
         alpha
             array or scalar specifying the negative slope.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -171,15 +176,16 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a =ivy.array([0.39, -0.85]))
+        >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
         >>> y = ivy.Container.static_leaky_relu(x)
         >>> print(y)
         {
-              a: ivy.array([0.39, -0.17])
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "leaky_relu",
             x,
             alpha=alpha,
@@ -194,7 +200,7 @@ class ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        alpha: Optional[ivy.Container] = 0.2,
+        alpha: ivy.Container = 0.2,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -213,15 +219,16 @@ class ContainerWithActivations(ContainerBase):
         alpha
             array or scalar specifying the negative slope.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -233,11 +240,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a =ivy.array([0.39, -0.85]))
+        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
         >>> y = x.leaky_relu()
         >>> print(y)
         {
-            a: ivy.array([0.39, -0.17])
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
         }
 
         """
@@ -275,15 +283,16 @@ class ContainerWithActivations(ContainerBase):
         approximate
             whether to use the gelu approximation algorithm or exact formulation.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -303,7 +312,7 @@ class ContainerWithActivations(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "gelu",
             x,
             approximate=approximate,
@@ -318,7 +327,7 @@ class ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        approximate: Optional[bool] = True,
+        approximate: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -337,15 +346,16 @@ class ContainerWithActivations(ContainerBase):
         approximate
             whether to use the gelu approximation algorithm or exact formulation.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -396,15 +406,16 @@ class ContainerWithActivations(ContainerBase):
         x
             input container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -416,15 +427,16 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]))
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = ivy.Container.static_sigmoid(x)
         >>> print(y)
         {
-            a: ivy.array([0.269, 0.731, 0.881])
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "sigmoid",
             x,
             key_chains=key_chains,
@@ -454,15 +466,16 @@ class ContainerWithActivations(ContainerBase):
         self
             input container.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -474,13 +487,13 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]))
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = x.sigmoid()
         >>> print(y)
         {
-            a: ivy.array([0.269, 0.731, 0.881])
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
         }
-
         """
         return self.static_sigmoid(
             self,
@@ -515,15 +528,16 @@ class ContainerWithActivations(ContainerBase):
         axis
             the axis or axes along which the softmax should be computed
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -535,15 +549,16 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> x = ivy.Container(a=ivy.array([1.0, 0]), b=ivy.array([1.3, 0, -1.0]))
         >>> y = ivy.Container.static_softmax(x)
         >>> print(y)
         {
-            a: ivy.array([0.422, 0.155, 0.422])
+            a: ivy.array([0.7310586, 0.2689414]),
+            b: ivy.array([0.72844321, 0.19852395, 0.07303288])
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "softmax",
             x,
             axis=axis,
@@ -577,15 +592,16 @@ class ContainerWithActivations(ContainerBase):
         axis
             the axis or axes along which the softmax should be computed
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -597,11 +613,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> x = ivy.Container(a=ivy.array([1.0, 0]), b=ivy.array([1.3, 0, -1.0]))
         >>> y = x.softmax()
         >>> print(y)
         {
-            a: ivy.array([0.422, 0.155, 0.422])
+            a: ivy.array([0.7310586, 0.2689414]),
+            b: ivy.array([0.72844321, 0.19852395, 0.07303288])
         }
 
         """
@@ -620,6 +637,8 @@ class ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -635,16 +654,21 @@ class ContainerWithActivations(ContainerBase):
         ----------
         x
             input container.
+        beta
+            The beta value for the softplus formation. Default: ``None``.
+        threshold
+            values above this revert to a linear function. Default: ``None``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -656,17 +680,26 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]), b=ivy.array([1., 0.]))
         >>> y = ivy.Container.static_softplus(x)
         >>> print(y)
         {
-            a: ivy.array([0.535, 0.42])
+            a: ivy.array([0.53499615, 0.42036411]),
+            b: ivy.array([1.31326175, 0.69314718])
         }
 
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = ivy.Container.static_softplus(x, beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "softplus",
             x,
+            beta=beta,
+            threshold=threshold,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -678,6 +711,8 @@ class ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -693,16 +728,21 @@ class ContainerWithActivations(ContainerBase):
         ----------
         self
             input container.
+        beta
+            The beta value for the softplus formation. Default: ``None``.
+        threshold
+            values above this revert to a linear function. Default: ``None``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -721,9 +761,157 @@ class ContainerWithActivations(ContainerBase):
             a: ivy.array([0.535, 0.42])
         }
 
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = x.softplus(beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
         """
         return self.static_softplus(
             self,
+            beta=beta,
+            threshold=threshold,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_log_softmax(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: Optional[ivy.Container] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.log_softmax.
+        This method simply wraps the function, and so the docstring
+        for ivy.log_softmax also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        axis
+            the axis or axes along which the log_softmax should be computed
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the log_softmax unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1.0, -0.98, 2.3]))
+        >>> y = ivy.Container.static_log_softmax(x)
+        >>> print(y)
+        {
+            a: ivy.array([-3.37, -3.35, -0.0719])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1.0, 2.4]), b=ivy.array([-0.2, -1.0]))
+        >>> y = ivy.Container.static_log_softmax(x)
+        >>> print(y)
+        {
+            a: ivy.array([-1.62, -0.22]),
+            b: ivy.array([-0.371, -1.17])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "log_softmax",
+            x,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def log_softmax(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[ivy.Container] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.log_softmax.
+        This method simply wraps the function, and so the docstring
+        for ivy.log_softmax also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        axis
+            the axis or axes along which the log_softmax should be computed
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the log_softmax unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1.0, -0.98, 2.3]))
+        >>> y = x.log_softmax()
+        >>> print(y)
+        {
+            a: ivy.array([-3.37, -3.35, -0.0719])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1.0, 2.4]), b=ivy.array([-0.2, -1.0]))
+        >>> y = x.log_softmax()
+        >>> print(y)
+        {
+            a: ivy.array([-1.62, -0.22]),
+            b: ivy.array([-0.371, -1.17])
+        }
+        """
+        return self.static_log_softmax(
+            self,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

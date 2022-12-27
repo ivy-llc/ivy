@@ -1,7 +1,7 @@
 """Collection of PyTorch activation functions, wrapped to fit Ivy syntax and
 signature.
 """
-from typing import Optional
+from typing import Optional, Union
 
 # global
 import numpy as np
@@ -10,30 +10,29 @@ import torch.nn
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def relu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.relu(x)
 
 
-relu.unsupported_dtypes = ("float16",)
-
-
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def leaky_relu(
     x: torch.Tensor,
     /,
     *,
-    alpha: Optional[float] = 0.2,
+    alpha: float = 0.2,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
-leaky_relu.unsupported_dtypes = ("float16",)
-
-
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def gelu(
-    x: torch.Tensor, /, *, approximate: bool = True, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, approximate: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if approximate:
         return (
@@ -42,19 +41,17 @@ def gelu(
     return torch.nn.functional.gelu(x)
 
 
-gelu.unsupported_dtypes = ("float16",)
-
-
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if not ivy.is_array(x):
         x = torch.tensor(x)
     return torch.sigmoid(x, out=out)
 
 
-sigmoid.unsupported_dtypes = ("float16",)
 sigmoid.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def softmax(
     x: torch.Tensor,
     /,
@@ -67,11 +64,27 @@ def softmax(
     return torch.nn.functional.softmax(x, axis)
 
 
-softmax.unsupported_dtypes = ("float16",)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+def softplus(
+    x: torch.Tensor,
+    /,
+    *,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    kwargs = {
+        k: v for k, v in {"beta": beta, "threshold": threshold}.items() if v is not None
+    }
+    return torch.nn.functional.softplus(x, **kwargs)
 
 
-def softplus(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.nn.functional.softplus(x)
-
-
-softplus.unsupported_dtypes = ("float16", "bfloat16")
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+def log_softmax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+):
+    return torch.nn.functional.log_softmax(x, axis)

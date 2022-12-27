@@ -8,45 +8,108 @@ from typing import Union, Optional, Callable
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import (
+    _get_required_float_variables,
+    _get_y_and_ret_idxs,
+    _get_native_y,
+    _set_duplicates,
+    _process_func_ret_and_grads,
+)
 
 
-def variable(x):
+def variable(x, /):
     with tf.device(ivy.dev(x, as_native=True)):
         return tf.Variable(x, trainable=True)
 
 
-def is_variable(x, exclusive=False):
+def is_variable(x, /, *, exclusive=False):
     return isinstance(x, tf.Variable)
 
 
-def variable_data(x):
+def variable_data(x, /):
     return x.value()
 
 
-def execute_with_gradients(func, xs, retain_grads=False):
-    with tf.GradientTape(
-        persistent=retain_grads, watch_accessed_variables=False
-    ) as tape:
-        tape.watch(ivy.to_native(xs))
-        func_ret = func(xs)
-    if isinstance(func_ret, tuple):
-        y = func_ret[0]
-        rest = func_ret[1:]
+def _grad_func(y, xs, xs_required, tape):
+    """Gradient calculation function."""
+    # Creating a zero gradient nest for the case where no gradients are computed
+    grads_ = ivy.nested_map(
+        xs_required,
+        lambda x: ivy.to_native(ivy.zeros_like(x)),
+        include_derived=True,
+        shallow=False,
+    )
+
+    # Gradient calculation
+    grads = tape.gradient(y, xs_required)
+
+    # Returning zeros if no gradients are computed for consistent results
+    if isinstance(xs, ivy.NativeArray):
+        grads = grads_ if grads is None else grads
     else:
-        y = func_ret
-        rest = tuple()
-    y = ivy.to_native(y)
-    grads = tape.gradient(y, ivy.to_native(xs))
-    grads = ivy.to_ivy(grads)
-    y = ivy.to_ivy(y)
+        grads = ivy.nested_map(
+            grads,
+            lambda x: 0 if x is None else x,
+            include_derived=True,
+        )
+        if isinstance(grads, ivy.Container):
+            grads += grads_
+        else:
+            grads = ivy.nested_multi_map(lambda x, _: (x[0] + x[1]), [grads, grads_])
+    return grads
+
+
+def execute_with_gradients(
+    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
+):
+    # Conversion of required arrays to float variables and duplicate index chains
+    xs, xs_required, required_duplicate_index_chains, _ = _get_required_float_variables(
+        xs, xs_grad_idxs
+    )
+
+    # Creating a tape to record operations
+    with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
+        tape.watch(xs_required)
+        func_ret = func(xs)
+
+    # Getting the relevant outputs from the function return for gradient calculation
+    y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs, reshape=False)
+
+    if isinstance(y, ivy.NativeArray):
+        # Gradient calculation for a single output
+        grads = _set_duplicates(
+            ivy.to_ivy(_grad_func(y, xs, xs_required, tape)),
+            required_duplicate_index_chains,
+        )
+    else:
+        # Gradient calculation for multiple outputs
+        y = _get_native_y(y)
+        grads_ = ivy.nested_map(
+            y,
+            lambda x: _grad_func(x, xs, xs_required, tape),
+            include_derived=True,
+            shallow=False,
+        )
+        grads = grads_
+        if isinstance(ret_idxs, list) and len(ret_idxs):
+            grads = {
+                ret_idxs[i]: _set_duplicates(grad, required_duplicate_index_chains)
+                for i, grad in enumerate(grads_)
+            }
+
+    # Deleting the tape if not retaining gradients
     if not retain_grads:
-        y = ivy.stop_gradient(y)
-    return (y, grads, *rest)
+        del tape
+
+    # Stop further gradient propagation if not retaining gradients
+    return _process_func_ret_and_grads(func_ret, grads, retain_grads)
 
 
 def value_and_grad(func):
     def grad_fn(xs):
-        grads = ivy.nested_map(xs, lambda x: ivy.zeros_like(x), include_derived=True)
+        grads = ivy.nested_map(
+            xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
+        )
         with tf.GradientTape(watch_accessed_variables=False) as tape:
             xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
             tape.watch(xs)
@@ -58,7 +121,8 @@ def value_and_grad(func):
             lambda x: ivy.to_ivy(x),
             include_derived=True,
         )
-        grad_idxs = ivy.nested_indices_where(grads_, lambda x: ivy.is_ivy_array(x))
+        grads_ = ivy.to_ivy(grads_)
+        grad_idxs = ivy.nested_argwhere(grads_, lambda x: ivy.is_ivy_array(x))
         grad_array_vals = list(ivy.multi_index_nest(grads_, grad_idxs))
         xs = ivy.to_ivy(xs)
         if isinstance(xs, ivy.Array):
@@ -73,9 +137,10 @@ def value_and_grad(func):
 
 def stop_gradient(
     x: Union[tf.Tensor, tf.Variable],
-    preserve_type: bool = True,
+    /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    preserve_type: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     is_var = is_variable(x)
     x = tf.stop_gradient(x)

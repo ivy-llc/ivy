@@ -1,77 +1,188 @@
 # global
 
-import numpy as np
-from hypothesis import given, strategies as st
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
-
-@st.composite
-def _outer_get_dtype_and_data(draw):
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("numeric"))), key="shared_dtype"
-        )
-    )
-
-    shape = (
-        draw(st.integers(min_value=1, max_value=5)),
-        draw(st.integers(min_value=1, max_value=5)),
-    )
-    x = draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=shape,
-        )
-    )
-
-    data1 = (input_dtype, x)
-
-    shape = (
-        draw(st.integers(min_value=1, max_value=5)),
-        draw(st.integers(min_value=1, max_value=5)),
-    )
-    data2 = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            shape=shape,
-        )
-    )
-
-    return data1, data2
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_first_matrix_and_dtype,
+    _get_second_matrix_and_dtype,
+    _get_dtype_value1_value2_axis_for_tensordot,
+)
 
 
 # outer
-@handle_cmd_line_args
-@given(
-    dtype_and_x=_outer_get_dtype_and_data(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.outer"
+@handle_frontend_test(
+    fn_tree="numpy.outer",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        min_num_dims=1,
+        shared_dtype=True,
     ),
 )
 def test_numpy_outer(
     dtype_and_x,
     as_variable,
-    native_array,
+    with_out,
     num_positional_args,
-    fw,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
-    data1, data2 = dtype_and_x
-    input_dtype1, x = data1
-    input_dtype2, y = data2
-
+    input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype1, input_dtype2],
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        b=xs[1],
+    )
+
+
+# inner
+@handle_frontend_test(
+    fn_tree="numpy.inner",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_numpy_inner(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="outer",
-        a=np.array(x, dtype=input_dtype1),
-        b=np.array(y, dtype=input_dtype2),
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        b=xs[1],
+    )
+
+
+# matmul
+@handle_frontend_test(
+    fn_tree="numpy.matmul",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[_get_first_matrix_and_dtype, _get_second_matrix_and_dtype],
+        get_dtypes_kind="numeric",
+    ),
+)
+def test_numpy_matmul(
+    dtypes_values_casting,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtypes, x, casting, dtype = dtypes_values_casting
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
         out=None,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        # The arguments below are currently unused.
+        # subok=True,
+    )
+
+
+# matrix_power
+@handle_frontend_test(
+    fn_tree="numpy.linalg.matrix_power",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=50,
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+    ),
+    n=helpers.ints(min_value=1, max_value=8),
+)
+def test_numpy_matrix_power(
+    dtype_and_x,
+    n,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        n=n,
+    )
+
+
+# tensordot
+@handle_frontend_test(
+    fn_tree="numpy.tensordot",
+    dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
+        helpers.get_dtypes(kind="numeric")
+    ),
+)
+def test_numpy_tensordot(
+    dtype_values_and_axes,
+    as_variable,
+    native_array,
+    num_positional_args,
+    frontend,
+    fn_tree,
+):
+    dtype, a, b, axes = dtype_values_and_axes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        a=a,
+        b=b,
+        axes=axes,
     )

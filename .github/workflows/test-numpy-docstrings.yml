@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 jobs:
   run-docstring-tests:
-    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Function Reformatting')}}
+    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Function Reformatting')}}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

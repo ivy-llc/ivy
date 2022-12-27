@@ -1,10 +1,13 @@
-# For Review
 # global
-import ivy
-import numpy as np
 import math
-from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
+from typing import Union, Tuple, Optional, List, Sequence
+import numpy as np
+
+# local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def _flat_array_to_1_dim_array(x):
@@ -16,7 +19,11 @@ def _flat_array_to_1_dim_array(x):
 
 
 def concat(
-    xs: List[np.ndarray], /, *, axis: int = 0, out: Optional[np.ndarray] = None
+    xs: Union[Tuple[np.ndarray, ...], List[np.ndarray]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     is_tuple = type(xs) is tuple
     if axis is None:
@@ -30,8 +37,8 @@ def concat(
     ret = np.concatenate(xs, axis, out=out)
     highest_dtype = xs[0].dtype
     for i in xs:
-        highest_dtype = np.promote_types(highest_dtype, i.dtype)
-    return ret.astype(highest_dtype)
+        highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
+    return ivy.astype(ret, highest_dtype, copy=False)
 
 
 concat.support_native_out = True
@@ -41,7 +48,7 @@ def expand_dims(
     x: np.ndarray,
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.expand_dims(x, axis)
@@ -51,7 +58,7 @@ def flip(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     num_dims = len(x.shape)
@@ -77,12 +84,14 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    order: Optional[str] = "C",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = x.copy()
-        return np.reshape(newarr, shape)
-    return np.reshape(x, shape)
+        return np.reshape(newarr, shape, order=order)
+    return np.reshape(x, shape, order=order)
 
 
 def roll(
@@ -99,7 +108,7 @@ def roll(
 def squeeze(
     x: np.ndarray,
     /,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -108,7 +117,7 @@ def squeeze(
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
-        raise ValueError(
+        raise ivy.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
     return np.squeeze(x, axis=axis)
@@ -118,7 +127,7 @@ def stack(
     arrays: Union[Tuple[np.ndarray], List[np.ndarray]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.stack(arrays, axis, out=out)
@@ -132,16 +141,16 @@ stack.support_native_out = True
 
 
 def split(
-    x,
+    x: np.ndarray,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[np.ndarray]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "input array had no shape, but num_sections specified was {}".format(
                     num_or_size_splits
                 )
@@ -162,6 +171,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,
@@ -202,6 +212,17 @@ def swapaxes(
     return np.swapaxes(x, axis0, axis1)
 
 
+def unstack(
+    x: np.ndarray, /, *, axis: int = 0, keepdims: bool = False
+) -> List[np.ndarray]:
+    if x.shape == ():
+        return [x]
+    x_split = np.split(x, x.shape[axis], axis)
+    if keepdims:
+        return x_split
+    return [np.squeeze(item, axis) for item in x_split]
+
+
 def clip(
     x: np.ndarray,
     x_min: Union[Number, np.ndarray],
@@ -210,7 +231,7 @@ def clip(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    assert np.all(np.less(x_min, x_max)), "Min value must be less than max."
+    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
     return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
 
 

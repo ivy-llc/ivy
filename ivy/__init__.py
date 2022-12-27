@@ -1,25 +1,19 @@
 # global
-from typing import Union
-import jax.numpy as jnp
-import jax
-import jaxlib
-from jaxlib.xla_extension import Buffer
-import mxnet as mx
-import numpy as np
-import tensorflow as tf
-from tensorflow.python.types.core import Tensor
-from tensorflow.python.framework.tensor_shape import TensorShape
-import torch
 import warnings
+from ivy._version import __version__ as __version__
+import builtins
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
+
 
 # class placeholders
 
 
 class FrameworkStr(str):
     def __new__(cls, fw_str):
-        assert fw_str in ["jax", "tensorflow", "torch", "mxnet", "numpy"]
+        ivy.assertions.check_elem_in_list(
+            fw_str, ["jax", "tensorflow", "torch", "numpy"]
+        )
         return str.__new__(cls, fw_str)
 
 
@@ -27,29 +21,24 @@ class Framework:
     pass
 
 
-NativeArray = Union[
-    jax.interpreters.xla._DeviceArray,
-    jaxlib.xla_extension.DeviceArray,
-    Buffer,
-    mx.nd.NDArray,
-    np.ndarray,
-    Tensor,
-    torch.Tensor,
-]
+class NativeArray:
+    pass
 
 
-NativeVariable = Union[
-    jax.interpreters.xla._DeviceArray, mx.nd.NDArray, np.ndarray, Tensor, torch.Tensor
-]
+class NativeVariable:
+    pass
 
 
-NativeDevice = Union[jaxlib.xla_extension.Device, mx.context.Context, str, torch.device]
+class NativeDevice:
+    pass
 
 
-NativeDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype]
+class NativeDtype:
+    pass
 
 
-NativeShape = Union[tuple, TensorShape, torch.Size]
+class NativeShape:
+    pass
 
 
 class Container:
@@ -60,38 +49,131 @@ class Array:
     pass
 
 
-class Variable:
-    pass
-
-
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
-            assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
+            ivy.assertions.check_elem_in_list(dev_str[0:3], ["gpu", "tpu", "cpu"])
             if dev_str != "cpu":
-                assert dev_str[3] == ":"
-                assert dev_str[4:].isnumeric()
+                # ivy.assertions.check_equal(dev_str[3], ":")
+                ivy.assertions.check_true(
+                    dev_str[4:].isnumeric(),
+                    message="{} must be numeric".format(dev_str[4:]),
+                )
         return str.__new__(cls, dev_str)
 
 
 class Dtype(str):
     def __new__(cls, dtype_str):
-        assert "int" in dtype_str or "float" in dtype_str or "bool" in dtype_str
+        if dtype_str is builtins.int:
+            dtype_str = default_int_dtype()
+        if dtype_str is builtins.float:
+            dtype_str = default_float_dtype()
+        if dtype_str is builtins.bool:
+            dtype_str = "bool"
+        if not isinstance(dtype_str, str):
+            raise ivy.exceptions.IvyException("dtype must be type str")
+        if dtype_str not in _all_ivy_dtypes_str:
+            raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
+
+    def __ge__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self == ivy.promote_types(self, other)
+
+    def __gt__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self >= other and self != other
+
+    def __lt__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self != ivy.promote_types(self, other)
+
+    def __le__(self, other):
+        if isinstance(other, str):
+            other = Dtype(other)
+
+        if not isinstance(other, Dtype):
+            raise ivy.exceptions.IvyException(
+                "Attempted to compare a dtype with something which"
+                "couldn't be interpreted as a dtype"
+            )
+
+        return self < other or self == other
+
+    @property
+    def is_bool_dtype(self):
+        return is_bool_dtype(self)
+
+    @property
+    def is_int_dtype(self):
+        return is_int_dtype(self)
+
+    @property
+    def is_float_dtype(self):
+        return is_float_dtype(self)
+
+    @property
+    def is_uint_dtype(self):
+        return is_uint_dtype(self)
+
+    @property
+    def dtype_bits(self):
+        return dtype_bits(self)
+
+    @property
+    def as_native_dtype(self):
+        return as_native_dtype(self)
+
+    @property
+    def info(self):
+        if self.is_int_dtype or self.is_uint_dtype:
+            return iinfo(self)
+        elif self.is_float_dtype:
+            return finfo(self)
+        else:
+            raise ivy.exceptions.IvyError(f"{self} is not supported by info")
+
+    def can_cast(self, to):
+        return can_cast(self, to)
 
 
 class Shape(tuple):
     def __new__(cls, shape_tup):
-        valid_types = (int, list, tuple)
+        valid_types = (int, list, tuple, ivy.Array)
         if len(backend_stack) != 0:
-            valid_types += (ivy.NativeShape,)
-        assert isinstance(shape_tup, valid_types)
+            valid_types += (ivy.NativeShape, ivy.NativeArray)
+        ivy.assertions.check_isinstance(shape_tup, valid_types)
         if isinstance(shape_tup, int):
             shape_tup = (shape_tup,)
         elif isinstance(shape_tup, list):
             shape_tup = tuple(shape_tup)
-        assert builtins.all(
-            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup]
+        ivy.assertions.check_all(
+            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup],
+            "shape must take integers only",
         )
         if ivy.shape_array_mode():
             return ivy.array(shape_tup)
@@ -100,19 +182,69 @@ class Shape(tuple):
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
-        assert "int" in dtype_str
+        if dtype_str is builtins.int:
+            dtype_str = default_int_dtype()
+        if not isinstance(dtype_str, str):
+            raise ivy.exceptions.IvyException("dtype_str must be type str")
+        if "int" not in dtype_str:
+            raise ivy.exceptions.IvyException(
+                "dtype must be string and starts with int"
+            )
+        if dtype_str not in _all_ivy_dtypes_str:
+            raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
+
+    @property
+    def info(self):
+        return iinfo(self)
 
 
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
-        assert "float" in dtype_str
+        if dtype_str is builtins.float:
+            dtype_str = default_float_dtype()
+        if not isinstance(dtype_str, str):
+            raise ivy.exceptions.IvyException("dtype_str must be type str")
+        if "float" not in dtype_str:
+            raise ivy.exceptions.IvyException(
+                "dtype must be string and starts with float"
+            )
+        if dtype_str not in _all_ivy_dtypes_str:
+            raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
+
+    @property
+    def info(self):
+        return finfo(self)
 
 
 class UintDtype(IntDtype):
     def __new__(cls, dtype_str):
-        assert "uint" in dtype_str
+        if not isinstance(dtype_str, str):
+            raise ivy.exceptions.IvyException("dtype_str must be type str")
+        if "uint" not in dtype_str:
+            raise ivy.exceptions.IvyException(
+                "dtype must be string and starts with uint"
+            )
+        if dtype_str not in _all_ivy_dtypes_str:
+            raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
+        return str.__new__(cls, dtype_str)
+
+    @property
+    def info(self):
+        return iinfo(self)
+
+
+class ComplexDtype(Dtype):
+    def __new__(cls, dtype_str):
+        if not isinstance(dtype_str, str):
+            raise ivy.exceptions.IvyException("dtype_str must be type str")
+        if "complex" not in dtype_str:
+            raise ivy.exceptions.IvyException(
+                "dtype must be string and starts with complex"
+            )
+        if dtype_str not in _all_ivy_dtypes_str:
+            raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
 
 
@@ -124,6 +256,7 @@ class Node(str):
 array_significant_figures_stack = list()
 array_decimal_values_stack = list()
 warning_level_stack = list()
+nan_policy_stack = list()
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
@@ -136,7 +269,37 @@ _MIN_BASE = 1e-5
 import threading
 
 
+# devices
+# ToDo: add gpu and tpu for valid devices when we test for them
+all_devices = ("cpu", "gpu", "tpu")
+
+valid_devices = ("cpu",)
+
+invalid_devices = ("gpu", "tpu")
+
+# data types as string (to be used by Dtype classes)
+# any changes here should also be reflected in the data type initialisation underneath
+_all_ivy_dtypes_str = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "bfloat16",
+    "float16",
+    "float32",
+    "float64",
+    "complex64",
+    "complex128",
+    "complex256",
+    "bool",
+)
+
 # data types
+# any changes here should also be reflected in the data type string tuple above
 int8 = IntDtype("int8")
 int16 = IntDtype("int16")
 int32 = IntDtype("int32")
@@ -149,6 +312,10 @@ bfloat16 = FloatDtype("bfloat16")
 float16 = FloatDtype("float16")
 float32 = FloatDtype("float32")
 float64 = FloatDtype("float64")
+double = float64
+complex64 = ComplexDtype("complex64")
+complex128 = ComplexDtype("complex128")
+complex256 = ComplexDtype("complex256")
 bool = Dtype("bool")
 
 # native data types
@@ -164,6 +331,10 @@ native_bfloat16 = FloatDtype("bfloat16")
 native_float16 = FloatDtype("float16")
 native_float32 = FloatDtype("float32")
 native_float64 = FloatDtype("float64")
+native_double = native_float64
+complex64 = ComplexDtype("complex64")
+complex128 = ComplexDtype("complex128")
+complex256 = ComplexDtype("complex256")
 native_bool = Dtype("bool")
 
 # all
@@ -218,6 +389,11 @@ all_uint_dtypes = (
     uint32,
     uint64,
 )
+all_complex_dtypes = (
+    complex64,
+    complex128,
+    complex256,
+)
 
 # valid data types
 valid_dtypes = all_dtypes
@@ -225,6 +401,7 @@ valid_numeric_dtypes = all_numeric_dtypes
 valid_int_dtypes = all_int_dtypes
 valid_float_dtypes = all_float_dtypes
 valid_uint_dtypes = all_uint_dtypes
+valid_complex_dtypes = all_complex_dtypes
 
 # invalid data types
 invalid_dtypes = ()
@@ -232,6 +409,7 @@ invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
+invalid_complex_dtypes = ()
 
 # data type promotion
 array_api_promotion_table = {
@@ -304,6 +482,38 @@ array_api_promotion_table = {
 }
 locks = {"backend_setter": threading.Lock()}
 extra_promotion_table = {
+    (bool, uint16): uint16,
+    (bool, int32): int32,
+    (bool, float16): float16,
+    (bool, uint64): uint64,
+    (bool, float64): float64,
+    (bool, int8): int8,
+    (bool, int64): int64,
+    (bool, int16): int16,
+    (bool, bfloat16): bfloat16,
+    (bool, uint32): uint32,
+    (bool, uint8): uint8,
+    (bool, float32): float32,
+    (uint16, bool): uint16,
+    (int32, bool): int32,
+    (float16, bool): float16,
+    (uint64, bool): uint64,
+    (float64, bool): float64,
+    (int8, bool): int8,
+    (int64, bool): int64,
+    (int16, bool): int16,
+    (bfloat16, bool): bfloat16,
+    (uint32, bool): uint32,
+    (uint8, bool): uint8,
+    (float32, bool): float32,
+    (uint64, int8): float64,
+    (int8, uint64): float64,
+    (uint64, int16): float64,
+    (int16, uint64): float64,
+    (uint64, int32): float64,
+    (int32, uint64): float64,
+    (uint64, int64): float64,
+    (int64, uint64): float64,
     (int8, float16): float16,
     (float16, int8): float16,
     (int8, float32): float32,
@@ -375,12 +585,21 @@ extra_promotion_table = {
     (float32, bfloat16): float32,
     (bfloat16, float64): float64,
     (float64, bfloat16): float64,
+    (complex64, complex64): complex64,
+    (complex64, complex128): complex128,
+    (complex64, complex256): complex256,
+    (complex128, complex64): complex128,
+    (complex128, complex128): complex128,
+    (complex128, complex256): complex256,
+    (complex256, complex64): complex256,
+    (complex256, complex128): complex256,
+    (complex256, complex256): complex256,
 }
 
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}
 
 
-from .array import Array, Variable, add_ivy_array_instance_methods
+from .array import Array, add_ivy_array_instance_methods
 from .array.conversions import *
 from .array import conversions as arr_conversions
 from .container import conversions as cont_conversions
@@ -389,21 +608,22 @@ from .container import (
     Container,
     add_ivy_container_instance_methods,
 )
+from .nested_array import NestedArray
 from .backend_handler import (
     current_backend,
     get_backend,
     set_backend,
+    set_numpy_backend,
+    set_jax_backend,
+    set_tensorflow_backend,
+    set_torch_backend,
     unset_backend,
     backend_stack,
     choose_random_backend,
-    try_import_ivy_jax,
-    try_import_ivy_tf,
-    try_import_ivy_torch,
-    try_import_ivy_mxnet,
-    try_import_ivy_numpy,
     clear_backend_stack,
 )
-from . import backend_handler, func_wrapper
+from .func_wrapper import *
+from . import assertions, backend_handler, func_wrapper, exceptions
 from . import functional
 from .functional import *
 from . import stateful
@@ -513,7 +733,59 @@ add_ivy_container_instance_methods(
 )
 
 
+class GlobalsDict(dict):
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+    __name__ = dict.__name__
+
+
+# defines ivy.globals attribute
+globals = GlobalsDict(
+    {
+        "backend_stack": backend_stack,
+        "default_device_stack": device.default_device_stack,
+        "valid_dtypes": valid_dtypes,
+        "valid_numeric_dtypes": valid_numeric_dtypes,
+        "valid_int_dtypes": valid_int_dtypes,
+        "valid_int_dtypes": valid_int_dtypes,
+        "valid_uint_dtypes": valid_uint_dtypes,
+        "valid_complex_dtypes": valid_complex_dtypes,
+        "valid_devices": valid_devices,
+        "invalid_dtypes": invalid_dtypes,
+        "invalid_numeric_dtypes": invalid_numeric_dtypes,
+        "invalid_int_dtypes": invalid_int_dtypes,
+        "invalid_float_dtypes": invalid_float_dtypes,
+        "invalid_uint_dtypes": invalid_uint_dtypes,
+        "invalid_complex_dtypes": invalid_complex_dtypes,
+        "invalid_devices": invalid_devices,
+        "array_significant_figures_stack": array_significant_figures_stack,
+        "array_decimal_values_stack": array_decimal_values_stack,
+        "warning_level_stack": warning_level_stack,
+        "queue_timeout_stack": general.queue_timeout_stack,
+        "array_mode_stack": general.array_mode_stack,
+        "shape_array_mode_stack": general.shape_array_mode_stack,
+        "nestable_mode_stack": general.nestable_mode_stack,
+        "exception_trace_mode_stack": general.exception_trace_mode_stack,
+        "default_dtype_stack": data_type.default_dtype_stack,
+        "default_float_dtype_stack": data_type.default_float_dtype_stack,
+        "default_int_dtype_stack": data_type.default_int_dtype_stack,
+        "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
+        "nan_policy_stack": nan_policy_stack,
+    }
+)
+
+
+def set_global_attr(attr_name, attr_val):
+    setattr(globals, attr_name, attr_val)
+
+
+def del_global_attr(attr_name):
+    delattr(globals, attr_name)
+
+
 backend = "none"
+backend_version = "none"
 
 native_inplace_support = None
 
@@ -526,23 +798,22 @@ if "IVY_BACKEND" in os.environ:
 
 
 def _assert_array_significant_figures_formatting(sig_figs):
-    assert isinstance(sig_figs, int)
-    assert sig_figs > 0
+    ivy.assertions.check_isinstance(sig_figs, int)
+    ivy.assertions.check_greater(sig_figs, 0)
 
 
+# ToDo: SF formating for complex number
 def _sf(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
-    f = float(
-        np.format_float_positional(
-            x, precision=sig_fig, unique=False, fractional=False, trim="k"
+    if isinstance(x, complex):
+        return complex(x)
+    if "float" in type(x).__name__:
+        x = float(
+            np.format_float_positional(
+                x, precision=sig_fig, unique=False, fractional=False, trim="k"
+            )
         )
-    )
-    if "uint" in type(x).__name__:
-        f = np.uint(f)
-    elif "int" in type(x).__name__:
-        f = int(f)
-    x = f
     return x
 
 
@@ -568,7 +839,7 @@ def array_significant_figures(sig_figs=None):
         return sig_figs
     global array_significant_figures_stack
     if not array_significant_figures_stack:
-        ret = 3
+        ret = 10
     else:
         ret = array_significant_figures_stack[-1]
     return ret
@@ -599,8 +870,8 @@ def unset_array_significant_figures():
 
 
 def _assert_array_decimal_values_formatting(dec_vals):
-    assert isinstance(dec_vals, int)
-    assert dec_vals >= 0
+    ivy.assertions.check_isinstance(dec_vals, int)
+    ivy.assertions.check_greater(dec_vals, 0, allow_equal=True)
 
 
 def array_decimal_values(dec_vals=None):
@@ -621,7 +892,7 @@ def array_decimal_values(dec_vals=None):
         return dec_vals
     global array_decimal_values_stack
     if not array_decimal_values_stack:
-        ret = None
+        ret = 8
     else:
         ret = array_decimal_values_stack[-1]
     return ret
@@ -688,3 +959,48 @@ def warn(warning_message, stacklevel=0):
     warn_level = warning_level()
     warnings.filterwarnings("ignore", module=warn_to_regex[warn_level])
     warnings.warn(warning_message, stacklevel=stacklevel)
+
+
+# nan policy #
+
+
+def get_nan_policy():
+    """Summary.
+
+    Returns
+    -------
+    ret
+        current nan policy, default is "nothing"
+
+    """
+    global nan_policy_stack
+    if not nan_policy_stack:
+        ret = "nothing"
+    else:
+        ret = nan_policy_stack[-1]
+    return ret
+
+
+def set_nan_policy(warn_level):
+    """Summary.
+
+    Parameters
+    ----------
+    nan_policy
+        string for the nan policy to be set, one of
+        "nothing", "warns", "raise_exception"
+
+    """
+    global nan_policy_stack
+    if warn_level not in ["nothing", "warns", "raise_exception"]:
+        raise ivy.exceptions.IvyException(
+            "nan_policy must be one of 'nothing', 'warns', 'raise_exception'"
+        )
+    nan_policy_stack.append(warn_level)
+
+
+def unset_nan_policy():
+    """"""
+    global nan_policy_stack
+    if nan_policy_stack:
+        nan_policy_stack.pop(-1)

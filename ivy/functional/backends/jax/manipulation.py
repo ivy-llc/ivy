@@ -1,13 +1,14 @@
-# For Review
 # global
 import math
-import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List, Sequence, Iterable
 from numbers import Number
+from typing import Union, Tuple, Optional, List, Sequence, Iterable
+import jax.numpy as jnp
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from . import backend_version
 
 
 def _flat_array_to_1_dim_array(x):
@@ -19,10 +20,13 @@ def _flat_array_to_1_dim_array(x):
 
 
 def concat(
-    xs: List[JaxArray], /, *, axis: int = 0, out: Optional[JaxArray] = None
+    xs: Union[Tuple[JaxArray, ...], List[JaxArray]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     is_tuple = type(xs) is tuple
-
     if axis is None:
         if is_tuple:
             xs = list(xs)
@@ -38,21 +42,21 @@ def expand_dims(
     x: JaxArray,
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     try:
         ret = jnp.expand_dims(x, axis)
         return ret
-    except ValueError as error:
-        raise IndexError(error)
+    except IndexError as error:
+        raise ivy.exceptions.IvyException(repr(error))
 
 
 def flip(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.flip(x, axis=axis)
@@ -70,12 +74,14 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    order: Optional[str] = "C",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = jnp.copy(x)
-        return jnp.reshape(newarr, shape)
-    return jnp.reshape(x, shape)
+        return jnp.reshape(newarr, shape, order=order)
+    return jnp.reshape(x, shape, order=order)
 
 
 def roll(
@@ -92,14 +98,14 @@ def roll(
 def squeeze(
     x: JaxArray,
     /,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
-        raise ValueError(
+        raise ivy.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
     else:
@@ -111,11 +117,9 @@ def stack(
     arrays: Union[Tuple[JaxArray], List[JaxArray]],
     /,
     *,
-    axis: Optional[int] = None,
+    axis: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if axis is None:
-        axis = 0
     return jnp.stack(arrays, axis=axis)
 
 
@@ -124,16 +128,17 @@ def stack(
 
 
 def split(
-    x,
+    x: JaxArray,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[JaxArray]:
+
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "input array had no shape, but num_sections specified was {}".format(
                     num_or_size_splits
                 )
@@ -162,7 +167,6 @@ def repeat(
     axis: int = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     return jnp.repeat(x, repeats, axis)
 
 
@@ -180,7 +184,7 @@ def clip(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    assert jnp.all(jnp.less(x_min, x_max)), "Min value must be less than max."
+    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
@@ -193,7 +197,7 @@ def clip(
             promoted_type = jnp.promote_types(x.dtype, jnp.float32)
             promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = jnp.asarray(x, dtype=promoted_type)
+            x = x.astype(promoted_type)
         elif (
             jnp.float16 in (x.dtype, x_min.dtype, x_max.dtype)
             or jnp.float32 in (x.dtype, x_min.dtype, x_max.dtype)
@@ -206,14 +210,17 @@ def clip(
             promoted_type = jnp.promote_types(x.dtype, jnp.float64)
             promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = jnp.asarray(x, dtype=promoted_type)
+            x = x.astype(promoted_type)
         else:
             promoted_type = jnp.promote_types(x.dtype, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = jnp.asarray(x, dtype=promoted_type)
-    return jnp.clip(x, x_min, x_max)
+            x.astype(promoted_type)
+    # jnp.clip isn't used because of inconsistent gradients
+    x = jnp.where(x > x_max, x_max, x)
+    return jnp.where(x < x_min, x_min, x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,
@@ -225,7 +232,15 @@ def constant_pad(
     return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
-constant_pad.unsupported_dtypes = ("uint64",)
+def unstack(x: JaxArray, /, *, axis: int = 0, keepdims: bool = False) -> List[JaxArray]:
+    if x.shape == ():
+        return [x]
+    dim_size = x.shape[axis]
+    # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
+    x_split = jnp.split(x, dim_size, axis)
+    if keepdims:
+        return x_split
+    return [jnp.squeeze(item, axis) for item in x_split]
 
 
 def zero_pad(

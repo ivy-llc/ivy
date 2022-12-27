@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional, Union, Sequence
 import abc
 
 # local
@@ -13,20 +13,126 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        Calculates the minimum value of the input array ``x``.
+
+        Parameters
+        ----------
+        x
+            Input array. Should have a real-valued data type.
+        axis
+            axis or axes along which minimum values must be computed.
+            By default, the minimum value must be computed over the
+            entire array. If a tuple of integers,minimum values must be
+            computed over multiple axes. Default: ``None``.
+
+        keepdims
+            optional boolean, if ``True``, the reduced axes (dimensions)
+            must be included in the result as singleton dimensions, and,
+            accordingly, the result must be compatible with the input
+            array (see :ref:`broadcasting`). Otherwise, if ``False``, the
+            reduced axes (dimensions) must not be included in the
+            result. Default: ``False``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            if the minimum value was computed over the entire array, a
+            zero-dimensional array containing the minimum value; otherwise,
+            a non-zero-dimensional array containing the minimum values.
+            The returned array must have the same data type
+            as ``x``.
+
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([3., 4., 5.])
+        >>> y = x.min()
+        >>> print(y)
+        ivy.array(3.)
+
+        >>> x = ivy.array([[-1, 0, 1], [2, 3, 4]])
+        >>> y = x.min(axis=1)
+        >>> print(y)
+        ivy.array([-1,  2])
+
+        >>> x = ivy.array([0.1, 1.1, 2.1])
+        >>> y = ivy.array(0.)
+        >>> x.min(out=y)
+        >>> print(y)
+        ivy.array(0.1)
+
+        """
         return ivy.min(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def max(
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.max. This method simply
+        wraps the function, and so the docstring for ivy.max also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array. Should have a numeric data type.
+        axis
+            axis or axes along which maximum values must be computed.
+            By default, the maximum value must be computed over the
+            entire array. If a tuple of integers, maximum values must
+            be computed over multiple axes. Default: ``None``.
+        keepdims
+            if ``True``, the reduced axes (dimensions) must be included
+            in the result as singleton dimensions, and, accordingly, the
+            result must be compatible with the input array
+            (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
+            (dimensions) must not be included in the result. Default: ``False``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            if the maximum value was computed over the entire array,
+            a zero-dimensional array containing the maximum value;
+            otherwise, a non-zero-dimensional array
+            containing the maximum values. The returned array must
+            have the same data type
+            as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> z = x.max()
+        >>> print(z)
+        ivy.array(3)
+
+        >>> x = ivy.array([0, 1, 2])
+        >>> z = ivy.array([0])
+        >>> y = x.max(out=z)
+        >>> print(z)
+        ivy.array(2)
+
+        >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+        >>> y = x.max(axis=0, keepdims=True)
+        >>> print(y)
+        ivy.array([[4, 6, 10]])
+        """
         return ivy.max(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def mean(
@@ -77,7 +183,7 @@ class ArrayWithStatistical(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x = ivy.array([3., 4., 5.])
         >>> y = x.mean()
@@ -95,17 +201,17 @@ class ArrayWithStatistical(abc.ABC):
         >>> print(y)
         ivy.array(1.1)
 
-        >>> x = ivy.array([1, 2, 3, 0, -1])
+        >>> x = ivy.array([1., 2., 3., 0., -1.])
         >>> y = ivy.array(0.)
         >>> ivy.mean(x, out=y)
         >>> print(y)
-        ivy.array(0.)
+        ivy.array(1.)
 
         >>> x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])
         >>> y = ivy.array([0., 0., 0.])
-        >>> x.mean(axis=0, out=y)
+        >>> x.mean(axis=0, keepdims=True, out=y)
         >>> print(y)
-        ivy.array([-0.25,  1.05,  2.1])
+        ivy.array([[-0.25      ,  1.04999995,  2.0999999 ]])
 
         >>> x = ivy.array([[0., 1., 2.], [3., 4., 5.]])
         >>> y = ivy.array([0., 0.])
@@ -120,14 +226,14 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.var. This method simply 
-        wraps the function, and so the docstring for ivy.var also applies 
+        ivy.Array instance method variant of ivy.var. This method simply
+        wraps the function, and so the docstring for ivy.var also applies
         to this method with minimal changes.
 
         **Special Cases**
@@ -145,25 +251,25 @@ class ArrayWithStatistical(abc.ABC):
         axis
             axis or axes along which variances must be computed. By default, the
             variance must be computed over the entire array. If a tuple of integers,
-            variances must be computed over multiple axes. Default: None.
+            variances must be computed over multiple axes. Default: ``None``.
         correction
-            degrees of freedom adjustment. Setting this parameter to a value other 
+            degrees of freedom adjustment. Setting this parameter to a value other
             than 0 has the effect of adjusting the divisor during the calculation
-            of the variance according to N-c where N corresponds to the total 
+            of the variance according to N-c where N corresponds to the total
             number of elements over which the variance is computed and c corresponds
             to the provided degrees of freedom adjustment. When computing the variance
             of a population, setting this parameter to 0 is the standard choice
             (i.e., the provided array contains data constituting an entire population).
-            When computing the unbiased sample variance, setting this parameter to 1 
+            When computing the unbiased sample variance, setting this parameter to 1
             is the standard choice (i.e., the provided array contains data sampled
             from a larger population; this is commonly referred to as Bessel's
-            correction). Default: 0.
+            correction). Default: ``0``.
         keepdims
             if True, the reduced axes (dimensions) must be included in the result as
             singleton dimensions, and, accordingly, the result must be compatible
             with the input array (see Broadcasting). Otherwise, if False, the
             reduced axes (dimensions) must not be included in the result.
-            Default: False.
+            Default: ``False``.
         out
             optional output array, for writing the result to.
 
@@ -176,23 +282,23 @@ class ArrayWithStatistical(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[0.0, 1.0, 2.0], \
-                           [3.0, 4.0, 5.0], \
-                           [6.0, 7.0, 8.0]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0],
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, 8.0]])
         >>> y = x.var()
         >>> print(y)
         ivy.array(6.6666665)
 
-        >>> x = ivy.array([[0.0, 1.0, 2.0], \
-                           [3.0, 4.0, 5.0], \
-                           [6.0, 7.0, .08]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0],
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, .08]])
         >>> y = x.var(axis=0)
         >>> print(y)
         ivy.array([6., 6., 4.1])
 
-        >>> x = ivy.array([[0.0, 1.0, 2.0], \
-                           [3.0, 4.0, 5.0], \
-                           [6.0, 7.0, .08]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0],
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, .08]])
         >>> y = ivy.array([0., 0., 0.])
         >>> x.var(axis=1, out=y)
         >>> print(y)
@@ -207,45 +313,190 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """ivy.array instance method variant of ivy.prod.
+        This method simply wraps the function, and so
+        the docstring for ivy.prod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a floating-point data type.
+        axis
+            axis or axes along which products must be computed. By default,
+            the product must be computed over the entire array. If a
+            tuple of integers, products must be computed over multiple
+            axes. Default: ``None``.
+        keepdims
+            bool, if True, the reduced axes (dimensions) must be
+            included in the result as singleton dimensions, and,
+            accordingly, the result must be compatible with the
+            input array (see Broadcasting). Otherwise, if False,
+            the reduced axes (dimensions) must not be included in
+            the result. Default: ``False``.
+        dtype
+            data type of the returned array.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container, if the product was computed over the entire array,
+            a zero-dimensional array containing the product;
+            otherwise, a non-zero-dimensional array containing the products.
+            The returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        With: class: `ivy.Array` input:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> z = x.prod()
+        >>> print(z)
+        ivy.array(6)
+
+        >>> x = ivy.array([1, 0, 3])
+        >>> z = x.prod()
+        >>> print(z)
+        ivy.array(0)
+
+        >>> x = ivy.array([[3., 4., 5.]])
+        >>> y = x.prod(axis=1)
+        >>> print(y)
+        ivy.array([60.])
+
+        >>> x = ivy.array([2., 1.])
+        >>> y = ivy.array(0.)
+        >>> x.prod(out=y)
+        >>> print(y)
+        ivy.array(2.)
+
+        >>> x = ivy.array([[-1., -2.], [3., 3.]])
+        >>> y = x.prod(axis=1)
+        >>> print(y)
+        ivy.array([2., 9.])
+        """
         return ivy.prod(self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
     def sum(
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.sum(self._data, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+        return ivy.sum(self, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
     def std(
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.std(self._data, axis=axis, keepdims=keepdims, out=out)
+        """ivy.array instance method variant of ivy.std.
+        This method simply wraps the function, and so
+        the docstring for ivy.std also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        axis
+            axis or axes along which standard deviation must be computed.
+            By default, the product must be computed over the entire array.
+            If a tuple of integers, products must be computed over multiple
+            axes. Default: ``None``.
+        correction
+            degrees of freedom adjustment. Setting this parameter to a
+            value other than ``0`` has the effect of adjusting the
+            divisor during the calculation of the standard deviation
+            according to ``N-c`` where ``N`` corresponds to the total
+            number of elements over which the standard deviation is
+            computed and ``c`` corresponds to the provided degrees of
+            freedom adjustment. When computing the standard deviation
+            of a population, setting this parameter to ``0`` is the
+            standard choice (i.e., the provided array contains data
+            constituting an entire population). When computing
+            the corrected sample standard deviation, setting this
+            parameter to ``1`` is the standard choice (i.e., the
+            provided array contains data sampled from a larger
+            population; this is commonly referred to as Bessel's
+            correction). Default: ``0``.
+
+        keepdims
+            bool, if True, the reduced axes (dimensions) must be
+            included in the result as singleton dimensions, and,
+            accordingly, the result must be compatible with the
+            input array (see Broadcasting). Otherwise, if False,
+            the reduced axes (dimensions) must not be included in
+            the result. Default: ``False``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container, if the product was computed over the entire array,
+            a zero-dimensional array containing the product;
+            otherwise, a non-zero-dimensional array containing the products.
+            The returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        With: class: `ivy.Array` input:
+
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.std()
+        >>> print(y)
+        ivy.array(0.8164966)
+
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> z = x.std(correction=1)
+        >>> print(z)
+        ivy.array(1.)
+
+        >>> x = ivy.array([[0., 4.]])
+        >>> y = x.std(keepdims=True)
+        >>> print(y)
+        ivy.array([[2.]])
+
+        >>> x = ivy.array([2., 1.])
+        >>> y = ivy.array(0.)
+        >>> x.std(out=y)
+        >>> print(y)
+        ivy.array(0.5)
+
+        >>> x = ivy.array([[-1., -2.], [3., 3.]])
+        >>> y = x.std(axis=1)
+        >>> print(y)
+        ivy.array([1.5, 1. ])
+
+        """
+        return ivy.std(
+            self, axis=axis, correction=correction, keepdims=keepdims, out=out
+        )
 
     # Extra #
     # ----- #
 
     def cumsum(
         self: ivy.Array,
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
         reverse: bool = False,
+        *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -259,16 +510,16 @@ class ArrayWithStatistical(abc.ABC):
         self
             Input array to apply cumsum.
         axis
-            Axis along which the cumulative sum is computed. Default is 0.
+            Axis along which the cumulative sum is computed. Default is ``0``.
         exclusive
             Whether to perform cumsum exclusively. Default is ``False``.
         reverse
             Whether to perform the cumsum from last to first element in the selected
-            axis. Default is False (from first to last element)
+            axis. Default is ``False`` (from first to last element)
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional array container. Default is None.
+            Optional array container. Default is ``None``.
 
         Returns
         -------
@@ -296,9 +547,9 @@ class ArrayWithStatistical(abc.ABC):
                    [0, 4],
                    [0, 8]])
 
-        >>> x = ivy.array([[1, 5, 2], \
-                           [4, 3, 0], \
-                           [4, 8, 2]])
+        >>> x = ivy.array([[1, 5, 2],
+        ...                [4, 3, 0],
+        ...                [4, 8, 2]])
         >>> y = x.cumsum(axis=1, exclusive=True, reverse=True)
         >>> print(y)
         ivy.array([[ 7,  2,  0],
@@ -320,6 +571,8 @@ class ArrayWithStatistical(abc.ABC):
         *,
         axis: int = 0,
         exclusive: bool = False,
+        reverse: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -332,10 +585,13 @@ class ArrayWithStatistical(abc.ABC):
         self
             input array
         axis
-            int, axis along which to take the cumulative product. Default is 0.
+            int, axis along which to take the cumulative product. Default is ``0``.
         exclusive
             optional bool, whether to exclude the first value of the input array.
-            Default is False.
+            Default is ``False``.
+        reverse
+            Whether to perform the cumprod from last to first element in the selected
+            axis. Default is ``False`` (from first to last element)
         out
             optional output array, for writing the result to.
 
@@ -355,16 +611,93 @@ class ArrayWithStatistical(abc.ABC):
         >>> y = ivy.zeros((3, 2), dtype="int32")
         >>> x.cumprod(axis=1, exclusive=True, out=y)
         >>> print(y)
-        ivy.array([[1, 2],
-                   [1, 5],
-                   [1, 11]])
+        ivy.array([[0, 0],
+                   [0, 0],
+                   [0, 0]])
         """
-        return ivy.cumprod(self._data, axis, exclusive, out=out)
+        return ivy.cumprod(
+            self._data,
+            axis=axis,
+            exclusive=exclusive,
+            reverse=reverse,
+            dtype=dtype,
+            out=out,
+        )
 
     def einsum(
         self: ivy.Array,
         equation: str,
-        *,
+        *args,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.einsum(equation, self._data, out=out)
+        """
+        ivy.Array instance method variant of ivy.einsum. This method simply wraps the
+        function, and so the docstring for ivy.einsum also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        equation
+            A str describing the contraction, in the same format as numpy.einsum.
+        operands
+            seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes
+            should be consistent with equation.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The array with sums computed.
+
+        Examples
+        --------
+        >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+        >>> y = x.einsum('ii')
+        >>> print(y)
+        ivy.array(12)
+
+        >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+        >>> z = x.einsum('ij -> j')
+        >>> print(z)
+        ivy.array([ 9, 12, 15])
+
+        >>> A = ivy.array([0, 1, 2])
+        >>> B = ivy.array([[ 0,  1,  2,  3],
+        ...                [ 4,  5,  6,  7],
+        ...                [ 8,  9, 10, 11]])
+        >>> C = A.einsum('i,ij->i', B)
+        >>> print(C)
+        ivy.array([ 0, 22, 76])
+
+        >>> A = ivy.array([[1, 1, 1],
+        ...                [2, 2, 2],
+        ...                [5, 5, 5]])
+        >>> B = ivy.array([[0, 1, 0],
+        ...                [1, 1, 0],
+        ...                [1, 1, 1]])
+        >>> C = A.einsum('ij,jk->ik', B)
+        >>> print(C)
+        ivy.array([[ 2,  3,  1],
+               [ 4,  6,  2],
+               [10, 15,  5]])
+
+        >>> A = ivy.arange(10)
+        >>> B = A.einsum('i->')
+        >>> print(B)
+        ivy.array(45)
+
+        >>> A = ivy.arange(10)
+        >>> B = ivy.arange(5, 15)
+        >>> C = A.einsum('i,i->i', B)
+        >>> print(C)
+        ivy.array([  0,   6,  14,  24,  36,  50,  66,  84, 104, 126])
+
+        >>> A = ivy.arange(10)
+        >>> B = ivy.arange(5, 15)
+        >>> C = A.einsum('i,i->', B) # or just use 'i,i'
+        >>> print(C)
+        ivy.array(510)
+
+        """
+        return ivy.einsum(equation, *(self._data,) + args, out=out)

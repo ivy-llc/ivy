@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License..
 # ==============================================================================
+__version__ = None
+
 import setuptools
 from pathlib import Path
 from distutils.core import setup
@@ -75,10 +77,12 @@ lines = _replace_logos_html(text).split("\n")
 lines = [line for line in lines if not (_is_html(line) or _is_raw_block(line))]
 long_description = "\n".join(lines)
 
+with open("ivy/_version.py") as f:
+    exec(f.read(), __version__)
 
 setup(
     name="ivy-core",
-    version="1.1.9",
+    version=__version__,
     author="Ivy Team",
     author_email="ivydl.team@gmail.com",
     description=(
@@ -94,7 +98,8 @@ setup(
     },
     packages=setuptools.find_packages(),
     install_requires=[
-        _strip(line) for line in open("requirements.txt", "r", encoding="utf-8")
+        _strip(line)
+        for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
     classifiers=["License :: OSI Approved :: Apache Software License"],
     license="Apache 2.0",

@@ -1,5 +1,5 @@
 # global
-from typing import Optional, List
+from typing import Optional, List, Union
 
 # local
 import ivy
@@ -15,9 +15,9 @@ class ContainerWithNorms(ContainerBase):
         normalized_idxs: List[int],
         /,
         *,
+        weight: Optional[Union[ivy.Array, float]] = None,
+        bias: Optional[Union[ivy.Array, float]] = None,
         epsilon: float = ivy._MIN_BASE,
-        scale: float = 1.0,
-        offset: float = 1.0,
         new_std: float = 1.0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -32,13 +32,14 @@ class ContainerWithNorms(ContainerBase):
             Input container
         normalized_idxs
             Indices to apply the normalization to.
+        weight
+            Learnable gamma variables for elementwise post-multiplication,
+            default is ``None``.
+        bias
+            Learnable beta variables for elementwise post-addition, default is ``None``.
         epsilon
             small constant to add to the denominator, use global ivy._MIN_BASE by
             default.
-        scale
-            Learnable gamma variables for post-multiplication, default is None.
-        offset
-            Learnable beta variables for post-addition, default is None.
         new_std
             The standard deviation of the new normalized values. Default is 1.
         out
@@ -52,41 +53,41 @@ class ContainerWithNorms(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
-        >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
-                               'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
+        >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
+        ...                    'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
         >>> normalized_idxs = [0]
-        >>> norm = x.layer_norm(normalized_idxs, epsilon=1.25, scale=0.3)
+        >>> norm = x.layer_norm(normalized_idxs, epsilon=1.25, weight=0.3)
         >>> print(norm)
         {
-            a: ivy.array([0.658, 1.04, 1.3]),
-            b: ivy.array([[0.759, 0.759, 0.759], 
-                          [1.24, 1.24, 1.24]])
+            a: ivy.array([-0.342, 0.0427, 0.299]),
+            b: ivy.array([[-0.241, -0.241, -0.241,
+                          [0.241, 0.241, 0.241]])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
-                               'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
+        >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
+        ...                    'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
         >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
         >>> new_std = ivy.Container({'a': 1.25, 'b': 1.5})
-        >>> offset = ivy.Container({'a': 0.2, 'b': 0.3})
-        >>> norm = x.layer_norm(normalized_idxs, new_std=new_std, offset=offset)
+        >>> bias = ivy.Container({'a': [0.2, 0.5, 0.7], 'b': 0.3})
+        >>> norm = x.layer_norm(normalized_idxs, new_std=new_std, bias=bias)
         >>> print(norm)
         {
-            a: ivy.array([-1.42, 0.403, 1.62]),
-            b: ivy.array([[-1.54, 0.3, 2.14], 
-                          [-1.54, 0.3, 2.14]])
+            a: ivy.array([-1.62, 0.203, 1.42]),
+            b: ivy.array([[-1.84, 0., 1.84],
+                          [-1.84, 0., 1.84]])
         }
 
         """
         return ivy.layer_norm(
             self,
             normalized_idxs,
+            weight=weight,
+            bias=bias,
             epsilon=epsilon,
-            scale=scale,
-            offset=offset,
             new_std=new_std,
             out=out,
         )

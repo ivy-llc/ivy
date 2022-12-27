@@ -3,14 +3,27 @@ import math
 import ivy
 
 # local
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_casting,
+    handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
+)
 
 
+@to_ivy_arrays_and_back
 def convolve(a, v, mode="full"):
-    pass
+    if len(a) == 0:
+        raise ValueError("'a' cannot be empty.")
+    if len(v) == 0:
+        raise ValueError("'v' cannot be empty.")
+    return ivy.frontends.numpy.correlate(a, v[::-1], mode)
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def clip(
     a,
     a_min,
@@ -20,23 +33,34 @@ def clip(
     *,
     where=True,
     casting="same_kind",
-    order="k",
+    order="K",
     dtype=None,
     subok=True,
 ):
-
-    if not dtype:
-        dtype = a.dtype
-    ret = ivy.where(
-        ivy.broadcast_to(where, a.shape),
-        ivy.clip(a, a_min, a_max),
-        ivy.default(out, a),
-        out=out,
+    ivy.assertions.check_all_or_any_fn(
+        a_min,
+        a_max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of a_min and a_max can be None",
     )
-    return ivy.astype(ret, dtype, out=out)
+    a = ivy.array(a, dtype=dtype)
+    if a_min is None:
+        ret = ivy.minimum(a, a_max, out=out)
+    elif a_max is None:
+        ret = ivy.maximum(a, a_min, out=out)
+    else:
+        ret = ivy.clip(a, a_min, a_max, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def sqrt(
     x,
     /,
@@ -49,15 +73,16 @@ def sqrt(
     subok=True,
 ):
     x = ivy.array(x)
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.sqrt(x), ivy.default(out, x), out=out
     )
     return ret
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def cbrt(
     x,
     /,
@@ -69,8 +94,6 @@ def cbrt(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0)
     fixed_signs = ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive)
     ret = ivy.where(
@@ -79,7 +102,10 @@ def cbrt(
     return ret
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def square(
     x,
     /,
@@ -91,15 +117,16 @@ def square(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.square(x), ivy.default(out, x), out=out
     )
     return ret
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def absolute(
     x,
     /,
@@ -111,15 +138,16 @@ def absolute(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out
     )
     return ret
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def fabs(
     x,
     /,
@@ -131,15 +159,16 @@ def fabs(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out
     )
     return ret
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def sign(
     x,
     /,
@@ -151,8 +180,6 @@ def sign(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.sign(x, out=out)
     if where is not None:
         ret = ivy.where(
@@ -161,7 +188,10 @@ def sign(
     return ret
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def heaviside(
     x1,
     x2,
@@ -176,9 +206,6 @@ def heaviside(
 ):
     x1 = ivy.array(x1)
     x2 = ivy.array(x2)
-    if dtype:
-        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
-        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.equal(x1, x1.full_like(0.0)),
         x2,
@@ -190,6 +217,8 @@ def heaviside(
     return ret
 
 
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     ret = ivy.array(x, copy=copy)
     bounds = ivy.finfo(x)
@@ -205,10 +234,13 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     return ret
 
 
+@to_ivy_arrays_and_back
 def real_if_close(a, tol=100):
     return ivy.array(a)  # ivy doesn't yet support complex numbers
 
 
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False
@@ -218,10 +250,11 @@ def interp(x, xp, fp, left=None, right=None, period=None):
     x = ivy.astype(x_arr, "float64")
     xp = ivy.astype(ivy.array(xp), "float64")
     fp = ivy.astype(ivy.array(fp), "float64")
-    assert xp.ndim == 1 and fp.ndim == 1
-    assert xp.shape[0] == fp.shape[0]
+    ivy.assertions.check_equal(xp.ndim, 1)
+    ivy.assertions.check_equal(fp.ndim, 1)
+    ivy.assertions.check_equal(xp.shape[0], fp.shape[0])
     if period is not None:
-        assert period != 0
+        ivy.assertions.check_equal(period, 0, inverse=True)
         period = ivy.abs(period)
         x = ivy.remainder(x, period)
         xp = ivy.remainder(xp, period)

@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Tuple, Dict
+from typing import Optional, Union, List, Tuple, Dict, Sequence
 from numbers import Number
 import numpy as np
 
@@ -8,7 +8,6 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-# noinspection PyMissingConstructor
 class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_arange(
@@ -25,7 +24,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "arange",
             start,
             stop,
@@ -60,22 +59,22 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "asarray",
             x,
-            copy,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            copy=copy,
             dtype=dtype,
             device=device,
         )
 
     @staticmethod
     def static_zeros(
-        shape: Union[int, Tuple[int], List[int]],
+        shape: Union[int, Sequence[int]],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -86,7 +85,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "zeros",
             shape,
             key_chains,
@@ -100,7 +99,7 @@ class ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def static_ones(
-        shape: Union[int, Tuple[int], List[int]],
+        shape: Union[int, Sequence[int]],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -111,7 +110,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "ones",
             shape,
             key_chains,
@@ -149,15 +148,16 @@ class ContainerWithCreation(ContainerBase):
         fill_value
             Scalar fill value
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -176,26 +176,27 @@ class ContainerWithCreation(ContainerBase):
 
         Examples
         --------
-        With ivy.Container input
+        With :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
         >>> fill_value = 10
-        >>> y = ivy.Container.full_like(fill_value)
+        >>> y = ivy.Container.static_full_like(fill_value)
         {
             a: ivy.array([10, 10, 10]),
             b: ivy.array([10, 10, 10])
         }
 
-        >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
-                               b=ivy.array([4.123,5.23,6.23]))
+        >>> x = ivy.Container(a=ivy.array([1.2, 2.2324, 3.234]),
+        ...                   b=ivy.array([4.123, 5.23, 6.23]))
         >>> fill_value = 15.0
-        >>> y = ivy.Container.full_like(fill_value)
+        >>> y = ivy.Container.static_full_like(fill_value)
         >>> print(y)
         {
             a: ivy.array([15., 15., 15.]),
             b: ivy.array([15., 15., 15.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "full_like",
             x,
             fill_value,
@@ -233,15 +234,16 @@ class ContainerWithCreation(ContainerBase):
         fill_value
             Scalar fill value
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -260,7 +262,8 @@ class ContainerWithCreation(ContainerBase):
 
         Examples
         --------
-        With ivy.Container input
+        With :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
         >>> fill_value = 10
         >>> y = x.full_like(fill_value)
@@ -269,8 +272,8 @@ class ContainerWithCreation(ContainerBase):
             b: ivy.array([10, 10, 10])
         }
 
-        >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
-                               b=ivy.array([4.123,5.23,6.23]))
+        >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]),
+        ...                   b=ivy.array([4.123,5.23,6.23]))
         >>> fill_value = 15.0
         >>> y = x.full_like(fill_value)
         >>> print(y)
@@ -314,15 +317,16 @@ class ContainerWithCreation(ContainerBase):
         x
             input array from which to derive the output array shape.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             output array data type. If ``dtype`` is ``None``, the output array data type
             must be inferred from ``self``. Default  ``None``.
@@ -338,7 +342,7 @@ class ContainerWithCreation(ContainerBase):
         ret
             a container having the same shape as ``self`` and filled with ones.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "ones_like",
             x,
             key_chains=key_chains,
@@ -372,15 +376,16 @@ class ContainerWithCreation(ContainerBase):
         self
             input array from which to derive the output array shape.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             output array data type. If ``dtype`` is ``None``, the output array data type
             must be inferred from ``self``. Default  ``None``.
@@ -430,15 +435,16 @@ class ContainerWithCreation(ContainerBase):
         x
             input array or container from which to derive the output container shape.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             output array data type. If ``dtype`` is ``None``, the output container
             data type must be inferred from ``self``. Default  ``None``.
@@ -454,7 +460,7 @@ class ContainerWithCreation(ContainerBase):
         ret
             an container having the same shape as ``x`` and filled with ``zeros``.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "zeros_like",
             x,
             key_chains=key_chains,
@@ -488,18 +494,19 @@ class ContainerWithCreation(ContainerBase):
         self
             input array or container from which to derive the output container shape.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             output array data type. If ``dtype`` is ``None``, the output container
-            data type must be inferred from ``self``. Default  ``None``.
+            data type must be inferred from ``self``. Default: ``None``.
         device
             device on which to place the created array. If device is ``None``, the
             output container device must be inferred from ``self``. Default: ``None``.
@@ -535,7 +542,7 @@ class ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "tril",
             x,
             k,
@@ -579,7 +586,7 @@ class ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "triu",
             x,
             k,
@@ -624,7 +631,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "empty_like",
             x,
             key_chains,
@@ -664,7 +671,7 @@ class ContainerWithCreation(ContainerBase):
         n_rows: int,
         n_cols: Optional[int] = None,
         /,
-        k: Optional[int] = 0,
+        k: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -674,7 +681,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "eye",
             n_rows,
             n_cols,
@@ -705,17 +712,48 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "linspace",
             start,
             stop,
             num,
-            axis,
-            endpoint,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            endpoint=endpoint,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            dtype=dtype,
+            device=device,
+        )
+
+    def linspace(
+        self: ivy.Container,
+        stop: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
+        /,
+        num: int,
+        axis: int = None,
+        endpoint: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Container:
+        return self.static_linspace(
+            self,
+            stop,
+            num,
+            axis=axis,
+            endpoint=endpoint,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
             dtype=dtype,
             device=device,
@@ -724,46 +762,43 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_meshgrid(
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
-        indexing: Optional[str] = "xy",
+        sparse: bool = False,
+        indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "meshgrid",
             *arrays,
+            sparse,
             indexing,
             key_chains,
             to_apply,
             prune_unapplied,
             map_sequences,
-            out,
         )
 
     def meshgrid(
         self: ivy.Container,
         /,
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
-        indexing: Optional[str] = "xy",
+        sparse: bool = False,
+        indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_: ivy.meshgrid([x_._data] + list(arrays))
-                if ivy.is_array(x_)
-                else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        return self.static_meshgrid(
+            tuple([self] + list(arrays)),
+            sparse,
+            indexing,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
         )
 
     @staticmethod
@@ -777,7 +812,7 @@ class ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "from_dlpack",
             x,
             key_chains,
@@ -826,7 +861,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "native_array",
             x,
             key_chains,
@@ -878,7 +913,7 @@ class ContainerWithCreation(ContainerBase):
         out: Optional[ivy.Container] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "logspace",
             start,
             stop,
@@ -892,4 +927,143 @@ class ContainerWithCreation(ContainerBase):
             map_sequences,
             out,
             device=device,
+        )
+
+    @staticmethod
+    def static_one_hot(
+        indices: ivy.Container,
+        depth: int,
+        /,
+        *,
+        on_value: Optional[Number] = None,
+        off_value: Optional[Number] = None,
+        axis: Optional[int] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.one_hot. This method
+        simply wraps the function, and so the docstring for ivy.one_hot
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        indices
+            Indices for where the ones should be scattered *[batch_shape, dim]*
+        depth
+            Scalar defining the depth of the one-hot dimension.
+        on_value
+            Value to fill in output when indices[j] = i. If None, defaults to 1.
+        off_value
+            Value to fill in output when indices[j] != i. If None, defaults to 0.
+        axis
+            Axis to scatter on. The default is ``-1``, a new inner-most axis is created.
+        dtype
+            The data type of the output tensor. If None, defaults to the on_value dtype
+            or the off_value dtype. If both are None, defaults to float32.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            container with tensors of zeros with the same shape and type as the inputs,
+            unless dtype provided which overrides.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "one_hot",
+            indices,
+            depth,
+            on_value=on_value,
+            off_value=off_value,
+            axis=axis,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def one_hot(
+        self: ivy.Container,
+        depth: int,
+        /,
+        *,
+        on_value: Optional[Number] = None,
+        off_value: Optional[Number] = None,
+        axis: Optional[int] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.one_hot. This method
+        simply wraps the function, and so the docstring for ivy.one_hot
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Indices for where the ones should be scattered *[batch_shape, dim]*
+        depth
+            Scalar defining the depth of the one-hot dimension.
+        on_value
+            Value to fill in output when indices[j] == i. If None, defaults to 1.
+        off_value
+            Value to fill in output when indices[j] != i. If None, defaults to 0.
+        axis
+            Axis to scatter on. The default is ``-1``, a new inner-most axis is created.
+        dtype
+            The dtype of the returned tensor. If None, defaults to the on_value dtype
+            or the off_value dtype. If both are None, defaults to float32.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            container with tensors of zeros with the same shape and type as the inputs,
+            unless dtype provided which overrides.
+        """
+        return self.static_one_hot(
+            self,
+            depth,
+            on_value=on_value,
+            off_value=off_value,
+            axis=axis,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )

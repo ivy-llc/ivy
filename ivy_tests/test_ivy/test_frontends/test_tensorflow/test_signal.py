@@ -37,4 +37,4 @@ def test_tensorflow_hann_window(
         window_length=x[0],
         periodic=periodic,
         dtype=dtype[0],
-    )
+):

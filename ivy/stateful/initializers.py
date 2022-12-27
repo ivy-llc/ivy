@@ -1,7 +1,11 @@
-# local
-from typing import Tuple, Union
-import ivy
+# global
+from typing import Tuple, Union, Optional
 import abc
+
+# local
+import ivy
+from ivy.functional.ivy.gradients import _variable
+
 
 # Initializer #
 # ----------- #
@@ -22,10 +26,10 @@ class Initializer(abc.ABC):
         self,
         var_shape: Tuple[int, int],
         device: Union[ivy.Device, ivy.NativeDevice],
-        fan_out: float = None,
-        fan_in: float = None,
-        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
-    ) -> ivy.Variable:
+        fan_out: Optional[float] = None,
+        fan_in: Optional[float] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    ) -> ivy.Array:
         """
         Create internal variables for the layer
 
@@ -53,7 +57,7 @@ class Initializer(abc.ABC):
 
 
 class Constant(Initializer):
-    def __init__(self, constant):
+    def __init__(self, constant: float):
         """
         Constant initializer, will fill in all values with the value of `constant`.
 
@@ -68,11 +72,11 @@ class Constant(Initializer):
         self,
         var_shape: Tuple[int, int],
         device: Union[ivy.Device, ivy.NativeDevice],
-        fan_out: float = None,
-        fan_in: float = None,
-        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
-    ) -> ivy.Variable:
-        return ivy.variable(
+        fan_out: Optional[float] = None,
+        fan_in: Optional[float] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    ) -> ivy.Array:
+        return _variable(
             ivy.full(var_shape, self._constant, device=device, dtype=dtype),
         )
 
@@ -117,18 +121,16 @@ class Uniform(Initializer):
               This is useful when training using forward-propogation.
             - `fan_sum` sets `fan` to the sum of the number of input features and
               output features of this neuron.
-            - `fan_sum` sets `fan` to the average of the number of input features and
+            - `fan_avg` sets `fan` to the average of the number of input features and
               output features of this neuron.
         power
             Sets the drop-off factor for the calculated `fan`.
         gain
             Scales the output of the distribution.
         """
-        if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
-            raise Exception(
-                "Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | "
-                "fan_avg ] "
-            )
+        ivy.assertions.check_elem_in_list(
+            fan_mode, ["fan_in", "fan_out", "fan_sum", "fan_avg"]
+        )
         self._numerator = numerator
         self._fan_mode = fan_mode
         self._power = power
@@ -157,38 +159,45 @@ class Uniform(Initializer):
             Desired data type.
         """
         if self._fan_mode == "fan_in":
-            if fan_in is None:
-                raise Exception(
-                    "input_channels must be specified for fan_in denominator mode."
-                )
+            ivy.assertions.check_exists(
+                fan_in,
+                message="input_channels must be specified for fan_in denominator mode",
+            )
             fan = fan_in
         elif self._fan_mode == "fan_out":
-            if fan_out is None:
-                raise Exception(
-                    "output_channels must be specified for fan_out denominator mode."
-                )
+            ivy.assertions.check_exists(
+                fan_out,
+                message="output_channels must be specified for fan_out \
+                denominator mode",
+            )
             fan = fan_out
         elif self._fan_mode == "fan_sum":
-            if fan_in is None or fan_out is None:
-                raise Exception(
-                    "input_channels and output_channels must both be specified for"
-                    "fan_sum denominator mode."
-                )
+            ivy.assertions.check_all_or_any_fn(
+                fan_in,
+                fan_out,
+                fn=ivy.exists,
+                type="all",
+                message="input_channels and output_channels must both be \
+                specified for fan_sum denominator mode.",
+            )
             fan = fan_in + fan_out
         elif self._fan_mode == "fan_avg":
-            if fan_in is None or fan_out is None:
-                raise Exception(
-                    "input_channels and output_channels must both be specified for"
-                    "fan_avg denominator mode."
-                )
+            ivy.assertions.check_all_or_any_fn(
+                fan_in,
+                fan_out,
+                fn=ivy.exists,
+                type="all",
+                message="input_channels and output_channels must both be \
+                specified for fan_avg denominator mode.",
+            )
             fan = (fan_in + fan_out) / 2
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid denominator mode, must be one of [ fan_in | fan_out | "
                 "fan_sum | fan_avg ] "
             )
         wlim = ((self._numerator / fan) ** self._power) * self._gain
-        return ivy.variable(
+        return _variable(
             ivy.random_uniform(
                 low=-wlim, high=wlim, shape=var_shape, device=device, dtype=dtype
             ),
@@ -253,11 +262,9 @@ class KaimingNormal(Initializer):
             - `fan_sum` sets `fan` to the average of the number of input features and
               output features of this neuron.
         """
-        if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
-            raise Exception(
-                "Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | "
-                "fan_avg ] "
-            )
+        ivy.assertions.check_elem_in_list(
+            fan_mode, ["fan_in", "fan_out", "fan_sum", "fan_avg"]
+        )
         self._mean = mean
         self._fan_mode = fan_mode
 
@@ -293,38 +300,45 @@ class KaimingNormal(Initializer):
             Desired data type.
         """
         if self._fan_mode == "fan_in":
-            if fan_in is None:
-                raise Exception(
-                    "input_channels must be specified for fan_in denominator mode."
-                )
+            ivy.assertions.check_exists(
+                fan_in,
+                message="input_channels must be specified for fan_in denominator mode",
+            )
             fan = fan_in
         elif self._fan_mode == "fan_out":
-            if fan_in is None:
-                raise Exception(
-                    "output_channels must be specified for fan_out denominator mode."
-                )
+            ivy.assertions.check_exists(
+                fan_out,
+                message="output_channels must be specified for fan_out \
+                denominator mode",
+            )
             fan = fan_out
         elif self._fan_mode == "fan_sum":
-            if fan_in is None or fan_out is None:
-                raise Exception(
-                    "input_channels and output_channels must both be specified for"
-                    "fan_sum denominator mode."
-                )
+            ivy.assertions.check_all_or_any_fn(
+                fan_in,
+                fan_out,
+                fn=ivy.exists,
+                type="all",
+                message="input_channels and output_channels must both be \
+                specified for fan_sum denominator mode.",
+            )
             fan = fan_in + fan_out
         elif self._fan_mode == "fan_avg":
-            if fan_in is None or fan_out is None:
-                raise Exception(
-                    "input_channels and output_channels must both be specified for"
-                    "fan_avg denominator mode."
-                )
+            ivy.assertions.check_all_or_any_fn(
+                fan_in,
+                fan_out,
+                fn=ivy.exists,
+                type="all",
+                message="input_channels and output_channels must both be \
+                specified for fan_avg denominator mode.",
+            )
             fan = (fan_in + fan_out) / 2
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid denominator mode, must be one of [ fan_in | fan_out | "
                 "fan_sum | fan_avg ] "
             )
         std = (2 / ((1 + negative_slope**2) * fan)) ** 0.5
-        return ivy.variable(
+        return _variable(
             ivy.random_normal(
                 mean=self._mean, std=std, shape=var_shape, device=device, dtype=dtype
             )

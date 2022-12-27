@@ -9,88 +9,6 @@ import ivy
 
 
 class ArrayWithGradients(abc.ABC):
-    def variable(self: ivy.Array) -> ivy.Variable:
-        """
-        ivy.Array instance method variant of ivy.variable. This method simply wraps
-        the function, and so the docstring for ivy.variable also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            An ivy array.
-
-        Returns
-        -------
-        ret
-            An ivy variable that supports gradient computation.
-
-        Examples
-        --------
-        With :code:`ivy.Array` input:
-
-        >>> x = ivy.array([2., 4., -1.])
-        >>> y = x.variable()
-        >>> y
-        ivy.array([ 2.,  4., -1.])
-
-        """
-        return ivy.variable(self)
-
-    def is_variable(self: ivy.Array, /, *, exclusive: bool = False) -> bool:
-        """
-        ivy.Array instance method variant of ivy.is_variable. This method simply wraps
-        the function, and so the docstring for ivy.is_variable also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            An ivy array.
-        exclusive
-            Whether to check if the data type is exclusively a variable, rather than an
-            array. For frameworks like JAX that do not have exclusive variable types,
-            the function will always return False if this flag is set, otherwise the
-            check is the same for general arrays. Default is False.
-
-        Returns
-        -------
-        ret
-            Boolean, true if ``self`` is a trainable variable, false otherwise.
-
-        Examples
-        --------
-        With :code:`ivy.Array` input:
-
-        >>> x = ivy.array([[2], [3], [5]])
-        >>> is_var = x.is_variable(exclusive=True)
-        >>> print(is_var)
-        False
-
-        """
-        return ivy.is_variable(self, exclusive=exclusive)
-
-    # is_variable.computes_gradients = True
-
-    def variable_data(self: ivy.Array) -> bool:
-        """
-        ivy.Array instance method variant of ivy.variable_data. This method simply wraps
-        the function, and so the docstring for ivy.variable_data also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            An ivy variable.
-
-        Returns
-        -------
-        ret
-            The internal data stored by the variable
-
-        """
-        return ivy.variable_data(self)
-
     def stop_gradient(
         self: ivy.Array,
         /,
@@ -108,8 +26,8 @@ class ArrayWithGradients(abc.ABC):
         self
             Array for which to stop the gradient.
         preserve_type
-            Whether to preserve the input type (ivy.Variable or ivy.Array),
-            otherwise an array is always returned. Default is True.
+            Whether to preserve gradient computation on ivy.Array instances. Default is
+            True.
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -174,7 +92,7 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> dcdw = ivy.array([1, 2, 3])
         >>> mw = ivy.ones(3)
@@ -182,10 +100,10 @@ class ArrayWithGradients(abc.ABC):
         >>> step = ivy.array(3)
         >>> adam_step_delta = dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
-        (ivy.array([0.182, 0.182, 0.182]),\
-         ivy.array([0.9, 0.9, 0.9]),\
-         ivy.array([0.999, 0.999, 0.999]))
-        
+        (ivy.array([0.2020105,0.22187898,0.24144873]),
+            ivy.array([1.,1.10000002,1.20000005]),
+            ivy.array([1.,1.00300002,1.00800002]))
+
         """
         return ivy.adam_step(
             self, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon, out=out
@@ -216,7 +134,7 @@ class ArrayWithGradients(abc.ABC):
             relative to the gradient.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -269,10 +187,10 @@ class ArrayWithGradients(abc.ABC):
             variable updates, and handle gradients behind the scenes such as PyTorch.
             If the update step should form part of a computation graph
             (i.e. higher order optimization), then this should be set to False.
-            Default is True, provided the backend framework supports it.
+            Default is ``True``, provided the backend framework supports it.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
 
         Returns
         -------
@@ -281,21 +199,21 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-        With :code: `ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
-        >>> w = ivy.array([[1., 2, 3],\
-                       [4, 6, 1],\
-                       [1, 0, 7]])
-        >>> dcdw = ivy.array([[0.5, 0.2, 0.1],\
-                            [0.3, 0.6, 0.4],\
-                            [0.4, 0.7, 0.2]])
+        >>> w = ivy.array([[1., 2, 3],
+        ...                [4, 6, 1],
+        ...                [1, 0, 7]])
+        >>> dcdw = ivy.array([[0.5, 0.2, 0.1],
+        ...                   [0.3, 0.6, 0.4],
+        ...                   [0.4, 0.7, 0.2]])
         >>> lr = ivy.array(0.1)
         >>> new_weights = w.gradient_descent_update(dcdw, lr, stop_gradients = True)
         >>> print(new_weights)
-        ivy.array([[ 0.95,  1.98,  2.99],\
-                   [ 3.97,  5.94,  0.96],\
-                   [ 0.96, -0.07,  6.98]])
-        
+        ivy.array([[ 0.95,  1.98,  2.99],
+        ...        [ 3.97,  5.94,  0.96],
+        ...        [ 0.96, -0.07,  6.98]])
+
         """
         return ivy.gradient_descent_update(
             self, dcdw, lr, stop_gradients=stop_gradients, out=out
@@ -328,7 +246,7 @@ class ArrayWithGradients(abc.ABC):
             The factor used for weight decay. Default is zero.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -392,7 +310,7 @@ class ArrayWithGradients(abc.ABC):
             (Default value = 1e-7).
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -468,7 +386,7 @@ class ArrayWithGradients(abc.ABC):
             The factor used for weight decay. Default is zero.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
-            Default is True.
+            Default is ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -480,7 +398,7 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> w = ivy.array([1., 2, 3])
         >>> dcdw = ivy.array([0.5,0.2,0.1])
@@ -490,10 +408,10 @@ class ArrayWithGradients(abc.ABC):
         >>> step = ivy.array(1)
         >>> new_weights = w.lamb_update(dcdw, lr, mw_tm1, vw_tm1, step)
         >>> print(new_weights)
-        (ivy.array([0.784, 1.78 , 2.78 ]),\
-         ivy.array([0.05, 0.02, 0.01]),\
-         ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))
-        
+        (ivy.array([0.784, 1.78 , 2.78 ]),
+        ... ivy.array([0.05, 0.02, 0.01]),
+        ... ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))
+
         """
         return ivy.lamb_update(
             self,

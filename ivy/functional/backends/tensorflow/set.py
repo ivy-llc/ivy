@@ -1,16 +1,21 @@
 # global
 import tensorflow as tf
-from typing import NamedTuple, Union, Optional
+from typing import Tuple, Union, Optional
 from collections import namedtuple
 
 
 def unique_all(
     x: Union[tf.Tensor, tf.Variable],
     /,
-) -> NamedTuple:
-    UniqueAll = namedtuple(
-        typename="unique_all",
-        field_names=["values", "indices", "inverse_indices", "counts"],
+) -> Tuple[
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+]:
+    Results = namedtuple(
+        "Results",
+        ["values", "indices", "inverse_indices", "counts"],
     )
     flat_tensor = tf.reshape(x, [-1])
     values, inverse_indices, counts = tf.unique_with_counts(tf.sort(flat_tensor))
@@ -40,7 +45,7 @@ def unique_all(
         inverse_indices = [values_list.index(val) for val in tensor_list]
         inverse_indices = tf.convert_to_tensor(inverse_indices)
 
-    return UniqueAll(
+    return Results(
         tf.cast(values, x.dtype),
         tf.cast(indices, dtype=tf.int64),
         tf.cast(tf.reshape(inverse_indices, x.shape), dtype=tf.int64),
@@ -51,19 +56,19 @@ def unique_all(
 def unique_counts(
     x: Union[tf.Tensor, tf.Variable],
     /,
-) -> NamedTuple:
-    uc = namedtuple("uc", ["values", "counts"])
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
+    Results = namedtuple("Results", ["values", "counts"])
     v, _, c = tf.unique_with_counts(tf.sort(tf.reshape(x, [-1])))
     v = tf.cast(v, dtype=x.dtype)
     c = tf.cast(c, dtype=tf.int64)
-    return uc(v, c)
+    return Results(v, c)
 
 
 def unique_inverse(
     x: Union[tf.Tensor, tf.Variable],
     /,
-) -> NamedTuple:
-    out = namedtuple("unique_inverse", ["values", "inverse_indices"])
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
+    Results = namedtuple("Results", ["values", "inverse_indices"])
     flat_tensor = tf.reshape(x, -1)
     values = tf.unique(tf.sort(flat_tensor))[0]
     values = tf.cast(values, dtype=x.dtype)
@@ -72,7 +77,7 @@ def unique_inverse(
     inverse_indices = [values_list.index(val) for val in flat_tensor.numpy().tolist()]
     inverse_indices = tf.reshape(tf.convert_to_tensor(inverse_indices), x.shape)
     inverse_indices = tf.cast(inverse_indices, dtype=tf.int64)
-    return out(values, inverse_indices)
+    return Results(values, inverse_indices)
 
 
 def unique_values(

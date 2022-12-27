@@ -1,29 +1,18 @@
 # global
 import ivy
-import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# full
-@st.composite
-def _dtypes(draw):
-    return draw(
-        st.shared(
-            helpers.list_of_length(
-                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))), length=1
-            ),
-            key="dtype",
-        )
-    )
+# Helper functions
 
 
 @st.composite
 def _fill_value(draw):
-    dtype = draw(_dtypes())[0]
+    dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
     if ivy.is_uint_dtype(dtype):
         return draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
@@ -32,16 +21,19 @@ def _fill_value(draw):
 
 
 @st.composite
-def _requires_grad(draw):
-    dtype = draw(_dtypes())[0]
-    if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
-        return draw(st.just(False))
-    return draw(st.booleans())
+def _start_stop_step(draw):
+    start = draw(helpers.ints(min_value=0, max_value=50))
+    stop = draw(helpers.ints(min_value=0, max_value=50))
+    if start < stop:
+        step = draw(helpers.ints(min_value=1, max_value=50))
+    else:
+        step = draw(helpers.ints(min_value=-50, max_value=-1))
+    return start, stop, step
 
 
 # full
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.full",
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -50,76 +42,74 @@ def _requires_grad(draw):
         max_dim_size=10,
     ),
     fill_value=_fill_value(),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.full"
-    ),
+    dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
 )
 def test_torch_full(
+    *,
     shape,
     fill_value,
-    dtypes,
-    requires_grad,
-    device,
+    dtype,
+    as_variable,
+    with_out,
     num_positional_args,
-    fw,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        as_variable_flags=False,
-        with_out=False,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
-        frontend="torch",
-        fn_tree="full",
+        native_array_flags=native_array,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
         size=shape,
         fill_value=fill_value,
-        dtype=dtypes[0],
-        device=device,
-        requires_grad=requires_grad,
+        dtype=dtype[0],
+        device=on_device,
     )
 
 
 # ones_like
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.ones_like",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.ones_like"
-    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_ones_like(
+    *,
     dtype_and_x,
-    dtypes,
-    requires_grad,
-    device,
+    dtype,
+    as_variable,
+    with_out,
     num_positional_args,
-    fw,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
-    dtype, input = dtype_and_x
+    input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=dtype,
-        as_variable_flags=False,
-        with_out=False,
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
-        frontend="torch",
-        fn_tree="ones_like",
-        input=np.asarray(input, dtype=dtype),
-        dtype=dtypes[0],
-        device=device,
-        requires_grad=requires_grad,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        dtype=dtype[0],
+        device=on_device,
     )
 
 
 # ones
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.ones",
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -127,39 +117,38 @@ def test_torch_ones_like(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.ones"
-    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_ones(
+    *,
     shape,
-    dtypes,
-    requires_grad,
-    device,
+    dtype,
+    as_variable,
+    with_out,
     num_positional_args,
-    fw,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        as_variable_flags=False,
-        with_out=False,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
-        frontend="torch",
-        fn_tree="ones",
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         size=shape,
-        dtype=dtypes[0],
-        device=device,
-        requires_grad=requires_grad,
+        dtype=dtype[0],
+        device=on_device,
     )
 
 
 # zeros
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.zeros",
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -167,31 +156,425 @@ def test_torch_ones(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.zeros"
-    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_zeros(
+    *,
     shape,
-    dtypes,
-    requires_grad,
-    device,
+    dtype,
+    as_variable,
+    with_out,
     num_positional_args,
-    fw,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        as_variable_flags=False,
-        with_out=False,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
-        frontend="torch",
-        fn_tree="zeros",
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
         size=shape,
-        dtype=dtypes[0],
-        device=device,
-        requires_grad=requires_grad,
+        dtype=dtype[0],
+        device=on_device,
+    )
+
+
+# zeros_like
+@handle_frontend_test(
+    fn_tree="torch.zeros_like",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("numeric", full=False),
+)
+def test_torch_zeros_like(
+    *,
+    dtype_and_x,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        dtype=dtype[0],
+        device=on_device,
+    )
+
+
+# empty
+@handle_frontend_test(
+    fn_tree="torch.empty",
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_torch_empty(
+    *,
+    shape,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        size=shape,
+        dtype=dtype[0],
+        test_values=False,
+        device=on_device,
+    )
+
+
+# arange
+@handle_frontend_test(
+    fn_tree="torch.arange",
+    start_stop_step=_start_stop_step(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_torch_arange(
+    *,
+    start_stop_step,
+    dtype,
+    as_variable,
+    with_out,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    start, stop, step = start_stop_step
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=3,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        start=start,
+        end=stop,
+        step=step,
+        dtype=dtype[0],
+        device=on_device,
+    )
+
+
+# range
+@handle_frontend_test(
+    fn_tree="torch.range",
+    start_stop_step=_start_stop_step(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_torch_range(
+    *,
+    start_stop_step,
+    dtype,
+    as_variable,
+    with_out,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    start, stop, step = start_stop_step
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=3,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        start=start,
+        end=stop,
+        step=step,
+        dtype=dtype[0],
+        device=on_device,
+    )
+
+
+# linspace
+@handle_frontend_test(
+    fn_tree="torch.linspace",
+    start=st.floats(min_value=-10, max_value=10),
+    stop=st.floats(min_value=-10, max_value=10),
+    num=st.integers(min_value=1, max_value=10),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_torch_linspace(
+    *,
+    start,
+    stop,
+    num,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        start=start,
+        end=stop,
+        steps=num,
+        dtype=dtype[0],
+        device=on_device,
+    )
+
+
+# logspace
+@handle_frontend_test(
+    fn_tree="torch.logspace",
+    start=st.floats(min_value=-10, max_value=10),
+    stop=st.floats(min_value=-10, max_value=10),
+    num=st.integers(min_value=1, max_value=10),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_torch_logspace(
+    *,
+    start,
+    stop,
+    num,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        start=start,
+        end=stop,
+        steps=num,
+        dtype=dtype[0],
+        device=on_device,
+    )
+
+
+# empty_like
+@handle_frontend_test(
+    fn_tree="torch.empty_like",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_torch_empty_like(
+    *,
+    dtype_and_x,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, inputs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=inputs[0],
+        dtype=dtype[0],
+        device=on_device,
+        test_values=False,
+    )
+
+
+# full_like
+@handle_frontend_test(
+    fn_tree="torch.full_like",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.shared(
+            helpers.get_dtypes("numeric", full=False), key="dtype"
+        )
+    ),
+    fill_value=_fill_value(),
+    dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
+)
+def test_torch_full_like(
+    *,
+    dtype_and_x,
+    fill_value,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, inputs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=inputs[0],
+        fill_value=fill_value,
+        dtype=dtype[0],
+        device=on_device,
+        test_values=False,
+    )
+
+
+# as_tensor
+@handle_frontend_test(
+    fn_tree="torch.as_tensor",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_torch_as_tensor(
+    *,
+    dtype_and_x,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=input[0],
+        dtype=dtype[0],
+        device=on_device,
+    )
+
+
+# from_numpy
+@handle_frontend_test(
+    fn_tree="torch.from_numpy",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_torch_from_numpy(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        data=input[0],
+    )
+
+
+# tensor
+@handle_frontend_test(
+    fn_tree="torch.tensor",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_torch_tensor(
+    *,
+    dtype_and_x,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=input[0],
+        dtype=dtype[0],
+        device=on_device,
     )

@@ -11,6 +11,8 @@ from ivy.functional.ivy.random import (
     _randint_check_dtype_and_bound,
     _check_valid_scale,
 )
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 # Extra #
 # ------#
@@ -24,7 +26,10 @@ def random_uniform(
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None,
+    seed: Optional[int] = None,
 ) -> np.ndarray:
+    if seed:
+        np.random.seed(seed)
     shape = _check_bounds_and_get_shape(low, high, shape)
     return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
@@ -36,13 +41,17 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: str,
     dtype: np.dtype,
+    seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     _check_valid_scale(std)
     shape = _check_bounds_and_get_shape(mean, std, shape)
+    if seed:
+        np.random.seed(seed)
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -52,8 +61,11 @@ def multinomial(
     probs: Optional[np.ndarray] = None,
     replace: bool = True,
     device: str,
+    seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if seed:
+        np.random.seed(seed)
     if probs is None:
         probs = (
             np.ones(
@@ -73,11 +85,8 @@ def multinomial(
         np.random.choice(num_classes, num_samples, replace, p=prob[0])
         for prob in probs_stack
     ]
-    samples_flat = np.stack(samples_stack, out=out)
+    samples_flat = np.stack(samples_stack)
     return np.asarray(np.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
-
-
-multinomial.support_native_out = True
 
 
 def randint(
@@ -88,6 +97,7 @@ def randint(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: str,
     dtype: Optional[Union[np.dtype, ivy.Dtype]] = None,
+    seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if not dtype:
@@ -95,6 +105,8 @@ def randint(
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
+    if seed:
+        np.random.seed(seed)
     return np.random.randint(low, high, shape, dtype=dtype)
 
 
@@ -102,5 +114,9 @@ def seed(*, seed_value: int = 0) -> None:
     np.random.seed(seed_value)
 
 
-def shuffle(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def shuffle(
+    x: np.ndarray, /, *, seed: Optional[int] = None, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    if seed:
+        np.random.seed(seed)
     return np.random.permutation(x)
