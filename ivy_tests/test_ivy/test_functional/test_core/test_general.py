@@ -1422,6 +1422,7 @@ def test_is_ivy_array(
         available_dtypes=helpers.get_dtypes("valid")
     ),
     exclusive=st.booleans(),
+    as_variable_flags=st.just([False]),
     container_flags=st.just([False]),
     test_with_out=st.just(False),
 )
@@ -1459,6 +1460,7 @@ def test_is_native_array(
         available_dtypes=helpers.get_dtypes("valid")
     ),
     exclusive=st.booleans(),
+    as_variable_flags=st.just([False]),
     container_flags=st.just([False]),
     test_with_out=st.just(False),
 )
