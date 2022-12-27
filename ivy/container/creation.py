@@ -898,10 +898,109 @@ class ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def static_logspace(
-        start: Union[ivy.Array, ivy.NativeArray, float],
-        stop: Union[ivy.Array, ivy.NativeArray, float],
+        start: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
+        stop: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
         /,
         num: int,
+        base: float = 10.0,
+        axis: int = 0,
+        endpoint: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.logspace. This method simply
+        wraps the function, and so the docstring for ivy.logspace also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        start
+            Container for first value in the range in log space.
+        stop
+            Container for last value in the range in log space.
+        num
+            Number of values to generate.
+        base
+            The base of the log space. Default is 10.0
+        axis
+            Axis along which the operation is performed. Relevant only if values in
+            start or stop containers are array-like. Default is 0.
+        endpoint
+            If True, stop is the last sample. Otherwise, it is not included. Default is
+            True.
+        dtype
+            The data type of the output tensor. If None, the dtype of on_value is used
+            or if that is None, the dtype of off_value is used, or if that is None,
+            defaults to float32. Default is None.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default
+            is None.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to. Default is None.
+
+        Returns
+        -------
+        ret
+            a container having the same shape as ``start`` and filled with tensor of
+            evenly-spaced values in log space.
+
+        Examples
+        --------
+        >>> import ivy.container.creation.static_logspace as static_logspace
+        >>> x = ivy.Container(a = 1, b = 0)
+        >>> y = ivy.Container(a = 4, b = 1)
+        >>> z = static_logspace(x, y, 4)
+        {
+            a: ivy.array([10.,  100.,  1000., 10000.]),
+            b: ivy.array([ 1., 2.15443469, 4.64158883, 10.])
+        }
+
+        >>> u = ivy.Container(c = 0, d = 0)
+        >>> v = ivy.Container(c = 1, d = 2)
+        >>> x = ivy.Container(a = 1, b = u)
+        >>> y = ivy.Container(a = 4, b = v)
+        >>> z = static_logspace(x, y, 4)
+        {
+            a: ivy.array([10.,  100.,  1000., 10000.]),
+            b:  {
+                    c: ivy.array([ 1., 2.15443469, 4.64158883, 10.])
+                    d: ivy.array([ 1., 4.64158883, 21.5443469, 100.])
+                }
+        }
+
+        """
+
+        return ContainerBase.cont_multi_map_in_function(
+            "logspace",
+            start,
+            stop,
+            num,
+            base=base,
+            axis=axis,
+            endpoint=endpoint,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            device=device,
+            out=out,
+        )
+
+    def logspace(
+        self: ivy.Container,
+        stop: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
+        /,
+        num: int,
+        *,
         base: float = 10.0,
         axis: int = None,
         endpoint: bool = True,
@@ -909,24 +1008,94 @@ class ContainerWithCreation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
-            "logspace",
-            start,
+        """
+        ivy.Container instance method variant of ivy.logspace. This method simply
+        wraps the function, and so the docstring for ivy.logspace also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container for first value in the range in log space.
+        stop
+            Container for last value in the range in log space.
+        num
+            Number of values to generate.
+        base
+            The base of the log space. Default is 10.0
+        axis
+            Axis along which the operation is performed. Relevant only if values in
+            start or stop containers are array-like. Default is 0.
+        endpoint
+            If True, stop is the last sample. Otherwise, it is not included. Default is
+            True.
+        dtype
+            The data type of the output tensor. If None, the dtype of on_value is used
+            or if that is None, the dtype of off_value is used, or if that is None,
+            defaults to float32. Default is None.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default
+            is None.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to. Default is None.
+
+        Returns
+        -------
+        ret
+            a container having the same shape as ``self`` and filled with tensor of
+            evenly-spaced values in log space.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = 1, b = 0)
+        >>> y = ivy.Container(a = 4, b = 1)
+        >>> z = x.logspace(y, 4)
+        {
+            a: ivy.array([10.,  100.,  1000., 10000.]),
+            b: ivy.array([ 1., 2.15443469, 4.64158883, 10.])
+        }
+
+        >>> x = ivy.Container(a = 1, b = 0)
+        >>> y = ivy.Container(a = 4, b = 1)
+        >>> z = ivy.logspace(x, y, 4)
+        {
+            a: ivy.array([10.,  100.,  1000., 10000.]),
+            b: ivy.array([ 1., 2.15443469, 4.64158883, 10.])
+        }
+
+        >>> u = ivy.Container(c = 0, d = 0)
+        >>> v = ivy.Container(c = 1, d = 2)
+        >>> x = ivy.Container(a = 1, b = u)
+        >>> y = ivy.Container(a = 4, b = v)
+        >>> z = x.logspace(y, 4)
+        {
+            a: ivy.array([10.,  100.,  1000., 10000.]),
+            b:  {
+                    c: ivy.array([ 1., 2.15443469, 4.64158883, 10.])
+                    d: ivy.array([ 1., 4.64158883, 21.5443469, 100.])
+                }
+        }
+        """
+
+        return self.static_logspace(
+            self,
             stop,
             num,
-            base,
-            axis,
-            endpoint,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out,
+            base=base,
+            axis=axis,
+            endpoint=endpoint,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
             device=device,
+            out=out,
         )
 
     @staticmethod
