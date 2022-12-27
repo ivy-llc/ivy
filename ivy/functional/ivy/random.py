@@ -465,7 +465,7 @@ def randint(
     -------
     ret
         Returns an array with the given shape filled with integers from
-        the uniform distribution in the "half-open" interval [low, high)
+        the uniform distribution in the “half-open” interval [low, high)
 
     Examples
     --------
