@@ -3,7 +3,7 @@
 # global
 import numpy as np
 import importlib
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 import typing
 from types import SimpleNamespace
 
@@ -530,6 +530,7 @@ def test_dtype(
     input_dtype=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_with_out=st.just(False),
 )
 def test_dtype_bits(
     *,
@@ -540,7 +541,6 @@ def test_dtype_bits(
     on_device,
     ground_truth_backend,
 ):
-    assume(not test_flags.with_out)
     ret = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
