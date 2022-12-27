@@ -3,11 +3,11 @@ import math
 import ivy
 
 # local
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
 )
 
 
@@ -23,7 +23,7 @@ def convolve(a, v, mode="full"):
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def clip(
     a,
     a_min,
@@ -33,7 +33,7 @@ def clip(
     *,
     where=True,
     casting="same_kind",
-    order="k",
+    order="K",
     dtype=None,
     subok=True,
 ):
@@ -60,7 +60,7 @@ def clip(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def sqrt(
     x,
     /,
@@ -82,7 +82,7 @@ def sqrt(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def cbrt(
     x,
     /,
@@ -105,7 +105,7 @@ def cbrt(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def square(
     x,
     /,
@@ -126,7 +126,7 @@ def square(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def absolute(
     x,
     /,
@@ -147,7 +147,7 @@ def absolute(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def fabs(
     x,
     /,
@@ -168,7 +168,7 @@ def fabs(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def sign(
     x,
     /,
@@ -191,7 +191,7 @@ def sign(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def heaviside(
     x1,
     x2,
@@ -218,6 +218,7 @@ def heaviside(
 
 
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     ret = ivy.array(x, copy=copy)
     bounds = ivy.finfo(x)
@@ -239,6 +240,7 @@ def real_if_close(a, tol=100):
 
 
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False

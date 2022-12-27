@@ -116,6 +116,29 @@ def conv3d_transpose(
 
 
 @to_ivy_arrays_and_back
+def depthwise_conv2d(
+    input,
+    filter,
+    strides,
+    padding="SAME",
+    data_format="NHWC",
+    dilations=[1, 1],
+    name=None,
+):
+    return ivy.depthwise_conv2d(
+        input,
+        filter,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
+depthwise_conv2d.unsupported_dtypes = ("bfloat16",)
+
+
+@to_ivy_arrays_and_back
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
     inv = 1.0 / ivy.sqrt(variance + variance_epsilon)
     if scale is not None:
@@ -230,3 +253,23 @@ def local_response_normalization(
 @to_ivy_arrays_and_back
 def max_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.max_pool1d(input, ksize, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
+def moments(x, axes, shift=None, keepdims=False, name=None):
+    return ivy.mean(x, axis=axes, keepdims=keepdims), ivy.var(
+        x, axis=axes, keepdims=keepdims
+    )
+
+
+@to_ivy_arrays_and_back
+def bias_add(value, bias, data_format=None, name=None):
+    if data_format is None:
+        data_format = "N...C"
+
+    if data_format == "N...C":
+        return ivy.add(value, bias)
+    else:
+        value = ivy.swapaxes(value, 1, -1)
+        res = ivy.add(value, bias)
+        return ivy.swapaxes(res, 1, -1)

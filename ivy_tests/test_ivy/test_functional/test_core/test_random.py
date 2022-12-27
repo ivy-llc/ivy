@@ -1,7 +1,7 @@
 """Collection of tests for unified reduction functions."""
 
 # global
-from hypothesis import assume, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy
@@ -30,6 +30,7 @@ from ivy_tests.test_ivy.helpers import handle_test
     ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_random_uniform(
     *,
@@ -37,12 +38,7 @@ def test_random_uniform(
     dtype_and_high,
     dtype,
     seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -55,12 +51,7 @@ def test_random_uniform(
         return helpers.test_function(
             ground_truth_backend=ground_truth_backend,
             input_dtypes=low_dtype + high_dtype,
-            num_positional_args=num_positional_args,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            native_array_flags=native_array,
-            container_flags=container_flags,
-            instance_method=instance_method,
+            test_flags=test_flags,
             on_device=on_device,
             fw=backend_fw,
             fn_name=fn_name,
@@ -104,18 +95,14 @@ def test_random_uniform(
     ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_random_normal(
     dtype_and_mean,
     dtype_and_std,
     dtype,
     seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -128,12 +115,7 @@ def test_random_normal(
         return helpers.test_function(
             ground_truth_backend=ground_truth_backend,
             input_dtypes=mean_dtype + std_dtype,
-            num_positional_args=num_positional_args,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            native_array_flags=native_array,
-            container_flags=container_flags,
-            instance_method=instance_method,
+            test_flags=test_flags,
             on_device=on_device,
             fw=backend_fw,
             fn_name=fn_name,
@@ -184,38 +166,25 @@ def _pop_size_num_samples_replace_n_probs(draw):
     fn_tree="functional.ivy.multinomial",
     everything=_pop_size_num_samples_replace_n_probs(),
     seed=helpers.ints(min_value=0, max_value=100),
-    ground_truth_backend="numpy",
+    test_gradients=st.just(False),
 )
 def test_multinomial(
     *,
     everything,
     seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
-    # tensorflow does not support multinomial without replacement
-    if backend_fw == ivy.functional.backends.tensorflow:
-        assume(replace)
 
     def call():
         return helpers.test_function(
             ground_truth_backend=ground_truth_backend,
             input_dtypes=prob_dtype,
-            num_positional_args=num_positional_args,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            native_array_flags=native_array,
-            container_flags=container_flags,
-            instance_method=instance_method,
+            test_flags=test_flags,
             on_device=on_device,
             fw=backend_fw,
             fn_name=fn_name,
@@ -243,6 +212,7 @@ def test_multinomial(
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
+        assert u.shape == v.shape
 
 
 @st.composite
@@ -274,17 +244,13 @@ def _gen_randint_data(draw):
     fn_tree="functional.ivy.randint",
     dtype_low_high=_gen_randint_data(),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_randint(
     *,
     dtype_low_high,
     seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -296,12 +262,7 @@ def test_randint(
         return helpers.test_function(
             ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
-            num_positional_args=num_positional_args,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            native_array_flags=native_array,
-            container_flags=container_flags,
-            instance_method=instance_method,
+            test_flags=test_flags,
             on_device=on_device,
             fw=backend_fw,
             fn_name=fn_name,
@@ -344,17 +305,13 @@ def test_seed(seed_val):
         min_dim_size=2,
     ),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_shuffle(
     *,
     dtype_and_x,
     seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -366,12 +323,7 @@ def test_shuffle(
         return helpers.test_function(
             ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
-            num_positional_args=num_positional_args,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            native_array_flags=native_array,
-            container_flags=container_flags,
-            instance_method=instance_method,
+            test_flags=test_flags,
             on_device=on_device,
             fw=backend_fw,
             fn_name=fn_name,

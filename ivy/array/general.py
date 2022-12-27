@@ -235,7 +235,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        scatter values into an array
+        With scatter values into an array
 
         >>> arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
         >>> indices = ivy.array([[4], [3], [1], [7]])
@@ -244,7 +244,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(scatter)
         ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])
 
-        scatter values into an empty array
+        With scatter values into an empty array
 
         >>> shape = ivy.array([2, 5])
         >>> indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])

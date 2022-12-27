@@ -300,25 +300,6 @@ def copy_array(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.array(x)
 
 
-def logspace(
-    start: Union[JaxArray, int],
-    stop: Union[JaxArray, int],
-    /,
-    num: int,
-    *,
-    base: float = 10.0,
-    axis: int = None,
-    dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if axis is None:
-        axis = -1
-    return _to_device(
-        jnp.logspace(start, stop, num, base=base, dtype=dtype, axis=axis), device=device
-    )
-
-
 def one_hot(
     indices: JaxArray,
     depth: int,
