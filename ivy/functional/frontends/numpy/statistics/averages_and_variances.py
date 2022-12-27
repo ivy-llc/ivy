@@ -197,7 +197,9 @@ def cov(x, y=None, bias=False, dtype=None, fweights=None, aweights=None, ddof=No
         return c
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def nanmedian(
     a,
     /,
