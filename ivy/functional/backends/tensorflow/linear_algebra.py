@@ -276,7 +276,7 @@ def matrix_norm(
 ) -> Union[tf.Tensor, tf.Variable]:
 
     _expand_dims = False
-    if len(tuple(x.shape)) == 2: # ndim doesn't work for tf.Variable
+    if len(tuple(x.shape)) == 2:  # ndim doesn't work for tf.Variable
         x = tf.expand_dims(x, axis=0)
         _expand_dims = True
 
