@@ -2290,7 +2290,4 @@ class ContainerWithManipulationExperimental(ContainerBase):
         }
 
         """
-        return self.static_broadcast_shapes(
-            self,
-            out=out
-        )
+        return self.static_broadcast_shapes(self, out=out)
