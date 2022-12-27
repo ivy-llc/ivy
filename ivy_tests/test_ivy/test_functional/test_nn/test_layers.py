@@ -383,31 +383,45 @@ def x_and_filters(
             max_value=1.0,
         )
     )
-    if bias:
-        bias_shape = (output_channels,)
-        b = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                shape=bias_shape,
-                min_value=0.0,
-                max_value=1.0,
-            )
+    if transpose:
+        if general:
+            data_format = "channel_first" if channel_first else "channel_last"
+        return (
+            dtype,
+            vals,
+            filters,
+            dilations,
+            data_format,
+            strides,
+            padding,
+            output_shape,
+            fc,
         )
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
-    ret = (
-        dtype,
-        vals,
-        filters,
-        dilations,
-        data_format,
-        strides,
-        padding,
-    )
-    ret = ret + (output_shape, fc) if transpose else ret + (fc,)
-    if bias:
-        return ret + (b,)
-    return ret
+        # return dtype, vals, filters, dilations, data_format, strides, padding, fc
+        if bias:
+            bias_shape = (output_channels,)
+            bias = draw(
+                helpers.array_values(
+                    dtype=dtype[0],
+                    shape=bias_shape,
+                    min_value=0.0,
+                    max_value=1.0,
+                )
+            )
+            return (
+                dtype,
+                vals,
+                filters,
+                dilations,
+                data_format,
+                strides,
+                padding,
+                fc,
+                bias,
+            )
+    return dtype, vals, filters, dilations, data_format, strides, padding
 
 
 # conv1d
@@ -425,7 +439,7 @@ def test_conv1d(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -497,7 +511,7 @@ def test_conv2d(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -576,7 +590,7 @@ def test_depthwise_conv2d(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     fw = backend_fw.current_backend_str()
     assume(not (fw == "tensorflow" and dilations > 1 and stride > 1))
     helpers.test_function(
@@ -612,7 +626,7 @@ def test_conv3d(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -681,10 +695,7 @@ def test_conv_general_dilated(
     fn_tree="functional.ivy.conv_general_transpose",
     dims=st.shared(st.integers(1, 3), key="dims"),
     x_f_d_df=x_and_filters(
-        dim=st.shared(st.integers(1, 3), key="dims"),
-        general=True,
-        transpose=True,
-        bias=True,
+        dim=st.shared(st.integers(1, 3), key="dims"), general=True, transpose=True
     ),
     # tensorflow does not work with dilations > 1 on cpu
     ground_truth_backend="jax",
@@ -699,18 +710,7 @@ def test_conv_general_transpose(
     on_device,
     ground_truth_backend,
 ):
-    (
-        dtype,
-        x,
-        filters,
-        dilations,
-        data_format,
-        stride,
-        pad,
-        output_shape,
-        fc,
-        bias,
-    ) = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     fw = backend_fw.current_backend_str()
     assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_function(
@@ -731,7 +731,6 @@ def test_conv_general_transpose(
         data_format=data_format,
         dilations=dilations,
         feature_group_count=fc,
-        bias=bias,
     )
 
 

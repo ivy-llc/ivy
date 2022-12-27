@@ -116,16 +116,8 @@ def matrix_exp(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.exp(x, out=out)
-
-
-matrix_exp.support_native_out = True
+    return torch.exp(x)
 
 
 def eig(x: torch.Tensor, /) -> Tuple[torch.Tensor]:
-    if not torch.is_complex(x):
-        x = x.to(torch.complex128)
     return torch.linalg.eig(x)
-
-
-eig.support_native_out = False

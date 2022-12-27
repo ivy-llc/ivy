@@ -4,14 +4,12 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
     handle_numpy_dtype,
-    from_zero_dim_arrays_to_scalar,
 )
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
 def logical_and(
     x1,
     x2,
@@ -33,7 +31,6 @@ def logical_and(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
 def logical_or(
     x1,
     x2,
@@ -55,7 +52,6 @@ def logical_or(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
 def logical_not(
     x,
     /,
@@ -76,7 +72,6 @@ def logical_not(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
 def logical_xor(
     x1,
     x2,

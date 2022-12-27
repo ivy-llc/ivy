@@ -283,12 +283,8 @@ def depthwise_conv2d(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = torch.tensor(x)
-    filters = torch.tensor(filters)
     strides = [strides] * 2 if isinstance(strides, int) else strides
-    strides = [strides[1], strides[2]] if len(strides) == 4 else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    filters = ivy.squeeze(filters, 3) if filters.ndim == 4 else filters
 
     f_w_after_dilation = filters.shape[1] + (
         (dilations[1] - 1) * (filters.shape[1] - 1)
@@ -585,7 +581,6 @@ def conv_general_transpose(
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
-    bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -636,7 +631,7 @@ def conv_general_transpose(
         res = torch.nn.functional.conv_transpose1d(
             x,
             filters,
-            bias,
+            None,
             strides,
             padding_list,
             dilation=dilations,
@@ -649,7 +644,7 @@ def conv_general_transpose(
         res = torch.nn.functional.conv_transpose2d(
             x,
             filters,
-            bias,
+            None,
             strides,
             padding_list,
             dilation=dilations,
@@ -664,7 +659,7 @@ def conv_general_transpose(
         res = torch.nn.functional.conv_transpose3d(
             x,
             filters,
-            bias,
+            None,
             strides,
             padding_list,
             dilation=dilations,

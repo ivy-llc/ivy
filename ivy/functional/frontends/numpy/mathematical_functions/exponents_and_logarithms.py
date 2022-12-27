@@ -2,18 +2,18 @@
 import ivy
 
 # local
+from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
     handle_numpy_dtype,
-    from_zero_dim_arrays_to_scalar,
 )
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
+@from_zero_dim_arrays_to_float
 def exp(
     x,
     /,
@@ -34,7 +34,7 @@ def exp(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
+@from_zero_dim_arrays_to_float
 def expm1(
     x,
     /,
@@ -55,7 +55,7 @@ def expm1(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
+@from_zero_dim_arrays_to_float
 def exp2(
     x,
     /,
@@ -76,7 +76,7 @@ def exp2(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
+@from_zero_dim_arrays_to_float
 def log(
     x,
     /,
@@ -97,7 +97,7 @@ def log(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
+@from_zero_dim_arrays_to_float
 def log10(
     x,
     /,
@@ -118,7 +118,7 @@ def log10(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
+@from_zero_dim_arrays_to_float
 def log2(
     x,
     /,
@@ -139,7 +139,7 @@ def log2(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
+@from_zero_dim_arrays_to_float
 def log1p(
     x,
     /,
@@ -160,7 +160,7 @@ def log1p(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
+@from_zero_dim_arrays_to_float
 def logaddexp(
     x1,
     x2,
@@ -182,7 +182,7 @@ def logaddexp(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
+@from_zero_dim_arrays_to_float
 def logaddexp2(
     x1,
     x2,

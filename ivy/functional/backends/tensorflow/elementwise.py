@@ -314,20 +314,12 @@ def isinf(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    detect_positive: bool = True,
-    detect_negative: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
         return tf.zeros_like(x, tf.bool)
     else:
-        if detect_negative and detect_positive:
-            return tf.math.is_inf(x)
-        elif detect_negative:
-            return tf.experimental.numpy.isposinf(x)
-        elif detect_positive:
-            return tf.experimental.numpy.isneginf(x)
-        return tf.zeros_like(x, tf.bool)
+        return tf.math.is_inf(x)
 
 
 def isnan(

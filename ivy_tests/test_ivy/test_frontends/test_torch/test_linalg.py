@@ -42,51 +42,6 @@ def _get_dtype_and_matrix(draw):
     )
 
 
-# vector_norm
-@handle_frontend_test(
-    fn_tree="torch.linalg.vector_norm",
-    dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        valid_axis=True,
-        min_value=-1e04,
-        max_value=1e04,
-    ),
-    kd=st.booleans(),
-    ord=helpers.ints(min_value=1, max_value=2),
-    dtype=helpers.get_dtypes("valid"),
-)
-def test_torch_vector_norm(
-    *,
-    dtype_values_axis,
-    kd,
-    ord,
-    dtype,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    on_device,
-    fn_tree,
-    frontend,
-):
-    dtype, x, axis = dtype_values_axis
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        ord=ord,
-        dim=axis,
-        keepdim=kd,
-        dtype=dtype[0],
-    )
-
-
 # inv
 @handle_frontend_test(
     fn_tree="torch.linalg.inv",
@@ -115,43 +70,6 @@ def test_torch_inv(
         as_variable_flags=as_variable,
         with_out=with_out,
         all_aliases=["inverse"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-03,
-        atol=1e-02,
-        input=x[0],
-    )
-
-
-# inv_ex
-@handle_frontend_test(
-    fn_tree="torch.linalg.inv_ex",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
-        min_value=0,
-        max_value=20,
-        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
-)
-def test_torch_inv_ex(
-    *,
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    on_device,
-    fn_tree,
-    frontend,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,

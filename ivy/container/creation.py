@@ -24,7 +24,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "arange",
             start,
             stop,
@@ -59,7 +59,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "asarray",
             x,
             key_chains=key_chains,
@@ -85,7 +85,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "zeros",
             shape,
             key_chains,
@@ -110,7 +110,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "ones",
             shape,
             key_chains,
@@ -196,7 +196,7 @@ class ContainerWithCreation(ContainerBase):
             b: ivy.array([15., 15., 15.])
         }
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "full_like",
             x,
             fill_value,
@@ -342,7 +342,7 @@ class ContainerWithCreation(ContainerBase):
         ret
             a container having the same shape as ``self`` and filled with ones.
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "ones_like",
             x,
             key_chains=key_chains,
@@ -460,7 +460,7 @@ class ContainerWithCreation(ContainerBase):
         ret
             an container having the same shape as ``x`` and filled with ``zeros``.
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "zeros_like",
             x,
             key_chains=key_chains,
@@ -542,7 +542,7 @@ class ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "tril",
             x,
             k,
@@ -586,7 +586,7 @@ class ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "triu",
             x,
             k,
@@ -631,7 +631,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "empty_like",
             x,
             key_chains,
@@ -681,7 +681,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "eye",
             n_rows,
             n_cols,
@@ -712,7 +712,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "linspace",
             start,
             stop,
@@ -768,8 +768,9 @@ class ContainerWithCreation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "meshgrid",
             *arrays,
             sparse,
@@ -778,6 +779,7 @@ class ContainerWithCreation(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
+            out,
         )
 
     def meshgrid(
@@ -790,15 +792,21 @@ class ContainerWithCreation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_meshgrid(
-            tuple([self] + list(arrays)),
-            sparse,
-            indexing,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+        return ContainerBase.cont_handle_inplace(
+            self.cont_map(
+                lambda x_: ivy.meshgrid([x_._data] + list(arrays))
+                if ivy.is_array(x_)
+                else x_,
+                sparse,
+                indexing,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
         )
 
     @staticmethod
@@ -812,7 +820,7 @@ class ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "from_dlpack",
             x,
             key_chains,
@@ -861,7 +869,7 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "native_array",
             x,
             key_chains,
@@ -913,7 +921,7 @@ class ContainerWithCreation(ContainerBase):
         out: Optional[ivy.Container] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "logspace",
             start,
             stop,
@@ -983,7 +991,7 @@ class ContainerWithCreation(ContainerBase):
             container with tensors of zeros with the same shape and type as the inputs,
             unless dtype provided which overrides.
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "one_hot",
             indices,
             depth,

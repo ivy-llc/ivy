@@ -4,14 +4,12 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
     handle_numpy_dtype,
-    from_zero_dim_arrays_to_scalar,
 )
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
 def minimum(
     x1,
     x2,
@@ -31,7 +29,6 @@ def minimum(
 
 
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
 def amin(
     a,
     /,
@@ -71,7 +68,6 @@ def amin(
 
 
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
 def amax(
     a,
     /,
@@ -111,7 +107,6 @@ def amax(
 
 
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
 def nanmin(
     a,
     axis=None,
@@ -153,7 +148,6 @@ def nanmin(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
 def maximum(
     x1,
     x2,
@@ -173,7 +167,6 @@ def maximum(
 
 
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
 def nanmax(
     a,
     axis=None,

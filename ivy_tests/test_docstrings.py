@@ -259,7 +259,6 @@ def test_docstrings(backend):
         "supports_inplace_updates",
         "get",
         "deserialize",
-        "dropout",
     ]
     # the temp skip list consists of functions which have an issue with their
     # implementation
@@ -275,7 +274,7 @@ def test_docstrings(backend):
     ]
 
     # skip list for array and container docstrings
-    skip_arr_cont = ["cumprod", "supports_inplace_updates", "slogdet", "dropout"]
+    skip_arr_cont = ["cumprod", "supports_inplace_updates", "slogdet"]
     # currently_being_worked_on = ["layer_norm"]
 
     # comment out the line below in future to check for the functions in temp skip list

@@ -60,7 +60,7 @@ class ContainerWithSearching(ContainerBase):
                           [0]])
         }
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argmax",
             x,
             axis=axis,
@@ -176,7 +176,7 @@ class ContainerWithSearching(ContainerBase):
                           [0]])
         }
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argmin",
             x,
             axis=axis,
@@ -288,7 +288,7 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the nonzero values.
 
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nonzero", x, as_tuple=as_tuple, size=size, fill_value=fill_value
         )
 
@@ -376,7 +376,7 @@ class ContainerWithSearching(ContainerBase):
             b: ivy.array([2, 8, 6])
         }
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "where", condition, x1, x2, out=out
         )
 
@@ -484,7 +484,7 @@ class ContainerWithSearching(ContainerBase):
             b: ivy.array([[0], [1]])
         }
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argwhere",
             x,
             key_chains=key_chains,

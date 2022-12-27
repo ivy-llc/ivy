@@ -2,16 +2,16 @@
 import ivy
 
 # local
+from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_dtype,
-    from_zero_dim_arrays_to_scalar,
 )
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
+@from_zero_dim_arrays_to_float
 def sum(
     x,
     /,
@@ -39,7 +39,7 @@ def sum(
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
+@from_zero_dim_arrays_to_float
 def prod(
     x, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=True
 ):
@@ -59,7 +59,6 @@ def prod(
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
 def nansum(
     a, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None
 ):  # ToDo handle initial
@@ -72,7 +71,6 @@ def nansum(
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
 def nanprod(
     a, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None
 ):  # ToDo handle initial

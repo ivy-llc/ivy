@@ -28,7 +28,9 @@ class ContainerWithDevice(ContainerBase):
             b: cpu
         }
         """
-        return ContainerBase.cont_multi_map_in_function("dev", x, as_native=as_native)
+        return ContainerBase.cont_multi_map_in_static_method(
+            "dev", x, as_native=as_native
+        )
 
     def dev(self: ivy.Container, as_native: bool = False) -> ivy.Container:
         """
@@ -115,7 +117,7 @@ class ContainerWithDevice(ContainerBase):
         cpu cpu
 
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "to_device",
             x,
             device,

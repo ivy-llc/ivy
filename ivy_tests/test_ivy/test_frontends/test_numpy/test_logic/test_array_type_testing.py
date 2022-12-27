@@ -1,5 +1,4 @@
 # global
-import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -13,8 +12,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
-                min_value=-np.inf,
-                max_value=np.inf,
             )
         ],
         special=True,
@@ -64,8 +61,6 @@ def test_numpy_isfinite(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
-                min_value=-np.inf,
-                max_value=np.inf,
             )
         ],
         special=True,
@@ -115,9 +110,6 @@ def test_numpy_isinf(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
-                min_value=-np.inf,
-                max_value=np.inf,
-                allow_nan=True,
             )
         ],
         special=True,

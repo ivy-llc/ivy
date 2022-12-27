@@ -51,7 +51,7 @@ class ContainerWithGeneralExperimental(ContainerBase):
         ivy.Container(a=[[ True,  True,  True], [False, False, False]],\
                       b=[False,  True, False])
         """
-        return ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_static_method(
             "isin", element, test_elements, assume_unique=assume_unique, invert=invert
         )
 
