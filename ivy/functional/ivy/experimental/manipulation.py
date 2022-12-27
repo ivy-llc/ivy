@@ -1534,8 +1534,7 @@ def hsplit(
 
 
 @handle_exceptions
-def broadcast_shapes(shapes: Union[List[int], List[Tuple]]
-                     ) -> Tuple[int]:
+def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     """Broadcasts shapes.
 
     Parameters

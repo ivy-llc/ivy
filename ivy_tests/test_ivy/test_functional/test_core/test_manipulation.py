@@ -52,6 +52,7 @@ def _arrays_idx_n_dtypes(draw):
 @handle_test(
     fn_tree="functional.ivy.concat",
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    test_gradients=st.just(False),
 )
 def test_concat(
     *,
@@ -88,6 +89,7 @@ def test_concat(
         max_size=1,
         force_int=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_expand_dims(
     *,
@@ -126,6 +128,7 @@ def test_expand_dims(
         max_size=1,
         force_int=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_flip(
     *,
@@ -167,6 +170,7 @@ def _permute_dims_helper(draw):
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     permutation=_permute_dims_helper(),
+    test_gradients=st.just(False),
 )
 def test_permute_dims(
     *,
@@ -202,6 +206,7 @@ def test_permute_dims(
         shape=st.shared(helpers.get_shape(), key="value_shape")
     ),
     order=st.sampled_from(["C", "F"]),
+    test_gradients=st.just(False),
 )
 def test_reshape(
     *,
@@ -261,6 +266,7 @@ def test_reshape(
             key="shift_len",
         ),
     ),
+    test_gradients=st.just(False),
 )
 def test_roll(
     *,
@@ -315,6 +321,7 @@ def _squeeze_helper(draw):
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
+    test_gradients=st.just(False),
 )
 def test_squeeze(
     *,
@@ -364,6 +371,7 @@ def _stack_helper(draw):
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="values_shape"),
         force_int=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_stack(
     *,
@@ -411,6 +419,7 @@ def _basic_min_x_max(draw):
 @handle_test(
     fn_tree="functional.ivy.clip",
     dtype_x_min_max=_basic_min_x_max(),
+    test_gradients=st.just(False),
 )
 def test_clip(
     *,
@@ -461,6 +470,7 @@ def _constant_pad_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.constant_pad",
     dtype_value_pad_width_constant=_constant_pad_helper(),
+    test_gradients=st.just(False),
 )
 def test_constant_pad(
     *,
@@ -532,6 +542,7 @@ def _repeat_helper(draw):
         key="axis",
     ),
     repeat=st.one_of(st.integers(1, 10), _repeat_helper()),
+    test_gradients=st.just(False),
 )
 def test_repeat(
     *,
@@ -620,6 +631,7 @@ def _get_splits(draw):
     with_remainder=st.booleans(),
     num_or_size_splits=_get_splits(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_split(
     *,
@@ -662,6 +674,7 @@ def test_split(
     axis1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"), force_int=True
     ),
+    test_gradients=st.just(False),
 )
 def test_swapaxes(
     *,
@@ -703,6 +716,7 @@ def test_swapaxes(
         min_value=0,
         max_value=10,
     ),
+    test_gradients=st.just(False),
 )
 def test_tile(
     *,
@@ -732,6 +746,7 @@ def test_tile(
 @handle_test(
     fn_tree="functional.ivy.zero_pad",
     dtype_value_pad_width=_constant_pad_helper(),
+    test_gradients=st.just(False),
 )
 def test_zero_pad(
     *,
@@ -766,6 +781,7 @@ def test_zero_pad(
     ),
     keepdims=st.booleans(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_unstack(
     *,

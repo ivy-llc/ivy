@@ -284,6 +284,5 @@ def hsplit(
     return jnp.hsplit(ary, indices_or_sections)
 
 
-def broadcast_shapes(shapes: Union[List[int], List[Tuple]]
-                     ) -> Tuple[int]:
+def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return jnp.broadcast_shapes(*shapes)

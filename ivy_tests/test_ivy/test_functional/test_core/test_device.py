@@ -250,7 +250,7 @@ def test_to_device(
 
     if test_flags.with_out:
         # should be the same array test
-        assert np.allclose(ivy.to_numpy(x_on_dev), ivy.to_numpy(out))
+        assert x_on_dev is out
 
         # should be the same device
         assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)

@@ -331,7 +331,7 @@ def svd(
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
-def svdvals(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def svdvals(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.svd(x, compute_uv=False)
 
 

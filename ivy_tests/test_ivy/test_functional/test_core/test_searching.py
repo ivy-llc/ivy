@@ -56,6 +56,7 @@ def _broadcastable_trio(draw):
     fn_tree="functional.ivy.argmax",
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_argmax(
     *,
@@ -86,6 +87,7 @@ def test_argmax(
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
     output_dtype=st.sampled_from([ivy.int32, ivy.int64]),
+    test_gradients=st.just(False),
 )
 def test_argmin(
     *,
@@ -126,6 +128,7 @@ def test_argmin(
     size=st.integers(min_value=1, max_value=5),
     fill_value=st.one_of(st.integers(0, 5), helpers.floats()),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_nonzero(
     *,
@@ -157,6 +160,7 @@ def test_nonzero(
 @handle_test(
     fn_tree="functional.ivy.where",
     broadcastables=_broadcastable_trio(),
+    test_gradients=st.just(False),
 )
 def test_where(
     *,
@@ -186,6 +190,7 @@ def test_where(
 @handle_test(
     fn_tree="functional.ivy.argwhere",
     x=helpers.dtype_and_values(available_dtypes=("bool",)),
+    test_gradients=st.just(False),
 )
 def test_argwhere(
     *,
