@@ -27,6 +27,7 @@ import ivy
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
     ),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_dirichlet(
     *,
@@ -80,6 +81,7 @@ def test_dirichlet(
         exclude_min=True,
     ),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_beta(
     *,
@@ -134,6 +136,7 @@ def test_beta(
         exclude_min=True,
     ),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_gamma(
     *,

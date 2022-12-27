@@ -152,6 +152,7 @@ def test_get_referrers_recursive():
         num_arrays=2,
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_array_equal(
     dtypes_and_xs,
@@ -252,6 +253,7 @@ def test_get_item(
     ),
     copy=st.booleans(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_to_numpy(
     *,
@@ -291,6 +293,7 @@ def test_to_numpy(
         large_abs_safety_factor=20,
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_to_scalar(
     x0_n_x1_n_res,
@@ -320,6 +323,7 @@ def test_to_scalar(
         large_abs_safety_factor=20,
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_to_list(
     x0_n_x1_n_res,
@@ -351,6 +355,7 @@ def test_to_list(
     as_array=st.booleans(),
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_shape(
     x0_n_x1_n_res,
@@ -383,6 +388,7 @@ def test_shape(
     ),
     as_array=st.booleans(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_get_num_dims(
     x0_n_x1_n_res,
@@ -666,6 +672,7 @@ def test_scatter_flat(
         allow_inf=False,
     ),
     reduction=st.sampled_from(["sum", "min", "max", "replace"]),
+    test_gradients=st.just(False),
 )
 def test_scatter_nd(
     x,
@@ -1187,6 +1194,7 @@ def test_einops_rearrange(
     ),
     floattypes=helpers.get_dtypes("float"),
     reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
+    test_gradients=st.just(False),
 )
 def test_einops_reduce(
     *,
@@ -1385,6 +1393,7 @@ def test_inplace_increment(x_val_and_dtypes, tensor_fn, on_device):
     ground_truth_backend="numpy",
     as_variable_flags=st.just([False]),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_is_ivy_array(
     *,
@@ -1423,6 +1432,7 @@ def test_is_ivy_array(
     as_variable_flags=st.just([False]),
     container_flags=st.just([False]),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_is_native_array(
     *,
@@ -1461,6 +1471,7 @@ def test_is_native_array(
     as_variable_flags=st.just([False]),
     container_flags=st.just([False]),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_is_array(
     x_val_and_dtypes,
@@ -1496,6 +1507,7 @@ def test_is_array(
     ),
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_is_ivy_container(
     x_val_and_dtypes,
@@ -1527,6 +1539,7 @@ def test_is_ivy_container(
     ),
     equality_matrix=st.booleans(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_all_equal(
     dtypes_and_xs,
@@ -1610,6 +1623,7 @@ def test_clip_matrix_norm(
     ),
     include_infs=st.booleans(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_value_is_nan(
     *,
@@ -1644,6 +1658,7 @@ def test_value_is_nan(
     ),
     include_infs=st.booleans(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_has_nans(
     *,
@@ -1962,6 +1977,7 @@ def test_set_tmp_dir():
         available_dtypes=helpers.get_dtypes("valid")
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_supports_inplace_updates(
     x_val_and_dtypes,
@@ -1991,6 +2007,7 @@ def test_supports_inplace_updates(
     ),
     ground_truth_backend="numpy",
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_assert_supports_inplace(
     x_val_and_dtypes,
