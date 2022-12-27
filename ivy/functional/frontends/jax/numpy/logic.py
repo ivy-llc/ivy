@@ -77,6 +77,11 @@ def greater_equal(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def isnan(x, out=None):
+    return ivy.isnan(x, out=out)
+
+
+@to_ivy_arrays_and_back
 def equal(x1, x2):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.equal(x1, x2)
