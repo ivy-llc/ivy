@@ -73,6 +73,57 @@ class ArrayWithLayers(abc.ABC):
         dtype: ivy.Dtype = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.dropout. This method simply
+        wraps the function, and so the docstring for ivy.droput also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array x to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        scale
+            Whether to scale the output by `1/(1-prob)`, default is ``True``.
+        dtype
+            output array data type. If dtype is None, the output array data type
+            must be inferred from x. Default: ``None``.
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the output after dropout is performed.
+
+        Examples
+        --------
+        With :class:`ivy.Array` instances:
+
+        >>> x = ivy.array([[1., 2., 3.],
+        ...                [4., 5., 6.],
+        ...                [7., 8., 9.],
+        ...                [10., 11., 12.]])
+        >>> y = x.dropout(0.3)
+        >>> print(y)
+        ivy.array([[ 1.42857146,  2.85714293,  4.28571415],
+                   [ 5.71428585,  7.14285755,  8.5714283 ],
+                   [ 0.        , 11.4285717 , 12.8571434 ],
+                   [14.2857151 ,  0.        ,  0.        ]])
+
+        >>> x = ivy.array([[1., 2., 3.],
+        ...                [4., 5., 6.],
+        ...                [7., 8., 9.],
+        ...                [10., 11., 12.]])
+        >>> y = x.dropout(0.3, scale=Flase)
+        >>> print(y)
+        ivy.array([[ 1.,  2., 3.],
+                   [ 4.,  5., 0.],
+                   [ 7.,  0., 9.],
+                   [10., 11., 0.]])
+        """
         return ivy.dropout(
             self._data,
             prob,
