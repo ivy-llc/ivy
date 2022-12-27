@@ -929,7 +929,7 @@ def test_tensorflow_max_pool1d(
     fn_tree="tensorflow.nn.conv_transpose",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NWC", "NCHW"]),
+        data_format=st.sampled_from(["NHWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=3,
         stride_max=4,
