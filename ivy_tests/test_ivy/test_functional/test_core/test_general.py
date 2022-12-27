@@ -1344,8 +1344,7 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, on_device):
     ):
         x_inplace = ivy.inplace_decrement(x, val)
         assert id(x_inplace) == id(x)
-        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x))
-        return
+        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x_inplace))
 
 
 # inplace_increment
@@ -1374,7 +1373,6 @@ def test_inplace_increment(x_val_and_dtypes, tensor_fn, on_device):
         x_inplace = ivy.inplace_increment(x, val)
         assert id(x_inplace) == id(x)
         assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x_inplace))
-        return
 
 
 # is_ivy_array
