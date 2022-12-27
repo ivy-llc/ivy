@@ -1,14 +1,10 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
-import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
-    _get_dtype_value1_value2_axis_for_tensordot,
-)
+
 
 @st.composite
 def _get_dtype_and_matrix(draw):
@@ -23,6 +19,7 @@ def _get_dtype_and_matrix(draw):
             max_value=10,
         )
     )
+
 
 @handle_cmd_line_args
 @given(
@@ -43,9 +40,7 @@ def test_tensorflow_det(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="bincount",
-        weights= None,
+        weights=None,
         input=x[0],
         minlength=[0],
     )
-
-
