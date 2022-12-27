@@ -280,8 +280,10 @@ def diff(
     prepend: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
     append: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x = tf.experimental.numpy.append(prepend, x, axis=axis)
-    x = tf.experimental.numpy.append(x, append, axis=axis)
+    if prepend != None:
+        x = tf.experimental.numpy.append(prepend, x, axis=axis)
+    if append != None:
+        x = tf.experimental.numpy.append(x, append, axis=axis)
     return tf.experimental.numpy.diff(x, n=n, axis=axis)
 
 
