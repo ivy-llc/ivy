@@ -1,7 +1,7 @@
 """Collection of tests for creation functions."""
 
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 
 # local
 import ivy
@@ -521,6 +521,7 @@ def test_full_like(
     indexing=st.sampled_from(["xy", "ij"]),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_meshgrid(
     *,
@@ -533,7 +534,6 @@ def test_meshgrid(
     on_device,
     ground_truth_backend,
 ):
-    assume(not test_flags.with_out)
     dtype, arrays = dtype_and_arrays
     kw = {}
     i = 0
