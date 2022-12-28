@@ -208,27 +208,37 @@ def strided_slice(
     var=None,
     name=None
 ):
+    def num_to_bit_list(number):
+        return list(map(int, '{:0{size}b}'.format(number, size=len(input_.shape))))
+
+    begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask = list(
+        map(
+            num_to_bit_list,
+            [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask]
+        )
+    )
+
     full_slice = ()
     need_ellipsis = False
     if len(input_.shape) - len(begin.shape) > 0:
         need_ellipsis = True
     for i, _ in enumerate(begin.shape):
-        if need_ellipsis and int(bin(ellipsis_mask)[-i]):
+        if need_ellipsis and ellipsis_mask[i]:
             full_slice += (...,)
             need_ellipsis = False
         else:
-            if int(bin(new_axis_mask)[-i]):
+            if new_axis_mask[i]:
                 full_slice += (ivy.newaxis,)
             else:
-                if int(bin(begin_mask)[-i]):
-                    begin_i = None
-                else:
+                if not begin_mask[i] or shrink_axis_mask[i]:
                     begin_i = int(begin[i])
-                if int(bin(end_mask)[-i]):
+                else:
+                    begin_i = None
+                if shrink_axis_mask[i]:
+                    end_i = begin_i + 1
+                elif end_mask[i]:
                     end_i = None
                 else:
                     end_i = int(end[i])
-                if int(bin(shrink_axis_mask)[-i]):
-                    end_i = begin_i
                 full_slice += (slice(begin_i, end_i, int(strides[i])),)
     return input_[full_slice]

@@ -1,7 +1,6 @@
 # global
 from hypothesis import strategies as st
 import numpy as np
-import random
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1036,24 +1035,43 @@ def _strided_slice_helper(draw):
             ret_shape=True,
         ),
     )
+    ndims = len(shape)
     masks = draw(
         st.lists(
-            st.integers(min_value=0, max_value=2**len(shape)-1),
+            st.integers(min_value=0, max_value=2**ndims-1),
             min_size=5,
             max_size=5
-        )
+        ).filter(lambda x: bin(x[2])[2:].count('1') <= 1)  # maximum one ellipse
     )
+    if ndims <= 2:
+        masks[2] = 0  # can't have ellipse on 1-D or 2-D array
     begin, end, strides = [], [], []
-    sub_shape = tuple([i for i in shape if random.randint(0, 1)])
-    if len(sub_shape) < 1:
-        sub_shape = shape
-    for i in sub_shape:
-        begin += [draw(st.integers(min_value=0, max_value=i-1))]
-        end += [draw(st.integers(min_value=0, max_value=i-1))]
-        if begin[-1] < end[-1]:
-            strides += [draw(st.integers(min_value=1))]
+    shrink_axis_mask = list(map(int, '{:0{size}b}'.format(masks[4], size=ndims)))
+    for i, v in enumerate(shape):
+        begin += [draw(st.integers(min_value=0, max_value=v-1))]
+        end += [draw(
+            st.integers(min_value=0, max_value=v-1).filter(lambda x: x != begin[-1])
+        )]
+        if shrink_axis_mask[i] == 1:
+            strides += [1]  # only stride 1 allowed on non-range indexing
         else:
-            strides += [draw(st.integers(max_value=-1))]
+            if begin[-1] < end[-1]:
+                strides += [draw(st.integers(min_value=1))]
+            else:
+                strides += [draw(st.integers(max_value=-1))]
+    if bin(masks[2])[2:].count('1') == 1:  # remove elements corresponding to ellipsis
+        i_ellips = '{:0{size}b}'.format(masks[2], size=ndims).find('1') - 2
+        if i_ellips == 0:
+            pops = np.random.randint(1, ndims-2)
+            begin, end, strides = [arr[pops:] for arr in [begin, end, strides]]
+        elif i_ellips == ndims-1:
+            pops = np.random.randint(1, ndims-1)
+            begin, end, strides = [arr[:ndims-pops] for arr in [begin, end, strides]]
+        else:
+            pops = np.random.randint(1, ndims-i_ellips-1)
+            begin, end, strides = [
+                arr[:i_ellips] + arr[i_ellips+pops:] for arr in [begin, end, strides]
+            ]
     return dtype, x, np.array(begin), np.array(end), np.array(strides), masks
 
 
