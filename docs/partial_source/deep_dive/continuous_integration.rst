@@ -20,7 +20,7 @@ In order to incorporate Continuous Integration in the Ivy Repository, we follow 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/CI.png?raw=true
    :alt: CI Overview
 
-We use GitHub Actions in order to implement the CI Pipeline in our code, as explained in the following sections.
+We use GitHub Actions in order to implement and automate the process of testing. GitHub Actions allow implementing custom workflows that can build the code in the repository and run the tests. All the workflows used by Ivy are defined in the `.github/workflows <https://github.com/unifyai/ivy/tree/master/.github/workflows>`_ directory.
 
 GitHub Actions
 --------------
