@@ -850,6 +850,7 @@ def signbit(
 
 
 @to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
@@ -859,6 +860,7 @@ def diff(
     axis: Optional[int] = -1,
     prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
     append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the n-th discrete difference along the given axis.
 
@@ -876,6 +878,8 @@ def diff(
         difference. Scalar values are expanded to arrays with length 1 in the direction
         of axis and the shape of the input array in along all other axes. Otherwise the
         dimension and shape must match a except along axis.
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
