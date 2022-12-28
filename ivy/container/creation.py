@@ -964,7 +964,6 @@ class ContainerWithCreation(ContainerBase):
         }
 
         """
-
         return ContainerBase.cont_multi_map_in_function(
             "logspace",
             start,
@@ -1068,7 +1067,6 @@ class ContainerWithCreation(ContainerBase):
                 }
         }
         """
-
         return self.static_logspace(
             self,
             stop,

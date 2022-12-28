@@ -561,7 +561,6 @@ class ArrayWithCreation(abc.ABC):
                    [10000., 10000.]])
 
         """
-
         return ivy.logspace(
             self,
             stop,
