@@ -262,7 +262,9 @@ def depthwise_conv2d(
     out: Optional[np.ndarray] = None,
 ):
     strides = [strides] * 2 if isinstance(strides, int) else strides
+    strides = [strides[1], strides[2]] if len(strides) == 4 else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    filters = np.squeeze(filters, 3) if filters.ndim == 4 else filters
 
     if data_format == "NHWC":
         x = np.transpose(x, (3, 0, 1, 2))
@@ -476,6 +478,7 @@ def conv_general_dilated(
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -553,6 +556,7 @@ def conv_general_dilated(
         res.append(np.sum(mult, tuple([i for i in range(dims + 1, dims * 2 + 2)])))
     res = np.concatenate(res, axis=-1)
 
+    res = np.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
@@ -570,6 +574,7 @@ def conv_general_transpose(
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
+    bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
 
@@ -642,6 +647,7 @@ def conv_general_transpose(
         ],
         axis=-1,
     )
+    res = np.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res

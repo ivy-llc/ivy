@@ -978,3 +978,49 @@ def test_tensorflow_gather_nd(
         indices=indices,
         batch_dims=batch_dims,
     )
+
+
+# transpose
+@st.composite
+def _get_perm_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="shape"))
+    dimensions = [x for x in range(len(shape))]
+    perm = draw(st.permutations(dimensions))
+    return perm
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.transpose",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ),
+    perm=_get_perm_helper(),
+    conjugate=st.booleans(),
+)
+def test_tensorflow_transpose(
+    *,
+    dtype_and_x,
+    perm,
+    conjugate,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        perm=perm,
+        conjugate=conjugate,
+    )

@@ -1,3 +1,6 @@
+# global
+from hypothesis import strategies as st
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
@@ -5,7 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # msort
 @handle_test(
-    fn_tree="functional.experimental.msort",
+    fn_tree="functional.ivy.experimental.msort",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -15,6 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_value=-100,
         max_value=100,
     ),
+    test_gradients=st.just(False),
 )
 def test_msort(
     dtype_and_x,

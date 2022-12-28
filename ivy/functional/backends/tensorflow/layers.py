@@ -160,8 +160,10 @@ def depthwise_conv2d(
             "depthwise_conv2d does not support dilations greater than 1 and"
             "strides greater than 1 when device is cpu for tensorflow"
         )
-    filters = tf.expand_dims(filters, -1)
-    strides = [1, strides[0], strides[1], 1]
+    if tf.rank(filters) == 3:
+        filters = tf.expand_dims(filters, -1)
+    if len(strides) == 2:
+        strides = [1, strides[0], strides[1], 1]
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     res = tf.nn.depthwise_conv2d(x, filters, strides, padding, "NHWC", dilations)
@@ -261,6 +263,7 @@ def conv_general_dilated(
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(x_dilations, int):
@@ -354,6 +357,7 @@ def conv_general_dilated(
             ],
             axis=-1,
         )
+    res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
@@ -372,6 +376,7 @@ def conv_general_transpose(
     output_shape=None,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "channel_first":
@@ -430,6 +435,7 @@ def conv_general_transpose(
             ],
             axis=-1,
         )
+    res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res

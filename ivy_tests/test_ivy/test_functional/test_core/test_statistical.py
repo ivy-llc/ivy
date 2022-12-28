@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 
 @st.composite
-def statistical_dtype_values(draw, *, function):
+def statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
     large_abs_safety_factor = 2
     small_abs_safety_factor = 2
     if any(ele in function for ele in ["mean", "std", "var"]):
@@ -28,6 +28,8 @@ def statistical_dtype_values(draw, *, function):
             valid_axis=True,
             allow_neg_axes=False,
             min_axes_size=1,
+            min_value=min_value,
+            max_value=max_value,
         )
     )
     shape = values[0].shape
@@ -77,6 +79,7 @@ def _get_castable_dtype(draw):
     fn_tree="functional.ivy.min",
     dtype_and_x=statistical_dtype_values(function="min"),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_min(
     *,
@@ -107,6 +110,7 @@ def test_min(
     fn_tree="functional.ivy.max",
     dtype_and_x=statistical_dtype_values(function="max"),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_max(
     *,
@@ -137,6 +141,7 @@ def test_max(
     fn_tree="functional.ivy.mean",
     dtype_and_x=statistical_dtype_values(function="mean"),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_mean(
     *,
@@ -169,6 +174,7 @@ def test_mean(
     fn_tree="functional.ivy.var",
     dtype_and_x=statistical_dtype_values(function="var"),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_var(
     *,
@@ -202,6 +208,7 @@ def test_var(
     fn_tree="functional.ivy.prod",
     dtype_x_axis_castable=_get_castable_dtype(),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_prod(
     *,
@@ -239,6 +246,7 @@ def test_prod(
     fn_tree="functional.ivy.sum",
     dtype_x_axis_castable=_get_castable_dtype(),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_sum(
     *,
@@ -276,6 +284,7 @@ def test_sum(
     fn_tree="functional.ivy.std",
     dtype_and_x=statistical_dtype_values(function="std"),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_std(
     *,
@@ -309,6 +318,7 @@ def test_std(
     dtype_x_axis_castable=_get_castable_dtype(),
     exclusive=st.booleans(),
     reverse=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_cumsum(
     *,
@@ -338,6 +348,8 @@ def test_cumsum(
         exclusive=exclusive,
         reverse=reverse,
         dtype=castable_dtype,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
 
 
@@ -347,6 +359,7 @@ def test_cumsum(
     dtype_x_axis_castable=_get_castable_dtype(),
     exclusive=st.booleans(),
     reverse=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_cumprod(
     *,
@@ -376,6 +389,8 @@ def test_cumprod(
         exclusive=exclusive,
         reverse=reverse,
         dtype=castable_dtype,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
 
 
@@ -392,6 +407,7 @@ def test_cumprod(
     ),
     test_instance_method=st.just(False),
     dtype=helpers.get_dtypes("float", full=False),
+    test_gradients=st.just(False),
 )
 def test_einsum(
     *,
@@ -420,4 +436,6 @@ def test_einsum(
         on_device=on_device,
         equation=eq,
         **kw,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
