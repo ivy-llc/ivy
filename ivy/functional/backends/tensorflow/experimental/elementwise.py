@@ -17,7 +17,9 @@ def sinc(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
+    x = ivy.pi * x
+    return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x),
+                   x.dtype)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
@@ -280,9 +282,9 @@ def diff(
     prepend: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
     append: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if prepend != None:
+    if prepend is not None:
         x = tf.experimental.numpy.append(prepend, x, axis=axis)
-    if append != None:
+    if append is not None:
         x = tf.experimental.numpy.append(x, append, axis=axis)
     return tf.experimental.numpy.diff(x, n=n, axis=axis)
 
