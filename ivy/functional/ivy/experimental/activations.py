@@ -23,7 +23,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
-    out: Optional['ivy.Array'] = None,
+    out: Optional["ivy.Array"] = None,
 ) -> ivy.Array:
     """
     Computes the logit of x, i.e. logit(x) = log(x / (1 - x)).
