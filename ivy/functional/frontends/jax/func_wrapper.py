@@ -6,7 +6,7 @@ import inspect
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
-
+import ivy.functional.frontends.numpy as np_frontend
 
 def _is_jax_frontend_array(x):
     return isinstance(x, jax_frontend.DeviceArray)
