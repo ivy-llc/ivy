@@ -1,6 +1,7 @@
 # global
 import functools
 from typing import Callable
+import inspect
 
 # local
 import ivy
@@ -90,9 +91,30 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
 
 
-def handle_x64(fn: Callable) -> Callable:
+def handle_numpy_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def new_fn(*args, dtype=None, **kwargs):
+        if len(args) > (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            kwargs = {
+                **dict(
+                    zip(
+                        list(inspect.signature(fn).parameters.keys())[
+                            dtype_pos + 1 : len(args)
+                        ],
+                        args[dtype_pos + 1 :],
+                    )
+                ),
+                **kwargs,
+            }
+            args = args[:dtype_pos]
+        elif len(args) == (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            args = args[:-1]
+
+        if not dtype:
+            return fn(*args, dtype=dtype, **kwargs)
+
         if not jax_frontend.config.jax_enable_x64:
             dtype_replacement_dict = {
                 ivy.int64: ivy.int32,
@@ -102,18 +124,15 @@ def handle_x64(fn: Callable) -> Callable:
                 "uint64": "uint32",
                 "int64": "int32",
             }
-            # replace in args and kwargs all 64 bit dtypes with 32 bit dtypes
+            dtype = dtype_replacement_dict[dtype] \
+                if dtype in dtype_replacement_dict else dtype
 
-            new_args = ivy.nested_map(
-                args,
-                lambda x: dtype_replacement_dict[x] if x in dtype_replacement_dict else x
-            )
-            new_kwargs = ivy.nested_map(
-                kwargs,
-                lambda x: dtype_replacement_dict[x] if x in dtype_replacement_dict else x
-            )
-            # call unmodified function
-            return fn(*new_args, **new_kwargs)
-        return fn(*args, **kwargs)
+        if isinstance(dtype, str):
+            return fn(*args, dtype=dtype, **kwargs)
+        if isinstance(dtype, np_frontend.dtype):
+            return fn(*args, dtype=dtype._ivy_dtype, **kwargs)
+        return fn(*args, dtype=np_frontend.to_ivy_dtype(dtype), **kwargs)
 
+    dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
+    new_fn.handle_numpy_dtype = True
     return new_fn
