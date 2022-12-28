@@ -340,3 +340,16 @@ def gradient(
     if type(spacing) in (int, float):
         return np.gradient(x, spacing, axis=axis, edge_order=edge_order)
     return np.gradient(x, *spacing, axis=axis, edge_order=edge_order)
+
+
+def xlogy(
+    x: np.ndarray,
+    y: np.ndarray,    
+    /,
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    if (x == 0).all():
+        return 0.0
+    else:
+        return x * np.log(y)

@@ -1016,3 +1016,44 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         return ivy.gradient(
             self._data, spacing=spacing, axis=axis, edge_order=edge_order
         )
+
+    def xlogy(
+        self: ivy.Array,
+        y: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> bool:
+        """
+        ivy.Array instance method variant of ivy.xlogy. This method simply
+        wraps the function, and so the docstring for ivy.xlogy also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        y
+            Second input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The next representable values of x1 in the direction of x2.
+
+        Examples
+        --------
+        >>> x = ivy.zeros(3)
+        >>> y = ivy.array([-1.0, 0.0, 1.0])
+        >>> x.xlogy(y)
+        ivy.array([0.0, 0.0, 0.0])
+
+        >>> x = ivy.array([1.0, 2.0, 3.0])
+        >>> y = ivy.array([3.0, 2.0, 1.0])
+        >>> x.xlogy(y)
+        ivy.array([1.0986, 1.3863, 0.0000])
+        """
+        return ivy.xlogy(self._data, y, out=out)

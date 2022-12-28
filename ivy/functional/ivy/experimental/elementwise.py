@@ -1155,3 +1155,47 @@ def gradient(
     return ivy.current_backend(x).gradient(
         x, spacing=spacing, edge_order=edge_order, axis=axis
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def xlogy(
+    x: Union[ivy.Array, ivy.NativeArray],
+    y: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> bool:
+    """
+    Compute x*log(y) element-wise so that the result is 0 if x = 0.
+
+    Parameters
+    ----------
+    x
+        First input array.
+    y
+        Second input array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        The next representable values of x1 in the direction of x2.
+
+    Examples
+    --------
+    >>> x = ivy.zeros(3)
+    >>> y = ivy.array([-1.0, 0.0, 1.0])
+    >>> ivy.xlogy(x, y)
+    ivy.array([0.0, 0.0, 0.0])
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([3.0, 2.0, 1.0])
+    >>> ivy.xlogy(x, y)
+    ivy.array([1.0986, 1.3863, 0.0000])
+    """
+    return ivy.current_backend(x, y).xlogy(x, y, out=out)
