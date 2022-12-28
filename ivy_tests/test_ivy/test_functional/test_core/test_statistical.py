@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 
 @st.composite
-def statistical_dtype_values(draw, *, function):
+def statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
     large_abs_safety_factor = 2
     small_abs_safety_factor = 2
     if any(ele in function for ele in ["mean", "std", "var"]):
@@ -28,6 +28,8 @@ def statistical_dtype_values(draw, *, function):
             valid_axis=True,
             allow_neg_axes=False,
             min_axes_size=1,
+            min_value=min_value,
+            max_value=max_value,
         )
     )
     shape = values[0].shape
