@@ -256,7 +256,10 @@ def fix(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.fix(x)
+    return tf.cast(tf.where(x > 0,
+                            tf.math.floor(x),
+                            tf.math.ceil(x)),
+                   x.dtype)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16,")}, backend_version)
@@ -527,3 +530,14 @@ def gradient(
         return outvals[0]
     else:
         return outvals
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16,")}, backend_version)
+def xlogy(
+    x: Union[tf.Tensor, tf.Variable],
+    y: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.xlogy(x, y)
