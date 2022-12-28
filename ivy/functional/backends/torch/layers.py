@@ -283,8 +283,12 @@ def depthwise_conv2d(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    x = torch.tensor(x)
+    filters = torch.tensor(filters)
     strides = [strides] * 2 if isinstance(strides, int) else strides
+    strides = [strides[1], strides[2]] if len(strides) == 4 else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    filters = ivy.squeeze(filters, 3) if filters.ndim == 4 else filters
 
     f_w_after_dilation = filters.shape[1] + (
         (dilations[1] - 1) * (filters.shape[1] - 1)
