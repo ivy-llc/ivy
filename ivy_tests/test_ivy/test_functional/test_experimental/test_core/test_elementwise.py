@@ -638,8 +638,8 @@ def test_logaddexp2(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-03,
-        atol_=1e-03,
+        rtol_=1e-02,
+        atol_=1e-02,
         x1=x[0],
         x2=x[1],
     )
@@ -853,4 +853,36 @@ def test_gradient(
         fn_name=fn_name,
         x=x[0],
         spacing=spacing,
+    )
+
+
+# xlogy
+@handle_test(
+    fn_tree="functional.ivy.experimental.xlogy",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float16", "float32", "float64"],
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    test_gradients=st.just(False),
+)
+def test_xlogy(
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name="xlogy",
+        x=x[0],
+        y=x[1],
     )
