@@ -31,7 +31,7 @@ The following Tests are triggered in case of a Commit (Push/PR) made to the Ivy 
 #. Array API Tests
 
 Ivy Tests
-^^^^^^^^^
+---------
 A test is defined as the triplet of (submodule, function, backend). We follow the following notation to identify each test:
 :code:`submodule::function,backend`
 
@@ -56,17 +56,101 @@ Ivy’s Functional API functions :code:`binary_cross_entropy_with_logits`, :code
 
 How do we (or at least try to) achieve this?
 
-The following sections describe the relevant Workflows used in the Ivy Repository, that implement the CI Pipeline.
-Each of the workflows described below, are triggered on:
+Implementation
+A Top-Down View:
+In order to implement this, we use the magic of Test Coverage!
+Test Coverage refers to finding statements (lines) in your code that are executed (or could have been executed), on running a particular test. For example, (TODO: Give an example of Ivy Test and its coverage).
 
-#. Any push made to the repository.
-#. Any pull request made to the repository of the following types:
+We use the Python Coverage Package (https://coverage.readthedocs.io/en/7.0.0/) for determining the Test Coverage of our tests.
 
-    * :code:`labeled`
-    * :code:`opened`
-    * :code:`synchronize`
-    * :code:`reopened`
-    * :code:`review_requested`
+The way it works is by running a particular pytest, and then logging each line (of our code) that was executed (or could have been executed) by the test.
+
+Computing Test Coverage for all Ivy tests, allows us to find, for each line of code, which tests affect the same. We create a Dictionary (Mapping) to store this information as follows (The actual Mapping we prepare is a bit different from this design, but we will follow this for now due to Pedagogical Purposes):
+
+.. math::
+
+    \begin{flalign}
+    \{ \\
+     \ \ \ \ "f_1": [\{\}, \{"t_1","t_3","t_7"\}, …, \{"t_10","t_11","t_15"\}], \\
+     \ \ \ \ … \\
+     \ \ \ \ "f_m": [\{\}, \{"t_11","t_23","t_37"\}, …, \{"t_32","t_54","t_65"\}] \\
+    \}
+    \end{flalign}
+
+The dictionary thus stores a list for each file f1 … fm. The list is a sequence encapsulating the lines of the file. Each index of the list contains a set of tests, which are mapped to the corresponding line in the file.
+
+So Yeah, Given this Mapping for a commit, We can just follow the below procedure:
+Find the files which are changed in the commit, and check for lines that are added/deleted/updated in the file.
+Determine the Tests that impact the lines, and trigger just those tests, and no other.
+
+But, there’s a fundamental issue here, Computing the Mapping requires determining the coverage for all tests, which involves running all the tests. Doesn’t this sound cyclical? After all, We are doing all this to avoid running all the tests.
+
+Now assume that you had some way to update the Mapping for a commit from the previous Mapping without having to run all the tests. Then, Given the Mapping for a single commit, we could follow this to determine and run the relevant tests for each commit as follows:
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/ITRoadmap.png?raw=true
+   :alt: Intelligent Testing Roadmap
+This is exactly what we do in order to implement Intelligent Testing. The “Update Mapping” Logic works as follows for each changed file:
+
+1. For each deleted line, we remove the corresponding entry from the list corresponding to the file in the Mapping.
+
+.. code-block:: python
+
+    tests_file = tests[file_name]
+    for line in sorted(deleted, reverse=True):
+       if line < len(tests_file):
+           del tests_file[line]
+
+
+2. For each line added, we compute the tests as an intersection of the set of tests on the line above and below the line.
+
+.. code-block:: python
+
+    for line in added:
+       top = -1
+       bottom = -1
+       if 0 <= line - 1 < len(tests_file):
+           top = tests_file[line - 1]
+       if 0 <= line + 1 < len(tests_file):
+           bottom = tests_file[line + 1]
+       tests_line = set()
+       if top != -1 and bottom != -1:
+           tests_line = top.intersection(bottom)
+       elif top != -1:
+           tests_line = top
+       elif bottom != -1:
+           tests_line = bottom
+       tests_file.insert(line, tests_line)
+    tests[file_name] = tests_file
+
+
+3. Finally, For newly added tests, we compute the coverage of the new tests (limited to 10 per commit), and update the Mapping correspondingly.
+
+Once the Mapping has been updated, the “Determine & Run Tests” Logic works as follows:
+
+1. For each deleted line, we collect the tests corresponding to the line as:
+
+.. code-block:: python
+
+    for line in deleted:
+       tests_to_run = determine_tests_line(tests_file, line, tests_to_run)
+
+2. For each line updated, we collect the tests corresponding to the line as:
+
+.. code-block:: python
+
+    for line in updated:
+       tests_to_run = determine_tests_line(tests_file, line, tests_to_run)
+
+3. For each line added, we collect the tests corresponding to the line as:
+
+.. code-block:: python
+
+    for line in added:
+       tests_to_run = determine_tests_line(tests_file, line, tests_to_run)
+
+4. Further, All the new tests added in a commit are collected (up to a max limit of 10, any more tests added are taken up in subsequent commits).
+5. Finally, All the collected tests are triggered by the run_tests.py script, and the corresponding entry in the MongoDB Database is updated with the Test Result (Details on this in the Dashboard Section below).
+
 
 Array API Tests
 ---------------
