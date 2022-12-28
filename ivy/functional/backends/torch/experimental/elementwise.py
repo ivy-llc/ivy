@@ -263,12 +263,12 @@ def diff(
     x = x if type(x) == torch.Tensor else torch.Tensor(x)
     prepend = (
         prepend
-        if type(prepend) == torch.Tensor or prepend == None
+        if type(prepend) == torch.Tensor or prepend is None
         else torch.Tensor(prepend)
     )
     append = (
         append
-        if type(append) == torch.Tensor or append == None
+        if type(append) == torch.Tensor or append is None
         else torch.Tensor(append)
     )
     return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
@@ -361,3 +361,13 @@ def gradient(
     if len(grad) == 1:
         return grad[0]
     return grad
+
+
+def xlogy(
+    x: torch.tensor,
+    y: torch.tensor,
+    /,
+    *,
+    out: Optional[torch.tensor] = None
+) -> torch.tensor:
+    return torch.xlogy(x, y, out=out)
