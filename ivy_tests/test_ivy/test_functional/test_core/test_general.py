@@ -1888,20 +1888,15 @@ def _get_valid_numeric_no_unsigned(draw):
 @handle_test(
     fn_tree="functional.ivy.stable_pow",
     dtypes_and_xs=pow_helper(available_dtypes=_get_valid_numeric_no_unsigned()),
-    dtype_and_min_base=helpers.dtype_and_values(
-        available_dtypes=_get_valid_numeric_no_unsigned(),
-        num_arrays=1,
-        large_abs_safety_factor=100,
-        small_abs_safety_factor=100,
-        safety_factor_scale="log",
-        shared_dtype=True,
+    min_base=helpers.floats(
+        min_value=0, max_value=1, small_abs_safety_factor=8, safety_factor_scale="log"
     ),
     test_with_out=st.just(False),
 )
 def test_stable_pow(
     *,
     dtypes_and_xs,
-    dtype_and_min_base,
+    min_base,
     test_flags,
     backend_fw,
     fn_name,
@@ -1909,10 +1904,9 @@ def test_stable_pow(
     ground_truth_backend,
 ):
     dtypes, xs = dtypes_and_xs
-    input_dtype_min_base, min_base = dtype_and_min_base
-    assume(all(["bfloat16" not in x for x in dtypes + input_dtype_min_base]))
+    assume(all(["bfloat16" not in x for x in dtypes]))
     helpers.test_function(
-        input_dtypes=input_dtype_min_base,
+        input_dtypes=dtypes,
         test_flags=test_flags,
         ground_truth_backend=ground_truth_backend,
         on_device=on_device,
@@ -1922,7 +1916,7 @@ def test_stable_pow(
         atol_=1e-1,
         base=xs[0][0],
         exponent=np.abs(xs[1]),
-        min_base=min_base[0],
+        min_base=min_base,
     )
 
 
