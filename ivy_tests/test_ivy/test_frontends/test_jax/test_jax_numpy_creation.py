@@ -391,7 +391,6 @@ def test_jax_numpy_eye(
     ),
     k=helpers.ints(min_value=-10, max_value=10),
 )
-
 def test_numpy_triu(
         dtype_and_x,
         k,
