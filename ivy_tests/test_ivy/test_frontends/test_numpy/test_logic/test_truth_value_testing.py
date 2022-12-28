@@ -116,8 +116,6 @@ def test_numpy_any(
         where=where,
         test_values=False,
     )
-
-
 @handle_frontend_test(
     fn_tree="numpy.isscalar",
     element=st.booleans() | st.floats() | st.integers(),
@@ -143,9 +141,10 @@ def test_numpy_isscalar(
         on_device=on_device,
         element=element,
     )
+#iscomplex
 @handle_frontend_test(
     fn_tree="numpy.iscomplex",
-    element=st.booleans() | st.floats() | st.integers() | st.strings(),
+    element=st.booleans() | st.floats() | st.integers()
 )
 def test_numpy_iscomplex(
     *,
