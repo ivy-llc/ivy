@@ -64,11 +64,11 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     nested structure.
     """
     # To make sure that only the required arrays are converted to native arrays
-    xs = ivy.nested_map(xs, ivy.to_ivy, include_derived=True)
+    xs = ivy.nested_map(xs, ivy.to_ivy, include_derived=True, shallow=False)
     if xs_grad_idxs is not None:
         ivy.map_nest_at_indices(xs, xs_grad_idxs, ivy.to_native)
     else:
-        xs = ivy.nested_map(xs, ivy.to_native, include_derived=True)
+        xs = ivy.nested_map(xs, ivy.to_native, include_derived=True, shallow=False)
 
     def map_fn(x):
         if ivy.is_native_array(x):
@@ -76,7 +76,9 @@ def _get_required_native_variables(xs, xs_grad_idxs):
         return None
 
     # Extract all those required native arrays and None for all others
-    xs = ivy.nested_map(xs, map_fn, include_derived=True, to_mutable=True)
+    xs = ivy.nested_map(
+        xs, map_fn, include_derived=True, to_mutable=True, shallow=False
+    )
 
     # Prune all None values
     none_idxs = ivy.nested_argwhere(xs, lambda x: x is None)

@@ -2,11 +2,7 @@ import numpy as np
 from typing import Optional
 
 
-def logit(x: np.ndarray,
-          /,
-          *,
-          eps: Optional[float] = None,
-          out=None):
+def logit(x: np.ndarray, /, *, eps: Optional[float] = None, out=None):
     x_dtype = x.dtype
     if eps is None:
         x = np.where(np.logical_or(x > 1, x < 0), np.nan, x)

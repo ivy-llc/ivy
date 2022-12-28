@@ -3,11 +3,9 @@ import ivy
 from typing import Optional, Union
 
 
-def logit(x: Union[tf.Tensor, tf.Variable],
-          /,
-          *,
-          eps: Optional[float] = None,
-          out=None):
+def logit(
+    x: Union[tf.Tensor, tf.Variable], /, *, eps: Optional[float] = None, out=None
+):
     x_dtype = x.dtype
     if eps is None:
         x = tf.where(tf.math.logical_or(x > 1, x < 0), ivy.nan, x)

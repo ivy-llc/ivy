@@ -946,18 +946,21 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     Examples
     --------
     With :class:`ivy.Dtype` input:
+
     >>> xType = ivy.float16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     float16
 
     With :class:`ivy.NativeDtype` inputs:
+
     >>> xType = ivy.native_uint16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     <dtype:'uint16'>
 
     With :code:`str` input:
+
     >>> xType = 'int32'
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
@@ -1591,36 +1594,39 @@ def is_int_dtype(
 
     Examples
     --------
-     With :class:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
+
     >>> x = ivy.is_int_dtype(ivy.float64)
     >>> print(x)
     False
 
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([1., 2., 3.])
     >>> x.dtype
     float32
-
     >>> print(ivy.is_int_dtype(x))
     False
 
     With :class:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], dtype=ivy.int16)
     >>> print(ivy.is_int_dtype(x))
     True
 
     With :code:`Number` input:
+
     >>> x = 1
     >>> print(ivy.is_int_dtype(x))
     True
 
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3, 4, 5]))
     >>> x.a.dtype
     float32
     >>> x.b.dtype
     int32
-
     >>> print(ivy.is_int_dtype(x))
     {
         a: false,
@@ -1816,6 +1822,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
     Examples
     --------
     With :class:`ivy.Dtype` input:
+
     >>> ivy.set_default_dtype(ivy.bool)
     >>> ivy.default_dtype_stack
     ['bool']
@@ -1827,6 +1834,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
     >>> ivy.unset_default_dtype()
 
     With :class:`ivy.NativeDtype` input:
+
     >>> ivy.set_default_dtype(ivy.native_uint64)
     >>> ivy.default_dtype_stack
     ['uint64']
@@ -1838,12 +1846,25 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
 
 @handle_exceptions
 def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
-    """Summary.
+    """
+    Sets the 'float_dtype' as the default data type.
 
     Parameters
     ----------
     float_dtype
+        The float data type to be set as the default.
 
+    Examples
+    --------
+    With :class: `ivy.Dtype` input:
+
+    >>> ivy.set_default_float_dtype(ivy.floatDtype("float64"))
+    >>> ivy.default_float_dtype()
+    'float64'
+
+    >>> ivy.set_default_float_dtype(ivy.floatDtype("float32"))
+    >>> ivy.default_float_dtype()
+    'float32'
     """
     float_dtype = ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
     global default_float_dtype_stack
@@ -1863,6 +1884,7 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
     Examples
     --------
     With :class: `ivy.Dtype` input:
+
     >>> ivy.set_default_int_dtype(ivy.intDtype("int64"))
     >>> ivy.default_int_dtype()
     'int64'
@@ -1961,6 +1983,7 @@ def unset_default_float_dtype():
     >>> ivy.set_default_float_dtype(ivy.float64)
     >>> ivy.default_float_dtype_stack
     ['float32','float64']
+
     >>> ivy.unset_default_float_dtype()
     >>> ivy.default_float_dtype_stack
     ['float32']
