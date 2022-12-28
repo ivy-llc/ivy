@@ -152,11 +152,7 @@ amax = max
 def average(a, axis=None, weights=None, returned=False, keepdims=False):
 
     # canonicalize_axis to ensure axis or the values in axis > 0
-    if axis is None:
-        pass
-    elif isinstance(axis, int):
-        pass
-    elif isinstance(axis, tuple) or isinstance(axis, list):
+    if isinstance(axis, tuple) or isinstance(axis, list):
         a_ndim = len(ivy.shape(a))
         new_axis = [0] * len(axis)
         for i, v in enumerate(axis):
@@ -169,7 +165,7 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
                 new_axis[i] = v
         axis = tuple(new_axis)
     else:
-        raise TypeError("Argument 'axis' only support following int/tuple/list")
+        raise TypeError("Argument 'axis' only support following data types: int/tuple/list")
     
     if weights is None: 
         ret = ivy.mean(a, axis=axis, keepdims=keepdims)
