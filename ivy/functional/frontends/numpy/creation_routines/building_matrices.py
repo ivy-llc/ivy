@@ -14,4 +14,4 @@ def diag(v, k=0):
 
 @to_ivy_arrays_and_back
 def diagflat(v, k=0):
-    return ivy.diagflat(v, k=k)
+    return ivy.diagflat(v, k)
