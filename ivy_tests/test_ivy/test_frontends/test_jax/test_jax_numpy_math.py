@@ -1662,6 +1662,7 @@ def test_jax_numpy_heaviside(
         x2=x[0],
     )
 
+
 # log
 @handle_frontend_test(
     fn_tree="jax.numpy.log",
@@ -1697,4 +1698,3 @@ def test_jax_numpy_log(
         atol=1e-02,
         x=x[0],
     )
-
