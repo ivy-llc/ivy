@@ -15,11 +15,16 @@ def _get_clip_inputs(draw):
             min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
         )
     )
-    x_dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            shape=shape,
-        )
+    x_dtype, x, casting, dtype = draw(
+        np_frontend_helpers.dtypes_values_casting_dtype(
+            arr_func=[
+                lambda: helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("numeric"),
+                    shape=shape,
+                )
+            ],
+            get_dtypes_kind="numeric",
+        ),
     )
     min = draw(st.booleans())
     if min:
@@ -45,7 +50,7 @@ def _get_clip_inputs(draw):
                 dtype=x_dtype[0], shape=shape, min_value=6, max_value=50
             )
         )
-    return x_dtype, x, min, max
+    return x_dtype, x, min, max, casting, dtype
 
 
 # clip
@@ -65,11 +70,7 @@ def test_numpy_clip(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, min, max = input_and_ranges
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="numeric",
-    )
+    input_dtype, x, min, max, casting, dtype = input_and_ranges
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
