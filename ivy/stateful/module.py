@@ -4,8 +4,6 @@
 import os
 import abc
 import ivy.functional.backends.numpy
-import termcolor
-import numpy as np
 from types import SimpleNamespace
 
 try:
@@ -48,6 +46,7 @@ from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
 from ivy.functional.ivy.gradients import _is_variable
 from ivy.stateful.helpers import ModuleHelpers
+
 
 # Base #
 # -----#
