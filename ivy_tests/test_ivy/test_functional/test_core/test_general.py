@@ -642,7 +642,7 @@ def test_scatter_flat(
             if k > len(grad_support_version):
                 break
             if number < grad_support_version[k]:
-                test_flags.gradient = False
+                test_flags.test_gradients = False
             k += 1
     (val_dtype, vals), (ind_dtype, ind), size = x
     helpers.test_function(
