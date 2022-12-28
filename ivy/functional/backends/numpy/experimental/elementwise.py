@@ -256,9 +256,10 @@ def diff(
     axis: Optional[int] = -1,
     prepend: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
     append: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    prepend = prepend if prepend != None else np._NoValue
-    append = append if append != None else np._NoValue
+    prepend = prepend if prepend is not None else np._NoValue
+    append = append if append is not None else np._NoValue
     return np.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
