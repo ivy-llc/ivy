@@ -22,18 +22,39 @@ In order to incorporate Continuous Integration in the Ivy Repository, we follow 
 
 We use GitHub Actions in order to implement and automate the process of testing. GitHub Actions allow implementing custom workflows that can build the code in the repository and run the tests. All the workflows used by Ivy are defined in the `.github/workflows <https://github.com/unifyai/ivy/tree/master/.github/workflows>`_ directory.
 
-GitHub Actions
---------------
+Commit (Push/PR) Triggered Testing
+----------------------------------
 
-GitHub Actions allow implementing custom workflows that can build the code in the repository and run the tests.
-Workflows can be configured to be triggered on the following events:
+The following Tests are triggered in case of a Commit (Push/PR) made to the Ivy Repository:
 
-* **Push**: The Workflow triggers on a push to the repository with the possibility of getting started only on changes to specific files.
-* **Pull Requests**: The Workflow triggers on any pull request made to the repository.
-* **Schedule**: The Workflow runs on a fixed schedule, for ex., every hour, every day, etc.
-  (Similar to Cron Jobs in Ubuntu).
+#. Ivy Tests (A small subset)
+#. Array API Tests
 
-All the workflows used by Ivy are defined in the .github/workflows directory.
+Ivy Tests
+^^^^^^^^^
+A test is defined as the triplet of (submodule, function, backend). We follow the following notation to identify each test:
+:code:`submodule::function,backend`
+
+For example, :code:`ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,numpy`
+
+The Number of such Ivy tests running on the Repository (without taking any Framework/Python Versioning into account) is 7284 (as of writing this documentation), and we are adding tests daily. Therefore, triggering all the tests on each commit is neither desirable (as it will consume a huge lot of Compute Resources, as well take a large amount of time to run) nor feasible (as Each Job in Github Actions has a time Limit of 360 Minutes, and a Memory Limit as well).
+
+Further, When we consider versioning, for a single Python version, and ~40 frontend and backend versions, the tests would shoot up to 40 * 40 * 7284 = 11,654,400, and we obviously don't have resources as well as time to run those many tests on each commit.
+
+Thus, We need to prune the tests that run on each push to the Github Repository. The ideal situation, here, is to trigger only the tests that are impacted by the changes made in a push. The tests that are not impacted by the changes made in a push, are wasteful to trigger, as their results don’t change (keeping the same Hypothesis Configuration). For example, Consider the `commit <https://github.com/unifyai/ivy/commit/29cc90dda9e9a8d64789ed28e6eab0f41257a435>`_
+
+The commit changes the :code:`_reduce_loss` function and the :code:`binary_cross_entropy` functions in the ivy/functional/ivy/losses.py file. The only tests that must be triggered (for all 4 backends) are:
+
+:code:`ivy_tests/test_ivy/test_functional/test_nn/test_losses.py::test_binary_cross_entropy_with_logits`
+:code:`ivy_tests/test_ivy/test_functional/test_nn/test_losses.py::test_cross_entropy`
+:code:`ivy_tests/test_ivy/test_functional/test_nn/test_losses.py::test_binary_cross_entropy`
+:code:`ivy_tests/test_ivy/test_functional/test_nn/test_losses.py::test_sparse_cross_entropy`
+:code:`ivy_tests/test_ivy/test_frontends/test_torch/test_loss_functions.py::test_torch_binary_cross_entropy`
+:code:`ivy_tests/test_ivy/test_frontends/test_torch/test_loss_functions.py::test_torch_cross_entropy`
+
+Ivy’s Functional API functions :code:`binary_cross_entropy_with_logits`, :code:`test_cross_entropy`, :code:`test_binary_cross_entropy`, :code:`test_sparse_cross_entropy`, are precisely the ones impacted by the changes in the commit, and since the torch Frontend Functions torch_binary_cross_entropy, and torch_cross_entropy are wrapping these, the corresponding frontend tests are also impacted. No other Frontend function calls these underneath and hence are not triggered.
+
+How do we (or at least try to) achieve this?
 
 The following sections describe the relevant Workflows used in the Ivy Repository, that implement the CI Pipeline.
 Each of the workflows described below, are triggered on:
