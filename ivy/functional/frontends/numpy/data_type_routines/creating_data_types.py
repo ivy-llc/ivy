@@ -17,7 +17,7 @@ def to_ivy_dtype(dtype_in):
     if issubclass(dtype_in, np_frontend.generic):
         return np_frontend.numpy_scalar_to_dtype[dtype_in]
     else:
-        ivy.as_ivy_dtype(dtype_in)
+        return ivy.as_ivy_dtype(dtype_in)
 
 
 class dtype:
