@@ -193,30 +193,6 @@ def isclose(
 isclose.support_native_out = False
 
 
-def isposinf(
-    x: Union[np.ndarray, float, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.isposinf(x, out=out)
-
-
-isposinf.support_native_out = True
-
-
-def isneginf(
-    x: Union[np.ndarray, float, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.isneginf(x, out=out)
-
-
-isneginf.support_native_out = True
-
-
 def angle(
     z: np.ndarray,
     /,
@@ -281,6 +257,8 @@ def diff(
     prepend: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
     append: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
 ) -> np.ndarray:
+    prepend = prepend if prepend != None else np._NoValue
+    append = append if append != None else np._NoValue
     return np.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 

@@ -1682,13 +1682,14 @@ def one_hot(
 @handle_exceptions
 @handle_array_like
 def logspace(
-    start: Union[ivy.Array, ivy.NativeArray, int],
-    stop: Union[ivy.Array, ivy.NativeArray, int],
+    start: Union[ivy.Array, ivy.NativeArray, float],
+    stop: Union[ivy.Array, ivy.NativeArray, float],
     /,
     num: int,
     *,
     base: float = 10.0,
-    axis: Optional[int] = None,
+    axis: Optional[int] = 0,
+    endpoint: bool = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
@@ -1696,35 +1697,39 @@ def logspace(
     """Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
 
-    See :math:`arange` that allows to specify the step size of evenly spaced values in
-    an interval.
-
     Parameters
     ----------
     start
-        First entry in the range.
+        First value in the range in log space. base ** start is the starting value in
+        the sequence. Can be an array or a float.
     stop
-        Final entry in the range.
+        Last value in the range in log space. base ** stop is the final value in the
+        sequence. Can be an array or a float.
     num
         Number of values to generate.
     base
         The base of the log space. Default is 10.0
     axis
-        Axis along which the operation is performed.
+        Axis along which the operation is performed. Relevant only if start or stop are
+        array-like. Default is 0.
+    endpoint
+        If True, stop is the last sample. Otherwise, it is not included. Default is
+        True.
     dtype
         The data type of the output tensor. If None, the dtype of on_value is used or if
         that is None, the dtype of off_value is used, or if that is None, defaults to
-        float32.
+        float32. Default is None.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default is
+        None.
     out
         optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        inputs broadcast to. Default is None.
 
     Returns
     -------
     ret
-        Tensor of evenly-spaced values.
+        Tensor of evenly-spaced values in log space.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -1732,95 +1737,74 @@ def logspace(
 
     Functional Examples
     -------------------
-    With General input:
+    With float input:
 
-    >>> x = ivy.logspace(2.0,3.0,num=4)
-    >>> print(x)
-    ivy.array([100., 215.443469, 464.15888336, 1000.])
+    >>> ivy.logspace(1, 2, 4)
+    ivy.array([ 10., 21.5443469, 46.41588834, 100.])
 
-    >>> x = ivy.logspace(2.0, 3.0, num=4,axis=0,base=3)
-    >>> print(x)
-    ivy.array([9., 12.98024613, 18.72075441, 27.])
+    >>> ivy.logspace(1, 2, 4, endpoint=False)
+    ivy.array([10., 17.7827941, 31.6227766, 56.23413252])
+
+    >>> ivy.logspace(1, 2, 4, dtype = int)
+    ivy.array([10, 21, 46, 100])
+
+    >>> ivy.logspace(1, 2, 4, base = 2, device = "cuda:0")
+    ivy.array([2., 2.5198421, 3.1748021, 4.])
+
+    >>> out = ivy.array([0,0,0,0])
+    >>> ivy.logspace(1, 2, 4, out = out)
+    >>> print(out)
+    ivy.array([ 10., 21.5443469, 46.41588834, 100.])
 
     With :class:`ivy.Array` input:
+    >>> x = ivy.array([1, 2])
+    >>> y = ivy.array([4, 5])
+    >>> ivy.logspace(x, y, 4)
+    ivy.array([[1.e+01, 1.e+02],
+               [1.e+02, 1.e+03],
+               [1.e+03, 1.e+04],
+               [1.e+04, 1.e+05])
 
-    >>> y1 = ivy.array([[1, 2, 3], [7, 4, 5]])
-    >>> y2 = ivy.array([[1, 3, 9], [5, 7, 11]])
-    >>> op = ivy.logspace(y1, y2, 2, axis=2,base=2)
-    >>> print(op)
-    ivy.array([[[2.000e+00, 2.000e+00]
-                [4.000e+00, 8.000e+00]
-                [8.000e+00, 5.120e+02]],
+    >>> ivy.logspace(x, y, 4, axis = 1)
+    ivy.array([[[1.e+01, 1.e+02, 1.e+03, 1.e+04],
+               [1.e+02, 1.e+03, 1.e+04, 1.e+05]]])
 
-               [[1.280e+02, 3.200e+01]
-                [1.600e+01, 1.280e+02]
-                [3.200e+01, 2.048e+03]]])
+    >>> x = ivy.array([1, 2])
+    >>> y = ivy.array([4])      # Broadcasting example
+    >>> ivy.logspace(x, y, 4)
+    ivy.array([[10., 100.]
+               [100., 464.15888336]
+               [1000., 2154.43469003]
+               [10000., 10000.]])
 
-    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
-    >>> x2 = ivy.array([7, 11, 2, 9, 7, 6])
-    >>> op = ivy.logspace(x1,x2,2,axis=1)
-    >>> print(op)
-    ivy.array([[1.e+01, 1.e+07]
-               [1.e+02, 1.e+11]
-               [1.e+03, 1.e+02]
-               [1.e+04, 1.e+09]
-               [1.e+05, 1.e+07]
-               [1.e+06, 1.e+06]])
+    >>> x = ivy.array([1, 2])
+    >>> y1 = ivy.array([4])
+    >>> y2 = ivy.array([4, 4])
+    >>> y3 = 4
+    >>> l1 = ivy.logspace(x, y1, 4)
+    >>> l2 = ivy.logspace(x, y2, 4)
+    >>> l3 = ivy.logspace(x, y3, 4)
+    >>> print(l1 == l2)
+    True
+    >>> print(l1 == l3)
+    True
 
-    >>> x = ivy.array([3., 2., 1.])
-    >>> y = ivy.array([13., 72., 11.])
-    >>> op = ivy.logspace(x, y, 3, axis=1,dev_str=ivy.Device('cpu'))
-    >>> print(op)
-    ivy.array([[1.e+03, 1.e+08, 1.e+13]
-               [1.e+02, 1.e+37, 1.e+72]
-               [1.e+01, 1.e+06, 1.e+11]])
-
-    # Array ``op`` is now stored on the CPU.
-
-    >>> y1 = ivy.array([[1, 3, 9], [5, 7, 11]])
-    >>> y2 = ivy.zeros(3)
-    >>> op = ivy.logspace(y1, y2, 3, axis=1,base=1)
-    >>> print(op)
-    ivy.array([[[1., 1., 1.]
-                [1., 1., 1.]
-                [1., 1., 1.]],
-
-               [[1., 1., 1.]
-                [1., 1., 1.]
-                [1., 1., 1.]]])
-
-    >>> x1 = ivy.array([[5, 13, 9], [15, 6, 7]])
-    >>> x2 = ivy.ones(3)
-    >>> op = ivy.logspace(x1, x2, 2, axis=0, base=2)
-    >>> print(op)
-    ivy.array([[[3.2000e+01, 8.1920e+03, 5.1200e+02]
-                [3.2768e+04, 6.4000e+01, 1.2800e+02]],
-               [[2.0000e+00 2.0000e+00 2.0000e+00]
-                [2.0000e+00 2.0000e+00 2.0000e+00]]])
-
-     With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([21., 12.]))
-    >>> op = ivy.logspace(x.a,x.b,num=3)
-    >>> print(op)
-    ivy.array([[1.e+05, 1.e+13, 1.e+21]
-               [1.e+06, 1.e+09, 1.e+12]])
-
-    >>> x = ivy.Container(a=ivy.array([.3, .8]), b=ivy.array([.2, .2]))
-    >>> y = ivy.Container(a=ivy.array([.3, .2]), b=ivy.array([.7, .9]))
-    >>> op1 = ivy.logspace(x.a,y.b,num=3)
-    >>> op2 = ivy.logspace(x.b,y.a,num=3)
-    >>> op = ivy.logspace(op1,op2,num=5,base=2)
-    >>> print(op)
-    ivy.array([[[3.98688589, 3.71321804, 3.45833531, 3.22094823, 2.99985588]
-                [8.95241962, 7.04342969, 5.54150764, 4.35985143, 3.43016841]
-                [32.26442336, 19.12940149, 11.34171831, 6.72444323, 3.98688589]],
-
-               [[79.31783778, 34.97866642, 15.42537138, 6.80249153, 2.99985588]
-                [135.24747445, 52.19416699, 20.14256517, 7.77333857, 2.99985588]
-                [246.1309628, 81.78050455, 27.17273296, 9.02852606, 2.99985588]]])
-
+    Instance Method Examples
+    -------------------
+    With :class:`ivy.Array` input:
+    >>> x.logspace(y, 4)
+    ivy.array([[1.e+01, 1.e+02],
+               [1.e+02, 1.e+03],
+               [1.e+03, 1.e+04],
+               [1.e+04, 1.e+05])
     """
-    return current_backend(start).logspace(
-        start, stop, num, base=base, axis=axis, dtype=dtype, device=device, out=out
+    return base ** linspace(
+        start,
+        stop,
+        num,
+        endpoint=endpoint,
+        axis=axis,
+        dtype=dtype,
+        device=device,
+        out=out,
     )
