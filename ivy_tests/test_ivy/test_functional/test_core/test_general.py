@@ -222,7 +222,7 @@ def array_and_boolean_mask(
         array_and_boolean_mask(array_dtypes=helpers.get_dtypes("valid")),
     ),
     test_with_out=st.just(False),
-    test_gradient=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_get_item(
     dtype_x_indices,
