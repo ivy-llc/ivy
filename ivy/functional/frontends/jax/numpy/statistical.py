@@ -164,8 +164,6 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
             else:
                 new_axis[i] = v
         axis = tuple(new_axis)
-    else:
-        raise TypeError("Argument 'axis' only support following data types: int/tuple/list")
     
     if weights is None: 
         ret = ivy.mean(a, axis=axis, keepdims=keepdims)
