@@ -713,6 +713,6 @@ def test_tensorflow_linalg_cholesky(
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-02,
-        x=x,
+        input=x,
     )
     
