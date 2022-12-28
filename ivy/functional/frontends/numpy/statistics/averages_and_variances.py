@@ -197,14 +197,17 @@ def cov(x, y=None, bias=False, dtype=None, fweights=None, aweights=None, ddof=No
         return c
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def nanvar(a, axis=None, dtype=None, out=None, ddof=0.0, keepdims=False, *, where=True):
+def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
 
     if not ivy.any(is_nan):
         if dtype:
             a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+        else:
+            dtype = "float" if ivy.is_int_dtype(a) else a.dtype
 
         ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
 
@@ -217,6 +220,9 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0.0, keepdims=False, *, wher
 
         if dtype:
             a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+        else:
+            dtype = "float" if ivy.is_int_dtype(a) else a.dtype
+
         ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
 
         if ivy.is_array(where):

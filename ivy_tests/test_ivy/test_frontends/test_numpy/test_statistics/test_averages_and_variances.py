@@ -307,24 +307,23 @@ def test_numpy_cov(
 # nanvar
 @handle_frontend_test(
     fn_tree="numpy.nanvar",
-    dtype_x_axis=statistical_dtype_values(function="var"),
+    dtype_x_axis=statistical_dtype_values(function="nanvar"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    keepdims=st.booleans(),
+    keep_dims=st.booleans(),
 )
 def test_numpy_nanvar(
-    *,
     dtype_x_axis,
     dtype,
-    keepdims,
     where,
-    num_positional_args,
-    with_out,
     as_variable,
+    with_out,
+    num_positional_args,
     native_array,
-    on_device,
-    fn_tree,
     frontend,
+    fn_tree,
+    on_device,
+    keep_dims,
 ):
     x_dtype, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
@@ -345,11 +344,13 @@ def test_numpy_nanvar(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-1,
+        rtol=1e-1,
         a=x[0],
         axis=axis,
         dtype=dtype[0],
         out=None,
         ddof=ddof,
-        keepdims=keepdims,
+        keepdims=keep_dims,
         where=where,
     )
