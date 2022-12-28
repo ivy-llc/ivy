@@ -5,11 +5,20 @@ Continuous Integration
 .. _`continuous integration forum`: https://discord.com/channels/799879767196958751/982737993028755496
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
-We follow the practice of Continuous Integration (CI), in order to build and test our code at each commit (push or pull request) made to the Ivy Repository.
+We follow the practice of Continuous Integration (CI), in order to regularly build and test code at Ivy.
 This makes sure that:
 
-#. The commit doesn't introduce any new errors, in the code base. ✅
-#. The developer can easily debug the code when finding the source of an error. 🔍
+#. Developers get feedback on their code soon, and Errors in the Code are detected quickly. ✅
+#. The developer can easily debug the code when finding the source of an error, and rollback changes in case of Issues. 🔍
+
+In order to incorporate Continuous Integration in the Ivy Repository, we follow a three-fold technique, which involves:
+
+#. Commit Triggered Testing
+#. Periodic Testing
+#. Manual Testing
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/CI.png?raw=true
+   :alt: CI Overview
 
 We use GitHub Actions in order to implement the CI Pipeline in our code, as explained in the following sections.
 
