@@ -66,10 +66,10 @@ def histogram(
         less than or equal to the second.
     weights
         each value in ``a`` only contributes its associated weight towards the bin count
-         (instead of 1). Must be of the same shape as a.
+        (instead of 1). Must be of the same shape as a.
     density
-         if True, the result is the value of the probability density function at the
-         bin, normalized such that the integral over the range of bins is 1.
+        if True, the result is the value of the probability density function at the
+        bin, normalized such that the integral over the range of bins is 1.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -80,8 +80,8 @@ def histogram(
         a tuple containing the values of the histogram and the bin edges.
 
     Both the description and the type hints above assumes an array input for simplicity,
-     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-     instances in place of any of the arguments.
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -110,19 +110,20 @@ def histogram(
     >>> extend_upper_interval = True
     >>> dtype = ivy.float32
     >>> weights = ivy.array([[1., 1., 1.], [1., 1., 1.]])
-    >>> z = ivy.histogram(x,
-                          bins=y,
-                          axis=axis,
-                          extend_lower_interval=extend_lower_interval,
-                          extend_upper_interval=extend_upper_interval,
-                          dtype=dtype,
-                          weights=weights)
+    >>> z = ivy.histogram(
+    >>>                     x,
+    >>>                     bins=y,
+    >>>                     axis=axis,
+    >>>                     extend_lower_interval=extend_lower_interval,
+    >>>                     extend_upper_interval=extend_upper_interval,
+    >>>                     dtype=dtype,
+    >>>                     weights=weights)
     >>> print(z)
     (ivy.array([[0., 3.],
-       [1., 0.],
-       [1., 0.],
-       [1., 0.],
-       [0., 0.]]), ivy.array([0., 1., 2., 3., 4., 5.]))
+    [1., 0.],
+    [1., 0.],
+    [1., 0.],
+    [0., 0.]]), ivy.array([0., 1., 2., 3., 4., 5.]))
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.array([0., 1., 2., 3., 4., 5.])

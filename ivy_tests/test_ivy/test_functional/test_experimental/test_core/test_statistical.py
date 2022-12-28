@@ -1,8 +1,8 @@
 # global
-from hypothesis import strategies as st
-
 # local
 import numpy as np
+from hypothesis import strategies as st
+
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
@@ -77,10 +77,10 @@ def statistical_dtype_values(draw, *, function):
 # TODO: numpy does not support bfloat16
 # TODO: put this function inside statistical_dtype_values if needed
 @st.composite
-def _statistical_dtype_xs_bins_range_axis_castable(draw, n:int=2):
+def _statistical_dtype_xs_bins_range_axis_castable(draw, n: int = 2):
     available_dtypes = draw(helpers.get_dtypes(kind="float"))
-    if 'bfloat16' in available_dtypes:
-        available_dtypes.remove('bfloat16')
+    if "bfloat16" in available_dtypes:
+        available_dtypes.remove("bfloat16")
     shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=2))
     dtype, values = draw(
         helpers.dtype_and_values(
@@ -94,16 +94,26 @@ def _statistical_dtype_xs_bins_range_axis_castable(draw, n:int=2):
         )
     )
     axis = draw(helpers.get_axis(shape=shape, force_int=True))
-    dtype1, dtype2 = draw(
-        helpers.get_castable_dtype(available_dtypes, dtype[0])
+    dtype1, dtype2 = draw(helpers.get_castable_dtype(available_dtypes, dtype[0]))
+    bins = draw(
+        helpers.array_values(
+            dtype=dtype1, min_value=0, shape=draw(helpers.get_shape(max_num_dims=1))
+        )
     )
-    bins = draw(helpers.array_values(dtype=dtype1, min_value=0, shape=draw(helpers.get_shape(max_num_dims=1))))
     range = (0, 0)
     if bins.size == 1:
         while range[0] == range[1]:
             range = (
-                draw(st.floats(allow_nan=False, allow_infinity=False, allow_subnormal=False)),
-                draw(st.floats(allow_nan=False, allow_infinity=False, allow_subnormal=False))
+                draw(
+                    st.floats(
+                        allow_nan=False, allow_infinity=False, allow_subnormal=False
+                    )
+                ),
+                draw(
+                    st.floats(
+                        allow_nan=False, allow_infinity=False, allow_subnormal=False
+                    )
+                ),
             )
         range = sorted(range)
         return dtype1, values, int(bins), range, axis, dtype2
@@ -114,30 +124,20 @@ def _statistical_dtype_xs_bins_range_axis_castable(draw, n:int=2):
 
 
 @handle_test(
-    fn_tree="functional.experimental.histogram",
-    statistical_dtype_xs_bins_range_axis_castable=_statistical_dtype_xs_bins_range_axis_castable(),
+    fn_tree="functional.ivy.experimental.histogram",
+    private_data_generated=_statistical_dtype_xs_bins_range_axis_castable(),
     extend_lower_interval=st.booleans(),
     extend_upper_interval=st.booleans(),
     density=st.booleans(),
 )
 def test_histogram(
     *,
-    statistical_dtype_xs_bins_range_axis_castable,
+    private_data_generated,
     extend_lower_interval,
     extend_upper_interval,
     density,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
 ):
-    input_dtype, values, bins, range, axis, castable = statistical_dtype_xs_bins_range_axis_castable
+    input_dtype, values, bins, range, axis, castable = private_data_generated
     helpers.test_function(
         a=values[0],
         bins=bins,
@@ -149,16 +149,6 @@ def test_histogram(
         weights=values[1],
         density=density,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        with_out=with_out,
-        instance_method=instance_method,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
