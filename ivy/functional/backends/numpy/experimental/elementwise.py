@@ -187,7 +187,10 @@ def isclose(
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    ret = np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    if np.isscalar(ret):
+        return np.array(ret, dtype=np.bool)
+    return ret
 
 
 isclose.support_native_out = False
