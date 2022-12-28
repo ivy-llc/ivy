@@ -963,19 +963,6 @@ class ContainerWithCreation(ContainerBase):
             b: ivy.array([ 1., 2.15443469, 4.64158883, 10.])
         }
 
-        >>> u = ivy.Container(c = 0, d = 0)
-        >>> v = ivy.Container(c = 1, d = 2)
-        >>> x = ivy.Container(a = 1, b = u)
-        >>> y = ivy.Container(a = 4, b = v)
-        >>> z = static_logspace(x, y, 4)
-        {
-            a: ivy.array([10.,  100.,  1000., 10000.]),
-            b:  {
-                    c: ivy.array([ 1., 2.15443469, 4.64158883, 10.])
-                    d: ivy.array([ 1., 4.64158883, 21.5443469, 100.])
-                }
-        }
-
         """
 
         return ContainerBase.cont_multi_map_in_function(

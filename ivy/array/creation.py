@@ -560,18 +560,6 @@ class ArrayWithCreation(abc.ABC):
                    [1000., 2154.43469003]
                    [10000., 10000.]])
 
-        >>> x = ivy.array([1, 2])
-        >>> y1 = ivy.array([4])
-        >>> y2 = ivy.array([4, 4])
-        >>> y3 = 4
-        >>> l1 = x.logspace(y1, 4)
-        >>> l2 = x.logspace(y2, 4)
-        >>> l3 = x.logspace(y3, 4)
-        >>> print(l1 == l2)
-        True
-        >>> print(l1 == l3)
-        True
-
         """
 
         return ivy.logspace(
