@@ -6,6 +6,9 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    statistical_dtype_values,
+)
 
 
 @st.composite
@@ -83,6 +86,7 @@ def _x_and_filters(
                     helpers.ints(min_value=3, max_value=5),
                     helpers.ints(min_value=1, max_value=3),
                     helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=1),
                 )
             )
         elif not transpose:
@@ -607,6 +611,45 @@ def test_tensorflow_conv3d_transpose(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.depthwise_conv2d",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="depthwise",
+    ),
+)
+def test_tensorflow_depthwise_conv2d(
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    stride = 1 if dilation > 1 else stride
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filter=filters,
+        strides=[1, stride, stride, 1],
+        padding=padding,
+        data_format=data_format,
+        dilations=[dilation, dilation],
+    )
+
+
 # TODO: test with other dtypes
 @handle_frontend_test(
     fn_tree="tensorflow.nn.batch_normalization",
@@ -918,5 +961,86 @@ def test_tensorflow_max_pool1d(
         ksize=ksize,
         strides=strides,
         padding=padding,
+        data_format=data_format,
+    )
+
+
+# moments
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.moments",
+    dtype_x_axis=statistical_dtype_values(function="mean"),
+    keepdims=st.booleans(),
+)
+def test_tensorflow_moments(
+    *,
+    dtype_x_axis,
+    keepdims,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
+        x=x[0],
+        axes=axis,
+        keepdims=keepdims,
+    )
+
+
+@st.composite
+def _generate_bias_data(draw):
+    data_format = draw(st.sampled_from(["NC...", "N...C", None]))
+    channel_dim = 1 if data_format == "NC..." else -1
+    dtype, value, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=3,
+            ret_shape=True,
+        )
+    )
+    channel_size = shape[channel_dim]
+    bias = draw(helpers.array_values(dtype=dtype[0], shape=(channel_size,)))
+    return data_format, dtype, value, bias
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.bias_add",
+    data=_generate_bias_data(),
+)
+def test_tensorflow_bias_add(
+    *,
+    data,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    data_format, dtype, value, bias = data
+    helpers.test_frontend_function(
+        input_dtypes=dtype * 2,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=value[0],
+        bias=bias,
         data_format=data_format,
     )

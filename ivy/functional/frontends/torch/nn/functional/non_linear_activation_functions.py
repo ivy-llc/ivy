@@ -1,5 +1,6 @@
 # local
 import ivy
+import math
 from ivy.func_wrapper import with_unsupported_dtypes
 
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
@@ -64,6 +65,27 @@ def _rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
         ivy.inplace_update(input, ret)
         return input
     return ret
+
+
+def kernels(ind, outd):
+    def start_index(a, b, c):
+        return math.floor((float(a) * float(c)) / b)
+
+    def end_index(a, b, c):
+        return math.ceil((float(a + 1) * float(c)) / b)
+
+    results = []
+    for ow in range(outd):
+        start = start_index(ow, outd, ind)
+        end = end_index(ow, outd, ind)
+        sz = end - start
+        results.append((start, sz))
+    return results
+
+
+def kernel_indexes(ind, out):
+    startsLengths = kernels(ind, out)
+    return [list(range(start, start + length)) for (start, length) in startsLengths]
 
 
 @to_ivy_arrays_and_back
@@ -404,3 +426,82 @@ def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
     )
 
     return ret
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def batch_norm(
+    input,
+    running_mean,
+    running_var,
+    weight=None,
+    bias=None,
+    training=False,
+    momentum=0.1,
+    eps=1e-5,
+):
+    if training:
+        dim = 0 if len(input.shape) == 2 else (0, 2, 3)
+        current_mean = ivy.mean(input, axis=dim)
+        current_var = ivy.var(input, axis=dim)
+    else:
+        current_mean = running_mean
+        current_var = running_var
+
+    input = ivy.swapaxes(input, 1, -1)
+    input -= current_mean
+    input /= ivy.sqrt(current_var + eps)
+    if weight is not None:
+        input *= weight
+    if bias is not None:
+        input += bias
+
+    # updating running mean & var is useless in functional API?
+    running_mean = (1.0 - momentum) * running_mean + momentum * current_mean
+    running_var = (1.0 - momentum) * running_var + momentum * current_var
+
+    return ivy.swapaxes(input, 1, -1)
+
+
+# Refrence: https://stackoverflow.com/a/63603993
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def adaptive_avg_pool1d(input, output_size):
+    squeeze = False
+    if len(input.shape) == 2:
+        input = ivy.expand_dims(input, axis=0)
+        squeeze = True
+    input_size = input.shape[-1]
+    if input_size % output_size == 0:
+        stride = input_size // output_size
+        kernel_size = input_size - (output_size - 1) * stride
+        pooled_output = ivy.avg_pool1d(
+            input, kernel_size, stride, "VALID", data_format="NCW"
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output
+    else:
+        kernels = kernel_indexes(input_size, output_size)
+        pooled_output = ivy.stack(
+            [sum([input[:, :, x] for x in xs]) / len(xs) for xs in kernels], axis=-1
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output

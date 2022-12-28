@@ -1,5 +1,11 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
+import math
+
+try:
+    import exceptions
+except ImportError:
+    pass
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -330,6 +336,71 @@ def test_torch_reshape(
     )
 
 
+@st.composite
+def _as_strided_helper(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            ret_shape=True,
+        )
+    )
+    ndim = len(shape)
+    numel = x[0].size
+    offset = draw(st.integers(min_value=0, max_value=numel - 1))
+    numel = numel - offset
+    size = draw(
+        helpers.get_shape(
+            min_num_dims=ndim,
+            max_num_dims=ndim,
+        ).filter(lambda s: math.prod(s) <= numel)
+    )
+    stride = draw(
+        helpers.get_shape(
+            min_num_dims=ndim,
+            max_num_dims=ndim,
+        ).filter(lambda s: all(numel // s_i >= size[i] for i, s_i in enumerate(s)))
+    )
+    return x_dtype, x, size, stride, offset
+
+
+# as_strided
+@handle_frontend_test(
+    fn_tree="torch.as_strided",
+    dtype_x_and_other=_as_strided_helper(),
+)
+def test_torch_as_strided(
+    *,
+    dtype_x_and_other,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtype, x, size, stride, offset = dtype_x_and_other
+    try:
+        helpers.test_frontend_function(
+            input_dtypes=x_dtype,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            frontend=frontend,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            input=x[0],
+            size=size,
+            stride=stride,
+            storage_offset=offset,
+        )
+    except exceptions.RuntimeError as e:
+        if "out of bounds for storage of size" in e.message:
+            assume(False)
+
+
 # stack
 @handle_frontend_test(
     fn_tree="torch.stack",
@@ -617,6 +688,37 @@ def test_torch_unsqueeze(
         on_device=on_device,
         input=value[0],
         dim=dim,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.argwhere",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_argwhere(
+    *,
+    dtype_and_values,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, input = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
     )
 
 

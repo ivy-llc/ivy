@@ -457,20 +457,18 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """
         Examples
         --------
-        x = ivy.array([[1., 2.],
-        ...            [3., 4.]])
-        y = pinv(x, None, None)
-        print(y)
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> y = x.pinv()
+        >>> print(y)
         ivy.array([[-2., 1.],
-        ...        [1.5, -0.5]])
+                   [1.5, -0.5]])
 
-        x = ivy.array([[1., 2.],
-        ...            [3., 4.]])
-        out = ivy.array()
-        pinv(x, 0, out)
-        print(out)
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> z = ivy.zeros((2,2))
+        >>> x.pinv(rtol=0, out=z)
+        >>> print(z)
         ivy.array([[0.0426, 0.0964],
-        ...       [0.0605, 0.1368]])
+                   [0.0605, 0.1368]])
         """
         return ivy.pinv(self._data, rtol=rtol, out=out)
 
@@ -635,12 +633,13 @@ class ArrayWithLinearAlgebra(abc.ABC):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
-        ord: Union[int, float, Literal[inf, -inf]] = 2,
+        keepdims: Optional[bool] = False,
+        ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.vector_norm(
-            self._data, axis=axis, keepdims=keepdims, ord=ord, out=out
+            self._data, axis=axis, keepdims=keepdims, ord=ord, dtype=dtype, out=out
         )
 
     def vector_to_skew_symmetric_matrix(

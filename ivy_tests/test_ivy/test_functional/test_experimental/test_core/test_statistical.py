@@ -163,9 +163,10 @@ def test_histogram(
 
 
 @handle_test(
-    fn_tree="functional.experimental.median",
+    fn_tree="functional.ivy.experimental.median",
     dtype_x_axis=statistical_dtype_values(function="median"),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_median(
     *,
@@ -203,22 +204,18 @@ def test_median(
 
 # nanmean
 @handle_test(
-    fn_tree="functional.experimental.nanmean",
+    fn_tree="functional.ivy.experimental.nanmean",
     dtype_x_axis=statistical_dtype_values(function="nanmean"),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("float"),
+    dtype=helpers.get_dtypes("float", full=False),
+    test_gradients=st.just(False),
 )
 def test_nanmean(
     *,
     dtype_x_axis,
     keep_dims,
     dtype,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -228,19 +225,14 @@ def test_nanmean(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -266,17 +258,13 @@ def max_value_as_shape_prod(draw):
 
 
 @handle_test(
-    fn_tree="functional.experimental.nanmean",
+    fn_tree="functional.ivy.experimental.nanmean",
     dtype_x_shape=max_value_as_shape_prod(),
+    test_gradients=st.just(False),
 )
 def test_unravel_index(
     dtype_x_shape,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     ground_truth_backend,
@@ -286,12 +274,7 @@ def test_unravel_index(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         indices=np.asarray(x[0], dtype=input_dtype[0]),
@@ -303,10 +286,11 @@ def test_unravel_index(
 
 
 @handle_test(
-    fn_tree="functional.experimental.quantile",
+    fn_tree="functional.ivy.experimental.quantile",
     dtype_and_x=statistical_dtype_values(function="quantile"),
     keep_dims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="quantile"),
+    test_gradients=st.just(False),
 )
 def test_quantile(
     *,

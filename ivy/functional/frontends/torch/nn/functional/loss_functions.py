@@ -109,6 +109,25 @@ def binary_cross_entropy(
 
 
 @to_ivy_arrays_and_back
+def binary_cross_entropy_with_logits(
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+    pos_weight=None,
+):
+    reduction = _get_reduction(reduction, size_average, reduce)
+    result = ivy.binary_cross_entropy_with_logits(target, input, pos_weight=pos_weight)
+
+    if weight is not None:
+        result = ivy.multiply(weight, result)
+    result = reduction(result).astype(target.dtype)
+    return result
+
+
+@to_ivy_arrays_and_back
 def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.square(input - target)
@@ -213,4 +232,19 @@ def nll_loss(
     reduct = _get_reduction(reduction, size_average, reduce)
     ret = reduct(loss)
 
+    return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def soft_margin_loss(
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = ivy.log1p(ivy.exp(-input * target))
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
     return ret

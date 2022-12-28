@@ -1,6 +1,7 @@
 # global
 from typing import Optional, Union, Tuple, List
 from numbers import Number
+from math import pi
 import torch
 
 # local
@@ -201,28 +202,20 @@ def isclose(
 isclose.support_native_out = False
 
 
-def isposinf(
-    x: Union[torch.Tensor, float, list, tuple],
+def angle(
+    input: torch.Tensor,
     /,
     *,
+    deg: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.isposinf(x, out=out)
+    if deg:
+        return torch.angle(input, out=out) * (180 / pi)
+    else:
+        return torch.angle(input, out=out)
 
 
-isposinf.support_native_out = True
-
-
-def isneginf(
-    x: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.isneginf(x, out=out)
-
-
-isneginf.support_native_out = True
+angle.support_native_out = True
 
 
 def nan_to_num(
@@ -262,13 +255,26 @@ def diff(
     x: Union[torch.Tensor, int, float, list, tuple],
     /,
     *,
-    out: Optional[torch.Tensor] = None,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
+    append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
 ) -> torch.Tensor:
     x = x if type(x) == torch.Tensor else torch.Tensor(x)
-    return torch.diff(x, out=out)
+    prepend = (
+        prepend
+        if type(prepend) == torch.Tensor or prepend is None
+        else torch.Tensor(prepend)
+    )
+    append = (
+        append
+        if type(append) == torch.Tensor or append is None
+        else torch.Tensor(append)
+    )
+    return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
 
 
-gcd.support_native_out = True
+gcd.support_native_out = False
 
 
 def signbit(
@@ -293,7 +299,8 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> bool:
-    return torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    ret = torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return torch.tensor(ret)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
@@ -354,3 +361,13 @@ def gradient(
     if len(grad) == 1:
         return grad[0]
     return grad
+
+
+def xlogy(
+    x: torch.tensor,
+    y: torch.tensor,
+    /,
+    *,
+    out: Optional[torch.tensor] = None
+) -> torch.tensor:
+    return torch.xlogy(x, y, out=out)

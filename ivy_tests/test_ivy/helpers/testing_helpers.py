@@ -2,16 +2,22 @@
 import importlib
 import inspect
 import typing
-from functools import partial
 
 from hypothesis import given, strategies as st
 
 # local
 import ivy
-from ivy_tests.test_ivy import conftest as cfg  # TODO temporary
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
+from ivy_tests.test_ivy.helpers.test_parameter_flags import (
+    BuiltInstanceStrategy,
+    BuiltAsVariableStrategy,
+    BuiltNativeArrayStrategy,
+    BuiltGradientStrategy,
+    BuiltContainerStrategy,
+    BuiltWithOutStrategy,
+)
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import (
     available_frameworks,
@@ -127,7 +133,9 @@ def _import_fn(fn_tree: str):
 
 
 def _generate_shared_test_flags(
-    param_names: list, _given_kwargs: dict, fn_tree: str, fn: callable
+    param_names: list,
+    _given_kwargs: dict,
+    fn_tree: str,
 ):
     """
     Generates flags that all tests use.
@@ -136,24 +144,14 @@ def _generate_shared_test_flags(
     -------
     shared flags that all tests use.
     """
-    if "num_positional_args" in param_names:
-        _given_kwargs["num_positional_args"] = num_positional_args(fn_name=fn_tree)
-    for flag_key, flag_value in cfg.GENERAL_CONFIG_DICT.items():
-        if flag_key in param_names:
-            _given_kwargs[flag_key] = st.just(flag_value)
-    for flag in cfg.UNSET_TEST_CONFIG["list"]:
-        if flag in param_names:
-            _given_kwargs[flag] = st.lists(st.booleans(), min_size=1, max_size=1)
-    for flag in cfg.UNSET_TEST_CONFIG["flag"]:
-        if flag in param_names:
-            _given_kwargs[flag] = st.booleans()
-    # Override with_out to be compatible
-    if "with_out" in param_names:
-        for k in inspect.signature(fn).parameters.keys():
-            if k.endswith("out"):
-                break
-        else:
-            _given_kwargs["with_out"] = st.just(False)
+    possible_flags = {
+        "num_positional_args": num_positional_args(fn_name=fn_tree),
+        "as_variable": pf.BuiltNativeArrayStrategy,
+        "native_array": pf.BuiltNativeArrayStrategy,
+        "with_out": pf.BuiltWithOutStrategy,
+    }
+    for k in set(param_names).intersection(possible_flags.keys()):
+        _given_kwargs[k] = possible_flags[k]
     return _given_kwargs
 
 
@@ -184,45 +182,51 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
 # Decorators
 
-possible_fixtures = ["backend_fw", "on_device"]
-
 
 def handle_test(
-    *, fn_tree: str, ground_truth_backend: str = ground_truth, **_given_kwargs
+    *,
+    fn_tree: str,
+    ground_truth_backend: str = ground_truth,
+    number_positional_args=None,
+    test_instance_method=BuiltInstanceStrategy,
+    test_with_out=BuiltWithOutStrategy,
+    test_gradients=BuiltGradientStrategy,
+    as_variable_flags=BuiltAsVariableStrategy,
+    native_array_flags=BuiltNativeArrayStrategy,
+    container_flags=BuiltContainerStrategy,
+    **_given_kwargs,
 ):
     fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
-    given_kwargs = _given_kwargs
+    if is_hypothesis_test:
+        if number_positional_args is None:
+            number_positional_args = num_positional_args(fn_name=fn_tree)
+        test_flags = pf.function_flags(
+            num_positional_args=number_positional_args,
+            instance_method=test_instance_method,
+            with_out=test_with_out,
+            test_gradients=test_gradients,
+            as_variable=as_variable_flags,
+            native_arrays=native_array_flags,
+            container_flags=container_flags,
+        )
 
     def test_wrapper(test_fn):
         callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
         param_names = inspect.signature(test_fn).parameters.keys()
         supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
 
-        # No Hypothesis @given is used
+        # Additional arguments are being passed
         if is_hypothesis_test:
-            _given_kwargs = _generate_shared_test_flags(
-                param_names, given_kwargs, fn_tree, callable_fn
-            )
-            for flag in cfg.UNSET_TEST_API_CONFIG["list"]:
-                if flag in param_names:
-                    _given_kwargs[flag] = st.lists(
-                        st.booleans(), min_size=1, max_size=1
-                    )
-            for flag in cfg.UNSET_TEST_API_CONFIG["flag"]:
-                if flag in param_names:
-                    _given_kwargs[flag] = st.booleans()
-
-            wrapped_test = given(**_given_kwargs)(test_fn)
             possible_arguments = {
-                "fn_name": fn_name,
-                "ground_truth_backend": ground_truth_backend,
+                "test_flags": test_flags,
+                "fn_name": st.just(fn_name),
+                "ground_truth_backend": st.just(ground_truth_backend),
             }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
-            partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
-            _name = wrapped_test.__name__
-            wrapped_test = partial(wrapped_test, **partial_kwargs)
-            wrapped_test.__name__ = _name
+            for key in filtered_args:
+                _given_kwargs[key] = possible_arguments[key]
+            wrapped_test = given(**_given_kwargs)(test_fn)
         else:
             wrapped_test = test_fn
 
@@ -239,13 +243,9 @@ def handle_test(
     return test_wrapper
 
 
-possible_fixtures_frontends = ["on_device", "frontend"]
-
-
 def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
     fn_tree = "ivy.functional.frontends." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
-    given_kwargs = _given_kwargs
 
     def test_wrapper(test_fn):
         callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
@@ -253,17 +253,16 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
 
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
-            _given_kwargs = _generate_shared_test_flags(
-                param_names, given_kwargs, fn_tree, callable_fn
+            given_kwargs = _generate_shared_test_flags(
+                param_names,
+                _given_kwargs,
+                fn_tree,
             )
-            wrapped_test = given(**_given_kwargs)(test_fn)
-            if "fn_tree" in param_names:
-                _name = wrapped_test.__name__
-                possible_arguments = {"fn_tree": fn_tree}
-                filtered_args = set(param_names).intersection(possible_arguments.keys())
-                partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
-                wrapped_test = partial(wrapped_test, **partial_kwargs)
-                wrapped_test.__name__ = _name
+            possible_arguments = {"fn_tree": st.just(fn_tree)}
+            filtered_args = set(param_names).intersection(possible_arguments.keys())
+            for key in filtered_args:
+                given_kwargs[key] = possible_arguments[key]
+            wrapped_test = given(**given_kwargs)(test_fn)
         else:
             wrapped_test = test_fn
 
@@ -301,7 +300,7 @@ def handle_method(
             method_tree
         )
         supported_device_dtypes = _get_method_supported_devices_dtypes(
-            method_name, method_mod.__name__, class_name
+            method_name, method_mod, class_name
         )
 
         if is_hypothesis_test:
@@ -324,21 +323,17 @@ def handle_method(
                         _given_kwargs[k] = num_positional_args(
                             fn_name=class_name + ".__init__"
                         )
-
-            wrapped_test = given(**_given_kwargs)(test_fn)
+                elif v is pf.BuiltGradientStrategy:
+                    _given_kwargs[k] = v
             possible_arguments = {
-                "class_name": class_name,
-                "method_name": method_name,
-                "ground_truth_backend": ground_truth_backend,
+                "class_name": st.just(class_name),
+                "method_name": st.just(method_name),
+                "ground_truth_backend": st.just(ground_truth_backend),
             }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
-            partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
-            _name = wrapped_test.__name__
-            wrapped_test = partial(
-                wrapped_test,
-                **partial_kwargs,
-            )
-            wrapped_test.__name__ = _name
+            for key in filtered_args:
+                _given_kwargs[key] = possible_arguments[key]
+            wrapped_test = given(**_given_kwargs)(test_fn)
         else:
             wrapped_test = test_fn
 
@@ -398,19 +393,17 @@ def handle_frontend_method(
                 elif v is pf.NumPositionalArgFn:
                     _given_kwargs[k] = num_positional_args(fn_name=init_tree[4:])
 
-            wrapped_test = given(**_given_kwargs)(test_fn)
-            _name = wrapped_test.__name__
             frontend_helper_data = FrontendMethodData(
                 ivy_init_module=importlib.import_module(ivy_init_module),
                 framework_init_module=importlib.import_module(framework_init_module),
                 init_name=init_name,
                 method_name=method_name,
             )
-            possible_arguments = {"frontend_method_data": frontend_helper_data}
+            possible_arguments = {"frontend_method_data": st.just(frontend_helper_data)}
             filtered_args = set(param_names).intersection(possible_arguments.keys())
-            partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
-            wrapped_test = partial(wrapped_test, **partial_kwargs)
-            wrapped_test.__name__ = _name
+            for key in filtered_args:
+                _given_kwargs[key] = possible_arguments[key]
+            wrapped_test = given(**_given_kwargs)(test_fn)
         else:
             wrapped_test = test_fn
 

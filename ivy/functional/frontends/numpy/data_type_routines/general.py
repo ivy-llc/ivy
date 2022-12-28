@@ -10,15 +10,13 @@ def can_cast(from_, to, casting="safe"):
         ["no", "equiv", "safe", "same_kind", "unsafe"],
         message="casting must be one of [no, equiv, safe, same_kind, unsafe]",
     )
-    if casting == "no" or casting == "equiv":
-        return from_ == to
 
     if ivy.is_array(from_):
         from_ = ivy.as_ivy_dtype(ivy.dtype(from_))
-    elif isinstance(from_, str) or isinstance(from_, type):
+    elif isinstance(from_, (str, type)):
         from_ = ivy.as_ivy_dtype(from_)
-    elif isinstance(from_, (int, float, bool)):
-        from_ = ivy.as_ivy_dtype(type(from_))
+    elif isinstance(from_, np_frontend.dtype):
+        from_ = from_._ivy_dtype
     else:
         raise ivy.exceptions.IvyException(
             "from_ must be one of dtype, dtype specifier, scalar, or array"
@@ -26,8 +24,13 @@ def can_cast(from_, to, casting="safe"):
 
     if isinstance(to, (str, type)):
         to = ivy.as_ivy_dtype(to)
+    elif isinstance(to, np_frontend.dtype):
+        to = to._ivy_dtype
     else:
         raise ivy.exceptions.IvyException("to must be dtype or dtype specifier")
+
+    if casting == "no" or casting == "equiv":
+        return from_ == to
 
     if casting == "safe" and to in np_frontend.numpy_casting_rules[from_]:
         return True
@@ -51,4 +54,8 @@ def can_cast(from_, to, casting="safe"):
 
 
 def promote_types(type1, type2, /):
+    if isinstance(type1, np_frontend.dtype):
+        type1 = type1._ivy_dtype
+    if isinstance(type2, np_frontend.dtype):
+        type2 = type2._ivy_dtype
     return np_frontend.dtype(np_frontend.promote_numpy_dtypes(type1, type2))

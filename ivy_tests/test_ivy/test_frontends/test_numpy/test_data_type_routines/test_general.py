@@ -59,7 +59,7 @@ def test_numpy_promote_types(
     fn_tree,
     frontend,
 ):
-    helpers.test_frontend_function(
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=[],
         as_variable_flags=as_variable,
         with_out=False,
@@ -70,4 +70,6 @@ def test_numpy_promote_types(
         on_device=on_device,
         type1=type1[0],
         type2=type2[0],
+        test_values=False,
     )
+    assert ret._ivy_dtype == frontend_ret[0].name
