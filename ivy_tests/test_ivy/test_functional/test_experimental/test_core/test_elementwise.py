@@ -638,8 +638,8 @@ def test_logaddexp2(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-03,
-        atol_=1e-03,
+        rtol_=1e-02,
+        atol_=1e-02,
         x1=x[0],
         x2=x[1],
     )
