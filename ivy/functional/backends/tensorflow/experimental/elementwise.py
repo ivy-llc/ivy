@@ -17,7 +17,6 @@ def sinc(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    tf.experimental.numpy.experimental_enable_numpy_behavior()
     return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
 
 
@@ -60,7 +59,6 @@ def fmax(
     tf.dtypes.cast(x2, tf.float64)
     x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
     x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
-    tf.experimental.numpy.experimental_enable_numpy_behavior()
     ret = tf.experimental.numpy.maximum(x1, x2)
     return ret
 
@@ -174,24 +172,6 @@ def isclose(
     )
 
 
-def isposinf(
-    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.isposinf(x)
-
-
-def isneginf(
-    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.isneginf(x)
-
-
 def nan_to_num(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -300,8 +280,10 @@ def diff(
     prepend: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
     append: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x = tf.experimental.numpy.append(prepend, x, axis=axis)
-    x = tf.experimental.numpy.append(x, append, axis=axis)
+    if prepend != None:
+        x = tf.experimental.numpy.append(prepend, x, axis=axis)
+    if append != None:
+        x = tf.experimental.numpy.append(x, append, axis=axis)
     return tf.experimental.numpy.diff(x, n=n, axis=axis)
 
 

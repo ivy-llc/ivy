@@ -64,12 +64,10 @@ def update_individual_test_results(collection, id, submod, backend, test, result
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 2:
-        redis_url = sys.argv[1]
-        redis_pass = sys.argv[2]
-        mongo_key = sys.argv[3]
-
-    if sys.argv[4]:
+    redis_url = sys.argv[1]
+    redis_pass = sys.argv[2]
+    mongo_key = sys.argv[3]
+    if len(sys.argv) > 3:
         run_id = sys.argv[4]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/"

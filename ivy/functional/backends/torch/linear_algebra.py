@@ -136,7 +136,7 @@ def inner(
         x2 = x2.long()
     if ivy.exists(out):
         if out.dtype != x1.dtype:
-            return ivy.inplace_update(out, torch.inner(x1, x2).type(ret_dtype))
+            return ivy.inplace_update(out, torch.inner(x1, x2).type(out.dtype))
     return torch.inner(x1, x2, out=out).type(ret_dtype)
 
 
@@ -423,7 +423,13 @@ def vecdot(
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     if dtype != "float64":
         x1, x2 = x1.to(dtype=torch.float32), x2.to(dtype=torch.float32)
-    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).to(dtype=dtype)
+    if ivy.exists(out):
+        if ivy.as_ivy_dtype(out.dtype) == ivy.as_ivy_dtype(x1.dtype):
+            return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
+        return ivy.inplace_update(
+            out, torch.tensordot(x1, x2, dims=([axis], [axis])).to(out.dtype)
+        )
+    return torch.tensordot(x1, x2, dims=([axis], [axis])).to(dtype)
 
 
 vecdot.support_native_out = True
@@ -435,10 +441,16 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    keepdims: Optional[bool] = False,
+    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    # TODO: remove the as_native_dtype call once there are wrappers that handle dtype
+    #  conversion automatically in the backends
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype and x.dtype != dtype:
+        x = x.type(dtype)
     return torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
 
 

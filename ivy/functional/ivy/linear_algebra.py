@@ -2335,8 +2335,9 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    keepdims: Optional[bool] = False,
+    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""Computes the vector norm of a vector (or batch of vectors) ``x``.
@@ -2385,6 +2386,9 @@ def vector_norm(
         +------------------+--------------------------------+
 
         Default: ``2``.
+    dtype
+        data type that may be used to perform the computation more precisely. The input
+        array ``x`` gets cast to ``dtype`` before the function's computations.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2411,7 +2415,7 @@ def vector_norm(
 
     """
     return current_backend(x).vector_norm(
-        x, axis=axis, keepdims=keepdims, ord=ord, out=out
+        x, axis=axis, keepdims=keepdims, ord=ord, dtype=dtype, out=out
     )
 
 

@@ -202,30 +202,6 @@ def isclose(
 isclose.support_native_out = False
 
 
-def isposinf(
-    x: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.isposinf(x, out=out)
-
-
-isposinf.support_native_out = True
-
-
-def isneginf(
-    x: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.isneginf(x, out=out)
-
-
-isneginf.support_native_out = True
-
-
 def angle(
     input: torch.Tensor,
     /,
@@ -285,8 +261,8 @@ def diff(
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
 ) -> torch.Tensor:
     x = x if type(x) == torch.Tensor else torch.Tensor(x)
-    prepend = prepend if type(prepend) == torch.Tensor else torch.Tensor(prepend)
-    append = append if type(append) == torch.Tensor else torch.Tensor(append)
+    prepend = prepend if type(prepend) == torch.Tensor or prepend == None else torch.Tensor(prepend)
+    append = append if type(append) == torch.Tensor or append == None else torch.Tensor(append)
     return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
 
 

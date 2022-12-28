@@ -4,7 +4,10 @@ import ivy
 
 from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    from_zero_dim_arrays_to_scalar,
+)
 
 
 @to_ivy_arrays_and_back
@@ -26,11 +29,13 @@ def nonzero(a):
 
 
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def argmin(a, /, *, axis=None, keepdims=False, out=None):
     return ivy.argmin(a, axis=axis, out=out, keepdims=keepdims)
 
 
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def argmax(
     a,
     /,
@@ -57,6 +62,7 @@ def argwhere(a):
     return ivy.argwhere(a)
 
 
+@from_zero_dim_arrays_to_scalar
 @to_ivy_arrays_and_back
 def nanargmax(a, axis=None, keepdims=False):
     finite_a = ivy.isfinite(a)
@@ -65,6 +71,7 @@ def nanargmax(a, axis=None, keepdims=False):
     return ivy.argmax(a[finite_a], axis=axis, keepdims=keepdims)
 
 
+@from_zero_dim_arrays_to_scalar
 @to_ivy_arrays_and_back
 def nanargmin(a, axis=None, keepdims=False):
     finite_a = ivy.isfinite(a)

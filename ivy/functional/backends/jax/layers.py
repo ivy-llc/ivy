@@ -125,7 +125,9 @@ def depthwise_conv2d(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
+    strides = [strides[1], strides[2]] if len(strides) == 4 else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    filters = jnp.squeeze(filters, 3) if filters.ndim == 4 else filters
     cn = filters.shape[-1]
     filters = jnp.expand_dims(filters, -2)
     return jlax.conv_general_dilated(
@@ -298,6 +300,7 @@ def conv_general_dilated(
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -324,7 +327,7 @@ def conv_general_dilated(
             )
         padding = [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)]
     df = ivy.get_x_data_format(dims, data_format)
-    return jlax.conv_general_dilated(
+    res = jlax.conv_general_dilated(
         x,
         filters,
         strides,
@@ -334,6 +337,11 @@ def conv_general_dilated(
         (df, filter_df, df),
         feature_group_count,
     )
+    if bias is not None:
+        if data_format == "channel_last":
+            return jnp.add(res, bias)
+        return jnp.add(res, bias[(None,) + (...,) + (None,) * dims])
+    return res
 
 
 def conv_general_transpose(
@@ -348,6 +356,7 @@ def conv_general_transpose(
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
+    bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -392,6 +401,7 @@ def conv_general_transpose(
         ],
         axis=-1,
     )
+    res = jnp.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         return jnp.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res

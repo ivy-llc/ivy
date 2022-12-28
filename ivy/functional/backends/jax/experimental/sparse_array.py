@@ -1,6 +1,6 @@
 import logging
 import ivy
-from ivy.functional.experimental.sparse_array import (
+from ivy.functional.ivy.experimental.sparse_array import (
     _verify_coo_components,
     _verify_csr_components,
     _verify_csc_components,

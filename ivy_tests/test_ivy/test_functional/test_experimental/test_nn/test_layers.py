@@ -8,9 +8,9 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 
 @handle_test(
-    fn_tree="functional.experimental.max_pool2d",
-    ground_truth_backend="jax",
+    fn_tree="functional.ivy.experimental.max_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_max_pool2d(
     *,
@@ -18,11 +18,10 @@ def test_max_pool2d(
     test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -37,9 +36,9 @@ def test_max_pool2d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.max_pool1d",
-    ground_truth_backend="jax",
+    fn_tree="functional.ivy.experimental.max_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_max_pool1d(
     *,
@@ -47,11 +46,10 @@ def test_max_pool1d(
     test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -66,20 +64,19 @@ def test_max_pool1d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.avg_pool1d",
-    ground_truth_backend="jax",
+    fn_tree="functional.ivy.experimental.avg_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_avg_pool1d(
     *,
     x_k_s_p,
     test_flags,
     backend_fw,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -94,9 +91,9 @@ def test_avg_pool1d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.max_pool3d",
-    ground_truth_backend="jax",
+    fn_tree="functional.ivy.experimental.max_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_max_pool3d(
     *,
@@ -104,11 +101,10 @@ def test_max_pool3d(
     test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -123,9 +119,9 @@ def test_max_pool3d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.avg_pool3d",
-    ground_truth_backend="jax",
+    fn_tree="functional.ivy.experimental.avg_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_avg_pool3d(
     *,
@@ -133,11 +129,10 @@ def test_avg_pool3d(
     test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -152,8 +147,9 @@ def test_avg_pool3d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.avg_pool2d",
+    fn_tree="functional.ivy.experimental.avg_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_avg_pool2d(
     *,
@@ -161,11 +157,10 @@ def test_avg_pool2d(
     test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -210,6 +205,7 @@ def valid_dct(draw):
 @handle_test(
     fn_tree="dct",
     dtype_x_and_args=valid_dct(),
+    test_gradients=st.just(False),
 )
 def test_dct(
     dtype_x_and_args,
@@ -259,9 +255,10 @@ def x_and_fft(draw, dtypes):
 
 
 @handle_test(
-    fn_tree="functional.ivy.fft",
+    fn_tree="functional.ivy.experimental.fft",
     d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
     ground_truth_backend="numpy",
+    test_gradients=st.just(False),
 )
 def test_fft(
     *,
@@ -290,7 +287,7 @@ def test_fft(
 
 # dropout1d
 @handle_test(
-    fn_tree="functional.ivy.dropout1d",
+    fn_tree="functional.ivy.experimental.dropout1d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -304,6 +301,7 @@ def test_fft(
     prob=helpers.floats(min_value=0, max_value=0.9),
     training=st.booleans(),
     data_format=st.sampled_from(["NWC", "NCW"]),
+    test_gradients=st.just(False),
 )
 def test_dropout1d(
     *,
