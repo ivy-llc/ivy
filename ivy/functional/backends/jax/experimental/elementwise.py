@@ -64,7 +64,7 @@ def exp2(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.exp2(x)
+    return jnp.power(2, x)
 
 
 def copysign(
