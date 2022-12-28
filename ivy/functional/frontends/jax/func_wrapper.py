@@ -91,6 +91,14 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
 
 
+def to_ivy_dtype(dtype):
+    if not dtype or isinstance(dtype, str):
+        return dtype
+    if dtype in (int, float, bool) or ivy.is_native_dtype(dtype):
+        return ivy.as_ivy_dtype(dtype)
+    return np_frontend.to_ivy_dtype(dtype)._ivy_dtype
+
+
 def handle_numpy_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, dtype=None, **kwargs):
@@ -115,6 +123,7 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
         if not dtype:
             return fn(*args, dtype=dtype, **kwargs)
 
+        dtype = to_ivy_dtype(dtype)
         if not jax_frontend.config.jax_enable_x64:
             dtype_replacement_dict = {
                 ivy.int64: ivy.int32,
