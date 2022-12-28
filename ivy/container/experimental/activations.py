@@ -9,11 +9,11 @@ from ivy.container.base import ContainerBase
 class ContainerWithActivationExperimental(ContainerBase):
     @staticmethod
     def static_logit(
-            x: Union[float, int, ivy.Container],
-            /,
-            *,
-            eps: Optional[float] = None,
-            out: Optional[ivy.Container] = None,
+        x: Union[float, int, ivy.Container],
+        /,
+        *,
+        eps: Optional[float] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.logit.
@@ -67,11 +67,11 @@ class ContainerWithActivationExperimental(ContainerBase):
         )
 
     def logit(
-            self: Union[float, int, ivy.Container],
-            /,
-            *,
-            eps: Optional[float] = None,
-            out: Optional[ivy.Container] = None,
+        self: Union[float, int, ivy.Container],
+        /,
+        *,
+        eps: Optional[float] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.logit.
@@ -118,7 +118,4 @@ class ContainerWithActivationExperimental(ContainerBase):
         }
 
         """
-        return self.static_logit(
-            self,
-            eps=eps,
-            out=out)
+        return self.static_logit(self, eps=eps, out=out)
