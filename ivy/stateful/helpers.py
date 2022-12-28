@@ -7,21 +7,22 @@ import numpy as np
 # local
 import ivy
 
+
 class ModuleHelpers(abc.ABC):
     # Private #
     # --------#
     def _top_v_fn(self, /, *, depth=None, flatten_key_chains=False):
         """
-        Returns the variables at a specific depth, with depth 1 returning the 
+        Returns the variables at a specific depth, with depth 1 returning the
         variables of the current layer.
 
         Parameters
         ----------
         depth
-            depth of the variables to return. 1 for current layer, None for the 
+            depth of the variables to return. 1 for current layer, None for the
             topmost layer. Default is ``None``.
         flatten_key_chains
-            If set True, will return a flat container which all nested key-chains 
+            If set True, will return a flat container which all nested key-chains
             flattened. Default is ``False``.
 
         Returns
@@ -42,7 +43,7 @@ class ModuleHelpers(abc.ABC):
 
     def _top_mod_fn(self, /, *, depth=None):
         """
-        Find the top (parent) module at specific depth, starting with depth 1 to 
+        Find the top (parent) module at specific depth, starting with depth 1 to
         return the current submodule.
 
         Parameters
@@ -555,4 +556,3 @@ class ModuleHelpers(abc.ABC):
         if sub_mod_repr == "''":
             return this_repr
         print("\n".join([this_repr, sub_mod_repr]))
-
