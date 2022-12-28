@@ -99,7 +99,7 @@ def to_ivy_dtype(dtype):
     return np_frontend.to_ivy_dtype(dtype)._ivy_dtype
 
 
-def handle_numpy_dtype(fn: Callable) -> Callable:
+def handle_jax_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, dtype=None, **kwargs):
         if len(args) > (dtype_pos + 1):
@@ -143,5 +143,4 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=np_frontend.to_ivy_dtype(dtype), **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
-    new_fn.handle_numpy_dtype = True
     return new_fn

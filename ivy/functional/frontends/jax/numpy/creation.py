@@ -4,11 +4,11 @@ from ivy.functional.frontends.jax.devicearray import DeviceArray
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
-    handle_numpy_dtype
+    handle_jax_dtype
 )
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def array(object, dtype=None, copy=True, order="K", ndmin=0):
     # TODO must ensure the array is created on default device.
@@ -22,7 +22,7 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
     return DeviceArray(ret)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def zeros_like(a, dtype=None, shape=None):
     if shape:
@@ -30,13 +30,13 @@ def zeros_like(a, dtype=None, shape=None):
     return ivy.zeros_like(a, dtype=dtype)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @outputs_to_frontend_arrays
 def arange(start, stop=None, step=1, dtype=None):
     return ivy.arange(start, stop, step=step, dtype=dtype)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def zeros(shape, dtype=None):
     if dtype is None:
@@ -44,13 +44,13 @@ def zeros(shape, dtype=None):
     return ivy.zeros(shape, dtype=dtype)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def ones(shape, dtype=None):
     return ivy.ones(shape, dtype=dtype)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def ones_like(a, dtype=None, shape=None):
     if shape:
@@ -58,7 +58,7 @@ def ones_like(a, dtype=None, shape=None):
     return ivy.ones_like(a, dtype=dtype)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def asarray(a, dtype=None, order=None):
     return ivy.asarray(a, dtype=dtype)
@@ -69,14 +69,14 @@ def uint16(x):
     return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def hstack(tup, dtype=None):
     # TODO: dtype supported in JAX v0.3.20
     return ivy.hstack(tup)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def eye(N, M=None, k=0, dtype=None):
     return ivy.eye(N, M, k=k, dtype=dtype)

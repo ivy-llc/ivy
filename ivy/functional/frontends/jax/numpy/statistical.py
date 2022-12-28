@@ -2,8 +2,8 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
+    handle_jax_dtype
 )
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_dtype
 
 
 @to_ivy_arrays_and_back
@@ -18,7 +18,7 @@ def einsum(
     return ivy.einsum(subscripts, *operands, out=out)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -31,7 +31,7 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -61,7 +61,7 @@ def bincount(x, weights=None, minlength=0, *, length=None):
     return ret
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def cumprod(a, axis=None, dtype=None, out=None):
     if dtype is None:
@@ -69,7 +69,7 @@ def cumprod(a, axis=None, dtype=None, out=None):
     return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def cumsum(a, axis=0, dtype=None, out=None):
     if dtype is None:
@@ -80,7 +80,7 @@ def cumsum(a, axis=0, dtype=None, out=None):
 cumproduct = cumprod
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def sum(
     a,
