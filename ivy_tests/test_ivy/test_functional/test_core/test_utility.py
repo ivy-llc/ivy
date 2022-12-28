@@ -17,6 +17,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         max_axes_size=1,
     ),
     keepdims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_all(
     dtype_x_axis,
@@ -51,6 +52,7 @@ def test_all(
         max_axes_size=1,
     ),
     keepdims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_any(
     dtype_x_axis,
