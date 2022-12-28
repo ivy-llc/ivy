@@ -17,6 +17,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helpe
     dtype_and_x_and_cast_dtype=astype_helper(),
     test_with_out=st.just(False),
     container_flags=st.just([False]),
+    test_gradients=st.just(False),
 )
 def test_native_array(
     *,
@@ -64,6 +65,7 @@ def test_native_array(
     axis=st.none(),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_linspace(
     *,
@@ -118,6 +120,7 @@ def test_linspace(
     axis=st.none(),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_logspace(
     *,
@@ -164,6 +167,7 @@ def test_logspace(
     as_variable_flags=st.just([False]),
     native_array_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_arange(
     *,
@@ -209,6 +213,7 @@ def test_arange(
     test_with_out=st.just(False),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_asarray(
     *,
@@ -258,6 +263,7 @@ def test_asarray(
     dtype=helpers.get_dtypes("numeric", full=False),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_empty(
     *,
@@ -302,6 +308,7 @@ def test_empty(
         max_dim_size=5,
     ),
     container_flags=st.just([False]),
+    test_gradients=st.just(False),
 )
 def test_empty_like(
     *,
@@ -347,6 +354,7 @@ def test_empty_like(
     fn_tree="functional.ivy.eye",
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_eye(
     *,
@@ -390,6 +398,7 @@ def test_eye(
     ),
     container_flags=st.just([False]),
     as_variable_flags=st.just([False]),  # can't convert variables
+    test_gradients=st.just(False),
 )
 def test_from_dlpack(
     *,
@@ -437,6 +446,7 @@ def _fill_value(draw):
     dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_full(
     *,
@@ -481,6 +491,7 @@ def _dtype_and_values(draw):
     fn_tree="functional.ivy.full_like",
     dtype_and_x=_dtype_and_values(),
     fill_value=_fill_value(),
+    test_gradients=st.just(False),
 )
 def test_full_like(
     *,
@@ -521,6 +532,8 @@ def test_full_like(
     indexing=st.sampled_from(["xy", "ij"]),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_meshgrid(
     *,
@@ -567,6 +580,7 @@ def test_meshgrid(
     dtype=helpers.get_dtypes("numeric", full=False),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_ones(
     *,
@@ -602,6 +616,7 @@ def test_ones(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    test_gradients=st.just(False),
 )
 def test_ones_like(
     *,
@@ -639,6 +654,7 @@ def test_ones_like(
     ),
     k=helpers.ints(min_value=-10, max_value=10),
     container_flags=st.just([False]),
+    test_gradients=st.just(False),
 )
 def test_tril(
     *,
@@ -676,6 +692,7 @@ def test_tril(
     ),
     k=helpers.ints(min_value=-10, max_value=10),
     container_flags=st.just([False]),
+    test_gradients=st.just(False),
 )
 def test_triu(
     *,
@@ -715,6 +732,7 @@ def test_triu(
     dtype=helpers.get_dtypes("numeric", full=False),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_zeros(
     *,
@@ -752,6 +770,7 @@ def test_zeros(
     ),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_zeros_like(
     *,
@@ -833,6 +852,7 @@ def _on_off_dtype(draw):
     fn_tree="functional.ivy.one_hot",
     dtype_indices_depth_axis=_dtype_indices_depth_axis(),
     on_off_dtype=_on_off_dtype(),
+    test_gradients=st.just(False),
 )
 def test_one_hot(
     dtype_indices_depth_axis,
