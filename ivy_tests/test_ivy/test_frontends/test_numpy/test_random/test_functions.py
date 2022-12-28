@@ -40,11 +40,11 @@ def test_numpy_random_sample(
 @handle_frontend_test(
     fn_tree="numpy.random.dirichlet",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=2),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.tuples(
             st.integers(min_value=2, max_value=5),
         ),
-        min_value=0,
+        min_value=1,
         max_value=100,
         exclude_min=True,
     ),
