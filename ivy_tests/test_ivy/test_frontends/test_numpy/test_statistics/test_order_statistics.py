@@ -38,7 +38,8 @@ def test_numpy_percentile(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=a[0],
-        q=q[0],
+        a=50,
+        q=50,
         out=None,
+        interpolation='lower'
     )
