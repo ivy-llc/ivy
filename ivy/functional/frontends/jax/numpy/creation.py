@@ -84,3 +84,9 @@ def eye(N, M=None, k=0, dtype=None):
 @to_ivy_arrays_and_back
 def triu(m, k=0):
     return ivy.triu(m, k=k)
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def identity(n, dtype=None):
+    return ivy.eye(n, dtype=dtype)

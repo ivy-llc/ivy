@@ -392,14 +392,14 @@ def test_jax_numpy_eye(
     k=helpers.ints(min_value=-10, max_value=10),
 )
 def test_numpy_triu(
-        dtype_and_x,
-        k,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    k,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -413,4 +413,35 @@ def test_numpy_triu(
         on_device=on_device,
         m=x[0],
         k=k,
+    )
+
+
+# identity
+@handle_frontend_test(
+    fn_tree="jax.numpy.identity",
+    n=helpers.ints(min_value=1, max_value=10),
+    dtypes=helpers.get_dtypes("valid", full=False),
+)
+def test_jax_numpy_identity(
+    *,
+    n,
+    dtypes,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n=n,
+        dtype=dtypes[0],
     )
