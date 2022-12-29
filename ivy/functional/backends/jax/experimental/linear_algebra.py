@@ -1,5 +1,5 @@
 import math
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Sequence
 import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
@@ -103,3 +103,12 @@ def matrix_exp(
 
 def eig(x: JaxArray, /) -> Tuple[JaxArray]:
     return jnp.linalg.eig(x)
+
+
+def multi_dot(
+    x: Sequence[JaxArray], 
+    /, 
+    *, 
+    out: Optional[JaxArray],
+) -> JaxArray:
+    return jnp.linalg.multi_dot(x)
