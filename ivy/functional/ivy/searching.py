@@ -220,6 +220,88 @@ def argmin(
 
 
 @to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like
+def argpartition(
+    x: Union[ivy.Array, ivy.NativeArray],
+    kth: Union[int, list, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, None]] = -1,
+    kind: Optional[str] = 'introselect',
+    order: Optional[Union[str, list]] = None,
+    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None
+) -> ivy.Array:
+    """
+    Perform an indirect partition along the given axis using the algorithm specified by
+    the kind keyword. It returns an array of indices of the same shape as a that index
+    data along the given axis in partitioned order.
+
+    Parameters
+    ----------
+    x
+        input array. Should have a numeric data type.
+    kth
+        Element index to partition by. The k-th element will be in its final sorted position
+        and all smaller elements will be moved before it and all larger elements behind it.
+        The order of all elements in the partitions is undefined.
+        If provided with a sequence of k-th it will partition all of them into their sorted
+        position at once.
+    axis
+        Axis along which to sort. The default is -1 (the last axis).
+        If None, the flattened array is used.
+    kind
+        Selection algorithm. Default is ‘introselect’
+    order
+        When a is an array with fields defined, this argument specifies which fields to compare
+        first, second, etc. A single field can be specified as a string, and not all fields
+        need be specified, but unspecified fields will still be used, in the order in which
+        they come up in the dtype, to break ties.
+    output_dtype
+            An optional output_dtype from: int32, int64. Defaults to int64.
+
+    Returns
+    -------
+    ret
+        Array of indices that partition a along the specified axis. 
+    
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmin.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([3, 4, 2, 1])
+    >>> y = ivy.argpartition(x, 3)
+    >>> print(y)
+    ivy.array([2, 3, 0, 1])
+
+    >>> x = ivy.array([3, 4, 2, 1])
+    >>> y = ivy.argpartition(x, (1, 3))
+    >>> print(y)
+    ivy.array([3, 2, 0, 1])
+
+    >>> x = ivy.array([[3, 4, 2], [1, 3, 1]])
+    >>> y = ivy.argpartition(x, 1, axis=-1)
+    >>> print(y)
+    ivy.array([[2, 0, 1],
+               [0, 2, 1]])
+    """
+    return current_backend(x).argpartition(
+        x=x, kth=kth, axis=axis, kind=kind, order=order, output_dtype=output_dtype
+    )
+
+
+@to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
 @handle_array_like

@@ -55,6 +55,27 @@ def argmin(
     return np.array(ret, dtype=np.int64)
 
 
+def argpartition(
+    x: np.ndarray,
+    kth: Union[int, list, np.ndarray],
+    /,
+    *,
+    axis: Optional[Union[int, None]] = -1,
+    kind: Optional[str] = 'introselect',
+    order: Optional[Union[str, list]] = None,
+    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None
+) -> np.ndarray:
+
+    ret = np.argpartition(x, kth=kth, axis=axis, kind=kind, order=order)
+    if output_dtype is not None:
+        output_dtype = ivy.as_native_dtype(output_dtype)
+        if output_dtype not in (np.int32, np.int64):
+            return ret.astype(dtype=np.int64)
+        else:
+            return ret.astype(dtype=output_dtype)
+    return ret.astype(dtype=np.int64)
+
+    
 argmin.support_native_out = True
 
 

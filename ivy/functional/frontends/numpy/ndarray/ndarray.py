@@ -151,6 +151,23 @@ class ndarray:
             out=out,
         )
 
+    def argpartition(
+        self,
+        kth,
+        /,
+        *,
+        axis=-1,
+        kind='introselect',
+        order=None
+    ):
+        return np_frontend.argpartition(
+            self._ivy_array,
+            kth=kth,
+            axis=axis,
+            kind=kind,
+            order=order
+        )
+        
     def clip(
         self,
         min,
