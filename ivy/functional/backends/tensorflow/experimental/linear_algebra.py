@@ -68,17 +68,17 @@ def eig(
 
 
 def multi_dot(
-    arrays: Sequence[Union[tf.Tensor, tf.Variable]], 
+    x: Sequence[Union[tf.Tensor, tf.Variable]], 
     /, 
     *, 
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
-    if len(arrays) == 1:
-        return arrays[0]
-    dot_out = arrays[0]
-    for elemen in range(1, len(arrays)):
+    if len(x) == 1:
+        return x[0]
+    dot_out = x[0]
+    for elemen in range(1, len(x)):
         dot_out = tf.tensordot(
             dot_out, 
-            arrays[elemen], 
+            x[elemen], 
             1)
     return dot_out

@@ -111,11 +111,11 @@ eig.support_native_out = False
 
 
 def multi_dot(
-    arrays: Sequence[np.ndarray], 
+    x: Sequence[np.ndarray], 
     *, 
     out: Optional[np.array] = None,
 ) -> np.ndarray: 
-    return np.linalg.multidot(arrays, out=out)
+    return np.linalg.multidot(x, out=out)
 
 
 multi_dot.support_native_out = True
