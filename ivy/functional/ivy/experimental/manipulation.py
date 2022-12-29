@@ -1529,7 +1529,7 @@ def hsplit(
                     [14., 15.]]))
     """
     return ivy.current_backend(ary).hsplit(
-        ary, indices_or_sections=indices_or_sections, out=out
+        ary, indices_or_sections, out=out
     )
 
 

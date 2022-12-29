@@ -788,4 +788,4 @@ class ArrayWithManipulationExperimental(abc.ABC):
                     [10., 11.],
                     [14., 15.]]))
         """
-        return ivy.hsplit(self._data, indices_or_sections=indices_or_sections, out=out)
+        return ivy.hsplit(self._data, indices_or_sections, out=out)
