@@ -79,3 +79,8 @@ def hstack(tup, dtype=None):
 @to_ivy_arrays_and_back
 def eye(N, M=None, k=0, dtype=None):
     return ivy.eye(N, M, k=k, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def triu(m, k=0):
+    return ivy.triu(m, k=k)

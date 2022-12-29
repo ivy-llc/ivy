@@ -346,11 +346,7 @@ def gradient(
 
 
 def xlogy(
-    x: np.ndarray,
-    y: np.ndarray,    
-    /,
-    *,
-    out: Optional[np.ndarray] = None
+    x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if (x == 0).all():
         return 0.0
