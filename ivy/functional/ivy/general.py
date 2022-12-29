@@ -1024,10 +1024,6 @@ def fourier_encode(
         New array with the final dimension expanded, and the encodings stored in this
         channel.
 
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
-    in the standard.
 
     Examples
     --------
