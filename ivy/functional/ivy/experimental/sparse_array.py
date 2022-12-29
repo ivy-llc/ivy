@@ -128,6 +128,70 @@ def _verify_csc_components(
     )
 
 
+def _verify_bsc_components(
+    *, ccol_indices=None, row_indices=None, values=None, dense_shape=None
+):
+    ivy.assertions.check_all_or_any_fn(
+        ccol_indices,
+        row_indices,
+        values,
+        dense_shape,
+        fn=ivy.exists,
+        type="all",
+        message="ccol_indices, row_indices, values and dense_shape must all \
+        be specified",
+    )
+    ivy.assertions.check_equal(
+        len(ivy.shape(ccol_indices)), 1, message="ccol_indices must be 1D"
+    )
+    ivy.assertions.check_equal(
+        len(ivy.shape(row_indices)), 1, message="row_indices must be 1D"
+    )
+    ivy.assertions.check_equal(len(ivy.shape(values)), 3, message="values must be 3D")
+    nrowblocks, ncolblocks = ivy.shape(values)[-2:]
+
+    ivy.assertions.check_equal(
+        dense_shape[0] % nrowblocks,
+        0,
+        message="number of rows of array must be divisible by that of block.",
+    )
+
+    ivy.assertions.check_equal(
+        dense_shape[1] % ncolblocks,
+        0,
+        message="number of cols of array must be divisible by that of block.",
+    )
+
+    ivy.assertions.check_equal(
+        len(dense_shape),
+        2,
+        message="only 2D arrays can be converted to BSC sparse arrays",
+    )
+
+    # number of intervals must be equal to y in shape (x, y)
+    ivy.assertions.check_equal(
+        ivy.shape(ccol_indices)[0] - 1, dense_shape[1] // ncolblocks
+    )
+
+    # index in row_indices must not exceed x in shape (x, y)
+    ivy.assertions.check_less(
+        row_indices, dense_shape[0], message="index in row_indices does not match shape"
+    )
+    # number of values must match number of coordinates
+    ivy.assertions.check_equal(
+        ivy.shape(row_indices)[0],
+        ivy.shape(values)[0],
+        message="values and row_indices do not match",
+    )
+    # index in ccol_indices must not exceed length of row_indices
+    ivy.assertions.check_less(
+        ccol_indices,
+        ivy.shape(row_indices)[0],
+        allow_equal=True,
+        message="index in ccol_indices does not match the number of row_indices",
+    )
+
+
 def _is_data_not_indices_values_and_shape(
     data=None,
     coo_indices=None,
@@ -135,6 +199,8 @@ def _is_data_not_indices_values_and_shape(
     csr_col_indices=None,
     csc_ccol_indices=None,
     csc_row_indices=None,
+    bsc_ccol_indices=None,
+    bsc_row_indices=None,
     values=None,
     dense_shape=None,
 ):
@@ -145,15 +211,19 @@ def _is_data_not_indices_values_and_shape(
             csr_col_indices,
             csc_ccol_indices,
             csc_row_indices,
+            bsc_ccol_indices,
+            bsc_row_indices,
             values,
             dense_shape,
             fn=ivy.exists,
             type="any",
             limit=[0],
             message="only specify data, all coo components (coo_indices, values \
-            and dense_shape), or all csr components (csr_crow_indices, \
-            csr_col_indices, values and dense_shape), or all csc components \
-                (csc_ccol_indices, csc_row_indices, values and dense_shape).",
+            and dense_shape), all csr components (csr_crow_indices, \
+            csr_col_indices, values and dense_shape), all csc components \
+                (csc_ccol_indices, csc_row_indices, values and dense_shape) or \
+            all bsc components (bsc_ccol_indices, bsc_row_indices, values \
+                and dense_shape).",
         )
         return True
     return False
@@ -165,6 +235,8 @@ def _is_coo(
     csr_col_indices=None,
     csc_ccol_indices=None,
     csc_row_indices=None,
+    bsc_ccol_indices=None,
+    bsc_row_indices=None,
     values=None,
     dense_shape=None,
 ):
@@ -176,6 +248,8 @@ def _is_coo(
         and csr_col_indices is None
         and csc_ccol_indices is None
         and csc_row_indices is None
+        and bsc_ccol_indices is None
+        and bsc_row_indices is None
     ):
         return True
     return False
@@ -187,6 +261,8 @@ def _is_csr(
     csr_col_indices=None,
     csc_ccol_indices=None,
     csc_row_indices=None,
+    bsc_ccol_indices=None,
+    bsc_row_indices=None,
     values=None,
     dense_shape=None,
 ):
@@ -198,6 +274,8 @@ def _is_csr(
         and coo_indices is None
         and csc_ccol_indices is None
         and csc_row_indices is None
+        and bsc_ccol_indices is None
+        and bsc_row_indices is None
     ):
         return True
 
@@ -210,6 +288,8 @@ def _is_csc(
     csr_col_indices=None,
     csc_ccol_indices=None,
     csc_row_indices=None,
+    bsc_ccol_indices=None,
+    bsc_row_indices=None,
     values=None,
     dense_shape=None,
 ):
@@ -221,6 +301,35 @@ def _is_csc(
         and coo_indices is None
         and csr_crow_indices is None
         and csr_col_indices is None
+        and bsc_ccol_indices is None
+        and bsc_row_indices is None
+    ):
+        return True
+
+    return False
+
+
+def _is_bsc(
+    coo_indices=None,
+    csr_crow_indices=None,
+    csr_col_indices=None,
+    csc_ccol_indices=None,
+    csc_row_indices=None,
+    bsc_ccol_indices=None,
+    bsc_row_indices=None,
+    values=None,
+    dense_shape=None,
+):
+    if (
+        ivy.exists(bsc_ccol_indices)
+        and ivy.exists(bsc_row_indices)
+        and ivy.exists(values)
+        and ivy.exists(dense_shape)
+        and coo_indices is None
+        and csr_crow_indices is None
+        and csr_col_indices is None
+        and csc_ccol_indices is None
+        and csc_row_indices is None
     ):
         return True
 
@@ -237,6 +346,8 @@ class SparseArray:
         csr_col_indices=None,
         csc_ccol_indices=None,
         csc_row_indices=None,
+        bsc_ccol_indices=None,
+        bsc_row_indices=None,
         values=None,
         dense_shape=None,
     ):
@@ -247,6 +358,8 @@ class SparseArray:
             csr_col_indices,
             csc_ccol_indices,
             csc_row_indices,
+            bsc_ccol_indices,
+            bsc_row_indices,
             values,
             dense_shape,
         ):
@@ -257,6 +370,8 @@ class SparseArray:
             csr_col_indices,
             csc_ccol_indices,
             csc_row_indices,
+            bsc_ccol_indices,
+            bsc_row_indices,
             values,
             dense_shape,
         ):
@@ -267,6 +382,8 @@ class SparseArray:
             csr_col_indices,
             csc_ccol_indices,
             csc_row_indices,
+            bsc_ccol_indices,
+            bsc_row_indices,
             values,
             dense_shape,
         ):
@@ -279,12 +396,30 @@ class SparseArray:
             csr_col_indices,
             csc_ccol_indices,
             csc_row_indices,
+            bsc_ccol_indices,
+            bsc_row_indices,
             values,
             dense_shape,
         ):
             self._init_csc_components(
                 csc_ccol_indices, csc_row_indices, values, dense_shape
             )
+
+        elif _is_bsc(
+            coo_indices,
+            csr_crow_indices,
+            csr_col_indices,
+            csc_ccol_indices,
+            csc_row_indices,
+            bsc_ccol_indices,
+            bsc_row_indices,
+            values,
+            dense_shape,
+        ):
+            self._init_bsc_components(
+                bsc_ccol_indices, bsc_row_indices, values, dense_shape
+            )
+
         else:
             raise ivy.exceptions.IvyException(
                 "specify all coo components (coo_indices, values \
@@ -301,6 +436,8 @@ class SparseArray:
             self._csr_col_indices = data.csr_col_indices
             self._csc_ccol_indices = data.csc_ccol_indices
             self._csc_row_indices = data.csc_row_indices
+            self._bsc_ccol_indices = data.bsc_ccol_indices
+            self._bsc_row_indices = data.bsc_row_indices
             self._values = data.values
             self._dense_shape = data.dense_shape
         else:
@@ -315,24 +452,44 @@ class SparseArray:
             self._data
         )
 
-        if "indices" in indices:
-            self._coo_indices = ivy.array(indices["indices"], dtype="int64")
+        if "coo_indices" in indices:
+            self._coo_indices = ivy.array(indices["coo_indices"], dtype="int64")
             self._csr_crow_indices = None
             self._csr_col_indices = None
             self._csc_ccol_indices = None
             self._csc_row_indices = None
-        elif "crow_indices" in indices and "col_indices" in indices:
-            self._csr_crow_indices = ivy.array(indices["crow_indices"], dtype="int64")
-            self._csr_col_indices = ivy.array(indices["col_indices"], dtype="int64")
+            self._bsc_ccol_indices = None
+            self._bsc_row_indices = None
+        elif "csr_crow_indices" in indices and "csr_col_indices" in indices:
+            self._csr_crow_indices = ivy.array(
+                indices["csr_crow_indices"], dtype="int64"
+            )
+            self._csr_col_indices = ivy.array(indices["csr_col_indices"], dtype="int64")
             self._coo_indices = None
             self._csc_ccol_indices = None
             self._csc_row_indices = None
+            self._bsc_ccol_indices = None
+            self._bsc_row_indices = None
+        elif "csc_ccol_indices" in indices and "csc_row_indices" in indices:
+            self._csc_ccol_indices = ivy.array(
+                indices["csc_ccol_indices"], dtype="int64"
+            )
+            self._csc_row_indices = ivy.array(indices["csc_row_indices"], dtype="int64")
+            self._coo_indices = None
+            self._csr_crow_indices = None
+            self._csr_col_indices = None
+            self._bsc_ccol_indices = None
+            self._bsc_row_indices = None
         else:
-            self._csc_ccol_indices = ivy.array(indices["ccol_indices"], dtype="int64")
-            self._csc_row_indices = ivy.array(indices["row_indices"], dtype="int64")
+            self._bsc_ccol_indices = ivy.array(
+                indices["bsc_ccol_indices"], dtype="int64"
+            )
+            self._bsc_row_indices = ivy.array(indices["bsc_row_indices"], dtype="int64")
             self._coo_indices = None
             self._csr_crow_indices = None
             self._csr_col_indices = None
+            self._csc_ccol_indices = None
+            self._csc_row_indices = None
 
         self._values = ivy.array(values)
         self._dense_shape = ivy.Shape(shape)
@@ -351,6 +508,8 @@ class SparseArray:
         self._csr_col_indices = None
         self._csc_ccol_indices = None
         self._csc_row_indices = None
+        self._bsc_ccol_indices = None
+        self._bsc_row_indices = None
 
     def _init_csr_components(self, csr_crow_indices, csr_col_indices, values, shape):
         csr_crow_indices = ivy.array(csr_crow_indices, dtype="int64")
@@ -370,6 +529,8 @@ class SparseArray:
         self._coo_indices = None
         self._csc_ccol_indices = None
         self._csc_row_indices = None
+        self._bsc_ccol_indices = None
+        self._bsc_row_indices = None
 
     def _init_csc_components(self, csc_ccol_indices, csc_row_indices, values, shape):
         csc_ccol_indices = ivy.array(csc_ccol_indices, dtype="int64")
@@ -389,6 +550,29 @@ class SparseArray:
         self._coo_indices = None
         self._csr_crow_indices = None
         self._csr_col_indices = None
+        self._bsc_ccol_indices = None
+        self._bsc_row_indices = None
+
+    def _init_bsc_components(self, bsc_ccol_indices, bsc_row_indices, values, shape):
+        bsc_ccol_indices = ivy.array(bsc_ccol_indices, dtype="int64")
+        bsc_row_indices = ivy.array(bsc_row_indices, dtype="int64")
+        values = ivy.array(values)
+        shape = ivy.Shape(shape)
+        self._data = ivy.native_sparse_array(
+            bsc_ccol_indices=bsc_ccol_indices,
+            bsc_row_indices=bsc_row_indices,
+            values=values,
+            dense_shape=shape,
+        )
+        self._bsc_ccol_indices = bsc_ccol_indices
+        self._bsc_row_indices = bsc_row_indices
+        self._values = values
+        self._dense_shape = shape
+        self._coo_indices = None
+        self._csr_crow_indices = None
+        self._csr_col_indices = None
+        self._csc_ccol_indices = None
+        self._csc_row_indices = None
 
     # Properties #
     # -----------#
@@ -416,6 +600,14 @@ class SparseArray:
     @property
     def csc_row_indices(self):
         return self._csc_row_indices
+
+    @property
+    def bsc_ccol_indices(self):
+        return self._bsc_ccol_indices
+
+    @property
+    def bsc_row_indices(self):
+        return self._bsc_row_indices
 
     @property
     def values(self):
@@ -473,16 +665,27 @@ class SparseArray:
         )
         self._csc_ccol_indices = indices
 
-    @csc_row_indices.setter
-    def csc_row_indices(self, indices):
+    @bsc_ccol_indices.setter
+    def bsc_ccol_indices(self, indices):
         indices = ivy.array(indices, dtype="int64")
-        _verify_csc_components(
-            ccol_indices=self._csc_ccol_indices,
+        _verify_bsc_components(
+            ccol_indices=indices,
+            row_indices=self._bsc_row_indices,
+            values=self._values,
+            dense_shape=self._dense_shape,
+        )
+        self._bsc_ccol_indices = indices
+
+    @bsc_row_indices.setter
+    def bsc_row_indices(self, indices):
+        indices = ivy.array(indices, dtype="int64")
+        _verify_bsc_components(
+            ccol_indices=self._bsc_ccol_indices,
             row_indices=indices,
             values=self._values,
             dense_shape=self._dense_shape,
         )
-        self._csc_row_indices = indices
+        self._bsc_row_indices = indices
 
     @values.setter
     def values(self, values):
@@ -521,7 +724,7 @@ class SparseArray:
                 cols = all_cols[all_rows[row] : all_rows[row + 1]]
                 for col in cols:
                     all_coordinates.append([row, col])
-        else:
+        elif self._csc_ccol_indices is not None and self._csc_row_indices is not None:
             # CSC sparse array
             total_cols = self._dense_shape[1]
             all_rows = self._csc_row_indices.to_list()
@@ -530,10 +733,31 @@ class SparseArray:
                 rows = all_rows[all_cols[col] : all_cols[col + 1]]
                 for row in rows:
                     all_coordinates.append([row, col])
+        else:
+            # BSC sparse array
+            total_cols = self._dense_shape[1]
+            all_rows = self._bsc_row_indices.to_list()
+            all_cols = self._bsc_ccol_indices.to_list()
+
+            nblockrows, nblockcols = self._values.shape[-2:]
+
+            for col in range(total_cols // nblockcols):
+                rows = all_rows[all_cols[col] : all_cols[col + 1]]
+                for row in rows:
+                    for col_index in range(nblockcols):
+                        for row_index in range(nblockrows):
+                            all_coordinates.append(
+                                [
+                                    nblockrows * row + row_index,
+                                    nblockcols * col + col_index,
+                                ]
+                            )
 
         # make dense array
         ret = ivy.scatter_nd(
-            ivy.array(all_coordinates), self._values, ivy.array(self._dense_shape)
+            ivy.array(all_coordinates),
+            ivy.flatten(self._values),
+            ivy.array(self._dense_shape),
         )
         return ret.to_native() if native else ret
 
@@ -562,6 +786,8 @@ def native_sparse_array(
     csr_col_indices=None,
     csc_ccol_indices=None,
     csc_row_indices=None,
+    bsc_ccol_indices=None,
+    bsc_row_indices=None,
     values=None,
     dense_shape=None,
 ):
@@ -572,6 +798,8 @@ def native_sparse_array(
         csr_col_indices=csr_col_indices,
         csc_ccol_indices=csc_ccol_indices,
         csc_row_indices=csc_row_indices,
+        bsc_ccol_indices=bsc_ccol_indices,
+        bsc_row_indices=bsc_row_indices,
         values=values,
         dense_shape=dense_shape,
     )
