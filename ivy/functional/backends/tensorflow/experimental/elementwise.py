@@ -18,8 +18,7 @@ def sinc(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x = ivy.pi * x
-    return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x),
-                   x.dtype)
+    return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x), x.dtype)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
@@ -256,10 +255,7 @@ def fix(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.cast(tf.where(x > 0,
-                            tf.math.floor(x),
-                            tf.math.ceil(x)),
-                   x.dtype)
+    return tf.cast(tf.where(x > 0, tf.math.floor(x), tf.math.ceil(x)), x.dtype)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16,")}, backend_version)
@@ -538,6 +534,6 @@ def xlogy(
     y: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.xlogy(x, y)
