@@ -11,8 +11,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @handle_frontend_test(
-    fn_tree="numpy.quantile",
-    dtype_and_x=statistical_dtype_values(function="quantile"),
+    fn_tree="numpy.percentile",
+    dtype_and_x=statistical_dtype_values(function="percentile"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
