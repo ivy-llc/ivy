@@ -72,10 +72,9 @@ def sqrt(
     dtype=None,
     subok=True,
 ):
-    x = ivy.array(x)
-    ret = ivy.where(
-        ivy.broadcast_to(where, x.shape), ivy.sqrt(x), ivy.default(out, x), out=out
-    )
+    ret = ivy.sqrt(x)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
@@ -95,10 +94,9 @@ def cbrt(
     subok=True,
 ):
     all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0)
-    fixed_signs = ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive)
-    ret = ivy.where(
-        ivy.broadcast_to(where, x.shape), fixed_signs, ivy.default(out, x), out=out
-    )
+    ret = ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
@@ -117,9 +115,9 @@ def square(
     dtype=None,
     subok=True,
 ):
-    ret = ivy.where(
-        ivy.broadcast_to(where, x.shape), ivy.square(x), ivy.default(out, x), out=out
-    )
+    ret = ivy.square(x)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
@@ -138,9 +136,9 @@ def absolute(
     dtype=None,
     subok=True,
 ):
-    ret = ivy.where(
-        ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out
-    )
+    ret = ivy.abs(x)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
@@ -159,9 +157,9 @@ def fabs(
     dtype=None,
     subok=True,
 ):
-    ret = ivy.where(
-        ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out
-    )
+    ret = ivy.abs(x)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
@@ -181,10 +179,8 @@ def sign(
     subok=True,
 ):
     ret = ivy.sign(x, out=out)
-    if where is not None:
-        ret = ivy.where(
-            ivy.broadcast_to(where, x.shape), ret, ivy.default(out, x), out=out
-        )
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
@@ -204,16 +200,9 @@ def heaviside(
     dtype=None,
     subok=True,
 ):
-    x1 = ivy.array(x1)
-    x2 = ivy.array(x2)
-    ret = ivy.where(
-        ivy.equal(x1, x1.full_like(0.0)),
-        x2,
-        ivy.where(ivy.less(x1, 0.0), ivy.zeros_like(x1), ivy.ones_like(x1)),
-    )
-    ret = ivy.where(
-        ivy.broadcast_to(where, x1.shape), ret, ivy.default(out, x1), out=out
-    )
+    ret = ivy.heaviside(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
