@@ -171,7 +171,8 @@ def cumprod(
             dtype = ivy.default_int_dtype()
         else:
             dtype = _infer_dtype(x.dtype)
-    x = ivy.astype(x, dtype, copy=False)
+        dtype = ivy.as_native_dtype(dtype)
+    x = tf.cast(x, dtype)
     return tf.math.cumprod(x, axis, exclusive, reverse)
 
 
@@ -190,7 +191,8 @@ def cumsum(
             dtype = ivy.default_int_dtype()
         else:
             dtype = _infer_dtype(x.dtype)
-    x = ivy.astype(x, dtype, copy=False)
+        dtype = ivy.as_native_dtype(dtype)
+    x = tf.cast(x, dtype)
     return tf.math.cumsum(x, axis, exclusive, reverse)
 
 
@@ -200,7 +202,5 @@ def einsum(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = _get_promoted_type_of_operands(operands)
-    operands = (
-        ivy.astype(operand, tf.float32, copy=False).to_native() for operand in operands
-    )
-    return ivy.astype(tf.einsum(equation, *operands), dtype, copy=False)
+    operands = (tf.cast(operand, tf.float32) for operand in operands)
+    return tf.cast(tf.einsum(equation, *operands), dtype)
