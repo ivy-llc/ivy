@@ -1,9 +1,10 @@
 from typing import Optional, Union, Tuple, Sequence
+
 import numpy as np
 
 
-#TODO: Implement bins as str
-#      Out does not work.
+# TODO: Implement bins as str
+#       Out does not work.
 def histogram(
     a: np.ndarray,
     /,
@@ -29,26 +30,21 @@ def histogram(
         bin_edges[-1] = np.inf
     if axis is not None:
         histogram_values = np.apply_along_axis(
-            lambda x :
-                np.histogram(
-                    a=x,
-                    bins=bin_edges,
-                    range=range,
-                    weights=weights,
-                )[0],
+            lambda x: np.histogram(
+                a=x,
+                bins=bin_edges,
+                range=range,
+                weights=weights,
+            )[0],
             axis,
-            a
+            a,
         )
         if dtype:
             histogram_values = histogram_values.astype(dtype)
         return histogram_values, bins
     else:
         ret = np.histogram(
-            a=a,
-            bins=bin_edges,
-            range=range,
-            weights=weights,
-            density=density
+            a=a, bins=bin_edges, range=range, weights=weights, density=density
         )
         histogram_values = ret[0]
         if dtype:

@@ -1,5 +1,6 @@
-from typing import Union, Optional, Tuple, Sequence
+from typing import Sequence
 from typing import Union, Optional, Tuple
+
 import tensorflow as tf
 import tensorflow_probability as tfp
 
@@ -7,7 +8,8 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-#TODO: Avoid error when inputs are out of range and extend_lower_interval or extend_upper_interval are false.
+# TODO: Avoid error when inputs are out of range and extend_lower_interval or
+#       extend_upper_interval are false.
 def histogram(
     a: tf.Tensor,
     /,
@@ -91,7 +93,6 @@ def quantile(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     axis = tuple(axis) if isinstance(axis, list) else axis
 
     # In tensorflow, it requires percentile in range [0, 100], while in the other

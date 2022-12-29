@@ -1,6 +1,6 @@
 # global
 from typing import Optional, Union, Tuple, Sequence
-from typing import Optional, Union, Tuple
+
 import torch
 
 # local
@@ -8,7 +8,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-#TODO: solve problem with bins error: only int and not also 1D torch.tensor.
+# TODO: solve problem with bins error: only int and not also 1D torch.tensor.
 def histogram(
     a: torch.tensor,
     /,
@@ -24,12 +24,7 @@ def histogram(
     out: Optional[torch.tensor] = None,
 ) -> Tuple[torch.tensor]:
     ret = torch.histogram(
-        input=a,
-        bins=bins,
-        range=range,
-        weight=weights,
-        density=density,
-        out=out
+        input=a, bins=bins, range=range, weight=weights, density=density, out=out
     )
     histogram_values = ret[0]
     bin_edges = ret[1]
@@ -97,7 +92,6 @@ def quantile(
     interpolation: str = "linear",
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-
     # a,_ = torch.sort(a)
     # n_axis = len(a.size())
 
