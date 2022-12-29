@@ -277,6 +277,19 @@ class ContainerWithManipulation(ContainerBase):
         -------
             A container with list of sub-arrays.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2, 1, 5, 9]), b=ivy.array([3, 7, 2, 11]))
+        >>> y = ivy.Container.static_split(x, num_or_size_splits=2)
+        >>> print(y)
+        [{
+            a: ivy.array([2, 1]),
+            b: ivy.array([3, 7])
+        }, {
+            a: ivy.array([5, 9]),
+            b: ivy.array([2, 11])
+        }]
+
         """
         return ContainerBase.cont_multi_map_in_function(
             "split",
@@ -338,12 +351,16 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([2, 5, 9]))
-        >>> y = x.split()
+        >>> x = ivy.Container(a=ivy.array([2, 1, 5, 9]), b=ivy.array([3, 7, 2, 11]))
+        >>> y = x.split(num_or_size_splits=2)
         >>> print(y)
-        {
-            a: ivy.array([[2], [5], [9]])
-        }
+        [{
+            a: ivy.array([2, 1]),
+            b: ivy.array([3, 7])
+        }, {
+            a: ivy.array([5, 9]),
+            b: ivy.array([2, 11])
+        }]
         """
         return self.static_split(
             self,
@@ -1267,11 +1284,14 @@ class ContainerWithManipulation(ContainerBase):
         Parameters
         ----------
         self
-            Container with leaves to join. Each array leavve must have the same shape.
+            Container with leaves to join with leaves of other arrays/containers.
+             Each array leave must have the same shape.
+        xs
+            Container with other leaves to join.
+            Each array leave must have the same shape.
         axis
             axis along which the array leaves will be joined. More details can be found
             in the docstring for ivy.stack.
-
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply

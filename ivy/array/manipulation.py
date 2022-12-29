@@ -30,8 +30,11 @@ class ArrayWithManipulation(abc.ABC):
         Parameters
         ----------
         self
-            input arrays to join. The arrays must have the same shape, except in the
-            dimension specified by axis.
+            input array to join with other arrays ``xs``.
+        xs
+            The other arrays to join with. The arrays must
+            have the same shape, except in the dimension
+            specified by axis.
         axis
             axis along which the arrays will be joined. If axis is None, arrays
             must be flattened before concatenation. If axis is negative, axis on
@@ -44,7 +47,6 @@ class ArrayWithManipulation(abc.ABC):
         -------
         ret
             an output array containing the concatenated values.
-
         """
         return ivy.concat([self._data] + xs, axis=axis, out=out)
 
@@ -347,8 +349,10 @@ class ArrayWithManipulation(abc.ABC):
 
         Parameters
         ----------
+        self
+            Array to join with other ``arrays``.
         arrays
-            input arrays to join. Each array must have the same shape.
+            Other arrays to join with. Each array must have the same shape.
         axis
             axis along which the arrays will be joined. More details can be found in
             the ``ivy.stack`` documentation.
