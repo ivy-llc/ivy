@@ -513,7 +513,7 @@ def adaptive_avg_pool1d(input, output_size):
         return pooled_output
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def adaptive_avg_pool2d(input, output_size):
 
