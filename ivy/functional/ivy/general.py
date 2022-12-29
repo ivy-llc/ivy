@@ -186,7 +186,7 @@ def is_ivy_array(
     >>> ivy.is_ivy_array(x, exclusive=True)
     False
     """
-    return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive=exclusive)
+    return isinstance(x, ivy.Array)
 
 
 @handle_exceptions
