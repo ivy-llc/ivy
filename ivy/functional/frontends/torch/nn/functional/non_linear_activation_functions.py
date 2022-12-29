@@ -550,7 +550,7 @@ def adaptive_avg_pool2d(input, output_size):
             for i_s, o_s, st in zip(shape[-2:], output_size, stride)
         )
         pooled_output = ivy.avg_pool2d(
-            input, kernel_size, stride, "VALID", data_format="NCW"
+            input, kernel_size, stride, "VALID", data_format="NCHW"
         )
         if squeeze:
             return ivy.squeeze(pooled_output, axis=0)
@@ -592,7 +592,8 @@ def adaptive_avg_pool2d(input, output_size):
     idxh, length_h, range_max_h, adaptive_h = compute_idx(shape[-2], output_size[-2])
     idxw, length_w, range_max_w, adaptive_w = compute_idx(shape[-1], output_size[-1])
 
-    vals = input[..., _expand_to_dim(idxh, 4), idxw]
+    # to numpy and back in order to bypass a slicing error in tensorflow
+    vals = ivy.array(input.to_numpy()[..., _expand_to_dim(idxh, 4), idxw])
 
     if not adaptive_h and not adaptive_w:
         return ivy.mean(vals, axis=(-3, -1))
