@@ -80,7 +80,7 @@ Testing Pipeline
    We generate the input data inside the :code:`@given` decorator that wraps every test.
 
 2. **Pre-execution Test Processing**: After the data is generated, more input processing is needed before testing the function.
-   This is more specific to which functions are we testing, `core functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L37>`_ require different input processing from `frontend functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L379>`_.th
+   This is more specific to which functions are we testing, `core functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L37>`_ require different input processing from `frontend functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L379>`_.
    One of the required pre-processing step for any test function is converting the array input to valid framework specific array, later in the testing process we call the backend framework function, for example TensorFlow's :code:`abs` function requires the input to be a :code:`tf.Tensor`, not an `ivy.Array`.
 
 3. **Test Execution**: After the input data is generated and processed, we assert that the result of the functions is correct, this includes, asserting the result has the correct values, shape and data type.
