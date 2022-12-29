@@ -12,7 +12,6 @@ from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
     _check_valid_scale,
-    _check_shapes_broadcastable,
 )
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_device
@@ -182,28 +181,3 @@ def shuffle(
         _setRNG(RNG_)
 
     return jax.random.shuffle(rng_input, x)
-
-
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
-def poisson(
-    lam: Union[float, JaxArray],
-    *,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device,
-    dtype: jnp.dtype = None,
-    seed: Optional[int] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    lam = jnp.array(lam)
-    _check_shapes_broadcastable(shape, lam.shape)
-    if seed:
-        rng_input = jax.random.PRNGKey(seed)
-    else:
-        RNG_, rng_input = jax.random.split(_getRNG())
-        _setRNG(RNG_)
-    return (
-        to_device(
-            jax.random.poisson(rng_input, lam, shape=shape),
-            device,
-        )
-    )

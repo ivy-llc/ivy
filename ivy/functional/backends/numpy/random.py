@@ -10,7 +10,6 @@ from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
     _check_valid_scale,
-    _check_shapes_broadcastable
 )
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -127,18 +126,3 @@ def shuffle(
     return np.random.permutation(x)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
-def poisson(
-    lam: Union[float, np.ndarray],
-    *,
-    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-    device: str,
-    dtype: np.dtype,
-    seed: Optional[int] = None,
-    out: Optional[np.ndarray] = None, 
-) -> np.ndarray:
-    lam = np.array(lam)
-    _check_shapes_broadcastable(shape, lam.shape)
-    if seed:
-        np.random.seed(seed)
-    return np.asarray(np.random.poisson(lam, shape), dtype=dtype)
