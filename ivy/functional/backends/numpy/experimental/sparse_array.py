@@ -3,7 +3,7 @@ import logging
 
 # local
 import ivy
-from ivy.functional.experimental.sparse_array import (
+from ivy.functional.ivy.experimental.sparse_array import (
     _is_csc,
     _verify_bsc_components,
     _verify_coo_components,

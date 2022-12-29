@@ -4,7 +4,7 @@ import logging
 
 # local
 import ivy
-from ivy.functional.experimental.sparse_array import (
+from ivy.functional.ivy.experimental.sparse_array import (
     _is_coo,
     _is_csc,
     _is_csr,
