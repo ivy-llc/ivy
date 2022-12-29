@@ -871,9 +871,12 @@ def test_gradient(
     test_gradients=st.just(False),
 )
 def test_xlogy(
+    *,
     dtype_and_x,
     test_flags,
     backend_fw,
+    fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -882,7 +885,8 @@ def test_xlogy(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
-        fn_name="xlogy",
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )
