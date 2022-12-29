@@ -15,7 +15,6 @@ from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
     _check_valid_scale,
-    _check_shapes_broadcastable
 )
 from . import backend_version
 

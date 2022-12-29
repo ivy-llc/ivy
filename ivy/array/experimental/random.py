@@ -189,8 +189,8 @@ class ArrayWithRandomExperimental(abc.ABC):
         seed
             A python integer. Used to create a random seed distribution
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------

@@ -124,5 +124,3 @@ def shuffle(
     if seed:
         np.random.seed(seed)
     return np.random.permutation(x)
-
-

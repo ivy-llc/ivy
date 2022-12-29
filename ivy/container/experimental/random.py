@@ -303,8 +303,8 @@ class ContainerWithRandomExperimental(ContainerBase):
         Parameters
         ----------
         lam
-            Input container with rate parameter(s) describing the poisson distribution(s)
-            to sample.
+            Input container with rate parameter(s) describing the poisson
+            distribution(s) to sample.
         shape
             optional container including ints or tuple of ints,
             Output shape for the arrays in the input container.
@@ -366,8 +366,8 @@ class ContainerWithRandomExperimental(ContainerBase):
         Parameters
         ----------
         self
-            Input container with rate parameter(s) describing the poisson distribution(s)
-            to sample.
+            Input container with rate parameter(s) describing the poisson
+            distribution(s) to sample.
         shape
             optional container including ints or tuple of ints,
             Output shape for the arrays in the input container.
