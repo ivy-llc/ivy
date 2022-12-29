@@ -73,7 +73,7 @@ def multi_dot(
     *, 
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
-    #This implementation simply chains tf.tensordot multiple times
+    # This implementation simply chains tf.tensordot multiple times
     # TODO: reimplement this function once tf adds multi_dot or inplace updates
     if len(x) == 1:
         return x[0]
