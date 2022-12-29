@@ -1721,13 +1721,16 @@ def einops_rearrange(
     >>> print(x.shape)
     (32, 3600)
 
-    Split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right), 128 = 32 * 2 * 2
-    >>> x = ivy.einops_rearrange(images, 'b (h1 h) (w1 w) c -> (b h1 w1) h w c', h1=2, w1=2)
+    Split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right),
+    128 = 32 * 2 * 2
+    >>> x = ivy.einops_rearrange(images, 'b (h1 h) (w1 w) c -> (b h1 w1) h w c',
+    ... h1=2, w1=2)
     >>> print(x.shape)
     (128, 15, 20, 3)
 
     Space-to-depth operation
-    >>> x = ivy.einops_rearrange(images, 'b (h h1) (w w1) c -> b h w (c h1 w1)', h1=2, w1=2)
+    >>> x = ivy.einops_rearrange(images, 'b (h h1) (w w1) c -> b h w (c h1 w1)', h1=2,
+    ... w1=2)
     >>> print(x.shape)
     (32, 15, 20, 12)
     """
