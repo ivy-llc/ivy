@@ -115,7 +115,7 @@ def multi_dot(
     *, 
     out: Optional[np.array] = None,
 ) -> np.ndarray: 
-    return np.linalg.multidot(x, out=out)
+    return np.linalg.multi_dot(x, out=out)
 
 
 multi_dot.support_native_out = True
