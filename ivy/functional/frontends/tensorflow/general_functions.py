@@ -85,9 +85,11 @@ def einsum(equation, *inputs, **kwargs):
 def reshape(tensor, shape, name=None):
     return ivy.reshape(tensor, shape=shape)
 
+
 @to_ivy_arrays_and_back
 def one_hot(indices, depth, on_value=None,off_value=None, axis=None, dtype=None, name=None):
     return ivy.one_hot(indices, depth, on_value, off_value, axis, dtype)
+
 
 @to_ivy_arrays_and_back
 def rank(input, **kwargs):

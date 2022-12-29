@@ -442,9 +442,10 @@ def test_tensorflow_one_hot(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        indices=x[0],
         dtype=dtype[0],
     )
+
 
 # ones_like
 @handle_frontend_test(
