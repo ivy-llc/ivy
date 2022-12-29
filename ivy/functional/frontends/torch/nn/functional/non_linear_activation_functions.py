@@ -1,8 +1,10 @@
+# global
+from itertools import product
+import math
+
 # local
 import ivy
-import math
 from ivy.func_wrapper import with_unsupported_dtypes
-
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -471,7 +473,7 @@ def batch_norm(
     return ivy.swapaxes(input, 1, -1)
 
 
-# Refrence: https://stackoverflow.com/a/63603993
+# Reference: https://stackoverflow.com/a/63603993
 @with_unsupported_dtypes(
     {
         "1.11.0 and below": (
@@ -487,6 +489,10 @@ def adaptive_avg_pool1d(input, output_size):
     if len(input.shape) == 2:
         input = ivy.expand_dims(input, axis=0)
         squeeze = True
+    elif len(input.shape) != 3:
+        raise ivy.exceptions.IvyException(
+            f"Got {len(input.shape)}D input, but only 2D and 3D inputs are supported.",
+        )
     input_size = input.shape[-1]
     if input_size % output_size == 0:
         stride = input_size // output_size
@@ -505,3 +511,112 @@ def adaptive_avg_pool1d(input, output_size):
         if squeeze:
             return ivy.squeeze(pooled_output, axis=0)
         return pooled_output
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
+@to_ivy_arrays_and_back
+def adaptive_avg_pool2d(input, output_size):
+
+    device = input.device
+    shape = input.shape
+    squeeze = False
+
+    if len(input.shape) == 3:
+        input = ivy.expand_dims(input, axis=0)
+        squeeze = True
+    elif len(input.shape) != 4:
+        raise ivy.exceptions.IvyException(
+            f"Got {len(shape)}D input, but only 3D and 4D inputs are supported.",
+        )
+    for d in input.shape[-2:]:
+        if d == 0:
+            raise ivy.exceptions.IvyException(
+                "Expected input to have non-zero size for non-batch dimensions, but"
+                f" input has shape {tuple(shape)}."
+            )
+
+    if all(i_s % o_s == 0 for i_s, o_s in zip(shape[-2:], output_size)):
+        stride = tuple(i_s // o_s for i_s, o_s in zip(shape[-2:], output_size))
+        kernel_size = tuple(
+            i_s - (o_s - 1) * st
+            for i_s, o_s, st in zip(shape[-2:], output_size, stride)
+        )
+        pooled_output = ivy.avg_pool2d(
+            input, kernel_size, stride, "VALID", data_format="NCHW"
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output
+
+    def start_index(a, b, c):
+        return ivy.trunc_divide(a * c, b).astype(ivy.int64)
+
+    def end_index(a, b, c):
+        return ivy.trunc_divide((a + 1) * c + b - 1, b).astype(ivy.int64)
+
+    def compute_idx(in_size, out_size):
+        orange = ivy.arange(out_size, device=device, dtype=ivy.int64)
+        i0 = start_index(orange, out_size, in_size)
+        maxlength = in_size // out_size + 1
+        in_size_mod = in_size % out_size
+        # adaptive = True iff there are kernels with different lengths
+        adaptive = not (in_size_mod == 0 or out_size % in_size_mod == 0)
+        if adaptive:
+            maxlength += 1
+        elif in_size_mod == 0:
+            maxlength -= 1
+        range_max = ivy.arange(maxlength, device=device, dtype=ivy.int64)
+        idx = ivy.expand_dims(i0, axis=-1) + range_max
+        if adaptive:
+            maxval = ivy.full_like(idx, fill_value=in_size - 1)
+            idx = ivy.minimum(idx, maxval)
+            i1 = end_index(orange, out_size, in_size)
+            length = i1 - i0
+        else:
+            length = maxlength
+        return idx, length, range_max, adaptive
+
+    def _expand_to_dim(x, dim):
+        for _ in range(dim - len(x.shape)):
+            x = ivy.expand_dims(x, axis=-1)
+        return x
+
+    idxh, length_h, range_max_h, adaptive_h = compute_idx(shape[-2], output_size[-2])
+    idxw, length_w, range_max_w, adaptive_w = compute_idx(shape[-1], output_size[-1])
+
+    # to numpy and back in order to bypass a slicing error in tensorflow
+    vals = ivy.array(input.to_numpy()[..., _expand_to_dim(idxh, 4), idxw])
+
+    if not adaptive_h and not adaptive_w:
+        return ivy.mean(vals, axis=(-3, -1))
+
+    def maybe_mask(vals, length, range_max, dim):
+        if isinstance(length, int):
+            return vals, length
+        else:
+            assert dim < 0
+            mask = ivy.greater_equal(range_max, ivy.expand_dims(length, axis=-1))
+            if dim == -2:
+                mask = _expand_to_dim(mask, 4)
+            vals = ivy.where(mask, 0.0, vals)
+            length = _expand_to_dim(length, -dim)
+            return vals, length
+
+    vals, length_h = maybe_mask(
+        vals, length_h, range_max_h, dim=-2
+    )
+    vals, length_w = maybe_mask(
+        vals, length_w, range_max_w, dim=-1
+    )
+
+    ret = None
+    for i, j in product(range(vals.shape[-3]), range(vals.shape[-1])):
+        if ret is None:
+            ret = vals[..., i, :, j]
+        else:
+            ret = ret + vals[..., i, :, j]
+    pooled_output = ret / (length_h * length_w)
+
+    if squeeze:
+        return ivy.squeeze(pooled_output, axis=0)
+    return pooled_output
