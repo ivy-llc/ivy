@@ -175,7 +175,7 @@ def test_numpy_slogdet(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.linalg.trace",
+    fn_tree="numpy.trace",
     dtype_and_x=_get_dtype_and_matrix(),
 )
 def test_numpy_trace(
