@@ -1,4 +1,4 @@
-from typing import Union, Optional, Tuple
+from typing import Union, Optional, Tuple, Sequence
 import tensorflow as tf
 
 import ivy
@@ -65,3 +65,20 @@ def eig(
     if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
         return tf.linalg.eig(tf.cast(x, tf.float64))
     return tf.linalg.eig(x)
+
+
+def multi_dot(
+    arrays: Sequence[Union[tf.Tensor, tf.Variable]], 
+    /, 
+    *, 
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    if len(arrays) == 1:
+        return arrays[0]
+    dot_out = arrays[0]
+    for elemen in range(1, len(arrays)):
+        dot_out = tf.tensordot(
+            dot_out, 
+            arrays[elemen], 
+            1)
+    return dot_out
