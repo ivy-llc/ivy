@@ -52,6 +52,10 @@ def ones(shape, dtype=ivy.float32, name=None):
     return ivy.ones(shape, dtype=dtype)
 
 
+def one_hot(indices, depth, on_value=None, off_value=None, axis=None, dtype=None, name=None):
+    return ivy.one_hot(indices = indices, depth = depth, on_value = on_value, off_value = off_value, axis = axis, dtype = dtype)
+
+
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def zeros_like(input, dtype=None, name=None):
