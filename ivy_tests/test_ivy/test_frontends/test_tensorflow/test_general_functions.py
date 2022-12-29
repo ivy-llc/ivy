@@ -1039,19 +1039,23 @@ def _strided_slice_helper(draw):
     ndims = len(shape)
     masks = draw(
         st.lists(
-            st.integers(min_value=0, max_value=2 ** ndims - 1),
-            min_size=5,
-            max_size=5
-        ).filter(lambda x: bin(x[2])[2:].count('1') <= 1)  # maximum one ellipse
+            st.integers(min_value=0, max_value=2**ndims - 1), min_size=5, max_size=5
+        ).filter(
+            lambda x: bin(x[2])[2:].count("1") <= 1
+        )  # maximum one ellipse
     )
     begin, end, strides = [], [], []
     n_omit = np.random.randint(0, ndims)
     sub_shape = shape[:-n_omit]
     for i in sub_shape:
         begin += [draw(st.integers(min_value=0, max_value=i - 1))]
-        end += [draw(
-            st.integers(min_value=0, max_value=i - 1).filter(lambda x: x != begin[-1])
-        )]
+        end += [
+            draw(
+                st.integers(min_value=0, max_value=i - 1).filter(
+                    lambda x: x != begin[-1]
+                )
+            )
+        ]
         if begin[-1] < end[-1]:
             strides += [draw(st.integers(min_value=1))]
         else:
@@ -1077,7 +1081,7 @@ def test_tensorflow_strided_slice(
     dtype, x, begin, end, strides, masks = dtype_x_params
     try:
         helpers.test_frontend_function(
-            input_dtypes=dtype + 3 * ['int64'] + 5 * ['int32'],
+            input_dtypes=dtype + 3 * ["int64"] + 5 * ["int32"],
             as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
@@ -1096,28 +1100,58 @@ def test_tensorflow_strided_slice(
             shrink_axis_mask=masks[4],
         )
     except Exception as e:
-        if hasattr(e, 'message'):
+        if hasattr(e, "message"):
             if "only stride 1 allowed on non-range indexing" in e.message:
                 assume(False)
+
+
+@st.composite
+def _linspace_helper(draw):
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=0,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
+    )
+
+    dtype = draw(st.sampled_from(["float32", "float64"]))
+
+    # Param: start
+    start = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=shape,
+            min_value=-5.0,
+            max_value=5.0,
+        ),
+    )
+
+    # Param:stop
+    stop = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=shape,
+            min_value=-4.0,
+            max_value=10.0,
+        ),
+    )
+
+    return [dtype] * 2, start, stop
 
 
 # linspace
 @handle_frontend_test(
     fn_tree="tensorflow.linspace",
-    start=helpers.floats(min_value=-5.0, max_value=5.0),
-    stop=helpers.floats(min_value=-4.0, max_value=10.0),
+    dtype_and_params=_linspace_helper(),
     num=helpers.ints(min_value=2, max_value=10),
     axis=helpers.ints(min_value=-1, max_value=0),
-    # axis=st.none() | helpers.get_axis(
-    #     shape=helpers.get_shape(min_num_dims=1),
-    #     allow_neg=True,
-    #     force_int=True,
-    # ),
 )
 def test_tensorflow_linspace(
     *,
-    start,
-    stop,
+    dtype_and_params,
     num,
     axis,
     as_variable,
@@ -1128,8 +1162,9 @@ def test_tensorflow_linspace(
     fn_tree,
     frontend,
 ):
+    dtype, start, stop = dtype_and_params
     helpers.test_frontend_function(
-        input_dtypes=[],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
