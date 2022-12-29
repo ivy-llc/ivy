@@ -416,3 +416,8 @@ def positive(input, *, out=None):
 @to_ivy_arrays_and_back
 def frac(input, *, out=None):
     return input - ivy.sign(input) * ivy.floor(ivy.abs(input))
+
+
+@to_ivy_arrays_and_back
+def xlogy(input, other, *, out=None):
+    return ivy.xlogy(input, other, out=out)
