@@ -1,45 +1,33 @@
 # global
-from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
-)
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @handle_frontend_test(
     fn_tree="numpy.percentile",
-    dtype_and_x=statistical_dtype_values(function="percentile"),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
-    where=np_frontend_helpers.where(),
-    keep_dims=st.booleans(),
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    dtype_and_q=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_numpy_percentile(
-    dtype_and_x,
-    dtype,
-    where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    frontend,
-    fn_tree,
-    on_device,
-    keep_dims,
+        dtype_and_a,
+        dtype_and_q,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        frontend,
+        fn_tree,
+        on_device,
 ):
-    input_dtype, x, axis = dtype_and_x
-    if isinstance(axis, tuple):
-        axis = axis[0]
-
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
+    input_dtype, a = dtype_and_a
+    input_dtype, q = dtype_and_q
 
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -50,11 +38,7 @@ def test_numpy_percentile(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        axis=axis,
-        dtype=dtype[0],
+        a=a[0],
+        q=q[0],
         out=None,
-        keepdims=keep_dims,
-        where=where,
-        test_values=False,
     )
