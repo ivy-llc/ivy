@@ -487,13 +487,6 @@ def reshape(
                       [3, 4, 5]])
     }
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[0, 1, 2, 3]])
-    >>> y = ivy.reshape(x, (2, 2))
-    >>> print(y)
-    ivy.array([[0, 1],[2, 3]])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
@@ -1100,13 +1093,13 @@ def split(
     ret
         A list of sub-arrays.
 
-
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.split(x)
@@ -1123,19 +1116,14 @@ def split(
     >>> print(y)
     ivy.array([[4], [6, 5, 3]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([7, 8, 9])
-    >>> y = ivy.split(x)
-    >>> print(y)
-    [ivy.array([7]),ivy.array([8]),ivy.array([9])]
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([10, 45, 2]))
     >>> y = ivy.split(x)
     >>> print(y)
-    {a:(list[3],<classivy.array.Array>shape=[1])}
+    {
+        a:(list[3],<classivy.array.Array>shape=[1])
+    }
     """
     return current_backend(x).split(
         x,
