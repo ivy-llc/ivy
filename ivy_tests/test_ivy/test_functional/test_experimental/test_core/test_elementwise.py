@@ -46,7 +46,7 @@ def test_sinc(
 @handle_test(
     fn_tree="functional.ivy.experimental.lcm",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=["int16", "int32", "int64"],
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
@@ -69,7 +69,7 @@ def test_lcm(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="jax",
+        ground_truth_backend="numpy",
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
