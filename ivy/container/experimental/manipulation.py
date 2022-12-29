@@ -2123,7 +2123,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "hsplit",
             ary,
-            indices_or_sections=indices_or_sections,
+            indices_or_sections,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2198,7 +2198,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         }
         """
         return self.static_hsplit(
-            self, indices_or_sections=indices_or_sections, out=out
+            self, indices_or_sections, out=out
         )
 
     @staticmethod
