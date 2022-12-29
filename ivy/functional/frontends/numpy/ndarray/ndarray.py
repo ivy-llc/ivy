@@ -266,6 +266,9 @@ class ndarray:
 
     def __truediv__(self, value, /):
         return np_frontend.true_divide(self._ivy_array, value)
+    
+    def __mod__(self, value, /):
+        return np_frontend.remainder(self._ivy_array, value)
 
     def __pow__(self, value, /):
         return np_frontend.power(self._ivy_array, value)
