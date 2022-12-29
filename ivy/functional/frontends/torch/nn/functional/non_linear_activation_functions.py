@@ -517,7 +517,6 @@ def adaptive_avg_pool1d(input, output_size):
     {
         "1.11.0 and below": (
             "bfloat16",
-            "float16",
         )
     },
     "torch",
