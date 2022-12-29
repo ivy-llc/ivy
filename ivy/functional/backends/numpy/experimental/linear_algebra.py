@@ -1,5 +1,5 @@
 import math
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Sequence
 import numpy as np
 
 import ivy
@@ -108,3 +108,14 @@ def eig(x: np.ndarray, /) -> Tuple[np.ndarray]:
 
 
 eig.support_native_out = False
+
+
+def multi_dot(
+    arrays: Sequence[np.ndarray], 
+    *, 
+    out: Optional[np.array] = None,
+) -> np.ndarray: 
+    return np.linalg.multidot(arrays, out=out)
+
+
+multi_dot.support_native_out = True
