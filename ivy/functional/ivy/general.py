@@ -6,25 +6,22 @@ import inspect
 import math
 from functools import wraps
 from numbers import Number
-from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional, Sequence
+from typing import (Any, Callable, Dict, Iterable, List, Optional, Sequence,
+                    Tuple, Union)
+
 import einops
 import numpy as np
 
 # local
 import ivy
-from ivy.backend_handler import current_backend, backend_stack
-from ivy.functional.ivy.gradients import _is_variable
+from ivy.backend_handler import backend_stack, current_backend
 from ivy.exceptions import handle_exceptions
-from ivy.func_wrapper import (
-    inputs_to_ivy_arrays,
-    inputs_to_native_arrays,
-    outputs_to_ivy_arrays,
-    to_native_arrays_and_back,
-    handle_out_argument,
-    handle_nestable,
-    handle_array_like,
-)
+from ivy.func_wrapper import (handle_array_like, handle_nestable,
+                              handle_out_argument, inputs_to_ivy_arrays,
+                              inputs_to_native_arrays, outputs_to_ivy_arrays,
+                              to_native_arrays_and_back)
 from ivy.functional.ivy.device import dev
+from ivy.functional.ivy.gradients import _is_variable
 
 FN_CACHE = dict()
 INF = float("inf")
@@ -1658,6 +1655,77 @@ def einops_rearrange(
     ret
         New array with einops.rearrange having been applied.
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[-4.47, 0.93, -3.34],
+    ...            [3.66, 24.29, 3.64]])
+    >>> y = ivy.einops_rearrange(x, 'a b -> (a b)')
+    >>> print(y)
+    ivy.array([-4.46999979,  0.93000001, -3.33999991,  3.66000009, 24.29000092,
+        3.6400001 ])
+
+    >>> x = ivy.array([[-4.1, 0.3, -1.2],
+    ...            [3.6, 3.4, 3.1]])
+    >>> y = ivy.zeros((3,2))
+    >>> ivy.einops_rearrange(x, 'a b -> b a', out=y)
+    >>> print(y)
+    ivy.array([[-4.0999999 ,  3.5999999 ],
+       [ 0.30000001,  3.4000001 ],
+       [-1.20000005,  3.0999999 ]])
+
+    With :class:`ivy.Container` input:
+
+    x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],
+    ...                            [3.66, 24.29, 3.64]]),
+    ...               b=ivy.array([[4.96, 1.52, -10.67],
+    ...                            [4.36, 13.96, 0.3]]))
+    y = ivy.einops_rearrange(x, 'a b -> b a')
+    print(y)
+    {
+        a: ivy.array([[-4.46999979, 3.66000009],
+                    [0.93000001, 24.29000092],
+                    [-3.33999991, 3.6400001]]),
+        b: ivy.array([[4.96000004, 4.36000013],
+                    [1.51999998, 13.96000004],
+                    [-10.67000008, 0.30000001]])
+    }
+
+    With varying pattern:
+
+    Suppose we have a set of 32 images in "h w c" format (height-width-channel)
+    >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
+
+    Concatenate images along height (vertical axis), 960 = 32 * 30
+    >>> x = ivy.einops_rearrange(images, 'b h w c -> (b h) w c')
+    >>> print(x.shape)
+    (960, 40, 3)
+
+    Concatenate images along horizontal axis, 1280 = 32 * 40
+    >>> x = ivy.einops_rearrange(images, 'b h w c -> h (b w) c')
+    >>> print(x.shape)
+    (30, 1280, 3)
+
+    Reorder axes to "b c h w" format for deep learning
+    >>> x = ivy.einops_rearrange(images, 'b h w c -> b c h w')
+    >>> print(x.shape)
+    (32, 3, 30, 40)
+
+    Flatten each image into a vector, 3600 = 30 * 40 * 3
+    >>> x = ivy.einops_rearrange(images, 'b h w c -> b (c h w)')
+    >>> print(x.shape)
+    (32, 3600)
+
+    Split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right), 128 = 32 * 2 * 2
+    >>> x = ivy.einops_rearrange(images, 'b (h1 h) (w1 w) c -> (b h1 w1) h w c', h1=2, w1=2)
+    >>> print(x.shape)
+    (128, 15, 20, 3)
+
+    Space-to-depth operation
+    >>> x = ivy.einops_rearrange(images, 'b (h h1) (w w1) c -> b h w (c h1 w1)', h1=2, w1=2)
+    >>> print(x.shape)
+    (32, 15, 20, 12)
     """
     ret = einops.rearrange(x, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
