@@ -8,7 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @handle_frontend_test(
-    fn_tree="numpy.percentile",
+    fn_tree="numpy.quantile",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
@@ -17,7 +17,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     keep_dims=st.booleans(),
 )
-def test_numpy_percentile(
+def test_numpy_quantile(
         dtype_and_a,
         dtype_and_q,
         as_variable,
