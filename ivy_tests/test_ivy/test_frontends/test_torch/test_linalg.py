@@ -727,9 +727,8 @@ def _tensorinv_helper(draw):
         max_value=100,
         shape=helpers.get_shape(min_num_dims=2, max_num_dims=10).filter(
             lambda x: np.prod(ivy.shape(x)[:ind]) == np.prod(ivy.shape(x)[ind:]),
-            )
         )
-    )
+    ))
     return dtype, input, ind
 
 
