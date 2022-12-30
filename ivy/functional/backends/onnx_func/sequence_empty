@@ -2,17 +2,16 @@
 Creating an empty tensor sequence with given data type (default is float)
 '''
 
-import tensorflow as tf
-
-import onnx
+from onnx import helper
 
 
 class SequenceEmpty:
     @constructor
-    def __init__(self, shape, dtype=tf.float32):
-        self.shape = shape
+    def __init__(self, name, dtype=float, shape):
+        self.name = name
         self.dtype = dtype
-        self.tensor = tf.zeros(self.shape, self.dtype)
+        self.shape = shape
+        self.tensor = helper.make_tensor(self.name, self.dtype, self.shape, 0)
     
     @classmethod
     def export(self):
