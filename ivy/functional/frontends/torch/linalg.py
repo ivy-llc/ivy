@@ -136,33 +136,27 @@ def inv_ex(input, *, check_errors=False, out=None):
 def tensorinv(input, ind=2, *, out=None):
     not_invertible = "Reshaped tensor is not invertible"
     prod_cond = "Tensor shape must satisfy prod(A.shape[:ind]) == prod(A.shape[ind:])"
+    positive_ind_cond = "Expected a strictly positive integer for 'ind'"
     input_shape = ivy.shape(input)
-    if ind > 0:
-        shape_ind_end = input_shape[:ind]
-        shape_ind_start = input_shape[ind:]
-        prod_ind_end = 1
-        prod_ind_start = 1
-        for i in shape_ind_start:
-            prod_ind_start *= i
-        for j in shape_ind_end:
-            prod_ind_end *= j
-        if prod_ind_end == prod_ind_start:
-            inverse_shape = shape_ind_start + shape_ind_end
-            input = ivy.reshape(input, shape=(prod_ind_end, -1))
-            inverse_shape_tuple = tuple([*inverse_shape])
-            try:
-                inv_ex(input, check_errors=True)
-            except RuntimeError:
-                print(f'{not_invertible}.')
-            if len(ivy.shape(input)) > 1:
-                inverse_tensor = ivy.inv(input)
-            else:
-                ret = ivy.reshape(input, shape=inverse_shape_tuple, out=out)
-                return ret if ivy.inv(ret) else not_invertible
-        else:
-            raise ValueError(f'{prod_cond}.')
+    assert ind > 0, f'{positive_ind_cond}'
+    shape_ind_end = input_shape[:ind]
+    shape_ind_start = input_shape[ind:]
+    prod_ind_end = 1
+    prod_ind_start = 1
+    for i in shape_ind_start:
+        prod_ind_start *= i
+    for j in shape_ind_end:
+        prod_ind_end *= j
+    assert prod_ind_end == prod_ind_start, f'{prod_cond}.'
+    inverse_shape = shape_ind_start + shape_ind_end
+    input = ivy.reshape(input, shape=(prod_ind_end, -1))
+    inverse_shape_tuple = tuple([*inverse_shape])
+    assert inv_ex(input, check_errors=True), f'{not_invertible}.'
+    if len(ivy.shape(input)) > 1:
+        inverse_tensor = ivy.inv(input)
     else:
-        raise ValueError("Expected a strictly positive integer for 'ind'")
+        ret = ivy.reshape(input, shape=inverse_shape_tuple, out=out)
+        return ret if ivy.inv(ret) else not_invertible
     return ivy.reshape(inverse_tensor, shape=inverse_shape_tuple, out=out)
 
 
