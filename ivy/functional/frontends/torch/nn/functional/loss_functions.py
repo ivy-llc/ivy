@@ -101,7 +101,7 @@ def binary_cross_entropy(
 ):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.binary_cross_entropy(target, input, epsilon=0.0)
-
+    
     if weight is not None:
         result = ivy.multiply(weight, result)
     result = reduction(result)
@@ -120,7 +120,7 @@ def binary_cross_entropy_with_logits(
 ):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.binary_cross_entropy_with_logits(target, input, pos_weight=pos_weight)
-
+    
     if weight is not None:
         result = ivy.multiply(weight, result)
     result = reduction(result).astype(target.dtype)
@@ -147,7 +147,7 @@ def smooth_l1_loss(
 ):
     beta = ivy.array(beta, device=input.device)
     reduction = _get_reduction(reduction, size_average, reduce)
-
+    
     if beta < 1e-5:
         # [Copied and modified from fvcore]
         # if beta == 0, then torch.where will result in nan gradients when
@@ -158,15 +158,15 @@ def smooth_l1_loss(
         loss = ivy.abs(input - target)
     else:
         _diff_abs = ivy.abs(input - target)
-
+        
         loss = ivy.where(
             _diff_abs < beta,
             0.5 * _diff_abs ** 2 / beta,
             _diff_abs - 0.5 * beta,
         )
-
+    
     ret = reduction(loss)
-
+    
     return ret
 
 
@@ -179,16 +179,16 @@ def huber_loss(
 ):
     delta = ivy.array(delta)
     _diff_abs = ivy.abs(ivy.subtract(input, target))
-
+    
     loss = ivy.where(
         _diff_abs < delta,  # If |xᵢ - yᵢ| < δ
         0.5 * _diff_abs ** 2,  # lᵢ = 0.5(xᵢ - yᵢ)²
         delta * (_diff_abs - 0.5 * delta),
     )  # lᵢ = δ(|xᵢ - yᵢ| - 0.5 * δ)
-
+    
     reduction = _get_reduction(reduction)
     ret = reduction(loss)
-
+    
     return ivy.astype(ret, input.dtype)
 
 
@@ -217,7 +217,7 @@ def nll_loss(
         reduction="mean",
 ):
     out = ivy.zeros_like(target)
-
+    
     if len(input.shape) == 1:
         for i in range(len(target)):
             out[i] = input[target[i]]
@@ -225,12 +225,12 @@ def nll_loss(
         for i in range(len(target)):
             out[i] = input[i][target[i]]
     loss = -out
-
+    
     if weight is not None:
         loss = ivy.multiply(weight, loss)
     reduct = _get_reduction(reduction, size_average, reduce)
     ret = reduct(loss)
-
+    
     return ret
 
 
@@ -258,23 +258,25 @@ def kl_div(
         reduction='mean',
         log_target=False
 ):
+    size = ivy.shape(input)
+    
     def loss_fn():
         if log_target:
             return ivy.exp(target) * (target - input)
         return target * (ivy.log(target) - input)
-
+    
     def batchmean(x):
-        size = ivy.shape(x)
         if len(size) <= 1:
             return ivy.mean(x)
+        
         batch_size = size[0]
         return ivy.sum(x) / batch_size
-
+    
     loss = loss_fn()
-
-    if reduction == 'batchmean':
+    
+    if reduction == "batchmean":
         reduction = batchmean
     else:
         reduction = _get_reduction(reduction, size_average, reduce)
-
+    
     return reduction(loss)
