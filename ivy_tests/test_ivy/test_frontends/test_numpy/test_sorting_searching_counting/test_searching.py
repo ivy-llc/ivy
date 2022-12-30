@@ -189,19 +189,70 @@ def test_numpy_flatnonzero(
 
 
 # searchsorted
+@st.composite
+def _search_sorted_values(draw):
+    case = st.booleans()
+    if case:
+        # when x is 1-D and v is N-D
+        dtype_x, x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes(
+                    "numeric", full=False, key="searchsorted"
+                ),
+                shape=(draw(st.integers(min_value=1, max_value=5)),),
+            ),
+        )
+        dtype_v, v = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes(
+                    "numeric", full=False, key="searchsorted"
+                ),
+                min_num_dims=1,
+            )
+        )
+    else:
+        # when x is N-D and v is N-D
+        lead_dim = draw(
+            helpers.get_shape(min_num_dims=1),
+        )
+        nx = draw(st.integers(min_value=1, max_value=5))
+        nv = draw(st.integers(min_value=1, max_value=5))
+        dtype_x, x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes(
+                    "numeric", full=False, key="searchsorted"
+                ),
+                shape=lead_dim + (nx,),
+            ),
+        )
+        dtype_v, v = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes(
+                    "numeric", full=False, key="searchsorted"
+                ),
+                shape=lead_dim + (nv,),
+            ),
+        )
+    input_dtypes = dtype_x + dtype_v
+    xs = x + v
+    side = draw(st.sampled_from(["left", "right"]))
+    use_sorter = draw(st.booleans())
+    if use_sorter:
+        sorter_dtype = draw(st.sampled_from(["int32", "int64"]))
+        input_dtypes.append(sorter_dtype)
+        sorter = np.argsort(xs[0], axis=-1).astype(sorter_dtype)
+    else:
+        sorter = None
+        xs[0] = np.sort(xs[0], axis=-1)
+    return input_dtypes, xs, side, sorter
+
+
 @handle_frontend_test(
     fn_tree="numpy.searchsorted",
-    dtype_x_v=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1,
-        num_arrays=2,
-    ),
-    side=st.sampled_from(["left", "right"]),
+    dtype_x_v_side_sorter=_search_sorted_values(),
 )
 def test_numpy_searchsorted(
-    dtype_x_v,
-    side,
+    dtype_x_v_side_sorter,
     as_variable,
     num_positional_args,
     native_array,
@@ -209,7 +260,7 @@ def test_numpy_searchsorted(
     fn_tree,
     on_device,
 ):
-    input_dtypes, xs = dtype_x_v
+    input_dtypes, xs, side, sorter = dtype_x_v_side_sorter
     helpers.test_frontend_function(
         input_dtypes=input_dtypes + ["int64"],
         as_variable_flags=as_variable,
@@ -222,7 +273,7 @@ def test_numpy_searchsorted(
         a=xs[0],
         v=xs[1],
         side=side,
-        sorter=np.argsort(xs[0]),
+        sorter=sorter,
     )
 
 
