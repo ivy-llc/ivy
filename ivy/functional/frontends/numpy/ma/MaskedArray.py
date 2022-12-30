@@ -177,6 +177,11 @@ class MaskedArray(np_frontend.ndarray):
             )
 
     def _array_in_str(self):
+        # check if we have unsized array
+        if self._data.shape == ():
+            if self._mask:
+                return masked_print_options
+            return str(self._data.to_list())
         if ivy.any(self._mask):
             return str(
                 [

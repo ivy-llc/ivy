@@ -170,3 +170,14 @@ global_norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
+
+@to_ivy_arrays_and_back
+def cholesky(input, name=None):
+    def symmetrize(input):
+        # TODO : Take Hermitian transpose after complex numbers added
+        return (input + ivy.swapaxes(input, -1, -2)) / 2
+
+    input = symmetrize(input)
+
+    return ivy.cholesky(input)

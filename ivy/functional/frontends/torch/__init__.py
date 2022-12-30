@@ -43,6 +43,7 @@ from .tensor_functions import *
 from . import utilities
 from .utilities import *
 from . import linalg
+from .linalg import *
 import ivy
 from ivy.exceptions import handle_exceptions
 
