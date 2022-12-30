@@ -722,12 +722,12 @@ def test_torch_svdvals(
 def _tensorinv_helper(draw):
     ind = draw(helpers.ints(min_value=1, max_value=10))
     dtype, input = draw(helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            min_value=-100,
-            max_value=100,
-            shape=helpers.get_shape(min_num_dims=2, max_num_dims=10).filter(
-                lambda x: np.prod(ivy.shape(x)[:ind]) == np.prod(ivy.shape(x)[ind:]),
-            )
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        shape=helpers.get_shape(min_num_dims=2, max_num_dims=10).filter(
+            lambda x: np.prod(ivy.shape(x)[:ind]) == np.prod(ivy.shape(x)[ind:]),
+        )
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon))
     return dtype, input, ind
 
