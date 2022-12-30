@@ -2115,9 +2115,6 @@ def test_numpy_instance_imul__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
-        safety_factor_scale="log",
         shared_dtype=True,
     ),
 )
@@ -2131,7 +2128,6 @@ def test_numpy_instance_itruediv__(
     frontend,
 ):
     input_dtype, xs = dtype_and_x
-    assume(not np.any(np.isclose(xs[1], 0)))
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -2139,7 +2135,7 @@ def test_numpy_instance_itruediv__(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": xs[0],
+            "object": xs[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
