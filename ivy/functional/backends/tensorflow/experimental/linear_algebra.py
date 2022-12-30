@@ -75,8 +75,8 @@ def multi_dot(
 ) -> tf.Tensor:
     # This implementation simply chains tf.tensordot multiple times
     # TODO: reimplement this function once tf adds multi_dot or inplace updates
-    if len(x) == 1:
-        return x[0]
+    if len(x) < 2:
+        raise ValueError("Expecting at least two tensors.")
     dot_out = x[0]
     for elemen in range(1, len(x)):
         dot_out = tf.tensordot(
