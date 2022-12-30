@@ -1194,7 +1194,6 @@ def test_einops_rearrange(
     ),
     floattypes=helpers.get_dtypes("float"),
     reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
-    test_gradients=st.just(False),
 )
 def test_einops_reduce(
     *,
