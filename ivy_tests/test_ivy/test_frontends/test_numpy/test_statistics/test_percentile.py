@@ -47,11 +47,9 @@ def test_numpy_percentile(
         num_positional_args,
         native_array,
         with_out,
-        instance_method,
-        backend_fw,
-        fn_name,
+        frontend,
+        fn_tree,
         on_device,
-        ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_a_and_axis
     np_frontend_helpers.test_frontend_function(
@@ -60,10 +58,8 @@ def test_numpy_percentile(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        instance_method=instance_method,
-        ground_truth_backend=ground_truth_backend,
-        fw=backend_fw,
-        fn_name=fn_name,
+        frontend=frontend,
+        fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
         q=q,
