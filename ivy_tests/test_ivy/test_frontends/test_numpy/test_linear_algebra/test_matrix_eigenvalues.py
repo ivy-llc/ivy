@@ -8,8 +8,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 
 # eigvalsh
 @handle_frontend_test(
-    fn_tree="numpy.linalg.eigvalsh",
-    x=_get_dtype_and_matrix(symmetric=True)
+    fn_tree="numpy.linalg.eigvalsh", x=_get_dtype_and_matrix(symmetric=True)
 )
 def test_numpy_eigvalsh(
     x,
@@ -31,5 +30,5 @@ def test_numpy_eigvalsh(
         frontend="numpy",
         fn_tree=fn_tree,
         on_device=on_device,
-        x=xs
+        x=xs,
     )
