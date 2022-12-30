@@ -97,6 +97,7 @@ def test_numpy_argmin(
     as_variable,
     num_positional_args,
     native_array,
+    with_out,
     frontend,
     fn_tree,
     on_device,
@@ -106,7 +107,7 @@ def test_numpy_argmin(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -115,7 +116,6 @@ def test_numpy_argmin(
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
-        out=None,
     )
 
 
@@ -136,6 +136,7 @@ def test_numpy_argmax(
     as_variable,
     num_positional_args,
     native_array,
+    with_out,
     frontend,
     fn_tree,
     on_device,
@@ -145,7 +146,7 @@ def test_numpy_argmax(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -154,7 +155,6 @@ def test_numpy_argmax(
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
-        out=None,
     )
 
 
@@ -324,6 +324,7 @@ def test_numpy_nanargmax(
     as_variable,
     num_positional_args,
     native_array,
+    with_out,
     frontend,
     fn_tree,
     on_device,
@@ -333,7 +334,7 @@ def test_numpy_nanargmax(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -355,15 +356,14 @@ def test_numpy_nanargmax(
         min_num_dims=1,
         force_int_axis=True,
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     keep_dims=st.booleans(),
 )
 def test_numpy_nanargmin(
     dtype_x_axis,
-    dtype,
     as_variable,
     num_positional_args,
     native_array,
+    with_out,
     frontend,
     fn_tree,
     on_device,
@@ -373,7 +373,7 @@ def test_numpy_nanargmin(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,

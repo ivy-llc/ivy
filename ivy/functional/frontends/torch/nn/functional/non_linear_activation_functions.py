@@ -513,7 +513,15 @@ def adaptive_avg_pool1d(input, output_size):
         return pooled_output
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def adaptive_avg_pool2d(input, output_size):
 
@@ -602,12 +610,8 @@ def adaptive_avg_pool2d(input, output_size):
             length = _expand_to_dim(length, -dim)
             return vals, length
 
-    vals, length_h = maybe_mask(
-        vals, length_h, range_max_h, dim=-2
-    )
-    vals, length_w = maybe_mask(
-        vals, length_w, range_max_w, dim=-1
-    )
+    vals, length_h = maybe_mask(vals, length_h, range_max_h, dim=-2)
+    vals, length_w = maybe_mask(vals, length_w, range_max_w, dim=-1)
 
     ret = None
     for i, j in product(range(vals.shape[-3]), range(vals.shape[-1])):
