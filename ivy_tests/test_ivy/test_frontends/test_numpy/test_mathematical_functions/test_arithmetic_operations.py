@@ -1,4 +1,6 @@
 # global
+from hypothesis import assume
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -9,13 +11,20 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # add
 @handle_frontend_test(
     fn_tree="numpy.add",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_add(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -25,11 +34,7 @@ def test_numpy_add(
     fn_tree,
     on_device,
 ):
-    input_dtypes, xs = dtype_and_x
-    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtypes,
-        get_dtypes_kind="numeric",
-    )
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -59,13 +64,20 @@ def test_numpy_add(
 # subtract
 @handle_frontend_test(
     fn_tree="numpy.subtract",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_subtract(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -75,11 +87,7 @@ def test_numpy_subtract(
     fn_tree,
     on_device,
 ):
-    input_dtypes, xs = dtype_and_x
-    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtypes,
-        get_dtypes_kind="numeric",
-    )
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -141,13 +149,20 @@ def test_numpy_vdot(
 # divide
 @handle_frontend_test(
     fn_tree="numpy.divide",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_divide(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -157,11 +172,8 @@ def test_numpy_divide(
     fn_tree,
     on_device,
 ):
-    input_dtypes, xs = dtype_and_x
-    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtypes,
-        get_dtypes_kind="numeric",
-    )
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
+    assume(not np.any(np.isclose(xs[1], 0.0)))
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -191,13 +203,20 @@ def test_numpy_divide(
 # multiply
 @handle_frontend_test(
     fn_tree="numpy.multiply",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_multiply(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -207,11 +226,7 @@ def test_numpy_multiply(
     fn_tree,
     on_device,
 ):
-    input_dtypes, xs = dtype_and_x
-    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtypes,
-        get_dtypes_kind="numeric",
-    )
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -241,13 +256,21 @@ def test_numpy_multiply(
 # power
 @handle_frontend_test(
     fn_tree="numpy.power",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("integer"),
+                num_arrays=2,
+                min_value=0,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="integer",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_power(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -257,11 +280,7 @@ def test_numpy_power(
     fn_tree,
     on_device,
 ):
-    input_dtypes, xs = dtype_and_x
-    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtypes,
-        get_dtypes_kind="numeric",
-    )
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -291,13 +310,20 @@ def test_numpy_power(
 # float_power
 @handle_frontend_test(
     fn_tree="numpy.float_power",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_float_power(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -306,11 +332,7 @@ def test_numpy_float_power(
     frontend,
     fn_tree,
 ):
-    input_dtypes, xs = dtype_and_x
-    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtypes,
-        get_dtypes_kind="numeric",
-    )
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -338,15 +360,19 @@ def test_numpy_float_power(
 
 # positive
 @handle_frontend_test(
-    fn_tree="numpy.tan",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
+    fn_tree="numpy.positive",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_positive(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -356,11 +382,7 @@ def test_numpy_positive(
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="numeric",
-    )
+    input_dtype, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -388,14 +410,19 @@ def test_numpy_positive(
 
 # negative
 @handle_frontend_test(
-    fn_tree="numpy.tan",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+    fn_tree="numpy.negative",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_negative(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -405,11 +432,7 @@ def test_numpy_negative(
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="numeric",
-    )
+    input_dtype, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -438,13 +461,20 @@ def test_numpy_negative(
 # floor_divide
 @handle_frontend_test(
     fn_tree="numpy.floor_divide",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_floor_divide(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -454,11 +484,8 @@ def test_numpy_floor_divide(
     fn_tree,
     on_device,
 ):
-    input_dtypes, x = dtype_and_x
-    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtypes,
-        get_dtypes_kind="numeric",
-    )
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    assume(not np.any(np.isclose(x[1], 0)))
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -488,16 +515,22 @@ def test_numpy_floor_divide(
 # mod
 @handle_frontend_test(
     fn_tree="numpy.mod",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_value=0,
-        exclude_min=True,
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                num_arrays=2,
+                min_value=0,
+                exclude_min=True,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_mod(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -507,11 +540,7 @@ def test_numpy_mod(
     fn_tree,
     on_device,
 ):
-    input_dtypes, xs = dtype_and_x
-    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtypes,
-        get_dtypes_kind="float",
-    )
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -541,14 +570,19 @@ def test_numpy_mod(
 # reciprocal
 @handle_frontend_test(
     fn_tree="numpy.reciprocal",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                min_num_dims=1,
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_reciprocal(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -557,11 +591,7 @@ def test_numpy_reciprocal(
     frontend,
     fn_tree,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="numeric",
-    )
+    input_dtype, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,

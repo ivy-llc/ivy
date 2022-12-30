@@ -1739,17 +1739,14 @@ def logspace(
     -------------------
     With float input:
 
-    >>> ivy.logspace(1, 2, 4)
+    >>> print(ivy.logspace(1, 2, 4))
     ivy.array([ 10., 21.5443469, 46.41588834, 100.])
 
-    >>> ivy.logspace(1, 2, 4, endpoint=False)
+    >>> print(ivy.logspace(1, 2, 4, endpoint=False))
     ivy.array([10., 17.7827941, 31.6227766, 56.23413252])
 
-    >>> ivy.logspace(1, 2, 4, dtype = int)
+    >>> print(ivy.logspace(1, 2, 4, dtype = int))
     ivy.array([10, 21, 46, 100])
-
-    >>> ivy.logspace(1, 2, 4, base = 2, device = "cuda:0")
-    ivy.array([2., 2.5198421, 3.1748021, 4.])
 
     >>> out = ivy.array([0,0,0,0])
     >>> ivy.logspace(1, 2, 4, out = out)
@@ -1759,44 +1756,24 @@ def logspace(
     With :class:`ivy.Array` input:
     >>> x = ivy.array([1, 2])
     >>> y = ivy.array([4, 5])
-    >>> ivy.logspace(x, y, 4)
+    >>> print(ivy.logspace(x, y, 4))
     ivy.array([[1.e+01, 1.e+02],
                [1.e+02, 1.e+03],
                [1.e+03, 1.e+04],
                [1.e+04, 1.e+05])
 
-    >>> ivy.logspace(x, y, 4, axis = 1)
+    >>> print(ivy.logspace(x, y, 4, axis = 1))
     ivy.array([[[1.e+01, 1.e+02, 1.e+03, 1.e+04],
                [1.e+02, 1.e+03, 1.e+04, 1.e+05]]])
 
     >>> x = ivy.array([1, 2])
     >>> y = ivy.array([4])      # Broadcasting example
-    >>> ivy.logspace(x, y, 4)
+    >>> print(ivy.logspace(x, y, 4))
     ivy.array([[10., 100.]
                [100., 464.15888336]
                [1000., 2154.43469003]
                [10000., 10000.]])
 
-    >>> x = ivy.array([1, 2])
-    >>> y1 = ivy.array([4])
-    >>> y2 = ivy.array([4, 4])
-    >>> y3 = 4
-    >>> l1 = ivy.logspace(x, y1, 4)
-    >>> l2 = ivy.logspace(x, y2, 4)
-    >>> l3 = ivy.logspace(x, y3, 4)
-    >>> print(l1 == l2)
-    True
-    >>> print(l1 == l3)
-    True
-
-    Instance Method Examples
-    -------------------
-    With :class:`ivy.Array` input:
-    >>> x.logspace(y, 4)
-    ivy.array([[1.e+01, 1.e+02],
-               [1.e+02, 1.e+03],
-               [1.e+03, 1.e+04],
-               [1.e+04, 1.e+05])
     """
     return base ** linspace(
         start,

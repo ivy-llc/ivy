@@ -636,6 +636,9 @@ def test_slogdet(
 ):
     input_dtype, x = dtype_x
     assume(matrix_is_stable(x[0]))
+    ret_grad_idxs = (
+        [["a", 0], ["b", "c", 0], ["b", "d", 0]] if test_flags.container[0] else [[0]]
+    )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -645,7 +648,7 @@ def test_slogdet(
         atol_=1e-2,
         fn_name=fn_name,
         on_device=on_device,
-        ret_grad_idxs=[["1"]],
+        ret_grad_idxs=ret_grad_idxs,
         x=x[0],
     )
 
@@ -1185,7 +1188,6 @@ def _matrix_rank_helper(draw):
     | st.just(None),
     rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
     | st.just(None),
-    test_gradients=st.just(False),
 )
 def test_matrix_rank(
     *,

@@ -17,15 +17,22 @@ def argmax(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.array(np.argmax(x, axis=axis, keepdims=keepdims, out=out))
+    if select_last_index:
+        x = np.flip(x, axis=axis)
+        ret = np.argmax(x, axis=axis, keepdims=keepdims)
+        if axis is not None:
+            ret = x.shape[axis] - ret - 1
+        else:
+            ret = x.size - ret - 1
+        ret = np.array(ret)
+    else:
+        ret = np.array(np.argmax(x, axis=axis, keepdims=keepdims))
     if output_dtype:
         ret = ret.astype(output_dtype)
     return ret
-
-
-argmax.support_native_out = True
 
 
 def argmin(

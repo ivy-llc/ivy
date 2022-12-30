@@ -246,12 +246,12 @@ def reciprocal(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    if dtype is None:
+        dtype = ivy.as_ivy_dtype(x.dtype)
     ret = ivy.reciprocal(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    return ret.astype(dtype)
 
 
 @handle_numpy_dtype

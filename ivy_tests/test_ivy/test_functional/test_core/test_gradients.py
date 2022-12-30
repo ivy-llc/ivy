@@ -121,6 +121,7 @@ def test_stop_gradient(
     ),
     retain_grads=st.booleans(),
     test_instance_method=st.just(False),
+    test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
 def test_execute_with_gradients(
