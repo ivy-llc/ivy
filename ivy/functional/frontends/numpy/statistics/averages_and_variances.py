@@ -229,4 +229,7 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
             where = ivy.array(where, dtype=ivy.bool)
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
 
+    all_nan = ivy.isnan(ret)
+    if ivy.all(all_nan):
+        ret = ivy.astype(ret, ivy.array([float("inf")]))
     return ret

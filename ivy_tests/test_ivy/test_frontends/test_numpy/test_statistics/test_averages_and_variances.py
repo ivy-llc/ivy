@@ -308,7 +308,7 @@ def test_numpy_cov(
 @handle_frontend_test(
     fn_tree="numpy.nanvar",
     dtype_x_axis=statistical_dtype_values(function="nanvar"),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype=helpers.get_dtypes("float"),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )
