@@ -352,3 +352,10 @@ def xlogy(
         return 0.0
     else:
         return x * np.log(y)
+
+def ldexp(
+        a: np.ndarray,
+        b: np.ndarray,
+        out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.ldexp(a, b, out=out)

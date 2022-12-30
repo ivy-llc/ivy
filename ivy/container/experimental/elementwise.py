@@ -2812,3 +2812,78 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_ldexp(
+            self: ivy.Container,
+            x: ivy.Container,
+            /,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.ldexp. This method simply
+        wraps the function, and so the docstring for ivy.ldexp also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        x
+            Second input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The next representable values of x1 in the direction of x2.
+
+        Example
+        --------
+        >>> ivy.set_backend('tensorflow')
+        >>> a = ivy.array([3.0, 4.5, 6.2])
+        >>> b = ivy.array([2, 4, 6])
+        >>> ivy.ldexp(a, b)
+        ivy.array([12.0, 56.0, 396.8])
+        """
+        return ivy.ldexp(self._data, x, out=out)
+
+    def ldexp(
+            self: ivy.Container,
+            x: ivy.Container,
+            /,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Array instance method variant of ivy.ldexp. This method simply
+        wraps the function, and so the docstring for ivy.ldexp also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        x
+            Second input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The next representable values of x1 in the direction of x2.
+
+        Example
+        --------
+        >>> ivy.set_backend('tensorflow')
+        >>> a = ivy.array([3.0, 4.5, 6.2])
+        >>> b = ivy.array([2, 4, 6])
+        >>> ivy.ldexp(a, b)
+        ivy.array([12.0, 56.0, 396.8])
+        """
+        return ivy.ldexp(self._data, x, out=out)

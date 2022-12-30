@@ -757,3 +757,12 @@ def trunc_divide(
 
 def isreal(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.isreal(x)
+
+def ldexp(
+        a: Union[float, torch.Tensor],
+        b: Union[int, torch.Tensor],
+        /,
+        *,
+        out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.ldexp(a, b, out=out)

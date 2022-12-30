@@ -541,6 +541,50 @@ def gcd(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+def ldexp(
+        a: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Calculates element-wise the product of a floating-point number and an
+    integer power of two.
+
+    Parameters
+    ----------
+    a
+        First array-like input.
+    b
+        Second array-like input.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        Number of the product of a floating-point number and an integer power
+        of two.
+
+    Example
+    --------
+    >>> ivy.set_backend('tensorflow')
+    >>> a = ivy.array([3.0, 4.5, 6.2])
+    >>> b = ivy.array([2, 4, 6])
+    >>> ivy.ldexp(a, b)
+    ivy.array([12.0, 56.0, 396.8])
+    """
+    return ivy.current_backend().ldexp(
+        a, b, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def isclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],

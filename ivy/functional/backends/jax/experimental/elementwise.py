@@ -455,3 +455,12 @@ def gradient(
 
 def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return js.special.xlogy(x, y)
+
+def ldexp(
+        a: JaxArray,
+        b: JaxArray,
+        /,
+        *,
+        out: Optional[JaxArray] = None,
+) -> jnp.array:
+    return jnp.ldexp(a, b, out=out)
