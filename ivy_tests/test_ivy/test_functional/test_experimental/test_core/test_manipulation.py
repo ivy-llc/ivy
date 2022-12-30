@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import hypothesis.extra.numpy as nph
 
 # local
 import numpy as np
@@ -59,6 +60,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_size=1,
         force_int=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_moveaxis(
     *,
@@ -130,6 +132,7 @@ def test_ndindex(dtype_x_shape):
         num_arrays=2,
         shared_dtype=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_heaviside(
     *,
@@ -165,6 +168,7 @@ def test_heaviside(
         min_dim_size=1,
         max_dim_size=3,
     ),
+    test_gradients=st.just(False),
 )
 def test_flipud(
     *,
@@ -200,6 +204,7 @@ def test_flipud(
             min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
         ),
     ),
+    test_gradients=st.just(False),
 )
 def test_vstack(
     *,
@@ -235,6 +240,7 @@ def test_vstack(
             min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
         ),
     ),
+    test_gradients=st.just(False),
 )
 def test_hstack(
     dtype_and_m,
@@ -316,6 +322,7 @@ def _get_dtype_values_k_axes_for_rot90(
         min_dim_size=1,
         max_dim_size=10,
     ),
+    test_gradients=st.just(False),
 )
 def test_rot90(
     dtype_m_k_axes,
@@ -354,6 +361,7 @@ def test_rot90(
     axis=helpers.ints(min_value=-1, max_value=0),
     k=helpers.ints(min_value=1, max_value=4),
     largest=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_top_k(
     *,
@@ -389,6 +397,7 @@ def test_top_k(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
     ),
+    test_gradients=st.just(False),
 )
 def test_fliplr(
     *,
@@ -423,6 +432,7 @@ def test_fliplr(
         min_dim_size=1,
         max_dim_size=3,
     ),
+    test_gradients=st.just(False),
 )
 def test_i0(
     *,
@@ -460,6 +470,7 @@ def test_i0(
         force_tuple=True,
     ),
     order=st.sampled_from(["C", "F"]),
+    test_gradients=st.just(False),
 )
 def test_flatten(
     *,
@@ -556,6 +567,7 @@ def _pad_helper(draw):
     dtype_and_input_and_other=_pad_helper(),
     reflect_type=st.sampled_from(["even", "odd"]),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_pad(
     *,
@@ -608,6 +620,7 @@ def test_pad(
     indices_or_sections=helpers.get_shape(
         min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
+    test_gradients=st.just(False),
 )
 def test_vsplit(
     dtype_and_x,
@@ -646,6 +659,7 @@ def test_vsplit(
     indices_or_sections=helpers.get_shape(
         min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
+    test_gradients=st.just(False),
 )
 def test_dsplit(
     dtype_and_x,
@@ -678,6 +692,7 @@ def test_dsplit(
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_atleast_1d(
     dtype_and_x,
@@ -716,6 +731,7 @@ def test_atleast_1d(
             min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
         ),
     ),
+    test_gradients=st.just(False),
 )
 def test_dstack(
     *,
@@ -746,6 +762,7 @@ def test_dstack(
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_atleast_2d(
     *,
@@ -779,6 +796,7 @@ def test_atleast_2d(
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_atleast_3d(
     dtype_and_x,
@@ -816,6 +834,7 @@ def test_atleast_3d(
         max_dim_size=10,
         indices_same_dims=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_take_along_axis(
     *,
@@ -855,6 +874,7 @@ def test_take_along_axis(
     indices_or_sections=helpers.get_shape(
         min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
+    test_gradients=st.just(False),
 )
 def test_hsplit(
     dtype_and_x,
@@ -875,4 +895,35 @@ def test_hsplit(
         fn_name=fn_name,
         x=x[0],
         indices_or_sections=indices_or_sections,
+    )
+
+
+# dstack
+@handle_test(
+    fn_tree="functional.ivy.experimental.broadcast_shapes",
+    shapes=nph.mutually_broadcastable_shapes(
+        num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5
+    ),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_broadcast_shapes(
+    *,
+    shapes,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    shapes, _ = shapes
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=["int64"],
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        shapes=shapes,
     )

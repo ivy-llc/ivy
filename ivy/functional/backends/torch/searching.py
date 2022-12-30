@@ -18,15 +18,23 @@ def argmax(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.argmax(x, dim=axis, keepdim=keepdims, out=out)
+    if select_last_index:
+        if axis is None:
+            x = torch.flip(x, dims=[axes for axes in range(x.ndim)])
+            ret = torch.argmax(x, dim=axis, keepdim=keepdims)
+            ret = x.numel() - ret - 1
+        else:
+            x = torch.flip(x, dims=(axis,))
+            ret = torch.argmax(x, dim=axis, keepdim=keepdims)
+            ret = x.shape[axis] - ret - 1
+    else:
+        ret = torch.argmax(x, dim=axis, keepdim=keepdims)
     if output_dtype:
         ret = ret.to(dtype=output_dtype)
     return ret
-
-
-argmax.support_native_out = True
 
 
 def argmin(

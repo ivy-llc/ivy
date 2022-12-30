@@ -18,9 +18,18 @@ def argmax(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ret = jnp.argmax(x, axis=axis, keepdims=keepdims)
+    if select_last_index:
+        x = jnp.flip(x, axis=axis)
+        ret = jnp.array(jnp.argmax(x, axis=axis, keepdims=keepdims))
+        if axis is not None:
+            ret = x.shape[axis] - ret - 1
+        else:
+            ret = x.size - ret - 1
+    else:
+        ret = jnp.argmax(x, axis=axis, keepdims=keepdims)
     if output_dtype:
         ret = ret.astype(output_dtype)
     return ret

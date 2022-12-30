@@ -32,6 +32,7 @@ def _isin_data_generation_helper(draw):
     assume_unique_and_dtype_and_x=_isin_data_generation_helper(),
     invert=st.booleans(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_isin(
     assume_unique_and_dtype_and_x,

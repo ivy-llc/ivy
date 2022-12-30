@@ -360,7 +360,7 @@ def handle_out_argument(fn: Callable) -> Callable:
         # compute return, and then handle the inplace update explicitly
 
         ret = fn(*args, **kwargs)
-        return ivy.inplace_update(out, ivy.astype(ret, out.dtype))
+        return ivy.inplace_update(out, ivy.astype(ret, ivy.dtype(out)))
         # return output matches the dtype of the out array to match numpy and torch
 
     new_fn.handle_out_argument = True
@@ -413,45 +413,6 @@ def handle_nestable(fn: Callable) -> Callable:
         return fn(*args, **kwargs)
 
     new_fn.handle_nestable = True
-    return new_fn
-
-
-def custom_handle_nestable(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
-        if ivy.get_nestable_mode() and (
-            ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
-            or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
-        ):
-            arg_cont_idxs = ivy.nested_argwhere(
-                args, ivy.is_ivy_container, to_ignore=ivy.Container
-            )
-            kwarg_cont_idxs = ivy.nested_argwhere(
-                kwargs, ivy.is_ivy_container, to_ignore=ivy.Container
-            )
-            arg_conts = ivy.multi_index_nest(args, arg_cont_idxs)
-            num_arg_conts = len(arg_conts)
-            kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
-            conts = arg_conts + kwarg_conts
-
-            def map_fn(vals, _):
-                arg_vals = vals[:num_arg_conts]
-                a = ivy.copy_nest(args, to_mutable=True)
-                ivy.set_nest_at_indices(a, arg_cont_idxs, arg_vals)
-                kwarg_vals = vals[num_arg_conts:]
-                kw = ivy.copy_nest(kwargs, to_mutable=True)
-                ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
-                return fn(*a, **kw)
-
-            ret = ivy.Container.cont_multi_map(map_fn, conts)
-            for values in ret.values():
-                if isinstance(values, list):
-                    for v in values:
-                        if ivy.is_ivy_array(v):
-                            return ret.cont_unstack_conts(0)
-            return ret
-        return fn(*args, **kwargs)
-
     return new_fn
 
 

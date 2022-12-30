@@ -324,7 +324,11 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 
 def _is_zero_dim_array(x):
-    return x.shape == () and not ivy.isinf(x) and not ivy.isnan(x)
+    return (
+        x.shape == ()
+        if x.dtype == ivy.bool
+        else x.shape == () and not ivy.isinf(x) and not ivy.isnan(x)
+    )
 
 
 def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
