@@ -150,7 +150,9 @@ def count_nonzero(
         for d in sorted(axis, reverse=True):
             x = x.unsqueeze(d)
         return x
-    return x.unsqueeze(axis)
+    elif isinstance(x, int):
+        return x.unsqueeze(axis)
+    return x
 
 
 count_nonzero.support_native_out = False
