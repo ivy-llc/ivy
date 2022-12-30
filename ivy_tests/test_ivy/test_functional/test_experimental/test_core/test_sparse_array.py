@@ -61,6 +61,48 @@ def _sparse_csr_indices_values_shape(draw):
 
 
 @st.composite
+def _sparse_bsr_indices_values_shape(draw):
+    nblockrows = draw(helpers.ints(min_value=2, max_value=5))
+    nblockcols = draw(helpers.ints(min_value=2, max_value=5))
+
+    dim1 = draw(helpers.ints(min_value=3, max_value=5))
+    dim2 = draw(helpers.ints(min_value=2, max_value=5))
+
+    value_dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
+
+    crow_indices, col_indices, values = (
+        [0],
+        [],
+        [
+            [
+                [],
+            ],
+        ],
+    )
+    for _ in range(dim1):
+        index = draw(
+            helpers.ints(
+                min_value=max(crow_indices[-1] + 1, 1),
+                max_value=crow_indices[-1] + dim2,
+            )
+        )
+        cur_num_elem = index - crow_indices[-1]
+        col_indices += list(range(cur_num_elem))
+        crow_indices.append(index)
+
+    shape = (dim1 * nblockrows, dim2 * nblockcols)
+    values = draw(
+        helpers.array_values(
+            dtype=value_dtype,
+            shape=(crow_indices[-1], nblockrows, nblockcols),
+            min_value=0,
+        )
+    )
+
+    return crow_indices, col_indices, value_dtype, values, shape
+
+
+@st.composite
 def _sparse_csc_indices_values_shape(draw):
     num_elem = draw(helpers.ints(min_value=2, max_value=8))
     dim1 = draw(helpers.ints(min_value=5, max_value=10))
@@ -266,6 +308,43 @@ def test_sparse_bsc(
         init_all_as_kwargs_np={
             "bsc_ccol_indices": ccol_indices,
             "bsc_row_indices": row_indices,
+            "values": values,
+            "dense_shape": shape,
+        },
+        method_input_dtypes=[],
+        method_as_variable_flags=[],
+        method_num_positional_args=0,
+        method_native_array_flags=[],
+        method_container_flags=[False],
+        method_all_as_kwargs_np={},
+        class_name=class_name,
+        method_name=method_name,
+    )
+
+
+# bsr - to_dense_array
+@handle_method(
+    method_tree="SparseArray.to_dense_array",
+    sparse_data=_sparse_bsr_indices_values_shape(),
+)
+def test_sparse_bsr(
+    sparse_data,
+    init_as_variable_flags: pf.AsVariableFlags,
+    init_native_array_flags: pf.NativeArrayFlags,
+    class_name,
+    method_name,
+    ground_truth_backend,
+):
+    crow_indices, col_indices, value_dtype, values, shape = sparse_data
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_input_dtypes=["int64", "int64", value_dtype],
+        init_as_variable_flags=init_as_variable_flags,
+        init_num_positional_args=0,
+        init_native_array_flags=init_native_array_flags,
+        init_all_as_kwargs_np={
+            "bsr_crow_indices": crow_indices,
+            "bsr_col_indices": col_indices,
             "values": values,
             "dense_shape": shape,
         },
