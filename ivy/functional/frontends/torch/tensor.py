@@ -349,9 +349,9 @@ class Tensor:
         return self
 
     def size(self, dim=None):
-        shape = ivy.shape(self._ivy_array, as_array=True)
+        shape = self._ivy_array.shape
         if dim is None:
-            return shape
+            return "torch.Size(" + str(list(self._ivy_array.shape)) + ")"
         else:
             try:
                 return shape[dim]
