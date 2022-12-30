@@ -314,6 +314,28 @@ def angle(
         return tf.math.angle(input, name=None)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+            "int32",
+        )
+    },
+    backend_version,
+)
+def imag(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor,tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.imag(input, name=None)
+
+
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16, float16,")}, backend_version)
 def zeta(
     x: Union[tf.Tensor, tf.Variable],
