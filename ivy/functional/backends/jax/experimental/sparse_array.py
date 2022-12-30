@@ -1,11 +1,14 @@
 import logging
 import ivy
 from ivy.functional.ivy.experimental.sparse_array import (
+    _is_bsr,
     _is_csc,
+    _is_bsc,
     _verify_bsc_components,
     _verify_coo_components,
     _verify_csr_components,
     _verify_csc_components,
+    _verify_bsr_components,
     _is_coo,
     _is_csr,
 )
@@ -26,6 +29,8 @@ def native_sparse_array(
     csc_row_indices=None,
     bsc_ccol_indices=None,
     bsc_row_indices=None,
+    bsr_crow_indices=None,
+    bsr_col_indices=None,
     values=None,
     dense_shape=None,
 ):
@@ -42,6 +47,8 @@ def native_sparse_array(
         csc_row_indices,
         bsc_ccol_indices,
         bsc_row_indices,
+        bsr_crow_indices,
+        bsr_col_indices,
         values,
         dense_shape,
     ):
@@ -56,6 +63,8 @@ def native_sparse_array(
         csc_row_indices,
         bsc_ccol_indices,
         bsc_row_indices,
+        bsr_crow_indices,
+        bsr_col_indices,
         values,
         dense_shape,
     ):
@@ -73,6 +82,8 @@ def native_sparse_array(
         csc_row_indices,
         bsc_ccol_indices,
         bsc_row_indices,
+        bsr_crow_indices,
+        bsr_col_indices,
         values,
         dense_shape,
     ):
@@ -82,7 +93,19 @@ def native_sparse_array(
             values=values,
             dense_shape=dense_shape,
         )
-    else:
+    elif _is_bsc(
+        coo_indices,
+        csr_crow_indices,
+        csr_col_indices,
+        csc_ccol_indices,
+        csc_row_indices,
+        bsc_ccol_indices,
+        bsc_row_indices,
+        bsr_crow_indices,
+        bsr_col_indices,
+        values,
+        dense_shape,
+    ):
         _verify_bsc_components(
             ccol_indices=bsc_ccol_indices,
             row_indices=bsc_row_indices,
@@ -90,6 +113,25 @@ def native_sparse_array(
             dense_shape=dense_shape,
         )
 
+    elif _is_bsr(
+        coo_indices,
+        csr_crow_indices,
+        csr_col_indices,
+        csc_ccol_indices,
+        csc_row_indices,
+        bsc_ccol_indices,
+        bsc_row_indices,
+        bsr_crow_indices,
+        bsr_col_indices,
+        values,
+        dense_shape,
+    ):
+        _verify_bsr_components(
+            crow_indices=bsr_crow_indices,
+            col_indices=bsr_col_indices,
+            values=values,
+            dense_shape=dense_shape,
+        )
     logging.warning("Jax does not support sparse array natively, None is returned.")
     return None
 
