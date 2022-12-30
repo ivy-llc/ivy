@@ -734,7 +734,7 @@ def _tensorinv_helper(draw):
 
 @handle_frontend_test(
     fn_tree="torch.linalg.tensorinv",
-    dtype_input_ind=_tensorinv_helper
+    dtype_input_ind=_tensorinv_helper()
 )
 def test_torch_tensorinv(
         *,
