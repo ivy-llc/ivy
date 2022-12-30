@@ -1,0 +1,19 @@
+'''
+Creating an empty tensor sequence with given data type (default is float)
+'''
+
+import tensorflow as tf
+
+import onnx
+
+
+class SequenceEmpty:
+    @constructor
+    def __init__(self, shape, dtype=tf.float32):
+        self.shape = shape
+        self.dtype = dtype
+        self.tensor = tf.zeros(self.shape, self.dtype)
+    
+    @classmethod
+    def export(self):
+        return self.tensor
