@@ -1,3 +1,7 @@
+# global
+from hypothesis import strategies as st
+
+# local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -25,12 +29,10 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         exclude_max=False,
         exclude_min=False,
     ),
-    interpolation=draw(
-        helpers.lists(
-            arg=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
-            min_size=1,
-            max_size=1
-        )
+    interpolation=helpers.lists(
+        arg=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
+        min_size=1,
+        max_size=1
     ),
     num_positional_args=helpers.num_positional_args(fn_name="percentile"),
 )
