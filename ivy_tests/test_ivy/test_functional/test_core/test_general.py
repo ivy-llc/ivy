@@ -1194,7 +1194,6 @@ def test_einops_rearrange(
     ),
     floattypes=helpers.get_dtypes("float"),
     reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
-    test_gradients=st.just(False),
 )
 def test_einops_reduce(
     *,
@@ -1212,6 +1211,9 @@ def test_einops_reduce(
     dtype, x = dtype_x
     if (reduction in ["mean", "prod"]) and (dtype not in floattypes):
         dtype = ["float32"]
+    # torch computes min and max differently and leads to inconsistent gradients
+    if "torch" in backend_fw.__name__ and reduction in ["min", "max"]:
+        test_flags.test_gradients = False
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
