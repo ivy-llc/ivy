@@ -35,6 +35,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         max_size=1
     ),
     num_positional_args=helpers.num_positional_args(fn_name="percentile"),
+    keep_dims=st.booleans(),
 )
 def test_numpy_percentile(
         *,
