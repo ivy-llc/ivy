@@ -338,9 +338,9 @@ def test_separable_conv2d(
     test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
+    ground_truth_backend, 
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, stride, depthwise_filter, pointwise_filter, pad = x_k_s_p
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -349,8 +349,9 @@ def test_separable_conv2d(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        x=x[0],
-        kernel=kernel,
+        x=x,
+        depthwise_filter=depthwise_filter,
+        pointwise_filter=pointwise_filter,
         strides=stride,
         padding=pad,
     )
