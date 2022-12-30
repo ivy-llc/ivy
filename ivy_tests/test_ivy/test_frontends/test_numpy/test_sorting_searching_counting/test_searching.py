@@ -191,15 +191,50 @@ def test_numpy_flatnonzero(
 # searchsorted
 @st.composite
 def _search_sorted_values(draw):
-    input_dtypes, xs = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            min_num_dims=1,
-            max_num_dims=1,
-            shared_dtype=True,
-            num_arrays=2,
-        ),
-    )
+    case = st.booleans()
+    if case:
+        # when x is 1-D and v is N-D
+        dtype_x, x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes(
+                    "numeric", full=False, key="searchsorted"
+                ),
+                shape=(draw(st.integers(min_value=1, max_value=5)),),
+            ),
+        )
+        dtype_v, v = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes(
+                    "numeric", full=False, key="searchsorted"
+                ),
+                min_num_dims=1,
+            )
+        )
+    else:
+        # when x is N-D and v is N-D
+        lead_dim = draw(
+            helpers.get_shape(min_num_dims=1),
+        )
+        nx = draw(st.integers(min_value=1, max_value=5))
+        nv = draw(st.integers(min_value=1, max_value=5))
+        dtype_x, x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes(
+                    "numeric", full=False, key="searchsorted"
+                ),
+                shape=lead_dim + (nx,),
+            ),
+        )
+        dtype_v, v = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes(
+                    "numeric", full=False, key="searchsorted"
+                ),
+                shape=lead_dim + (nv,),
+            ),
+        )
+    input_dtypes = dtype_x + dtype_v
+    xs = x + v
     side = draw(st.sampled_from(["left", "right"]))
     use_sorter = draw(st.booleans())
     if use_sorter:
