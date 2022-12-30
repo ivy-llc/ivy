@@ -90,7 +90,6 @@ def _generate_data_layer_norm(
     ),
     new_std=st.floats(min_value=0.01, max_value=0.1),
     epsilon=st.floats(min_value=0.01, max_value=0.1),
-    # test_gradients=st.just(False),
 )
 def test_layer_norm(
     *,
