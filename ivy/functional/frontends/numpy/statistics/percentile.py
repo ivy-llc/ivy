@@ -10,12 +10,13 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @from_zero_dim_arrays_to_scalar
 def percentile(a,
                q,
+               /,
+               *,
                axis=None,
                out=None,
                overwrite_input=False,
                method="linear",
                keepdims=False,
-               *,
                interpolation=None):
 
     # The only difference between the quantile and percentile
