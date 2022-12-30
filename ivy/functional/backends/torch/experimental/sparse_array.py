@@ -3,6 +3,9 @@ from ivy.functional.ivy.experimental.sparse_array import (
     _is_coo,
     _is_csc,
     _is_csr,
+    _is_bsr,
+    _is_bsc,
+    _verify_bsr_components,
     _verify_bsc_components,
     _verify_coo_components,
     _verify_csr_components,
@@ -26,6 +29,8 @@ def native_sparse_array(
     csc_row_indices=None,
     bsc_ccol_indices=None,
     bsc_row_indices=None,
+    bsr_crow_indices=None,
+    bsr_col_indices=None,
     values=None,
     dense_shape=None,
 ):
@@ -38,6 +43,8 @@ def native_sparse_array(
         csc_row_indices,
         bsc_ccol_indices,
         bsc_row_indices,
+        bsr_crow_indices,
+        bsr_col_indices,
         values,
         dense_shape,
     ):
@@ -53,6 +60,8 @@ def native_sparse_array(
         csc_row_indices,
         bsc_ccol_indices,
         bsc_row_indices,
+        bsr_crow_indices,
+        bsr_col_indices,
         values,
         dense_shape,
     ):
@@ -70,6 +79,8 @@ def native_sparse_array(
         csc_row_indices,
         bsc_ccol_indices,
         bsc_row_indices,
+        bsr_crow_indices,
+        bsr_col_indices,
         values,
         dense_shape,
     ):
@@ -93,6 +104,8 @@ def native_sparse_array(
         csc_row_indices,
         bsc_ccol_indices,
         bsc_row_indices,
+        bsr_crow_indices,
+        bsr_col_indices,
         values,
         dense_shape,
     ):
@@ -108,18 +121,44 @@ def native_sparse_array(
             values=values,
             size=dense_shape,
         )
-    else:
+    elif _is_bsc(
+        coo_indices,
+        csr_crow_indices,
+        csr_col_indices,
+        csc_ccol_indices,
+        csc_row_indices,
+        bsc_ccol_indices,
+        bsc_row_indices,
+        bsr_crow_indices,
+        bsr_col_indices,
+        values,
+        dense_shape,
+    ):
         _verify_bsc_components(
             ccol_indices=bsc_ccol_indices,
             row_indices=bsc_row_indices,
             values=values,
             dense_shape=dense_shape,
         )
-        return torch.sparse_bsc_tensor(
-            ccol_indices=bsc_ccol_indices,
-            row_indices=bsc_row_indices,
+
+    elif _is_bsr(
+        coo_indices,
+        csr_crow_indices,
+        csr_col_indices,
+        csc_ccol_indices,
+        csc_row_indices,
+        bsc_ccol_indices,
+        bsc_row_indices,
+        bsr_crow_indices,
+        bsr_col_indices,
+        values,
+        dense_shape,
+    ):
+        _verify_bsr_components(
+            crow_indices=bsr_crow_indices,
+            col_indices=bsr_col_indices,
             values=values,
-            size=dense_shape,
+            dense_shape=dense_shape,
         )
 
 
@@ -145,4 +184,10 @@ def native_sparse_array_to_indices_values_and_shape(x):
             x.values(),
             x.size(),
         )
-    raise ivy.exceptions.IvyException("not a sparse COO/CSR/CSC/BSC Tensor")
+    elif x.layout == torch.sparse_bsr:
+        return (
+            {"bsr_crow_indices": x.crow_indices(), "bsr_col_indices": x.col_indices()},
+            x.values(),
+            x.size(),
+        )
+    raise ivy.exceptions.IvyException("not a sparse COO/CSR/CSC/BSC/BSR Tensor")
