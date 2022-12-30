@@ -162,7 +162,7 @@ class ndarray:
     ):
         return np_frontend.argpartition(
             self._ivy_array,
-            kth=kth,
+            kth,
             axis=axis,
             kind=kind,
             order=order

@@ -55,6 +55,9 @@ def argmin(
     return np.array(ret, dtype=np.int64)
 
 
+argmin.support_native_out = True
+
+
 def argpartition(
     x: np.ndarray,
     kth: Union[int, list, np.ndarray],
@@ -66,9 +69,7 @@ def argpartition(
     output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None
 ) -> np.ndarray:
     # Check if the given order one of the field else return pass order as None
-    try:
-        x[order]
-    except:
+    if x.dtype.fields and order not in list(x.dtype.fields):
         order = None
 
     ret = np.argpartition(x, kth, axis=axis, kind=kind, order=order)
@@ -81,7 +82,7 @@ def argpartition(
     return ret.astype(dtype=np.int64)
 
     
-argmin.support_native_out = True
+argpartition.support_native_out = False
 
 
 def nonzero(

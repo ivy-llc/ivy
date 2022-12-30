@@ -229,6 +229,14 @@ def _set_order(args, order):
     return order
 
 
+def _set_argpartition_order(args, order):
+    if args[0].dtype and hasattr(args[0].dtype, 'fields') and args[0].dtype.fields:
+        order = list(args[0].dtype.fields)[ivy.random.randint(low=0, high=len(args[0].dtype.fields))]
+    else:
+        order = None
+    return order
+
+
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -284,7 +292,10 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
             if len(args) >= (order_pos + 1):
                 order = args[order_pos]
                 args = args[:-1]
-            order = _set_order(args, order)
+            if fn.__name__ == 'argpartition':
+                order = _set_argpartition_order(args, order)
+            else:
+                order = _set_order(args, order)
             try:
                 ret = fn(*args, order=order, **kwargs)
             finally:

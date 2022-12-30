@@ -152,7 +152,8 @@ def test_numpy_ndarray_argmax(
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
-    )
+    ),
+    kth=st.integers(min_value=0, max_value=0)
 )
 def test_numpy_ndarray_argpartition(
     dtype_x_axis,
@@ -162,9 +163,9 @@ def test_numpy_ndarray_argpartition(
     method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    kth
 ):
     input_dtype, x, axis = dtype_x_axis
-    kth = np.random.randint(low=0, high=max(len(x)-1, 1))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
