@@ -175,6 +175,11 @@ def stack(values, axis=0, name="stack"):
 
 
 @to_ivy_arrays_and_back
+def is_tensor(x, name=None):
+    return ivy.is_array(x)
+
+
+@to_ivy_arrays_and_back
 def gather(params, indices, axis=None, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
