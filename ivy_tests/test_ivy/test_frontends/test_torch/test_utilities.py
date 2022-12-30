@@ -32,4 +32,3 @@ def test_torch_result_type(
         tensor=x[0],
         other=x[1],
     )
-    
