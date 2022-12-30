@@ -719,51 +719,20 @@ def test_torch_svdvals(
 
 # tensorinv
 @st.composite
-def _get_inv_square_matrices(draw):
-    dim_size = draw(helpers.ints(min_value=1, max_value=10))
-
-    batch_shape = draw(st.sampled_from([2, 4, 6, 8, 10]))
-
-    generated_shape = (dim_size,) * batch_shape
-    generated_ind = int(np.floor(len(generated_shape) / 2))
-
-    handpicked_shape, handpicked_ind = draw(
-        st.sampled_from([[(24, 6, 4), 1], [(8, 3, 6, 4), 2], [(6, 7, 8, 16, 21), 3]])
-    )
-
-    shape, ind = draw(
-        st.sampled_from(
-            [(generated_shape, generated_ind), (handpicked_shape, handpicked_ind)]
-        )
-    )
-
-    input_dtype = draw(
-        helpers.get_dtypes("float", index=1, full=False).filter(
-            lambda x: x not in ["float16", "bfloat16"]
-        )
-    )
-    invertible = False
-    while not invertible:
-        input = draw(
-            helpers.array_values(
-                dtype=input_dtype[0],
-                shape=shape,
-                min_value=-100,
-                max_value=100,
+def _tensorinv_helper(draw):
+    ind = draw(helpers.ints(min_value=1, max_value=10))
+    dtype, input = draw(helpers.dtype_and_values(
+            available_dtypes = helpers.get_dtypes("float"),
+            min_value=-100,
+            max_value=100,
+            shape=helpers.get_shape(min_num_dims=2, max_num_dims=10).filter(
+                lambda x:  np.prod(ivy.shape(x)[:ind]) == np.prod(ivy.shape(x)[ind:]),
             )
-        )
-        try:
-            np.linalg.inv(input)
-            invertible = True
-        except np.linalg.LinAlgError:
-            pass
-
-    return input_dtype, input, ind
-
-
+    ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon))
+    return dtype, input, ind
 @handle_frontend_test(
     fn_tree="torch.linalg.tensorinv",
-    dtype_input_ind=_get_inv_square_matrices()
+    dtype_input_ind=_tensorinv_helper()
 )
 def test_torch_tensorinv(
         *,
