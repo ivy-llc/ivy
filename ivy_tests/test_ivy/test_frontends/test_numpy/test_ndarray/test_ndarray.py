@@ -143,6 +143,50 @@ def test_numpy_ndarray_argmax(
     )
 
 
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree='numpy.array',
+    method_name='argpartition',
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    )
+)
+def test_numpy_ndarray_argpartition(
+    dtype_x_axis,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    frontend,
+    frontend_method_data,
+):
+    input_dtype, x, axis = dtype_x_axis
+    kth = np.random.randint(low=0, high=max(len(x)-1, 1))
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_num_positional_args=method_num_positional_args,
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "kth": kth,
+            "axis": axis,
+            "order": None
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+    )
+
+    
 @st.composite
 def dtypes_x_reshape(draw):
     dtypes, x = draw(

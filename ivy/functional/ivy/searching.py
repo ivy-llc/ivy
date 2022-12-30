@@ -297,7 +297,7 @@ def argpartition(
                [0, 2, 1]])
     """
     return current_backend(x).argpartition(
-        x=x, kth=kth, axis=axis, kind=kind, order=order, output_dtype=output_dtype
+        x, kth, axis=axis, kind=kind, order=order, output_dtype=output_dtype
     )
 
 
