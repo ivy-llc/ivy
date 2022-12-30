@@ -1188,7 +1188,6 @@ def _matrix_rank_helper(draw):
     | st.just(None),
     rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
     | st.just(None),
-    test_gradients=st.just(False),
 )
 def test_matrix_rank(
     *,
