@@ -730,9 +730,11 @@ def _tensorinv_helper(draw):
             )
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon))
     return dtype, input, ind
+
+
 @handle_frontend_test(
     fn_tree="torch.linalg.tensorinv",
-    dtype_input_ind=_tensorinv_helper()
+    dtype_input_ind=_tensorinv_helper
 )
 def test_torch_tensorinv(
         *,
