@@ -30,7 +30,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         exclude_min=False,
     ),
     interpolation=helpers.lists(
-        arg=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
+        arg=st.sampled_from(["linear", "lower", "higher"]),
         min_size=1,
         max_size=1
     ),
