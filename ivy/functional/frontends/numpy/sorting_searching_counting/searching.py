@@ -46,6 +46,11 @@ def argmax(
 ):
     return ivy.argmax(a, axis=axis, out=out, keepdims=keepdims)
 
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def argpartition(a, kth, /, *, axis=-1, kind='introselect', order=None):
+    return ivy.argpartition(a, kth, axis=axis, kind=kind, order=order)
+
 
 @to_ivy_arrays_and_back
 def flatnonzero(a):
