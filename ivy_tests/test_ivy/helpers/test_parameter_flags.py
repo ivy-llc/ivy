@@ -61,7 +61,7 @@ class FunctionTestFlags:
         as_variable,
         native_arrays,
         container,
-        gradient,
+        test_gradients,
     ):
         self.num_positional_args = num_positional_args
         self.with_out = with_out
@@ -69,7 +69,7 @@ class FunctionTestFlags:
         self.native_arrays = native_arrays
         self.container = container
         self.as_variable = as_variable
-        self.gradient = gradient
+        self.test_gradients = test_gradients
 
     def __str__(self):
         return (
@@ -79,7 +79,7 @@ class FunctionTestFlags:
             f"native_arrays={self.native_arrays}. "
             f"container={self.container}. "
             f"as_variable={self.as_variable}. "
-            f"gradient={self.gradient}."
+            f"test_gradients={self.test_gradients}."
         )
 
 
@@ -90,7 +90,7 @@ def function_flags(
     num_positional_args,
     instance_method,
     with_out,
-    gradient,
+    test_gradients,
     as_variable,
     native_arrays,
     container_flags,
@@ -101,7 +101,7 @@ def function_flags(
             num_positional_args=num_positional_args,
             with_out=with_out,
             instance_method=instance_method,
-            gradient=gradient,
+            test_gradients=test_gradients,
             as_variable=as_variable,
             native_arrays=native_arrays,
             container=container_flags,

@@ -328,11 +328,21 @@ isfinite.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def isinf(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.isinf(x, out=out)
-
-
-isinf.support_native_out = True
+def isinf(
+    x: np.ndarray,
+    /,
+    *,
+    detect_positive: bool = True,
+    detect_negative: bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if detect_negative and detect_positive:
+        return np.isinf(x)
+    elif detect_negative:
+        return np.isneginf(x)
+    elif detect_positive:
+        return np.isposinf(x)
+    return np.full_like(x, False, dtype=np.bool)
 
 
 @_scalar_output_to_0d_array

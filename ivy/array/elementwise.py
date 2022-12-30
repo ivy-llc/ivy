@@ -1058,7 +1058,13 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.isfinite(self._data, out=out)
 
-    def isinf(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def isinf(
+        self: ivy.Array,
+        *,
+        detect_positive: bool = True,
+        detect_negative: bool = True,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.isinf. This method simply wraps
         the function, and so the docstring for ivy.isinf also applies to this
@@ -1068,6 +1074,10 @@ class ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a real-valued data type.
+        detect_positive
+            if ``True``, positive infinity is detected.
+        detect_negative
+            if ``True``, negative infinity is detected.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1105,7 +1115,12 @@ class ArrayWithElementwise(abc.ABC):
             [False, False, False],
             [False, False, False]])
         """
-        return ivy.isinf(self._data, out=out)
+        return ivy.isinf(
+            self._data,
+            detect_positive=detect_positive,
+            detect_negative=detect_negative,
+            out=out,
+        )
 
     def isnan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
