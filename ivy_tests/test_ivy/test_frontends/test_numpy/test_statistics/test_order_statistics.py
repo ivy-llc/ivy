@@ -1,4 +1,5 @@
 # global
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -14,6 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     dtype_and_q=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    keep_dims=st.booleans(),
 )
 def test_numpy_percentile(
         dtype_and_a,
@@ -25,9 +27,12 @@ def test_numpy_percentile(
         frontend,
         fn_tree,
         on_device,
+        keep_dims,
 ):
-    input_dtype, a = dtype_and_a
-    input_dtype, q = dtype_and_q
+    input_dtype, a, axis, axis_excess = dtype_and_a
+    input_dtype, q, axis, axis_excess = dtype_and_q
+    if isinstance(axis, tuple):
+        axis = axis[0]
 
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -38,8 +43,10 @@ def test_numpy_percentile(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=50,
-        q=50,
+        a=a[0],
+        q=q[0],
+        axis=axis,
         out=None,
-        interpolation='lower'
+        keepdims=keep_dims,
+        interpolation='linear'
     )
