@@ -35,4 +35,3 @@ def test_numpy_sort_complex(
         on_device=on_device,
         a=x[0],
     )
-#had trouble importing pytest on my machine but this should fix the issue 
