@@ -266,11 +266,16 @@ def kl_div(
         return target * (ivy.log(target) - input)
     
     def batchmean(x):
+        if not reduce:
+            return x / size[0]
+        
         if len(size) <= 1:
             return ivy.mean(x)
         
-        batch_size = size[0]
-        return ivy.sum(x) / batch_size
+        if size_average:
+            return ivy.mean(x) / size[0]
+        
+        return ivy.sum(x) / size[0]
     
     loss = loss_fn()
     
