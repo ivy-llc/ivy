@@ -1039,19 +1039,23 @@ def _strided_slice_helper(draw):
     ndims = len(shape)
     masks = draw(
         st.lists(
-            st.integers(min_value=0, max_value=2 ** ndims - 1),
-            min_size=5,
-            max_size=5
-        ).filter(lambda x: bin(x[2])[2:].count('1') <= 1)  # maximum one ellipse
+            st.integers(min_value=0, max_value=2**ndims - 1), min_size=5, max_size=5
+        ).filter(
+            lambda x: bin(x[2])[2:].count("1") <= 1
+        )  # maximum one ellipse
     )
     begin, end, strides = [], [], []
     n_omit = np.random.randint(0, ndims)
     sub_shape = shape[:-n_omit]
     for i in sub_shape:
         begin += [draw(st.integers(min_value=0, max_value=i - 1))]
-        end += [draw(
-            st.integers(min_value=0, max_value=i - 1).filter(lambda x: x != begin[-1])
-        )]
+        end += [
+            draw(
+                st.integers(min_value=0, max_value=i - 1).filter(
+                    lambda x: x != begin[-1]
+                )
+            )
+        ]
         if begin[-1] < end[-1]:
             strides += [draw(st.integers(min_value=1))]
         else:
@@ -1077,7 +1081,7 @@ def test_tensorflow_strided_slice(
     dtype, x, begin, end, strides, masks = dtype_x_params
     try:
         helpers.test_frontend_function(
-            input_dtypes=dtype + 3 * ['int64'] + 5 * ['int32'],
+            input_dtypes=dtype + 3 * ["int64"] + 5 * ["int32"],
             as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
@@ -1096,6 +1100,6 @@ def test_tensorflow_strided_slice(
             shrink_axis_mask=masks[4],
         )
     except Exception as e:
-        if hasattr(e, 'message'):
+        if hasattr(e, "message"):
             if "only stride 1 allowed on non-range indexing" in e.message:
                 assume(False)

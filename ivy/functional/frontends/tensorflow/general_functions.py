@@ -206,15 +206,15 @@ def strided_slice(
     new_axis_mask=0,
     shrink_axis_mask=0,
     var=None,
-    name=None
+    name=None,
 ):
     def num_to_bit_list(number):
-        return list(map(int, '{:0{size}b}'.format(number, size=len(input_.shape))))
+        return list(map(int, "{:0{size}b}".format(number, size=len(input_.shape))))
 
     begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask = list(
         map(
             num_to_bit_list,
-            [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask]
+            [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask],
         )
     )
 
