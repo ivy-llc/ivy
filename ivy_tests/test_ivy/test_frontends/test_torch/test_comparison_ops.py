@@ -670,6 +670,43 @@ def test_torch_minimum(
     )
 
 
+# ldexp
+@handle_frontend_test(
+    fn_tree="torch.ldexp",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-np.inf,
+        max_value=np.inf,
+    ),
+)
+def test_torch_ldexp(
+    *,
+    dtype_and_inputs,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, inputs = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=inputs[0],
+        other=inputs[1],
+    )
+
+
 # fmax
 @handle_frontend_test(
     fn_tree="torch.fmax",
