@@ -1838,6 +1838,55 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
+        """ivy.Container static method variant of ivy.svd. This method simply
+        wraps the function, and so the docstring for ivy.svd also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container with array leaves having shape ``(..., M, N)`` and whose
+            innermost two dimensions form matrices on which to perform singular value
+            decomposition. Should have a floating-point data type.
+        full_matrices
+            If ``True``, compute full-sized ``U`` and ``Vh``, such that ``U`` has
+            shape ``(..., M, M)`` and ``Vh`` has shape ``(..., N, N)``. If ``False``,
+            compute on             the leading ``K`` singular vectors, such that ``U``
+            has shape ``(..., M, K)`` and ``Vh`` has shape ``(..., K, N)`` and where
+            ``K = min(M, N)``. Default: ``True``.
+        compute_uv
+            If ``True`` then left and right singular vectors will be computed and
+            returned in ``U`` and ``Vh``, respectively. Otherwise, only the singular
+            values will be computed, which can be significantly faster.
+        .. note::
+            with backend set as torch, svd with still compute left and right singular
+            vectors irrespective of the value of compute_uv, however Ivy will
+            still only return the
+            singular values.
+
+        Returns
+        -------
+        .. note::
+            once complex numbers are supported, each square matrix must be Hermitian.
+
+        ret
+            A container of a namedtuples ``(U, S, Vh)``. More details in ivy.svd.
+
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.random_normal(shape = (9, 6))
+        >>> y = ivy.random_normal(shape = (2, 4))
+        >>> z = ivy.Container(a=x, b=y)
+        >>> ret = ivy.Container.static_svd(z)
+        >>> aU, aS, aVh = ret.a
+        >>> bU, bS, bVh = ret.b
+        >>> print(aU.shape, aS.shape, aVh.shape, bU.shape, bS.shape, bVh.shape)
+        (9, 9) (6,) (6, 6) (2, 2) (2,) (4, 4)
+
+        """
         return ContainerBase.cont_multi_map_in_function(
             "svd",
             x,
@@ -1862,6 +1911,54 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.svd. This method simply
+        wraps the function, and so the docstring for ivy.svd also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container with array leaves having shape ``(..., M, N)`` and whose
+            innermost two dimensions form matrices on which to perform singular value
+            decomposition. Should have a floating-point data type.
+        full_matrices
+            If ``True``, compute full-sized ``U`` and ``Vh``, such that ``U`` has
+            shape ``(..., M, M)`` and ``Vh`` has shape ``(..., N, N)``. If ``False``,
+            compute on             the leading ``K`` singular vectors, such that ``U``
+            has shape ``(..., M, K)`` and ``Vh`` has shape ``(..., K, N)`` and where
+            ``K = min(M, N)``. Default: ``True``.
+        compute_uv
+            If ``True`` then left and right singular vectors will be computed and
+            returned in ``U`` and ``Vh``, respectively. Otherwise, only the singular
+            values will be computed, which can be significantly faster.
+        .. note::
+            with backend set as torch, svd with still compute left and right singular
+            vectors irrespective of the value of compute_uv, however Ivy will
+            still only return the
+            singular values.
+
+        Returns
+        -------
+        .. note::
+            once complex numbers are supported, each square matrix must be Hermitian.
+
+        ret
+            A container of a namedtuples ``(U, S, Vh)``. More details in ivy.svd.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.random_normal(shape = (9, 6))
+        >>> y = ivy.random_normal(shape = (2, 4))
+        >>> z = ivy.Container(a=x, b=y)
+        >>> ret = z.svd()
+        >>> aU, aS, aVh = ret.a
+        >>> bU, bS, bVh = ret.b
+        >>> print(aU.shape, aS.shape, aVh.shape, bU.shape, bS.shape, bVh.shape)
+        (9, 9) (6,) (6, 6) (2, 2) (2,) (4, 4)
+
+        """
         return self.static_svd(
             self,
             compute_uv=compute_uv,
