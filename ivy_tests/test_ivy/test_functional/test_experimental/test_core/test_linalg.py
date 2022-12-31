@@ -287,8 +287,7 @@ def test_eig(
     )
 
 
-# matrix_exp
-
+# multi_dot
 @st.composite
 def _generate_multi_dot_dtype_and_arrays(draw):
     input_dtype = [draw(
@@ -330,12 +329,7 @@ def _generate_multi_dot_dtype_and_arrays(draw):
 )
 def test_multi_dot(
     dtype_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     ground_truth_backend,
@@ -344,13 +338,9 @@ def test_multi_dot(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        test_values=True,
         x=x,
     )
