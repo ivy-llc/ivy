@@ -1528,9 +1528,7 @@ def hsplit(
                     [10., 11.],
                     [14., 15.]]))
     """
-    return ivy.current_backend(ary).hsplit(
-        ary, indices_or_sections, out=out
-    )
+    return ivy.current_backend(ary).hsplit(ary, indices_or_sections, out=out)
 
 
 @handle_exceptions

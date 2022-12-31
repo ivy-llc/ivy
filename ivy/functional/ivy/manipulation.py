@@ -1033,13 +1033,11 @@ def repeat(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3, 4, 5])
-    >>> y= ivy.repeat(x, 2)
+    >>> y = ivy.repeat(x, 2)
     >>> print(y)
     ivy.array([3, 3, 4, 4, 5, 5])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> y = ivy.repeat(x, [1, 2], axis=0)
     >>> print(y)
     ivy.array([[1, 2, 3],
@@ -1205,9 +1203,8 @@ def swapaxes(
                [[4, 6],
                 [5, 7]]])
 
-    With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([[0, 1, 2]])
+    >>> x = ivy.array([[0, 1, 2]])
     >>> y = ivy.swapaxes(x, 0, 1)
     >>> print(y)
     ivy.array([[0],
@@ -1227,32 +1224,6 @@ def swapaxes(
                       [4.],
                       [5.]])
     }
-
-    Instance Method Examples
-    ------------------------
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[0., 1., 2.]])
-    >>> y = x.swapaxes(0, 1)
-    >>> print(y)
-    ivy.array([[0.],
-               [1.],
-               [2.]])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
-    >>> y = x.swapaxes(0, 1)
-    >>> print(y)
-    {
-        a: ivy.array([[0.],
-                      [1.],
-                      [2.]]),
-        b: ivy.array([[3.],
-                      [4.],
-                      [5.]])
-    }
-
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -1287,7 +1258,7 @@ def tile(
 
     Returns
     -------
-    retwaitin
+    ret
         The tiled output array.
 
 
@@ -1296,7 +1267,7 @@ def tile(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1,2,3,4])
-    >>> y = ivy.tile(x,(3))
+    >>> y = ivy.tile(x, 3)
     >>> print(y)
     ivy.array([1,2,3,4,1,2,3,4,1,2,3,4])
 
@@ -1309,9 +1280,7 @@ def tile(
                [1,2,3,1,2,3,1,2,3],
                [4,5,6,4,5,6,4,5,6]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[[0], [1]]])
+    >>> x = ivy.array([[[0], [1]]])
     >>> y = ivy.tile(x,(2,2,3))
     >>> print(y)
     ivy.array([[[0,0,0],

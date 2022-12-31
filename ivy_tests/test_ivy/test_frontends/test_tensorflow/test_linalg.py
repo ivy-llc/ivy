@@ -673,7 +673,7 @@ def test_tensorflow_global_norm(
         t_list=x,
     )
 
-    
+
 # cholesky
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.cholesky",
@@ -715,4 +715,3 @@ def test_tensorflow_linalg_cholesky(
         rtol=1e-02,
         input=x,
     )
-    
