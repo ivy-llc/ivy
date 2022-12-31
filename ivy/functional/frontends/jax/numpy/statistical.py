@@ -146,6 +146,7 @@ def max(a, axis=None, out=None, keepdims=False, where=None):
 
 amax = max
 
+
 @to_ivy_arrays_and_back
 def count_nonzero(a, axis=None, keepdims=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
