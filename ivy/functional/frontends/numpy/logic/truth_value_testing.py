@@ -1,7 +1,7 @@
 # global
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
-
+from ivy import asarray,issubclass,bool
 
 @to_ivy_arrays_and_back
 def all(
@@ -43,7 +43,7 @@ def isscalar(element):
 
 @to_ivy_arrays_and_back   
 def iscomplex(element):
-    ax = ivy.is_array(element)
+    ax = ivy.asarray(element)
     if issubclass(ax.dtype.type, ivy.complexfloating):
         return ax.imag != 0
     res = ivy.zeros(ax.shape, bool)
