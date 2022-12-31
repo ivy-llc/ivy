@@ -1,5 +1,5 @@
 import numpy as np
-from ivy.functional.frontends.torch import Tensor
+from tensorflow.keras.layers import Tensor
 from ivy_tests.test_ivy import helpers
 from .test_raw_ops import _arrays_idx_n_dtypes
 from ivy_tests.test_ivy.helpers import handle_frontend_test
