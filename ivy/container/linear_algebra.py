@@ -1455,8 +1455,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-            input array having shape ``(..., M, N)`` and whose innermost two
-            dimensions form ``MxN`` matrices.
+            input Container which will have arrays with shape ``(..., M, N)``
+            and whose innermost two dimensions form ``MxN`` matrices.
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -1464,9 +1464,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            an array containing the transpose for each matrix and having shape
+            A container with the transposes for each matrix and having shape
             ``(..., N, M)``. The returned array must have the same data
             type as ``x``.
+
 
         Examples
         --------
@@ -1508,9 +1509,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Parameters
         ----------
-        x
-            input array having shape ``(..., M, N)`` and whose innermost two
-            dimensions form ``MxN`` matrices.
+        self
+            input Container which will have arrays with shape ``(..., M, N)``
+            and whose innermost two dimensions form ``MxN`` matrices.
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -1518,7 +1519,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            an array containing the transpose for each matrix and having shape
+            A container with the transposes for each matrix and having shape
             ``(..., N, M)``. The returned array must have the same data
             type as ``x``.
 
@@ -1528,7 +1529,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[1., 1.], [0., 3.]]), \
                       b=ivy.array([[0., 4.], [3., 1.]]))
-        >>> y = ivy.matrix_transpose(x)
+        >>> y = x.matrix_transpose()
         >>> print(y)
         {
             a: ivy.array([[1., 0.],
