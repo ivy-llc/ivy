@@ -974,7 +974,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))
         >>> out = ivy.Container(a=ivy.zeros((2, 2)))
-        >>> ivy.Container.static_pinv(x, 0, out=out)
+        >>> ivy.Container.static_pinv(x, rtol=1e-1, out=out)
         >>> print(out)
         {
             a: ivy.array([[0.0426, 0.0964],
@@ -1025,7 +1025,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a= ivy.array([[1., 2.], [3., 4.]]))
-        >>> y = ivy.pinv(x)
+        >>> y = x.pinv()
         >>> print(y)
         {
             a: ivy.array([[-2., 1.],
@@ -1033,12 +1033,12 @@ class ContainerWithLinearAlgebra(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))
-        >>> out = ivy.Container(a=ivy.array())
-        >>> ivy.pinv(x, 0., out=out)
+        >>> out = ivy.Container(a=ivy.zeros_like(x[a]))
+        >>> x.pinv(0., out=out)
         >>> print(out)
         {
-            a: ivy.array([[0.0426, 0.0964],
-                          [0.0605, 0.1368]])
+            a: ivy.array([[-1.99999988, 1.],
+                          [1.5, -0.5]])
         }
         """
         return self.static_pinv(
