@@ -412,7 +412,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             input array having shape ``(..., M, N)`` and whose innermost two
             dimensions form ``MxN`` matrices.
         out
@@ -431,7 +431,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         With :class:`ivy.Array` instance inputs:
 
         >>> x = ivy.array([[1., 2.], [0., 3.]])
-        >>> y = ivy.matrix_transpose(x)
+        >>> y = x.matrix_transpose()
         >>> print(y)
         ivy.array([[1., 0.],
                    [2., 3.]])

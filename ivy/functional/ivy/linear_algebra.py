@@ -1399,9 +1399,7 @@ def matrix_transpose(
     ivy.array([[2., 1.],
        [3., 2.]])
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[0., 1., 2.], [1., 2., 3.]])
+    >>> x = ivy.array([[0., 1., 2.], [1., 2., 3.]])
     >>> y = ivy.matrix_transpose(x)
     >>> print(y)
     ivy.array([[0., 1.],
