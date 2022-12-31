@@ -19,8 +19,35 @@ class ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
+        ivy.Array instance method variant of ivy.matmul. This method simply wraps the
+        function, and so the docstring for ivy.matmul also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. Should have a numeric data type. Must have at least one
+            dimension.
+        x2
+            second input array. Should have a numeric data type. Must have at least one
+            dimension.
+        transpose_a
+            if True, ``x1`` is transposed before multiplication.
+        transpose_b
+            if True, ``x2`` is transposed before multiplication.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array containing the output of matrix multiplication. The returned array
+            must have a data type determined by :ref:`type-promotion`. More details
+            can be found in ivy.matmul.
+
         Examples
-        ------------------------
+        --------
 
         With :class:`ivy.Array` instance inputs:
 
@@ -334,26 +361,26 @@ class ArrayWithLinearAlgebra(abc.ABC):
         Parameters
         ----------
         self
-            input array having shape ``(..., M, M)`` and whose innermost two dimensions form
-            square matrices. Should have a floating-point data type.
+            input array having shape ``(..., M, M)`` and whose innermost two
+            dimensions form square matrices. Should have a floating-point data type.
 
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array containing the multiplicative inverses. The returned array must have a
-            floating-point data type determined by :ref:`type-promotion` and must have the
-            same shape as ``x``.
+            an array containing the multiplicative inverses. The returned array
+            must have a floating-point data type determined by :ref:`type-promotion`
+            and must have the same shape as ``x``.
 
         Examples
         --------
         With :class:`ivy.Array` inputs:
 
         >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
-        >>> y = ivy.inv(x)
+        >>> y = x.inv()
         >>> print(y)
         ivy.array([[-2., 1.],[1.5, -0.5]])
         """

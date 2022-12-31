@@ -57,6 +57,19 @@ class ContainerWithLinearAlgebra(ContainerBase):
         -------
         ret
             the matrix multiplication result of x1 and x2
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) ,
+        ...                   b = ivy.array([[2., 1.], [1., 1.]]))
+        >>> y = ivy.Container.static_matmul(x, x)
+        >>> print(y)
+        {
+            a: ivy.array([[10., -6.],
+                          [-6., 10.]]),
+            b: ivy.array([[5., 3.],
+                          [3., 2.]])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "matmul",
@@ -114,6 +127,19 @@ class ContainerWithLinearAlgebra(ContainerBase):
         -------
         ret
             the matrix multiplication result of self and x2
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) ,
+        ...                   b = ivy.array([[2., 1.], [1., 1.]]))
+        >>> y = x.matmul(x)
+        >>> print(y)
+        {
+            a: ivy.array([[10., -6.],
+                          [-6., 10.]]),
+            b: ivy.array([[5., 3.],
+                          [3., 2.]])
+        }
         """
         return self.static_matmul(
             self,

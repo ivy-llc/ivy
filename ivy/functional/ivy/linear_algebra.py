@@ -110,7 +110,6 @@ def cholesky(
                [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
                [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
 
-    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
     >>> u = ivy.cholesky(x, upper='false')
@@ -875,6 +874,10 @@ def matmul(
     x2
         second input array. Should have a numeric data type. Must have at least one
         dimension.
+    transpose_a
+        if True, ``x1`` is transposed before multiplication.
+    transpose_b
+        if True, ``x2`` is transposed before multiplication.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -949,13 +952,12 @@ def matmul(
     >>> print(z)
     ivy.array(32.)
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[1., 2.], [0., 1.]])
-    >>> y = ivy.native_array([[2., 0.], [0., 3.]])
-    >>> z = ivy.matmul(x, y)
+    >>> x = ivy.array([[1., 2.], [0., 1.]])
+    >>> y = ivy.array([[2., 0.], [0., 3.]])
+    >>> z = ivy.matmul(x, y, transpose_b=True)
     >>> print(z)
-    ivy.array([[2., 6.],[0., 3.]])
+    ivy.array([[2., 6.],
+           [0., 3.]])
 
     With :class:`ivy.Container` inputs:
 
@@ -980,13 +982,12 @@ def matmul(
         b: ivy.array(9.)
     }
 
-    With a combination of :class:`ivy.NativeArray` and :class:`ivy.Array` inputs:
-
-    >>> x = ivy.native_array([[1., 2.], [0., 3.]])
+    >>> x = ivy.array([[1., 2.], [0., 3.]])
     >>> y = ivy.array([[1.], [3.]])
-    >>> z = ivy.matmul(x, y)
+    >>> z = ivy.matmul(x, y, transpose_a=True)
     >>> print(z)
-    ivy.array([[7.],[9.]])
+    ivy.array([[ 1.],
+       [11.]])
 
     """
     return current_backend(x1).matmul(
