@@ -2,9 +2,6 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
-# global
-import math
-
 
 @to_ivy_arrays_and_back
 def cat(tensors, dim=0, *, out=None):
