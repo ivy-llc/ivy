@@ -285,3 +285,72 @@ def test_eig(
         test_values=False,
         x=x[0],
     )
+
+
+# matrix_exp
+
+@st.composite
+def _generate_multi_dot_dtype_and_arrays(draw):
+    input_dtype = [draw(
+        st.sampled_from(draw(helpers.get_dtypes("numeric")))
+    )]
+    matrices_dims = draw(
+        st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
+    )
+    shape_1 = (matrices_dims[0], matrices_dims[1])
+    shape_2 = (matrices_dims[1], matrices_dims[2])
+    shape_3 = (matrices_dims[2], matrices_dims[3])
+    
+    matrix_1 = draw(
+        helpers.dtype_and_values(
+            shape=shape_1,
+            dtype=input_dtype,
+        )
+    )
+    matrix_2 = draw(
+        helpers.dtype_and_values(
+            shape=shape_2,
+            dtype=input_dtype,
+        )
+    )
+    matrix_3 = draw(
+        helpers.dtype_and_values(
+            shape=shape_3,
+            dtype=input_dtype,
+        )
+    )
+
+    return input_dtype, (matrix_1[1], matrix_2[1], matrix_3[1])
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.multi_dot",
+    dtype_x=_generate_multi_dot_dtype_and_arrays(),
+    test_gradients=st.just(False),
+)
+def test_multi_dot(
+    dtype_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x = dtype_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x,
+    )
