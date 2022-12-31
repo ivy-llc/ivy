@@ -4,6 +4,7 @@
 import ivy
 from ivy.stateful.module import Module
 from ivy.stateful.initializers import Zeros, GlorotUniform
+from ivy.func_wrapper import handle_nestable
 
 
 # Linear #
@@ -1383,6 +1384,7 @@ class LSTM(Module):
         )
         return {"input": input_weights, "recurrent": recurrent_weights}
 
+    @handle_nestable
     def _forward(self, inputs, initial_state=None):
         """Perform forward pass of the LSTM layer.
 
