@@ -496,6 +496,7 @@ def test_jax_numpy_max(
 def test_jax_numpy_count_nonzero(
     *,
     dtype_and_x,
+    as_variable,
     num_positional_args,
     native_array,
     on_device,
