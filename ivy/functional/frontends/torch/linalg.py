@@ -94,6 +94,11 @@ def cross(input, other, *, dim=-1, out=None):
 
 
 @to_ivy_arrays_and_back
+def vecdot(x1, x2, *, dim=-1, out=None):
+    return ivy.vecdot(x1, x2, axis=dim, out=out)
+
+
+@to_ivy_arrays_and_back
 def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
     # TODO: add handling for hermitian once complex numbers are supported
     return ivy.astype(ivy.matrix_rank(input, atol=atol, rtol=rtol, out=out), ivy.int64)
