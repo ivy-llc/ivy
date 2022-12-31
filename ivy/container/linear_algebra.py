@@ -967,7 +967,53 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.inv.
+        This method simply wraps the function, and so the docstring for
+        ivy.inv also applies to this method with minimal changes.
 
+        Parameters
+        ----------
+        x
+            Ivy container having shape ``(..., M, M)`` and whose
+            innermost two dimensions form square matrices.
+            Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container containing the multiplicative inverses.
+            The returned array must have a floating-point data type
+            determined by :ref:`type-promotion` and must have the
+            same shape as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[0., 1.], [4., 4.]]),
+        ...                      b=ivy.array([[4., 4.], [2., 1.]]))
+        >>> y = ivy.Container.static_inv(x)
+        >>> print(y)
+        {
+            a: ivy.array([[-1, 0.25], [1., 0.]]),
+            b: ivy.array([-0.25, 1.], [0.5, -1.])
+        }
+        """
         return ContainerBase.cont_multi_map_in_function(
             "inv",
             x,
@@ -1019,7 +1065,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            an container containing the multiplicative inverses.
+            A container containing the multiplicative inverses.
             The returned array must have a floating-point data type
             determined by :ref:`type-promotion` and must have the
             same shape as ``x``.
@@ -1030,7 +1076,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[0., 1.], [4., 4.]]),
         ...                      b=ivy.array([[4., 4.], [2., 1.]]))
-        >>> y = ivy.inv(x)
+        >>> y = x.inv()
         >>> print(y)
         {
             a: ivy.array([[-1, 0.25], [1., 0.]]),
