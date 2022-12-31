@@ -497,6 +497,7 @@ def test_torch_cross(
         dim=dim,
     )
 
+
 # vecdot
 @handle_frontend_test(
     fn_tree="torch.linalg.vecdot",
@@ -537,6 +538,7 @@ def test_torch_vecdot(
         other=other,
         dim=dim,
     )
+
 
 @st.composite
 def _matrix_rank_helper(draw):
