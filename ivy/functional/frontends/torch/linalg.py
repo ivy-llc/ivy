@@ -92,9 +92,6 @@ def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, ou
 def cross(input, other, *, dim=-1, out=None):
     return torch_frontend.cross(input, other, dim, out=out)
 
-@to_ivy_arrays_and_back
-def vecdot(x1, x2, *, out=None):
-    return ivy.vecdot(x1, x2, out=out)
 
 @to_ivy_arrays_and_back
 def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
