@@ -572,11 +572,13 @@ def test_torch_swapaxes(
 
 @st.composite
 def _chunk_helper(draw):
-    dtype, x, shape = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        ret_shape=True,
-    ))
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=1,
+            ret_shape=True,
+        )
+    )
     axis = draw(helpers.get_axis(shape=shape, force_int=True))
     if shape[axis] == 0:
         chunks = 0
