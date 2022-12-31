@@ -46,7 +46,7 @@ def test_sinc(
 @handle_test(
     fn_tree="functional.ivy.experimental.lcm",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=["int16", "int32", "int64"],
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
@@ -69,7 +69,7 @@ def test_lcm(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="jax",
+        ground_truth_backend="numpy",
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
@@ -718,7 +718,7 @@ def test_fix(
 @handle_test(
     fn_tree="functional.ivy.experimental.nextafter",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=2),
+        available_dtypes=["float32", "float64"],
         num_arrays=2,
         shared_dtype=True,
         min_value=-10,
@@ -729,9 +729,12 @@ def test_fix(
     test_gradients=st.just(False),
 )
 def test_nextafter(
+    *,
     dtype_and_x,
     test_flags,
     backend_fw,
+    fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -740,7 +743,8 @@ def test_nextafter(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
-        fn_name="nextafter",
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
@@ -871,9 +875,12 @@ def test_gradient(
     test_gradients=st.just(False),
 )
 def test_xlogy(
+    *,
     dtype_and_x,
     test_flags,
     backend_fw,
+    fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -882,7 +889,8 @@ def test_xlogy(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
-        fn_name="xlogy",
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )
