@@ -144,7 +144,7 @@ def test_numpy_isscalar(
 #iscomplex
 @handle_frontend_test(
     fn_tree="numpy.iscomplex",
-    element=st.booleans() | st.floats() | st.integers()
+    element=st.booleans() | st.floats() | st.integers(),
 )
 def test_numpy_iscomplex(
     *,
