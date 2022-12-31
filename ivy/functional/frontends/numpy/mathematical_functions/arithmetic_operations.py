@@ -279,6 +279,10 @@ def mod(
     return ret
 
 
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def fmod(
     x1,
     x2,
