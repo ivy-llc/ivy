@@ -462,13 +462,13 @@ class ArrayWithLinearAlgebra(abc.ABC):
         Parameters
         ----------
         self
-            input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-            ``MxN`` matrices. Should have a floating-point data type.
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices. Should have a floating-point data type.
         rtol
             relative tolerance for small singular values. More details in ivy.pinv.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
 
         Returns
         -------
@@ -560,6 +560,60 @@ class ArrayWithLinearAlgebra(abc.ABC):
         compute_uv: bool = True,
         full_matrices: bool = True,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+        """ivy.Array instance method variant of ivy.svf. This method simply wraps the
+        function, and so the docstring for ivy.svd also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form matrices on which to perform singular value decomposition.
+            Should have a floating-point data type.
+        full_matrices
+            If ``True``, compute full-sized ``U`` and ``Vh``, such that ``U`` has shape
+            ``(..., M, M)`` and ``Vh`` has shape ``(..., N, N)``. If ``False``,
+            compute on the leading ``K`` singular vectors, such that ``U`` has
+            shape ``(..., M, K)`` and ``Vh`` has shape ``(..., K, N)`` and where
+            ``K = min(M, N)``. Default: ``True``.
+        compute_uv
+            If ``True`` then left and right singular vectors will be computed and
+            returned in ``U`` and ``Vh``, respectively. Otherwise, only the
+            singular values will be computed, which can be significantly faster.
+        .. note::
+            with backend set as torch, svd with still compute left and right singular
+            vectors irrespective of the value of compute_uv, however Ivy will still only
+            return the singular values.
+
+        Returns
+        -------
+        .. note::
+            once complex numbers are supported, each square matrix must be Hermitian.
+
+        ret
+            a namedtuple ``(U, S, Vh)``. More details in ivy.svd.
+
+            Each returned array must have the same floating-point data type as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.random_normal(shape = (9, 6))
+        >>> U, S, Vh = x.svd()
+        >>> print(U.shape, S.shape, Vh.shape)
+        (9, 9) (6,) (6, 6)
+
+        With reconstruction from SVD, result is numerically close to x
+
+        >>> reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)
+        >>> print((reconstructed_x - x > 1e-3).sum())
+        ivy.array(0)
+
+        >>> U, S, Vh = x.svd(full_matrices = False)
+        >>> print(U.shape, S.shape, Vh.shape)
+        (9, 6) (6,) (6, 6)
+        """
         return ivy.svd(self._data, compute_uv=compute_uv, full_matrices=full_matrices)
 
     def svdvals(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
