@@ -633,8 +633,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         --------
         With :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]],
-        ...                   b=ivy.array([[5., 6.], [7., 8.]])))
+        >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]),
+        ...                   b=ivy.array([[5., 6.], [7., 8.]]))
         >>> d = x.diagonal()
         >>> print(d)
         {
