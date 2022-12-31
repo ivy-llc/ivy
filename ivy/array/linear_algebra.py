@@ -455,6 +455,26 @@ class ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
+        ivy.Array instance method variant of ivy.pinv. This method simply wraps the
+        function, and so the docstring for ivy.pinv also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array having shape ``(..., M, N)`` and whose innermost two dimensions form
+            ``MxN`` matrices. Should have a floating-point data type.
+        rtol
+            relative tolerance for small singular values. More details in ivy.pinv.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array containing the pseudo-inverses. More details in ivy.pinv.
+
         Examples
         --------
         >>> x = ivy.array([[1., 2.], [3., 4.]])
