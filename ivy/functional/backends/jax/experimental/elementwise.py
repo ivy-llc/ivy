@@ -453,11 +453,5 @@ def gradient(
         return outvals
 
 
-def xlogy(
-    x: JaxArray,
-    y: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return js.special.xlogy(x, y)

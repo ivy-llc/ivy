@@ -30,6 +30,7 @@ def argmax(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
@@ -49,6 +50,9 @@ def argmax(
         against the array.
     output_dtype
         Optional data type of the output array.
+    select_last_index
+        If this is set to True, the index corresponding to the
+        last occurrence of the maximum value will be returned
     out
         If provided, the result will be inserted into this array. It should be of the
         appropriate shape and dtype.
@@ -108,7 +112,12 @@ def argmax(
 
     """
     return current_backend(x).argmax(
-        x, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        x,
+        axis=axis,
+        keepdims=keepdims,
+        output_dtype=output_dtype,
+        select_last_index=select_last_index,
+        out=out,
     )
 
 
