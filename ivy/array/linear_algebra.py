@@ -153,6 +153,76 @@ class ArrayWithLinearAlgebra(abc.ABC):
         axis2: int = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.diagonal. This method simply wraps the
+        function, and so the docstring for ivy.diagonal also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices.
+        offset
+            offset specifying the off-diagonal relative to the main diagonal.
+            - ``offset = 0``: the main diagonal.
+            - ``offset > 0``: off-diagonal above the main diagonal.
+            - ``offset < 0``: off-diagonal below the main diagonal.
+            Default: `0`.
+        axis1
+            axis to be used as the first axis of the 2-D sub-arrays from
+            which the diagonals should be taken. Defaults to first axis (-2).
+        axis2
+            axis to be used as the second axis of the 2-D sub-arrays from which
+            the diagonals should be taken. Defaults to second axis (-1).
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the diagonals and whose shape is determined
+            by removing the last two dimensions and appending a dimension equal
+            to the size of the resulting diagonals. The returned array must
+            have the same data type as ``x``.
+
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([[1., 2.],
+        ...                [3., 4.]])
+
+        >>> d = x.diagonal()
+        >>> print(d)
+        ivy.array([1., 4.])
+
+        >>> x = ivy.array([[[1., 2.],
+        ...                 [3., 4.]],
+        ...                [[5., 6.],
+        ...                 [7., 8.]]])
+        >>> d = x.diagonal()
+        >>> print(d)
+        ivy.array([[1., 4.],
+                   [5., 8.]])
+
+        >>> x = ivy.array([[1., 2.],
+        ...                [3., 4.]])
+
+        >>> d = x.diagonal(offset=1)
+        >>> print(d)
+        ivy.array([2.])
+
+        >>> x = ivy.array([[0, 1, 2],
+        ...                [3, 4, 5],
+        ...                [6, 7, 8]])
+        >>> d = x.diagonal(offset=-1, axis1=0)
+        >>> print(d)
+        ivy.array([3, 7])
+
+        """
         return ivy.diagonal(
             self._data, offset=offset, axis1=axis1, axis2=axis2, out=out
         )
