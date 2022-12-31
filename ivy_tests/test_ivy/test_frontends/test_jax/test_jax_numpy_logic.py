@@ -16,16 +16,12 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
         num_arrays=2,
         shared_dtype=True,
     ),
-    rtol=st.floats(min_value=1e-5, max_value=1e-1),
-    atol=st.floats(min_value=1e-8, max_value=1e-6),
     equal_nan=st.booleans(),
 )
 def test_jax_numpy_allclose(
     *,
     dtype_and_input,
     equal_nan,
-    rtol,
-    atol,
     as_variable,
     with_out,
     num_positional_args,
@@ -44,8 +40,6 @@ def test_jax_numpy_allclose(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=rtol,
-        atol=atol,
         a=input[0],
         b=input[1],
         equal_nan=equal_nan,
@@ -322,6 +316,45 @@ def test_jax_numpy_greater_equal(
         fn_tree=fn_tree,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# isnan
+@handle_frontend_test(
+    fn_tree="jax.numpy.isnan",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-np.inf,
+        max_value=np.inf,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_inf=True,
+    ),
+)
+def test_jax_numpy_isnan(
+    *,
+    dtype_and_x,
+    with_out,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
 
 

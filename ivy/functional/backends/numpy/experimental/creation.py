@@ -48,6 +48,19 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
+def tril_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: Optional[int] = 0,
+    /,
+    *,
+    device: str,
+) -> Tuple[np.ndarray, ...]:
+    return tuple(
+        _to_device(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)), device=device)
+    )
+
+
 def hann_window(
     window_length: int,
     periodic: Optional[bool] = True,

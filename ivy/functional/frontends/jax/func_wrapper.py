@@ -66,7 +66,18 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         # call unmodified function
-        ret = fn(*args, **kwargs)
+        # ToDo: Remove this default dtype setting
+        #  once frontend specific backend setting is added
+        if jax_frontend.config.jax_enable_x64:
+            ivy.set_default_int_dtype("int64")
+            ivy.set_default_float_dtype("float64")
+            try:
+                ret = fn(*args, **kwargs)
+            finally:
+                ivy.unset_default_int_dtype()
+                ivy.unset_default_float_dtype()
+        else:
+            ret = fn(*args, **kwargs)
         # convert all arrays in the return to `jax_frontend.DeviceArray` instances
         return _from_ivy_array_to_jax_frontend_array(
             ret, nested=True, include_derived={tuple: True}

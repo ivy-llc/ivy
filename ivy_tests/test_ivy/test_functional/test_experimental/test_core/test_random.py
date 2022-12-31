@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -13,9 +13,9 @@ import ivy
 
 # dirichlet
 @handle_test(
-    fn_tree="functional.experimental.dirichlet",
+    fn_tree="functional.ivy.experimental.dirichlet",
     dtype_and_alpha=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=2),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.tuples(
             st.integers(min_value=2, max_value=5),
         ),
@@ -27,6 +27,7 @@ import ivy
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
     ),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_dirichlet(
     *,
@@ -40,6 +41,7 @@ def test_dirichlet(
     ground_truth_backend,
 ):
     dtype, alpha = dtype_and_alpha
+    assume("bfloat16" not in dtype)
 
     def call():
         return helpers.test_function(
@@ -70,7 +72,7 @@ def test_dirichlet(
 
 # beta
 @handle_test(
-    fn_tree="functional.experimental.beta",
+    fn_tree="functional.ivy.experimental.beta",
     dtype_and_alpha_beta=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -80,6 +82,7 @@ def test_dirichlet(
         exclude_min=True,
     ),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_beta(
     *,
@@ -124,7 +127,7 @@ def test_beta(
 
 # gamma
 @handle_test(
-    fn_tree="functional.experimental.gamma",
+    fn_tree="functional.ivy.experimental.gamma",
     dtype_and_alpha_beta=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -134,6 +137,7 @@ def test_beta(
         exclude_min=True,
     ),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_gamma(
     *,

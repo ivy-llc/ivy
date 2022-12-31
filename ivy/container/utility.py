@@ -80,7 +80,7 @@ class ContainerWithUtility(ContainerBase):
             b: ivy.array(False)
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "all",
             x,
             axis=axis,
@@ -246,7 +246,7 @@ class ContainerWithUtility(ContainerBase):
             b: ivy.array(False)
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "any",
             x,
             axis=axis,

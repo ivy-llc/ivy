@@ -1,15 +1,15 @@
 # global
 import ivy
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
 )
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def mean(
     x,
     /,
@@ -33,7 +33,7 @@ def mean(
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def nanmean(
     a,
     /,
@@ -68,7 +68,8 @@ def nanmean(
     return ret
 
 
-@from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def std(
     x,
     /,
@@ -91,8 +92,8 @@ def std(
     return ret
 
 
-# @from_zero_dim_arrays_to_float
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
     axis = tuple(axis) if isinstance(axis, list) else axis
     global avg
@@ -123,3 +124,74 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
         return avg.astype(dtype), weights_sum
     else:
         return avg.astype(dtype)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def nanstd(
+    a, /, *, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=True
+):
+    a = a[~ivy.isnan(a)]
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    if dtype:
+        a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+
+    ret = ivy.std(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    return ret
+
+
+@to_ivy_arrays_and_back
+def cov(x, y=None, bias=False, dtype=None, fweights=None, aweights=None, ddof=None):
+    # check if inputs are valid
+    input_check = ivy.valid_dtype(dtype) and x.ndim in [0, 1]
+
+    if input_check:
+        x = ivy.array(x)
+        x = x.stack([], axis=0)
+        # if two input arrays are given
+        if ivy.exists(y) and y.ndim > 0:
+            x = x.stack(ivy.array(y), axis=0)
+
+        # compute the weights array
+        w = None
+        # if weights are 1D and positive
+        if ivy.exists(fweights):
+            if fweights.ndim < 2 and not fweights.min(keepdims=True)[0] > 0:
+                w = ivy.array(fweights)
+        if ivy.exists(aweights):
+            if aweights.ndim < 2 and not aweights.min(keepdims=True)[0] > 0:
+                w = w.multiply(aweights) if ivy.exists(w) else ivy.array(aweights)
+
+            # if w exists, use weighted average
+            xw = x.multiply(w)
+            w_sum = ivy.sum(w)
+            average = ivy.stable_divide(ivy.sum(xw, axis=1), w_sum)
+        else:
+            # else compute arithmetic average
+            average = ivy.mean(x, axis=1)
+
+        # compute the normalization
+        if ddof is None:
+            ddof = 1 if bias == 0 else 0
+
+        if w is None:
+            norm = x.shape[0] - ddof
+        elif ddof == 0:
+            norm = w_sum
+        elif aweights is None:
+            norm = w_sum - ddof
+        else:
+            norm = w_sum - ivy.stable_divide(ddof * ivy.sum(w * aweights), w_sum)
+
+        # compute residuals from average
+        x -= average[:]
+        # compute transpose matrix
+        x_t = ivy.matrix_transpose(x * w) if ivy.exists(w) else ivy.matrix_transpose(x)
+        # compute covariance matrix
+        c = ivy.stable_divide(ivy.matmul(x, x_t), norm).astype(dtype)
+
+        return c

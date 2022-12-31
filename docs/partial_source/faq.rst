@@ -61,6 +61,7 @@ E.g. When using a torch backend, then torch will be a dependency of Ivy, and its
 Model Deployment
 ----------------
 **Q:** Does Ivy support model deployment?
+
 **A:** Yes, Ivy will support efficient model deployment.
 However, currently this feature is not yet supported as the graph compiler module is still under development, and will be released soon with ivy version 1.2.0.
 

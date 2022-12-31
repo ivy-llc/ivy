@@ -96,7 +96,7 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([0.0999, -7.38, -1.29])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "random_uniform",
             low=low,
             high=high,
@@ -383,7 +383,7 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([0.464, -8.51, -3.75])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "random_normal",
             mean=mean,
             std=std,
@@ -642,7 +642,7 @@ class ContainerWithRandom(ContainerBase):
         ret
             Drawn samples from the parameterized normal distribution.
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "multinomial",
             population_size,
             num_samples,
@@ -817,7 +817,7 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([0, 10, 17])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "randint",
             low,
             high,
@@ -1069,7 +1069,7 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([8, 4, 9])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "shuffle",
             x,
             seed=seed,

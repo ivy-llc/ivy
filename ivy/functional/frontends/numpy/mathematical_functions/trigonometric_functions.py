@@ -2,18 +2,18 @@
 import ivy
 
 # local
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
 )
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def cos(
     x,
     /,
@@ -34,7 +34,7 @@ def cos(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def sin(
     x,
     /,
@@ -55,7 +55,7 @@ def sin(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def tan(
     x,
     /,
@@ -76,7 +76,7 @@ def tan(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def arcsin(
     x,
     /,
@@ -97,7 +97,7 @@ def arcsin(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def arccos(
     x,
     /,
@@ -118,7 +118,7 @@ def arccos(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def arctan(
     x,
     /,
@@ -139,7 +139,7 @@ def arctan(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def deg2rad(
     x,
     /,
@@ -162,7 +162,7 @@ def deg2rad(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def rad2deg(
     x,
     /,

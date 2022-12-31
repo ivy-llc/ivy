@@ -23,7 +23,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "diagflat",
             x,
             offset=offset,
@@ -124,7 +124,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
             b: ivy.array([450])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "kron",
             a,
             b,
@@ -180,7 +180,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "matrix_exp",
             x,
             out=out,
@@ -219,7 +219,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
             to_apply=to_apply,
             out=out,
         )
-        
+
     @staticmethod
     def static_eig(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -265,7 +265,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
                 ])
         )
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "eig",
             x,
             key_chains=key_chains,
