@@ -331,6 +331,23 @@ class ArrayWithLinearAlgebra(abc.ABC):
         This method simply wraps the function, and so the docstring for
         ivy.inv also applies to this method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array having shape ``(..., M, M)`` and whose innermost two dimensions form
+            square matrices. Should have a floating-point data type.
+
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the multiplicative inverses. The returned array must have a
+            floating-point data type determined by :ref:`type-promotion` and must have the
+            same shape as ``x``.
+
         Examples
         --------
         With :class:`ivy.Array` inputs:
