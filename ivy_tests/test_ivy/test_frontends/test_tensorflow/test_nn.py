@@ -86,6 +86,7 @@ def _x_and_filters(
                     helpers.ints(min_value=3, max_value=5),
                     helpers.ints(min_value=1, max_value=3),
                     helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=1),
                 )
             )
         elif not transpose:
@@ -607,6 +608,45 @@ def test_tensorflow_conv3d_transpose(
         padding=padding,
         data_format=data_format,
         dilations=1 if not ivy.gpu_is_available() else dilation,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.depthwise_conv2d",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="depthwise",
+    ),
+)
+def test_tensorflow_depthwise_conv2d(
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    stride = 1 if dilation > 1 else stride
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filter=filters,
+        strides=[1, stride, stride, 1],
+        padding=padding,
+        data_format=data_format,
+        dilations=[dilation, dilation],
     )
 
 

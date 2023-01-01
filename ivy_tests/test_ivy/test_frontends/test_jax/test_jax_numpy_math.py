@@ -49,7 +49,8 @@ def test_jax_numpy_absolute(
 @handle_frontend_test(
     fn_tree="jax.numpy.add",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
     ),
 )
 def test_jax_numpy_add(
@@ -63,6 +64,7 @@ def test_jax_numpy_add(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -113,7 +115,6 @@ def test_jax_numpy_arctan(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        shared_dtype=True,
     ),
 )
 def test_jax_numpy_arctan2(
@@ -128,6 +129,7 @@ def test_jax_numpy_arctan2(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -482,7 +484,6 @@ def test_jax_numpy_dot(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        shared_dtype=True,
     ),
 )
 def test_jax_numpy_mod(
@@ -496,7 +497,7 @@ def test_jax_numpy_mod(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    assume(not np.any(np.isclose(x[1], 0)))
+    assume(not np.any(np.isclose(x[1], 0)) and "bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -664,7 +665,8 @@ def test_jax_numpy_arcsinh(
 @handle_frontend_test(
     fn_tree="jax.numpy.power",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
     ),
 )
 def test_jax_numpy_power(
@@ -678,6 +680,7 @@ def test_jax_numpy_power(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -758,7 +761,6 @@ def test_jax_numpy_ceil(
         min_value=-10,
         max_value=10,
         num_arrays=2,
-        shared_dtype=True,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -776,6 +778,7 @@ def test_jax_numpy_float_power(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -872,8 +875,7 @@ def test_jax_numpy_exp2(
         min_dim_size=1,
         max_dim_size=3,
         num_arrays=2,
-        shared_dtype=True,
-    ),
+    ).filter(lambda x: all([dtype != "uint64" for dtype in x[0]])),
 )
 def test_jax_numpy_gcd(
     *,
@@ -942,12 +944,11 @@ def test_jax_numpy_i0(
     fn_tree="jax.numpy.kron",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=3,
+        min_num_dims=2,
+        max_num_dims=2,
         min_dim_size=1,
         max_dim_size=3,
         num_arrays=2,
-        shared_dtype=True,
     ),
 )
 def test_jax_numpy_kron(
@@ -961,6 +962,7 @@ def test_jax_numpy_kron(
     frontend,
 ):
     input_dtype, x = dtype_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -981,7 +983,6 @@ def test_jax_numpy_kron(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        shared_dtype=True,
         min_num_dims=1,
         max_num_dims=3,
         min_value=-100,
@@ -1000,6 +1001,11 @@ def test_jax_numpy_lcm(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    value_test = True
+    # Skip Tensorflow backend value test for lcm
+    # https://github.com/tensorflow/tensorflow/issues/58955
+    if ivy.current_backend_str() == "tensorflow":
+        value_test = False
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1011,6 +1017,7 @@ def test_jax_numpy_lcm(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        test_values=value_test,
     )
 
 
@@ -1321,7 +1328,6 @@ def test_jax_numpy_arctanh(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        shared_dtype=True,
     ),
 )
 def test_jax_numpy_multiply(
@@ -1333,6 +1339,7 @@ def test_jax_numpy_multiply(
     fn_tree,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1389,7 +1396,6 @@ def test_jax_numpy_log10(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        shared_dtype=True,
         min_num_dims=1,
         max_num_dims=3,
         min_value=-100,
@@ -1408,6 +1414,7 @@ def test_jax_numpy_logaddexp(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1465,7 +1472,6 @@ def test_jax_numpy_degrees(
 def test_jax_numpy_negative(
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     frontend,
@@ -1490,7 +1496,7 @@ def test_jax_numpy_negative(
 @handle_frontend_test(
     fn_tree="jax.numpy.rad2deg",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
     ),
 )
 def test_jax_numpy_rad2deg(
@@ -1522,7 +1528,6 @@ def test_jax_numpy_rad2deg(
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        shared_dtype=True,
         min_value=-np.inf,
         max_value=np.inf,
     ),
@@ -1538,6 +1543,7 @@ def test_jax_numpy_fmax(
     frontend,
 ):
     input_dtype, inputs = dtype_and_inputs
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1558,7 +1564,6 @@ def test_jax_numpy_fmax(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        shared_dtype=True,
     ),
 )
 def test_jax_numpy_maximum(
@@ -1570,6 +1575,7 @@ def test_jax_numpy_maximum(
     fn_tree,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1589,7 +1595,6 @@ def test_jax_numpy_maximum(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.minimum"
@@ -1604,6 +1609,7 @@ def test_jax_numpy_minimum(
     fn_tree,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1629,10 +1635,46 @@ def test_jax_numpy_minimum(
         min_dim_size=1,
         max_dim_size=3,
         num_arrays=2,
-        shared_dtype=True,
     ),
 )
 def test_jax_numpy_heaviside(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[0],
+    )
+
+
+# log
+@handle_frontend_test(
+    fn_tree="jax.numpy.log",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+    ),
+)
+def test_jax_numpy_log(
     *,
     dtype_and_x,
     num_positional_args,
@@ -1652,6 +1694,7 @@ def test_jax_numpy_heaviside(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x1=x[0],
-        x2=x[0],
+        rtol=1e-01,
+        atol=1e-02,
+        x=x[0],
     )

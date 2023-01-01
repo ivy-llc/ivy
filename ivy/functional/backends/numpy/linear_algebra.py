@@ -331,7 +331,7 @@ def svd(
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
-def svdvals(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def svdvals(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.svd(x, compute_uv=False)
 
 
@@ -404,7 +404,7 @@ def vector_norm(
     if axis is None:
         np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
     else:
-        if isinstance(ord, int) and ord != 0:
+        if isinstance(ord, (int, float)) and ord != 0:
             np_normalized_vector = np.sum(
                 np.abs(x) ** ord, axis=axis, keepdims=keepdims
             ) ** (1.0 / ord)

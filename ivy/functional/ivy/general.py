@@ -161,7 +161,7 @@ def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
 ) -> bool:
     """
-    Determines whether the input x is an Ivy Array.
+    Determines whether the input x is a valid Ivy Array.
 
     Parameters
     ----------
@@ -174,7 +174,7 @@ def is_ivy_array(
     Returns
     -------
     ret
-        Boolean, whether or not x is an array.
+        Boolean, whether or not x is a valid Ivy Array.
 
     Examples
     --------

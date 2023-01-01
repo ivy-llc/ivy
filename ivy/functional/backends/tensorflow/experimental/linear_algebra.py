@@ -59,9 +59,9 @@ def matrix_exp(
 
 
 def eig(
-    x: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.Tensor],
     /,
-) -> Tuple[Union[tf.Tensor, tf.Variable]]:
+) -> Tuple[tf.Tensor]:
     if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
         return tf.linalg.eig(tf.cast(x, tf.float64))
     return tf.linalg.eig(x)
