@@ -1474,6 +1474,7 @@ def test_jax_lax_gt(
         y=xs[1],
     )
 
+
 # cos
 @handle_frontend_test(
     fn_tree="jax.lax.cos",
