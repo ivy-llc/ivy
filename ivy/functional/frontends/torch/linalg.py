@@ -14,7 +14,7 @@ def norm(A, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
             ord=2
         return ivy.vector_norm(A, axis=dim, keepdims=keepdim, ord=ord, dtype=dtype, out=out)
     # If dim is a 2-tuple, the matrix norm will be computed.
-    else if (type(dim) is tuple and len(dim)==2):
+    elif (type(dim) is tuple and len(dim)==2):
         if ord is None:
             ord='fro'
         return ivy.matrix_norm(A, ord=ord, axis=dim, keepdims=keepdim, out=out)
