@@ -9,21 +9,23 @@ from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 @to_ivy_arrays_and_back
 def norm(A, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
     # If dim is an int, the vector norm will be computed.
-    if (type(dim) is int or (type(dim) is tuple and len(dim)==1)):
+    if (type(dim) is int or (type(dim) is tuple and len(dim) == 1)):
         if ord is None:
-            ord=2
-        return ivy.vector_norm(A, axis=dim, keepdims=keepdim, ord=ord, dtype=dtype, out=out)
+            ord = 2
+        return ivy.vector_norm(A, axis=dim, keepdims=keepdim, ord=ord, dtype=dtype, 
+                               out=out)
     # If dim is a 2-tuple, the matrix norm will be computed.
-    elif (type(dim) is tuple and len(dim)==2):
+    elif (type(dim) is tuple and len(dim) == 2):
         if ord is None:
-            ord='fro'
+            ord = 'fro'
         return ivy.matrix_norm(A, ord=ord, axis=dim, keepdims=keepdim, out=out)
     # If dim is None
     else:
-        # and ord= None, A will be flattened to 1D and the 2-norm of the resulting vector will be computed.
+        # and ord= None, A will be flattened to 1D 
+        # and the 2-norm of the resulting vector will be computed.
         if ord is None:  
-             A=ivy.flatten(A)
-             return ivy.vector_norm(A, axis=dim, keepdims=keepdim, ord=2, dtype=dtype, out=out)
+            A=ivy.flatten(A)
+            return ivy.vector_norm(A, axis=dim, keepdims=keepdim, ord=2, dtype=dtype, out=out)
         # and ord != None, A must be 1D or 2D.
         else:
              dimension = ivy.shape(A)
