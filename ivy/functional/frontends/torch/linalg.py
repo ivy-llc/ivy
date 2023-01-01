@@ -30,12 +30,12 @@ def norm(A, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
         # and ord != None, A must be 1D or 2D.
         else:
             dimension = ivy.shape(A)
-            if (type(dimension) is tuple and len(dimension)==2):
-                dim=(-2, -1)
+            if (type(dimension) is tuple and len(dimension) == 2):
+                dim = (-2, -1)
                 return ivy.matrix_norm(A, ord=ord, axis=dim, keepdims=keepdim, out=out)
             else:
-                return ivy.vector_norm(A, axis=dim, keepdims=keepdim, ord=ord, dtype=dtype,
-                                       out=out)
+                return ivy.vector_norm(A, axis=dim, keepdims=keepdim, ord=ord, 
+                                       dtype=dtype, out=out)
             
 
 @to_ivy_arrays_and_back
