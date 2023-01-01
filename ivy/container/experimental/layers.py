@@ -1035,17 +1035,18 @@ class ContainerWithLayersExperimental(ContainerBase):
         dim
             The dimension along which to take the one dimensional FFT.
         norm
-            Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
             "backward" indicates no normalization.
             "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
             "forward" indicates normalization by $\frac{1}{n}$.
         n
-            Optional argument indicating the sequence length, if given, the input would be
-            padded with zero or truncated to length n before performing FFT.
+            Optional argument indicating the sequence length, if given, the input would
+            be padded with zero or truncated to length n before performing FFT.
             Should be a integer greater than 1.
         out
-            Optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
@@ -1060,11 +1061,11 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> dims = ivy.Container(a=0, b=0)
         >>> c.fft(dims)
         {
-            a: ivy.array([0.+0.j, 12.+0.j, 8.+0.j, 4.+0.j]),
-            b: ivy.array([-3.44509285e-16+1.14423775e-17j, 8.00000000e+00-8.11483250e-16j,
-                           2.33486982e-16+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j,
-                           9.95799250e-17+2.33486982e-16j, 0.00000000e+00+7.66951701e-17j,
-                           1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])
+        a: ivy.array([0.+0.j, 12.+0.j, 8.+0.j, 4.+0.j]),
+        b: ivy.array([-3.44509285e-16+1.14423775e-17j, 8.00000000e+00-8.11483250e-16j,
+                       2.33486982e-16+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j,
+                       9.95799250e-17+2.33486982e-16j, 0.00000000e+00+7.66951701e-17j,
+                       1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])
         }
         """
         return self.static_fft(
@@ -1100,17 +1101,18 @@ class ContainerWithLayersExperimental(ContainerBase):
         dim
             The dimension along which to take the one dimensional IFFT.
         norm
-            Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
             "backward" indicates no normalization.
             "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
             "forward" indicates normalization by $\frac{1}{n}$.
         n
-            Optional argument indicating the sequence length, if given, the input would be
-            padded with zero or truncated to length n before performing IFFT.
+            Optional argument indicating the sequence length, if given, the input would
+            be padded with zero or truncated to length n before performing IFFT.
             Should be a integer greater than 1.
         out
-            Optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
@@ -1125,11 +1127,11 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> dims = ivy.Container(a=0, b=0)
         >>> ivy.Container.static_ifft(c, dims)
         {
-            a: ivy.array([0.+0.j, 1.+0.j, 2.+0.j, 3.+0.j]),
-            b: ivy.array([-4.30636606e-17+1.43029718e-18j, 0.00000000e+00+1.53080850e-17j,
-                           1.43029718e-18+1.53080850e-17j, 0.00000000e+00+9.58689626e-18j,
-                           1.24474906e-17+2.91858728e-17j, 0.00000000e+00+1.53080850e-17j,
-                           2.91858728e-17+1.53080850e-17j, 1.00000000e+00-1.01435406e-16j])
+        a: ivy.array([0.+0.j, 1.+0.j, 2.+0.j, 3.+0.j]),
+        b: ivy.array([-4.30636606e-17+1.43029718e-18j, 0.00000000e+00+1.53080850e-17j,
+                       1.43029718e-18+1.53080850e-17j, 0.00000000e+00+9.58689626e-18j,
+                       1.24474906e-17+2.91858728e-17j, 0.00000000e+00+1.53080850e-17j,
+                       2.91858728e-17+1.53080850e-17j, 1.00000000e+00-1.01435406e-16j])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1165,17 +1167,18 @@ class ContainerWithLayersExperimental(ContainerBase):
         dim
             The dimension along which to take the one dimensional IFFT.
         norm
-            Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
             "backward" indicates no normalization.
-            "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
-            "forward" indicates normalization by $\frac{1}{n}$.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
         n
-            Optional argument indicating the sequence length, if given, the input would be
-            padded with zero or truncated to length n before performing IFFT.
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing IFFT.
             Should be a integer greater than 1.
         out
-            Optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
@@ -1190,11 +1193,11 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> dims = ivy.Container(a=0, b=0)
         >>> c.ifft(dims)
         {
-            a: ivy.array([0.+0.j, 1.+0.j, 2.+0.j, 3.+0.j]),
-            b: ivy.array([-4.30636606e-17+1.43029718e-18j, 0.00000000e+00+1.53080850e-17j,
-                           1.43029718e-18+1.53080850e-17j, 0.00000000e+00+9.58689626e-18j,
-                           1.24474906e-17+2.91858728e-17j, 0.00000000e+00+1.53080850e-17j,
-                           2.91858728e-17+1.53080850e-17j, 1.00000000e+00-1.01435406e-16j])
+        a: ivy.array([0.+0.j, 1.+0.j, 2.+0.j, 3.+0.j]),
+        b: ivy.array([-4.30636606e-17+1.43029718e-18j, 0.00000000e+00+1.53080850e-17j,
+                       1.43029718e-18+1.53080850e-17j, 0.00000000e+00+9.58689626e-18j,
+                       1.24474906e-17+2.91858728e-17j, 0.00000000e+00+1.53080850e-17j,
+                       2.91858728e-17+1.53080850e-17j, 1.00000000e+00-1.01435406e-16j])
         }
         """
         return self.static_ifft(

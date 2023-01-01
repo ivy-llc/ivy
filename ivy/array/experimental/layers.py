@@ -465,17 +465,18 @@ class ArrayWithLayersExperimental(abc.ABC):
         dim
             The dimension along which to take the one dimensional FFT.
         norm
-            Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
             "backward" indicates no normalization.
-            "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
-            "forward" indicates normalization by $\frac{1}{n}$.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
         n
-            Optional argument indicating the sequence length, if given, the input would be
-            padded with zero or truncated to length n before performing FFT.
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing FFT.
             Should be a integer greater than 1.
         out
-            Optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            Optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -519,17 +520,18 @@ class ArrayWithLayersExperimental(abc.ABC):
         dim
             The dimension along which to take the one dimensional IFFT.
         norm
-            Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
             "backward" indicates no normalization.
-            "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
-            "forward" indicates normalization by $\frac{1}{n}$.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
         n
-            Optional argument indicating the sequence length, if given, the input would be
-            padded with zero or truncated to length n before performing IFFT.
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing IFFT.
             Should be a integer greater than 1.
         out
-            Optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
