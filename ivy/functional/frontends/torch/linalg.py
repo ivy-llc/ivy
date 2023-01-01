@@ -9,7 +9,7 @@ from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 @to_ivy_arrays_and_back
 def norm(A, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
     # If dim is an int, the vector norm will be computed.
-    if type(dim) is int:
+    if (type(dim) is int or (type(dim) is tuple and len(dim)==1)):
         if ord is None:
             ord=2
         return ivy.vector_norm(A, axis=dim, keepdims=keepdim, ord=ord, dtype=dtype, out=out)
