@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like,
+    infer_dtype,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -163,6 +164,7 @@ def cholesky(
 @handle_nestable
 @handle_exceptions
 @handle_array_like
+@infer_dtype
 def cov(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Optional[ivy.Array] = None,

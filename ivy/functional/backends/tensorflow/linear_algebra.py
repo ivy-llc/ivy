@@ -57,9 +57,9 @@ def cov(
 
     if dtype is None:
         if x2 is None:
-            dtype = tf.experimental.numpy.result_type(x1, tf.float64)
+            dtype = tf.experimental.numpy.result_type(x1, tf.float32)
         else:
-            dtype = tf.experimental.numpy.result_type(x1, x2, tf.float64)
+            dtype = tf.experimental.numpy.result_type(x1, x2, tf.float32)
 
     if ddof is None:
         if bias == 0:
