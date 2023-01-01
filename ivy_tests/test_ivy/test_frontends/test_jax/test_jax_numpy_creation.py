@@ -306,6 +306,7 @@ def test_jax_lax_int16(
         x=x[0],
     )
 
+
 # uint16
 @handle_frontend_test(
     fn_tree="jax.numpy.uint16",
