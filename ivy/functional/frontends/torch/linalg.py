@@ -25,14 +25,15 @@ def norm(input, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
         # and the 2-norm of the resulting vector will be computed.
         if ord is None:  
             input = ivy.flatten(input)
-            return ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=2, dtype=dtype, 
-                                   out=out)
+            return ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=2, 
+                                   dtype=dtype, out=out)
         # and ord != None, A must be 1D or 2D.
         else:
             dimension = ivy.shape(input)
             if (type(dimension) is tuple and len(dimension) == 2):
                 dim = (-2, -1)
-                return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+                return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, 
+                                       out=out)
             else:
                 return ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord, 
                                        dtype=dtype, out=out)
