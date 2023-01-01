@@ -2,11 +2,6 @@
 from hypothesis import strategies as st, assume
 import math
 
-try:
-    import exceptions
-except ImportError:
-    pass
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
