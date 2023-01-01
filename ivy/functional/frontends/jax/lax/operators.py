@@ -208,11 +208,6 @@ def gt(x, y):
 
 
 @to_ivy_arrays_and_back
-def int16(x):
-    return ivy.astype(x, ivy.int16)
-
-
-@to_ivy_arrays_and_back
 def le(x, y):
     return ivy.less_equal(x, y)
 
