@@ -759,7 +759,7 @@ def _tensorinv_helper(draw):
             dtype=dtype[0],
             min_value=-100,
             max_value=100,
-        )
+        ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon)
     )
 
     return dtype, input, ind
