@@ -720,15 +720,48 @@ def test_torch_svdvals(
 # tensorinv
 @st.composite
 def _tensorinv_helper(draw):
-    ind = draw(helpers.ints(min_value=1, max_value=10))
-    dtype, input = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-100,
-        max_value=100,
-        shape=helpers.get_shape(min_num_dims=2, max_num_dims=10).filter(
-            lambda x: np.prod(ivy.shape(x)[:ind]) == np.prod(ivy.shape(x)[ind:]),
+    def factors(x):
+        result = [1, ]
+        i = 2
+        while i * i <= x:
+            if x % i == 0:
+                result.append(i)
+                if x // i != i:
+                    result.append(x // i)
+            i += 1
+        result.append(x)
+        return np.array(result)
+    ind = draw(helpers.ints(min_value=1, max_value=5))
+    product_half = draw(helpers.ints(min_value=2,max_value=25))
+    factors_list = factors(product_half)
+    shape = ()
+    while len(shape) < ind and ind > 2:
+        while np.prod(shape) < product_half:
+            a = factors_list[np.random.randint(len(factors_list))]
+            shape += (a,)
+        if np.prod(shape) > product_half:
+            shape = ()
+        while len(shape) < ind:
+            shape += (1,)
+        if np.prod(shape) == product_half and len(shape) == ind:
+            shape += shape[::-1]
+            break
+    if ind == 1:
+        shape += (product_half, product_half)
+    if ind == 2:
+        shape += (1, product_half, product_half, 1)
+    shape_cor = ()
+    for i in shape:
+        shape_cor += (int(i),)
+    dtype = draw(helpers.get_dtypes("float"))
+    input = draw(helpers.array_values(
+            shape=shape_cor,
+            dtype=dtype[0],
+            min_value=-100,
+            max_value=100,
         )
-    ))
+    )
+
     return dtype, input, ind
 
 
