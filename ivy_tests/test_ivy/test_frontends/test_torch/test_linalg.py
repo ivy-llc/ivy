@@ -42,6 +42,54 @@ def _get_dtype_and_matrix(draw):
     )
 
 
+# norm
+@handle_frontend_test(
+    fn_tree="torch.linalg.norm",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays = 1,
+        min_value=-1e04,
+        max_value=1e04,
+        valid_axis=True,
+        allow_neg_axes=True,
+        max_axes_size=2
+    ),
+    ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 0, 1, -1, 2, -2]),
+    keepdim=st.booleans(),
+    dtype=helpers.get_dtypes("valid"),
+)
+def test_torch_norm(
+    *,
+    dtype_values_axis,
+    ord,
+    keepdim,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ord=ord,
+        dim=axis,
+        keepdim=keepdim,
+        dtype=dtype[0],
+    )
+    
+    
 # vector_norm
 @handle_frontend_test(
     fn_tree="torch.linalg.vector_norm",
