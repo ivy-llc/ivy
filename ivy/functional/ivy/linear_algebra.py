@@ -110,7 +110,6 @@ def cholesky(
                [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
                [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
 
-    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
     >>> u = ivy.cholesky(x, upper='false')
@@ -356,10 +355,6 @@ def diagonal(
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
-    out
-        optional output array to write the result in. Must have the same number
-        of dimensions as the function output.
-
     Returns
     -------
     ret
@@ -447,32 +442,30 @@ def diagonal(
     ivy.array([[3.],
                [4.]])
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[1., 2.],
-    ...                       [3., 4.]])
+    >>> x = ivy.array([[1., 2.],
+    ...                [3., 4.]])
     >>> d = ivy.diagonal(x)
     >>> print(d)
     ivy.array([1., 4.])
 
-    >>> x = ivy.native_array([[[ 0,  1,  2],
-    ...                        [ 3,  4,  5],
-    ...                        [ 6,  7,  8]],
-    ...                       [[ 9, 10, 11],
-    ...                        [12, 13, 14],
-    ...                        [15, 16, 17]],
-    ...                       [[18, 19, 20],
-    ...                        [21, 22, 23],
-    ...                        [24, 25, 26]]])
+    >>> x = ivy.array([[[ 0,  1,  2],
+    ...                 [ 3,  4,  5],
+    ...                 [ 6,  7,  8]],
+    ...                [[ 9, 10, 11],
+    ...                 [12, 13, 14],
+    ...                 [15, 16, 17]],
+    ...                [[18, 19, 20],
+    ...                 [21, 22, 23],
+    ...                 [24, 25, 26]]])
     >>> d = ivy.diagonal(x, offset=1, axis1=1, axis2=-1)
     >>> print(d)
     ivy.array([[ 1,  5],
                [10, 14],
                [19, 23]])
 
-    >>> x = ivy.native_array([[0, 1, 2],
-    ...                       [3, 4, 5],
-    ...                       [6, 7, 8]])
+    >>> x = ivy.array([[0, 1, 2],
+    ...                [3, 4, 5],
+    ...                [6, 7, 8]])
     >>> d = ivy.diagonal(x)
     >>> print(d)
     ivy.array([0, 4, 8])
@@ -787,6 +780,7 @@ def inv(
     x
         input array having shape ``(..., M, M)`` and whose innermost two dimensions form
         square matrices. Should have a floating-point data type.
+
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -880,6 +874,10 @@ def matmul(
     x2
         second input array. Should have a numeric data type. Must have at least one
         dimension.
+    transpose_a
+        if True, ``x1`` is transposed before multiplication.
+    transpose_b
+        if True, ``x2`` is transposed before multiplication.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -954,13 +952,12 @@ def matmul(
     >>> print(z)
     ivy.array(32.)
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[1., 2.], [0., 1.]])
-    >>> y = ivy.native_array([[2., 0.], [0., 3.]])
-    >>> z = ivy.matmul(x, y)
+    >>> x = ivy.array([[1., 2.], [0., 1.]])
+    >>> y = ivy.array([[2., 0.], [0., 3.]])
+    >>> z = ivy.matmul(x, y, transpose_b=True)
     >>> print(z)
-    ivy.array([[2., 6.],[0., 3.]])
+    ivy.array([[2., 6.],
+           [0., 3.]])
 
     With :class:`ivy.Container` inputs:
 
@@ -985,13 +982,12 @@ def matmul(
         b: ivy.array(9.)
     }
 
-    With a combination of :class:`ivy.NativeArray` and :class:`ivy.Array` inputs:
-
-    >>> x = ivy.native_array([[1., 2.], [0., 3.]])
+    >>> x = ivy.array([[1., 2.], [0., 3.]])
     >>> y = ivy.array([[1.], [3.]])
-    >>> z = ivy.matmul(x, y)
+    >>> z = ivy.matmul(x, y, transpose_a=True)
     >>> print(z)
-    ivy.array([[7.],[9.]])
+    ivy.array([[ 1.],
+       [11.]])
 
     """
     return current_backend(x1).matmul(
@@ -1399,9 +1395,7 @@ def matrix_transpose(
     ivy.array([[2., 1.],
        [3., 2.]])
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[0., 1., 2.], [1., 2., 3.]])
+    >>> x = ivy.array([[0., 1., 2.], [1., 2., 3.]])
     >>> y = ivy.matrix_transpose(x)
     >>> print(y)
     ivy.array([[0., 1.],
@@ -2335,8 +2329,9 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    keepdims: Optional[bool] = False,
+    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""Computes the vector norm of a vector (or batch of vectors) ``x``.
@@ -2350,7 +2345,7 @@ def vector_norm(
         vector norms. If an n-tuple, ``axis`` specifies the axes (dimensions) along
         which to compute batched vector norms. If ``None``, the vector norm must be
         computed over all array values (i.e., equivalent to computing the vector norm of
-        a flattened array). Negative indices must be supported. Default: ``None``.
+        a flattened array). Negative indices are also supported. Default: ``None``.
     keepdims
         If ``True``, the axes (dimensions) specified by ``axis`` must be included in the
         result as singleton dimensions, and, accordingly, the result must be compatible
@@ -2358,7 +2353,7 @@ def vector_norm(
         axes (dimensions) specified by ``axis`` must not be included in the result.
         Default: ``False``.
     ord
-        order of the norm. The following mathematical norms must be supported:
+        order of the norm. The following mathematical norms are supported:
 
         +------------------+----------------------------+
         | ord              | description                |
@@ -2372,16 +2367,12 @@ def vector_norm(
         | (int,float >= 1) | p-norm                     |
         +------------------+----------------------------+
 
-        The following non-mathematical "norms" must be supported:
+        The following non-mathematical "norms" are also supported:
 
         +------------------+--------------------------------+
         | ord              | description                    |
         +==================+================================+
         | 0                | sum(a != 0)                    |
-        +------------------+--------------------------------+
-        | -1               | 1./sum(1./abs(a))              |
-        +------------------+--------------------------------+
-        | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   |
         +------------------+--------------------------------+
         | -inf             | min(abs(a))                    |
         +------------------+--------------------------------+
@@ -2389,6 +2380,9 @@ def vector_norm(
         +------------------+--------------------------------+
 
         Default: ``2``.
+    dtype
+        data type that may be used to perform the computation more precisely. The input
+        array ``x`` gets cast to ``dtype`` before the function's computations.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2415,7 +2409,7 @@ def vector_norm(
 
     """
     return current_backend(x).vector_norm(
-        x, axis=axis, keepdims=keepdims, ord=ord, out=out
+        x, axis=axis, keepdims=keepdims, ord=ord, dtype=dtype, out=out
     )
 
 

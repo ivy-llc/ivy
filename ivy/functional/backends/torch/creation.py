@@ -135,8 +135,6 @@ def asarray(
         # if `obj` is a list of specifically tensors or
         # a multidimensional list which contains a tensor
         if isinstance(obj[0], torch.Tensor) or contain_tensor:
-            if len(obj) == 1:
-                dtype = obj[0].dtype
             if copy is True:
                 return (
                     torch.stack([torch.as_tensor(i, dtype=dtype) for i in obj])
@@ -330,12 +328,20 @@ def linspace(
     if axis is None:
         axis = -1
     if not endpoint:
-        ans = linspace_helper(start, stop, num + 1, axis, device=device)
+        if dtype is not None:
+            ans = linspace_helper(
+                start, stop, num + 1, axis, dtype=dtype, device=device
+            )
+        else:
+            ans = linspace_helper(start, stop, num + 1, axis, device=device)
         if axis < 0:
             axis += len(ans.shape)
         ans = ans[_slice_at_axis(slice(None, -1), axis)]
     else:
-        ans = linspace_helper(start, stop, num, axis, device=device)
+        if dtype is not None:
+            ans = linspace_helper(start, stop, num, axis, dtype=dtype, device=device)
+        else:
+            ans = linspace_helper(start, stop, num, axis, device=device)
     if (
         endpoint
         and ans.shape[0] > 1
@@ -358,7 +364,7 @@ def linspace(
 linspace.support_native_out = True
 
 
-def linspace_helper(start, stop, num, axis=None, *, device):
+def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
     num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
     start_is_array = isinstance(start, torch.Tensor)
     stop_is_array = isinstance(stop, torch.Tensor)
@@ -427,7 +433,7 @@ def linspace_helper(start, stop, num, axis=None, *, device):
         else:
             res = [linspace_method(start, stp, num, device=device) for stp in stop]
     else:
-        return linspace_method(start, stop, num, device=device)
+        return linspace_method(start, stop, num, dtype=dtype, device=device)
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
         res = torch.transpose(res, axis, -1)
@@ -556,28 +562,6 @@ array = asarray
 
 def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return x.clone()
-
-
-@with_unsupported_device_and_dtypes(
-    {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
-)
-def logspace(
-    start: Union[torch.Tensor, int],
-    stop: Union[torch.Tensor, int],
-    /,
-    num: int,
-    *,
-    base: float = 10.0,
-    axis: Optional[int] = None,
-    dtype: torch.dtype,
-    device: torch.device,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return ivy.pow(ivy.asarray(base, dtype=dtype), power_seq)
-
-
-logspace.support_native_out = True
 
 
 def one_hot(

@@ -1,6 +1,9 @@
-name: intelligent-tests
+name: intelligent-tests-pr
 on:
   workflow_dispatch:
+  pull_request:
+    types: [labeled, opened, synchronize, reopened, review_requested]
+
 permissions:
   actions: read
 jobs:
@@ -15,39 +18,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-           github_token: ${{ secrets.GITHUB_TOKEN }}
-           job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master1 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py extra
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }} 
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master1
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -63,42 +43,17 @@ jobs:
            persist-credentials: false
            submodules: "recursive"
            fetch-depth: 100
-      
-
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
 
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master2 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         continue-on-error: true
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master2
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -115,39 +70,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master3 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master3
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -164,39 +96,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master4 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master4
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -213,39 +122,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master5 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo 
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master5
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -262,39 +148,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master6 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master6
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -311,39 +174,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master7 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master7
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -360,39 +200,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master8 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master8
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -409,39 +226,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master9 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master9
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -458,39 +252,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master10 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master10
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -507,39 +278,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master11 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master11
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -556,39 +304,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master12 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master12
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -605,39 +330,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master13 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master13
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -654,39 +356,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master14 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master14
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -703,39 +382,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master15 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master15
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -752,39 +408,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master16 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master16
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -801,39 +434,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master17 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master17
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -850,39 +460,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master18 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master18
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -899,39 +486,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master19 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master19
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -948,39 +512,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master20 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master20
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -997,39 +538,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master21 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master21
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -1046,39 +564,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master22 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master22
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -1095,39 +590,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master23 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master23
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -1144,39 +616,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master24 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master24
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -1193,39 +642,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master25 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master25
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -1242,39 +668,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master26 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master26
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -1291,39 +694,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master27 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master27
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -1340,39 +720,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master28 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master28
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -1389,39 +746,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master29 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master29
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -1438,39 +772,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master30 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master30
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -1487,39 +798,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master31 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master31
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -1536,39 +824,16 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master32 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller pymongo
+           pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
-           cd ..
-           mkdir tests
-           cp ivy/tests.pbz2 tests/
-           cd ivy
-            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests_pr.py
          continue-on-error: true
-
-       - name: Push Mapping
-         uses: cpina/github-action-push-to-another-repository@main
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         with:
-           source-directory: tests/
-           destination-github-username: 'unifyai'
-           destination-repository-name: 'Mapping'
-           user-email: rashul.chutani@gmail.com
-           commit-message: Update Mapping
-           target-branch: master32
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'

@@ -5,6 +5,7 @@ from hypothesis import settings
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
+import ivy.functional.frontends.torch as torch_frontend
 
 
 # can_cast
@@ -72,3 +73,17 @@ def test_torch_promote_types(
         test_values=False,
     )
     assert ret == repr(frontend_ret[0]).split(".")[1]
+
+
+# set_default_dtype
+@handle_frontend_test(
+    fn_tree="torch.set_default_dtype",
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_set_default_dtype(
+    *,
+    dtype,
+):
+    dtype = dtype[0]
+    torch_frontend.set_default_dtype(dtype)
+    assert torch_frontend.get_default_dtype() == dtype

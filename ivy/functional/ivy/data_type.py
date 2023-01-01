@@ -94,6 +94,12 @@ def _get_function_list(func):
                     ),
                 )
             elif isinstance(nodef, ast.Attribute):
+                if (
+                    hasattr(nodef, "value")
+                    and hasattr(nodef.value, "id")
+                    and nodef.value.id != "ivy"
+                ):
+                    continue
                 names[nodef.attr] = getattr(
                     func,
                     "__self__",
@@ -940,18 +946,21 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     Examples
     --------
     With :class:`ivy.Dtype` input:
+
     >>> xType = ivy.float16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     float16
 
     With :class:`ivy.NativeDtype` inputs:
+
     >>> xType = ivy.native_uint16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     <dtype:'uint16'>
 
     With :code:`str` input:
+
     >>> xType = 'int32'
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
@@ -1004,6 +1013,7 @@ def default_float_dtype(
     >>> ivy.default_float_dtype(input=x)
     'float16'
     """
+    global default_float_dtype_stack
     if ivy.exists(float_dtype):
         if as_native is True:
             return ivy.as_native_dtype(float_dtype)
@@ -1020,22 +1030,27 @@ def default_float_dtype(
             ):
                 ret = ivy.float64
             else:
-                def_dtype = default_dtype()
-                if ivy.is_float_dtype(def_dtype):
-                    ret = def_dtype
+                if not default_float_dtype_stack:
+                    def_dtype = default_dtype()
+                    if ivy.is_float_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "float32"
                 else:
-                    ret = ivy.float32
+                    ret = default_float_dtype_stack[-1]
         elif isinstance(input, Number):
             if _check_float64(input):
                 ret = ivy.float64
             else:
-                def_dtype = default_dtype()
-                if ivy.is_float_dtype(def_dtype):
-                    ret = def_dtype
+                if not default_float_dtype_stack:
+                    def_dtype = default_dtype()
+                    if ivy.is_float_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "float32"
                 else:
-                    ret = ivy.float32
+                    ret = default_float_dtype_stack[-1]
     else:
-        global default_float_dtype_stack
         if not default_float_dtype_stack:
             def_dtype = default_dtype()
             if ivy.is_float_dtype(def_dtype):
@@ -1120,7 +1135,9 @@ def default_dtype(
         return ivy.as_ivy_dtype(dtype)
     as_native = ivy.default(as_native, False)
     if ivy.exists(item):
-        if isinstance(item, (list, tuple, dict)) and len(item) == 0:
+        if hasattr(item, "override_dtype_check"):
+            return item.override_dtype_check()
+        elif isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_float_dtype(item):
             return ivy.default_float_dtype(input=item, as_native=as_native)
@@ -1184,6 +1201,7 @@ def default_int_dtype(
     >>> ivy.default_int_dtype(input=x)
     'int32'
     """
+    global default_int_dtype_stack
     if ivy.exists(int_dtype):
         if as_native is True:
             return ivy.as_native_dtype(int_dtype)
@@ -1212,11 +1230,14 @@ def default_int_dtype(
             ):
                 ret = ivy.int64
             else:
-                def_dtype = ivy.default_dtype()
-                if ivy.is_int_dtype(def_dtype):
-                    ret = def_dtype
+                if not default_int_dtype_stack:
+                    def_dtype = ivy.default_dtype()
+                    if ivy.is_int_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "int32"
                 else:
-                    ret = ivy.int32
+                    ret = default_int_dtype_stack[-1]
         elif isinstance(input, Number):
             if (
                 input > 9223372036854775807
@@ -1227,13 +1248,15 @@ def default_int_dtype(
             elif input > 2147483647 and input != ivy.inf:
                 ret = ivy.int64
             else:
-                def_dtype = ivy.default_dtype()
-                if ivy.is_int_dtype(def_dtype):
-                    ret = def_dtype
+                if not default_int_dtype_stack:
+                    def_dtype = ivy.default_dtype()
+                    if ivy.is_int_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "int32"
                 else:
-                    ret = ivy.int32
+                    ret = default_int_dtype_stack[-1]
     else:
-        global default_int_dtype_stack
         if not default_int_dtype_stack:
             def_dtype = ivy.default_dtype()
             if ivy.is_int_dtype(def_dtype):
@@ -1287,6 +1310,7 @@ def default_uint_dtype(
     >>> ivy.default_uint_dtype(input=x)
     'uint32'
     """
+    global default_uint_dtype_stack
     if ivy.exists(uint_dtype):
         if as_native is True:
             return ivy.as_native_dtype(uint_dtype)
@@ -1308,22 +1332,27 @@ def default_uint_dtype(
             ):
                 ret = ivy.uint64
             else:
-                def_dtype = ivy.default_dtype()
-                if ivy.is_uint_dtype(def_dtype):
-                    ret = def_dtype
+                if default_uint_dtype_stack:
+                    ret = default_uint_dtype_stack[-1]
                 else:
-                    ret = ivy.uint32
+                    def_dtype = ivy.default_dtype()
+                    if ivy.is_uint_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "uint32"
         elif isinstance(input, Number):
             if input > 4294967295 and input != ivy.inf and ivy.backend != "torch":
                 ret = ivy.uint64
             else:
-                def_dtype = ivy.default_dtype()
-                if ivy.is_uint_dtype(def_dtype):
-                    ret = def_dtype
+                if default_uint_dtype_stack:
+                    ret = default_uint_dtype_stack[-1]
                 else:
-                    ret = ivy.uint32
+                    def_dtype = ivy.default_dtype()
+                    if ivy.is_uint_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "uint32"
     else:
-        global default_uint_dtype_stack
         if default_uint_dtype_stack:
             ret = default_uint_dtype_stack[-1]
         else:
@@ -1565,36 +1594,39 @@ def is_int_dtype(
 
     Examples
     --------
-     With :class:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
+
     >>> x = ivy.is_int_dtype(ivy.float64)
     >>> print(x)
     False
 
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([1., 2., 3.])
     >>> x.dtype
     float32
-
     >>> print(ivy.is_int_dtype(x))
     False
 
     With :class:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], dtype=ivy.int16)
     >>> print(ivy.is_int_dtype(x))
     True
 
     With :code:`Number` input:
+
     >>> x = 1
     >>> print(ivy.is_int_dtype(x))
     True
 
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3, 4, 5]))
     >>> x.a.dtype
     float32
     >>> x.b.dtype
     int32
-
     >>> print(ivy.is_int_dtype(x))
     {
         a: false,
@@ -1790,6 +1822,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
     Examples
     --------
     With :class:`ivy.Dtype` input:
+
     >>> ivy.set_default_dtype(ivy.bool)
     >>> ivy.default_dtype_stack
     ['bool']
@@ -1801,6 +1834,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
     >>> ivy.unset_default_dtype()
 
     With :class:`ivy.NativeDtype` input:
+
     >>> ivy.set_default_dtype(ivy.native_uint64)
     >>> ivy.default_dtype_stack
     ['uint64']
@@ -1812,12 +1846,25 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
 
 @handle_exceptions
 def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
-    """Summary.
+    """
+    Sets the 'float_dtype' as the default data type.
 
     Parameters
     ----------
     float_dtype
+        The float data type to be set as the default.
 
+    Examples
+    --------
+    With :class: `ivy.Dtype` input:
+
+    >>> ivy.set_default_float_dtype(ivy.floatDtype("float64"))
+    >>> ivy.default_float_dtype()
+    'float64'
+
+    >>> ivy.set_default_float_dtype(ivy.floatDtype("float32"))
+    >>> ivy.default_float_dtype()
+    'float32'
     """
     float_dtype = ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
     global default_float_dtype_stack
@@ -1837,6 +1884,7 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
     Examples
     --------
     With :class: `ivy.Dtype` input:
+
     >>> ivy.set_default_int_dtype(ivy.intDtype("int64"))
     >>> ivy.default_int_dtype()
     'int64'
@@ -1935,6 +1983,7 @@ def unset_default_float_dtype():
     >>> ivy.set_default_float_dtype(ivy.float64)
     >>> ivy.default_float_dtype_stack
     ['float32','float64']
+
     >>> ivy.unset_default_float_dtype()
     >>> ivy.default_float_dtype_stack
     ['float32']

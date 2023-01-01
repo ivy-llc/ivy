@@ -77,7 +77,13 @@ def std(input, dim, unbiased, keepdim=False, *, out=None):
     },
     "torch",
 )
-def prod(input, dim, keepdim=False, *, dtype=None):
+# TODO: the original torch.prod places * right before `dtype`
+def prod(input, dim, *, keepdim=False, dtype=None):
+    if not dtype:
+        if "int" in input.dtype:
+            dtype = ivy.int64
+        elif "float" in input.dtype:
+            dtype = ivy.float32
     return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 
 
@@ -130,3 +136,12 @@ def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
     )
     temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
     return temp_std, temp_mean
+
+
+@to_ivy_arrays_and_back
+def var_mean(input, dim, unbiased, keepdim=False, *, out=None):
+    temp_var = ivy.var(
+        input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
+    )
+    temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
+    return (temp_var, temp_mean)

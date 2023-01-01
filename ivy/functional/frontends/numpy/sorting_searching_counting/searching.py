@@ -4,7 +4,10 @@ import ivy
 
 from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    from_zero_dim_arrays_to_scalar,
+)
 
 
 @to_ivy_arrays_and_back
@@ -26,11 +29,13 @@ def nonzero(a):
 
 
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def argmin(a, /, *, axis=None, keepdims=False, out=None):
     return ivy.argmin(a, axis=axis, out=out, keepdims=keepdims)
 
 
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def argmax(
     a,
     /,
@@ -57,17 +62,28 @@ def argwhere(a):
     return ivy.argwhere(a)
 
 
-@to_ivy_arrays_and_back
-def nanargmax(a, axis=None, keepdims=False):
-    finite_a = ivy.isfinite(a)
-    if ivy.all(finite_a):
-        return ivy.argmax(a, axis=axis, keepdims=keepdims)
-    return ivy.argmax(a[finite_a], axis=axis, keepdims=keepdims)
+# nanargmin and nanargmax composition helper
+def _nanargminmax(a, axis=None):
+    # check nans
+    nans = ivy.isnan(a).astype(ivy.bool)
+    # replace nans with inf
+    a = ivy.where(nans, ivy.inf, a)
+    if nans is not None:
+        nans = ivy.all(nans, axis=axis)
+        if ivy.any(nans):
+            raise ivy.exceptions.IvyError("All-NaN slice encountered")
+    return a
 
 
 @to_ivy_arrays_and_back
-def nanargmin(a, axis=None, keepdims=False):
-    finite_a = ivy.isfinite(a)
-    if ivy.all(finite_a):
-        return ivy.argmin(a, axis=axis, keepdims=keepdims)
-    return ivy.argmin(a[finite_a], axis=axis, keepdims=keepdims)
+@from_zero_dim_arrays_to_scalar
+def nanargmax(a, /, *, axis=None, out=None, keepdims=False):
+    a = _nanargminmax(a, axis=axis)
+    return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def nanargmin(a, /, *, axis=None, out=None, keepdims=False):
+    a = _nanargminmax(a, axis=axis)
+    return ivy.argmin(a, axis=axis, keepdims=keepdims, out=out)
