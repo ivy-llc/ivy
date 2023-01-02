@@ -13,23 +13,32 @@ from pathlib import Path
 
 
 hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
-redis_connect = None
+redis_connect_dev = None
+redis_connect_master = None
 try:
     os.makedirs(hypothesis_cache)
 except FileExistsError:
     pass
 
 
-def is_db_available():
-    global redis_connect
-    redis_connect = redis.Redis.from_url(
-        url="redis://redis-17011.c259.us-central1-2.gce.cloud.redislabs.com:17011",
-        username="general_use",
-        password="Hypothesiscache@123",
-        max_connections=2,
-    )
+def is_db_available(master=False, credentials=None):
+    global redis_connect_dev, redis_connect_master
+    redis_connect_local = None
+    if master:
+        redis_connect_master = redis.Redis.from_url(
+            url=credentials[0], password=credentials[1]
+        )
+        redis_connect_local = redis_connect_master
+    else:
+        redis_connect_dev = redis.Redis.from_url(
+            url="redis://redis-17011.c259.us-central1-2.gce.cloud.redislabs.com:17011",
+            username="general_use",
+            password="Hypothesiscache@123",
+            max_connections=2,
+        )
+        redis_connect_local = redis_connect_dev
     try:
-        redis_connect.get("b")
+        redis_connect_local.get("b")
     except redis.exceptions.ConnectionError:
         print("Fallback to DirectoryBasedExamples")
         return False
@@ -59,18 +68,24 @@ def pytest_configure(config):
     getopt = config.getoption
     max_examples = getopt("--num-examples")
     deadline = getopt("--deadline")
-    if os.getenv("REDIS_URL", default=False) and os.environ["REDIS_URL"]:
-        print("Update Database with examples !")
-        db = redis.Redis.from_url(
-            os.environ["REDIS_URL"], password=os.environ["REDIS_PASSWD"]
+    if (
+        os.getenv("REDIS_URL", default=False)
+        and os.environ["REDIS_URL"]
+        and is_db_available(
+            master=True,
+            credentials=(os.environ["REDIS_URL"], os.environ["REDIS_PASSWD"]),
         )
+    ):
+        print("Update Database with examples !")
         profile_settings["database"] = RedisExampleDatabase(
-            db, key_prefix=b"hypothesis-example:"
+            redis_connect_master, key_prefix=b"hypothesis-example:"
         )
 
-    elif is_db_available():
+    elif not os.getenv("REDIS_URL") and is_db_available():
         print("Use Database in ReadOnly Mode with local caching !")
-        shared = RedisExampleDatabase(redis_connect, key_prefix=b"hypothesis-example:")
+        shared = RedisExampleDatabase(
+            redis_connect_dev, key_prefix=b"hypothesis-example:"
+        )
         profile_settings["database"] = MultiplexedDatabase(
             DirectoryBasedExampleDatabase(path=hypothesis_cache),
             ReadOnlyDatabase(shared),

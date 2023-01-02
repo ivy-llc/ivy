@@ -1,15 +1,15 @@
 # global
 import ivy
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
 )
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def mean(
     x,
     /,
@@ -33,7 +33,7 @@ def mean(
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def nanmean(
     a,
     /,
@@ -68,7 +68,8 @@ def nanmean(
     return ret
 
 
-@from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def std(
     x,
     /,
@@ -91,8 +92,8 @@ def std(
     return ret
 
 
-# @from_zero_dim_arrays_to_float
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
     axis = tuple(axis) if isinstance(axis, list) else axis
     global avg
@@ -126,15 +127,25 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
 
 
 @to_ivy_arrays_and_back
-def cov(
-    x,
-    y=None,
-    bias=False,
-    dtype=None,
-    fweights=None,
-    aweights=None,
-    ddof=None
+@from_zero_dim_arrays_to_scalar
+def nanstd(
+    a, /, *, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=True
 ):
+    a = a[~ivy.isnan(a)]
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    if dtype:
+        a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+
+    ret = ivy.std(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    return ret
+
+
+@to_ivy_arrays_and_back
+def cov(x, y=None, bias=False, dtype=None, fweights=None, aweights=None, ddof=None):
     # check if inputs are valid
     input_check = ivy.valid_dtype(dtype) and x.ndim in [0, 1]
 
@@ -158,7 +169,7 @@ def cov(
             # if w exists, use weighted average
             xw = x.multiply(w)
             w_sum = ivy.sum(w)
-            average = ivy.stable_divide(ivy.sum(xw, axis=1) , w_sum)
+            average = ivy.stable_divide(ivy.sum(xw, axis=1), w_sum)
         else:
             # else compute arithmetic average
             average = ivy.mean(x, axis=1)

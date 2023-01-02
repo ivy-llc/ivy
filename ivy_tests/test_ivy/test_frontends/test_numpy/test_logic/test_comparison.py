@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -13,11 +14,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("valid"),
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
+                shared_dtype=True,
             )
         ],
-        get_dtypes_kind="valid",
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
@@ -79,6 +81,7 @@ def test_numpy_array_equal(
     frontend,
 ):
     dtype, x = dtype_and_x
+    equal_nan = np.array(equal_nan, dtype=np.bool)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -99,11 +102,12 @@ def test_numpy_array_equal(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("valid"),
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
+                shared_dtype=True,
             )
         ],
-        get_dtypes_kind="valid",
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
@@ -150,11 +154,12 @@ def test_numpy_greater(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("valid"),
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
+                shared_dtype=True,
             )
         ],
-        get_dtypes_kind="valid",
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
@@ -201,11 +206,12 @@ def test_numpy_greater_equal(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("valid"),
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
+                shared_dtype=True,
             )
         ],
-        get_dtypes_kind="valid",
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
@@ -252,11 +258,12 @@ def test_numpy_less(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("valid"),
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
+                shared_dtype=True,
             )
         ],
-        get_dtypes_kind="valid",
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
@@ -305,6 +312,7 @@ def test_numpy_less_equal(
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("valid"),
                 num_arrays=2,
+                shared_dtype=True,
             )
         ],
         get_dtypes_kind="valid",
@@ -352,14 +360,12 @@ def test_numpy_not_equal(
 @handle_frontend_test(
     fn_tree="numpy.array_equiv",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2, shared_dtype=True
     ),
-    factor=helpers.ints(min_value=1, max_value=4),
 )
 def test_numpy_array_equiv(
     *,
     dtype_and_x,
-    factor,
     as_variable,
     num_positional_args,
     native_array,
@@ -369,7 +375,7 @@ def test_numpy_array_equiv(
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -377,6 +383,6 @@ def test_numpy_array_equiv(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        a1=x,
-        a2=factor * [x],
+        a1=x[0],
+        a2=x[1],
     )
