@@ -134,3 +134,10 @@ def inv_ex(input, *, check_errors=False, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def eig(input, *, out=None):
     return ivy.eig(input, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def solve(input, other, *, out=None):
+    return ivy.solve(input, other, out=out)
+
