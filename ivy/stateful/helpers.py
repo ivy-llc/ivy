@@ -68,14 +68,14 @@ class ModuleHelpers(abc.ABC):
     # noinspection PyProtectedMember
     def track_submod_rets(self):
         """
-        Tracks the returns of the submodules if track_submod_returns
-        argument is set to True during call
+        Returns True if the current module should have its returns tracked
+        as set by the user during the call.
 
         Returns
         -------
         ret
-            True if the current module gets tracked in the computation
-            graph.
+            True if the returned values of the current module should be 
+            tracked.
         """
         if not ivy.exists(self.top_mod):
             return False
@@ -95,8 +95,8 @@ class ModuleHelpers(abc.ABC):
 
     def check_submod_rets(self):
         """
-        Compares the submodule returns with the expected submodule
-        returns passed during call
+        Returns True if there is an expected submodule return value 
+        set by the user during the call. 
 
         Returns
         -------
@@ -138,12 +138,12 @@ class ModuleHelpers(abc.ABC):
 
     def mod_depth(self):
         """
-        Return the depth of the current module.
+        Return the depth of the current module. Return 0 for root module.
 
         Returns
         -------
         ret
-            The depth of the module in the network. Return 0 for root module.
+            The depth of the module in the network.
         """
         depth = 0
         mod_above = self
@@ -157,12 +157,12 @@ class ModuleHelpers(abc.ABC):
 
     def mod_height(self):
         """
-        Return the height of the current module.
+        Return the height of the network, with the current level being 0. 
 
         Returns
         -------
         ret
-            The height of the network. Return 0 for leaf module.
+            The height of the network. 0 if the are no submodules.
         """
         return self.sub_mods().cont_max_depth - 1
 
@@ -215,7 +215,8 @@ class ModuleHelpers(abc.ABC):
 
     def get_mod_key(self, /, *, top_mod=None):
         """
-        Get the key of current module.
+        Get the key of current module to be used when checking or tracking the
+        return values of a submodule.
 
         Parameters
         ----------
@@ -242,7 +243,7 @@ class ModuleHelpers(abc.ABC):
 
     def sub_mods(self, /, *, show_v=True, depth=None, flatten_key_chains=False):
         """
-        Return a container composing of all submodules.
+        Return a container comoposed of all submodules.
 
         Parameters
         ----------
@@ -254,12 +255,12 @@ class ModuleHelpers(abc.ABC):
             None for current layer. Default is ``None``.
         flatten_key_chains
             If set True, will return a flat (depth-1) container,
-            which all nested key-chains flattened. Default is ``False``.
+            in which all nested key-chains flattened. Default is ``False``.
 
         Returns
         -------
         ret
-            A container composing of all submodules.
+            A container composed of all submodules.
         """
         if self._sub_mods:
             if ivy.exists(depth):
@@ -287,8 +288,8 @@ class ModuleHelpers(abc.ABC):
 
     def show_v_in_top_v(self, /, *, depth=None):
         """
-        Show sub containers from the perspective of value of top layer.
-        Will give prompt if either of `v` and `top_v` is not initialized.
+        Show sub containers from the perspective of the top layer.
+        Will give prompt if either of `v` or `top_v` is not initialized.
 
         Parameters
         ----------
@@ -307,7 +308,7 @@ class ModuleHelpers(abc.ABC):
 
     def v_with_top_v_key_chains(self, /, *, depth=None, flatten_key_chains=False):
         """
-        Show current layer from the perspective of value of top layer.
+        Show the network's variables from the perspective of value of top layer.
         Will give prompt if either of `v` and `top_v` is not initialized.
 
         Parameters
@@ -316,8 +317,8 @@ class ModuleHelpers(abc.ABC):
             The number of modules we want to step in. None for the value of
             current module. Default is ``None``.
         flatten_key_chains
-            If set True, will return a flat (depth-1) container,
-            which all nested key-chains flattened. Default is ``False``.
+            If set True, will return a flat container,
+            with all nested key-chains flattened. Default is ``False``.
         """
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             kc = self.top_v(depth).cont_find_sub_container(self.v)
@@ -337,14 +338,19 @@ class ModuleHelpers(abc.ABC):
 
     def mod_with_top_mod_key_chain(self, /, *, depth=None, flatten_key_chain=False):
         """
-        (TODO)
+        Return a list containing the modules of the network starting from the top
+        module, and ending with the current module. 
 
         Parameters
         ----------
         depth
+            If specified, will return a list of modules of length starting at
+            the current module and ending at the module at the specified depth.
+            0 for the current module. 1 for the iimediate parent module. None for
+            the top module. Default is ``None``. 
 
         flatten_key_chain
-            If set True, will return return a flat (depth-1) container,
+            If set True, will return return a flat container,
             with all nested key-chains flattened. Default is ``False``.
         """
         if not ivy.exists(self.top_mod) or depth == 0:
@@ -409,13 +415,12 @@ class ModuleHelpers(abc.ABC):
 
     def _add_submod_ret(self, ret, /):
         """
-        Add returns in the submodule return of the top module.
+        Add returns to submod_rets variable of the top module.
 
         Parameters
         ----------
         ret
-            The return you want to add.
-
+            The return to be added.
         """
         top_mod = self.top_mod()
         sr = top_mod.submod_rets
@@ -428,7 +433,7 @@ class ModuleHelpers(abc.ABC):
 
     def _check_submod_ret(self):
         """
-        Check submodule returns with expected submodule returns.
+        Check the actual submodule returns with the expected submodule return values.
         Raise AssertError if returns are not close enough.
         """
         top_mod = self.top_mod()
@@ -489,11 +494,7 @@ class ModuleHelpers(abc.ABC):
 
     def _add_submod_enter(self):
         """
-        (TODO)
-
-        Returns
-        -------
-        None
+        Add key chains to submod_call_order variable of the top module.
         """
         sco = self.top_mod().submod_call_order
         key_chain = self.mod_with_top_mod_key_chain()

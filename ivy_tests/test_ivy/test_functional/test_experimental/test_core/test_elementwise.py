@@ -790,7 +790,7 @@ def test_diff(
 @handle_test(
     fn_tree="functional.ivy.experimental.zeta",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=2),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         min_value=-10,
@@ -808,7 +808,7 @@ def test_zeta(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="torch",
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,

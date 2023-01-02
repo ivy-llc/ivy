@@ -22,6 +22,7 @@ def get_gradient_arguments_with_lr(
     large_abs_safety_factor=2,
     small_abs_safety_factor=16,
     num_arrays=1,
+    float_lr=False,
     no_lr=False,
 ):
     dtypes, arrays, shape = draw(
@@ -42,20 +43,28 @@ def get_gradient_arguments_with_lr(
     dtype = dtypes[0]
     if no_lr:
         return dtypes, arrays
-    lr = draw(
-        st.one_of(
+    if float_lr:
+        lr = draw(
             helpers.floats(
                 min_value=1e-2,
                 max_value=1.0,
-            ),
-            helpers.array_values(
-                dtype=dtype,
-                shape=shape,
-                min_value=1e-2,
-                max_value=1.0,
-            ),
+            )
         )
-    )
+    else:
+        lr = draw(
+            st.one_of(
+                helpers.floats(
+                    min_value=1e-2,
+                    max_value=1.0,
+                ),
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=shape,
+                    min_value=1e-2,
+                    max_value=1.0,
+                ),
+            )
+        )
     if isinstance(lr, list):
         dtypes += [dtype]
     return dtypes, arrays, lr

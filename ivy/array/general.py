@@ -325,6 +325,35 @@ class ArrayWithGeneral(abc.ABC):
         ret
             New array with einops.rearrange having been applied.
 
+        Examples
+        --------
+        With :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([[1, 2, 3],
+        ...               [-4, -5, -6]])
+        >>> y = x.einops_rearrange("height width -> width height")
+        >>> print(y)
+        ivy.array([[ 1, -4],
+            [ 2, -5],
+            [ 3, -6]])
+
+        >>> x = ivy.array([[[ 1,  2,  3],
+        ...                  [ 4,  5,  6]],
+        ...               [[ 7,  8,  9],
+        ...                  [10, 11, 12]]])
+        >>> y = x.einops_rearrange("c h w -> c (h w)")
+        >>> print(y)
+        ivy.array([[ 1,  2,  3,  4,  5,  6],
+            [ 7,  8,  9, 10, 11, 12]])
+
+        >>> x = ivy.array([[1, 2, 3, 4, 5, 6]
+        ...               [7, 8, 9, 10, 11, 12]])
+        >>> y = x.einops_rearrange("c (h w) -> (c h) w", h=2, w=3)
+        ivy.array([[ 1,  2,  3],
+            [ 4,  5,  6],
+            [ 7,  8,  9],
+            [10, 11, 12]])
+
         """
         return ivy.einops_rearrange(self._data, pattern, out=out, **axes_lengths)
 
