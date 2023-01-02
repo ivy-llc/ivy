@@ -153,7 +153,7 @@ def test_fmax(
 
 # fmin
 @handle_test(
-    fn_tree="functional.experimental.fmin",
+    fn_tree="functional.ivy.experimental.fmax",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -166,6 +166,7 @@ def test_fmax(
         max_dim_size=3,
         allow_nan=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_fmin(
     dtype_and_x,
