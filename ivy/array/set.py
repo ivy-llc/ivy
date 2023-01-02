@@ -116,7 +116,7 @@ class ArrayWithSet(abc.ABC):
         >>> y = x.unique_inverse()
         >>> print(y)
         Results(values=ivy.array([0.2, 0.3, 0.4, 0.5, 0.7, 0.8]),
-        inverse_indices=ivy.array([1, 2, 4, 2, 0, 5, 3]))
+                inverse_indices=ivy.array([1, 2, 4, 2, 0, 5, 3]))
 
         """
         return ivy.unique_inverse(self._data)

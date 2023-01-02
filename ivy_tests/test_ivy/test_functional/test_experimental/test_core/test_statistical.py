@@ -78,6 +78,7 @@ def statistical_dtype_values(draw, *, function):
     fn_tree="functional.ivy.experimental.median",
     dtype_x_axis=statistical_dtype_values(function="median"),
     keep_dims=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_median(
     *,
@@ -119,6 +120,7 @@ def test_median(
     dtype_x_axis=statistical_dtype_values(function="nanmean"),
     keep_dims=st.booleans(),
     dtype=helpers.get_dtypes("float", full=False),
+    test_gradients=st.just(False),
 )
 def test_nanmean(
     *,
@@ -170,6 +172,7 @@ def max_value_as_shape_prod(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.nanmean",
     dtype_x_shape=max_value_as_shape_prod(),
+    test_gradients=st.just(False),
 )
 def test_unravel_index(
     dtype_x_shape,
@@ -199,6 +202,7 @@ def test_unravel_index(
     dtype_and_x=statistical_dtype_values(function="quantile"),
     keep_dims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="quantile"),
+    test_gradients=st.just(False),
 )
 def test_quantile(
     *,

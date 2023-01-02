@@ -195,7 +195,7 @@ class ContainerWithSet(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
         ...                   b=ivy.array([1,2,1,3,4,1,3]))
-        >>> y = ivy.static_unique_counts(x)
+        >>> y = ivy.Container.static_unique_counts(x)
         >>> print(y)
         {
             a:[values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])],
@@ -325,6 +325,53 @@ class ContainerWithSet(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.unique_inverse. This method simply
+        wraps the function, and so the docstring for ivy.unique_inverse also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+             input container. If ``x`` has more than one dimension, the function must
+             flatten ``x`` and return the unique elements of the flattened array.
+        key_chains
+             The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+             If True, the method will be applied to key_chains, otherwise key_chains
+             will be skipped. Default is ``True``.
+        prune_unapplied
+             Whether to prune key_chains for which the function was not applied.
+             Default is ``False``.
+        map_sequences
+             Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+
+             a namedtuple ``(values, inverse_indices)`` whose
+
+             - first element must have the field name ``values`` and must be an array
+             containing the unique elements of ``x``. The array must have the same data
+             type as ``x``.
+             - second element must have the field name ``inverse_indices`` and
+              must be an array containing the indices of ``values`` that
+              reconstruct ``x``. The array must have the same shape as ``x`` and
+              must have the default array index data type.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([4.,8.,3.,5.,9.,4.]),
+        ...                   b=ivy.array([7,6,4,5,6,3,2]))
+        >>> y = ivy.Container.static_unique_inverse(x)
+        >>> print(y)
+        {
+            a:[values=ivy.array([3.,4.,5.,8.,9.]),inverse_indices=ivy.array([1,3,0,2,4,1])],
+            b:[values=ivy.array([2,3,4,5,6,7]),inverse_indices=ivy.array([5,4,2,3,4,1,0])]
+        }
+        """
         return ContainerBase.cont_multi_map_in_function(
             "unique_inverse",
             x,
@@ -387,7 +434,8 @@ class ContainerWithSet(ContainerBase):
         >>> print(y)
         {
             a:[values=ivy.array([3.,4.,5.,8.,9.]),inverse_indices=ivy.array([1,3,0,2,4,1])],
-            b:[values=ivy.array([2,3,4,5,6,7]),inverse_indices=ivy.array([5,4,2,3,4,1,0])]}
+            b:[values=ivy.array([2,3,4,5,6,7]),inverse_indices=ivy.array([5,4,2,3,4,1,0])]
+        }
 
         """
         return self.static_unique_inverse(

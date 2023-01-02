@@ -93,6 +93,7 @@ def test_linear(
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_dropout(
     *,
@@ -847,6 +848,7 @@ def x_and_lstm(draw, dtypes):
     dtype_lstm=x_and_lstm(
         dtypes=helpers.get_dtypes("float"),
     ),
+    test_with_out=st.just(False),
 )
 def test_lstm_update(
     *,

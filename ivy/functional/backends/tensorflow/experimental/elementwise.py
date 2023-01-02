@@ -7,7 +7,7 @@ from .. import backend_version
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import tensorflow_probability as tfp
 
 
@@ -17,8 +17,8 @@ def sinc(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    tf.experimental.numpy.experimental_enable_numpy_behavior()
-    return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
+    x = ivy.pi * x
+    return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x), x.dtype)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
@@ -60,7 +60,6 @@ def fmax(
     tf.dtypes.cast(x2, tf.float64)
     x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
     x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
-    tf.experimental.numpy.experimental_enable_numpy_behavior()
     ret = tf.experimental.numpy.maximum(x1, x2)
     return ret
 
@@ -256,7 +255,7 @@ def fix(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.fix(x)
+    return tf.cast(tf.where(x > 0, tf.math.floor(x), tf.math.ceil(x)), x.dtype)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16,")}, backend_version)
@@ -282,8 +281,10 @@ def diff(
     prepend: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
     append: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x = tf.experimental.numpy.append(prepend, x, axis=axis)
-    x = tf.experimental.numpy.append(x, append, axis=axis)
+    if prepend is not None:
+        x = tf.experimental.numpy.append(prepend, x, axis=axis)
+    if append is not None:
+        x = tf.experimental.numpy.append(x, append, axis=axis)
     return tf.experimental.numpy.diff(x, n=n, axis=axis)
 
 
@@ -313,7 +314,7 @@ def angle(
         return tf.math.angle(input, name=None)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16, float16,")}, backend_version)
+@with_supported_dtypes({"2.11.0 and below": ("float32, float64,")}, backend_version)
 def zeta(
     x: Union[tf.Tensor, tf.Variable],
     q: Union[tf.Tensor, tf.Variable],
@@ -525,3 +526,14 @@ def gradient(
         return outvals[0]
     else:
         return outvals
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16,")}, backend_version)
+def xlogy(
+    x: Union[tf.Tensor, tf.Variable],
+    y: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.xlogy(x, y)

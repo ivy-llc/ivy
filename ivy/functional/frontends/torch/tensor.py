@@ -451,6 +451,12 @@ class Tensor:
     def index_select(self, dim, index):
         return torch_frontend.index_select(self._ivy_array, dim, index)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+    def clamp(self, min=None, max=None, *, out=None):
+        if min is not None and max is not None and ivy.all(min > max):
+            return torch_frontend.tensor(ivy.array(self._ivy_array).full_like(max))
+        return torch_frontend.clamp(self._ivy_array, min=min, max=max, out=out)
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def sqrt(self):
         return torch_frontend.sqrt(self._ivy_array)
@@ -461,10 +467,13 @@ class Tensor:
 
     def clone(self, memory_format=None):
         return torch_frontend.tensor(ivy.array(self._ivy_array, copy=True))
-
+    
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh(self):
         return torch_frontend.acosh(self._ivy_array)
+
+    def real(self):
+        return torch_frontend.real(self._ivy_array)
 
     def masked_fill(self, mask, value):
         # TODO: replace with torch_frontend.where when it's added
@@ -472,6 +481,11 @@ class Tensor:
 
     def masked_fill_(self, mask, value):
         self._ivy_array = self.masked_fill(mask, value).ivy_array
+        return self
+    
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def acosh_(self):
+        self._ivy_array = self.acosh().ivy_array
         return self
 
     # Special Methods #

@@ -291,7 +291,6 @@ class ArrayWithCreation(abc.ABC):
         sparse: bool = False,
         indexing: str = "xy",
     ) -> List[ivy.Array]:
-        list_arrays = [self._data] + list(arrays)
         """
         ivy.Array instance method variant of ivy.meshgrid. This method simply wraps the
         function, and so the docstring for ivy.meshgrid also applies to this method
@@ -316,9 +315,9 @@ class ArrayWithCreation(abc.ABC):
             list of N arrays, where ``N`` is the number of provided one-dimensional
             input arrays. Each returned array must have rank ``N``. For ``N``
             one-dimensional arrays having lengths ``Ni = len(xi)``.
-        
+
         """
-        return ivy.meshgrid(*list_arrays, sparse=sparse, indexing=indexing)
+        return ivy.meshgrid(*tuple([self] + arrays), sparse=sparse, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,
@@ -479,4 +478,97 @@ class ArrayWithCreation(abc.ABC):
             out=out,
             dtype=dtype,
             device=device,
+        )
+
+    def logspace(
+        self: ivy.Array,
+        stop: Union[ivy.Array, ivy.NativeArray, float],
+        /,
+        num: int,
+        *,
+        base: float = 10.0,
+        axis: int = 0,
+        endpoint: bool = True,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.logspace. This method simply wraps the
+        function, and so the docstring for ivy.logspace also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First value in the range in log space. base ** start is the starting value
+            in the sequence. Can be an array or a float.
+        stop
+            Last value in the range in log space. base ** stop is the final value in the
+            sequence. Can be an array or a float.
+        num
+            Number of values to generate.
+        base
+            The base of the log space. Default is 10.0
+        axis
+            Axis along which the operation is performed. Relevant only if start or stop
+            are array-like. Default is 0.
+        endpoint
+            If True, stop is the last sample. Otherwise, it is not included. Default is
+            True.
+        dtype
+            The data type of the output tensor. If None, the dtype of on_value is used
+            or if that is None, the dtype of off_value is used, or if that is None,
+            defaults to float32. Default is None.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default
+            is None.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to. Default is None.
+
+        Returns
+        -------
+        ret
+            Tensor of evenly-spaced values in log space.
+
+        Both the description and the type hints above assumes an array input for
+        simplicity, but this function is *nestable*, and therefore also accepts
+        :class:`ivy.Container` instances in place of any of the arguments.
+
+        Functional Examples
+        -------------------
+        With float input:
+
+        >>> x = ivy.array([1, 2])
+        >>> y = ivy.array([4, 5])
+        >>> x.logspace(y, 4)
+        ivy.array([[1.e+01, 1.e+02],
+                   [1.e+02, 1.e+03],
+                   [1.e+03, 1.e+04],
+                   [1.e+04, 1.e+05])
+
+        >>> x.logspace(y, 4, axis = 1)
+        ivy.array([[[1.e+01, 1.e+02, 1.e+03, 1.e+04],
+                   [1.e+02, 1.e+03, 1.e+04, 1.e+05]]])
+
+        >>> x = ivy.array([1, 2])
+        >>> y = ivy.array([4])      # Broadcasting example
+        >>> x.logspace(y, 4)
+        ivy.array([[10., 100.]
+                   [100., 464.15888336]
+                   [1000., 2154.43469003]
+                   [10000., 10000.]])
+
+        """
+        return ivy.logspace(
+            self,
+            stop,
+            num,
+            base=base,
+            axis=axis,
+            endpoint=endpoint,
+            dtype=dtype,
+            device=device,
+            out=out,
         )

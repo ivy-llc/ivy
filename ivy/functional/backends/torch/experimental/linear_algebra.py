@@ -116,8 +116,25 @@ def matrix_exp(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.exp(x)
+    return torch.exp(x, out=out)
+
+
+matrix_exp.support_native_out = True
 
 
 def eig(x: torch.Tensor, /) -> Tuple[torch.Tensor]:
+    if not torch.is_complex(x):
+        x = x.to(torch.complex128)
     return torch.linalg.eig(x)
+
+
+eig.support_native_out = False
+
+
+def eigvals(x: torch.Tensor, /) -> torch.Tensor:
+    if not torch.is_complex(x):
+        x = x.to(torch.complex128)
+    return torch.linalg.eigvals(x)
+
+
+eigvals.support_native_out = False
