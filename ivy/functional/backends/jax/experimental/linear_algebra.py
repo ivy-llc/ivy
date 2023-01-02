@@ -106,4 +106,6 @@ def eig(x: JaxArray, /) -> Tuple[JaxArray]:
 
 
 def eigvals(x: JaxArray, /) -> JaxArray:
+    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
+        x = x.astype(jnp.float64)
     return jnp.linalg.eigvals(x)

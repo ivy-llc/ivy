@@ -115,3 +115,6 @@ def eigvals(x: np.ndarray, /) -> np.ndarray:
         x = x.astype(np.float32)
     e = np.linalg.eigvals(x)
     return e.astype(complex)
+
+
+eigvals.support_native_out = False

@@ -288,7 +288,7 @@ def test_eig(
 
 
 @handle_test(
-    fn_tree="functional.experimental.eigvals",
+    fn_tree="functional.ivy.experimental.eigvals",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
             ivy.float32,
@@ -306,6 +306,8 @@ def test_eig(
         max_value=1.0e5,
         shared_dtype=True,
     ),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_eigvals(
     dtype_x,

@@ -132,6 +132,8 @@ eig.support_native_out = False
 
 
 def eigvals(x: torch.Tensor, /) -> torch.Tensor:
+    if not torch.is_complex(x):
+        x = x.to(torch.complex128)
     return torch.linalg.eigvals(x)
 
 

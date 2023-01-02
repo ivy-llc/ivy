@@ -356,16 +356,16 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         --------
         >>> x = ivy.array([[1,2], [3,4]])
         >>> c = ivy.Container({'x':{'xx':x}})
-        >>> ivy.Container.eigvals(c)
+        >>> c.eigvals()
         {
-            x:  {
-                    xx: (tuple(2), <class ivy.array.array.Array>, shape=[2, 2])
-                }
+            x: {
+                xx: ivy.array([-0.37228132+0.j, 5.37228132+0.j])
+            }
         }
-        >>> ivy.Container.eigvals(c)['x']['xx']
-        ivy.array([-0.37228107+0.j,  5.3722816 +0.j])
+        >>>c.eigvals()['x']['xx']
+        ivy.array([-0.37228132+0.j,  5.37228132+0.j])
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "eigvals",
             x,
             key_chains=key_chains,
@@ -382,7 +382,6 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.eigvals.
@@ -406,16 +405,15 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         >>> c = ivy.Container({'x':{'xx':x}})
         >>> c.eigvals()
         {
-            x:  {
-                    xx: (tuple(2), <class ivy.array.array.Array>, shape=[2, 2])
-                }
+            x: {
+                xx: ivy.array([-0.37228132+0.j, 5.37228132+0.j])
+            }
         }
         >>>c.eigvals()['x']['xx']
-        ivy.array([-0.37228107+0.j,  5.3722816 +0.j])
+        ivy.array([-0.37228132+0.j,  5.37228132+0.j])
         """
         return self.static_eigvals(
             self,
-            out=out,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
