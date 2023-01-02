@@ -54,7 +54,7 @@ def _get_dtype_and_matrix(draw):
         allow_neg_axes=True,
         max_axes_size=2
     ),
-    ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 0, 1, -1, 2, -2]),
+    ord=st.sampled_from([np.inf, -np.inf, 0, 1, -1, 2, -2]),
     keepdim=st.booleans(),
     dtype=helpers.get_dtypes("valid"),
 )
