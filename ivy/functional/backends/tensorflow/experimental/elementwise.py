@@ -7,7 +7,7 @@ from .. import backend_version
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import tensorflow_probability as tfp
 
 
@@ -18,8 +18,7 @@ def sinc(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x = ivy.pi * x
-    return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x),
-                   x.dtype)
+    return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x), x.dtype)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
@@ -256,10 +255,7 @@ def fix(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.cast(tf.where(x > 0,
-                            tf.math.floor(x),
-                            tf.math.ceil(x)),
-                   x.dtype)
+    return tf.cast(tf.where(x > 0, tf.math.floor(x), tf.math.ceil(x)), x.dtype)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16,")}, backend_version)
@@ -318,7 +314,7 @@ def angle(
         return tf.math.angle(input, name=None)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16, float16,")}, backend_version)
+@with_supported_dtypes({"2.11.0 and below": ("float32, float64,")}, backend_version)
 def zeta(
     x: Union[tf.Tensor, tf.Variable],
     q: Union[tf.Tensor, tf.Variable],
@@ -538,6 +534,6 @@ def xlogy(
     y: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.xlogy(x, y)

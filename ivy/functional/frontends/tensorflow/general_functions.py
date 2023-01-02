@@ -175,6 +175,11 @@ def stack(values, axis=0, name="stack"):
 
 
 @to_ivy_arrays_and_back
+def is_tensor(x, name=None):
+    return ivy.is_array(x)
+
+
+@to_ivy_arrays_and_back
 def gather(params, indices, axis=None, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
@@ -192,3 +197,53 @@ def transpose(a, perm=None, conjugate=False, name="transpose"):
     n = a.ndim
     perm = ivy.arange(n - 1, -1, -1)
     return ivy.permute_dims(a, axes=perm)
+
+
+@to_ivy_arrays_and_back
+def strided_slice(
+    input_,
+    begin,
+    end,
+    strides=None,
+    begin_mask=0,
+    end_mask=0,
+    ellipsis_mask=0,
+    new_axis_mask=0,
+    shrink_axis_mask=0,
+    var=None,
+    name=None,
+):
+    def num_to_bit_list(number):
+        return list(map(int, "{:0{size}b}".format(number, size=len(input_.shape))))
+
+    begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask = list(
+        map(
+            num_to_bit_list,
+            [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask],
+        )
+    )
+
+    full_slice = ()
+    need_ellipsis = False
+    if len(input_.shape) - len(begin.shape) > 0:
+        need_ellipsis = True
+    for i, _ in enumerate(begin.shape):
+        if need_ellipsis and ellipsis_mask[i]:
+            full_slice += (...,)
+            need_ellipsis = False
+        else:
+            if new_axis_mask[i]:
+                full_slice += (ivy.newaxis,)
+            else:
+                if not begin_mask[i] or shrink_axis_mask[i]:
+                    begin_i = int(begin[i])
+                else:
+                    begin_i = None
+                if shrink_axis_mask[i]:
+                    end_i = begin_i + 1
+                elif end_mask[i]:
+                    end_i = None
+                else:
+                    end_i = int(end[i])
+                full_slice += (slice(begin_i, end_i, int(strides[i])),)
+    return input_[full_slice]

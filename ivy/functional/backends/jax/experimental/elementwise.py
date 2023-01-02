@@ -64,7 +64,7 @@ def exp2(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.exp2(x)
+    return jnp.power(2, x)
 
 
 def copysign(
@@ -453,11 +453,5 @@ def gradient(
         return outvals
 
 
-def xlogy(
-    x: JaxArray,
-    y: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return js.special.xlogy(x, y)

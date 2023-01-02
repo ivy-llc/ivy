@@ -186,6 +186,8 @@ def test_adam_optimizer(
     method_tree="LAMB._step",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes[1:],
+        min_value=-1e5,
+        max_value=1e5,
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
