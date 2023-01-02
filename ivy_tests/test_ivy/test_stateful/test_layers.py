@@ -87,6 +87,7 @@ def test_linear_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -119,6 +120,7 @@ def test_linear_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=test_gradients,
     )
 
 
@@ -427,6 +429,7 @@ def test_conv1d_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -471,6 +474,7 @@ def test_conv1d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=test_gradients,
     )
 
 
@@ -497,6 +501,7 @@ def test_conv1d_transpose_layer(
     num_positional_args_method: pf.NumPositionalArg,
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -550,10 +555,11 @@ def test_conv1d_transpose_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=test_gradients,
     )
 
 
-# # conv2d
+# conv2d
 @handle_method(
     method_tree="Conv2D.__call__",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(),
@@ -573,6 +579,7 @@ def test_conv2d_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -617,6 +624,7 @@ def test_conv2d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=test_gradients,
     )
 
 
@@ -647,6 +655,7 @@ def test_conv2d_transpose_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -700,6 +709,7 @@ def test_conv2d_transpose_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=test_gradients,
     )
 
 
@@ -727,6 +737,7 @@ def test_depthwise_conv2d_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -775,6 +786,7 @@ def test_depthwise_conv2d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=test_gradients,
     )
 
 
@@ -799,6 +811,7 @@ def test_conv3d_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -850,6 +863,7 @@ def test_conv3d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=test_gradients,
     )
 
 
@@ -880,6 +894,7 @@ def test_conv3d_transpose_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -933,6 +948,7 @@ def test_conv3d_transpose_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        test_gradients=test_gradients,
     )
 
 
@@ -977,6 +993,7 @@ def test_lstm_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -1010,6 +1027,7 @@ def test_lstm_layer(
         method_with_v=method_with_v,
         rtol_=1e-01,
         atol_=1e-01,
+        test_gradients=test_gradients,
     )
 
 
