@@ -48,6 +48,8 @@ def _get_dtype_and_matrix(draw):
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=2,
         min_value=-1e04,
         max_value=1e04,
         valid_axis=True,
