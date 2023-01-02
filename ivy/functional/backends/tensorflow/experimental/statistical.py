@@ -70,3 +70,14 @@ def quantile(
         a, q, axis=axis, interpolation=interpolation, keepdims=keepdims
     )
     return result
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("int8", "int16")}, backend_version)
+def corrcoef(
+    x: Union[tf.Tensor],
+    /,
+    *,
+    y: Optional[Union[tf.Tensor]] = None,
+    rowvar: Optional[bool] = True,
+) -> Union[tf.Tensor]:
+    return tfp.stats.correlation(x, y=y, sample_axis=0, event_axis=None)

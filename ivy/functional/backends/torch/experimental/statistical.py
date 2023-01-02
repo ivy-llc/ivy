@@ -100,3 +100,13 @@ def quantile(
         return a
 
     return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
+
+
+def corrcoef(
+    x: torch.Tensor,
+    /,
+    *,
+    y: Optional[torch.Tensor] = None,
+    rowvar: Optional[bool] = True,
+) -> torch.Tensor:
+    return torch.corrcoef(x)

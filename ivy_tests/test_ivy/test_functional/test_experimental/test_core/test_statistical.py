@@ -170,7 +170,7 @@ def max_value_as_shape_prod(draw):
 
 
 @handle_test(
-    fn_tree="functional.ivy.experimental.nanmean",
+    fn_tree="functional.ivy.experimental.unravel_index",
     dtype_x_shape=max_value_as_shape_prod(),
     test_gradients=st.just(False),
 )
@@ -195,8 +195,6 @@ def test_unravel_index(
 
 
 # quantile
-
-
 @handle_test(
     fn_tree="functional.ivy.experimental.quantile",
     dtype_and_x=statistical_dtype_values(function="quantile"),
@@ -237,4 +235,45 @@ def test_quantile(
         axis=axis,
         interpolation=interpolation[0],
         keepdims=keep_dims,
+    )
+
+
+# corrcoef
+@handle_test(
+    fn_tree="functional.ivy.experimental.corrcoef",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float16", "float32", "float64"],
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+    # rowvar=st.booleans(),
+    # test_gradients=st.just(False),
+    rowvar=st.just(True),
+)
+def test_corrcoef(
+    *,
+    dtype_and_x,
+    rowvar,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        rowvar=rowvar,
     )

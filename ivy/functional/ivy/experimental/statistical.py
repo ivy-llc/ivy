@@ -220,3 +220,20 @@ def quantile(
     return ivy.current_backend(a).quantile(
         a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def corrcoef(
+    x: ivy.Array,
+    /,
+    *,
+    y: Optional[ivy.Array] = None,
+    rowvar: Optional[bool] = True,
+) -> ivy.Array:
+    return ivy.current_backend().corrcoef(
+        x, y=y, rowvar=rowvar
+    )
+
