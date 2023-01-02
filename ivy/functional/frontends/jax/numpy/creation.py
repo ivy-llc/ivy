@@ -88,5 +88,11 @@ def triu(m, k=0):
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+def empty(shape, dtype=None):
+    return ivy.empty(shape, dtype=dtype)
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
 def identity(n, dtype=None):
     return ivy.eye(n, dtype=dtype)

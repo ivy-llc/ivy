@@ -2,9 +2,6 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
-# global
-import math
-
 
 @to_ivy_arrays_and_back
 def cat(tensors, dim=0, *, out=None):
@@ -13,14 +10,13 @@ def cat(tensors, dim=0, *, out=None):
 
 @to_ivy_arrays_and_back
 def chunk(input, chunks, dim=0):
-    shape = ivy.shape(input)[dim]
-    if chunks > shape:
-        split_size = shape
+    ret = ivy.split(input, num_or_size_splits=chunks, axis=dim, with_remainder=True)
+    if isinstance(ret, list):
+        for i, x in enumerate(ret):
+            ret[i] = x.astype(input.dtype)
+        return ret
     else:
-        split_size = math.ceil(shape / chunks) if shape % chunks != 0 else chunks
-    return ivy.split(
-        input, num_or_size_splits=split_size, axis=dim, with_remainder=True
-    )
+        return ret.astype(input.dtype)
 
 
 @to_ivy_arrays_and_back

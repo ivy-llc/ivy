@@ -472,6 +472,9 @@ class Tensor:
     def acosh(self):
         return torch_frontend.acosh(self._ivy_array)
 
+    def real(self):
+        return torch_frontend.real(self._ivy_array)
+
     def masked_fill(self, mask, value):
         # TODO: replace with torch_frontend.where when it's added
         return torch_frontend.tensor(ivy.where(mask, value, self._ivy_array))
