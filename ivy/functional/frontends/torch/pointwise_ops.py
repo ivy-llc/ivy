@@ -422,3 +422,8 @@ def frac(input, *, out=None):
 @to_ivy_arrays_and_back
 def xlogy(input, other, *, out=None):
     return ivy.xlogy(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def copysign(input, other, *, out=None):
+    return ivy.copysign(input, other, out=out)
