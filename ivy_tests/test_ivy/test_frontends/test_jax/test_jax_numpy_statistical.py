@@ -12,6 +12,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 )
 from ivy import inf
 
+
 # einsum
 @handle_frontend_test(
     fn_tree="jax.numpy.einsum",
