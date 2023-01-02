@@ -90,4 +90,3 @@ def triu(m, k=0):
 @to_ivy_arrays_and_back
 def empty(shape, dtype=None):
     return ivy.empty(shape, dtype=dtype)
-    
