@@ -146,6 +146,7 @@ def max(a, axis=None, out=None, keepdims=False, where=None):
 
 amax = max
 
+
 @to_ivy_arrays_and_back
 def nanmax(
     a,
@@ -190,3 +191,4 @@ def nanmax(
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
     return res
+    
