@@ -84,9 +84,8 @@ class Module(ModuleHelpers):
             Ivy container of trainable variables. Created internally by default.
         build_mode
             How the Module is built, either on initialization (now),
-            explicitly by the user by calling
-            build(), or the first time the __call__ method is run.
-            Default is on initialization.
+            explicitly by the user by calling build(), or the first 
+            time the __call__ method is run. Default is on initialization.
         compile_on_next_step
             Whether to compile the network on the next forward pass.
             Default is ``False``.
@@ -563,8 +562,7 @@ class Module(ModuleHelpers):
         else:
             dtype = ivy.default_dtype(dtype=self._dtype, as_native=True)
 
-        # TODO: this line causes error when calling consturctor
-        # kwargs["dtype"] = dtype
+        kwargs["dtype"] = dtype
         # build local Module, and any child modules flagged with "explicit" build mode
         built = ivy.default(self._build(*args, **kwargs), True)
 
