@@ -286,3 +286,8 @@ def log(x):
 @to_ivy_arrays_and_back
 def copysign(x1, x2):
     return ivy.copysign(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def sinc(x):
+    return ivy.sinc(x)
