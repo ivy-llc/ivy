@@ -202,11 +202,10 @@ def cov(x, y=None, bias=False, dtype=None, fweights=None, aweights=None, ddof=No
 @from_zero_dim_arrays_to_scalar
 def nanmedian(
     a,
-    /,
-    *,
     axis=None,
-    keepdims=False,
     out=None,
+    overwrite_input=False,
+    keepdims=False,
     dtype=None,
     where=True,
 ):
@@ -216,7 +215,7 @@ def nanmedian(
     if not any(is_nan):
         if dtype:
             a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-        ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
+        ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out)
 
         if ivy.is_array(where):
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
