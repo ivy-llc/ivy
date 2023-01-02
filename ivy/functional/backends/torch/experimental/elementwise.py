@@ -338,10 +338,10 @@ def zeta(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.special.zeta(x, q)
+    return torch.special.zeta(x, q, out=out)
 
 
-zeta.support_native_out = False
+zeta.support_native_out = True
 
 
 def gradient(
