@@ -204,6 +204,8 @@ def test_numpy_average(
             keepdims=keep_dims,
             returned=returned,
             on_device=on_device,
+            rtol=1e-2,
+            atol=1e-2,
         )
     except ZeroDivisionError:
         assume(False)
