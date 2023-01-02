@@ -59,7 +59,7 @@ def matrix_exp(
 
 
 def eig(
-    x: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.Tensor],
     /,
 ) -> Tuple[tf.Tensor]:
     if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
@@ -68,7 +68,7 @@ def eig(
 
 
 def eigvals(
-    x: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.Tensor],
     /,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
