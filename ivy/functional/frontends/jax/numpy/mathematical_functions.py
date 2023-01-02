@@ -281,3 +281,8 @@ def heaviside(x1, x2):
 @to_ivy_arrays_and_back
 def log(x):
     return ivy.log(x)
+
+
+@to_ivy_arrays_and_back
+def copysign(x1, x2):
+    return ivy.copysign(x1, x2)
