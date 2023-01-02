@@ -645,6 +645,7 @@ def test_numpy_fmod(
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
+    assume(not np.any(np.isclose(xs[1], 0)))
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
