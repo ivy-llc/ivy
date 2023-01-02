@@ -616,7 +616,7 @@ def test_numpy_reciprocal(
     )
 
     
-#fmod
+
 @handle_frontend_test(
     fn_tree="numpy.fmod",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
