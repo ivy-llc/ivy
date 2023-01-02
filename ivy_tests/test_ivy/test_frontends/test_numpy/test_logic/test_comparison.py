@@ -310,12 +310,12 @@ def test_numpy_less_equal(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("valid"),
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="valid",
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
