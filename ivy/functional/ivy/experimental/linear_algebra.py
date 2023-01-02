@@ -258,6 +258,7 @@ def eigvals(
     >>> w = ivy.eigvals(x)
     >>> w
     ivy.array([-0.37228132+0.j,  5.37228132+0.j])
+
     >>> x = ivy.array([[[1,2], [3,4]], [[5,6], [5,6]]])
     >>> w = ivy.eigvals(x)
     >>> w

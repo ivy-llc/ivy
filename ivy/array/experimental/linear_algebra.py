@@ -103,7 +103,7 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.eig(self._data)
 
     def eigvals(
-        self: Union[ivy.Array, ivy.NativeArray],
+        self: ivy.Array,
         /,
     ) -> ivy.Array:
         """
