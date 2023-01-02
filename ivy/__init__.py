@@ -622,6 +622,7 @@ from .backend_handler import (
     choose_random_backend,
     clear_backend_stack,
 )
+from .func_wrapper import *
 from . import assertions, backend_handler, func_wrapper, exceptions
 from . import functional
 from .functional import *

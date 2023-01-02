@@ -7,13 +7,18 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # ceil
 @handle_frontend_test(
     fn_tree="numpy.ceil",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+            )
+        ],
+        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_ceil(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -23,11 +28,7 @@ def test_numpy_ceil(
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="float",
-    )
+    input_dtype, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -88,13 +89,18 @@ def test_numpy_fix(
 # trunc
 @handle_frontend_test(
     fn_tree="numpy.trunc",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+            )
+        ],
+        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_trunc(
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     as_variable,
     with_out,
@@ -104,11 +110,7 @@ def test_numpy_trunc(
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="float",
-    )
+    input_dtype, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,

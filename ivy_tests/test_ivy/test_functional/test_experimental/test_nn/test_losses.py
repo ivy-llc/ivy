@@ -8,7 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # binary_cross_entropy_with_logits
 @handle_test(
-    fn_tree="functional.ivy.binary_cross_entropy_with_logits",
+    fn_tree="functional.ivy.experimental.binary_cross_entropy_with_logits",
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -41,7 +41,7 @@ from ivy_tests.test_ivy.helpers import handle_test
             max_num_dims=1,
             min_dim_size=2,
         ),
-        st.just([None], [None]),
+        st.just([[None], [None]]),
     ),
     reduction=st.sampled_from(["none", "sum", "mean"]),
     epsilon=helpers.floats(min_value=0, max_value=0.49),

@@ -56,11 +56,13 @@ def _broadcastable_trio(draw):
     fn_tree="functional.ivy.argmax",
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
+    select_last_index=st.booleans(),
 )
 def test_argmax(
     *,
     dtype_x_axis,
     keepdims,
+    select_last_index,
     test_flags,
     backend_fw,
     fn_name,
@@ -78,6 +80,7 @@ def test_argmax(
         x=x[0],
         axis=axis,
         keepdims=keepdims,
+        select_last_index=select_last_index,
     )
 
 

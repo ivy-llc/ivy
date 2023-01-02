@@ -210,34 +210,13 @@ def isclose(
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    ret = np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    if np.isscalar(ret):
+        return np.array(ret, dtype=np.bool)
+    return ret
 
 
 isclose.support_native_out = False
-
-
-def isposinf(
-    x: Union[np.ndarray, float, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.isposinf(x, out=out)
-
-
-isposinf.support_native_out = True
-
-
-def isneginf(
-    x: Union[np.ndarray, float, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.isneginf(x, out=out)
-
-
-isneginf.support_native_out = True
 
 
 def angle(
@@ -303,7 +282,10 @@ def diff(
     axis: Optional[int] = -1,
     prepend: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
     append: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    prepend = prepend if prepend is not None else np._NoValue
+    append = append if append is not None else np._NoValue
     return np.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
@@ -384,3 +366,12 @@ def gradient(
     if type(spacing) in (int, float):
         return np.gradient(x, spacing, axis=axis, edge_order=edge_order)
     return np.gradient(x, *spacing, axis=axis, edge_order=edge_order)
+
+
+def xlogy(
+    x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    if (x == 0).all():
+        return 0.0
+    else:
+        return x * np.log(y)

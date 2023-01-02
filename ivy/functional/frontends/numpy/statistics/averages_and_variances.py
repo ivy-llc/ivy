@@ -1,15 +1,15 @@
 # global
 import ivy
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
 )
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def mean(
     x,
     /,
@@ -33,7 +33,7 @@ def mean(
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def nanmean(
     a,
     /,
@@ -68,7 +68,8 @@ def nanmean(
     return ret
 
 
-@from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def std(
     x,
     /,
@@ -91,8 +92,8 @@ def std(
     return ret
 
 
-# @from_zero_dim_arrays_to_float
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
     axis = tuple(axis) if isinstance(axis, list) else axis
     global avg
@@ -123,23 +124,16 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
         return avg.astype(dtype), weights_sum
     else:
         return avg.astype(dtype)
-    
-    
-@from_zero_dim_arrays_to_float
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def nanstd(
-        a,
-        /,
-        *,
-        axis=None, 
-        dtype=None, 
-        out=None, 
-        ddof=0, 
-        keepdims=False,
-        where=True
-):        
+    a, /, *, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=True
+):
     a = a[~ivy.isnan(a)]
     axis = tuple(axis) if isinstance(axis, list) else axis
-    
+
     if dtype:
         a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
 
