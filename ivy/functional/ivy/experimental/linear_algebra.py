@@ -192,7 +192,7 @@ def eig(
     w
         Not necessarily ordered array(..., N) of eigenvalues in complex type.
     v
-        An array(..., N, N) of normalized (unit “length”) eigenvectors,
+        An array(..., N, N) of normalized (unit "length") eigenvectors,
         the column v[:,i] is the eigenvector corresponding to the eigenvalue w[i].
 
     This function conforms to the `Array API Standard
@@ -230,6 +230,45 @@ def eig(
     ])
     """
     return current_backend(x).eig(x)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def eigvals(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> ivy.Array:
+    """Computes eigenvalues of x. Returns a set of eigenvalues.
+
+    Parameters
+    ----------
+    x
+        An array of shape (..., N, N).
+
+    Returns
+    -------
+    w
+        Not necessarily ordered array(..., N) of eigenvalues in complex type.
+
+    Functional Examples
+    ------------------
+    With :class:`ivy.Array` inputs:
+    >>> x = ivy.array([[1,2], [3,4]])
+    >>> w = ivy.eigvals(x)
+    >>> w
+    ivy.array([-0.37228132+0.j,  5.37228132+0.j])
+    >>> x = ivy.array([[[1,2], [3,4]], [[5,6], [5,6]]])
+    >>> w = ivy.eigvals(x)
+    >>> w
+    ivy.array(
+        [
+            [-0.37228132+0.j,  5.37228132+0.j],
+            [ 0.        +0.j, 11.        +0.j]
+        ]
+    )
+    """
+    return current_backend(x).eigvals(x)
 
 
 @to_native_arrays_and_back

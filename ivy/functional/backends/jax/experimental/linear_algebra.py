@@ -107,11 +107,17 @@ def eig(x: JaxArray, /) -> Tuple[JaxArray]:
     return jnp.linalg.eig(x)
 
 
+def eigvals(x: JaxArray, /) -> JaxArray:
+    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
+        x = x.astype(jnp.float64)
+    return jnp.linalg.eigvals(x)
+
+
 def adjoint(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
+        x: JaxArray,
+        /,
+        *,
+        out: Optional[JaxArray] = None,
 ) -> JaxArray:
     _check_valid_dimension_size(x)
     axes = [x for x in range(len(x.shape))]

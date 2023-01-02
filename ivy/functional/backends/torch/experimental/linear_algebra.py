@@ -133,11 +133,20 @@ def eig(x: torch.Tensor, /) -> Tuple[torch.Tensor]:
 eig.support_native_out = False
 
 
+def eigvals(x: torch.Tensor, /) -> torch.Tensor:
+    if not torch.is_complex(x):
+        x = x.to(torch.complex128)
+    return torch.linalg.eigvals(x)
+
+
+eigvals.support_native_out = False
+
+
 def adjoint(
-    x: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
+        x: torch.Tensor,
+        /,
+        *,
+        out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     _check_valid_dimension_size(x)
     return torch.adjoint(x).resolve_conj()

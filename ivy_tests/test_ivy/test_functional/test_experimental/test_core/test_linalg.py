@@ -288,6 +288,47 @@ def test_eig(
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.eigvals",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=(
+            ivy.float32,
+            ivy.float64,
+            ivy.int32,
+            ivy.int64,
+            ivy.complex64,
+            ivy.complex128,
+        ),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=10,
+        max_dim_size=10,
+        min_value=1.0,
+        max_value=1.0e5,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_eigvals(
+    dtype_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x = dtype_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        test_values=False,
+        x=x[0],
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.adjoint",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
