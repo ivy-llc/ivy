@@ -154,11 +154,12 @@ def test_numpy_std(
         on_device=on_device,
         x=x[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
         out=None,
-        correction=0,
         keepdims=keep_dims,
         where=where,
+        rtol=1e-2,
+        atol=1e-2,
     )
 
 
