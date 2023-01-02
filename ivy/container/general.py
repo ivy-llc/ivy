@@ -3095,7 +3095,7 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
             ivy.Container with each array having einops.rearrange applied.
-        
+
         Examples
         --------
         With :class:`ivy.Container` input:
@@ -3107,11 +3107,11 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.static_einops_rearrange(x, "height width -> width height")
         >>> print(y)
         {
-            a: ivy.array([[1, -4], 
-                        [2, -5], 
+            a: ivy.array([[1, -4],
+                        [2, -5],
                         [3, -6]]),
-            b: ivy.array([[7, 10], 
-                        [8, 11], 
+            b: ivy.array([[7, 10],
+                        [8, 11],
                         [9, 12]])
         }
 
