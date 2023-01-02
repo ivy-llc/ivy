@@ -1,8 +1,9 @@
 # local
+import math
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -74,6 +75,18 @@ def matrix_power(input, n, *, out=None):
     return ivy.matrix_power(input, n, out=out)
 
 
+@with_supported_dtypes(
+    {"1.11.0 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
+)
+@to_ivy_arrays_and_back
+def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
+    if "complex" in ivy.as_ivy_dtype(input.dtype):
+        input = ivy.abs(input)
+    if dtype:
+        input = ivy.astype(input, dtype)
+    return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+
+
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def cross(input, other, *, dim=-1, out=None):
@@ -104,6 +117,20 @@ def svdvals(A, *, driver=None, out=None):
 
 
 @to_ivy_arrays_and_back
+def inv_ex(input, *, check_errors=False, out=None):
+    try:
+        inputInv = ivy.inv(input, out=out)
+        info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
+        return inputInv, info
+    except RuntimeError as e:
+        if check_errors:
+            raise RuntimeError(e)
+        else:
+            inputInv = input * math.nan
+            info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
+            return inputInv, info
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def eig(input, *, out=None):
     return ivy.eig(input, out=out)

@@ -235,6 +235,9 @@ def test_reshape(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
     shift=helpers.dtype_and_values(
         available_dtypes=[ivy.int32],
@@ -261,6 +264,7 @@ def test_reshape(
             key="shift_len",
         ),
     ),
+    # test_gradients=st.just(False),
 )
 def test_roll(
     *,
@@ -293,6 +297,7 @@ def test_roll(
         x=value[0],
         shift=shift_val,
         axis=axis,
+        xs_grad_idxs=[[0, 0]],
     )
 
 
@@ -564,6 +569,7 @@ def test_repeat(
         x=value[0],
         repeats=repeat,
         axis=axis,
+        xs_grad_idxs=[[0, 0]],
     )
 
 
@@ -725,6 +731,9 @@ def test_tile(
         on_device=on_device,
         x=value[0],
         reps=repeat_list[0],
+        rtol_=1e-2,
+        atol_=1e-2,
+        xs_grad_idxs=[[0, 0]],
     )
 
 

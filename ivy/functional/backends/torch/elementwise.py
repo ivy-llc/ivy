@@ -423,7 +423,7 @@ def floor_divide(
     if ivy.exists(out):
         if not ivy.is_float_dtype(out):
             return ivy.inplace_update(
-                out, torch.floor(torch.div(x1, x2)).type(x1.dtype)
+                out, torch.floor(torch.div(x1, x2)).type(out.dtype)
             )
     return torch.floor(torch.div(x1, x2), out=out).type(x1.dtype)
 
@@ -614,7 +614,7 @@ def remainder(
         if ivy.exists(out):
             if out.dtype != x2.dtype:
                 return ivy.inplace_update(
-                    out, torch.round(torch.mul(diff, x2)).to(x1.dtype)
+                    out, torch.round(torch.mul(diff, x2)).to(out.dtype)
                 )
         return torch.round(torch.mul(diff, x2), out=out).to(x1.dtype)
     return torch.remainder(x1, x2, out=out).to(x1.dtype)

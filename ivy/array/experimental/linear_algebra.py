@@ -101,3 +101,20 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
         """
         return ivy.eig(self._data)
+
+    def eigvals(
+        self: ivy.Array,
+        /,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.eigvals.
+        This method simply wraps the function, and so the docstring for
+        ivy.eigvals also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1,2], [3,4]])
+        >>> x.eigvals()
+        ivy.array([-0.37228132+0.j,  5.37228132+0.j])
+        """
+        return ivy.eigvals(self._data)
