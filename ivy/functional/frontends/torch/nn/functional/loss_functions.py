@@ -277,7 +277,7 @@ def kl_div(
         
         return ivy.sum(x) / size[0]
     
-    loss = loss_fn()
+    loss = ivy.nan_to_num(loss_fn())
     
     if reduction == "batchmean":
         reduction = batchmean

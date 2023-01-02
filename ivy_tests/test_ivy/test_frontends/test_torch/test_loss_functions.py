@@ -590,10 +590,10 @@ def test_torch_soft_margin_loss(
         shared_dtype=True,
         min_value=1e-10,
         max_value=1,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        max_dim_size=2,
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=0,
+        max_dim_size=5,
         num_arrays=2
     ),
     size_average=st.booleans(),
@@ -617,7 +617,7 @@ def test_torch_kl_div(
 ):
     inputs_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
-        input_dtypes=[inputs_dtype[0], inputs_dtype[1]],
+        input_dtypes=inputs_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
