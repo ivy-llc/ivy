@@ -52,6 +52,7 @@ def _get_dtype_and_matrix(draw):
         max_value=1e04,
         valid_axis=True,
         allow_neg_axes=True,
+        min_axes_size=1,
         max_axes_size=2
     ),
     ord=st.sampled_from([np.inf, -np.inf, 0, 1, -1, 2, -2]),
