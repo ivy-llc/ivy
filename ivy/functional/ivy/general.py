@@ -1664,14 +1664,14 @@ def einops_rearrange(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[-4.47, 0.93, -3.34],
-    ...            [3.66, 24.29, 3.64]])
+    ...                [3.66, 24.29, 3.64]])
     >>> y = ivy.einops_rearrange(x, 'a b -> (a b)')
     >>> print(y)
     ivy.array([-4.46999979,  0.93000001, -3.33999991,  3.66000009, 24.29000092,
         3.6400001 ])
 
     >>> x = ivy.array([[-4.1, 0.3, -1.2],
-    ...            [3.6, 3.4, 3.1]])
+    ...                [3.6, 3.4, 3.1]])
     >>> y = ivy.zeros((3,2))
     >>> ivy.einops_rearrange(x, 'a b -> b a', out=y)
     >>> print(y)
