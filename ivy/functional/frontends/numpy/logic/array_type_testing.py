@@ -66,9 +66,9 @@ def isnan(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
-
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting_special
 def isreal(
     x,
     /,
