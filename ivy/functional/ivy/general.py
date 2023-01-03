@@ -1661,23 +1661,30 @@ def einops_rearrange(
 
     Examples
     --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([[-4.47, 0.93, -3.34],
-    ...                [3.66, 24.29, 3.64]])
-    >>> y = ivy.einops_rearrange(x, 'a b -> (a b)')
+    With :class:`ivy.Array` instance method:
+    >>> x = ivy.array([[1, 2, 3],
+    ...               [-4, -5, -6]])
+    >>> y = x.einops_rearrange("height width -> width height")
     >>> print(y)
-    ivy.array([-4.46999979,  0.93000001, -3.33999991,  3.66000009, 24.29000092,
-        3.6400001 ])
-
-    >>> x = ivy.array([[-4.1, 0.3, -1.2],
-    ...                [3.6, 3.4, 3.1]])
-    >>> y = ivy.zeros((3,2))
-    >>> ivy.einops_rearrange(x, 'a b -> b a', out=y)
+    ivy.array([[ 1, -4],
+        [ 2, -5],
+        [ 3, -6]])
+    >>> x = ivy.array([[[ 1,  2,  3],
+    ...                  [ 4,  5,  6]],
+    ...               [[ 7,  8,  9],
+    ...                  [10, 11, 12]]])
+    >>> y = x.einops_rearrange("c h w -> c (h w)")
     >>> print(y)
-    ivy.array([[-4.0999999 ,  3.5999999 ],
-       [ 0.30000001,  3.4000001 ],
-       [-1.20000005,  3.0999999 ]])
+    ivy.array([[ 1,  2,  3,  4,  5,  6],
+        [ 7,  8,  9, 10, 11, 12]])
+    >>> x = ivy.array([[1, 2, 3, 4, 5, 6],
+    ...            [7, 8, 9, 10, 11, 12]])
+    >>> y = ivy.zeros((4,3))
+    >>> x.einops_rearrange("c (h w) -> (c h) w", out=y, h=2, w=3)
+    ivy.array([[ 1,  2,  3],
+       [ 4,  5,  6],
+       [ 7,  8,  9],
+       [10, 11, 12]])
 
     With :class:`ivy.Container` input:
 
