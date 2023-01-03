@@ -114,10 +114,10 @@ def eigvals(x: JaxArray, /) -> JaxArray:
 
 
 def adjoint(
-        x: JaxArray,
-        /,
-        *,
-        out: Optional[JaxArray] = None,
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     _check_valid_dimension_size(x)
     axes = [x for x in range(len(x.shape))]
