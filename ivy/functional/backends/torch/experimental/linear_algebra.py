@@ -143,10 +143,10 @@ eigvals.support_native_out = False
 
 
 def adjoint(
-        x: torch.Tensor,
-        /,
-        *,
-        out: Optional[torch.Tensor] = None,
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     _check_valid_dimension_size(x)
     return torch.adjoint(x).resolve_conj()
