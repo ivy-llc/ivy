@@ -291,3 +291,8 @@ def copysign(x1, x2):
 @to_ivy_arrays_and_back
 def sinc(x):
     return ivy.sinc(x)
+
+
+@to_ivy_arrays_and_back
+def diagflat(x, k=0):
+    return ivy.diagflat(x, k=k)
