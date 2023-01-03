@@ -331,8 +331,9 @@ def test_nested_multi_map(func, nests):
         nests,
         lambda x: ivy.array(x) if isinstance(x, np.ndarray) else x,
         include_derived=True,
+        shallow=False,
     )
-    # without key_chains specification
+    # without index_chains specification
     nested_multi_map_res = ivy.nested_multi_map(func, nests)
 
     # modify this to test for other functions
