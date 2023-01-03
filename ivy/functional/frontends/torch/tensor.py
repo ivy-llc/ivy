@@ -467,7 +467,7 @@ class Tensor:
 
     def clone(self, memory_format=None):
         return torch_frontend.tensor(ivy.array(self._ivy_array, copy=True))
-
+    
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh(self):
         return torch_frontend.acosh(self._ivy_array)
@@ -481,6 +481,11 @@ class Tensor:
 
     def masked_fill_(self, mask, value):
         self._ivy_array = self.masked_fill(mask, value).ivy_array
+        return self
+    
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def acosh_(self):
+        self._ivy_array = self.acosh().ivy_array
         return self
 
     # Special Methods #
