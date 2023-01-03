@@ -491,8 +491,5 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         }
         """
         return self.static_adjoint(
-            self,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            out=out
+            self, key_chains=key_chains, to_apply=to_apply, out=out
         )
