@@ -433,17 +433,20 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         ivy.Container static method variant of ivy.adjoint. This method simply wraps
         the function, and so the docstring for ivy.adjoint also applies to this method
         with minimal changes.
+
         Parameters
         ----------
         x
             container with input arrays of dimensions greater than 1.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             container including arrays corresponding to the conjugate transpose of
             the arrays in the input container
+
         Examples
         --------
         >>> x = np.array([[1.-1.j, 2.+2.j],
@@ -479,6 +482,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.adjoint.
         This method simply wraps the function, and so the docstring for
         ivy.adjoint also applies to this method with minimal changes.
+
         Examples
         --------
         >>> x = np.array([[1.-1.j, 2.+2.j],
