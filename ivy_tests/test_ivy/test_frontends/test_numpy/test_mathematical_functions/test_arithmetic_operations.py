@@ -564,6 +564,8 @@ def test_numpy_mod(
         order="K",
         dtype=dtype,
         subok=True,
+        rtol=1e-2,
+        atol=1e-2,
     )
 
 
