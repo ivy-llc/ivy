@@ -290,7 +290,7 @@ def dtypes_x_reshape(draw):
         )
     )
     shape = draw(helpers.get_shape(min_num_dims=1).filter(
-            lambda s: math.prod(s) == math.prod(shape)
+        lambda s: math.prod(s) == math.prod(shape)
     ))
     return dtypes, x, shape
 

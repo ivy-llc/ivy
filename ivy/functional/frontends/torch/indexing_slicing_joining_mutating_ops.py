@@ -28,7 +28,7 @@ def chunk(input, chunks, dim=0):
                 return ivy.split(
                     input,
                     num_or_size_splits=tuple(
-                            [chunk_size + remainder] + [chunk_size] * (chunks - 1)
+                        [chunk_size + remainder] + [chunk_size] * (chunks - 1)
                     ),
                     axis=dim,
                 )
