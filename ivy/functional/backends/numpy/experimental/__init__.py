@@ -6,7 +6,6 @@ backend_version = {"version": np.__version__}
 # local sub-modules
 # flake8: noqa
 from .activations import *
-from .compilation import *
 from .creation import *
 from .data_type import *
 from .device import *
@@ -26,7 +25,6 @@ from .utility import *
 
 del (
     activations,
-    compilation,
     creation,
     data_type,
     device,
