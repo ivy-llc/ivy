@@ -3,6 +3,7 @@ import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
@@ -291,3 +292,9 @@ def copysign(x1, x2):
 @to_ivy_arrays_and_back
 def sinc(x):
     return ivy.sinc(x)
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16", "float16",)}, "jax")
+@to_ivy_arrays_and_back
+def nextafter(x1, x2):
+    return ivy.nextafter(x1, x2)
