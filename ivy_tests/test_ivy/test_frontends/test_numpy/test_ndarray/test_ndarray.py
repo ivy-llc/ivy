@@ -1334,6 +1334,47 @@ def test_numpy_instance_truediv__(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
+    method_name="__pow__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    power=helpers.ints(min_value=1, max_value=3),
+)
+def test_numpy_instance_pow__(
+    dtype_and_x,
+    power,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_native_array_flags=native_array,
+        method_num_positional_args=method_num_positional_args,
+        method_all_as_kwargs_np={
+            "value": power,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
     method_name="__and__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
