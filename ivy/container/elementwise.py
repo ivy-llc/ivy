@@ -8907,8 +8907,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the test result. An element ``out_i`` is ``self_i``
-            if ``self_i`` is real number else ``took real number part only`` if ``self_i``
-            contains real number and complex number both.
+            if ``self_i`` is real number else ``took real number part only``
+            if ``self_i`` contains real number and complex number both.
             The returned array should have a data type of ``float``.
 
         Examples
