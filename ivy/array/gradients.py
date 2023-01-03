@@ -321,6 +321,20 @@ class ArrayWithGradients(abc.ABC):
             The new function weights ws_new, and also new mw and vw, following the adam
             updates.
 
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> w = ivy.array([1., 2, 3.])
+        >>> dcdw = ivy.array([0.2,0.1,0.3])
+        >>> lr = ivy.array(0.1)
+        >>> vw_tm1 = ivy.zeros(1)
+        >>> mw_tm1 = ivy.zeros(3)
+        >>> step = 2
+        >>> updated_weights = w.adam_update(dcdw, lr, mw_tm1, vw_tm1, step)
+        >>> print(updated_weights)
+        (ivy.array([0.92558753, 1.92558873, 2.92558718]), ivy.array([0.02, 0.01, 0.03]), ivy.array([4.00000063e-05, 1.00000016e-05, 9.00000086e-05]))
+
         """
         return ivy.adam_update(
             self,
