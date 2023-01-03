@@ -1662,6 +1662,7 @@ def einops_rearrange(
     Examples
     --------
     With :class:`ivy.Array` instance method:
+
     >>> x = ivy.array([[1, 2, 3],
     ...               [-4, -5, -6]])
     >>> y = x.einops_rearrange("height width -> width height")
@@ -1669,6 +1670,7 @@ def einops_rearrange(
     ivy.array([[ 1, -4],
         [ 2, -5],
         [ 3, -6]])
+
     >>> x = ivy.array([[[ 1,  2,  3],
     ...                  [ 4,  5,  6]],
     ...               [[ 7,  8,  9],
@@ -1677,6 +1679,7 @@ def einops_rearrange(
     >>> print(y)
     ivy.array([[ 1,  2,  3,  4,  5,  6],
         [ 7,  8,  9, 10, 11, 12]])
+
     >>> x = ivy.array([[1, 2, 3, 4, 5, 6],
     ...            [7, 8, 9, 10, 11, 12]])
     >>> y = ivy.zeros((4,3))
