@@ -7,12 +7,14 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
 )
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def add(
     x1,
     x2,
@@ -35,6 +37,7 @@ def add(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def subtract(
     x1,
     x2,
@@ -57,6 +60,7 @@ def subtract(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def divide(
     x1,
     x2,
@@ -82,6 +86,7 @@ true_divide = divide
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def multiply(
     x1,
     x2,
@@ -104,6 +109,7 @@ def multiply(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def power(
     x1,
     x2,
@@ -126,6 +132,7 @@ def power(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def float_power(
     x1,
     x2,
@@ -147,6 +154,7 @@ def float_power(
 
 
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def vdot(
     a,
     b,
@@ -159,6 +167,7 @@ def vdot(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def positive(
     x,
     /,
@@ -179,6 +188,7 @@ def positive(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def negative(
     x,
     /,
@@ -199,6 +209,7 @@ def negative(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def floor_divide(
     x1,
     x2,
@@ -223,6 +234,7 @@ def floor_divide(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def reciprocal(
     x,
     /,
@@ -234,17 +246,18 @@ def reciprocal(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    if dtype is None:
+        dtype = ivy.as_ivy_dtype(x.dtype)
     ret = ivy.reciprocal(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    return ret.astype(dtype)
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def mod(
     x1,
     x2,
@@ -261,6 +274,31 @@ def mod(
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
         x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.remainder(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def fmod(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
+        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
+    ret = ivy.fmod(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret

@@ -5,6 +5,8 @@ from ivy.functional.backends.jax import JaxArray
 
 import ivy
 
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+
 
 def diagflat(
     x: JaxArray,
@@ -92,5 +94,32 @@ def kron(
     return jnp.kron(a, b)
 
 
-def eig(x: JaxArray, /) -> Tuple[JaxArray, ...]:
-    return tuple(jnp.linalg.eig(x))
+def matrix_exp(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.exp(x)
+
+
+def eig(x: JaxArray, /) -> Tuple[JaxArray]:
+    return jnp.linalg.eig(x)
+
+
+def eigvals(x: JaxArray, /) -> JaxArray:
+    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
+        x = x.astype(jnp.float64)
+    return jnp.linalg.eigvals(x)
+
+
+def adjoint(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    _check_valid_dimension_size(x)
+    axes = [x for x in range(len(x.shape))]
+    axes[-1], axes[-2] = axes[-2], axes[-1]
+    return jnp.conjugate(jnp.transpose(x, axes=axes))

@@ -8,7 +8,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 
 def _from_torch_frontend_tensor_to_ivy_array(x):
-    if isinstance(x, torch_frontend.Tensor):
+    if hasattr(x, "ivy_array"):
         return x.ivy_array
     return x
 
@@ -16,7 +16,7 @@ def _from_torch_frontend_tensor_to_ivy_array(x):
 def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
-            x, _from_ivy_array_to_torch_frontend_tensor, include_derived
+            x, _from_ivy_array_to_torch_frontend_tensor, include_derived, shallow=False
         )
     elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
         a = torch_frontend.Tensor(0)  # TODO: Find better initialisation workaround
@@ -52,14 +52,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             has_out = True
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
-            args,
-            _to_ivy_array,
-            include_derived={tuple: True},
+            args, _to_ivy_array, include_derived={tuple: True}, shallow=False
         )
         new_kwargs = ivy.nested_map(
-            kwargs,
-            _to_ivy_array,
-            include_derived={tuple: True},
+            kwargs, _to_ivy_array, include_derived={tuple: True}, shallow=False
         )
         # add the original out argument back to the keyword arguments
         if has_out:
@@ -77,7 +73,15 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         by the function into `Tensor` instances.
         """
         # call unmodified function
-        ret = fn(*args, **kwargs)
+        # ToDo: Remove this default dtype setting
+        #  once frontend specific backend setting is added
+        ivy.set_default_int_dtype("int64")
+        ivy.set_default_float_dtype(torch_frontend.get_default_dtype())
+        try:
+            ret = fn(*args, **kwargs)
+        finally:
+            ivy.unset_default_int_dtype()
+            ivy.unset_default_float_dtype()
         # convert all arrays in the return to `torch_frontend.Tensor` instances
         return _from_ivy_array_to_torch_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}

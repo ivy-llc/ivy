@@ -59,21 +59,14 @@ def relu(
     >>> print(y)
     ivy.array([1.5, 0.7, 0.])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., -1., 2.])
-    >>> y = ivy.relu(x)
-    >>> print(y)
-    ivy.array([0., 0., 2.])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-    >>> x = ivy.relu(x, out = x)
+    >>> x = ivy.relu(x, out=x)
     >>> print(x)
     {
-    a: ivy.array([1., 0.]),
-    b: ivy.array([0.40000001, 0.])
+        a: ivy.array([1., 0.]),
+        b: ivy.array([0.40000001, 0.])
     }
     """
     return current_backend(x).relu(x, out=out)
@@ -119,24 +112,26 @@ def leaky_relu(
 
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
-    >>> ivy.leaky_relu(x, out = y)
+    >>> ivy.leaky_relu(x, out=y)
     >>> print(y)
     ivy.array([ 1.5 ,  0.7 , -0.48])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
-    >>> ivy.leaky_relu(x, out = x)
+    >>> ivy.leaky_relu(x, out=x)
     >>> print(x)
     ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
        [-0.88, -1.1 , -1.32]])
 
+    With :class:`ivy.Container` input:
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., -1., 2.])
-    >>> y = ivy.leaky_relu(x)
-    >>> print(y)
-    ivy.array([ 0. , -0.2,  2. ])
+    >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.leaky_relu(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([0., -0.24000001]),
+        b: ivy.array([0.40000001, -0.04])
+    }
     """
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
@@ -224,9 +219,8 @@ def sigmoid(
     ret
         an array containing the sigmoid activation of each element in ``x``.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1., 1., 2.])
@@ -234,23 +228,11 @@ def sigmoid(
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
 
-    With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([-1.3, 3.8, 2.1])
+    >>> x = ivy.array([-1.3, 3.8, 2.1])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     ivy.array([0.214, 0.978, 0.891])
-
-    Instance Method Example
-    -----------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-1., 1., 2.])
-    >>> y = x.sigmoid()
-    >>> print(y)
-    ivy.array([0.269, 0.731, 0.881])
-
     """
     return current_backend(x).sigmoid(x, out=out)
 
@@ -284,9 +266,8 @@ def softmax(
     ret
         The input array with softmax applied element-wise.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1.0, 0, 1.0])
@@ -300,24 +281,6 @@ def softmax(
     >>> print(y)
     ivy.array([[0.0768, 0.231 , 0.693 ],
                [0.0768, 0.231 , 0.693 ]])
-
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1.5, 0.3, 1.2])
-    >>> y = ivy.softmax(x)
-    >>> print(y)
-    ivy.array([0.49 , 0.147, 0.363])
-
-    Instance Method Example
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1.0, 0, 1.0])
-    >>> y = x.softmax()
-    >>> print(y)
-    ivy.array([0.422, 0.155, 0.422])
     """
     return current_backend(x).softmax(x, axis=axis, out=out)
 
@@ -373,24 +336,6 @@ def softplus(
     >>> y = ivy.softplus(x, threshold=2)
     >>> print(y)
     ivy.array([1.31, 2.13, 3.  ])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-0.3461, -0.6491])
-    >>> y = ivy.softplus(x)
-    >>> print(y)
-    ivy.array([0.535,0.42])
-
-
-    Instance Method Example
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-0.3461, -0.6491])
-    >>> y = x.softplus()
-    >>> print(y)
-    ivy.array([0.535,0.42])
 
     """
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
@@ -486,14 +431,14 @@ def deserialize(
 
     Examples
     --------
-    With :str: input:
+    With :code:`str` input:
 
     >>> name = "sigmoid"
     >>> sigmoid = ivy.deserialize(name)
     >>> print(sigmoid)
     <function sigmoid at XXXXXXXXXXXXXX>
 
-    With :str and dict: input:
+    With :code:`str` and :code:`dict` input:
 
     >>> name = "custom_fn"
     >>> objects = {"custom_fn": lambda x: x}
@@ -560,7 +505,7 @@ def get(
 
     Examples
     --------
-    With :str: input:
+    With :code:`str` input:
 
     >>> name = "sigmoid"
     >>> sigmoid = ivy.get(name)
@@ -572,7 +517,7 @@ def get(
     >>> print(linear)
     <function linear at XXXXXXXXXXXXXX>
 
-    With :str and dict: input:
+    With :code:`str` and :code:`dict` input:
 
     >>> name = "custom_fn"
     >>> objects = {"custom_fn": lambda x: x}

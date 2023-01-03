@@ -56,12 +56,12 @@ class ContainerWithActivations(ContainerBase):
         >>> y = ivy.Container.static_relu(x)
         >>> print(y)
         {
-        a: ivy.array([1., 0.]),
-        b: ivy.array([0.40000001, 0.])
+            a: ivy.array([1., 0.]),
+            b: ivy.array([0.40000001, 0.])
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "relu",
             x,
             key_chains=key_chains,
@@ -117,8 +117,8 @@ class ContainerWithActivations(ContainerBase):
         >>> y = x.relu()
         >>> print(y)
         {
-        a: ivy.array([1., 0.]),
-        b: ivy.array([0.40000001, 0.])
+            a: ivy.array([1., 0.]),
+            b: ivy.array([0.40000001, 0.])
         }
 
         """
@@ -176,15 +176,16 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a =ivy.array([0.39, -0.85]))
+        >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
         >>> y = ivy.Container.static_leaky_relu(x)
         >>> print(y)
         {
-              a: ivy.array([0.39, -0.17])
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "leaky_relu",
             x,
             alpha=alpha,
@@ -239,11 +240,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a =ivy.array([0.39, -0.85]))
+        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
         >>> y = x.leaky_relu()
         >>> print(y)
         {
-            a: ivy.array([0.39, -0.17])
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
         }
 
         """
@@ -310,7 +312,7 @@ class ContainerWithActivations(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "gelu",
             x,
             approximate=approximate,
@@ -425,15 +427,16 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]))
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = ivy.Container.static_sigmoid(x)
         >>> print(y)
         {
-            a: ivy.array([0.269, 0.731, 0.881])
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "sigmoid",
             x,
             key_chains=key_chains,
@@ -484,13 +487,13 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]))
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = x.sigmoid()
         >>> print(y)
         {
-            a: ivy.array([0.269, 0.731, 0.881])
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
         }
-
         """
         return self.static_sigmoid(
             self,
@@ -546,15 +549,16 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> x = ivy.Container(a=ivy.array([1.0, 0]), b=ivy.array([1.3, 0, -1.0]))
         >>> y = ivy.Container.static_softmax(x)
         >>> print(y)
         {
-            a: ivy.array([0.422, 0.155, 0.422])
+            a: ivy.array([0.7310586, 0.2689414]),
+            b: ivy.array([0.72844321, 0.19852395, 0.07303288])
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "softmax",
             x,
             axis=axis,
@@ -609,11 +613,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> x = ivy.Container(a=ivy.array([1.0, 0]), b=ivy.array([1.3, 0, -1.0]))
         >>> y = x.softmax()
         >>> print(y)
         {
-            a: ivy.array([0.422, 0.155, 0.422])
+            a: ivy.array([0.7310586, 0.2689414]),
+            b: ivy.array([0.72844321, 0.19852395, 0.07303288])
         }
 
         """
@@ -675,11 +680,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]), b=ivy.array([1., 0.]))
         >>> y = ivy.Container.static_softplus(x)
         >>> print(y)
         {
-            a: ivy.array([0.535, 0.42])
+            a: ivy.array([0.53499615, 0.42036411]),
+            b: ivy.array([1.31326175, 0.69314718])
         }
 
         >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
@@ -689,7 +695,7 @@ class ContainerWithActivations(ContainerBase):
             a: ivy.array([0.948, 2.63, 4.25])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "softplus",
             x,
             beta=beta,
@@ -833,7 +839,7 @@ class ContainerWithActivations(ContainerBase):
             b: ivy.array([-0.371, -1.17])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "log_softmax",
             x,
             axis=axis,

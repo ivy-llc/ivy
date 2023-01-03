@@ -3,6 +3,8 @@
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_dtype
+from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
 
 
 class EagerTensor:
@@ -16,12 +18,12 @@ class EagerTensor:
 
     def __repr__(self):
         return (
-            "ivy.frontends.tensorflow.EagerTensor("
-            + str(ivy.to_list(self._ivy_array))
-            + ",shape="
+            repr(self._ivy_array).replace(
+                "ivy.array", "ivy.frontends.tensorflow.EagerTensor"
+            )[:-1]
+            + ", shape="
             + str(self._ivy_array.shape)
-            + ","
-            + "dtype="
+            + ", dtype="
             + str(self._ivy_array.dtype)
             + ")"
         )
@@ -69,7 +71,7 @@ class EagerTensor:
                 )
 
     def numpy(self):
-        return ivy.to_numpy(self._ivy_array)
+        return array(self._ivy_array)
 
     def __add__(self, y, name="add"):
         return y.__radd__(self._ivy_array)
@@ -81,11 +83,8 @@ class EagerTensor:
         return y.__rand__(self._ivy_array)
 
     def __array__(self, dtype=None, name="array"):
-        if ivy.is_native_dtype(dtype):
-            dtype = ivy.as_ivy_dtype(dtype)
-        if not isinstance(dtype, str):
-            dtype = tf_frontend.as_dtype(dtype)._ivy_dtype
-        return ivy.asarray(self._ivy_array, dtype=dtype)
+        dtype = to_ivy_dtype(dtype)
+        return array(ivy.asarray(self._ivy_array, dtype=dtype))
 
     def __bool__(self, name="bool"):
         if isinstance(self._ivy_array, int):

@@ -1,9 +1,9 @@
+# global
+import math
+
 # local
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-
-# global
-import math
 
 
 @to_ivy_arrays_and_back
@@ -13,14 +13,25 @@ def cat(tensors, dim=0, *, out=None):
 
 @to_ivy_arrays_and_back
 def chunk(input, chunks, dim=0):
-    shape = ivy.shape(input)[dim]
-    if chunks > shape:
-        split_size = shape
+    if ivy.shape(input) == ():
+        return [input]
     else:
-        split_size = math.ceil(shape / chunks) if shape % chunks != 0 else chunks
-    return ivy.split(
-        input, num_or_size_splits=split_size, axis=dim, with_remainder=True
-    )
+        dim_size = ivy.shape(input)[dim]
+        chunk_size = dim_size // chunks
+        if chunk_size == 0:
+            return ivy.split(input, num_or_size_splits=dim_size, axis=dim)
+        else:
+            remainder = dim_size % chunks
+            if remainder == 0:
+                return ivy.split(input, num_or_size_splits=chunks, axis=dim)
+            else:
+                return ivy.split(
+                    input,
+                    num_or_size_splits=tuple(
+                        [chunk_size + remainder] + [chunk_size] * (chunks - 1)
+                    ),
+                    axis=dim,
+                )
 
 
 @to_ivy_arrays_and_back
@@ -74,6 +85,18 @@ def reshape(input, shape):
 
 
 @to_ivy_arrays_and_back
+def as_strided(input, size, stride, storage_offset=None):
+    ind = ivy.array([0], dtype=ivy.int64)
+    for i, (size_i, stride_i) in enumerate(zip(size, stride)):
+        r_size = [1] * len(stride)
+        r_size[i] = -1
+        ind = ind + ivy.reshape(ivy.arange(size_i), r_size) * stride_i
+    if storage_offset:
+        ind = ind + storage_offset
+    return ivy.gather(ivy.flatten(input), ind)
+
+
+@to_ivy_arrays_and_back
 def squeeze(input, dim):
     if isinstance(dim, int) and input.ndim > 0:
         if input.shape[dim] > 1:
@@ -123,6 +146,11 @@ def tile(input, dims):
 @to_ivy_arrays_and_back
 def unsqueeze(input, dim=0):
     return ivy.expand_dims(input, axis=dim)
+
+
+@to_ivy_arrays_and_back
+def argwhere(input):
+    return ivy.argwhere(input)
 
 
 @to_ivy_arrays_and_back

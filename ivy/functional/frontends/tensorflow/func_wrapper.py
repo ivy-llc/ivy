@@ -9,6 +9,14 @@ import ivy
 import ivy.functional.frontends.tensorflow as frontend
 
 
+def to_ivy_dtype(dtype):
+    if not dtype or isinstance(dtype, str):
+        return dtype
+    if dtype in (int, float, bool) or ivy.is_native_dtype(dtype):
+        return ivy.as_ivy_dtype(dtype)
+    return frontend.as_dtype(dtype)._ivy_dtype
+
+
 def handle_tf_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, dtype=None, **kwargs):
@@ -29,11 +37,8 @@ def handle_tf_dtype(fn: Callable) -> Callable:
         elif len(args) == (dtype_pos + 1):
             dtype = args[dtype_pos]
             args = args[:-1]
-        if not dtype or isinstance(dtype, str):
-            return fn(*args, dtype=dtype, **kwargs)
-        if ivy.is_native_dtype(dtype):
-            return fn(*args, dtype=ivy.as_ivy_dtype(dtype), **kwargs)
-        return fn(*args, dtype=frontend.as_dtype(dtype)._ivy_dtype, **kwargs)
+        dtype = to_ivy_dtype(dtype)
+        return fn(*args, dtype=dtype, **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
     new_fn.handle_tf_dtype = True
@@ -41,7 +46,7 @@ def handle_tf_dtype(fn: Callable) -> Callable:
 
 
 def _tf_frontend_array_to_ivy(x):
-    if isinstance(x, frontend.EagerTensor):
+    if hasattr(x, "ivy_array"):
         return x.ivy_array
     return x
 
@@ -90,8 +95,12 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             has_out = True
 
         # convert all arrays in the inputs to ivy.Array instances
-        ivy_args = ivy.nested_map(args, _to_ivy_array, include_derived=True)
-        ivy_kwargs = ivy.nested_map(kwargs, _to_ivy_array, include_derived=True)
+        ivy_args = ivy.nested_map(
+            args, _to_ivy_array, include_derived=True, shallow=False
+        )
+        ivy_kwargs = ivy.nested_map(
+            kwargs, _to_ivy_array, include_derived=True, shallow=False
+        )
         if has_out:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)

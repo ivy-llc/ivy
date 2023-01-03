@@ -180,7 +180,7 @@ class Container(
         }
         """
         if isinstance(power, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.pow(xs[0], xs[1]), [self, power], map_nests=True
             )
         return self.cont_map(lambda x, kc: x**power, map_sequences=True)
@@ -249,7 +249,7 @@ class Container(
                           [8.1, 9.3, 3.4]])
         }
         """
-        return ivy.Container.multi_map(
+        return ivy.Container.cont_multi_map(
             lambda xs, _: operator.add(xs[0], xs[1]), [self, other], map_nests=True
         )
 
@@ -283,7 +283,7 @@ class Container(
             b: 5
         }
         """
-        return ivy.Container.multi_map(
+        return ivy.Container.cont_multi_map(
             lambda xs, _: operator.add(xs[0], xs[1]), [other, self], map_nests=True
         )
 
@@ -348,7 +348,7 @@ class Container(
                           [5.9, 4.7, 10.6]])
         }
         """
-        return ivy.Container.multi_map(
+        return ivy.Container.cont_multi_map(
             lambda xs, _: operator.sub(xs[0], xs[1]), [self, other], map_nests=True
         )
 
@@ -382,17 +382,17 @@ class Container(
             b: -3
         }
         """
-        return ivy.Container.multi_map(
+        return ivy.Container.cont_multi_map(
             lambda xs, _: operator.sub(xs[0], xs[1]), [other, self], map_nests=True
         )
 
     def __mul__(self, other):
-        return ivy.Container.multi_map(
+        return ivy.Container.cont_multi_map(
             lambda xs, _: operator.mul(xs[0], xs[1]), [self, other], map_nests=True
         )
 
     def __rmul__(self, other):
-        return ivy.Container.multi_map(
+        return ivy.Container.cont_multi_map(
             lambda xs, _: operator.mul(xs[0], xs[1]), [other, self], map_nests=True
         )
 
@@ -443,18 +443,18 @@ class Container(
         }
 
         """
-        return ivy.Container.multi_map(
+        return ivy.Container.cont_multi_map(
             lambda xs, _: operator.truediv(xs[0], xs[1]), [self, other], map_nests=True
         )
 
     def __rtruediv__(self, other):
-        return ivy.Container.multi_map(
+        return ivy.Container.cont_multi_map(
             lambda xs, _: operator.truediv(xs[0], xs[1]), [other, self], map_nests=True
         )
 
     def __floordiv__(self, other):
         if isinstance(other, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.floordiv(xs[0], xs[1]),
                 [self, other],
                 map_nests=True,
@@ -529,7 +529,7 @@ class Container(
         }
         """
         if isinstance(other, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.lt(xs[0], xs[1]), [self, other], map_nests=True
             )
         return self.cont_map(lambda x, kc: x < other, map_sequences=True)
@@ -567,7 +567,7 @@ class Container(
         }
         """
         if isinstance(other, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.le(xs[0], xs[1]), [self, other], map_nests=True
             )
         return self.cont_map(lambda x, kc: x <= other, map_sequences=True)
@@ -629,7 +629,7 @@ class Container(
         }
         """
         if isinstance(other, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.eq(xs[0], xs[1]), [self, other], map_nests=True
             )
         return self.cont_map(lambda x, kc: x == other, map_sequences=True)
@@ -691,7 +691,7 @@ class Container(
         }
         """
         if isinstance(other, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.ne(xs[0], xs[1]), [self, other], map_nests=True
             )
         return self.cont_map(lambda x, kc: x != other, map_sequences=True)
@@ -729,7 +729,7 @@ class Container(
         }
         """
         if isinstance(other, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.gt(xs[0], xs[1]), [self, other], map_nests=True
             )
         return self.cont_map(lambda x, kc: x > other, map_sequences=True)
@@ -767,14 +767,14 @@ class Container(
         }
         """
         if isinstance(other, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.ge(xs[0], xs[1]), [self, other], map_nests=True
             )
         return self.cont_map(lambda x, kc: x >= other, map_sequences=True)
 
     def __and__(self, other):
         if isinstance(other, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.and_(xs[0], xs[1]), [self, other], map_nests=True
             )
         return self.cont_map(lambda x, kc: x and other, map_sequences=True)
@@ -784,7 +784,7 @@ class Container(
 
     def __or__(self, other):
         if isinstance(other, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.or_(xs[0], xs[1]), [self, other], map_nests=True
             )
         return self.cont_map(lambda x, kc: x or other, map_sequences=True)
@@ -829,7 +829,7 @@ class Container(
         }
         """
         if isinstance(other, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.xor(xs[0], xs[1]), [self, other], map_nests=True
             )
         return self.cont_map(lambda x, kc: operator.xor(x, other), map_sequences=True)
@@ -897,7 +897,7 @@ class Container(
         }
         """
         if isinstance(other, ivy.Container):
-            return ivy.Container.multi_map(
+            return ivy.Container.cont_multi_map(
                 lambda xs, _: operator.rshift(xs[0], xs[1]),
                 [self, other],
                 map_nests=True,
