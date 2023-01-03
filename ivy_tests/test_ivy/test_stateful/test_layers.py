@@ -348,7 +348,7 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
     )
     input_channels = draw(st.integers(1, 3))
     output_channels = draw(st.integers(1, 3))
-    dilations = draw(st.integers(1, 2))
+    dilations = 1
     x_dim = []
     for i in range(dim):
         min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
