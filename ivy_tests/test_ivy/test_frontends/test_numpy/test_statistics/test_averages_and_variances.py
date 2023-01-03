@@ -253,7 +253,7 @@ def test_numpy_nanstd(
         on_device=on_device,
         a=a[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
         out=None,
         ddof=0,
         keepdims=keep_dims,
