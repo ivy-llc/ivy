@@ -303,3 +303,8 @@ def nextafter(x1, x2):
 @to_ivy_arrays_and_back
 def remainder(x1, x2):
     return ivy.remainder(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def trace(a, offset=0, axis1=0, axis2=1, out=None):
+    return ivy.trace(a, offset=offset, axis1=axis1, axis2=axis2, out=out)
