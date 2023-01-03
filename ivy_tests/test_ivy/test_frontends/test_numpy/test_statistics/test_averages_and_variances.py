@@ -307,7 +307,7 @@ def test_numpy_cov(
 # nanmedian
 @handle_frontend_test(
     fn_tree="numpy.nanmedian",
-    dtype_and_a=statistical_dtype_values(function="median"),
+    dtype_and_a=statistical_dtype_values(function="nanmedian"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
@@ -347,9 +347,10 @@ def test_numpy_nanmedian(
         on_device=on_device,
         a=a[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=dtype,
         out=None,
+        correction=0,
         keepdims=keep_dims,
         where=where,
-        test_values=False,
+        test_values=False
     )
