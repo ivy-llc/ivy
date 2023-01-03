@@ -1024,7 +1024,6 @@ def fourier_encode(
         New array with the final dimension expanded, and the encodings stored in this
         channel.
 
-
     Examples
     --------
     >>> x = ivy.array([1,2,3])

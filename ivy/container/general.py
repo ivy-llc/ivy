@@ -1172,18 +1172,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = ivy.Container.static_fourier_encode(x,y)
         >>> print(z)
         {
-            a: ivy.array([[ 1.0000000e+00, 1.2246468e-16, 0.0000000e+00,
-                    0.0000000e+00, 0.0000000e+00, -1.0000000e+00, 1.0000000e+00,
-                    1.0000000e+00, 1.0000000e+00],
-                    [ 2.0000000e+00, -2.4492936e-16, 0.0000000e+00, 0.0000000e+00,
-                    0.0000000e+00, 1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
-                    1.0000000e+00]]),
-            b: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 0.0000000e+00,
-                    0.0000000e+00, 0.0000000e+00, -1.0000000e+00, 1.0000000e+00,
-                    1.0000000e+00,1.0000000e+00],
-                    [ 4.0000000e+00, -4.8985872e-16, 0.0000000e+00, 0.0000000e+00,
-                    0.0000000e+00, 1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
-                    1.0000000e+00]]
+            a: (<classivy.array.array.Array>shape=[2,9]),
+            b: (<classivy.array.array.Array>shape=[2,9])
         }
 
         >>> x = ivy.Container(a = ivy.array([3,10]),
@@ -1270,7 +1260,6 @@ class ContainerWithGeneral(ContainerBase):
             New container with the final dimension expanded of arrays at its leaves,
             and the encodings stored in this channel.
 
-
         Examples
         --------
         >>> x = ivy.Container(a = ivy.array([1,2]),
@@ -1279,18 +1268,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = x.fourier_encode(y)
         >>> print(z)
         {
-            a: ivy.array([[ 1.0000000e+00, 1.2246468e-16, 0.0000000e+00,
-                    0.0000000e+00, 0.0000000e+00, -1.0000000e+00, 1.0000000e+00,
-                    1.0000000e+00, 1.0000000e+00],
-                    [ 2.0000000e+00, -2.4492936e-16, 0.0000000e+00, 0.0000000e+00,
-                    0.0000000e+00, 1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
-                    1.0000000e+00]]),
-            b: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 0.0000000e+00,
-                    0.0000000e+00, 0.0000000e+00, -1.0000000e+00, 1.0000000e+00,
-                    1.0000000e+00,1.0000000e+00],
-                    [ 4.0000000e+00, -4.8985872e-16, 0.0000000e+00, 0.0000000e+00,
-                    0.0000000e+00, 1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
-                    1.0000000e+00]]
+            a: (<classivy.array.array.Array>shape=[2,9]),
+            b: (<classivy.array.array.Array>shape=[2,9])
         }
 
         >>> x = ivy.Container(a = ivy.array([3,10]),
