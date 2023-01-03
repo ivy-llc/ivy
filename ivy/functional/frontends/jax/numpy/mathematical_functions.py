@@ -291,3 +291,8 @@ def copysign(x1, x2):
 @to_ivy_arrays_and_back
 def sinc(x):
     return ivy.sinc(x)
+
+
+@to_ivy_arrays_and_back
+def rot90(x, k=1, axis=0):
+    return ivy.rot90(x, k=k, axis=axis)
