@@ -1777,28 +1777,27 @@ def test_jax_numpy_sinc(
     )
 
     
-#rot90
+# rot90
 @handle_frontend_test(
     fn_tree="jax.numpy.rot90",
-    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    dtype=helpers.get_dtypes("numeric", none=True, full=False),
-    k= helpers.get_dtypes("numeric", none=True, full=False),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.numpy.rot90"
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_jax_numpy_rot90(
     *,
-    xs_n_input_dtypes_n_unique_idx,
+    dtype_and_x,
     k,
+    axis,
     as_variable,
     dtype,
     num_positional_args,
     native_array,
+    on_device,
     frontend,
     fn_tree,
 ):
-    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
+    input_dtypes, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -1808,8 +1807,8 @@ def test_jax_numpy_rot90(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        arrays=xs,
+        arrays=x,
         k=k,
-        axis=unique_idx,
+        axis=axis,
     )
     
