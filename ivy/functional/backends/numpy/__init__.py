@@ -121,8 +121,6 @@ backend = "numpy"
 # local sub-modules
 from . import activations
 from .activations import *
-from . import compilation
-from .compilation import *
 from . import creation
 from .creation import *
 from . import data_type
