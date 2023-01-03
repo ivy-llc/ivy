@@ -87,7 +87,7 @@ def triu(m, k=0):
     return ivy.triu(m, k=k)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def empty(shape, dtype=None):
     return ivy.empty(shape, dtype=dtype)
