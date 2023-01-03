@@ -565,6 +565,35 @@ class ArrayWithLayers(abc.ABC):
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> Tuple[ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.lstm_update. This method simply
+        wraps the function, and so the docstring for ivy.lstm_update also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input tensor of LSTM layer *[batch_shape, t, in]*.
+        init_h
+            initial state tensor for the cell output *[batch_shape, out]*.
+        init_c
+            initial state tensor for the cell hidden state *[batch_shape, out]*.
+        kernel
+            weights for cell kernel *[in, 4 x out]*.
+        recurrent_kernel
+            weights for cell recurrent kernel *[out, 4 x out]*.
+        bias
+            bias for cell kernel *[4 x out]*. (Default value = None)
+        recurrent_bias
+            bias for cell recurrent kernel *[4 x out]*. (Default value = None)
+
+        Returns
+        -------
+        ret
+            hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
+            timestep *[batch_shape,out]*
+
+        """
         return ivy.lstm_update(
             self._data,
             init_h,
