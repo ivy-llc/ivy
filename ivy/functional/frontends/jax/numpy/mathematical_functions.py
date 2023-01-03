@@ -298,3 +298,8 @@ def sinc(x):
 @to_ivy_arrays_and_back
 def nextafter(x1, x2):
     return ivy.nextafter(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def remainder(x1, x2):
+    return ivy.remainder(x1, x2)
