@@ -314,12 +314,20 @@ def isinf(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    detect_positive: bool = True,
+    detect_negative: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
         return tf.zeros_like(x, tf.bool)
     else:
-        return tf.math.is_inf(x)
+        if detect_negative and detect_positive:
+            return tf.math.is_inf(x)
+        elif detect_negative:
+            return tf.experimental.numpy.isposinf(x)
+        elif detect_positive:
+            return tf.experimental.numpy.isneginf(x)
+        return tf.zeros_like(x, tf.bool)
 
 
 def isnan(
@@ -768,3 +776,12 @@ def isreal(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.isreal(x)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+def real(x: Union[tf.Tensor, tf.Variable],
+         /,
+         *,
+         out: Optional[Union[tf.Tensor, tf.Variable]] = None
+         ) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.real(x)
