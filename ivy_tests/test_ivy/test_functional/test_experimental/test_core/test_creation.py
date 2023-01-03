@@ -4,8 +4,6 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
-
-
 @handle_test(
     fn_tree="functional.ivy.experimental.triu_indices",
     n_rows=helpers.ints(min_value=0, max_value=10),
@@ -39,7 +37,6 @@ def test_triu_indices(
         device=on_device,
     )
 
-
 # vorbis_window
 @handle_test(
     fn_tree="functional.ivy.experimental.vorbis_window",
@@ -67,7 +64,6 @@ def test_vorbis_window(
         on_device=on_device,
         window_length=window_length,
     )
-
 
 # hann_window
 @handle_test(
@@ -101,7 +97,6 @@ def test_hann_window(
         periodic=periodic,
         dtype=dtype,
     )
-
 
 # kaiser_window
 @handle_test(
@@ -143,7 +138,6 @@ def test_kaiser_window(
         dtype=dtype,
     )
 
-
 # kaiser_bessel_derived_window
 @handle_test(
     fn_tree="functional.ivy.experimental.kaiser_bessel_derived_window",
@@ -184,7 +178,6 @@ def test_kaiser_bessel_derived_window(
         dtype=dtype,
     )
 
-
 # hamming_window
 @handle_test(
     fn_tree="functional.ivy.experimental.hamming_window",
@@ -223,7 +216,6 @@ def test_hamming_window(
         beta=beta,
         dtype=dtype,
     )
-
 
 @handle_test(
     fn_tree="functional.ivy.experimental.tril_indices",
