@@ -491,7 +491,19 @@ def test_jax_numpy_max(
 # average
 @handle_frontend_test(
     fn_tree="jax.numpy.average",
-    dtype_x_axis=statistical_dtype_values(function="average"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        valid_axis=True,
+        allow_neg_axes=False,
+        min_axes_size=1,
+    ),
     returned=st.booleans(),
 )
 def test_jax_numpy_average(
@@ -524,6 +536,6 @@ def test_jax_numpy_average(
         rtol=1e-2,
         a=x[0],
         axis=axis,
-        weights=None,
+        weights=x[1],
         returned=returned,
     )
