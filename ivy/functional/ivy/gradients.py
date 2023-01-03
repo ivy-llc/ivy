@@ -1089,7 +1089,7 @@ def adam_update(
     epsilon: float = 1e-7,
     stop_gradients: bool = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, using ADAM update. `[reference]
 
