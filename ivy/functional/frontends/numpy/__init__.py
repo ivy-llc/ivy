@@ -1,5 +1,7 @@
 # flake8: noqa
-import ivy
+import importlib
+
+from  ivy.func_wrapper import with_unsupported_dtypes
 from ivy.exceptions import handle_exceptions
 from typing import Union, Iterable, Tuple
 from numbers import Number
@@ -393,6 +395,16 @@ def promote_types_of_numpy_inputs(
         x2 = ivy.asarray(x2, dtype=promoted)
     return x1, x2
 
+def module_level_unsupported_dtype_and_import(s,v_dict,fw):
+    module=importlib.import_module(s,package=__package__)
+    for name,type in module.__dict__.items():
+        if callable(type) and not getattr(type,'override',None):
+
+            globals()[name]=(with_unsupported_dtypes(v_dict,fw))(type)
+        elif callable(type) and getattr(type,'override',None):
+            globals()[name]=type
+
+    pass
 
 from . import creation_routines
 from .creation_routines import *
@@ -439,4 +451,7 @@ from .linalg.decompositions import cholesky, qr, svd
 
 from .linalg.norms_and_other_numbers import det, slogdet, matrix_rank, norm, trace
 
-from .linalg.solving_equations_and_inverting_matrices import pinv, inv, solve
+module_level_unsupported_dtype_and_import('.linalg.solving_equations_and_inverting_matrices',{"1.23.0 and below": ("float16",)},'numpy')
+
+
+
