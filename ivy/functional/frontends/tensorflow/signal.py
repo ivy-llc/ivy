@@ -14,3 +14,11 @@ def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
 
 
 kaiser_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
+
+
+@handle_tf_dtype
+@to_ivy_arrays_and_back
+def vorbis_window(window_length, dtype=ivy.float32, name=None):
+    return ivy.vorbis_window(window_length, dtype=dtype)
+
+vorbis_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
