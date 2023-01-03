@@ -1807,6 +1807,5 @@ def test_jax_numpy_diagflat(
         on_device=on_device,
         arrays=x,
         k=k,
-        dtype=dtype,
     )
     
