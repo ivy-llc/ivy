@@ -623,7 +623,6 @@ def test_numpy_reciprocal(
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
                 num_arrays=2,
-                exclude_min=True,
                 shared_dtype=True,
             )
         ],
