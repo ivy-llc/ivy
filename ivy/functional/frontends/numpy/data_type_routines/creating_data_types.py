@@ -14,8 +14,9 @@ def to_ivy_dtype(dtype_in):
         return ivy.as_ivy_dtype(dtype_in)
     if dtype_in in (int, float, bool):
         return {int: ivy.int64, float: ivy.float64, bool: ivy.bool}[dtype_in]
-    if issubclass(dtype_in, np_frontend.generic):
-        return np_frontend.numpy_scalar_to_dtype[dtype_in]
+    if isinstance(dtype_in, type):
+        if issubclass(dtype_in, np_frontend.generic):
+            return np_frontend.numpy_scalar_to_dtype[dtype_in]
     else:
         return ivy.as_ivy_dtype(dtype_in)
 
