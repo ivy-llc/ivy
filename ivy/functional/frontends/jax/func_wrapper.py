@@ -96,7 +96,7 @@ def to_ivy_dtype(dtype):
         return dtype
     if dtype in (int, float, bool) or ivy.is_native_dtype(dtype):
         return ivy.as_ivy_dtype(dtype)
-    return np_frontend.to_ivy_dtype(dtype)._ivy_dtype
+    return np_frontend.to_ivy_dtype(dtype)
 
 
 def handle_jax_dtype(fn: Callable) -> Callable:
@@ -129,18 +129,11 @@ def handle_jax_dtype(fn: Callable) -> Callable:
                 ivy.int64: ivy.int32,
                 ivy.uint64: ivy.uint32,
                 ivy.float64: ivy.float32,
-                "float64": "float32",
-                "uint64": "uint32",
-                "int64": "int32",
             }
             dtype = dtype_replacement_dict[dtype] \
                 if dtype in dtype_replacement_dict else dtype
 
-        if isinstance(dtype, str):
-            return fn(*args, dtype=dtype, **kwargs)
-        if isinstance(dtype, np_frontend.dtype):
-            return fn(*args, dtype=dtype._ivy_dtype, **kwargs)
-        return fn(*args, dtype=np_frontend.to_ivy_dtype(dtype), **kwargs)
+        return fn(*args, dtype=dtype, **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
     return new_fn

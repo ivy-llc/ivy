@@ -372,9 +372,6 @@ def _handle_x64_promotion(d):
         ivy.int64: ivy.int32,
         ivy.uint64: ivy.uint32,
         ivy.float64: ivy.float32,
-        "float64": "float32",
-        "uint64": "uint32",
-        "int64": "int32",
     }
     if not jax_frontend.config.jax_enable_x64:
         d = dtype_replacement_dict[d] if d in dtype_replacement_dict else d
