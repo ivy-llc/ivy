@@ -325,3 +325,97 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_eigvals(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.eigvals.
+        This method simply wraps the function, and so the docstring for
+        ivy.eigvals also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+            x
+                container with input arrays.
+
+        Returns
+        -------
+            ret
+                container including array corresponding
+                to eigenvalues of input array
+
+        Examples
+        --------
+        >>> x = ivy.array([[1,2], [3,4]])
+        >>> c = ivy.Container({'x':{'xx':x}})
+        >>> ivy.Container.eigvals(c)
+        {
+            x: {
+                xx: ivy.array([-0.37228132+0.j, 5.37228132+0.j])
+            }
+        }
+        >>> ivy.Container.eigvals(c)['x']['xx']
+        ivy.array([-0.37228132+0.j,  5.37228132+0.j])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "eigvals",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def eigvals(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.eigvals.
+        This method simply wraps the function, and so the docstring for
+        ivy.eigvals also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+            x
+                container with input arrays.
+
+        Returns
+        -------
+            ret
+                container including array corresponding
+                to eigenvalues of input array
+
+        Examples
+        --------
+        >>> x = ivy.array([[1,2], [3,4]])
+        >>> c = ivy.Container({'x':{'xx':x}})
+        >>> c.eigvals()
+        {
+            x: {
+                xx: ivy.array([-0.37228132+0.j, 5.37228132+0.j])
+            }
+        }
+        >>> c.eigvals()['x']['xx']
+        ivy.array([-0.37228132+0.j,  5.37228132+0.j])
+        """
+        return self.static_eigvals(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
