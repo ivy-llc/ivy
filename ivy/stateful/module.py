@@ -84,7 +84,7 @@ class Module(ModuleHelpers):
             Ivy container of trainable variables. Created internally by default.
         build_mode
             How the Module is built, either on initialization (now),
-            explicitly by the user by calling build(), or the first 
+            explicitly by the user by calling build(), or the first
             time the __call__ method is run. Default is on initialization.
         compile_on_next_step
             Whether to compile the network on the next forward pass.
