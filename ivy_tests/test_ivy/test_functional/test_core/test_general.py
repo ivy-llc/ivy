@@ -1194,7 +1194,6 @@ def test_einops_rearrange(
     ),
     floattypes=helpers.get_dtypes("float"),
     reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
-    test_gradients=st.just(False),
 )
 def test_einops_reduce(
     *,
@@ -1212,6 +1211,9 @@ def test_einops_reduce(
     dtype, x = dtype_x
     if (reduction in ["mean", "prod"]) and (dtype not in floattypes):
         dtype = ["float32"]
+    # torch computes min and max differently and leads to inconsistent gradients
+    if "torch" in backend_fw.__name__ and reduction in ["min", "max"]:
+        test_flags.test_gradients = False
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -1315,16 +1317,20 @@ def test_inplace_variables_supported():
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_update(x_val_and_dtypes, tensor_fn, on_device):
+    dtype = x_val_and_dtypes[0][0]
+    if dtype in ivy.function_unsupported_dtypes(ivy.inplace_update):
+        return
     x, val = x_val_and_dtypes[1]
-    x = tensor_fn(x.tolist(), dtype="float32", device=on_device)
-    val = tensor_fn(val.tolist(), dtype="float32", device=on_device)
+    x = tensor_fn(x.tolist(), dtype=dtype, device=on_device)
+    val = tensor_fn(val.tolist(), dtype=dtype, device=on_device)
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
         tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
     ):
         x_inplace = ivy.inplace_update(x, val)
         assert id(x_inplace) == id(x)
-        assert np.allclose(ivy.to_numpy(x), ivy.to_numpy(val))
-        return
+        x = helpers.flatten_and_to_np(ret=x)
+        val = helpers.flatten_and_to_np(ret=val)
+        helpers.value_test(ret_np_flat=x, ret_np_from_gt_flat=val)
 
 
 # inplace_decrement
@@ -1338,21 +1344,25 @@ def test_inplace_update(x_val_and_dtypes, tensor_fn, on_device):
         min_dim_size=2,
         num_arrays=2,
         shared_dtype=True,
+        safety_factor_scale="log",
     ),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_decrement(x_val_and_dtypes, tensor_fn, on_device):
+    dtype = x_val_and_dtypes[0][0]
     x, val = x_val_and_dtypes[1]
     x, val = x.tolist(), val.tolist()
-    x = tensor_fn(x, dtype="float32", device=on_device)
-    val = tensor_fn(val, dtype="float32", device=on_device)
+    x = tensor_fn(x, dtype=dtype, device=on_device)
+    val = tensor_fn(val, dtype=dtype, device=on_device)
     new_val = x - val
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
         tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
     ):
         x_inplace = ivy.inplace_decrement(x, val)
         assert id(x_inplace) == id(x)
-        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x_inplace))
+        x = helpers.flatten_and_to_np(ret=x)
+        new_val = helpers.flatten_and_to_np(ret=new_val)
+        helpers.value_test(ret_np_flat=x, ret_np_from_gt_flat=new_val)
 
 
 # inplace_increment
@@ -1370,17 +1380,22 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, on_device):
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_increment(x_val_and_dtypes, tensor_fn, on_device):
+    dtype = x_val_and_dtypes[0][0]
+    if dtype in ivy.function_unsupported_dtypes(ivy.inplace_increment):
+        return
     x, val = x_val_and_dtypes[1]
     x, val = x.tolist(), val.tolist()
-    x = tensor_fn(x, dtype="float32", device=on_device)
-    val = tensor_fn(val, dtype="float32", device=on_device)
+    x = tensor_fn(x, dtype=dtype, device=on_device)
+    val = tensor_fn(val, dtype=dtype, device=on_device)
     new_val = x + val
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
         tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
     ):
         x_inplace = ivy.inplace_increment(x, val)
         assert id(x_inplace) == id(x)
-        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x_inplace))
+        x = helpers.flatten_and_to_np(ret=x)
+        new_val = helpers.flatten_and_to_np(ret=new_val)
+        helpers.value_test(ret_np_flat=x, ret_np_from_gt_flat=new_val)
 
 
 # is_ivy_array

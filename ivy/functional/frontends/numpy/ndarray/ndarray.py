@@ -353,6 +353,9 @@ class ndarray:
     def __imul__(self, value, /):
         return np_frontend.multiply(self._ivy_array, value)
 
+    def __itruediv__(self, value, /):
+        return np_frontend.true_divide(self._ivy_array, value)
+
     def __ipow__(self, value, /):
         return np_frontend.power(self._ivy_array, value)
 
