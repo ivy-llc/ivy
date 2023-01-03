@@ -1680,6 +1680,31 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container static method variant of ivy.zero_pad. This method simply
         wraps the function, and so the docstring for ivy.zero_pad also applies to
         this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array to pad.
+        pad_width
+            Number of values padded to the edges of each axis. Specified as
+            ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Padded array of rank equal to x with shape increased according to pad_width.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([1., 2., 3.,4, 5, 6])
+        >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
+        >>> print(y)
+        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 0., 0., 0.])
         """
         return ContainerBase.cont_multi_map_in_function(
             "zero_pad",
@@ -1707,6 +1732,31 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.zero_pad. This method simply wraps
         the function, and so the docstring for ivy.zero_pad also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to pad.
+        pad_width
+            Number of values padded to the edges of each axis. Specified as
+            ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Padded array of rank equal to x with shape increased according to pad_width.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([1., 2., 3.,4, 5, 6])
+        >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
+        >>> print(y)
+        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 0., 0., 0.])
         """
         return self.static_zero_pad(
             self,
