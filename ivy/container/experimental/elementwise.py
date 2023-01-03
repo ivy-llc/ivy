@@ -429,6 +429,99 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_fmax(self, x2, out=out)
 
     @staticmethod
+    def static_fmin(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.fmin. This method simply wraps
+        the function, and so the docstring for ivy.fmin also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            container with the first input arrays.
+        x2
+            container with the second input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise minimums.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([2, 3, 4]),\
+                               b=ivy.array([ivy.nan, 0, ivy.nan]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 5, 2]),\
+                               b=ivy.array([0, ivy.nan, ivy.nan]))
+        >>> ivy.Container.static_fmin(x1, x2)
+        {
+            a: ivy.array([1, 3, 2]),
+            b: ivy.array([0., 0., nan])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_static_method(
+            "fmin",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def fmin(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.fmin. This method simply
+        wraps the function, and so the docstring for ivy.fmin also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the first input arrays.
+        x2
+            container with the second input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise minimums.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([2, 3, 4]),\
+                               b=ivy.array([ivy.nan, 0, ivy.nan]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 5, 2]),\
+                               b=ivy.array([0, ivy.nan, ivy.nan]))
+        >>> x1.fmin(x2)
+        {
+            a: ivy.array([1, 3, 2]),
+            b: ivy.array([0., 0., nan])
+        }
+        """
+        return self.static_fmin(self, x2, out=out)
+
+    @staticmethod
     def static_float_power(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
@@ -2679,4 +2772,136 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         """
         return self.static_gradient(
             self, spacing=spacing, edge_order=edge_order, axis=axis
+        )
+
+    @staticmethod
+    def static_xlogy(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        y: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.xlogy. This method simply wraps
+        the function, and so the docstring for ivy.xlogy also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container containing first input arrays.
+        y
+            Input container containing second input arrays.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the next representable values of
+            input container's arrays, element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.zeros(3)),\
+        ...                         b=ivy.array([1.0, 2.0, 3.0]))
+        >>> y = ivy.Container(a=ivy.array([-1.0, 0.0, 1.0]),\
+        ...                         b=ivy.array([3.0, 2.0, 1.0]))
+        >>> ivy.Container.static_xlogy(x, y)
+        {
+            a: ivy.array([0.0, 0.0, 0.0]),
+            b: ivy.array([1.0986, 1.3863, 0.0000])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "xlogy",
+            x,
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def xlogy(
+        self: ivy.Container,
+        y: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.xlogy. This method simply
+        wraps the function, and so the docstring for ivy.xlogy also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing first input array.
+        y
+            Input container containing second input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the next representable values of
+            input container's arrays, element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.zeros(3)),\
+        ...                         b=ivy.array([1.0, 2.0, 3.0]))
+        >>> y = ivy.Container(a=ivy.array([-1.0, 0.0, 1.0]),\
+        ...                         b=ivy.array([3.0, 2.0, 1.0]))
+        >>> x.xlogy(y)
+        {
+            a: ivy.array([0.0, 0.0, 0.0]),
+            b: ivy.array([1.0986, 1.3863, 0.0000])
+        }
+        """
+        return self.static_xlogy(
+            self,
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )

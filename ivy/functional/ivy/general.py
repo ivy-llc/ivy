@@ -161,7 +161,7 @@ def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
 ) -> bool:
     """
-    Determines whether the input x is an Ivy Array.
+    Determines whether the input x is a valid Ivy Array.
 
     Parameters
     ----------
@@ -174,7 +174,7 @@ def is_ivy_array(
     Returns
     -------
     ret
-        Boolean, whether or not x is an array.
+        Boolean, whether or not x is a valid Ivy Array.
 
     Examples
     --------
@@ -1658,6 +1658,35 @@ def einops_rearrange(
     ret
         New array with einops.rearrange having been applied.
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1, 2, 3],
+    ...               [-4, -5, -6]])
+    >>> y = ivy.einops_rearrange(x, "height width -> width height")
+    >>> print(y)
+    ivy.array([[ 1, -4],
+       [ 2, -5],
+       [ 3, -6]])
+
+    >>> x = ivy.array([[[ 1,  2,  3],
+    ...                  [ 4,  5,  6]],
+    ...               [[ 7,  8,  9],
+    ...                  [10, 11, 12]]])
+    >>> y = ivy.einops_rearrange(x, "c h w -> c (h w)")
+    >>> print(y)
+    ivy.array([[ 1,  2,  3,  4,  5,  6],
+       [ 7,  8,  9, 10, 11, 12]])
+
+    >>> x = ivy.array([[1, 2, 3, 4, 5, 6]
+    ...               [7, 8, 9, 10, 11, 12]])
+    >>> y = ivy.einops_rearrange(x, "c (h w) -> (c h) w", h=2, w=3)
+    ivy.array([[ 1,  2,  3],
+       [ 4,  5,  6],
+       [ 7,  8,  9],
+       [10, 11, 12]])
+
     """
     ret = einops.rearrange(x, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
@@ -1722,6 +1751,7 @@ def einops_reduce(
         a: ivy.array([-2.29, 10.5]),
         b: ivy.array([-1.4, 6.21])
     }
+
     """
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)

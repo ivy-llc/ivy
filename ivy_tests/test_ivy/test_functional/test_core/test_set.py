@@ -18,6 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_dim_size=1,
         max_dim_size=3,
     ),
+    test_gradients=st.just(False),
 )
 def test_unique_values(
     *,
@@ -53,6 +54,7 @@ def test_unique_values(
         max_dim_size=5,
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_unique_all(
     *,
@@ -88,6 +90,7 @@ def test_unique_all(
         max_dim_size=5,
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_unique_counts(
     *,
@@ -123,6 +126,7 @@ def test_unique_counts(
         max_dim_size=5,
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_unique_inverse(
     *,

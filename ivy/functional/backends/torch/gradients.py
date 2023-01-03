@@ -2,7 +2,6 @@
 
 # global
 import torch
-import warnings
 from typing import Optional, Callable
 
 # local
@@ -17,6 +16,8 @@ from ivy.functional.ivy.gradients import (
 
 
 def variable(x, /):
+    if ivy.is_int_dtype(x.dtype):
+        x = ivy.astype(x, ivy.default_float_dtype()).to_native()
     if not x.is_leaf:
         return x.detach().requires_grad_()
     return x.clone().requires_grad_()
@@ -160,13 +161,11 @@ def stop_gradient(
     out: Optional[torch.Tensor] = None,
 ):
     if is_variable(x) and preserve_type:
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            if x.grad_fn:
-                x = x.detach()
-                x.requires_grad = True
-            elif x.grad:
-                x.grad.data.zero_()
+        if x.grad_fn:
+            x = x.detach()
+            x.requires_grad = True
+        elif x.grad:
+            x.grad.data.zero_()
         return x
     return x.detach()
 
