@@ -74,6 +74,29 @@ fmax.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+def fmin(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fmin(
+        x1,
+        x2,
+        out=None,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    )
+
+
+fmin.support_native_out = True
+
+
+@_scalar_output_to_0d_array
 def trapz(
     y: np.ndarray,
     /,
@@ -187,7 +210,10 @@ def isclose(
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    ret = np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    if np.isscalar(ret):
+        return np.array(ret, dtype=np.bool)
+    return ret
 
 
 isclose.support_native_out = False
@@ -343,11 +369,7 @@ def gradient(
 
 
 def xlogy(
-    x: np.ndarray,
-    y: np.ndarray,    
-    /,
-    *,
-    out: Optional[np.ndarray] = None
+    x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if (x == 0).all():
         return 0.0
