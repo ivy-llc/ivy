@@ -273,8 +273,11 @@ def _is_variable(x, exclusive=False) -> bool:
 def _variable_data(x: Union[ivy.Array, ivy.NativeArray]
 )-> ivy.Array:
     """
-    Gets contents of the input.
-
+    Gets the contents of the input.
+    :Note: This helper function is supposed to be used internally only so \
+    it should not have any container or array implementation \
+    though I have added each. 
+    
     Parameters
     ----------
     x
@@ -287,7 +290,53 @@ def _variable_data(x: Union[ivy.Array, ivy.NativeArray]
     
     Examples
     --------
-    ## TODO: write examples
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array(2.3)
+    >>> #calling as internal helper method of the module
+    >>> print(ivy.gradients._variable_data(x)) 
+    ivy.array(2.3)
+
+    >>> x = ivy.zeros((3, 2))
+    >>> x.variable_data()
+    ivy.array([[0., 0.],
+       [0., 0.],
+       [0., 0.]])
+
+    >>> x = ivy.array([[2], [3], [5]])
+    >>> x.variable_data()
+    ivy.array([[2],
+       [3],
+       [5]])
+    
+
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([-1, 0., 0.8, 9])
+    >>> ivy.gradients._variable_data(x)
+    ivy.array([-1.        ,  0.        ,  0.80000001,  9.        ])
+
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
+    >>> x.variable_data()
+    {
+        a: ivy.array(3.2),
+        b: ivy.array(2)
+    }
+
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.Container(a=ivy.array([2, -1, 0])), b=ivy.array([0., -0.4, 8]))
+    >>> x.variable_data()
+    {
+        a: {
+            a: ivy.array([2, -1, 0])
+        },
+        b: ivy.array([0., -0.40000001, 8.])
+    }
     """
     x = ivy.to_native(x, nested=True)
 

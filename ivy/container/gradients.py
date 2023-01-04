@@ -9,11 +9,7 @@ from ivy.container.base import ContainerBase
 class ContainerWithGradients(ContainerBase):
     @staticmethod
     def static_variable_data(
-    x: ivy.Container,
-    key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-    to_apply: bool = True,
-    prune_unapplied: bool = False,
-    map_sequences: bool = False,
+    x: ivy.Container
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy._variable_data. This method simply
@@ -43,24 +39,35 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        ## TODO: write examples
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "_variable_data",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
+        With :code:`ivy.Container` input:
 
+        >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
+        >>> x.variable_data()
+        {
+            a: ivy.array(3.2),
+            b: ivy.array(2)
+        }
+
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.Container(a=ivy.array([2, -1, 0])), b=ivy.array([0., -0.4, 8]))
+        >>> x.variable_data()
+        {
+            a: {
+                a: ivy.array([2, -1, 0])
+            },
+            b: ivy.array([0., -0.40000001, 8.])
+        }
+        """
+        return ivy.gradients._variable_data(x)
 
     def variable_data(
     self: ivy.Container,
-    key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-    to_apply: bool = True,
-    prune_unapplied: bool = False,
-    map_sequences: bool = False,
+    # key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+    # to_apply: bool = True,
+    # prune_unapplied: bool = False,
+    # map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy._variable_data. This method simply
@@ -93,11 +100,7 @@ class ContainerWithGradients(ContainerBase):
         ##TODO: write examples
         """
         return self.static_variable_data(
-            self,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
+            self
         )
 
 
