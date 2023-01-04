@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 
 # local
 import ivy
@@ -102,15 +102,19 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
         """
         return ivy.eig(self._data)
 
-    def multi_dot(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def multi_dot(
+        self: ivy.Array, 
+        x: Sequence[Union[ivy.Array, ivy.NativeArray]], 
+        /, 
+        *, 
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.multi_dot.
         This method simply wraps the function, and so the docstring for
         ivy.multi_dot also applies to this method with minimal changes.
-        However due to the nature of tensor homogeneity, this method only 
-        works for tensors of equal shape.
 
         Examples
         --------
         """
-        return ivy.multi_dot(self._data, out=out)
+        return ivy.multi_dot((self._data, *x), out=out)
