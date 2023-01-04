@@ -294,7 +294,15 @@ def sinc(x):
     return ivy.sinc(x)
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16", "float16",)}, "jax")
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "jax",
+)
 @to_ivy_arrays_and_back
 def nextafter(x1, x2):
     return ivy.nextafter(x1, x2)
