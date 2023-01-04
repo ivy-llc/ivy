@@ -103,3 +103,8 @@ def take(
 @to_ivy_arrays_and_back
 def broadcast_to(arr, shape):
     return ivy.broadcast_to(arr, shape)
+
+
+@to_ivy_arrays_and_back
+def swapaxes(a, axis1, axis2):
+    return ivy.swapaxes(a, axis1, axis2)
