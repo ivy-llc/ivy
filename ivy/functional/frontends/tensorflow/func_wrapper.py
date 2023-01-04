@@ -109,7 +109,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     return new_fn
 
 
-def outputs_to_tensorflow_array(fn: Callable) -> Callable:
+def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -136,12 +136,12 @@ def outputs_to_tensorflow_array(fn: Callable) -> Callable:
             ret, _ivy_array_to_tensorflow, include_derived={tuple: True}
         )
 
-    new_fn.outputs_to_tensorflow_array = True
+    new_fn.outputs_to_frontend_arrays = True
     return new_fn
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    return outputs_to_tensorflow_array(inputs_to_ivy_arrays(fn))
+    return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
 
 
 # update kwargs dictionary keys helper
