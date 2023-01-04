@@ -8,6 +8,100 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class ContainerWithGradients(ContainerBase):
     @staticmethod
+    def static_variable_data(
+    x: ivy.Container,
+    key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+    to_apply: bool = True,
+    prune_unapplied: bool = False,
+    map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy._variable_data. This method simply
+        wraps the function, and so the docstring for ivy._variable_data also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Array or Container to serve as input.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            Contents of the container as an ivy.Container.
+
+        Examples
+        --------
+        ## TODO: write examples
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "_variable_data",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+
+    def variable_data(
+    self: ivy.Container,
+    key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+    to_apply: bool = True,
+    prune_unapplied: bool = False,
+    map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy._variable_data. This method simply
+        wraps the function, and so the docstring for ivy._variable_data also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Array or Container to serve as input.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            Contents of the container as an ivy.Container.
+
+        Examples
+        --------
+        ##TODO: write examples
+        """
+        return self.static_variable_data(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+
+    @staticmethod
     def static_stop_gradient(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,

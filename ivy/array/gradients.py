@@ -9,6 +9,29 @@ import ivy
 
 
 class ArrayWithGradients(abc.ABC):
+    def variable_data(self: ivy.Array
+    )-> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy._variable_data method.
+        Gets the contents of the array.
+
+        Parameters
+        ----------
+            Array that serves as input.
+
+        Returns
+        -------
+        ret
+            Contents of the input array as ivy.Array
+
+        Examples
+        --------
+        
+        ## TODO: write examples
+        """
+        return ivy._variable_data(self)
+
+
     def stop_gradient(
         self: ivy.Array,
         /,
