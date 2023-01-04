@@ -85,9 +85,15 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     order: Optional[str] = "C",
+    allowzero: Optional[bool] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    if not allowzero:
+        shape = [
+            new_s if con else old_s
+            for new_s, con, old_s in zip(shape, np.array(shape) != 0, x.shape)
+        ]
     if copy:
         newarr = x.copy()
         return np.reshape(newarr, shape, order=order)
@@ -184,9 +190,9 @@ def repeat(
 
 
 def tile(
-    x: np.ndarray, /, reps: Sequence[int], *, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, repeats: Sequence[int], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.tile(x, reps)
+    return np.tile(x, repeats)
 
 
 def constant_pad(
