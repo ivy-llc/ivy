@@ -658,7 +658,7 @@ def _get_input_and_two_swapabble_axes(draw):
             max_value=len(x_shape) - 1,
         )
     )
-    return x_dtype, x, axis1, axis2 + 2
+    return x_dtype, x, axis1, axis2
 
 
 @handle_frontend_test(
