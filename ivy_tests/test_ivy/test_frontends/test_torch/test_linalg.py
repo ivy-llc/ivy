@@ -753,13 +753,12 @@ def _tensorinv_helper(draw):
     shape_cor = ()
     for i in shape:
         shape_cor += (int(i),)
-    dtype = draw(helpers.get_dtypes("float"))
-    input = draw(helpers.array_values(
+    dtype, input = draw(helpers.dtype_and_values(
+            available_dtypes=draw(helpers.get_dtypes("float")),
             shape=shape_cor,
-            dtype=dtype[0],
             min_value=-100,
             max_value=100,
-        ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon)
+        ).filter(lambda x: ivy.det(x) > sys.float_info.epsilon)
     )
 
     return dtype, input, ind
