@@ -282,7 +282,7 @@ with_grads_stack = list()
 
 
 class GradientTracking:
-    """"""
+    """Gradient tracking Context Manager."""
 
     # noinspection PyShadowingNames
     def __init__(self, with_grads):

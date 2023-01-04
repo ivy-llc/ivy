@@ -68,6 +68,7 @@ def nanmean(
     return ret
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def std(
@@ -75,21 +76,22 @@ def std(
     /,
     *,
     axis=None,
-    correction=0.0,
+    ddof=0.0,
     keepdims=False,
     out=None,
     dtype=None,
     where=True,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-
-    ret = ivy.std(x, axis=axis, correction=correction, keepdims=keepdims, out=out)
+    if dtype is None:
+        if ivy.is_int_dtype(x.dtype):
+            dtype = ivy.float64
+        else:
+            dtype = x.dtype
+    ret = ivy.std(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-
-    return ret
+    return ret.astype(dtype, copy=False)
 
 
 @to_ivy_arrays_and_back

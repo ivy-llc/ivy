@@ -89,8 +89,8 @@ def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, ou
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
-def cross(input, other, *, dim=-1, out=None):
-    return torch_frontend.cross(input, other, dim, out=out)
+def cross(input, other, *, dim=None, out=None):
+    return torch_frontend.cross(input, other, dim=dim, out=out)
 
 
 @to_ivy_arrays_and_back

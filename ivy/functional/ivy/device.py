@@ -37,7 +37,7 @@ max_chunk_sizes = dict()
 
 
 class DefaultDevice:
-    """"""
+    """Ivy Device Class"""
 
     def __init__(
         self,
