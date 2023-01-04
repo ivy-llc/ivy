@@ -648,6 +648,7 @@ class ContainerWithManipulation(ContainerBase):
         copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
         order: Optional[str] = "C",
+        allowzero: Optional[bool] = True,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.reshape. This method simply wraps the
@@ -743,6 +744,7 @@ class ContainerWithManipulation(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             copy=copy,
+            allowzero=allowzero,
             out=out,
             order=order,
         )
@@ -758,6 +760,7 @@ class ContainerWithManipulation(ContainerBase):
         map_sequences: bool = False,
         copy: Optional[bool] = None,
         order: Optional[str] = "C",
+        allowzero: Optional[bool] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -844,6 +847,7 @@ class ContainerWithManipulation(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             copy=copy,
+            allowzero=allowzero,
             out=out,
             order=order,
         )

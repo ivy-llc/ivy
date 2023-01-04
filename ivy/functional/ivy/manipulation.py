@@ -399,6 +399,7 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     order: Optional[str] = "C",
+    allowzero: Optional[bool] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gives a new shape to an array without changing its data.
@@ -499,7 +500,9 @@ def reshape(
 
     """
     ivy.assertions.check_elem_in_list(order, ["C", "F"])
-    return current_backend(x).reshape(x, shape=shape, copy=copy, out=out, order=order)
+    return current_backend(x).reshape(
+        x, shape=shape, copy=copy, allowzero=allowzero, out=out, order=order
+    )
 
 
 @to_native_arrays_and_back
