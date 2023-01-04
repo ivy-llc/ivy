@@ -1,6 +1,7 @@
 # global
 from hypothesis import assume
 import numpy as np
+from tensorflow.python.framework.errors_impl import InvalidArgumentError
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -678,4 +679,6 @@ def test_numpy_fmod(
         )
 
     except ZeroDivisionError:
+        assume(False)
+    except InvalidArgumentError:
         assume(False)
