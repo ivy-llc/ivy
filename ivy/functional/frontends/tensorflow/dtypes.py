@@ -119,7 +119,7 @@ def as_dtype(type_value):
     if type_value in tf_frontend.tensorflow_type_to_enum:
         return DType(tf_frontend.tensorflow_type_to_enum[type_value])
     if isinstance(type_value, np_frontend.dtype):
-        return DType(tf_frontend.tensorflow_type_to_enum[type_value._ivy_dtype])
+        return DType(tf_frontend.tensorflow_type_to_enum[type_value.name])
     if issubclass(type_value, np_frontend.generic):
         return DType(
             tf_frontend.tensorflow_type_to_enum[
