@@ -1,6 +1,5 @@
 # flake8: noqa
 from .activations import *
-from .compilation import *
 from .converters import *
 from .creation import *
 from .data_type import *
@@ -21,7 +20,6 @@ from .utility import *
 
 del (
     activations,
-    compilation,
     converters,
     creation,
     data_type,

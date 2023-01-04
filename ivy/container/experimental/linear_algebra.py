@@ -419,3 +419,81 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_adjoint(
+        x: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container static method variant of ivy.adjoint. This method simply wraps
+        the function, and so the docstring for ivy.adjoint also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            container with input arrays of dimensions greater than 1.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including arrays corresponding to the conjugate transpose of
+            the arrays in the input container
+
+        Examples
+        --------
+        >>> x = np.array([[1.-1.j, 2.+2.j],
+                          [3.+3.j, 4.-4.j]])
+        >>> y = np.array([[1.-2.j, 3.+4.j],
+                          [1.-0.j, 2.+6.j]])
+        >>> c = ivy.Container(a=ivy.array(x), b=ivy.array(y))
+        >>> ivy.Container.static_adjoint(c)
+        {
+            a: ivy.array([[1.+1.j, 3.-3.j],
+                          [2.-2.j, 4.+4.j]]),
+            b: ivy.array([[1.+2.j, 1.-0.j],
+                          [3.-4.j, 2.-6.j]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "adjoint",
+            x,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+        )
+
+    def adjoint(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.adjoint.
+        This method simply wraps the function, and so the docstring for
+        ivy.adjoint also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = np.array([[1.-1.j, 2.+2.j],
+                          [3.+3.j, 4.-4.j]])
+        >>> c = ivy.Container(a=ivy.array(x))
+        >>> c.adjoint()
+        {
+            a: ivy.array([[1.+1.j, 3.-3.j],
+                          [2.-2.j, 4.+4.j]])
+        }
+        """
+        return self.static_adjoint(
+            self, key_chains=key_chains, to_apply=to_apply, out=out
+        )

@@ -292,6 +292,7 @@ def diff(
 diff.support_native_out = False
 
 
+@_scalar_output_to_0d_array
 def allclose(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -302,10 +303,10 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> bool:
-    return np.array(np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan))
+    return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-isclose.support_native_out = False
+allclose.support_native_out = False
 
 
 def fix(

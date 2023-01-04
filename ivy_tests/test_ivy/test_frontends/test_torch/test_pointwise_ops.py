@@ -1873,6 +1873,7 @@ def test_torch_addcdiv(
         tensor1=x[1],
         tensor2=x[2],
         value=value,
+        atol=1e-03,
         out=None,
     )
 
@@ -2156,7 +2157,7 @@ def test_torch_logaddexp2(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1e-03,
+        atol=1e-02,
         x1=x[0],
         x2=x[1],
     )

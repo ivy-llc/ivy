@@ -32,6 +32,10 @@ def lcm(
     return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "uint8", "uint16", "uint32", "uint64")},
+    backend_version,
+)
 def fmod(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -39,13 +43,8 @@ def fmod(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    result = tf.math.floormod(x1, x2, name=None)
-    temp = [result, x1]
-    return tf.map_fn(
-        lambda x: x[0] if (x[0] * x[1] >= 0) else (-1 * x[0]),
-        temp,
-        fn_output_signature=result.dtype,
-    )
+    res = tf.experimental.numpy.remainder(tf.math.abs(x1), tf.math.abs(x2))
+    return tf.where(x1 < 0, -res, res)
 
 
 def fmax(

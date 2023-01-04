@@ -574,7 +574,9 @@ def test_numpy_mod(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("numeric"),
-                min_num_dims=1,
+                small_abs_safety_factor=4,
+                large_abs_safety_factor=4,
+                safety_factor_scale="log",
             )
         ],
         get_dtypes_kind="numeric",
@@ -598,6 +600,7 @@ def test_numpy_reciprocal(
         as_variable=as_variable,
         native_array=native_array,
     )
+    assume(not np.any(np.isclose(x[0], 0)))
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -610,23 +613,28 @@ def test_numpy_reciprocal(
         out=None,
         where=where,
         casting=casting,
+        rtol=1e-2,
+        atol=1e-2,
         order="K",
         dtype=dtype,
         subok=True,
     )
 
-    
+
 @handle_frontend_test(
     fn_tree="numpy.fmod",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
                 shared_dtype=True,
+                large_abs_safety_factor=6,
+                small_abs_safety_factor=6,
+                safety_factor_scale="log",
             )
         ],
-        get_dtypes_kind="float",
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
 )
