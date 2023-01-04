@@ -327,3 +327,17 @@ def log2(x):
 def vdot(a, b):
     a, b = promote_types_of_jax_inputs(a, b)
     return ivy.multiply(a, b).sum()
+
+
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+@to_ivy_arrays_and_back
+def cbrt(x, /):
+    all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0)
+    return ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive)
