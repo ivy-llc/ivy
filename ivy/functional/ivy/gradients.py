@@ -15,6 +15,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like,
+    outputs_to_ivy_arrays
 )
 from ivy.exceptions import handle_exceptions
 
@@ -268,8 +269,78 @@ def _is_variable(x, exclusive=False) -> bool:
     )
 
 
-def _variable_data(x):
+@outputs_to_ivy_arrays
+def _variable_data(x: Union[ivy.Array, ivy.NativeArray]
+)-> ivy.Array:
+    """
+    Gets the contents of the input.
+    :Note: This helper function is supposed to be used internally only so \
+    it should not have any container or array implementation \
+    though I have added each. 
+    
+    Parameters
+    ----------
+    x
+        Input array.
+    
+    Returns
+    -------
+    ret
+        An ivy.Array containing the contents of the input array.
+    
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array(2.3)
+    >>> #calling as internal helper method of the module
+    >>> print(ivy.gradients._variable_data(x)) 
+    ivy.array(2.3)
+
+    >>> x = ivy.zeros((3, 2))
+    >>> x.variable_data()
+    ivy.array([[0., 0.],
+       [0., 0.],
+       [0., 0.]])
+
+    >>> x = ivy.array([[2], [3], [5]])
+    >>> x.variable_data()
+    ivy.array([[2],
+       [3],
+       [5]])
+    
+
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([-1, 0., 0.8, 9])
+    >>> ivy.gradients._variable_data(x)
+    ivy.array([-1.        ,  0.        ,  0.80000001,  9.        ])
+
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
+    >>> x.variable_data()
+    {
+        a: ivy.array(3.2),
+        b: ivy.array(2)
+    }
+
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.Container(a=ivy.array([2, -1, 0])), b=ivy.array([0., -0.4, 8]))
+    >>> x.variable_data()
+    {
+        a: {
+            a: ivy.array([2, -1, 0])
+        },
+        b: ivy.array([0., -0.40000001, 8.])
+    }
+    """
     x = ivy.to_native(x, nested=True)
+
+    ##TODO: return with to_ivy...... this is not the best
     return ivy.nested_map(
         x, lambda x: current_backend(x).variable_data(x), include_derived=True
     )
