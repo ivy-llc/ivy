@@ -115,7 +115,11 @@ def seed(*, seed_value: int = 0) -> None:
 
 
 def shuffle(
-    x: np.ndarray, /, *, seed: Optional[int] = None, out: Optional[np.ndarray] = None
+    x: np.ndarray, 
+    /, 
+    *, 
+    seed: Optional[int] = None, 
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if seed:
         np.random.seed(seed)
