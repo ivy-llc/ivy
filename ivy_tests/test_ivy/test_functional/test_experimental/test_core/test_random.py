@@ -174,6 +174,8 @@ def test_gamma(
 
 
 # poisson
+# TODO: Enable gradient tests (test_gradients) once random generation
+#   is unified
 @handle_test(
     fn_tree="functional.ivy.experimental.poisson",
     dtype_and_lam=helpers.dtype_and_values(
@@ -190,6 +192,7 @@ def test_gamma(
     ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_poisson(
         *,
