@@ -190,9 +190,9 @@ def repeat(
 
 
 def tile(
-    x: np.ndarray, /, reps: Sequence[int], *, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, repeats: Sequence[int], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.tile(x, reps)
+    return np.tile(x, repeats)
 
 
 def constant_pad(
