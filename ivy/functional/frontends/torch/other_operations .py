@@ -19,4 +19,3 @@ def bincount(input, weights=None, minlength=0):
     ivy.add_at(counts, indices, weights)
 
     return counts
-
