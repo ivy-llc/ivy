@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: '3.10'
           cache: 'pip'
-      - run: pip install jupyter
+      - run: pip install -r requirements.txt
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
