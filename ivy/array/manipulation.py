@@ -610,7 +610,7 @@ class ArrayWithManipulation(abc.ABC):
     def tile(
         self: ivy.Array,
         /,
-        reps: Iterable[int],
+        repeats: Iterable[int],
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -623,7 +623,7 @@ class ArrayWithManipulation(abc.ABC):
         ----------
         self
             Input array.
-        reps
+        repeats
             The number of repetitions of x along each axis.
         out
             optional output array, for writing the result to. It must have a
@@ -650,7 +650,7 @@ class ArrayWithManipulation(abc.ABC):
                    [2,2]])
 
         """
-        return ivy.tile(self._data, reps=reps, out=out)
+        return ivy.tile(self._data, repeats=repeats, out=out)
 
     def unstack(
         self: ivy.Array, /, *, axis: int = 0, keepdims: bool = False
