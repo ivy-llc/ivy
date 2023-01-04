@@ -1161,10 +1161,6 @@ def adam_update(
     ...                               beta1=beta1, beta2=beta2,
     ...                               epsilon=epsilon, out=out,
     ...                               stop_gradients=stop_gradients)
-    >>> print(out)
-    ivy.array([[0.92558873, 1.92558754, 2.92558718],
-           [3.92558694, 1.92558682, 3.92558861],
-           [5.92558861, 3.92558694, 1.92558718]])
     >>> print(updated_weights)
     (ivy.array([[0.92558873, 1.92558754, 2.92558718],
            [3.92558694, 1.92558682, 3.92558861],
@@ -1179,7 +1175,7 @@ def adam_update(
     With one :class:`ivy.Container` input:
 
     >>> w = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))
-    >>> dcdw = ivy.array([1., 0.2, 0.4])
+    >>> dcdw = ivy.array([0.5, 0.2, 0.4])
     >>> mw_tm1 = ivy.array([0., 0., 0.])
     >>> vw_tm1 = ivy.array([0.])
     >>> lr = ivy.array(0.01)
@@ -1189,9 +1185,8 @@ def adam_update(
     ({
         a: ivy.array([1., 2., 3.]),
         b: ivy.array([4., 5., 6.])
-    },
-    ivy.array([0.1 , 0.02, 0.04]),
-    ivy.array([0.01099, 0.01003, 0.01015]))
+    }, ivy.array([0.05, 0.02, 0.04]),
+    ivy.array([0.01024, 0.01003, 0.01015]))
 
     With multiple :class:`ivy.Container` inputs:
 
