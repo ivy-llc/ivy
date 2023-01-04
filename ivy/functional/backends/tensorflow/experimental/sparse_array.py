@@ -5,17 +5,12 @@ import logging
 # local
 import ivy
 from ivy.functional.ivy.experimental.sparse_array import (
-    _is_bsc,
-    _is_bsr,
-    _is_coo,
-    _is_csc,
-    _is_csr,
+    _is_data_not_indices_values_and_shape,
     _verify_bsc_components,
     _verify_bsr_components,
     _verify_coo_components,
-    _verify_csr_components,
     _verify_csc_components,
-    _is_data_not_indices_values_and_shape,
+    _verify_csr_components,
 )
 
 
@@ -27,50 +22,38 @@ def native_sparse_array(
     data=None,
     *,
     coo_indices=None,
-    csr_crow_indices=None,
-    csr_col_indices=None,
-    csc_ccol_indices=None,
-    csc_row_indices=None,
-    bsc_ccol_indices=None,
-    bsc_row_indices=None,
-    bsr_crow_indices=None,
-    bsr_col_indices=None,
+    crow_indices=None,
+    col_indices=None,
+    ccol_indices=None,
+    row_indices=None,
     values=None,
     dense_shape=None,
+    format="coo",
 ):
+
     if _is_data_not_indices_values_and_shape(
         data,
         coo_indices,
-        csr_crow_indices,
-        csr_col_indices,
-        csc_ccol_indices,
-        csc_row_indices,
-        bsc_ccol_indices,
-        bsc_row_indices,
-        bsr_crow_indices,
-        bsr_col_indices,
+        crow_indices,
+        col_indices,
+        ccol_indices,
+        row_indices,
         values,
         dense_shape,
+        format,
     ):
         ivy.assertions.check_true(
             ivy.is_native_sparse_array(data), message="not a sparse array"
         )
         return data
-    elif _is_coo(
-        coo_indices,
-        csr_crow_indices,
-        csr_col_indices,
-        csc_ccol_indices,
-        csc_row_indices,
-        bsc_ccol_indices,
-        bsc_row_indices,
-        bsr_crow_indices,
-        bsr_col_indices,
-        values,
-        dense_shape,
-    ):
+
+    format = format.lower()
+
+    if format == "coo":
         _verify_coo_components(
-            indices=coo_indices, values=values, dense_shape=dense_shape
+            coo_indices,
+            values,
+            dense_shape,
         )
         all_coordinates = []
         for i in range(values.shape[0]):
@@ -80,94 +63,39 @@ def native_sparse_array(
         return tf.SparseTensor(
             indices=all_coordinates, values=values, dense_shape=dense_shape
         )
-    elif _is_csr(
-        coo_indices,
-        csr_crow_indices,
-        csr_col_indices,
-        csc_ccol_indices,
-        csc_row_indices,
-        bsc_ccol_indices,
-        bsc_row_indices,
-        bsr_crow_indices,
-        bsr_col_indices,
-        values,
-        dense_shape,
-    ):
+    elif format == "csr":
         _verify_csr_components(
-            crow_indices=csr_crow_indices,
-            col_indices=csr_col_indices,
+            crow_indices=crow_indices,
+            col_indices=col_indices,
             values=values,
             dense_shape=dense_shape,
         )
-        logging.warning(
-            "Tensorflow does not support CSR sparse array natively. None is returned."
-        )
-    elif _is_csc(
-        coo_indices,
-        csr_crow_indices,
-        csr_col_indices,
-        csc_ccol_indices,
-        csc_row_indices,
-        bsc_ccol_indices,
-        bsc_row_indices,
-        bsr_crow_indices,
-        bsr_col_indices,
-        values,
-        dense_shape,
-    ):
-        _verify_csc_components(
-            ccol_indices=csc_ccol_indices,
-            row_indices=csc_row_indices,
-            values=values,
-            dense_shape=dense_shape,
-        )
-        logging.warning(
-            "Tensorflow does not support CSC sparse array natively. None is returned."
-        )
-    elif _is_bsc(
-        coo_indices,
-        csr_crow_indices,
-        csr_col_indices,
-        csc_ccol_indices,
-        csc_row_indices,
-        bsc_ccol_indices,
-        bsc_row_indices,
-        bsr_crow_indices,
-        bsr_col_indices,
-        values,
-        dense_shape,
-    ):
-        _verify_bsc_components(
-            ccol_indices=bsc_ccol_indices,
-            row_indices=bsc_row_indices,
-            values=values,
-            dense_shape=dense_shape,
-        )
-        logging.warning(
-            "Tensorflow does not support BSC sparse array natively. None is returned."
-        )
-    elif _is_bsr(
-        coo_indices,
-        csr_crow_indices,
-        csr_col_indices,
-        csc_ccol_indices,
-        csc_row_indices,
-        bsc_ccol_indices,
-        bsc_row_indices,
-        bsr_crow_indices,
-        bsr_col_indices,
-        values,
-        dense_shape,
-    ):
+    elif format == "bsr":
         _verify_bsr_components(
-            crow_indices=bsr_crow_indices,
-            col_indices=bsr_col_indices,
+            crow_indices=crow_indices,
+            col_indices=col_indices,
             values=values,
             dense_shape=dense_shape,
         )
-        logging.warning(
-            "Tensorflow does not support BSR sparse array natively. None is returned."
+    elif format == "csc":
+        _verify_csc_components(
+            ccol_indices=ccol_indices,
+            row_indices=row_indices,
+            values=values,
+            dense_shape=dense_shape,
         )
+    else:
+        _verify_bsc_components(
+            ccol_indices=ccol_indices,
+            row_indices=row_indices,
+            values=values,
+            dense_shape=dense_shape,
+        )
+
+    logging.warning(
+        f"Tensorflow does not support {format.upper()} \
+sparse array natively. None is returned."
+    )
     return None
 
 
