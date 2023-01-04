@@ -112,6 +112,7 @@ eig.support_native_out = False
 
 def multi_dot(
     x: Sequence[np.ndarray], 
+    /,
     *, 
     out: Optional[np.array] = None,
 ) -> np.ndarray: 
