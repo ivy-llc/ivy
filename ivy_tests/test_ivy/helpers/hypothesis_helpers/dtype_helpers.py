@@ -56,6 +56,9 @@ def get_dtypes(
                     framework.valid_complex_dtypes
                 )
             ),
+            "float_and_complex": tuple(
+                set(framework.valid_float_dtypes).union(framework.valid_complex_dtypes)
+            ),
             "bool": tuple(
                 set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
             ),
