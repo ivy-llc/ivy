@@ -182,6 +182,8 @@ def test_numpy_amax(
         force_int_axis=True,
         large_abs_safety_factor=2,
         safety_factor_scale="log",
+        allow_nan=True,
+        allow_inf=True,
     ),
     initial=st.one_of(st.floats(min_value=-1000, max_value=1000), st.none()),
     keepdims=st.booleans(),
