@@ -605,3 +605,4 @@ def test_numpy_nanmin(
         initial=initial,
         where=where,
     )
+    
