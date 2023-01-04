@@ -1686,7 +1686,8 @@ def one_hot(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 1]), c=ivy.array([2, 3]))
+    >>> x = ivy.Container(a=ivy.array([1, 2]), \
+        b=ivy.array([3, 1]), c=ivy.array([2, 3]))
     >>> y = 5
     >>> z = x.one_hot(y)
     >>> print(z)
@@ -1699,7 +1700,8 @@ def one_hot(
                     [0., 0., 0., 1., 0.]])
     }
 
-    >>> x = ivy.Container(a=ivy.array([2]), b=ivy.array([]), c=ivy.native_array([4]))
+    >>> x = ivy.Container(a=ivy.array([2]), \
+        b=ivy.array([]), c=ivy.native_array([4]))
     >>> y = 7
     >>> z = x.one_hot(y)
     >>> print(z)
