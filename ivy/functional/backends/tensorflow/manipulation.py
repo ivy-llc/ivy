@@ -106,9 +106,15 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     order: Optional[str] = "C",
+    allowzero: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    if not allowzero:
+        shape = [
+            new_s if con else old_s
+            for new_s, con, old_s in zip(shape, tf.constant(shape) != 0, x.shape)
+        ]
     if copy:
         newarr = tf.experimental.numpy.copy(x)
         if order == "F":

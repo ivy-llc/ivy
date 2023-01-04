@@ -202,12 +202,14 @@ def test_permute_dims(
         shape=st.shared(helpers.get_shape(), key="value_shape")
     ),
     order=st.sampled_from(["C", "F"]),
+    allowzero=st.booleans(),
 )
 def test_reshape(
     *,
     dtype_value,
     reshape,
     order,
+    allowzero,
     test_flags,
     backend_fw,
     fn_name,
@@ -226,6 +228,7 @@ def test_reshape(
         x=value[0],
         shape=reshape,
         order=order,
+        allowzero=allowzero,
     )
 
 
