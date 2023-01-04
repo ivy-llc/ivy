@@ -147,3 +147,7 @@ class dtype:
     @property
     def subtype(self):
         return None
+
+    @property
+    def name(self):
+        return self._ivy_dtype
