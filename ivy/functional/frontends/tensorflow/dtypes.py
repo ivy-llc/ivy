@@ -13,6 +13,10 @@ class DType:
         return "ivy.frontends.tensorflow." + self._ivy_dtype
 
     @property
+    def name(self):
+        return self._ivy_dtype
+
+    @property
     def as_datatype_enum(self):
         return tf_frontend.tensorflow_type_to_enum[self._ivy_dtype]
 
