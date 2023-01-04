@@ -321,3 +321,9 @@ def trace(a, offset=0, axis1=0, axis2=1, out=None):
 @to_ivy_arrays_and_back
 def log2(x):
     return ivy.log2(x)
+
+
+@to_ivy_arrays_and_back
+def vdot(a, b):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.multiply(a, b).sum()
