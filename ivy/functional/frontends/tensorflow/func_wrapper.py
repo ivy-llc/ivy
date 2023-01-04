@@ -51,7 +51,7 @@ def _tf_frontend_array_to_ivy(x):
     return x
 
 
-def ivy_array_to_tensorflow(x):
+def _ivy_array_to_tensorflow(x):
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
         return frontend.EagerTensor(x)
     return x
@@ -133,7 +133,7 @@ def outputs_to_tensorflow_array(fn: Callable) -> Callable:
 
         # convert all arrays in the return to `frontend.Tensorflow.tensor` instances
         return ivy.nested_map(
-            ret, ivy_array_to_tensorflow, include_derived={tuple: True}
+            ret, _ivy_array_to_tensorflow, include_derived={tuple: True}
         )
 
     new_fn.outputs_to_tensorflow_array = True
@@ -145,7 +145,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 
 # update kwargs dictionary keys helper
-def update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
+def _update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
     """A helper function for updating the key-word only arguments dictionary.
 
     Parameters
@@ -201,7 +201,7 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
         def _wraped_fn(**kwargs):
             # update kwargs dictionary keys
             if kw_update:
-                kwargs = update_kwarg_keys(kwargs, kw_update)
+                kwargs = _update_kwarg_keys(kwargs, kw_update)
             return fn(**kwargs)
 
         return _wraped_fn
