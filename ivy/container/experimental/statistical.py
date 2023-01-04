@@ -568,3 +568,90 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+
+    @staticmethod
+    def static_corrcoef(
+        input: ivy.Container,
+        /,
+        *,
+        y: ivy.Container = None,
+        rowvar: Optional[bool] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = False,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.corrcoef. This method simply wraps
+        the function, and so the docstring for ivy.corrcoef also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        input
+            Input container including arrays.
+
+        Returns
+        -------
+        ret
+            The corrcoef of the array elements in the container.
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([[1, ivy.nan], [3, 4]]),\
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> ivy.Container.static_moveaxis(a)
+        {
+            x: ???
+            y: ???
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "corrcoef",
+            input,
+            y=y,
+            rowvar=rowvar,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def corrcoef(
+        self: ivy.Container,
+        /,
+        *,
+        y: ivy.Container = None,
+        rowvar: Optional[bool] = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.corrcoef. This method simply
+        wraps the function, and so the docstring for ivy.corrcoef also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+
+        Returns
+        -------
+        ret
+            The corrcoef of the array elements in the input container.
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([[1, ivy.nan], [3, 4]]),\
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> a.corrcoef()
+        {
+            x: ????
+            y: ????
+        }
+        """
+        return self.static_corrcoef(
+            self, y=y, rowvar=rowvar, out=out
+        )

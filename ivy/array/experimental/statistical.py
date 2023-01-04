@@ -221,6 +221,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         *,
         y: ivy.Array = None,
         rowvar: Optional[bool] = True,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.corrcoef. This method simply
         wraps the function, and so the docstring for ivy.corrcoef also applies to
@@ -256,5 +257,5 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         ????
         """
         return ivy.corrcoef(
-            self._data, y=y, rowvar=rowvar
+            self._data, y=y, rowvar=rowvar, out=out
         )

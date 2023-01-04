@@ -72,12 +72,24 @@ def quantile(
     return result
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("int8", "int16")}, backend_version)
+# def corrcoef(
+#     x: Union[tf.Tensor, tf.Variable],
+#     /,
+#     *,
+#     y: Union[tf.Tensor, tf.Variable],
+#     rowvar: Optional[bool] = True,
+# ) -> Union[tf.Tensor, tf.Variable]:
+#     return tfp.stats.correlation(x, y=y, sample_axis=0, event_axis=None)
+
+
 def corrcoef(
-    x: Union[tf.Tensor],
+    x: tf.Tensor,
     /,
     *,
-    y: Optional[Union[tf.Tensor]] = None,
+    y: tf.Tensor,
     rowvar: Optional[bool] = True,
-) -> Union[tf.Tensor]:
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    x = tf.convert_to_tensor(x, dtype=x.dtype)
+    y = tf.convert_to_tensor(y, dtype=y.dtype)
     return tfp.stats.correlation(x, y=y, sample_axis=0, event_axis=None)

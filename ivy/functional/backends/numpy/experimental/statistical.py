@@ -69,5 +69,6 @@ def corrcoef(
     *,
     y: Optional[np.ndarray] = None,
     rowvar: Optional[bool] = True,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.corrcoef(x, y=y, rowvar=rowvar)
+    return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
