@@ -8,6 +8,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 
 
 @handle_numpy_dtype
+@to_ivy_arrays_and_back
 def array(object, dtype=None, copy=True, order="K", ndmin=0):
     # TODO must ensure the array is created on default device.
     if order is not None and order != "K":
@@ -78,3 +79,14 @@ def hstack(tup, dtype=None):
 @to_ivy_arrays_and_back
 def eye(N, M=None, k=0, dtype=None):
     return ivy.eye(N, M, k=k, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def triu(m, k=0):
+    return ivy.triu(m, k=k)
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def empty(shape, dtype=None):
+    return ivy.empty(shape, dtype=dtype)

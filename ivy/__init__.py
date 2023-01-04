@@ -622,6 +622,7 @@ from .backend_handler import (
     choose_random_backend,
     clear_backend_stack,
 )
+from .func_wrapper import *
 from . import assertions, backend_handler, func_wrapper, exceptions
 from . import functional
 from .functional import *
@@ -859,7 +860,7 @@ def set_array_significant_figures(sig_figs):
 
 
 def unset_array_significant_figures():
-    """"""
+    """Unset the currently set array significant figures."""
     global array_significant_figures_stack
     if array_significant_figures_stack:
         array_significant_figures_stack.pop(-1)
@@ -912,7 +913,7 @@ def set_array_decimal_values(dec_vals):
 
 
 def unset_array_decimal_values():
-    """"""
+    """Unset the currently set array decimal values."""
     global array_decimal_values_stack
     if array_decimal_values_stack:
         array_decimal_values_stack.pop(-1)
@@ -948,7 +949,7 @@ def set_warning_level(warn_level):
 
 
 def unset_warning_level():
-    """"""
+    """Unset the currently set warning level."""
     global warning_level_stack
     if warning_level_stack:
         warning_level_stack.pop(-1)
@@ -999,7 +1000,7 @@ def set_nan_policy(warn_level):
 
 
 def unset_nan_policy():
-    """"""
+    """Unset the currently set nan policy."""
     global nan_policy_stack
     if nan_policy_stack:
         nan_policy_stack.pop(-1)

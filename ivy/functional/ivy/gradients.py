@@ -64,11 +64,11 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     nested structure.
     """
     # To make sure that only the required arrays are converted to native arrays
-    xs = ivy.nested_map(xs, ivy.to_ivy, include_derived=True)
+    xs = ivy.nested_map(xs, ivy.to_ivy, include_derived=True, shallow=False)
     if xs_grad_idxs is not None:
         ivy.map_nest_at_indices(xs, xs_grad_idxs, ivy.to_native)
     else:
-        xs = ivy.nested_map(xs, ivy.to_native, include_derived=True)
+        xs = ivy.nested_map(xs, ivy.to_native, include_derived=True, shallow=False)
 
     def map_fn(x):
         if ivy.is_native_array(x):
@@ -76,7 +76,9 @@ def _get_required_native_variables(xs, xs_grad_idxs):
         return None
 
     # Extract all those required native arrays and None for all others
-    xs = ivy.nested_map(xs, map_fn, include_derived=True, to_mutable=True)
+    xs = ivy.nested_map(
+        xs, map_fn, include_derived=True, to_mutable=True, shallow=False
+    )
 
     # Prune all None values
     none_idxs = ivy.nested_argwhere(xs, lambda x: x is None)
@@ -137,7 +139,7 @@ def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=Fal
     if ivy.is_array(x):
         return [], map_fn(x)
 
-    x = ivy.nested_map(x, map_fn, include_derived=True)
+    x = ivy.nested_map(x, map_fn, include_derived=True, shallow=False)
     arr_idxs = ivy.nested_argwhere(x, lambda x: ivy.is_native_array(x))
     if _check_if_empty(arr_idxs):
         return arr_idxs, []
@@ -280,7 +282,7 @@ with_grads_stack = list()
 
 
 class GradientTracking:
-    """"""
+    """Gradient tracking Context Manager."""
 
     # noinspection PyShadowingNames
     def __init__(self, with_grads):
@@ -792,7 +794,7 @@ def adam_step(
     step = float(step)
     mw = ivy.add(beta1 * mw, (1 - beta1) * dcdw)
     dcdw_sqrd = dcdw**2
-    vw = ivy.add(beta2 * vw, (1 - beta2) * dcdw_sqrd)
+    vw = ivy.add(ivy.multiply(beta2, vw), (1 - beta2) * dcdw_sqrd)
     vw_sqrt = ivy.maximum(vw, 0.0) ** 0.5
     beta1_pow = beta1**step
     beta2_pow = beta2**step

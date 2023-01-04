@@ -4,7 +4,6 @@
 from hypothesis import strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
@@ -56,11 +55,15 @@ def _broadcastable_trio(draw):
     fn_tree="functional.ivy.argmax",
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
+    output_dtype=helpers.get_dtypes("integer", full=False),
+    select_last_index=st.booleans(),
 )
 def test_argmax(
     *,
     dtype_x_axis,
     keepdims,
+    output_dtype,
+    select_last_index,
     test_flags,
     backend_fw,
     fn_name,
@@ -78,6 +81,8 @@ def test_argmax(
         x=x[0],
         axis=axis,
         keepdims=keepdims,
+        output_dtype=output_dtype[0],
+        select_last_index=select_last_index,
     )
 
 
@@ -85,13 +90,15 @@ def test_argmax(
     fn_tree="functional.ivy.argmin",
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
-    output_dtype=st.sampled_from([ivy.int32, ivy.int64]),
+    output_dtype=helpers.get_dtypes("integer", full=False),
+    select_last_index=st.booleans(),
 )
 def test_argmin(
     *,
     dtype_x_axis,
     keepdims,
     output_dtype,
+    select_last_index,
     test_flags,
     backend_fw,
     fn_name,
@@ -109,7 +116,8 @@ def test_argmin(
         x=x[0],
         axis=axis,
         keepdims=keepdims,
-        output_dtype=output_dtype,
+        output_dtype=output_dtype[0],
+        select_last_index=select_last_index,
     )
 
 
