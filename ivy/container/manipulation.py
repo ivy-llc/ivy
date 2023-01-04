@@ -648,6 +648,7 @@ class ContainerWithManipulation(ContainerBase):
         copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
         order: Optional[str] = "C",
+        allowzero: Optional[bool] = True,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.reshape. This method simply wraps the
@@ -743,6 +744,7 @@ class ContainerWithManipulation(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             copy=copy,
+            allowzero=allowzero,
             out=out,
             order=order,
         )
@@ -758,6 +760,7 @@ class ContainerWithManipulation(ContainerBase):
         map_sequences: bool = False,
         copy: Optional[bool] = None,
         order: Optional[str] = "C",
+        allowzero: Optional[bool] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -844,6 +847,7 @@ class ContainerWithManipulation(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             copy=copy,
+            allowzero=allowzero,
             out=out,
             order=order,
         )
@@ -1439,7 +1443,7 @@ class ContainerWithManipulation(ContainerBase):
     def static_tile(
         x: ivy.Container,
         /,
-        reps: Iterable[int],
+        repeats: Iterable[int],
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1456,7 +1460,7 @@ class ContainerWithManipulation(ContainerBase):
         ----------
         x
             Input Container.
-        reps
+        repeats
             The number of repetitions of x along each axis.
         out
             optional output array, for writing the result to. It must have
@@ -1485,7 +1489,7 @@ class ContainerWithManipulation(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "tile",
             x,
-            reps,
+            repeats,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1496,7 +1500,7 @@ class ContainerWithManipulation(ContainerBase):
     def tile(
         self: ivy.Container,
         /,
-        reps: Iterable[int],
+        repeats: Iterable[int],
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1513,7 +1517,7 @@ class ContainerWithManipulation(ContainerBase):
         ----------
         self
             Input container.
-        reps
+        repeats
             The number of repetitions of x along each axis.
         out
             optional output array, for writing the result to. It must have a
@@ -1537,7 +1541,7 @@ class ContainerWithManipulation(ContainerBase):
         """
         return self.static_tile(
             self,
-            reps,
+            repeats,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

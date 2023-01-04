@@ -134,13 +134,19 @@ def check_shape(x1, x2, message=""):
 
 
 def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
-    if not (
-        (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-        and isinstance(fill_value, int)
-    ) and not (
-        ivy.is_float_dtype(dtype)
-        and isinstance(fill_value, float)
-        or isinstance(fill_value, bool)
+    if (
+        not (
+            (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
+            and isinstance(fill_value, int)
+        )
+        and not (
+            ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))
+        )
+        and not (
+            ivy.is_float_dtype(dtype)
+            and isinstance(fill_value, float)
+            or isinstance(fill_value, bool)
+        )
     ):
         raise ivy.exceptions.IvyException(
             "the fill_value: {} and data type: {} are not compatible".format(
@@ -213,4 +219,12 @@ def check_inplace_sizes_valid(var, data):
             "Could not output values of shape {} into array with shape {}.".format(
                 data.shape, var.shape
             )
+        )
+
+
+def check_dimensions(x):
+    if len(x.shape) <= 1:
+        raise ivy.exceptions.IvyException(
+            "input must have greater than one dimension; "
+            + " {} has {} dimensions".format(x, len(x.shape))
         )

@@ -88,6 +88,8 @@ valid_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
+    ivy.complex64,
+    ivy.complex128,
     ivy.bool,
 )
 valid_numeric_dtypes = (
@@ -119,7 +121,7 @@ valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
 # invalid data types
-invalid_dtypes = ()
+invalid_dtypes = (ivy.complex256,)
 invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
@@ -148,8 +150,6 @@ backend = "jax"
 # local sub-modules
 from . import activations
 from .activations import *
-from . import compilation
-from .compilation import *
 from . import creation
 from .creation import *
 from . import data_type
