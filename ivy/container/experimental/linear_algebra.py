@@ -349,6 +349,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
 
     def multi_dot(
         self: ivy.Container,
+        arrays,
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -366,7 +367,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         --------
         """
         return self.static_multi_dot(
-            self,
+            (self, *arrays),
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
