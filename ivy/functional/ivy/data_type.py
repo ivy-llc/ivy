@@ -792,7 +792,7 @@ default_uint_dtype_stack = list()
 
 
 class DefaultDtype:
-    """"""
+    """Ivy's DefaultDtype class."""
 
     def __init__(self, dtype: ivy.Dtype):
         self._dtype = dtype
@@ -807,7 +807,7 @@ class DefaultDtype:
 
 
 class DefaultFloatDtype:
-    """"""
+    """Ivey's DefaultFloatDtype class."""
 
     def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
@@ -822,7 +822,7 @@ class DefaultFloatDtype:
 
 
 class DefaultIntDtype:
-    """"""
+    """Ivey's DefaultIntDtype class."""
 
     def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
@@ -837,7 +837,7 @@ class DefaultIntDtype:
 
 
 class DefaultUintDtype:
-    """"""
+    """Ivey's DefaultUintDtype class."""
 
     def __init__(self, uint_dtype: ivy.UintDtype):
         self._uint_dtype = uint_dtype

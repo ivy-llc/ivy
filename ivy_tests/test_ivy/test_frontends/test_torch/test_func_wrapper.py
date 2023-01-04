@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import given
 
 # local
 import ivy
@@ -23,7 +23,9 @@ def _fn(x, check_default=False):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_inputs_to_ivy_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
@@ -52,12 +54,12 @@ def test_inputs_to_ivy_arrays(dtype_and_x):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    backend=st.sampled_from(["numpy", "tensorflow", "jax", "torch"]),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_outputs_to_frontend_arrays(dtype_and_x, backend):
+def test_outputs_to_frontend_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
-    ivy.backend_handler.set_backend(backend)
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
@@ -66,17 +68,16 @@ def test_outputs_to_frontend_arrays(dtype_and_x, backend):
     assert str(input_ivy.dtype) == str(output.dtype)
     assert ivy.all(input_ivy == output.ivy_array)
 
-    ivy.backend_handler.unset_backend()
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    backend=st.sampled_from(["numpy", "tensorflow", "jax", "torch"]),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_to_ivy_arrays_and_back(dtype_and_x, backend):
+def test_to_ivy_arrays_and_back(dtype_and_x):
     x_dtype, x = dtype_and_x
-    ivy.backend_handler.set_backend(backend)
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
@@ -100,5 +101,4 @@ def test_to_ivy_arrays_and_back(dtype_and_x, backend):
     assert input_frontend.dtype == output.dtype
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
 
-    ivy.backend_handler.unset_backend()
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []

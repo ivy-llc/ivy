@@ -175,6 +175,11 @@ def stack(values, axis=0, name="stack"):
 
 
 @to_ivy_arrays_and_back
+def is_tensor(x, name=None):
+    return ivy.is_array(x)
+
+
+@to_ivy_arrays_and_back
 def gather(params, indices, axis=None, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
@@ -206,15 +211,15 @@ def strided_slice(
     new_axis_mask=0,
     shrink_axis_mask=0,
     var=None,
-    name=None
+    name=None,
 ):
     def num_to_bit_list(number):
-        return list(map(int, '{:0{size}b}'.format(number, size=len(input_.shape))))
+        return list(map(int, "{:0{size}b}".format(number, size=len(input_.shape))))
 
     begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask = list(
         map(
             num_to_bit_list,
-            [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask]
+            [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask],
         )
     )
 
