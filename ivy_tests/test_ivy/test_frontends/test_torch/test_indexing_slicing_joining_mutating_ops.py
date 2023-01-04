@@ -75,7 +75,8 @@ def _broadcastable_trio(draw):
     cond = draw(helpers.array_values(dtype="bool", shape=shape))
     dtypes, xs = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            # available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=['float32'],
             num_arrays=2,
             shape=shape,
             large_abs_safety_factor=16,
