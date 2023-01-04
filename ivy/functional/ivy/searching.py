@@ -133,6 +133,7 @@ def argmin(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
@@ -215,7 +216,12 @@ def argmin(
 
     """
     return current_backend(x).argmin(
-        x, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        x,
+        axis=axis,
+        keepdims=keepdims,
+        output_dtype=output_dtype,
+        select_last_index=select_last_index,
+        out=out,
     )
 
 

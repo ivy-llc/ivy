@@ -214,3 +214,11 @@ def check_inplace_sizes_valid(var, data):
                 data.shape, var.shape
             )
         )
+
+
+def check_dimensions(x):
+    if len(x.shape) <= 1:
+        raise ivy.exceptions.IvyException(
+            "input must have greater than one dimension; "
+            + " {} has {} dimensions".format(x, len(x.shape))
+        )

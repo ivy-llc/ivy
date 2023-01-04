@@ -200,6 +200,20 @@ numpy_str_to_type_table = {
     "F": "complex64",
     "D": "complex128",
     "G": "complex256",
+    "f2": "float16",
+    "f4": "float32",
+    "f8": "float64",
+    "i1": "int8",
+    "i2": "int16",
+    "i4": "int32",
+    "i8": "int64",
+    "u1": "uint8",
+    "u2": "uint16",
+    "u4": "uint32",
+    "u8": "uint64",
+    "c8": "complex64",
+    "c16": "complex128",
+    "c32": "complex256",
 }
 
 numpy_type_to_str_and_num_table = {
