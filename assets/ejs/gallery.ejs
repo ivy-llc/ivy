@@ -1,8 +1,15 @@
 ```{=html}
+<link href="assets/css/custom.css" rel="stylesheet" type="text/css">
+
 <div>
 <% for (const item of items) { %>
-  <div><a href="<%- item.path %>"><%= item.title %></a></div>
-  <div><%= item.description %></div>
+  <a href="<%- item.path %>">
+    <div class="notebook-card">
+      <div class="notebook-card-title"><%= item.title %></div>
+      <div class="notebook-card-title-border"></div>
+      <div><%= item.description %></div>
+    </div>
+  </a>
 <% } %>
 </div>
 ```
