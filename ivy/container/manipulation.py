@@ -1687,10 +1687,11 @@ class ContainerWithManipulation(ContainerBase):
             Input array to pad.
         pad_width
             Number of values padded to the edges of each axis. Specified as
-            ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+            ((before_1, after_1), … (before_N, after_N)),
+            where N is number of axes of x.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -1739,10 +1740,11 @@ class ContainerWithManipulation(ContainerBase):
             Input array to pad.
         pad_width
             Number of values padded to the edges of each axis. Specified as
-            ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+            ((before_1, after_1), … (before_N, after_N)),
+            where N is number of axes of x.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
