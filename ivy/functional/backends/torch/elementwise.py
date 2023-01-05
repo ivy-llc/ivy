@@ -146,7 +146,7 @@ def ceil(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 ceil.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
 def floor(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if "int" in str(x.dtype):
@@ -414,7 +414,7 @@ def tanh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 tanh.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
 def floor_divide(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],

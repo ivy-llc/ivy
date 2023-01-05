@@ -270,6 +270,7 @@ expm1.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def floor(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
         ret = np.copy(x)
@@ -284,6 +285,7 @@ floor.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def floor_divide(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
