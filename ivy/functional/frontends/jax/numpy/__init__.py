@@ -24,7 +24,6 @@ float32 = dtype("float32")
 float64 = dtype("float64")
 complex64 = dtype("complex64")
 complex128 = dtype("complex128")
-complex256 = dtype("complex256")
 bool = dtype("bool")
 
 
