@@ -2,17 +2,11 @@ project:
   type: website
   output-dir: docs
 
-listing:
-  template: assets/ejs/gallery.ejs
-
 website:
-  navbar:
+  sidebar:
     logo: "assets/img/ivy_logo.png"
-    logo-alt: "Ivy Demos"
     background: "#43AE43"
     foreground: "#ffffff"
-  
-  sidebar:
     border: true
     collapse-level: 2
     contents: 
