@@ -955,21 +955,6 @@ def _check_complex128(input) -> bool:
     return False
 
 
-def _check_complex256(input) -> bool:
-    if ivy.is_array(input):
-        return ivy.dtype(input) == "complex256"
-    elif isinstance(input, np.ndarray):
-        return str(input.dtype) == "complex256"
-    if hasattr(input, "real") and hasattr(input, "imag"):
-        if math.isfinite(input.real) and math.isfinite(input.imag):
-            _, e1 = math.frexp(input.real)
-            _, e2 = math.frexp(input.imag)
-            return (
-                (abs(input.real) > 1.7976931e308) or (e1 < -254) or (e1 > 256)
-            ) and ((abs(input.imag) > 1.7976931e308) or (e2 < -254) or (e2 > 256))
-    return False
-
-
 @handle_exceptions
 def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype, str]:
     """Determines the closest valid datatype to the datatype passed as input.
@@ -1469,12 +1454,6 @@ def default_complex_dtype(
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_argwhere(
                 input,
-                lambda x: _check_complex256(x),
-                stop_after_n_found=1,
-            ):
-                ret = ivy.complex256
-            elif ivy.nested_argwhere(
-                input,
                 lambda x: _check_complex128(x),
                 stop_after_n_found=1,
             ):
@@ -1489,9 +1468,7 @@ def default_complex_dtype(
                 else:
                     ret = default_complex_dtype_stack[-1]
         elif isinstance(input, Number):
-            if _check_complex256(input):
-                ret = ivy.complex256
-            elif _check_complex128(input):
+            if _check_complex128(input):
                 ret = ivy.complex128
             else:
                 if not default_complex_dtype_stack:
