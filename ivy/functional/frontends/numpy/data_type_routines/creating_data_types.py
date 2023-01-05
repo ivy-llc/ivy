@@ -149,5 +149,5 @@ class dtype:
         return None
 
     @property
-    def name(self):
+    def ivy_dtype(self):
         return self._ivy_dtype
