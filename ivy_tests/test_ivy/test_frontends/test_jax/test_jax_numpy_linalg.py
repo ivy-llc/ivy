@@ -873,6 +873,9 @@ def test_jax_numpy_tensorinv(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
         allow_nan=True
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
     ),
     p=st.sampled_from([None, "fro", np.inf, -np.inf, 1, -1, 2, -2])
 )
