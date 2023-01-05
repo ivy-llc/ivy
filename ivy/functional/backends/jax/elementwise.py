@@ -78,6 +78,7 @@ def bitwise_invert(
     return jnp.bitwise_not(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_left_shift(
     x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
@@ -101,6 +102,7 @@ def bitwise_or(
     return jnp.bitwise_or(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_right_shift(
     x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
