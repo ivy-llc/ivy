@@ -46,7 +46,12 @@ def mean(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.mean(x, axis=axis, keepdims=keepdims)
+    ret = jnp.mean(x, axis=axis, keepdims=keepdims)
+    if ivy.is_int_dtype(x):
+        dtype = ivy.default_float_dtype(input=x, as_native=True)
+    else:
+        dtype = x.dtype
+    return ret.astype(dtype)
 
 
 def _infer_dtype(dtype: jnp.dtype):
@@ -94,12 +99,15 @@ def sum(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = x.dtype
-    if dtype != x.dtype and not ivy.is_bool_dtype(x):
-        x = x.astype(dtype)
+        if ivy.is_int_dtype(x) or ivy.is_bool_dtype(x):
+            dtype = ivy.default_float_dtype(input=x, as_native=True)
+        else:
+            dtype = x.dtype
+    else:
+        dtype = ivy.as_native_dtype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
+    print(jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims), dtype, x.dtype)
     return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
@@ -125,12 +133,20 @@ def var(
         size *= x.shape[a]
     if size == correction:
         size += 0.0001  # to avoid division by zero in return
+
+    ret = jnp.multiply(
+        jnp.var(x, axis=axis, keepdims=keepdims, out=out),
+        size / jnp.abs(size - correction),
+    )
+
+    if ivy.is_int_dtype(x):
+        dtype = ivy.default_float_dtype(item=x, as_native=True)
+    else:
+        dtype = x.dtype
+
     return ivy.astype(
-        jnp.multiply(
-            jnp.var(x, axis=axis, keepdims=keepdims, out=out),
-            size / jnp.abs(size - correction),
-        ),
-        x.dtype,
+        ret,
+        dtype,
         copy=False,
     )
 
