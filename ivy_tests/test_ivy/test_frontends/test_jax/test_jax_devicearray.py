@@ -53,7 +53,7 @@ def _at_helper(draw):
     axis = draw(helpers.get_axis(shape=shape, force_tuple=True))
     index = ()
     for a in axis:
-        index = index + (draw(st.integers(min_value=0, max_value=shape[a]-1)),)
+        index = index + (draw(st.integers(min_value=0, max_value=shape[a] - 1)),)
     return data, index
 
 
