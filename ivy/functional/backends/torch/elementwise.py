@@ -32,6 +32,7 @@ def add(
 add.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def bitwise_xor(
     x1: Union[int, bool, torch.Tensor],
     x2: Union[int, bool, torch.Tensor],
@@ -55,6 +56,7 @@ def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
 expm1.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def bitwise_invert(
     x: Union[int, bool, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -116,6 +118,7 @@ def less_equal(
 less_equal.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def bitwise_and(
     x1: Union[int, bool, torch.Tensor],
     x2: Union[int, bool, torch.Tensor],
@@ -431,6 +434,7 @@ def floor_divide(
 floor_divide.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def bitwise_or(
     x1: Union[int, bool, torch.Tensor],
     x2: Union[int, bool, torch.Tensor],
