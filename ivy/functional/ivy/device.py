@@ -719,8 +719,8 @@ def default_device(
     else:
         ret = default_device_stack[-1]
     if as_native:
-        return ivy.as_native_dev(ret)
-    return ivy.as_ivy_dev(ret)
+        return ivy.as_native_dev(ret=ret)
+    return ivy.as_ivy_dev(ret=ret)
 
 
 @handle_exceptions
