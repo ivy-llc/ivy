@@ -330,11 +330,7 @@ def vdot(a, b):
 
 
 @with_unsupported_dtypes(
-    {
-        "0.3.14 and below": (
-            "bfloat16",
-        )
-    },
+    {"0.3.14 and below": ("bfloat16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
