@@ -549,7 +549,8 @@ class ContainerWithGradients(ContainerBase):
         ({
             a: ivy.array([1., 2., 3.]),
             b: ivy.array([4., 5., 6.])
-        }, ivy.array([0.1 , 0.02, 0.04]), ivy.array([0.01099, 0.01003, 0.01015]))
+        }, ivy.array([0.1 , 0.02, 0.04]),
+        ivy.array([0.01099, 0.01003, 0.01015]))
 
         With multiple :class:`ivy.Container` inputs:
 
