@@ -130,7 +130,7 @@ def bitwise_invert(
         return tf.bitwise.invert(x)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def bitwise_left_shift(
     x1: Union[int, tf.Tensor, tf.Variable],
     x2: Union[int, tf.Tensor, tf.Variable],
@@ -157,7 +157,7 @@ def bitwise_or(
         return tf.bitwise.bitwise_or(x1, x2)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def bitwise_right_shift(
     x1: Union[int, tf.Tensor, tf.Variable],
     x2: Union[int, tf.Tensor, tf.Variable],
@@ -322,6 +322,7 @@ def isfinite(
         return tf.math.is_finite(x)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def isinf(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -342,6 +343,7 @@ def isinf(
         return tf.zeros_like(x, tf.bool)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def isnan(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -354,7 +356,7 @@ def isnan(
         return tf.math.is_nan(x)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def less(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -366,7 +368,7 @@ def less(
     return tf.math.less(x1, x2)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def less_equal(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
