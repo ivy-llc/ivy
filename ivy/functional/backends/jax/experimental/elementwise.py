@@ -36,6 +36,16 @@ def fmax(
     return jnp.fmax(x1, x2)
 
 
+def fmin(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fmin(x1, x2)
+
+
 def trapz(
     y: JaxArray,
     /,
@@ -453,11 +463,5 @@ def gradient(
         return outvals
 
 
-def xlogy(
-    x: JaxArray,
-    y: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return js.special.xlogy(x, y)

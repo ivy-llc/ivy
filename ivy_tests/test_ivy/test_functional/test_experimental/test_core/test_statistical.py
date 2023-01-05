@@ -248,7 +248,7 @@ def max_value_as_shape_prod(draw):
 
 
 @handle_test(
-    fn_tree="functional.ivy.experimental.nanmean",
+    fn_tree="functional.ivy.experimental.unravel_index",
     dtype_x_shape=max_value_as_shape_prod(),
     test_gradients=st.just(False),
 )

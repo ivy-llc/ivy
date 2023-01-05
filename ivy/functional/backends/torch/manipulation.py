@@ -97,9 +97,15 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     order: Optional[str] = "C",
+    allowzero: Optional[bool] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    if not allowzero:
+        shape = [
+            new_s if con else old_s
+            for new_s, con, old_s in zip(shape, torch.tensor(shape) != 0, x.shape)
+        ]
     if copy:
         newarr = torch.clone(x)
         if order == "F":
@@ -242,11 +248,11 @@ def repeat(
 
 
 def tile(
-    x: torch.Tensor, /, reps: Sequence[int], *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, repeats: Sequence[int], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if isinstance(reps, torch.Tensor):
-        reps = reps.detach().cpu().numpy().tolist()
-    return x.repeat(reps)
+    if isinstance(repeats, torch.Tensor):
+        repeats = repeats.detach().cpu().numpy().tolist()
+    return x.repeat(repeats)
 
 
 def constant_pad(
