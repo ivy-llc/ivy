@@ -123,7 +123,7 @@ def tensorinv(a, ind=2):
 
 
 @to_ivy_arrays_and_back
-def cond((x, p=None):
+def cond(x, p=None):
     for a in x:
         if (a.size == 0 and np.product(a.shape[-2:]) == 0):
             raise ValueError("Arrays cannot be empty")
