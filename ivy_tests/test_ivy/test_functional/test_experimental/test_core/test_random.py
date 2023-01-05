@@ -195,16 +195,16 @@ def test_gamma(
     test_gradients=st.just(False),
 )
 def test_poisson(
-        *,
-        dtype_and_lam,
-        shape,
-        dtype,
-        seed,
-        test_flags,
-        backend_fw,
-        fn_name,
-        on_device,
-        ground_truth_backend,
+    *,
+    dtype_and_lam,
+    shape,
+    dtype,
+    seed,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     lam_dtype, lam = dtype_and_lam
     shape = shape + ivy.shape(lam[0])
