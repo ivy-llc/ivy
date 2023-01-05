@@ -181,6 +181,7 @@ def bitwise_xor(
 bitwise_xor.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 @_scalar_output_to_0d_array
 def ceil(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
