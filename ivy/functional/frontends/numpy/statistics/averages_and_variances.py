@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_dtype,
@@ -201,6 +202,7 @@ def cov(x, y=None, bias=False, dtype=None, fweights=None, aweights=None, ddof=No
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
