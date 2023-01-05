@@ -158,7 +158,8 @@ def is_strictly_increasing(x, name="is_strictly_increasing"):
     if ivy.array(x).size == 2:
         return ivy.array(x[0] < x[1])
     for i in range((ivy.array(x).size) - 1):
-        if x[i] >= x[i+1]:
+        ivy.greater_equal(ivy.array([x[i+1]]), ivy.array([x[i]], out=y)
+        if y == ivy.array([True]):
             return ivy.array(False)
     return ivy.array(True)
 
