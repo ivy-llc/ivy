@@ -72,16 +72,6 @@ def quantile(
     return result
 
 
-# def corrcoef(
-#     x: Union[tf.Tensor, tf.Variable],
-#     /,
-#     *,
-#     y: Union[tf.Tensor, tf.Variable],
-#     rowvar: Optional[bool] = True,
-# ) -> Union[tf.Tensor, tf.Variable]:
-#     return tfp.stats.correlation(x, y=y, sample_axis=0, event_axis=None)
-
-
 def corrcoef(
     x: tf.Tensor,
     /,
