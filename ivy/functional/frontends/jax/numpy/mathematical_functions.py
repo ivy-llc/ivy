@@ -342,3 +342,8 @@ def cbrt(x, /):
 @to_ivy_arrays_and_back
 def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     return ivy.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
+@to_ivy_arrays_and_back
+def fix(x, out=None):
+    return ivy.fix(x, out=out)
