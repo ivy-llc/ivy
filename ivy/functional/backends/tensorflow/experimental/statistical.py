@@ -90,6 +90,9 @@ def corrcoef(
     rowvar: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
-    x = tf.convert_to_tensor(x, dtype=x.dtype)
-    y = tf.convert_to_tensor(y, dtype=y.dtype)
-    return tfp.stats.correlation(x, y=y, sample_axis=0, event_axis=None)
+    xarr = tf.concat([x, y], axis=0) if y is not None else x
+    mean_t = tf.reduce_mean(xarr, axis=1, keepdims=True)
+    cov_t = ((xarr-mean_t) @ tf.transpose(xarr-mean_t))/(x.shape[1]-1)
+    cov2_t = tf.linalg.diag(1/tf.sqrt(tf.linalg.diag_part(cov_t)))
+    cor = cov2_t @ cov_t @ cov2_t
+    return cor

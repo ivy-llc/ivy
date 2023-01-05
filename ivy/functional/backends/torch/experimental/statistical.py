@@ -110,5 +110,5 @@ def corrcoef(
     rowvar: Optional[bool] = True,
     out: Optional[torch.tensor] = None,
 ) -> torch.Tensor:
-    stacked_tensor = torch.stack([x, y], dim=0)
-    return torch.corrcoef(stacked_tensor)
+    xarr = torch.concat([x, y], dim=0) if y is not None else x
+    return torch.corrcoef(xarr)

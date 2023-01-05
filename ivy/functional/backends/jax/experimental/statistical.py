@@ -68,4 +68,5 @@ def corrcoef(
     rowvar: Optional[bool] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.corrcoef(x, y=y, rowvar=rowvar)
+    xarr = jnp.concatenate([x, y]) if y is not None else x
+    return jnp.corrcoef(xarr, rowvar=rowvar)

@@ -71,4 +71,5 @@ def corrcoef(
     rowvar: Optional[bool] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
+    xarr = np.concatenate([x, y]) if y is not None else x
+    return np.corrcoef(xarr, rowvar=rowvar, dtype=x.dtype)
