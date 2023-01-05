@@ -1,0 +1,58 @@
+// self-defined globals //
+
+$ivy-green: #43ae43;
+$ivy-grey: #f5f5f4;
+$ivy-light-grey: #f9f9f8;
+
+// configure default globals //
+
+// general
+$font-family-sans-serif: helvetica;
+$link-color: $ivy-green;
+
+// inline code
+$code-color: $ivy-green;
+$code-bg: $ivy-light-grey;
+
+// code block
+$code-block-bg: $ivy-grey;
+$code-block-bg-padding: 3%;
+$code-block-border-left: $ivy-green;
+$code-block-border-left-size: 3px;
+$btn-code-copy-color-active: $ivy-green;
+
+// sidebar
+$sidebar-bg: $ivy-grey;
+$sidebar-fg: black;
+
+/*-- scss:rules --*/
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+a:hover {
+    color: black;
+}
+
+/*-- scss:defaults --*/
+
+.notebook-card {
+    border: 2px solid black;
+    border-radius: 20px;
+    background-color: $ivy-grey;
+    margin: 5% 2%;
+    padding: 5% 10%;
+}
+
+.notebook-card-title {
+    font-size: x-large;
+    font-weight: 500;
+}
+
+.notebook-card-title-border {
+    margin: 3% 15% 2% 0;
+    border-bottom: 2px solid;
+    border-image: linear-gradient(to right, $ivy-green, $ivy-grey) 1
+}
