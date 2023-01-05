@@ -5,10 +5,11 @@ project:
 website:
   sidebar:
     logo: "assets/img/ivy_logo.png"
-    background: "#43AE43"
-    foreground: "#ffffff"
-    border: true
-    collapse-level: 2
+    collapse-level: 1
     contents: 
       - auto: "*unify_existing_code/"
       - auto: "*temp_demos/"
+
+format:
+  html:
+    theme: assets/css/custom.scss
