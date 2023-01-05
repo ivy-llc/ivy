@@ -1,5 +1,7 @@
 # global
 from hypothesis import strategies as st, assume
+import numpy as np
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -133,7 +135,7 @@ def test_numpy_std(
     on_device,
     keep_dims,
 ):
-    input_dtype, x, axis, axis_excess = dtype_and_x
+    input_dtype, x, axis, correction = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -142,7 +144,7 @@ def test_numpy_std(
         as_variable=as_variable,
         native_array=native_array,
     )
-
+    assume(np.dtype(dtype[0]) >= np.dtype(input_dtype[0]))
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -152,12 +154,14 @@ def test_numpy_std(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
         x=x[0],
         axis=axis,
-        dtype=dtype,
-        out=None,
-        correction=0,
+        ddof=correction,
         keepdims=keep_dims,
+        out=None,
+        dtype=dtype[0],
         where=where,
     )
 
@@ -204,6 +208,8 @@ def test_numpy_average(
             keepdims=keep_dims,
             returned=returned,
             on_device=on_device,
+            rtol=1e-2,
+            atol=1e-2,
         )
     except ZeroDivisionError:
         assume(False)

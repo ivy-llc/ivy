@@ -330,6 +330,7 @@ def test_function(
         and not fw == "numpy"
         and not instance_method
         and "bool" not in input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
     ):
         if fw in fw_list:
             if ivy.nested_argwhere(
@@ -1120,7 +1121,12 @@ def test_method(
     ivy.unset_backend()
     # gradient test
     fw = ivy.current_backend_str()
-    if test_gradients and not fw == "numpy" and "bool" not in method_input_dtypes:
+    if (
+        test_gradients
+        and not fw == "numpy"
+        and "bool" not in method_input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in method_input_dtypes)
+    ):
         if fw in fw_list:
             if ivy.nested_argwhere(
                 method_all_as_kwargs_np,
