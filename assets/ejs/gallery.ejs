@@ -1,7 +1,8 @@
 ```{=html}
-<ul>
+<div>
 <% for (const item of items) { %>
-  <li><a href="<%- item.path %>"><%= item.title %></a></li>
+  <div><a href="<%- item.path %>"><%= item.title %></a></div>
+  <div><%= item.description %></div>
 <% } %>
-</ul>
+</div>
 ```
