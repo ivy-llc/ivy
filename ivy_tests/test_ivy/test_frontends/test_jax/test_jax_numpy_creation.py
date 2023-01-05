@@ -61,7 +61,7 @@ def test_jax_numpy_array(
     ),
     dtype=helpers.get_dtypes("valid", full=False),
 )
-def test_numpy_zeros_like(
+def test_jax_numpy_zeros_like(
     dtype_and_x,
     dtype,
     shape,
