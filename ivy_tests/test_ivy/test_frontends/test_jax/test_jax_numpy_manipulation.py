@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st, settings
+from hypothesis import strategies as st
 import numpy as np
 
 # local
@@ -635,7 +635,7 @@ def test_jax_numpy_append(
     )
 
 
-#atleast_3d
+# atleast_3d
 @handle_frontend_test(
     fn_tree="jax.numpy.atleast_3d",
     dtype_and_x=helpers.dtype_and_values(
