@@ -74,7 +74,12 @@ def mean(
             return ivy.inplace_update(out, x)
         else:
             return x
-    return torch.mean(x, dim=axis, keepdim=keepdims, out=out)
+    ret = torch.mean(x, dim=axis, keepdim=keepdims, out=out)
+    if ivy.is_int_dtype(x):
+        dtype = ivy.default_float_dtype(input=x, as_native=True)
+    else:
+        dtype = x.dtype
+    return ivy.astype(ret, dtype, copy=False)
 
 
 mean.support_native_out = True
@@ -163,9 +168,13 @@ def sum(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None and not ivy.is_bool_dtype(x):
-        dtype = x.dtype
+    if dtype is None:
+        if ivy.is_int_dtype(x) or ivy.is_bool_dtype(x):
+            dtype = ivy.default_float_dtype(input=x, as_native=True)
+        else:
+            dtype = x.dtype
+    else:
+        dtype = ivy.as_native_dtype(dtype)
     if axis == ():
         return x.type(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -199,11 +208,16 @@ def var(
         ret = torch.var(x, dim=axis, unbiased=False, keepdim=keepdims)
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
+
+    if ivy.is_int_dtype(x):
+        dtype = ivy.default_float_dtype(input=x, as_native=True)
     else:
-        return torch.mul(
-            torch.var(x, dim=axis, unbiased=False, keepdim=keepdims),
-            (size / (size - correction)),
-        ).to(x.dtype)
+        dtype = x.dtype
+
+    return torch.mul(
+        torch.var(x, dim=axis, unbiased=False, keepdim=keepdims),
+        (size / (size - correction)),
+    ).to(dtype)
 
 
 # Extra #
