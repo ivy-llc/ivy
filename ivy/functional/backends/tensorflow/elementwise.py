@@ -177,6 +177,7 @@ def bitwise_xor(
         return tf.bitwise.bitwise_xor(x1, x2)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def ceil(
     x: Union[tf.Tensor, tf.Variable],
     /,
