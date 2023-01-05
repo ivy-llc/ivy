@@ -130,7 +130,7 @@ def bitwise_and(
 bitwise_and.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
 def ceil(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if "int" in str(x.dtype):
