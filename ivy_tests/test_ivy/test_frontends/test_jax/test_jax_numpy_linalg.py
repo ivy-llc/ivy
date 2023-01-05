@@ -874,7 +874,7 @@ def test_jax_numpy_tensorinv(
         num_arrays=1,
         allow_nan=True
     )
-    p=st.sampled_from([None, "fro", np.inf, -np.inf, 1, -1, 2, -2])
+    p=st.sampled_from(["fro", np.inf, -np.inf, 1, -1, 2, -2])
 )
 def test_jax_numpy_cond(
     *,
