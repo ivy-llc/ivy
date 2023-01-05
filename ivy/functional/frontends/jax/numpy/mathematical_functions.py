@@ -316,3 +316,34 @@ def remainder(x1, x2):
 @to_ivy_arrays_and_back
 def trace(a, offset=0, axis1=0, axis2=1, out=None):
     return ivy.trace(a, offset=offset, axis1=axis1, axis2=axis2, out=out)
+
+
+@to_ivy_arrays_and_back
+def log2(x):
+    return ivy.log2(x)
+
+
+@to_ivy_arrays_and_back
+def vdot(a, b):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.multiply(a, b).sum()
+
+
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("bfloat16",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def cbrt(x, /):
+    all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0)
+    return ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive)
+
+
+@to_ivy_arrays_and_back
+def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
+    return ivy.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
+@to_ivy_arrays_and_back
+def fix(x, out=None):
+    return ivy.fix(x, out=out)
