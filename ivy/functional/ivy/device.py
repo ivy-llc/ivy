@@ -712,7 +712,7 @@ def default_device(
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_array(item):
-            return ivy.dev(item, as_native == as_native)
+            return ivy.dev(item, as_native=as_native)
     global default_device_stack
     if not default_device_stack:
         ret = "gpu:0" if ivy.gpu_is_available() else "cpu"
