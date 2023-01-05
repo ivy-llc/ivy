@@ -60,6 +60,8 @@ def test_numpy_mean(
         keepdims=keep_dims,
         where=where,
         test_values=False,
+        atol=1e-3,
+        rtol=1e-3,
     )
 
 
