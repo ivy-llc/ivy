@@ -78,6 +78,7 @@ atan.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def atan2(
     x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:

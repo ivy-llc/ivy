@@ -549,8 +549,8 @@ atan.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("float16", "bfloat16")}, backend_version
-)  # TODO Fixed in PyTorch 1.12.1
+    {"1.11.0 and below": ("float16", "bfloat16", 'complex')}, backend_version
+)  # TODO Fixed in PyTorch 1.12.1 (this note excludes complex)
 def atan2(
     x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:

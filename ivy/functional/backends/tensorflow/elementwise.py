@@ -81,6 +81,7 @@ def atan(
     return tf.math.atan(x)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def atan2(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
