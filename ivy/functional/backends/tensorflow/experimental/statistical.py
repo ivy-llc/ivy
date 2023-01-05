@@ -80,23 +80,18 @@ def corrcoef(
     rowvar: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
-    if y is not None:
-        if rowvar:
-            xarr = tf.concat([x, y], axis=0)
-            mean_t = tf.reduce_mean(xarr, axis=1, keepdims=True)
-            cov_t = ((xarr-mean_t) @ tf.transpose(xarr-mean_t))/(x.shape[1]-1)
-        else:
-            xarr = tf.concat([x, y], axis=1)
-            mean_t = tf.reduce_mean(xarr, axis=0, keepdims=True)
-            cov_t = (tf.transpose(xarr-mean_t) @ (xarr-mean_t))/(x.shape[1]-1)
-    else:
+    if y is None:
         xarr = x
-        if rowvar:
-            mean_t = tf.reduce_mean(xarr, axis=1, keepdims=True)
-            cov_t = ((xarr-mean_t) @ tf.transpose(xarr-mean_t))/(x.shape[1]-1)
-        else:
-            mean_t = tf.reduce_mean(xarr, axis=0, keepdims=True)
-            cov_t = (tf.transpose(xarr-mean_t) @ (xarr-mean_t))/(x.shape[1]-1)
-    cov2_t = tf.linalg.diag(1/tf.sqrt(tf.linalg.diag_part(cov_t)))
+    else:
+        xarr = tf.concat([x, y], axis=0) if rowvar else tf.concat([x, y], axis=1)
+
+    if rowvar:
+        mean_t = tf.reduce_mean(xarr, axis=1, keepdims=True)
+        cov_t = ((xarr - mean_t) @ tf.transpose(xarr - mean_t)) / (x.shape[1] - 1)
+    else:
+        mean_t = tf.reduce_mean(xarr, axis=0, keepdims=True)
+        cov_t = (tf.transpose(xarr - mean_t) @ (xarr - mean_t)) / (x.shape[1] - 1)
+
+    cov2_t = tf.linalg.diag(1 / tf.sqrt(tf.linalg.diag_part(cov_t)))
     cor = cov2_t @ cov_t @ cov2_t
     return cor

@@ -6,7 +6,6 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
-from hypothesis import reproduce_failure
 # Helpers #
 # ------- #
 
@@ -239,7 +238,6 @@ def test_quantile(
 
 
 # corrcoef
-# @reproduce_failure('6.55.0', b'AXicY2CAAEYkGoV9gAEOsKphRJUnWw2pduFjQ8xh/Q8zAAD6OQNn')
 @handle_test(
     fn_tree="functional.ivy.experimental.corrcoef",
     dtype_and_x=helpers.dtype_and_values(
@@ -255,7 +253,7 @@ def test_quantile(
         allow_nan=False,
     ),
     # rowvar=st.booleans(),
-    # test_gradients=st.just(False),
+    test_gradients=st.just(False),
     rowvar=st.just(True),
 )
 def test_corrcoef(
