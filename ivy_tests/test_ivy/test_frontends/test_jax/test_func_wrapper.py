@@ -21,9 +21,7 @@ def _fn(x, check_default=False):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_inputs_to_ivy_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
@@ -51,9 +49,7 @@ def test_inputs_to_ivy_arrays(dtype_and_x):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_outputs_to_frontend_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
@@ -69,9 +65,7 @@ def test_outputs_to_frontend_arrays(dtype_and_x):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_to_ivy_arrays_and_back(dtype_and_x):
     x_dtype, x = dtype_and_x
