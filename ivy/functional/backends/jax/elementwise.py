@@ -176,6 +176,7 @@ def expm1(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.expm1(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def floor(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
@@ -183,6 +184,7 @@ def floor(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
         return jnp.floor(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def floor_divide(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
