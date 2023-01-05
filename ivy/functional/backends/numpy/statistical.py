@@ -53,9 +53,13 @@ def mean(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return ivy.astype(
-        np.mean(x, axis=axis, keepdims=keepdims, out=out), x.dtype, copy=False
-    )
+    ret = np.mean(x, axis=axis, keepdims=keepdims, out=out)
+    if ivy.is_int_dtype(x):
+        dtype = ivy.default_float_dtype(input=x, as_native=True)
+    else:
+        dtype = x.dtype
+
+    return ret.astype(dtype)
 
 
 mean.support_native_out = True
@@ -112,8 +116,14 @@ def sum(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if dtype is None and not ivy.is_bool_dtype(x):
-        dtype = x.dtype
+
+    if dtype is None:
+        if ivy.is_int_dtype(x) or ivy.is_bool_dtype(x):
+            dtype = ivy.default_float_dtype(input=x, as_native=True)
+        else:
+            dtype = x.dtype
+    else:
+        dtype = ivy.as_native_dtype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(
         np.sum(
@@ -153,12 +163,18 @@ def var(
     size = 1
     for a in axis:
         size *= x.shape[a]
+
+    if ivy.is_int_dtype(x):
+        dtype = ivy.default_float_dtype(input=x, as_native=True)
+    else:
+        dtype = x.dtype
+
     return ivy.astype(
         np.multiply(
             np.var(x, axis=axis, keepdims=keepdims, out=out),
             ivy.stable_divide(size, (size - correction)),
         ),
-        x.dtype,
+        dtype,
         copy=False,
     )
 
