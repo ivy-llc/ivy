@@ -465,3 +465,8 @@ def gradient(
 
 def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return js.special.xlogy(x, y)
+
+
+def real(x: Union[JaxArray], /, *,
+         out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.real(x)

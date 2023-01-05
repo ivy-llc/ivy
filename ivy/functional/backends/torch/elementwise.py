@@ -757,10 +757,3 @@ def trunc_divide(
 
 def isreal(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.isreal(x)
-
-
-def real(x: Union[torch.Tensor],
-         /,
-         *,
-         out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.real(x)

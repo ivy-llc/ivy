@@ -375,3 +375,10 @@ def xlogy(
         return 0.0
     else:
         return x * np.log(y)
+
+
+def real(x: Union[np.ndarray],
+         /,
+         *,
+         out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.real(x)

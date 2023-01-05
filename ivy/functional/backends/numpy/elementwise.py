@@ -757,10 +757,3 @@ def isreal(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 isreal.support_native_out = False
-
-
-def real(x: Union[np.ndarray],
-         /,
-         *,
-         out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.real(x)
