@@ -903,8 +903,8 @@ def _composition_1():
 
 _composition_1.test_unsupported_dtypes = {
     "numpy": ("bfloat16",),
-    "jax": ("complex256",),
-    "tensorflow": ("complex64", "complex128", "complex256"),
+    "jax": (),
+    "tensorflow": ("complex64", "complex128"),
     "torch": (
         "uint16",
         "uint32",
@@ -912,7 +912,6 @@ _composition_1.test_unsupported_dtypes = {
         "float16",
         "complex64",
         "complex128",
-        "complex256",
     ),
 }
 
@@ -924,9 +923,9 @@ def _composition_2():
 
 _composition_2.test_unsupported_dtypes = {
     "numpy": ("bfloat16",),
-    "jax": ("complex256",),
-    "tensorflow": ("complex256",),
-    "torch": ("uint16", "uint32", "uint64", "float16", "complex256"),
+    "jax": (),
+    "tensorflow": (),
+    "torch": ("uint16", "uint32", "uint64", "float16"),
 }
 
 
