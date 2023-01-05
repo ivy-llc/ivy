@@ -876,7 +876,7 @@ def test_jax_numpy_tensorinv(
     )
     p=st.sampled_from([None, "fro", np.inf, -np.inf, 1, -1, 2, -2])
 )
-def test_jax_numpy_tensorinv(
+def test_jax_numpy_cond(
     *,
     params,
     as_variable,
