@@ -759,4 +759,3 @@ def test_torch_solve(
         input=input,
         other=other,
     )
-

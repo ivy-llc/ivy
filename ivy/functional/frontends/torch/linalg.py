@@ -140,4 +140,3 @@ def eig(input, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def solve(input, other, *, out=None):
     return ivy.solve(input, other, out=out)
-
