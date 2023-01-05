@@ -2945,8 +2945,9 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         -------
         ret
             a container containing the test result. An element ``out_i`` is ``out_i``
-            if ``x_i`` is real number part only else ``real number part``, if it contains
-            real and complex part both. The returned array should have a data type of ``float``.
+            if ``x_i`` is real number part only else ``real number part``, 
+            if it contains real and complex part both.
+            The returned array should have a data type of ``float``.
 
         Examples
         --------
@@ -3005,8 +3006,9 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            a container containing the test result. An element ``out_i`` is ``self_i``
-            if ``self_i`` is real number else ``took real number part only`` if ``self_i``
+            a container containing the test result. 
+            An element ``out_i`` is ``self_i`` if ``self_i`` is real number
+            else ``took real number part only`` if ``self_i``
             contains real number and complex number both.
             The returned array should have a data type of ``float``.
 
