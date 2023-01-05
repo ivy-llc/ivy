@@ -220,7 +220,7 @@ def log2(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.log2(x, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
 def log1p(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.log1p(x, out=out)
@@ -527,7 +527,7 @@ def abs(
 abs.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
 def logaddexp(
     x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
