@@ -2197,9 +2197,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                         [14., 15.]])
         }
         """
-        return self.static_hsplit(
-            self, indices_or_sections, out=out
-        )
+        return self.static_hsplit(self, indices_or_sections, out=out)
 
     @staticmethod
     def static_broadcast_shapes(

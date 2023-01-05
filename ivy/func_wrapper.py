@@ -14,6 +14,7 @@ FN_DECORATORS = [
     "infer_dtype",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
+    "outputs_to_native_arrays",
     "inputs_to_native_arrays",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
@@ -193,6 +194,41 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
 
     new_fn.outputs_to_ivy_arrays = True
     return new_fn
+
+
+def output_to_native_arrays(fn: Callable) -> Callable:
+    """
+    Calls the function, and then converts all `ivy.Array` instances in
+    the function return into `ivy.NativeArray` instances.
+
+    Parameters
+    ----------
+    args
+        The arguments to be passed to the function.
+
+    kwargs
+        The keyword arguments to be passed to the function.
+
+    Returns
+    -------
+        The return of the function, with ivy arrays as native arrays.
+    """
+
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        return ivy.to_native(ret, nested=True, include_derived={tuple: True})
+
+    new_fn.outputs_to_native_arrays = True
+    return new_fn
+
+
+def to_ivy_arrays_and_back(fn: Callable) -> Callable:
+    """
+    Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
+    and return arrays are all converted to `ivy.NativeArray` instances.
+    """
+    return output_to_native_arrays(inputs_to_ivy_arrays(fn))
 
 
 def to_native_arrays_and_back(fn: Callable) -> Callable:
@@ -413,45 +449,6 @@ def handle_nestable(fn: Callable) -> Callable:
         return fn(*args, **kwargs)
 
     new_fn.handle_nestable = True
-    return new_fn
-
-
-def custom_handle_nestable(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
-        if ivy.get_nestable_mode() and (
-            ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
-            or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
-        ):
-            arg_cont_idxs = ivy.nested_argwhere(
-                args, ivy.is_ivy_container, to_ignore=ivy.Container
-            )
-            kwarg_cont_idxs = ivy.nested_argwhere(
-                kwargs, ivy.is_ivy_container, to_ignore=ivy.Container
-            )
-            arg_conts = ivy.multi_index_nest(args, arg_cont_idxs)
-            num_arg_conts = len(arg_conts)
-            kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
-            conts = arg_conts + kwarg_conts
-
-            def map_fn(vals, _):
-                arg_vals = vals[:num_arg_conts]
-                a = ivy.copy_nest(args, to_mutable=True)
-                ivy.set_nest_at_indices(a, arg_cont_idxs, arg_vals)
-                kwarg_vals = vals[num_arg_conts:]
-                kw = ivy.copy_nest(kwargs, to_mutable=True)
-                ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
-                return fn(*a, **kw)
-
-            ret = ivy.Container.cont_multi_map(map_fn, conts)
-            for values in ret.values():
-                if isinstance(values, list):
-                    for v in values:
-                        if ivy.is_ivy_array(v):
-                            return ret.cont_unstack_conts(0)
-            return ret
-        return fn(*args, **kwargs)
-
     return new_fn
 
 

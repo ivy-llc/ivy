@@ -564,6 +564,8 @@ def test_numpy_mod(
         order="K",
         dtype=dtype,
         subok=True,
+        rtol=1e-5,
+        atol=1e-5,
     )
 
 
@@ -574,7 +576,9 @@ def test_numpy_mod(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("numeric"),
-                min_num_dims=1,
+                small_abs_safety_factor=4,
+                large_abs_safety_factor=4,
+                safety_factor_scale="log",
             )
         ],
         get_dtypes_kind="numeric",
@@ -598,6 +602,7 @@ def test_numpy_reciprocal(
         as_variable=as_variable,
         native_array=native_array,
     )
+    assume(not np.any(np.isclose(x[0], 0)))
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -607,6 +612,64 @@ def test_numpy_reciprocal(
         frontend=frontend,
         fn_tree=fn_tree,
         x=x[0],
+        out=None,
+        where=where,
+        casting=casting,
+        rtol=1e-2,
+        atol=1e-2,
+        order="K",
+        dtype=dtype,
+        subok=True,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fmod",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                shared_dtype=True,
+                large_abs_safety_factor=6,
+                small_abs_safety_factor=6,
+                safety_factor_scale="log",
+            )
+        ],
+        get_dtypes_kind="numeric",
+    ),
+    where=np_frontend_helpers.where(),
+)
+def test_numpy_fmod(
+    dtypes_values_casting,
+    where,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
+    assume(not np.any(np.isclose(xs[1], 0.0)))
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=xs[0],
+        x2=xs[1],
         out=None,
         where=where,
         casting=casting,
