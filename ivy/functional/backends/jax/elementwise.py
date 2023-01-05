@@ -120,6 +120,7 @@ def bitwise_xor(
     return jnp.bitwise_xor(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def ceil(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
