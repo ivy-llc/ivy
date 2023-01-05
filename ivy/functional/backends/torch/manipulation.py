@@ -248,11 +248,11 @@ def repeat(
 
 
 def tile(
-    x: torch.Tensor, /, reps: Sequence[int], *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, repeats: Sequence[int], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if isinstance(reps, torch.Tensor):
-        reps = reps.detach().cpu().numpy().tolist()
-    return x.repeat(reps)
+    if isinstance(repeats, torch.Tensor):
+        repeats = repeats.detach().cpu().numpy().tolist()
+    return x.repeat(repeats)
 
 
 def constant_pad(

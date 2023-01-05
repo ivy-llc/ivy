@@ -2410,7 +2410,7 @@ def _unfold_args(draw):
     size = draw(
         st.integers(
             min_value=1,
-            max_value=max(shape[axis]-1, 1),
+            max_value=max(shape[axis] - 1, 1),
         )
     )
     step = draw(

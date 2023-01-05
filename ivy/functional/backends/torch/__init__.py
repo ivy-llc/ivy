@@ -52,6 +52,8 @@ valid_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
+    ivy.complex64,
+    ivy.complex128,
     ivy.bool,
 )
 valid_numeric_dtypes = (
@@ -75,8 +77,9 @@ invalid_dtypes = (
     ivy.uint16,
     ivy.uint32,
     ivy.uint64,
+    ivy.complex256,
 )
-invalid_num_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
+invalid_numeric_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_int_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_float_dtypes = ()
 invalid_uint_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
@@ -135,3 +138,5 @@ from . import utility
 from .utility import *
 from . import experimental
 from .experimental import *
+from . import control_flow_ops
+from .control_flow_ops import *

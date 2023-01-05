@@ -733,7 +733,7 @@ def test_tile(
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
-        reps=repeat_list[0],
+        repeats=repeat_list[0],
         rtol_=1e-2,
         atol_=1e-2,
         xs_grad_idxs=[[0, 0]],
