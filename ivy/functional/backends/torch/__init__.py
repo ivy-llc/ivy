@@ -77,12 +77,13 @@ invalid_dtypes = (
     ivy.uint16,
     ivy.uint32,
     ivy.uint64,
+    ivy.complex256,
 )
 invalid_numeric_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_int_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_float_dtypes = ()
 invalid_uint_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
-invalid_complex_dtypes = ()
+invalid_complex_dtypes = (ivy.complex256,)
 
 native_inplace_support = True
 
