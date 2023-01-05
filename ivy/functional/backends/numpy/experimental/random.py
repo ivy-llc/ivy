@@ -68,13 +68,13 @@ def gamma(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def poisson(
-        lam: Union[float, np.ndarray],
-        *,
-        shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-        device: str,
-        dtype: np.dtype,
-        seed: Optional[int] = None,
-        out: Optional[np.ndarray] = None,
+    lam: Union[float, np.ndarray],
+    *,
+    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
+    device: str,
+    dtype: np.dtype,
+    seed: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     lam = np.array(lam)
     _check_shapes_broadcastable(shape, lam.shape)
