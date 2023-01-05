@@ -299,6 +299,7 @@ def divide(
 divide.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def greater(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
@@ -313,6 +314,7 @@ def greater(
 greater.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def greater_equal(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
