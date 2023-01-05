@@ -59,6 +59,7 @@ def atanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arctanh(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_and(
     x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
@@ -70,6 +71,7 @@ def bitwise_and(
     return jnp.bitwise_and(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_invert(
     x: Union[int, JaxArray], /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
@@ -87,6 +89,7 @@ def bitwise_left_shift(
     return jnp.left_shift(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_or(
     x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
@@ -109,6 +112,7 @@ def bitwise_right_shift(
     return jnp.right_shift(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_xor(
     x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
