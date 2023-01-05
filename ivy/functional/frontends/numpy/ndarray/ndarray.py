@@ -44,7 +44,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return self._dtype
+        return self._ivy_array.dtype
 
     # Setters #
     # --------#
