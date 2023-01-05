@@ -141,8 +141,8 @@ def cond(x, p=None):
             raise ValueError('Last 2 dimensions of the array must be square')
         invx = ivy.inv(x)
         r = ivy.matrix_norm(x, ord=p, axis=(-2, -1)) * ivy.norm(invx, ord=p, axis=(-2, -1))
-   # Convert nans to infs unless the original array had nan entries
-   orig_nan_check = ivy.full_like(r, ~ivy.isnan(r).any())
-   nan_mask = ivy.logical_and(ivy.isnan(r), ~jnp.isnan(x).any(axis=(-2, -1)))
-   r = jnp.where(orig_nan_check, ivy.where(nan_mask, ivy.inf, r), r)
-   return r
+    # Convert nans to infs unless the original array had nan entries
+    orig_nan_check = ivy.full_like(r, ~ivy.isnan(r).any())
+    nan_mask = ivy.logical_and(ivy.isnan(r), ~jnp.isnan(x).any(axis=(-2, -1)))
+    r = jnp.where(orig_nan_check, ivy.where(nan_mask, ivy.inf, r), r)
+    return r
