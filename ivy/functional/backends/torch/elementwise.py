@@ -104,6 +104,7 @@ def equal(
 equal.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def less_equal(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
@@ -233,6 +234,7 @@ def isnan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
     return torch.isnan(x)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def less(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
@@ -638,6 +640,7 @@ def atanh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Te
 atanh.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def bitwise_right_shift(
     x1: Union[int, bool, torch.Tensor],
     x2: Union[int, bool, torch.Tensor],
@@ -653,6 +656,7 @@ def bitwise_right_shift(
 bitwise_right_shift.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def bitwise_left_shift(
     x1: Union[int, bool, torch.Tensor],
     x2: Union[int, bool, torch.Tensor],
