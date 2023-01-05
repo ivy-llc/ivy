@@ -102,6 +102,7 @@ def atanh(
     return tf.math.atanh(x)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def bitwise_and(
     x1: Union[int, tf.Tensor, tf.Variable],
     x2: Union[int, tf.Tensor, tf.Variable],
@@ -116,6 +117,7 @@ def bitwise_and(
         return tf.bitwise.bitwise_and(x1, x2)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def bitwise_invert(
     x: Union[int, tf.Tensor, tf.Variable],
     /,
@@ -139,6 +141,7 @@ def bitwise_left_shift(
     return tf.bitwise.left_shift(x1, x2)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def bitwise_or(
     x1: Union[int, tf.Tensor, tf.Variable],
     x2: Union[int, tf.Tensor, tf.Variable],
@@ -164,6 +167,7 @@ def bitwise_right_shift(
     return tf.bitwise.right_shift(x1, x2)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def bitwise_xor(
     x1: Union[int, tf.Tensor, tf.Variable],
     x2: Union[int, tf.Tensor, tf.Variable],
