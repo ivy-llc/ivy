@@ -47,7 +47,12 @@ def mean(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
+    ret = tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
+    if ivy.is_int_dtype(x):
+        dtype = ivy.default_float_dtype(input=x, as_native=True)
+    else:
+        dtype = x.dtype
+    return tf.cast(ret, dtype)
 
 
 def _infer_dtype(dtype: tf.DType):
@@ -111,9 +116,14 @@ def sum(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None and not ivy.is_bool_dtype(x):
-        dtype = x.dtype
+    if dtype is None:
+        if ivy.is_int_dtype(x) or ivy.is_bool_dtype(x):
+            dtype = ivy.default_float_dtype(input=x, as_native=True)
+        else:
+            dtype = x.dtype
+    else:
+        dtype = ivy.as_native_dtype(dtype)
+
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
 
@@ -139,15 +149,20 @@ def var(
         ret = tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
+
+    if ivy.is_int_dtype(x):
+        dtype = ivy.default_float_dtype(item=x, as_native=True)
     else:
-        return ivy.astype(
-            tf.math.multiply(
-                tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
-                size / (size - correction),
-            ),
-            x.dtype,
-            copy=False,
-        )
+        dtype = x.dtype
+
+    return ivy.astype(
+        tf.math.multiply(
+            tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
+            size / (size - correction),
+        ),
+        dtype,
+        copy=False,
+    )
 
 
 # Extra #
