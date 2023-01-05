@@ -399,6 +399,7 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     order: Optional[str] = "C",
+    allowzero: Optional[bool] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gives a new shape to an array without changing its data.
@@ -487,13 +488,6 @@ def reshape(
                       [3, 4, 5]])
     }
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[0, 1, 2, 3]])
-    >>> y = ivy.reshape(x, (2, 2))
-    >>> print(y)
-    ivy.array([[0, 1],[2, 3]])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
@@ -506,7 +500,9 @@ def reshape(
 
     """
     ivy.assertions.check_elem_in_list(order, ["C", "F"])
-    return current_backend(x).reshape(x, shape=shape, copy=copy, out=out, order=order)
+    return current_backend(x).reshape(
+        x, shape=shape, copy=copy, allowzero=allowzero, out=out, order=order
+    )
 
 
 @to_native_arrays_and_back
@@ -1040,13 +1036,11 @@ def repeat(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3, 4, 5])
-    >>> y= ivy.repeat(x, 2)
+    >>> y = ivy.repeat(x, 2)
     >>> print(y)
     ivy.array([3, 3, 4, 4, 5, 5])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> y = ivy.repeat(x, [1, 2], axis=0)
     >>> print(y)
     ivy.array([[1, 2, 3],
@@ -1100,13 +1094,13 @@ def split(
     ret
         A list of sub-arrays.
 
-
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.split(x)
@@ -1123,19 +1117,14 @@ def split(
     >>> print(y)
     ivy.array([[4], [6, 5, 3]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([7, 8, 9])
-    >>> y = ivy.split(x)
-    >>> print(y)
-    [ivy.array([7]),ivy.array([8]),ivy.array([9])]
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([10, 45, 2]))
     >>> y = ivy.split(x)
     >>> print(y)
-    {a:(list[3],<classivy.array.Array>shape=[1])}
+    {
+        a:(list[3],<classivy.array.Array>shape=[1])
+    }
     """
     return current_backend(x).split(
         x,
@@ -1217,9 +1206,8 @@ def swapaxes(
                [[4, 6],
                 [5, 7]]])
 
-    With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([[0, 1, 2]])
+    >>> x = ivy.array([[0, 1, 2]])
     >>> y = ivy.swapaxes(x, 0, 1)
     >>> print(y)
     ivy.array([[0],
@@ -1240,32 +1228,6 @@ def swapaxes(
                       [5.]])
     }
 
-    Instance Method Examples
-    ------------------------
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[0., 1., 2.]])
-    >>> y = x.swapaxes(0, 1)
-    >>> print(y)
-    ivy.array([[0.],
-               [1.],
-               [2.]])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
-    >>> y = x.swapaxes(0, 1)
-    >>> print(y)
-    {
-        a: ivy.array([[0.],
-                      [1.],
-                      [2.]]),
-        b: ivy.array([[3.],
-                      [4.],
-                      [5.]])
-    }
-
-
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
@@ -1281,7 +1243,7 @@ def swapaxes(
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    reps: Iterable[int],
+    repeats: Iterable[int],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1291,7 +1253,7 @@ def tile(
     ----------
     x
         Input array.
-    reps
+    repeats
         The number of repetitions of x along each axis.
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -1299,7 +1261,7 @@ def tile(
 
     Returns
     -------
-    retwaitin
+    ret
         The tiled output array.
 
 
@@ -1308,7 +1270,7 @@ def tile(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1,2,3,4])
-    >>> y = ivy.tile(x,(3))
+    >>> y = ivy.tile(x, 3)
     >>> print(y)
     ivy.array([1,2,3,4,1,2,3,4,1,2,3,4])
 
@@ -1321,9 +1283,7 @@ def tile(
                [1,2,3,1,2,3,1,2,3],
                [4,5,6,4,5,6,4,5,6]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[[0], [1]]])
+    >>> x = ivy.array([[[0], [1]]])
     >>> y = ivy.tile(x,(2,2,3))
     >>> print(y)
     ivy.array([[[0,0,0],
@@ -1351,7 +1311,7 @@ def tile(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).tile(x, reps, out=out)
+    return current_backend(x).tile(x, repeats, out=out)
 
 
 @to_native_arrays_and_back

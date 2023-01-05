@@ -30,8 +30,11 @@ class ArrayWithManipulation(abc.ABC):
         Parameters
         ----------
         self
-            input arrays to join. The arrays must have the same shape, except in the
-            dimension specified by axis.
+            input array to join with other arrays ``xs``.
+        xs
+            The other arrays to join with. The arrays must
+            have the same shape, except in the dimension
+            specified by axis.
         axis
             axis along which the arrays will be joined. If axis is None, arrays
             must be flattened before concatenation. If axis is negative, axis on
@@ -44,7 +47,6 @@ class ArrayWithManipulation(abc.ABC):
         -------
         ret
             an output array containing the concatenated values.
-
         """
         return ivy.concat([self._data] + xs, axis=axis, out=out)
 
@@ -190,6 +192,7 @@ class ArrayWithManipulation(abc.ABC):
         *,
         copy: Optional[bool] = None,
         order: Optional[str] = "C",
+        allowzero: Optional[bool] = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -250,7 +253,9 @@ class ArrayWithManipulation(abc.ABC):
                    [1., 5.]])
 
         """
-        return ivy.reshape(self._data, shape, copy=copy, out=out, order=order)
+        return ivy.reshape(
+            self._data, shape, copy=copy, allowzero=allowzero, out=out, order=order
+        )
 
     def roll(
         self: ivy.Array,
@@ -347,8 +352,10 @@ class ArrayWithManipulation(abc.ABC):
 
         Parameters
         ----------
+        self
+            Array to join with other ``arrays``.
         arrays
-            input arrays to join. Each array must have the same shape.
+            Other arrays to join with. Each array must have the same shape.
         axis
             axis along which the arrays will be joined. More details can be found in
             the ``ivy.stack`` documentation.
@@ -434,6 +441,26 @@ class ArrayWithManipulation(abc.ABC):
         wraps the function, and so the docstring for ivy.constant_pad also applies
         to this method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            Input array to pad.
+        pad_width
+            Number of values padded to the edges of each axis.
+            Specified as ((before_1, after_1), … (before_N, after_N)), where N
+            is number of axes of x.
+        value
+            The constant value to pad the array with.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Padded array of rank equal to x with shape increased according
+            to pad_width.
+
         Examples
         --------
         >>> x = ivy.array([1., 2., 3.])
@@ -455,6 +482,25 @@ class ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.repeat. This method simply wraps the
         function, and so the docstring for ivy.repeat also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        repeats
+            The number of repetitions for each element. repeats is broadcast to
+            fit the shape of the given axis.
+        axis
+            The axis along which to repeat values. By default, use the flattened
+            input array, and return a flat output array.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The repeated output array.
 
         Examples
         --------
@@ -522,13 +568,49 @@ class ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.swap_axes. This method simply
         wraps the function, and so the docstring for ivy.split also applies
         to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis0
+            First axis to be swapped.
+        axis1
+            Second axis to be swapped.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            x with its axes permuted.
+
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([[0., 1., 2.]])
+        >>> y = x.swapaxes(0, 1)
+        >>> print(y)
+        ivy.array([[0.],
+                   [1.],
+                   [2.]])
+
+        >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+        >>> y = x.swapaxes(0, 2)
+        >>> print(y)
+        ivy.array([[[0, 4],
+                    [2, 6]],
+                   [[1, 5],
+                    [3, 7]]])
         """
         return ivy.swapaxes(self._data, axis0, axis1, out=out)
 
     def tile(
         self: ivy.Array,
         /,
-        reps: Iterable[int],
+        repeats: Iterable[int],
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -536,6 +618,21 @@ class ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.tile. This method simply
         wraps the function, and so the docstring for ivy.tile also applies
         to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        repeats
+            The number of repetitions of x along each axis.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The tiled output array.
 
         Examples
         --------
@@ -553,7 +650,7 @@ class ArrayWithManipulation(abc.ABC):
                    [2,2]])
 
         """
-        return ivy.tile(self._data, reps=reps, out=out)
+        return ivy.tile(self._data, repeats=repeats, out=out)
 
     def unstack(
         self: ivy.Array, /, *, axis: int = 0, keepdims: bool = False
