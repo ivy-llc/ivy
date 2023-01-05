@@ -259,6 +259,7 @@ def expm1(
     return tf.math.expm1(x)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def floor(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -271,6 +272,7 @@ def floor(
         return tf.math.floor(x)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def floor_divide(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
