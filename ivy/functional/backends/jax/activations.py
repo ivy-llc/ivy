@@ -9,9 +9,12 @@ import jax.numpy as jnp
 from typing import Optional, Union
 
 # local
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 from ivy.functional.backends.jax import JaxArray
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def gelu(
     x: JaxArray,
     /,
