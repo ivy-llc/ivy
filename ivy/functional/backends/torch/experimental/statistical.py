@@ -110,5 +110,11 @@ def corrcoef(
     rowvar: Optional[bool] = True,
     out: Optional[torch.tensor] = None,
 ) -> torch.Tensor:
-    xarr = torch.concat([x, y], dim=0) if y is not None else x
+    if y is None:
+        xarr = x
+    else:
+        axis = 0 if rowvar else 1
+        xarr = torch.concat([x, y], dim=axis)
+        xarr = xarr.T if not rowvar else xarr
+
     return torch.corrcoef(xarr)
