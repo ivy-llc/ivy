@@ -14,6 +14,7 @@ website:
 format:
   html:
     theme: assets/css/custom.scss
+    page-layout: full
     code-overflow: scroll
     jupyter: python3
     monobackgroundcolor: "#f9f9f8"
