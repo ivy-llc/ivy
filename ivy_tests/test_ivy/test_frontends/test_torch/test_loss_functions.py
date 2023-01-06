@@ -202,7 +202,7 @@ def test_torch_binary_cross_entropy(
     reduction=st.sampled_from(["mean", "none", "sum", None]),
     dtype_and_pos_weight=st.one_of(
         helpers.dtype_and_values(
-            array_dtype="float",
+            available_dtypes=helpers.get_dtypes("float"),
             min_value=0,
             max_value=10,
             allow_inf=False,
@@ -212,7 +212,7 @@ def test_torch_binary_cross_entropy(
             max_num_dims=1,
             min_dim_size=2,
         ),
-        st.just([None], [None]),
+        st.just([[None], [None]]),
     ),
 )
 def test_torch_binary_cross_entropy_with_logits(
