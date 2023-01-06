@@ -168,4 +168,5 @@ def gather_nd(params, indices, batch_dims=0, name=None):
 
 @to_ivy_arrays_and_back
 def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
-    return ivy.pad(tensor, paddings, mode=mode, constant_values=constant_values)
+    paddings = paddings.to_list() if ivy.is_array(paddings) else paddings
+    return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
