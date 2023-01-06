@@ -678,6 +678,7 @@ def trunc(
 # ------#
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def erf(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -694,6 +695,7 @@ def erf(
             "uint16",
             "uint32",
             "uint64",
+            "complex",
         )
     },
     backend_version,
@@ -722,6 +724,7 @@ def maximum(
             "uint16",
             "uint32",
             "uint64",
+            "complex",
         )
     },
     backend_version,
