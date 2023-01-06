@@ -93,6 +93,8 @@ def test_linear(
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
+    training_mode=st.booleans(),
+    seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
 )
 def test_dropout(
@@ -100,6 +102,8 @@ def test_dropout(
     dtype_and_x,
     prob,
     scale,
+    training_mode,
+    seed,
     test_flags,
     backend_fw,
     fn_name,
@@ -119,6 +123,8 @@ def test_dropout(
         prob=prob,
         scale=scale,
         dtype=dtype[0],
+        training_mode=training_mode,
+        seed=seed,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:

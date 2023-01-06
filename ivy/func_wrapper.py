@@ -14,6 +14,7 @@ FN_DECORATORS = [
     "infer_dtype",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
+    "outputs_to_native_arrays",
     "inputs_to_native_arrays",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
@@ -193,6 +194,41 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
 
     new_fn.outputs_to_ivy_arrays = True
     return new_fn
+
+
+def output_to_native_arrays(fn: Callable) -> Callable:
+    """
+    Calls the function, and then converts all `ivy.Array` instances in
+    the function return into `ivy.NativeArray` instances.
+
+    Parameters
+    ----------
+    args
+        The arguments to be passed to the function.
+
+    kwargs
+        The keyword arguments to be passed to the function.
+
+    Returns
+    -------
+        The return of the function, with ivy arrays as native arrays.
+    """
+
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        return ivy.to_native(ret, nested=True, include_derived={tuple: True})
+
+    new_fn.outputs_to_native_arrays = True
+    return new_fn
+
+
+def to_ivy_arrays_and_back(fn: Callable) -> Callable:
+    """
+    Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
+    and return arrays are all converted to `ivy.NativeArray` instances.
+    """
+    return output_to_native_arrays(inputs_to_ivy_arrays(fn))
 
 
 def to_native_arrays_and_back(fn: Callable) -> Callable:

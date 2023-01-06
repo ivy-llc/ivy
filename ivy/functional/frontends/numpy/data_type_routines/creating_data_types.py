@@ -6,6 +6,8 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 def to_ivy_dtype(dtype_in):
+    if isinstance(dtype_in, ivy.Dtype):
+        return dtype_in
     if isinstance(dtype_in, str):
         if dtype_in.strip("><=") in np_frontend.numpy_str_to_type_table:
             return ivy.Dtype(np_frontend.numpy_str_to_type_table[dtype_in.strip("><=")])
@@ -148,3 +150,7 @@ class dtype:
     @property
     def subtype(self):
         return None
+
+    @property
+    def ivy_dtype(self):
+        return self._ivy_dtype

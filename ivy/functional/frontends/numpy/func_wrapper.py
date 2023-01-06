@@ -19,9 +19,9 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
                 **dict(
                     zip(
                         list(inspect.signature(fn).parameters.keys())[
-                            dtype_pos + 1 : len(args)
+                            dtype_pos + 1: len(args)
                         ],
-                        args[dtype_pos + 1 :],
+                        args[dtype_pos + 1:],
                     )
                 ),
                 **kwargs,
@@ -30,10 +30,6 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
         elif len(args) == (dtype_pos + 1):
             dtype = args[dtype_pos]
             args = args[:-1]
-        if not dtype or isinstance(dtype, str):
-            return fn(*args, dtype=dtype, **kwargs)
-        if isinstance(dtype, np_frontend.dtype):
-            return fn(*args, dtype=dtype._ivy_dtype, **kwargs)
         return fn(*args, dtype=np_frontend.to_ivy_dtype(dtype), **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
@@ -366,11 +362,8 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
         out_kwargs = ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs
         if out_args and out_kwargs:
             if isinstance(ret, tuple):
-                data = tuple(ivy.native_array(ret))
-            else:
-                data = ret.data
-            if isinstance(data, tuple):
                 # converting every scalar element of the tuple to float
+                data = tuple([ivy.native_array(i) for i in ret])
                 data = ivy.copy_nest(data, to_mutable=True)
                 ret_idx = ivy.nested_argwhere(data, lambda x: x.shape == ())
                 try:
@@ -386,6 +379,7 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                 return tuple(data)
             else:
                 # converting the scalar to float
+                data = ivy.native_array(ret)
                 if _is_zero_dim_array(data):
                     try:
                         return np_frontend.numpy_dtype_to_scalar[ivy.dtype(data)](data)

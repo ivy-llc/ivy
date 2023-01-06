@@ -1,6 +1,3 @@
-# global
-import math
-
 # local
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
@@ -139,7 +136,7 @@ def tile(input, dims):
         res = ivy.tile(input, tup)
 
     else:
-        res = ivy.tile(input, reps=dims, out=None)
+        res = ivy.tile(input, repeats=dims, out=None)
     return res
 
 
@@ -176,3 +173,8 @@ def dstack(tensors, *, out=None):
 @to_ivy_arrays_and_back
 def take_along_dim(input, indices, dim, *, out=None):
     return ivy.take_along_axis(input, indices, dim, out=out)
+
+
+@to_ivy_arrays_and_back
+def vstack(tensors, *, out=None):
+    return ivy.vstack(tensors, out=out)

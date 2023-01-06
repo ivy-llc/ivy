@@ -192,6 +192,7 @@ class ArrayWithManipulation(abc.ABC):
         *,
         copy: Optional[bool] = None,
         order: Optional[str] = "C",
+        allowzero: Optional[bool] = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -252,7 +253,9 @@ class ArrayWithManipulation(abc.ABC):
                    [1., 5.]])
 
         """
-        return ivy.reshape(self._data, shape, copy=copy, out=out, order=order)
+        return ivy.reshape(
+            self._data, shape, copy=copy, allowzero=allowzero, out=out, order=order
+        )
 
     def roll(
         self: ivy.Array,
@@ -607,7 +610,7 @@ class ArrayWithManipulation(abc.ABC):
     def tile(
         self: ivy.Array,
         /,
-        reps: Iterable[int],
+        repeats: Iterable[int],
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -620,7 +623,7 @@ class ArrayWithManipulation(abc.ABC):
         ----------
         self
             Input array.
-        reps
+        repeats
             The number of repetitions of x along each axis.
         out
             optional output array, for writing the result to. It must have a
@@ -647,7 +650,7 @@ class ArrayWithManipulation(abc.ABC):
                    [2,2]])
 
         """
-        return ivy.tile(self._data, reps=reps, out=out)
+        return ivy.tile(self._data, repeats=repeats, out=out)
 
     def unstack(
         self: ivy.Array, /, *, axis: int = 0, keepdims: bool = False

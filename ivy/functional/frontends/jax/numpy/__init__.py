@@ -25,7 +25,6 @@ float32 = dtype("float32")
 float64 = dtype("float64")
 complex64 = dtype("complex64")
 complex128 = dtype("complex128")
-complex256 = dtype("complex256")
 bool = dtype("bool")
 
 
@@ -46,7 +45,6 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
         ivy.bfloat16,
     ],
     ivy.int8: [
@@ -59,7 +57,6 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
         ivy.bfloat16,
     ],
     ivy.int16: [
@@ -70,7 +67,6 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.int32: [
         ivy.int32,
@@ -78,14 +74,12 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.int64: [
         ivy.int64,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.uint8: [
         ivy.int16,
@@ -100,7 +94,6 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
         ivy.bfloat16,
     ],
     ivy.uint16: [
@@ -113,7 +106,6 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.uint32: [
         ivy.int64,
@@ -122,14 +114,12 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.uint64: [
         ivy.uint64,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.float16: [
         ivy.float16,
@@ -137,31 +127,26 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.float32: [
         ivy.float32,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.float64: [
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
-    ivy.complex64: [ivy.complex64, ivy.complex128, ivy.complex256, ivy.bfloat16],
-    ivy.complex128: [ivy.complex128, ivy.complex256, ivy.bfloat16],
-    ivy.complex256: [ivy.complex256, ivy.bfloat16],
+    ivy.complex64: [ivy.complex64, ivy.complex128, ivy.bfloat16],
+    ivy.complex128: [ivy.complex128, ivy.bfloat16],
     ivy.bfloat16: [
         ivy.bfloat16,
         ivy.float32,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
 }
 
