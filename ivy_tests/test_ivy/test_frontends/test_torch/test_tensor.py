@@ -156,7 +156,7 @@ def test_torch_instance_chunk(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="any",
-    dtype_x_dim=helpers.dtype_values_axis(
+    dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_value=-1e04,
