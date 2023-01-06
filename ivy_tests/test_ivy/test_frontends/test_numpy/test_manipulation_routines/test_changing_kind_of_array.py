@@ -7,13 +7,13 @@ from hypothesis import strategies as st
 # asanyarray
 @handle_frontend_test(
     fn_tree="numpy.asanyarray",
-    dtype_and_a=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     dtype=helpers.get_dtypes("valid", full=False),
     order=st.sampled_from(["C", "F", "A", "K"]),
     like=helpers.get_dtypes("valid"),
 )
 def test_numpy_asanyarray(
-    data_and_a,
+    data_and_x,
     dtype,
     order,
     *,
@@ -25,7 +25,7 @@ def test_numpy_asanyarray(
     fn_tree,
     frontend,
 ):
-    dtype, a = dtype_and_a
+    dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -35,7 +35,7 @@ def test_numpy_asanyarray(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=a,
+        a=x[0],
         dtype=dtype[0],
         order=order,
         like=like,
