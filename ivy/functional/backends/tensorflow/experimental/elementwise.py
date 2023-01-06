@@ -7,7 +7,7 @@ from .. import backend_version
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import tensorflow_probability as tfp
 
 
@@ -32,6 +32,10 @@ def lcm(
     return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "uint8", "uint16", "uint32", "uint64")},
+    backend_version,
+)
 def fmod(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -39,13 +43,8 @@ def fmod(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    result = tf.math.floormod(x1, x2, name=None)
-    temp = [result, x1]
-    return tf.map_fn(
-        lambda x: x[0] if (x[0] * x[1] >= 0) else (-1 * x[0]),
-        temp,
-        fn_output_signature=result.dtype,
-    )
+    res = tf.experimental.numpy.remainder(tf.math.abs(x1), tf.math.abs(x2))
+    return tf.where(x1 < 0, -res, res)
 
 
 def fmax(
@@ -61,6 +60,23 @@ def fmax(
     x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
     x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
     ret = tf.experimental.numpy.maximum(x1, x2)
+    return ret
+
+
+def fmin(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    temp = tf.constant(float("nan"))
+    tf.dtypes.cast(x1, tf.float64)
+    tf.dtypes.cast(x2, tf.float64)
+    x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
+    x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
+    tf.experimental.numpy.experimental_enable_numpy_behavior()
+    ret = tf.experimental.numpy.minimum(x1, x2)
     return ret
 
 
@@ -124,7 +140,6 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype is None:
         return tf.math.count_nonzero(a, axis=axis, keepdims=keepdims, name=None)
@@ -248,7 +263,7 @@ def allclose(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16,")}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def fix(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -258,7 +273,7 @@ def fix(
     return tf.cast(tf.where(x > 0, tf.math.floor(x), tf.math.ceil(x)), x.dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16,")}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
 def nextafter(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -314,7 +329,15 @@ def angle(
         return tf.math.angle(input, name=None)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16, float16,")}, backend_version)
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def zeta(
     x: Union[tf.Tensor, tf.Variable],
     q: Union[tf.Tensor, tf.Variable],

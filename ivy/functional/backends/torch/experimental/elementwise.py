@@ -52,6 +52,19 @@ def fmax(
 fmax.support_native_out = True
 
 
+def fmin(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fmin(x1, x2, out=None)
+
+
+fmin.support_native_out = True
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -131,7 +144,6 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, list):
         axis = tuple(axis)
@@ -153,9 +165,6 @@ def count_nonzero(
     elif isinstance(x, int):
         return x.unsqueeze(axis)
     return x
-
-
-count_nonzero.support_native_out = False
 
 
 def nansum(
@@ -338,10 +347,10 @@ def zeta(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.special.zeta(x, q)
+    return torch.special.zeta(x, q, out=out)
 
 
-zeta.support_native_out = False
+zeta.support_native_out = True
 
 
 def gradient(

@@ -75,9 +75,7 @@ def apply_safety_factor(
     assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
     assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
 
-    if "complex" in dtype:
-        dtype = "float32" if dtype == "complex64" else "float64"
-    if "float" in dtype:
+    if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
         dtype_info = ivy.finfo(dtype)
     elif "int" in dtype:
