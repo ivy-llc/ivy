@@ -61,3 +61,14 @@ def quantile(
     return np.quantile(
         a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
     ).astype(a.dtype)
+
+
+def corrcoef(
+    x: np.ndarray,
+    /,
+    *,
+    y: Optional[np.ndarray] = None,
+    rowvar: Optional[bool] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
