@@ -1,7 +1,10 @@
 from typing import Union, Optional, Tuple, Sequence
 import tensorflow as tf
+from functools import reduce
 
 import ivy
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 
 def diagflat(
@@ -67,6 +70,19 @@ def eig(
     return tf.linalg.eig(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.9.1": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
 def multi_dot(
     x: Sequence[Union[tf.Tensor, tf.Variable]], 
     /, 
@@ -77,10 +93,5 @@ def multi_dot(
     # TODO: reimplement this function once tf adds multi_dot or inplace updates
     if len(x) < 2:
         raise ValueError("Expecting at least two tensors.")
-    dot_out = x[0]
-    for elemen in range(1, len(x)):
-        dot_out = tf.tensordot(
-            dot_out, 
-            x[elemen], 
-            1)
+    dot_out = reduce(tf.matmul, x)
     return dot_out
