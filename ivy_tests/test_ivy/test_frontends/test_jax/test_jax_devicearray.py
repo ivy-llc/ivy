@@ -43,13 +43,15 @@ def test_jax_devicearray_property_dtype(
 
 @st.composite
 def _at_helper(draw):
-    _, data, shape = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_num_dims=1,
-        ret_shape=True,
-    ))
+    _, data, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=2,
+            shared_dtype=True,
+            min_num_dims=1,
+            ret_shape=True,
+        )
+    )
     axis = draw(helpers.get_axis(shape=shape, force_tuple=True))
     index = ()
     for a in axis:

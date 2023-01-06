@@ -667,6 +667,4 @@ class ContainerWithStatisticalExperimental(ContainerBase):
                           [-1., 1.]])
         }
         """
-        return self.static_corrcoef(
-            self, y=y, rowvar=rowvar, out=out
-        )
+        return self.static_corrcoef(self, y=y, rowvar=rowvar, out=out)
