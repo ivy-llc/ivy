@@ -250,7 +250,6 @@ def local_response_normalization(
     return ivy.permute_dims(div, [0, 2, 3, 1])
 
 
-@to_ivy_arrays_and_back
 def conv_transpose(
     input,
     filters,
@@ -271,7 +270,7 @@ def conv_transpose(
         dilations=dilations,
     )
 
-
+@to_ivy_arrays_and_back
 def max_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.max_pool1d(input, ksize, strides, padding, data_format=data_format)
 
