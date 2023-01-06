@@ -255,6 +255,4 @@ class ArrayWithStatisticalExperimental(abc.ABC):
                        [nan, nan, nan],
                        [-1., nan,  1.]])
         """
-        return ivy.corrcoef(
-            self._data, y=y, rowvar=rowvar, out=out
-        )
+        return ivy.corrcoef(self._data, y=y, rowvar=rowvar, out=out)
