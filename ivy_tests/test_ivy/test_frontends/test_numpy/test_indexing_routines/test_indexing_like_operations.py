@@ -46,26 +46,27 @@ def test_numpy_diagonal(
         axis2=axis[1],
     )
 
+
 @handle_frontend_test(
     fn_tree="numpy.diag",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=2,
-        min_dim_size=2
+        min_dim_size=2,
     ),
     k=st.integers(min_value=-1, max_value=1),
 )
 def test_numpy_diag(
-        dtype_and_x,
-        k,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
-        ):
+    dtype_and_x,
+    k,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
         dtypes=input_dtype,
