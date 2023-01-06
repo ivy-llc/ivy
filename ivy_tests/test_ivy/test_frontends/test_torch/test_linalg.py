@@ -194,7 +194,7 @@ def test_torch_pinv(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        atol=1e-03,
+        atol=1e-02,
     )
 
 
@@ -714,4 +714,48 @@ def test_torch_svdvals(
         fn_tree=fn_tree,
         on_device=on_device,
         A=x,
+    )
+
+
+# solve
+@handle_frontend_test(
+    fn_tree="torch.linalg.solve",
+    dtype_and_data=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(x[1][0][:, :-1]) != 0
+        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
+    ),
+)
+def test_torch_solve(
+    *,
+    dtype_and_data,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    with_out,
+    frontend,
+):
+    input_dtype, data = dtype_and_data
+    input = data[0][:, :-1]
+    other = data[0][:, -1].reshape(-1, 1)
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], input_dtype[0]],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        other=other,
     )

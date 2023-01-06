@@ -20,20 +20,101 @@ from ivy.exceptions import handle_exceptions
 # ------#
 
 
+@handle_exceptions
+def deserialize(
+    name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
+) -> Union[Callable, None]:
+    """Returns activation function given a string identifier.
+
+    Parameters
+    ----------
+    name
+        The name of the activation function.
+    custom_objects
+        Optional dictionary listing user-provided activation functions.
+
+    Returns
+    -------
+    ret
+        Corresponding activation function.
+
+    Examples
+    --------
+    With :code:`str` input:
+
+    >>> name = "sigmoid"
+    >>> sigmoid = ivy.deserialize(name)
+    >>> print(sigmoid)
+    <function sigmoid at XXXXXXXXXXXXXX>
+
+    With :code:`str` and :code:`dict` input:
+
+    >>> name = "custom_fn"
+    >>> objects = {"custom_fn": lambda x: x}
+    >>> custom_fn = ivy.deserialize(name, custom_objects=objects)
+    >>> print(custom_fn)
+    <function custom_fn at XXXXXXXXXXXXXX>
+    """
+    if current_backend().__name__.split(".")[-1] == "tensorflow":
+        return current_backend().deserialize(name, custom_objects=custom_objects)
+
+    if name is None:
+        return None
+
+    module_name = "ivy.functional.ivy.activations"
+    activation_functions = {}
+    module = sys.modules[module_name]
+
+    for fn_name in dir(module):
+        obj = getattr(module, fn_name)
+        if callable(obj) and fn_name in ACTIVATION_FUNCTIONS:
+            activation_functions[fn_name] = obj
+
+    if isinstance(name, str):
+        if custom_objects and name in custom_objects:
+            fn_obj = custom_objects.get(name)
+        else:
+            fn_obj = activation_functions.get(name)
+            if fn_obj is None:
+                raise ValueError(f"Unknown activation function: {name}.")
+        return fn_obj
+
+    else:
+        raise ValueError(f"Could not interpret serialized activation function: {name}")
+
+
+ACTIVATION_FUNCTIONS = [
+    "gelu",
+    "leaky_relu",
+    "log_softmax",
+    "relu",
+    "sigmoid",
+    "softmax",
+    "softplus",
+]
+
+
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
 @handle_array_like
-def relu(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+def gelu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    approximate: bool = False,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies the rectified linear unit function element-wise.
+    """Applies the Gaussian error linear unit (GELU) activation function.
 
     Parameters
     ----------
     x
-        input array
+        Input array.
+    approximate
+        Whether to approximate, default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -41,35 +122,84 @@ def relu(
     Returns
     -------
     ret
-        an array containing the rectified linear unit activation of each element in
-        ``x``.
+        The input array with gelu applied element-wise.
 
     Examples
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([-1., 0., 1.])
-    >>> y = ivy.relu(x)
-    >>> print(y)
-    ivy.array([0., 0., 1.])
+    >>> x = ivy.array([-1.2, -0.6, 1.5])
+    >>> y = ivy.gelu(x)
+    >>> y
+    ivy.array([-0.138, -0.165, 1.4])
 
-    >>> x = ivy.array([1.5, 0.7, -2.4])
-    >>> y = ivy.zeros(3)
-    >>> ivy.relu(x, out = y)
-    >>> print(y)
-    ivy.array([1.5, 0.7, 0.])
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-1.3, 3.8, 2.1])
+    >>> y = ivy.gelu(x)
+    >>> y
+    ivy.array([-0.126, 3.8, 2.06])
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-    >>> x = ivy.relu(x, out=x)
-    >>> print(x)
+    >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.9, -1.]))
+    >>> y = ivy.gelu(x)
+    >>> y
     {
-        a: ivy.array([1., 0.]),
-        b: ivy.array([0.40000001, 0.])
+        a: ivy.array([0.841, 1.95]),
+        b: ivy.array([-0.166, -0.159])
     }
     """
-    return current_backend(x).relu(x, out=out)
+    return current_backend(x).gelu(x, approximate=approximate, out=out)
+
+
+@handle_exceptions
+def get(
+    name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
+) -> Union[Callable, None]:
+    """Returns activation function given a string identifier.
+
+    Parameters
+    ----------
+    name
+        The name of the activation function.
+    custom_objects
+        Optional dictionary listing user-provided activation functions.
+
+    Returns
+    -------
+    ret
+        Corresponding activation function.
+
+    Examples
+    --------
+    With :code:`str` input:
+
+    >>> name = "sigmoid"
+    >>> sigmoid = ivy.get(name)
+    >>> print(sigmoid)
+    <function sigmoid at XXXXXXXXXXXXXX>
+
+    >>> name = None
+    >>> linear = ivy.get(name)
+    >>> print(linear)
+    <function linear at XXXXXXXXXXXXXX>
+
+    With :code:`str` and :code:`dict` input:
+
+    >>> name = "custom_fn"
+    >>> objects = {"custom_fn": lambda x: x}
+    >>> custom_fn = ivy.get(name, custom_objects=objects)
+    >>> print(custom_fn)
+    <function custom_fn at XXXXXXXXXXXXXX>
+    """
+    if current_backend().__name__.split(".")[-1] == "tensorflow":
+        return current_backend().get(name, custom_objects=custom_objects)
+
+    if name is None:
+        return ivy.linear
+
+    return ivy.deserialize(name, custom_objects=custom_objects)
 
 
 @to_native_arrays_and_back
@@ -136,27 +266,26 @@ def leaky_relu(
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
 
-@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
 @handle_array_like
-def gelu(
+def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    approximate: bool = False,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies the Gaussian error linear unit (GELU) activation function.
+    """Applies the log_softmax function element-wise.
 
     Parameters
     ----------
     x
         Input array.
-    approximate
-        Whether to approximate, default is ``True``.
+    axis
+        The dimension log_softmax would be performed on. The default is ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -164,35 +293,99 @@ def gelu(
     Returns
     -------
     ret
-        The input array with gelu applied element-wise.
+        The output array with log_softmax applied element-wise to input.
 
     Examples
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([-1.2, -0.6, 1.5])
-    >>> y = ivy.gelu(x)
-    >>> y
-    ivy.array([-0.138, -0.165, 1.4])
+    >>> x = ivy.array([-1.0, -0.98])
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    ivy.array([-0.703, -0.683])
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    ivy.array([-2.41, -1.41, -0.408])
 
     With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([-1.3, 3.8, 2.1])
-    >>> y = ivy.gelu(x)
-    >>> y
-    ivy.array([-0.126, 3.8, 2.06])
+    >>> x = ivy.native_array([1.5, 0.5, 1.0])
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    ivy.array([-0.68, -1.68, -1.18])
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.9, -1.]))
-    >>> y = ivy.gelu(x)
-    >>> y
+    >>> x = ivy.Container(a=ivy.array([1.5, 0.5, 1.0]))
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
     {
-        a: ivy.array([0.841, 1.95]),
-        b: ivy.array([-0.166, -0.159])
+        a: ivy.array([-0.68, -1.68, -1.18])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1.0, 2.0]), b=ivy.array([0.4, -0.2]))
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1.31, -0.313]),
+        b: ivy.array([-0.437, -1.04])
     }
     """
-    return current_backend(x).gelu(x, approximate=approximate, out=out)
+    return current_backend(x).log_softmax(x, axis=axis, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like
+def relu(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Applies the rectified linear unit function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the rectified linear unit activation of each element in
+        ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1., 0., 1.])
+    >>> y = ivy.relu(x)
+    >>> print(y)
+    ivy.array([0., 0., 1.])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.relu(x, out = y)
+    >>> print(y)
+    ivy.array([1.5, 0.7, 0.])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.relu(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([1., 0.]),
+        b: ivy.array([0.40000001, 0.])
+    }
+    """
+    return current_backend(x).relu(x, out=out)
 
 
 @integer_arrays_to_float
@@ -339,196 +532,3 @@ def softplus(
 
     """
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-@handle_array_like
-def log_softmax(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: Optional[int] = None,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Applies the log_softmax function element-wise.
-
-    Parameters
-    ----------
-    x
-        Input array.
-    axis
-        The dimension log_softmax would be performed on. The default is ``None``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        The output array with log_softmax applied element-wise to input.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([-1.0, -0.98])
-    >>> y = ivy.log_softmax(x)
-    >>> print(y)
-    ivy.array([-0.703, -0.683])
-
-    >>> x = ivy.array([1.0, 2.0, 3.0])
-    >>> y = ivy.log_softmax(x)
-    >>> print(y)
-    ivy.array([-2.41, -1.41, -0.408])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1.5, 0.5, 1.0])
-    >>> y = ivy.log_softmax(x)
-    >>> print(y)
-    ivy.array([-0.68, -1.68, -1.18])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1.5, 0.5, 1.0]))
-    >>> y = ivy.log_softmax(x)
-    >>> print(y)
-    {
-        a: ivy.array([-0.68, -1.68, -1.18])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1.0, 2.0]), b=ivy.array([0.4, -0.2]))
-    >>> y = ivy.log_softmax(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1.31, -0.313]),
-        b: ivy.array([-0.437, -1.04])
-    }
-    """
-    return current_backend(x).log_softmax(x, axis=axis, out=out)
-
-
-@handle_exceptions
-def deserialize(
-    name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
-) -> Union[Callable, None]:
-    """Returns activation function given a string identifier.
-
-    Parameters
-    ----------
-    name
-        The name of the activation function.
-    custom_objects
-        Optional dictionary listing user-provided activation functions.
-
-    Returns
-    -------
-    ret
-        Corresponding activation function.
-
-    Examples
-    --------
-    With :code:`str` input:
-
-    >>> name = "sigmoid"
-    >>> sigmoid = ivy.deserialize(name)
-    >>> print(sigmoid)
-    <function sigmoid at XXXXXXXXXXXXXX>
-
-    With :code:`str` and :code:`dict` input:
-
-    >>> name = "custom_fn"
-    >>> objects = {"custom_fn": lambda x: x}
-    >>> custom_fn = ivy.deserialize(name, custom_objects=objects)
-    >>> print(custom_fn)
-    <function custom_fn at XXXXXXXXXXXXXX>
-    """
-    if current_backend().__name__.split(".")[-1] == "tensorflow":
-        return current_backend().deserialize(name, custom_objects=custom_objects)
-
-    if name is None:
-        return None
-
-    module_name = "ivy.functional.ivy.activations"
-    activation_functions = {}
-    module = sys.modules[module_name]
-
-    for fn_name in dir(module):
-        obj = getattr(module, fn_name)
-        if callable(obj) and fn_name in ACTIVATION_FUNCTIONS:
-            activation_functions[fn_name] = obj
-
-    if isinstance(name, str):
-        if custom_objects and name in custom_objects:
-            fn_obj = custom_objects.get(name)
-        else:
-            fn_obj = activation_functions.get(name)
-            if fn_obj is None:
-                raise ValueError(f"Unknown activation function: {name}.")
-        return fn_obj
-
-    else:
-        raise ValueError(f"Could not interpret serialized activation function: {name}")
-
-
-ACTIVATION_FUNCTIONS = [
-    "gelu",
-    "leaky_relu",
-    "log_softmax",
-    "relu",
-    "sigmoid",
-    "softmax",
-    "softplus",
-]
-
-
-@handle_exceptions
-def get(
-    name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
-) -> Union[Callable, None]:
-    """Returns activation function given a string identifier.
-
-    Parameters
-    ----------
-    name
-        The name of the activation function.
-    custom_objects
-        Optional dictionary listing user-provided activation functions.
-
-    Returns
-    -------
-    ret
-        Corresponding activation function.
-
-    Examples
-    --------
-    With :code:`str` input:
-
-    >>> name = "sigmoid"
-    >>> sigmoid = ivy.get(name)
-    >>> print(sigmoid)
-    <function sigmoid at XXXXXXXXXXXXXX>
-
-    >>> name = None
-    >>> linear = ivy.get(name)
-    >>> print(linear)
-    <function linear at XXXXXXXXXXXXXX>
-
-    With :code:`str` and :code:`dict` input:
-
-    >>> name = "custom_fn"
-    >>> objects = {"custom_fn": lambda x: x}
-    >>> custom_fn = ivy.get(name, custom_objects=objects)
-    >>> print(custom_fn)
-    <function custom_fn at XXXXXXXXXXXXXX>
-    """
-    if current_backend().__name__.split(".")[-1] == "tensorflow":
-        return current_backend().get(name, custom_objects=custom_objects)
-
-    if name is None:
-        return ivy.linear
-
-    return ivy.deserialize(name, custom_objects=custom_objects)

@@ -286,7 +286,9 @@ def linspace(
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bool",)}, backend_version)
 def meshgrid(
-    *arrays: Union[tf.Tensor, tf.Variable], sparse: bool = False, indexing: str = "xy"
+    *arrays: Union[tf.Tensor, tf.Variable],
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if not sparse:
         return tf.meshgrid(*arrays, indexing=indexing)

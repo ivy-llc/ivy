@@ -177,6 +177,8 @@ def dropout(
     *,
     scale: bool = True,
     dtype: ivy.Dtype = None,
+    training_mode: bool = True,
+    seed: int = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -294,16 +296,22 @@ def dropout(
                       [7., 0., 0.]])
     }
     """
+    if prob == 0 or not training_mode:
+        if dtype is not None:
+            x = ivy.astype(x, dtype)
+        return x if not ivy.exists(out) else ivy.inplace_update(out, x)
+    mask = (
+        ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype, seed=seed)
+        < prob
+    )
     x = ivy.where(
-        ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
+        mask,
         ivy.zeros_like(x, dtype=dtype),
         x,
     )
     if scale:
         x = ivy.multiply(x, 1 / (1 - prob), out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, x)
-    return x
+    return x if not ivy.exists(out) else ivy.inplace_update(out, x)
 
 
 # Attention #

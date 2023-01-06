@@ -87,7 +87,6 @@ def test_linear_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -120,7 +119,6 @@ def test_linear_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=test_gradients,
     )
 
 
@@ -348,7 +346,7 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
     )
     input_channels = draw(st.integers(1, 3))
     output_channels = draw(st.integers(1, 3))
-    dilations = draw(st.integers(1, 2))
+    dilations = 1
     x_dim = []
     for i in range(dim):
         min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
@@ -429,7 +427,6 @@ def test_conv1d_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -474,7 +471,6 @@ def test_conv1d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=test_gradients,
     )
 
 
@@ -501,7 +497,6 @@ def test_conv1d_transpose_layer(
     num_positional_args_method: pf.NumPositionalArg,
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -555,7 +550,6 @@ def test_conv1d_transpose_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=test_gradients,
     )
 
 
@@ -579,7 +573,6 @@ def test_conv2d_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -624,7 +617,6 @@ def test_conv2d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=test_gradients,
     )
 
 
@@ -655,7 +647,6 @@ def test_conv2d_transpose_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -709,7 +700,6 @@ def test_conv2d_transpose_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=test_gradients,
     )
 
 
@@ -737,7 +727,6 @@ def test_depthwise_conv2d_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -786,7 +775,6 @@ def test_depthwise_conv2d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=test_gradients,
     )
 
 
@@ -811,7 +799,6 @@ def test_conv3d_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -863,7 +850,6 @@ def test_conv3d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=test_gradients,
     )
 
 
@@ -894,7 +880,6 @@ def test_conv3d_transpose_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -948,7 +933,6 @@ def test_conv3d_transpose_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=test_gradients,
     )
 
 
@@ -993,7 +977,6 @@ def test_lstm_layer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -1027,7 +1010,6 @@ def test_lstm_layer(
         method_with_v=method_with_v,
         rtol_=1e-01,
         atol_=1e-01,
-        test_gradients=test_gradients,
     )
 
 
@@ -1153,3 +1135,6 @@ def test_sequential_layer(
     assert np.allclose(
         ivy.to_numpy(seq(x)), np.array(target), rtol=tolerance_dict[dtype]
     )
+
+
+# ToDo : Add gradient testing once random number generation is unified

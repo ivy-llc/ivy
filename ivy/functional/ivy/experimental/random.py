@@ -5,6 +5,8 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    infer_dtype,
+    infer_device,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -170,4 +172,69 @@ def gamma(
     """
     return ivy.current_backend().gamma(
         shape, alpha, beta, device=device, dtype=dtype, seed=seed, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_device
+@infer_dtype
+@handle_nestable
+@handle_exceptions
+def poisson(
+    lam: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Draws samples from a poisson distribution.
+
+    Parameters
+    ----------
+    lam
+        Rate parameter(s) describing the poisson distribution(s) to sample.
+        It must have a shape that is broadcastable to the requested shape.
+    shape
+        If the given shape is, e.g '(m, n, k)', then 'm * n * k' samples are drawn.
+        (Default value = 'None', where 'ivy.shape(lam)' samples are drawn)
+    device
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        (Default value = None).
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data
+        type will be the default floating-point data type. Default ``None``
+    seed
+        A python integer. Used to create a random seed distribution
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+     ret
+        Drawn samples from the poisson distribution
+
+    Functional Examples
+    -------------------
+
+    >>> lam = [1.0, 2.0, 3.0]
+    >>> ivy.poisson(lam)
+    ivy.array([1., 4., 4.])
+
+    >>> lam = [1.0, 2.0, 3.0]
+    >>> ivy.poisson(lam, shape = (2,3))
+    ivy.array([[0., 2., 2.],
+               [1., 2., 3.]])
+    """
+    return ivy.current_backend().poisson(
+        lam,
+        shape=shape,
+        device=device,
+        dtype=dtype,
+        seed=seed,
+        out=out,
     )
