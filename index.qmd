@@ -1,9 +1,20 @@
 ---
 listing: 
-    template: assets/ejs/gallery.ejs
-    contents:
-        - unify_existing_code
-        - temp_demos
+    - id: unify-existing-code
+      template: assets/ejs/gallery.ejs
+      contents: unify_existing_code
+
+    - id: temp-demos
+      template: assets/ejs/gallery.ejs
+      contents: temp_demos
 ---
 
 # Demo Collections
+
+### Unify Existing Code 
+:::{#unify-existing-code}
+:::
+
+### Temp Demos 
+:::{#temp-demos}
+:::
