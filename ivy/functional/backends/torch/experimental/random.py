@@ -68,13 +68,13 @@ def gamma(
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
 def poisson(
-        lam: Union[float, torch.Tensor],
-        *,
-        shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-        device: torch.device,
-        dtype: torch.dtype,
-        seed: Optional[int] = None,
-        out: Optional[torch.Tensor] = None,
+    lam: Union[float, torch.Tensor],
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: torch.device,
+    dtype: torch.dtype,
+    seed: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
 ):
     lam = torch.tensor(lam, device=device, dtype=torch.float32)
     if seed:

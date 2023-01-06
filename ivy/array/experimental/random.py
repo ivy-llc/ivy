@@ -161,19 +161,17 @@ class ArrayWithRandomExperimental(abc.ABC):
         )
 
     def poisson(
-            self: ivy.Array,
-            *,
-            shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-            device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-            dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-            seed: Optional[int] = None,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        *,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
     ):
         """
-
         Parameters
         ----------
-
         self
             Input Array of rate paramter(s). It must have a shape that is broadcastable
             to the requested shape

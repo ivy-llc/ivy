@@ -68,6 +68,11 @@ def uint16(x):
     return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)
 
 
+@to_ivy_arrays_and_back
+def uint64(x):
+    return ivy.astype(x, ivy.UintDtype("uint64"), copy=False)
+
+
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 def hstack(tup, dtype=None):

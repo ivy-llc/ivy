@@ -78,13 +78,13 @@ def gamma(
 
 @with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def poisson(
-        lam: Union[float, JaxArray],
-        *,
-        shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-        device: jaxlib.xla_extension.Device,
-        dtype: jnp.dtype = None,
-        seed: Optional[int] = None,
-        out: Optional[JaxArray] = None,
+    lam: Union[float, JaxArray],
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: jaxlib.xla_extension.Device,
+    dtype: jnp.dtype = None,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     lam = jnp.array(lam)
     _check_shapes_broadcastable(shape, lam.shape)
@@ -93,9 +93,7 @@ def poisson(
     else:
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
-    return (
-        to_device(
-            jax.random.poisson(rng_input, lam, shape=shape),
-            device,
-        )
+    return to_device(
+        jax.random.poisson(rng_input, lam, shape=shape),
+        device,
     )

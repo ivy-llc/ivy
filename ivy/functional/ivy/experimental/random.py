@@ -196,8 +196,8 @@ def poisson(
     Parameters
     ----------
     lam
-        Rate parameter(s) describing the poisson distribution(s) to sample. It must have
-        a shape that is broadcastable to the requested shape
+        Rate parameter(s) describing the poisson distribution(s) to sample.
+        It must have a shape that is broadcastable to the requested shape.
     shape
         If the given shape is, e.g '(m, n, k)', then 'm * n * k' samples are drawn.
         (Default value = 'None', where 'ivy.shape(lam)' samples are drawn)
@@ -223,7 +223,7 @@ def poisson(
 
     >>> lam = [1.0, 2.0, 3.0]
     >>> ivy.poisson(lam)
-   ivy.array([1., 4., 4.])
+    ivy.array([1., 4., 4.])
 
     >>> lam = [1.0, 2.0, 3.0]
     >>> ivy.poisson(lam, shape = (2,3))

@@ -664,6 +664,37 @@ def test_jax_numpy_logical_and(
     )
 
 
+# invert
+@handle_frontend_test(
+    fn_tree="jax.numpy.invert",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+    ),
+)
+def test_jax_numpy_invert(
+    dtypes_values,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtypes, x = dtypes_values
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # isinf
 @handle_frontend_test(
     fn_tree="jax.numpy.isinf",

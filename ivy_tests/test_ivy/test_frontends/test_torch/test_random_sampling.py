@@ -99,7 +99,7 @@ def test_torch_manual_seed(
         min_num_dims=0,
         max_num_dims=10,
         min_dim_size=1,
-    )
+    ),
 )
 def test_torch_poisson(
     *,
