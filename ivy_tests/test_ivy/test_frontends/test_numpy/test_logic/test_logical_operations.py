@@ -132,7 +132,7 @@ def test_numpy_logical_not(
     fn_tree,
     frontend,
 ):
-    dtypes, x, casting, dtype = dtypes_values_casting
+    dtypes, x, casting, _ = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=dtypes,
@@ -153,7 +153,7 @@ def test_numpy_logical_not(
         where=where,
         casting=casting,
         order="K",
-        dtype=dtype,
+        dtype="bool",
         subok=True,
     )
 
