@@ -520,16 +520,16 @@ def test_jax_numpy_average(
     frontend,
 ):
     x_dtype, x, axis = dtype_x_axis
-    
+
     if isinstance(axis, tuple):
         axis = axis[0]
 
     np_helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        as_variable_flags=as_variable, 
+        as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array, 
+        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
