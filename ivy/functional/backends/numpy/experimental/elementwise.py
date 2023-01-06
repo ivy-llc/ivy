@@ -159,7 +159,6 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
@@ -167,9 +166,6 @@ def count_nonzero(
     if np.isscalar(ret):
         return np.array(ret, dtype=dtype)
     return ret.astype(dtype)
-
-
-count_nonzero.support_native_out = False
 
 
 def nansum(
