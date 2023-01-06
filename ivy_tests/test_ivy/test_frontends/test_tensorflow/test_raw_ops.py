@@ -3090,7 +3090,7 @@ def test_tensorflow_Pack(
 
 
 @st.composite
-def _pad_helper(draw, *, padding_types=None):
+def _pad_helper(draw, *, padding_types=None, return_constant_values=False):
     if padding_types is None:
         padding_types = ["int32", "int64"]
 
@@ -3110,6 +3110,14 @@ def _pad_helper(draw, *, padding_types=None):
         )
     )
 
+    if return_constant_values:
+        _, constant_values = draw(
+            helpers.dtype_and_values(
+                dtype=dtype,
+                shape=(1,),
+            )
+        )
+        return dtype, input[0], padding_dtype, paddings[0], constant_values[0][0]
     return dtype, input[0], padding_dtype, paddings[0]
 
 
@@ -3135,4 +3143,30 @@ def test_tensorflow_Pad(
         fn_tree=fn_tree,
         input=x,
         paddings=paddings,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.PadV2",
+    dtype_x_paddings=_pad_helper(return_constant_values=True),
+)
+def test_tensorflow_PadV2(
+    dtype_x_paddings,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    dtype, x, padding_dtype, paddings, constant_values = dtype_x_paddings
+    helpers.test_frontend_function(
+        input_dtypes=dtype + padding_dtype + dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=x,
+        paddings=paddings,
+        constant_values=constant_values,
     )

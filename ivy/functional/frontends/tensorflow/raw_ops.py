@@ -327,6 +327,11 @@ def Pad(*, input, paddings, name="Pad"):
     return ivy.constant_pad(input, paddings.to_list())
 
 
+@to_ivy_arrays_and_back
+def PadV2(*, input, paddings, constant_values, name="PadV2"):
+    return ivy.constant_pad(input, paddings.to_list(), value=constant_values)
+
+
 Relu = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.keras.activations.relu,
