@@ -631,7 +631,7 @@ from .stateful import *
 from . import verbosity
 from .inspection import fn_array_spec, add_array_specs
 
-add_array_specs()
+# add_array_specs()
 
 # add instance methods to Ivy Array and Container
 from ivy.functional.ivy import (

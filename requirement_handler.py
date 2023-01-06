@@ -1,8 +1,7 @@
 from typing import List
 import operator
 import requests
-
-
+import sys
 url = "https://pypi.python.org/pypi/"
 
 
@@ -80,6 +79,7 @@ string_dict = {
     ">": operator.gt,
     "<": operator.lt,
     "==": operator.eq,
+    "!=": operator.ne,
 }
 
 lower = ["<=", "<"]
@@ -107,13 +107,22 @@ def get_package_versions(lis: List):
         return dict()
     dic = dict()
     for i in lis:
-        dic[i.split(" ")[0]] = get_version_from_string(i.split(" ")[1])
+        if ';' in i:
+            i=i[:i.index(';')]
+        if " " in i:
+            dic[i.split(" ")[0]] = get_version_from_string(i.split(" ")[1])
+        else:
+            dic[i]=()
+
+
     return dic
 
 
 def resolution(conflict_keys, dic1, dic2):
     resolution = {}
     for i in conflict_keys:
+        if dic1[i]==dic2[i]:
+            continue
         for j in dic1[i]:
             for k in dic2[i]:
                 resolution[i] = higher_or_lower(
@@ -138,10 +147,10 @@ def package_conflicts(pkg1, pkg2=None):
         [] if not data_2["info"]["requires_dist"] else data_2["info"]["requires_dist"]
     )
     data_1_dic = get_package_versions(
-        ["python " + data_1["info"]["requires_python"]] + data_1_dic
+        ["python " + str(data_1["info"]["requires_python"])] + data_1_dic
     )
     data_2_dic = get_package_versions(
-        ["python " + data_1["info"]["requires_python"]] + data_2_dic
+        ["python " + str(data_2["info"]["requires_python"])] + data_2_dic
     )
     return resolution(data_1_dic.keys() & data_2_dic.keys(), data_1_dic, data_2_dic)
 
@@ -149,6 +158,42 @@ def package_conflicts(pkg1, pkg2=None):
 def get_package_requirements(pkg):
     return requests.get(url + str(pkg) + "/json").json()
 
+def tuple_to_version(tup):
+    s=''
+    for i in tup:
+        s+=str(i)+'.'
+    return s[:-1]
 
 # example usage
-print(package_conflicts("tensorflow/2.6.0", "tensorflow/2.7.0"))
+if __name__ == "__main__":
+    fw1=sys.argv[1]
+    fw2=sys.argv[2]
+    python=sys.argv[3]
+    conf=package_conflicts(fw1,fw2)
+    if not conf:
+        sys.exit("-1")
+    if 'python' in conf:
+        if tuple_to_version(conf['python'])>python:
+            conf['python']=[conf['python'],-1]
+        elif tuple_to_version(conf['python'])<python:
+            conf['python']=[conf['python'],-2]
+
+        else: del conf['python']
+    f=open("additional_requirements.txt","w")
+    for key,val in conf.items():
+        if key=='python':
+            if val[-1]==-1:
+                print(f"The environment has python {python} which is lower than the required version {tuple_to_version(val[0])} do anticipate unexpected results")
+            else:
+                print(
+                    f"The environment has python {python} which is greater than the required version {tuple_to_version(val[0])} do anticipate unexpected results")
+
+        f.write(f"{key}=={val}")
+
+
+
+
+# print(package_conflicts("torch/1.5.0", "torch/1.5.0"))
+# #
+# # print(get_package_requirements('tensorflow/2.2.0')["info"]["requires_dist"])
+# print(get_package_requirements('torch/1.5.0')["info"]["requires_python"])

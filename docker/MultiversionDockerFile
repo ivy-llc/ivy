@@ -1,0 +1,22 @@
+FROM ubuntu:20.04
+WORKDIR /ivy
+
+COPY ../docker/multicondaenv.yml .
+
+
+# Install miniconda
+ENV CONDA_DIR /opt/miniconda
+RUN apt-get update
+RUN apt-get install -y wget
+
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py38_22.11.1-1-Linux-x86_64.sh -O ~/miniconda.sh && \
+     /bin/bash ~/miniconda.sh -b -p /opt/miniconda
+
+
+ENV PATH=$CONDA_DIR/bin:$PATH
+RUN conda env create -f multicondaenv.yml
+
+# Make RUN commands use the new environment:
+SHELL ["conda", "run", "-n", "multienv", "/bin/bash", "-c"]
+
+
