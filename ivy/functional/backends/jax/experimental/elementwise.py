@@ -94,8 +94,9 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[jnp.dtype] = None,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if dtype is None:
         return jnp.count_nonzero(a, axis=axis, keepdims=keepdims)
     return jnp.array(jnp.count_nonzero(a, axis=axis, keepdims=keepdims), dtype=dtype)
