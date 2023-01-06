@@ -1689,6 +1689,17 @@ class ContainerWithManipulation(ContainerBase):
             Number of values padded to the edges of each axis. Specified as
             ((before_1, after_1), … (before_N, after_N)),
             where N is number of axes of x.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -1700,12 +1711,15 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With :class:`ivy.Array` input:
+        With :class:`ivy.Container` input:
 
-        >>> x = ivy.array([1., 2., 3.,4, 5, 6])
+        >>> x = ivy.Container(a = ivy.array([1., 2., 3.]), b = ivy.array([3., 4., 5.]))
         >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
         >>> print(y)
-        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 0., 0., 0.])
+        {
+            a: ivy.array([0., 0., 1., 2., 3., 0., 0., 0.]),
+            b: ivy.array([0., 0., 3., 4., 5., 0., 0., 0.])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "zero_pad",
@@ -1742,6 +1756,17 @@ class ContainerWithManipulation(ContainerBase):
             Number of values padded to the edges of each axis. Specified as
             ((before_1, after_1), … (before_N, after_N)),
             where N is number of axes of x.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -1753,12 +1778,16 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        With :class:`ivy.Array` input:
+        With :class:`ivy.Container` input:
 
-        >>> x = ivy.array([1., 2., 3.,4, 5, 6])
+        >>> x = ivy.Container(a = ivy.array([1., 2., 3.]), b = ivy.array([3., 4., 5.]))
         >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
         >>> print(y)
-        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 0., 0., 0.])
+        {
+            a: ivy.array([0., 0., 1., 2., 3., 0., 0., 0.]),
+            b: ivy.array([0., 0., 3., 4., 5., 0., 0., 0.])
+        }
+
         """
         return self.static_zero_pad(
             self,

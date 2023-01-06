@@ -712,22 +712,15 @@ class ArrayWithManipulation(abc.ABC):
         Returns
         -------
         ret
-        Padded array of rank equal to x with shape increased according to pad_width.
+            Padded array of rank equal to x with shape increased according to pad_width.
         Examples
         --------
         With :class:`ivy.Array` input:
 
         >>> x = ivy.array([1., 2., 3.,4, 5, 6])
-        >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
+        >>> y = x.zero_pad(pad_width = [[2, 3]])
         >>> print(y)
         ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 0., 0., 0.])
 
-        >>> x = ivy.Container(a = ivy.array([1., 2., 3.]), b = ivy.array([3., 4., 5.]))
-        >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
-        >>> print(y)
-        {
-            a: ivy.array([0., 0., 1., 2., 3., 0., 0., 0.]),
-            b: ivy.array([0., 0., 3., 4., 5., 0., 0., 0.])
-        }
         """
         return ivy.zero_pad(self._data, pad_width=pad_width, out=out)

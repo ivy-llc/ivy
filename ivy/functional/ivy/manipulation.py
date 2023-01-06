@@ -1423,6 +1423,15 @@ def zero_pad(
     ret
         Padded array of rank equal to x with shape increased according to pad_width.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -1450,15 +1459,6 @@ def zero_pad(
         a: ivy.array([0., 0., 1., 2., 3., 0., 0., 0.]),
         b: ivy.array([0., 0., 3., 4., 5., 0., 0., 0.])
     }
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     """
     return current_backend(x).zero_pad(x, pad_width, out=out)
