@@ -50,9 +50,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
@@ -86,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
@@ -132,11 +134,127 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.container.experimental.activations</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
+<span></span><span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 
 
 <div class="viewcode-block" id="ContainerWithActivationExperimental"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithActivationExperimental">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithActivationExperimental</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+<div class="viewcode-block" id="ContainerWithActivationExperimental.static_logit"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithActivationExperimental.static_logit">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">static_logit</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container static method variant of ivy.logit.</span>
+<span class="sd">        This method simply wraps the function, and so the</span>
+<span class="sd">        docstring for ivy.logit  also applies to this method with</span>
+<span class="sd">        minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            Input container.</span>
+<span class="sd">        eps</span>
+<span class="sd">            When eps is None the function outpus NaN where x &lt; 0 or x &gt; 1.</span>
+<span class="sd">            and inf or -inf where x = 1 or x = 0, respectively.</span>
+<span class="sd">            Otherwise if eps is defined, x is clamped to [eps, 1 - eps]</span>
+<span class="sd">        out</span>
+<span class="sd">            Optional output Contaner.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Container with logits of the leaves.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([1, 0, 0.9])</span>
+<span class="sd">        &gt;&gt;&gt; b = ivy.array([0.1, 2, -0.9])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=a, b=b)</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_logit(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([inf, -inf, 2.19722438]),</span>
+<span class="sd">            b: ivy.array([-2.19722462, nan, nan])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([0.3, 2, 0.9])</span>
+<span class="sd">        &gt;&gt;&gt; b = ivy.array([0.1, 1.2, -0.9])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=a, b=b)</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_logit(x, eps=0.2)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([-0.84729779, 1.38629448, 1.38629448]),</span>
+<span class="sd">            b: ivy.array([-1.38629436, 1.38629448, -1.38629436])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_function</span><span class="p">(</span>
+            <span class="s2">&quot;logit&quot;</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span>
+            <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerWithActivationExperimental.logit"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithActivationExperimental.logit">[docs]</a>    <span class="k">def</span> <span class="nf">logit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.logit.</span>
+<span class="sd">        This method simply wraps the function, and so the</span>
+<span class="sd">        docstring for ivy.logit  also applies to this method with</span>
+<span class="sd">        minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input container.</span>
+<span class="sd">        eps</span>
+<span class="sd">            When eps is None the function outpus NaN where x &lt; 0 or x &gt; 1.</span>
+<span class="sd">            and inf or -inf where x = 1 or x = 0, respectively.</span>
+<span class="sd">            Otherwise if eps is defined, x is clamped to [eps, 1 - eps]</span>
+<span class="sd">        out</span>
+<span class="sd">            Optional output Contaner.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Container with logits of the leaves.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([1, 0, 0.9])</span>
+<span class="sd">        &gt;&gt;&gt; b = ivy.array([0.1, 2, -0.9])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=a, b=b)</span>
+<span class="sd">        &gt;&gt;&gt; z = x.logit()</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([inf, -inf, 2.19722438]),</span>
+<span class="sd">            b: ivy.array([-2.19722462, nan, nan])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([0.3, 2, 0.9])</span>
+<span class="sd">        &gt;&gt;&gt; b = ivy.array([0.1, 1.2, -0.9])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=a, b=b)</span>
+<span class="sd">        &gt;&gt;&gt; z = x.logit(eps=0.2)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([-0.84729779, 1.38629448, 1.38629448]),</span>
+<span class="sd">            b: ivy.array([-1.38629436, 1.38629448, -1.38629436])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_logit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

@@ -50,9 +50,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
@@ -86,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
@@ -166,7 +168,7 @@
     <span class="n">upper</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Computes the cholesky decomposition of the x matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the cholesky decomposition of the x matrix.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -244,7 +246,6 @@
 <span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
 <span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
 
-<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., -2.], [2., 5.]])</span>
 <span class="sd">    &gt;&gt;&gt; u = ivy.cholesky(x, upper=&#39;false&#39;)</span>
@@ -308,7 +309,7 @@
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;The cross product of 3-element vectors. If x1 and x2 are multi-dimensional</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The cross product of 3-element vectors. If x1 and x2 are multi-dimensional</span>
 <span class="sd">    arrays (i.e., both have a rank greater than 1), then the cross- product of each pair</span>
 <span class="sd">    of corresponding 3-element vectors is independently computed.</span>
 
@@ -391,7 +392,7 @@
 <span class="k">def</span> <span class="nf">det</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the determinant of a square matrix (or a stack of square matrices)``x``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the determinant of a square matrix (or a stack of square matrices)``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -466,7 +467,7 @@
     <span class="n">axis2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -489,10 +490,6 @@
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
-
-<span class="sd">    out</span>
-<span class="sd">        optional output array to write the result in. Must have the same number</span>
-<span class="sd">        of dimensions as the function output.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -581,32 +578,30 @@
 <span class="sd">    ivy.array([[3.],</span>
 <span class="sd">               [4.]])</span>
 
-<span class="sd">    With :class:`ivy.NativeArray` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2.],</span>
-<span class="sd">    ...                       [3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.],</span>
+<span class="sd">    ...                [3., 4.]])</span>
 <span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(d)</span>
 <span class="sd">    ivy.array([1., 4.])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[ 0,  1,  2],</span>
-<span class="sd">    ...                        [ 3,  4,  5],</span>
-<span class="sd">    ...                        [ 6,  7,  8]],</span>
-<span class="sd">    ...                       [[ 9, 10, 11],</span>
-<span class="sd">    ...                        [12, 13, 14],</span>
-<span class="sd">    ...                        [15, 16, 17]],</span>
-<span class="sd">    ...                       [[18, 19, 20],</span>
-<span class="sd">    ...                        [21, 22, 23],</span>
-<span class="sd">    ...                        [24, 25, 26]]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[ 0,  1,  2],</span>
+<span class="sd">    ...                 [ 3,  4,  5],</span>
+<span class="sd">    ...                 [ 6,  7,  8]],</span>
+<span class="sd">    ...                [[ 9, 10, 11],</span>
+<span class="sd">    ...                 [12, 13, 14],</span>
+<span class="sd">    ...                 [15, 16, 17]],</span>
+<span class="sd">    ...                [[18, 19, 20],</span>
+<span class="sd">    ...                 [21, 22, 23],</span>
+<span class="sd">    ...                 [24, 25, 26]]])</span>
 <span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, offset=1, axis1=1, axis2=-1)</span>
 <span class="sd">    &gt;&gt;&gt; print(d)</span>
 <span class="sd">    ivy.array([[ 1,  5],</span>
 <span class="sd">               [10, 14],</span>
 <span class="sd">               [19, 23]])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0, 1, 2],</span>
-<span class="sd">    ...                       [3, 4, 5],</span>
-<span class="sd">    ...                       [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],</span>
+<span class="sd">    ...                [3, 4, 5],</span>
+<span class="sd">    ...                [6, 7, 8]])</span>
 <span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(d)</span>
 <span class="sd">    ivy.array([0, 4, 8])</span>
@@ -645,7 +640,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of</span>
 <span class="sd">    symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of</span>
 <span class="sd">    matrices) and ``L`` is a vector (or a stack of vectors).</span>
 
@@ -706,7 +701,7 @@
     <span class="n">UPLO</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of</span>
 <span class="sd">    symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of</span>
 <span class="sd">    matrices) and ``L`` is a vector (or a stack of vectors).</span>
 
@@ -773,7 +768,7 @@
     <span class="n">UPLO</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">       The function ``eig`` will be added in a future version of the specification, as</span>
@@ -875,7 +870,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the inner product of two vectors ``x1`` and ``x2``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the inner product of two vectors ``x1`` and ``x2``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -913,7 +908,7 @@
     <span class="n">adjoint</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the multiplicative inverse of a square matrix (or a stack of square</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the multiplicative inverse of a square matrix (or a stack of square</span>
 <span class="sd">    matrices) ``x``.</span>
 
 <span class="sd">    Parameters</span>
@@ -921,6 +916,7 @@
 <span class="sd">    x</span>
 <span class="sd">        input array having shape ``(..., M, M)`` and whose innermost two dimensions form</span>
 <span class="sd">        square matrices. Should have a floating-point data type.</span>
+
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -1004,7 +1000,7 @@
     <span class="n">transpose_b</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Computes the matrix product.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the matrix product.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1014,6 +1010,10 @@
 <span class="sd">    x2</span>
 <span class="sd">        second input array. Should have a numeric data type. Must have at least one</span>
 <span class="sd">        dimension.</span>
+<span class="sd">    transpose_a</span>
+<span class="sd">        if True, ``x1`` is transposed before multiplication.</span>
+<span class="sd">    transpose_b</span>
+<span class="sd">        if True, ``x2`` is transposed before multiplication.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -1088,13 +1088,12 @@
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array(32.)</span>
 
-<span class="sd">    With :class:`ivy.NativeArray` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2.], [0., 1.]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([[2., 0.], [0., 3.]])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.], [0., 1.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[2., 0.], [0., 3.]])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y, transpose_b=True)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([[2., 6.],[0., 3.]])</span>
+<span class="sd">    ivy.array([[2., 6.],</span>
+<span class="sd">           [0., 3.]])</span>
 
 <span class="sd">    With :class:`ivy.Container` inputs:</span>
 
@@ -1119,13 +1118,12 @@
 <span class="sd">        b: ivy.array(9.)</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With a combination of :class:`ivy.NativeArray` and :class:`ivy.Array` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2.], [0., 3.]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.], [0., 3.]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([[1.], [3.]])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y, transpose_a=True)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([[7.],[9.]])</span>
+<span class="sd">    ivy.array([[ 1.],</span>
+<span class="sd">       [11.]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span>
@@ -1147,7 +1145,7 @@
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Compute the matrix p-norm.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the matrix p-norm.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1288,7 +1286,7 @@
 <span class="k">def</span> <span class="nf">matrix_power</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Raises a square matrix (or a stack of square matrices) x to an integer power n.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raises a square matrix (or a stack of square matrices) x to an integer power n.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1385,7 +1383,7 @@
     <span class="n">rtol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the rank (i.e., number of non-zero singular values) of a matrix (or a</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the rank (i.e., number of non-zero singular values) of a matrix (or a</span>
 <span class="sd">    stack of matrices).</span>
 
 <span class="sd">    Parameters</span>
@@ -1483,7 +1481,7 @@
 <span class="k">def</span> <span class="nf">matrix_transpose</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Transposes a matrix (or a stack of matrices) ``x``.</span>
 
 <span class="sd">    Parameters</span>
@@ -1533,9 +1531,7 @@
 <span class="sd">    ivy.array([[2., 1.],</span>
 <span class="sd">       [3., 2.]])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [1., 2., 3.]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.], [1., 2., 3.]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.matrix_transpose(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[0., 1.],</span>
@@ -1570,7 +1566,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the outer product of two vectors ``x1`` and ``x2``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the outer product of two vectors ``x1`` and ``x2``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1657,7 +1653,7 @@
     <span class="n">rtol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)</span>
 <span class="sd">    ``x``.</span>
 
 <span class="sd">    Parameters</span>
@@ -1725,7 +1721,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;reduced&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the qr decomposition x = QR of a full column rank matrix (or a stack of</span>
 <span class="sd">    matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an</span>
 <span class="sd">    upper-triangular matrix (or a stack of matrices).</span>
@@ -1781,7 +1777,7 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the sign and the natural logarithm of the absolute value of the determinant of a square matrix (or a stack of square matrices) ``x``.</span>
 <span class="sd">    .. note::</span>
 <span class="sd">       The purpose of this function is to calculate the determinant more accurately when the determinant is either very small or very large, as calling ``det`` may overflow or underflow.</span>
@@ -1865,7 +1861,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the solution to the system of linear equations represented by the well-</span>
 <span class="sd">    determined (i.e., full rank) linear matrix equation AX = B.</span>
 
@@ -1918,7 +1914,7 @@
     <span class="n">compute_uv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">full_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a singular value decomposition A = USVh of a matrix (or a stack of</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a singular value decomposition A = USVh of a matrix (or a stack of</span>
 <span class="sd">    matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal</span>
 <span class="sd">    columns, ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh``</span>
 <span class="sd">    is a matrix (or a stack of matrices) with orthonormal rows.</span>
@@ -2037,7 +2033,7 @@
 <span class="k">def</span> <span class="nf">svdvals</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the singular values of a matrix (or a stack of matrices) ``x``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the singular values of a matrix (or a stack of matrices) ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2165,7 +2161,7 @@
     <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a tensor contraction of x1 and x2 over specific axes.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a tensor contraction of x1 and x2 over specific axes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2293,7 +2289,7 @@
     <span class="n">axis2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the sum along the specified diagonals of a matrix (or a stack of</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the sum along the specified diagonals of a matrix (or a stack of</span>
 <span class="sd">    matrices) ``x``.</span>
 
 <span class="sd">    Parameters</span>
@@ -2406,7 +2402,7 @@
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Computes the (vector) dot product of two arrays.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the (vector) dot product of two arrays.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2474,7 +2470,7 @@
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the vector norm of a vector (or batch of vectors) ``x``.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the vector norm of a vector (or batch of vectors) ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2569,7 +2565,7 @@
     <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the specified diagonals of the input array,</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the specified diagonals of the input array,</span>
 <span class="sd">    or an array with the input array&#39;s elements as diagonals.</span>
 
 <span class="sd">    Parameters</span>
@@ -2650,7 +2646,7 @@
     <span class="n">increasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Generates a Vandermonde matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates a Vandermonde matrix.</span>
 <span class="sd">    The columns of the output matrix are elementwise powers</span>
 <span class="sd">    of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x.</span>
 <span class="sd">    If increasing is True, the order of the columns is reversed</span>
@@ -2717,7 +2713,7 @@
 <span class="k">def</span> <span class="nf">vector_to_skew_symmetric_matrix</span><span class="p">(</span>
     <span class="n">vector</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Given vector, return the associated `Skew-symmetric matrix</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given vector, return the associated `Skew-symmetric matrix</span>
 <span class="sd">        &lt;https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product/&gt;`_.</span>
 
 

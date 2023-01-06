@@ -29,6 +29,7 @@ Data type
    data_type/default_dtype.rst
    data_type/default_int_dtype.rst
    data_type/default_uint_dtype.rst
+   data_type/default_complex_dtype.rst
    data_type/dtype.rst
    data_type/function_supported_dtypes.rst
    data_type/function_unsupported_dtypes.rst
@@ -38,22 +39,26 @@ Data type
    data_type/check_float.rst
    data_type/is_float_dtype.rst
    data_type/is_uint_dtype.rst
+   data_type/is_complex_dtype.rst
    data_type/promote_types.rst
    data_type/set_default_dtype.rst
    data_type/set_default_float_dtype.rst
    data_type/set_default_int_dtype.rst
    data_type/set_default_uint_dtype.rst
+   data_type/set_default_complex_dtype.rst
    data_type/type_promote_arrays.rst
    data_type/unset_default_dtype.rst
    data_type/unset_default_float_dtype.rst
    data_type/unset_default_int_dtype.rst
    data_type/unset_default_uint_dtype.rst
+   data_type/unset_default_complex_dtype.rst
    data_type/valid_dtype.rst
    data_type/promote_types_of_inputs.rst
    data_type/DefaultDtype.rst
    data_type/DefaultFloatDtype.rst
    data_type/DefaultIntDtype.rst
    data_type/DefaultUintDtype.rst
+   data_type/DefaultComplexDtype.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`data type forum`: https://discord.com/channels/799879767196958751/1028298847950225519

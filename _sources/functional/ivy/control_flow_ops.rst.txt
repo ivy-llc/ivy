@@ -1,0 +1,20 @@
+Control flow ops
+================
+
+.. automodule:: ivy.functional.ivy.control_flow_ops
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Control flow ops
+
+   control_flow_ops/IfElse.rst
+   control_flow_ops/if_else.rst
+   control_flow_ops/WhileLoop.rst
+   control_flow_ops/while_loop.rst
+

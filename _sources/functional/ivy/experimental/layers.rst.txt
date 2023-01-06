@@ -1,0 +1,25 @@
+Layers
+======
+
+.. automodule:: ivy.functional.ivy.experimental.layers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Layers
+
+   layers/max_pool1d.rst
+   layers/max_pool2d.rst
+   layers/max_pool3d.rst
+   layers/avg_pool1d.rst
+   layers/avg_pool2d.rst
+   layers/avg_pool3d.rst
+   layers/dct.rst
+   layers/fft.rst
+   layers/dropout1d.rst
+

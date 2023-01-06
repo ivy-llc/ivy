@@ -50,9 +50,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/device.html">Device</a></li>
@@ -86,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
@@ -152,7 +154,7 @@
         <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Copies an array to a specified data type irrespective of</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Copies an array to a specified data type irrespective of</span>
 <span class="sd">        :ref:`type-promotion` rules.</span>
 
 <span class="sd">        .. note::</span>
@@ -202,7 +204,7 @@
 <div class="viewcode-block" id="ArrayWithDataTypes.broadcast_arrays"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.broadcast_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">broadcast_arrays</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        `ivy.Array` instance method variant of `ivy.broadcast_arrays`.</span>
 <span class="sd">        This method simply wraps the function,</span>
 <span class="sd">        and so the docstring for `ivy.broadcast_arrays`</span>
@@ -247,7 +249,7 @@
 <div class="viewcode-block" id="ArrayWithDataTypes.broadcast_to"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.broadcast_to">[docs]</a>    <span class="k">def</span> <span class="nf">broadcast_to</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        `ivy.Array` instance method variant of `ivy.broadcast_to`.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for `ivy.broadcast_to` also applies to this</span>
@@ -281,7 +283,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithDataTypes.can_cast"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.can_cast">[docs]</a>    <span class="k">def</span> <span class="nf">can_cast</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        `ivy.Array` instance method variant of `ivy.can_cast`. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for `ivy.can_cast` also applies to this</span>
 <span class="sd">        method with minimal changes.</span>
@@ -313,7 +315,7 @@
 <div class="viewcode-block" id="ArrayWithDataTypes.dtype"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.dtype">[docs]</a>    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">as_native</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Examples</span>
 <span class="sd">        -------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
@@ -327,7 +329,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithDataTypes.iinfo"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.iinfo">[docs]</a>    <span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iinfo</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([-119,122,14], dtype=ivy.int8))</span>
@@ -340,7 +342,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_bool_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithDataTypes.is_float_dtype"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.is_float_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_float_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        `ivy.Array` instance method variant of `ivy.is_float_dtype`. This method simply</span>
 <span class="sd">        checks to see if the array is of type `float`.</span>
 
@@ -372,7 +374,7 @@
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        `ivy.Array` instance method variant of `ivy.result_type`. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for `ivy.result_type` also applies to</span>
 <span class="sd">        this method with minimal changes.</span>

@@ -15,6 +15,7 @@ Framework classes
 
    stateful/activations.rst
    stateful/converters.rst
+   stateful/helpers.rst
    stateful/initializers.rst
    stateful/layers.rst
    stateful/module.rst

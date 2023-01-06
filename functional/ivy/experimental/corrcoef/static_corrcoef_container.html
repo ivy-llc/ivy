@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ivy.Container.static_corrcoef &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="diagflat" href="../diagflat.html" />
+    <link rel="prev" title="ivy.Container.corrcoef" href="corrcoef_container.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../experimental.html">Experimental</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../max_pool1d.html">max_pool1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../max_pool2d.html">max_pool2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../max_pool3d.html">max_pool3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../avg_pool1d.html">avg_pool1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../avg_pool2d.html">avg_pool2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../avg_pool3d.html">avg_pool3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dct.html">dct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fft.html">fft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dropout1d.html">dropout1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../is_native_sparse_array.html">is_native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../native_sparse_array.html">native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dirichlet.html">dirichlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../beta.html">beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gamma.html">gamma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../poisson.html">poisson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logit.html">logit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../median.html">median</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nanmean.html">nanmean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unravel_index.html">unravel_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quantile.html">quantile</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../corrcoef.html">corrcoef</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="corrcoef_functional.html">ivy.corrcoef</a></li>
+<li class="toctree-l3"><a class="reference internal" href="corrcoef_array.html">ivy.Array.corrcoef</a></li>
+<li class="toctree-l3"><a class="reference internal" href="corrcoef_container.html">ivy.Container.corrcoef</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.static_corrcoef</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../diagflat.html">diagflat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kron.html">kron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matrix_exp.html">matrix_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../eig.html">eig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../eigvals.html">eigvals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../adjoint.html">adjoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../triu_indices.html">triu_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vorbis_window.html">vorbis_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hann_window.html">hann_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kaiser_window.html">kaiser_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kaiser_bessel_derived_window.html">kaiser_bessel_derived_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hamming_window.html">hamming_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tril_indices.html">tril_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../is_native_dtype.html">is_native_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flatten.html">flatten</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../moveaxis.html">moveaxis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ndenumerate.html">ndenumerate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ndindex.html">ndindex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../heaviside.html">heaviside</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flipud.html">flipud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vstack.html">vstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hstack.html">hstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rot90.html">rot90</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../top_k.html">top_k</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fliplr.html">fliplr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../i0.html">i0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pad.html">pad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vsplit.html">vsplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dsplit.html">dsplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../atleast_1d.html">atleast_1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dstack.html">dstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../atleast_2d.html">atleast_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../atleast_3d.html">atleast_3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../take_along_axis.html">take_along_axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hsplit.html">hsplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../broadcast_shapes.html">broadcast_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isin.html">isin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sinc.html">sinc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lcm.html">lcm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fmod.html">fmod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fmax.html">fmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fmin.html">fmin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trapz.html">trapz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../float_power.html">float_power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exp2.html">exp2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../copysign.html">copysign</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../count_nonzero.html">count_nonzero</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nansum.html">nansum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gcd.html">gcd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isclose.html">isclose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isposinf.html">isposinf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isneginf.html">isneginf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../angle.html">angle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nan_to_num.html">nan_to_num</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logaddexp2.html">logaddexp2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../signbit.html">signbit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../diff.html">diff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../allclose.html">allclose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fix.html">fix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nextafter.html">nextafter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zeta.html">zeta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gradient.html">gradient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xlogy.html">xlogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../SparseArray.html">SparseArray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../NativeSparseArray.html">NativeSparseArray</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../elementwise.html">Elementwise</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../experimental.html">Experimental</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../max_pool1d.html">max_pool1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../max_pool2d.html">max_pool2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../max_pool3d.html">max_pool3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../avg_pool1d.html">avg_pool1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../avg_pool2d.html">avg_pool2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../avg_pool3d.html">avg_pool3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dct.html">dct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fft.html">fft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dropout1d.html">dropout1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../is_native_sparse_array.html">is_native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../native_sparse_array.html">native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dirichlet.html">dirichlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../beta.html">beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gamma.html">gamma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../poisson.html">poisson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logit.html">logit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../median.html">median</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nanmean.html">nanmean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unravel_index.html">unravel_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quantile.html">quantile</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../corrcoef.html">corrcoef</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="corrcoef_functional.html">ivy.corrcoef</a></li>
+<li class="toctree-l3"><a class="reference internal" href="corrcoef_array.html">ivy.Array.corrcoef</a></li>
+<li class="toctree-l3"><a class="reference internal" href="corrcoef_container.html">ivy.Container.corrcoef</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.static_corrcoef</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../diagflat.html">diagflat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kron.html">kron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matrix_exp.html">matrix_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../eig.html">eig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../eigvals.html">eigvals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../adjoint.html">adjoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../triu_indices.html">triu_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vorbis_window.html">vorbis_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hann_window.html">hann_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kaiser_window.html">kaiser_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kaiser_bessel_derived_window.html">kaiser_bessel_derived_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hamming_window.html">hamming_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tril_indices.html">tril_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../is_native_dtype.html">is_native_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flatten.html">flatten</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../moveaxis.html">moveaxis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ndenumerate.html">ndenumerate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ndindex.html">ndindex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../heaviside.html">heaviside</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flipud.html">flipud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vstack.html">vstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hstack.html">hstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rot90.html">rot90</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../top_k.html">top_k</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fliplr.html">fliplr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../i0.html">i0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pad.html">pad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vsplit.html">vsplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dsplit.html">dsplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../atleast_1d.html">atleast_1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dstack.html">dstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../atleast_2d.html">atleast_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../atleast_3d.html">atleast_3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../take_along_axis.html">take_along_axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hsplit.html">hsplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../broadcast_shapes.html">broadcast_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isin.html">isin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sinc.html">sinc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lcm.html">lcm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fmod.html">fmod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fmax.html">fmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fmin.html">fmin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trapz.html">trapz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../float_power.html">float_power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exp2.html">exp2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../copysign.html">copysign</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../count_nonzero.html">count_nonzero</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nansum.html">nansum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gcd.html">gcd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isclose.html">isclose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isposinf.html">isposinf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isneginf.html">isneginf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../angle.html">angle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nan_to_num.html">nan_to_num</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logaddexp2.html">logaddexp2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../signbit.html">signbit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../diff.html">diff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../allclose.html">allclose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fix.html">fix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nextafter.html">nextafter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zeta.html">zeta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gradient.html">gradient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xlogy.html">xlogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../SparseArray.html">SparseArray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../NativeSparseArray.html">NativeSparseArray</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nested_array/nested_array.html">Nested array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+                    <li><a href="../../experimental.html">Experimental</a> &raquo;</li>
+          <li><a href="../corrcoef.html">corrcoef</a> &raquo;</li>
+      <li>ivy.Container.static_corrcoef</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/functional/ivy/experimental/corrcoef/static_corrcoef_container.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ivy-container-static-corrcoef">
+<h1>ivy.Container.static_corrcoef<a class="headerlink" href="#ivy-container-static-corrcoef" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_corrcoef">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_corrcoef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowvar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_corrcoef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_corrcoef" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container static method variant of <a href="../corrcoef/corrcoef_functional.html">ivy.corrcoef</a>. This method simply wraps
+the function, and so the docstring for <a href="../corrcoef/corrcoef_functional.html">ivy.corrcoef</a> also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – Input container including arrays.</p></li>
+<li><p><strong>y</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – An additional input container. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>rowvar</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – If rowvar is True (default), then each row represents a variable, with (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+observations in the columns. Otherwise, the relationship is transposed:
+each column represents a variable, while the rows contain observations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The corrcoef of the array elements in the container.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">w</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]),</span>                              <span class="n">z</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    w: ivy.array([[1., 1.],</span>
+<span class="go">                  [1., 1.]]),</span>
+<span class="go">    z: ivy.array([[1., -1.],</span>
+<span class="go">                  [-1., 1.]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
+</div>
+<p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../../_images/numpy_logo.png" /></a></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="corrcoef_container.html" class="btn btn-neutral float-left" title="ivy.Container.corrcoef" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../diagflat.html" class="btn btn-neutral float-right" title="diagflat" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

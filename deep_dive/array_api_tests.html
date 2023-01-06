@@ -84,9 +84,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
@@ -120,6 +121,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
@@ -311,7 +313,7 @@ This is done by identifying any references to a backend in the commented-out lin
 The <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code> scheme was implemented to skip <em>specific test cases</em>.
 The array-api test suite contains a set of special tests which aim to cover edge-case input and particular data type promotion rules (see <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_array_api/array_api_tests/test_special_cases.py</span></code>).
 In <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code>, tests are skipped by writing the filepath + conditions on the input of the test e.g.,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop<span class="o">[</span>__ipow__<span class="o">(</span>x1_i is -infinity and x2_i &gt; <span class="m">0</span> and not <span class="o">(</span>x2_i.is_integer<span class="o">()</span> and x2_i % <span class="nv">2</span> <span class="o">==</span> <span class="m">1</span><span class="o">))</span> -&gt; +infinity<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop<span class="o">[</span>__ipow__<span class="o">(</span>x1_i<span class="w"> </span>is<span class="w"> </span>-infinity<span class="w"> </span>and<span class="w"> </span>x2_i<span class="w"> </span>&gt;<span class="w"> </span><span class="m">0</span><span class="w"> </span>and<span class="w"> </span>not<span class="w"> </span><span class="o">(</span>x2_i.is_integer<span class="o">()</span><span class="w"> </span>and<span class="w"> </span>x2_i<span class="w"> </span>%<span class="w"> </span><span class="nv">2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="o">))</span><span class="w"> </span>-&gt;<span class="w"> </span>+infinity<span class="o">]</span>
 </pre></div>
 </div>
 <p>is skipping the in-place operations test on the <code class="code docutils literal notranslate"><span class="pre">pow</span></code> instance method when x1 is -infinity and x2 is a positive, odd float.

@@ -1,20 +1,3 @@
-Compilation
-===========
-
-.. automodule:: ivy.functional.ivy.compilation
-    :members:
-    :special-members: __init__
-    :undoc-members:
-    :show-inheritance:
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: Compilation
-
-   compilation/compile.rst
-
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`compilation forum`: https://discord.com/channels/799879767196958751/1028298745726648371
 .. _`compilation forum`: https://discord.com/channels/799879767196958751/1028298745726648371

@@ -50,9 +50,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
@@ -86,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
@@ -158,7 +160,7 @@
 
 
 <span class="k">def</span> <span class="nf">_get_duplicate_index_chains</span><span class="p">(</span><span class="n">xs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Used to generate a list of duplicate index chains for a</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Used to generate a list of duplicate index chains for a</span>
 <span class="sd">    given nested structure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">duplicate_index_chains</span> <span class="o">=</span> <span class="p">()</span>
@@ -170,7 +172,7 @@
 
 
 <span class="k">def</span> <span class="nf">_arrays_to_float_variables</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_grad_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Used to convert all required arrays to float variables for</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Used to convert all required arrays to float variables for</span>
 <span class="sd">    gradient calculation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -194,15 +196,15 @@
 
 
 <span class="k">def</span> <span class="nf">_get_required_native_variables</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_grad_idxs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Used to extract all required native variables from a</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Used to extract all required native variables from a</span>
 <span class="sd">    nested structure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># To make sure that only the required arrays are converted to native arrays</span>
-    <span class="n">xs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">xs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shallow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">xs_grad_idxs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">map_nest_at_indices</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_grad_idxs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">xs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">xs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shallow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">map_fn</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -210,7 +212,9 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># Extract all those required native arrays and None for all others</span>
-    <span class="n">xs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">map_fn</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">xs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
+        <span class="n">xs</span><span class="p">,</span> <span class="n">map_fn</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shallow</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
 
     <span class="c1"># Prune all None values</span>
     <span class="n">none_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
@@ -232,7 +236,7 @@
 
 
 <span class="k">def</span> <span class="nf">_get_required_float_variables</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_grad_idxs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Converts all required arrays to float variables for gradient</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts all required arrays to float variables for gradient</span>
 <span class="sd">    calculation. Also, returns a list of duplicate index chains</span>
 <span class="sd">    for the nested structure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -246,7 +250,7 @@
 
 
 <span class="k">def</span> <span class="nf">_get_native_variables_and_indices</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reshape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">create_var</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Used to extract all relevant results from the output</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Used to extract all relevant results from the output</span>
 <span class="sd">    nested structure of a function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -271,7 +275,7 @@
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[],</span> <span class="n">map_fn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-    <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">map_fn</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">map_fn</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shallow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">arr_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">_check_if_empty</span><span class="p">(</span><span class="n">arr_idxs</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">arr_idxs</span><span class="p">,</span> <span class="p">[]</span>
@@ -288,7 +292,7 @@
 
 
 <span class="k">def</span> <span class="nf">_set_duplicates</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">duplicate_index_chains</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Setting the duplicates in the nested structure to</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Setting the duplicates in the nested structure to</span>
 <span class="sd">    have the same reference</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">originals</span> <span class="o">=</span> <span class="p">[</span>
@@ -306,7 +310,7 @@
 
 
 <span class="k">def</span> <span class="nf">_get_y_and_ret_idxs</span><span class="p">(</span><span class="n">func_ret</span><span class="p">,</span> <span class="n">ret_grad_idxs</span><span class="p">,</span> <span class="n">create_var</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reshape</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Getting the relevant outputs from the function return value.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Getting the relevant outputs from the function return value.&quot;&quot;&quot;</span>
     <span class="n">ret_idxs</span><span class="p">,</span> <span class="n">ret_values</span> <span class="o">=</span> <span class="n">_get_native_variables_and_indices</span><span class="p">(</span>
         <span class="n">func_ret</span><span class="p">,</span> <span class="n">idxs</span><span class="o">=</span><span class="n">ret_grad_idxs</span><span class="p">,</span> <span class="n">create_var</span><span class="o">=</span><span class="n">create_var</span><span class="p">,</span> <span class="n">reshape</span><span class="o">=</span><span class="n">reshape</span>
     <span class="p">)</span>
@@ -320,7 +324,7 @@
 
 
 <span class="k">def</span> <span class="nf">_get_native_y</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Converting all outputs to native arrays.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converting all outputs to native arrays.&quot;&quot;&quot;</span>
     <span class="n">array_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
     <span class="n">y_final</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array_idxs</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">array_idxs</span><span class="p">,</span> <span class="s2">&quot;object&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -329,7 +333,7 @@
 
 
 <span class="k">def</span> <span class="nf">_stop_grad_and_index</span><span class="p">(</span><span class="n">func_ret</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Stop gradient propagation of the function results&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stop gradient propagation of the function results&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">retain_grads</span><span class="p">:</span>
         <span class="n">func_ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
             <span class="n">func_ret</span><span class="p">,</span>
@@ -342,7 +346,7 @@
 
 
 <span class="k">def</span> <span class="nf">_process_func_ret_and_grads</span><span class="p">(</span><span class="n">func_ret</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Setting the gradients of non-finite values to zero, and</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Setting the gradients of non-finite values to zero, and</span>
 <span class="sd">    stopping gradient propagation of the function results.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">grads</span> <span class="o">=</span> <span class="n">_non_finite_to_zero</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span>
@@ -414,7 +418,7 @@
 
 
 <div class="viewcode-block" id="GradientTracking"><a class="viewcode-back" href="../../../../functional/ivy/gradients/GradientTracking.html#ivy.functional.ivy.gradients.GradientTracking">[docs]</a><span class="k">class</span> <span class="nc">GradientTracking</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gradient tracking Context Manager.&quot;&quot;&quot;</span>
 
     <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="GradientTracking.__init__"><a class="viewcode-back" href="../../../../functional/ivy/gradients/GradientTracking.html#ivy.functional.ivy.gradients.GradientTracking.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_grads</span><span class="p">):</span>
@@ -434,7 +438,7 @@
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/with_grads.html#ivy.functional.ivy.gradients.with_grads">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">with_grads</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">with_grads</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enter a nested code space where gradients are computed. This method</span>
 <span class="sd">    adds the with_grads component to the global list with_grads_stack</span>
 
@@ -484,7 +488,7 @@
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="set_with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/set_with_grads.html#ivy.functional.ivy.gradients.set_with_grads">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">set_with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enter a nested code space where gradients are computed. This method</span>
 <span class="sd">    adds the with_grads component to the global list with_grads_stack</span>
 
@@ -529,7 +533,7 @@
 
 <div class="viewcode-block" id="unset_with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/unset_with_grads.html#ivy.functional.ivy.gradients.unset_with_grads">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">unset_with_grads</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enter a nested code space where gradients are computed. This method</span>
 <span class="sd">    deletes the with_grads component from the global list with_grads_stack</span>
 
@@ -571,7 +575,7 @@
     <span class="n">preserve_type</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Stops gradient computation.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stops gradient computation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -642,7 +646,7 @@
 <span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span>
     <span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">xs_grad_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_grad_idxs</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Call function func with input of xs variables, and return the function result</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Call function func with input of xs variables, and return the function result</span>
 <span class="sd">    func_ret and the gradients of each output variable w.r.t each input variable,</span>
 
 <span class="sd">    Parameters</span>
@@ -684,7 +688,7 @@
 <div class="viewcode-block" id="value_and_grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/value_and_grad.html#ivy.functional.ivy.gradients.value_and_grad">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">value_and_grad</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a function that evaluates both func and the gradient of func.</span>
 
 <span class="sd">    Parameters</span>
@@ -719,7 +723,7 @@
 <div class="viewcode-block" id="jac"><a class="viewcode-back" href="../../../../functional/ivy/gradients/jac.html#ivy.functional.ivy.gradients.jac">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s Jacobian partial derivatives.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s Jacobian partial derivatives.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -754,7 +758,7 @@
 <div class="viewcode-block" id="grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/grad.html#ivy.functional.ivy.gradients.grad">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s gradients.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s gradients.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -802,7 +806,7 @@
     <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Compute adam step delta, given the derivatives of some cost c with respect</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute adam step delta, given the derivatives of some cost c with respect</span>
 <span class="sd">    to weights ws, using ADAM update. `[reference]</span>
 
 <span class="sd">    &lt;https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam&gt;`_</span>
@@ -926,7 +930,7 @@
     <span class="n">step</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
     <span class="n">mw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">beta1</span> <span class="o">*</span> <span class="n">mw</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw</span><span class="p">)</span>
     <span class="n">dcdw_sqrd</span> <span class="o">=</span> <span class="n">dcdw</span><span class="o">**</span><span class="mi">2</span>
-    <span class="n">vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">beta2</span> <span class="o">*</span> <span class="n">vw</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw_sqrd</span><span class="p">)</span>
+    <span class="n">vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">beta2</span><span class="p">,</span> <span class="n">vw</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw_sqrd</span><span class="p">)</span>
     <span class="n">vw_sqrt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">vw</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
     <span class="n">beta1_pow</span> <span class="o">=</span> <span class="n">beta1</span><span class="o">**</span><span class="n">step</span>
     <span class="n">beta2_pow</span> <span class="o">=</span> <span class="n">beta2</span><span class="o">**</span><span class="n">step</span>
@@ -952,7 +956,7 @@
     <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the true or effective derivatives of</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the true or effective derivatives of</span>
 <span class="sd">    some cost c with respect to ws, [dc/dw for w in ws].</span>
 
 <span class="sd">    Parameters</span>
@@ -1074,7 +1078,7 @@
     <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
 <span class="sd">    respect to ws, [dc/dw for w in ws].</span>
 
 <span class="sd">    Parameters</span>
@@ -1167,7 +1171,7 @@
     <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
 <span class="sd">    respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive Rate Scaling</span>
 <span class="sd">    (LARS) method.</span>
 
@@ -1222,7 +1226,7 @@
     <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
 <span class="sd">    respect to ws, using ADAM update. `[reference]</span>
 
 <span class="sd">    &lt;https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam&gt;`_</span>
@@ -1298,7 +1302,7 @@
     <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
 <span class="sd">    respect to ws, [dc/dw for w in ws], by applying LAMB method.</span>
 
 <span class="sd">    Parameters</span>

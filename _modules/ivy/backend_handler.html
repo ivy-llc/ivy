@@ -50,9 +50,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/device.html">Device</a></li>
@@ -86,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
@@ -184,7 +186,7 @@
 
 
 <span class="k">def</span> <span class="nf">_determine_backend_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the appropriate Ivy backend, given some arguments.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the appropriate Ivy backend, given some arguments.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -228,7 +230,7 @@
 
 
 <div class="viewcode-block" id="fn_name_from_version_specific_fn_name"><a class="viewcode-back" href="../../backend_handler/fn_name_from_version_specific_fn_name.html#ivy.backend_handler.fn_name_from_version_specific_fn_name">[docs]</a><span class="k">def</span> <span class="nf">fn_name_from_version_specific_fn_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    name</span>
@@ -275,7 +277,7 @@
 
 
 <div class="viewcode-block" id="set_backend_to_specific_version"><a class="viewcode-back" href="../../backend_handler/set_backend_to_specific_version.html#ivy.backend_handler.set_backend_to_specific_version">[docs]</a><span class="k">def</span> <span class="nf">set_backend_to_specific_version</span><span class="p">(</span><span class="n">backend</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates the backend dict to make the original function</span>
 <span class="sd">    name point to the version specific one.</span>
 
@@ -300,7 +302,7 @@
 
 
 <div class="viewcode-block" id="current_backend"><a class="viewcode-back" href="../../backend_handler/current_backend.html#ivy.backend_handler.current_backend">[docs]</a><span class="k">def</span> <span class="nf">current_backend</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the current backend. Priorities:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the current backend. Priorities:</span>
 <span class="sd">    global_backend &gt; argument&#39;s backend.</span>
 
 <span class="sd">    Parameters</span>
@@ -351,7 +353,7 @@
 
 
 <div class="viewcode-block" id="set_backend"><a class="viewcode-back" href="../../backend_handler/set_backend.html#ivy.backend_handler.set_backend">[docs]</a><span class="k">def</span> <span class="nf">set_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sets `backend` to be the global backend.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets `backend` to be the global backend.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -408,17 +410,17 @@
 
 
 <div class="viewcode-block" id="set_numpy_backend"><a class="viewcode-back" href="../../backend_handler/set_numpy_backend.html#ivy.backend_handler.set_numpy_backend">[docs]</a><span class="k">def</span> <span class="nf">set_numpy_backend</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Sets NumPy to be the global backend. equivalent to `ivy.set_backend(&quot;numpy&quot;)`.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets NumPy to be the global backend. equivalent to `ivy.set_backend(&quot;numpy&quot;)`.&quot;&quot;&quot;</span>
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="set_jax_backend"><a class="viewcode-back" href="../../backend_handler/set_jax_backend.html#ivy.backend_handler.set_jax_backend">[docs]</a><span class="k">def</span> <span class="nf">set_jax_backend</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Sets JAX to be the global backend. equivalent to `ivy.set_backend(&quot;jax&quot;)`.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets JAX to be the global backend. equivalent to `ivy.set_backend(&quot;jax&quot;)`.&quot;&quot;&quot;</span>
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="set_tensorflow_backend"><a class="viewcode-back" href="../../backend_handler/set_tensorflow_backend.html#ivy.backend_handler.set_tensorflow_backend">[docs]</a><span class="k">def</span> <span class="nf">set_tensorflow_backend</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sets TensorFlow to be the global backend. equivalent to</span>
 <span class="sd">    `ivy.set_backend(&quot;tensorflow&quot;)`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -426,12 +428,12 @@
 
 
 <div class="viewcode-block" id="set_torch_backend"><a class="viewcode-back" href="../../backend_handler/set_torch_backend.html#ivy.backend_handler.set_torch_backend">[docs]</a><span class="k">def</span> <span class="nf">set_torch_backend</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Sets torch to be the global backend. equivalent to `ivy.set_backend(&quot;torch&quot;)`.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets torch to be the global backend. equivalent to `ivy.set_backend(&quot;torch&quot;)`.&quot;&quot;&quot;</span>
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_backend"><a class="viewcode-back" href="../../backend_handler/get_backend.html#ivy.backend_handler.get_backend">[docs]</a><span class="k">def</span> <span class="nf">get_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns Ivy&#39;s backend for `backend` if specified, or if it isn&#39;t specified it</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns Ivy&#39;s backend for `backend` if specified, or if it isn&#39;t specified it</span>
 <span class="sd">    returns the Ivy backend associated with the current globally set backend.</span>
 
 <span class="sd">    Parameters</span>
@@ -482,7 +484,7 @@
 
 
 <div class="viewcode-block" id="unset_backend"><a class="viewcode-back" href="../../backend_handler/unset_backend.html#ivy.backend_handler.unset_backend">[docs]</a><span class="k">def</span> <span class="nf">unset_backend</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Unsets the current global backend, and adjusts the ivy dict such that either</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unsets the current global backend, and adjusts the ivy dict such that either</span>
 <span class="sd">    a previously set global backend is then used as the backend, otherwise we return</span>
 <span class="sd">    to Ivy&#39;s implementations.</span>
 

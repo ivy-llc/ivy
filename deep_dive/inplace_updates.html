@@ -79,9 +79,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
@@ -115,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
@@ -333,38 +335,28 @@ However, in the <code class="code docutils literal notranslate"><span class="pre
 This is why we need to call <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.inplace_update()</span></code> explicitly here, to ensure the native inplace update is performed, as well as the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inplace update.</p>
 <p>Another case where we need to use <a href="#id1"><span class="problematic" id="id2">:func:`ivy.inplace_update`_</span></a> with a function that has <code class="xref py py-attr docutils literal notranslate"><span class="pre">support_native_out</span></code> is for the example of the <code class="code docutils literal notranslate"><span class="pre">torch</span></code> backend implementation of the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.remainder()</span></code> function</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">remainder</span><span class="p">(</span>
-<span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
-<span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
-<span class="o">/</span><span class="p">,</span>
-<span class="o">*</span><span class="p">,</span>
-<span class="n">modulus</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">modulus</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promote_types_of_inputs</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">modulus</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">/</span> <span class="n">x2</span>
+        <span class="n">res_floored</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">res</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">res</span> <span class="o">-</span> <span class="n">res_floored</span>
+        <span class="n">diff</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promote_types_of_inputs</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">x2</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span>
+                    <span class="n">out</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl>
-<dt>) -&gt; torch.Tensor:</dt><dd><p>x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-if not modulus:</p>
-<blockquote>
-<div><p>res = x1 / x2
-res_floored = torch.where(res &gt;= 0, torch.floor(res), torch.ceil(res))
-diff = res - res_floored
-diff, x2 = ivy.promote_types_of_inputs(diff, x2)
-if ivy.exists(out):</p>
-<blockquote>
-<div><dl>
-<dt>if out.dtype != x2.dtype:</dt><dd><dl class="simple">
-<dt>return ivy.inplace_update(</dt><dd><p>out, torch.round(torch.mul(diff, x2)).to(x1.dtype)</p>
-</dd>
-</dl>
-<p>)</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>return torch.round(torch.mul(diff, x2), out=out).to(x1.dtype)</p>
-</div></blockquote>
-<p>return torch.remainder(x1, x2, out=out).to(x1.dtype)</p>
-</dd>
-</dl>
 <p>Here, even though the <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.round()</span></code> function natively supports the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, in case the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is different
 from the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> of the result of the function, we need to use <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.inplace_update()</span></code>, while still trying to utilize the native <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument whenever
 the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is the same for maximum possible extent of the native inplace update.</p>

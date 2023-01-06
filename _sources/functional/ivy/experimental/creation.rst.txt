@@ -1,0 +1,23 @@
+Creation
+========
+
+.. automodule:: ivy.functional.ivy.experimental.creation
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Creation
+
+   creation/triu_indices.rst
+   creation/vorbis_window.rst
+   creation/hann_window.rst
+   creation/kaiser_window.rst
+   creation/kaiser_bessel_derived_window.rst
+   creation/hamming_window.rst
+   creation/tril_indices.rst
+

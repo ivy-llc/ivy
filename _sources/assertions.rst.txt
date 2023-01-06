@@ -30,4 +30,6 @@ Assertions
    assertions/check_gather_nd_input_valid.rst
    assertions/check_one_way_broadcastable.rst
    assertions/check_inplace_sizes_valid.rst
+   assertions/check_shapes_broadcastable.rst
+   assertions/check_dimensions.rst
 

@@ -1,0 +1,16 @@
+Device
+======
+
+.. automodule:: ivy.functional.ivy.experimental.device
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Device
+
+

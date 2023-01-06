@@ -14,8 +14,6 @@ Module
    :caption: Module
 
    module/Module.rst
-   module/MyTorchModule.rst
-   module/MyTFModule.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`module forum`: https://discord.com/channels/799879767196958751/1028300829905653780

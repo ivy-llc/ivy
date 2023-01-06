@@ -1,0 +1,42 @@
+Elementwise
+===========
+
+.. automodule:: ivy.functional.ivy.experimental.elementwise
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Elementwise
+
+   elementwise/sinc.rst
+   elementwise/lcm.rst
+   elementwise/fmod.rst
+   elementwise/fmax.rst
+   elementwise/fmin.rst
+   elementwise/trapz.rst
+   elementwise/float_power.rst
+   elementwise/exp2.rst
+   elementwise/copysign.rst
+   elementwise/count_nonzero.rst
+   elementwise/nansum.rst
+   elementwise/gcd.rst
+   elementwise/isclose.rst
+   elementwise/isposinf.rst
+   elementwise/isneginf.rst
+   elementwise/angle.rst
+   elementwise/nan_to_num.rst
+   elementwise/logaddexp2.rst
+   elementwise/signbit.rst
+   elementwise/diff.rst
+   elementwise/allclose.rst
+   elementwise/fix.rst
+   elementwise/nextafter.rst
+   elementwise/zeta.rst
+   elementwise/gradient.rst
+   elementwise/xlogy.rst
+

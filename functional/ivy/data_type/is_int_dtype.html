@@ -53,9 +53,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../data_type.html">Data type</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="astype.html">astype</a></li>
@@ -74,6 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="default_dtype.html">default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_int_dtype.html">default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_uint_dtype.html">default_uint_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default_complex_dtype.html">default_complex_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_supported_dtypes.html">function_supported_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_unsupported_dtypes.html">function_unsupported_dtypes</a></li>
@@ -89,22 +91,26 @@
 <li class="toctree-l2"><a class="reference internal" href="check_float.html">check_float</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_uint_dtype.html">is_uint_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_complex_dtype.html">is_complex_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="promote_types.html">promote_types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_default_dtype.html">set_default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_default_float_dtype.html">set_default_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_default_int_dtype.html">set_default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_default_uint_dtype.html">set_default_uint_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_default_complex_dtype.html">set_default_complex_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="type_promote_arrays.html">type_promote_arrays</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_default_dtype.html">unset_default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_default_float_dtype.html">unset_default_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_default_int_dtype.html">unset_default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_default_uint_dtype.html">unset_default_uint_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unset_default_complex_dtype.html">unset_default_complex_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="valid_dtype.html">valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="promote_types_of_inputs.html">promote_types_of_inputs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DefaultDtype.html">DefaultDtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DefaultFloatDtype.html">DefaultFloatDtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DefaultIntDtype.html">DefaultIntDtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DefaultUintDtype.html">DefaultUintDtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DefaultComplexDtype.html">DefaultComplexDtype</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
@@ -138,6 +144,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
@@ -214,29 +221,33 @@
 <span class="go">False</span>
 </pre></div>
 </div>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
-&gt;&gt;&gt; x = ivy.array([1., 2., 3.])
-&gt;&gt;&gt; x.dtype
-float32</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
+<span class="go">float32</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="go">False</span>
 </pre></div>
 </div>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:
-&gt;&gt;&gt; x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], dtype=ivy.int16)
-&gt;&gt;&gt; print(ivy.is_int_dtype(x))
-True</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">Number</span></code> input:
-&gt;&gt;&gt; x = 1
-&gt;&gt;&gt; print(ivy.is_int_dtype(x))
-True</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3, 4, 5]))
-&gt;&gt;&gt; x.a.dtype
-float32
-&gt;&gt;&gt; x.b.dtype
-int32</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>With <code class="code docutils literal notranslate"><span class="pre">Number</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span><span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span>
+<span class="go">float32</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">dtype</span>
+<span class="go">int32</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="go">{</span>
 <span class="go">    a: false,</span>
 <span class="go">    b: true</span>

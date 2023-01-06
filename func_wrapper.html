@@ -51,9 +51,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functional/ivy/device.html">Device</a></li>
@@ -87,6 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/optimizers.html">Optimizers</a></li>
@@ -134,26 +136,6 @@
              
   <section id="module-ivy.func_wrapper">
 <span id="func-wrapper"></span><h1>Func wrapper<a class="headerlink" href="#module-ivy.func_wrapper" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.func_wrapper.custom_handle_nestable">
-<span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">custom_handle_nestable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#custom_handle_nestable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.custom_handle_nestable" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.func_wrapper.from_zero_dim_arrays_to_float">
-<span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">from_zero_dim_arrays_to_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#from_zero_dim_arrays_to_float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.from_zero_dim_arrays_to_float" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.func_wrapper.handle_array_like">
 <span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">handle_array_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#handle_array_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.handle_array_like" title="Permalink to this definition"></a></dt>
@@ -245,9 +227,42 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.func_wrapper.output_to_native_arrays">
+<span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">output_to_native_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#output_to_native_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.output_to_native_arrays" title="Permalink to this definition"></a></dt>
+<dd><p>Calls the function, and then converts all <cite>ivy.Array</cite> instances in
+the function return into <cite>ivy.NativeArray</cite> instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – The arguments to be passed to the function.</p></li>
+<li><p><strong>kwargs</strong> – The keyword arguments to be passed to the function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>The return of the function, with ivy arrays as native arrays.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.func_wrapper.outputs_to_ivy_arrays">
 <span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">outputs_to_ivy_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#outputs_to_ivy_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.outputs_to_ivy_arrays" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.func_wrapper.to_ivy_arrays_and_back">
+<span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">to_ivy_arrays_and_back</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#to_ivy_arrays_and_back"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.to_ivy_arrays_and_back" title="Permalink to this definition"></a></dt>
+<dd><p>Wraps <cite>fn</cite> so that input arrays are all converted to <cite>ivy.Array</cite> instances
+and return arrays are all converted to <cite>ivy.NativeArray</cite> instances.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
 </dd>

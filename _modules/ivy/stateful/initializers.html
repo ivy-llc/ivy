@@ -50,9 +50,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/device.html">Device</a></li>
@@ -86,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
@@ -146,7 +148,7 @@
 
 
 <div class="viewcode-block" id="Initializer"><a class="viewcode-back" href="../../../stateful/initializers/Initializer.html#ivy.stateful.initializers.Initializer">[docs]</a><span class="k">class</span> <span class="nc">Initializer</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An initializer for internal variables for a layer.</span>
 <span class="sd">    A neuron is a function of the form `a = g(z)`, where `g` is the</span>
 <span class="sd">    activation functions and `z = w_1x_1 + w_2x_2 + ... + w_nx_n` where the</span>
@@ -164,7 +166,7 @@
         <span class="n">fan_in</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 
 <span class="sd">        Parameters</span>
@@ -192,7 +194,7 @@
 
 <div class="viewcode-block" id="Constant"><a class="viewcode-back" href="../../../stateful/initializers/Constant.html#ivy.stateful.initializers.Constant">[docs]</a><span class="k">class</span> <span class="nc">Constant</span><span class="p">(</span><span class="n">Initializer</span><span class="p">):</span>
 <div class="viewcode-block" id="Constant.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Constant.html#ivy.stateful.initializers.Constant.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constant initializer, will fill in all values with the value of `constant`.</span>
 
 <span class="sd">        Parameters</span>
@@ -217,13 +219,13 @@
 
 <div class="viewcode-block" id="Zeros"><a class="viewcode-back" href="../../../stateful/initializers/Zeros.html#ivy.stateful.initializers.Zeros">[docs]</a><span class="k">class</span> <span class="nc">Zeros</span><span class="p">(</span><span class="n">Constant</span><span class="p">):</span>
 <div class="viewcode-block" id="Zeros.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Zeros.html#ivy.stateful.initializers.Zeros.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A constant initalizer that fills with the constant value `0.0`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A constant initalizer that fills with the constant value `0.0`.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Ones"><a class="viewcode-back" href="../../../stateful/initializers/Ones.html#ivy.stateful.initializers.Ones">[docs]</a><span class="k">class</span> <span class="nc">Ones</span><span class="p">(</span><span class="n">Constant</span><span class="p">):</span>
 <div class="viewcode-block" id="Ones.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Ones.html#ivy.stateful.initializers.Ones.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A constant initalizer that fills with the constant value `1.0`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A constant initalizer that fills with the constant value `1.0`.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span></div></div>
 
 
@@ -233,7 +235,7 @@
 
 <div class="viewcode-block" id="Uniform"><a class="viewcode-back" href="../../../stateful/initializers/Uniform.html#ivy.stateful.initializers.Uniform">[docs]</a><span class="k">class</span> <span class="nc">Uniform</span><span class="p">(</span><span class="n">Initializer</span><span class="p">):</span>
 <div class="viewcode-block" id="Uniform.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Uniform.html#ivy.stateful.initializers.Uniform.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numerator</span><span class="p">,</span> <span class="n">fan_mode</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="n">gain</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A initializer based on a uniform distribution, will fill in all values with</span>
 <span class="sd">        values drawn from a uniform (all values have an equal probability) distribution</span>
 <span class="sd">        with range `[-wlim, wlim]` (endpoints included) with `wlim` being calculated as</span>
@@ -273,7 +275,7 @@
 <div class="viewcode-block" id="Uniform.create_variables"><a class="viewcode-back" href="../../../stateful/initializers/Uniform.html#ivy.stateful.initializers.Uniform.create_variables">[docs]</a>    <span class="k">def</span> <span class="nf">create_variables</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">var_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">fan_out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fan_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 
 <span class="sd">        Parameters</span>
@@ -340,7 +342,7 @@
 
 <div class="viewcode-block" id="GlorotUniform"><a class="viewcode-back" href="../../../stateful/initializers/GlorotUniform.html#ivy.stateful.initializers.GlorotUniform">[docs]</a><span class="k">class</span> <span class="nc">GlorotUniform</span><span class="p">(</span><span class="n">Uniform</span><span class="p">):</span>
 <div class="viewcode-block" id="GlorotUniform.__init__"><a class="viewcode-back" href="../../../stateful/initializers/GlorotUniform.html#ivy.stateful.initializers.GlorotUniform.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The Glorot uniform initializer, also known as the Xavier uniform initializer.</span>
 <span class="sd">        It draws values from a uniform distribtion `[-limit, limit]` where</span>
 <span class="sd">        `limit = sqrt(6 / (fan_in + fan_out))` where `fan_in` and `fan_out` are the</span>
@@ -351,7 +353,7 @@
 
 <div class="viewcode-block" id="FirstLayerSiren"><a class="viewcode-back" href="../../../stateful/initializers/FirstLayerSiren.html#ivy.stateful.initializers.FirstLayerSiren">[docs]</a><span class="k">class</span> <span class="nc">FirstLayerSiren</span><span class="p">(</span><span class="n">Uniform</span><span class="p">):</span>
 <div class="viewcode-block" id="FirstLayerSiren.__init__"><a class="viewcode-back" href="../../../stateful/initializers/FirstLayerSiren.html#ivy.stateful.initializers.FirstLayerSiren.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The Siren uniform initializer for the first layer. It draws values from a</span>
 <span class="sd">        uniform distribtion `[-limit, limit]` where `limit=fan_in` where `fan_in`</span>
 <span class="sd">        is the number of input features.</span>
@@ -361,7 +363,7 @@
 
 <div class="viewcode-block" id="Siren"><a class="viewcode-back" href="../../../stateful/initializers/Siren.html#ivy.stateful.initializers.Siren">[docs]</a><span class="k">class</span> <span class="nc">Siren</span><span class="p">(</span><span class="n">Uniform</span><span class="p">):</span>
 <div class="viewcode-block" id="Siren.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Siren.html#ivy.stateful.initializers.Siren.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w0</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The Siren uniform initializer for the first layer. It draws values from a</span>
 <span class="sd">        uniform distribtion `[-limit, limit]` where `limit=sqrt(6 / fan_in) / w0`</span>
 <span class="sd">        where `fan_in` is the number of input features.</span>
@@ -375,7 +377,7 @@
 
 <div class="viewcode-block" id="KaimingNormal"><a class="viewcode-back" href="../../../stateful/initializers/KaimingNormal.html#ivy.stateful.initializers.KaimingNormal">[docs]</a><span class="k">class</span> <span class="nc">KaimingNormal</span><span class="p">(</span><span class="n">Initializer</span><span class="p">):</span>
 <div class="viewcode-block" id="KaimingNormal.__init__"><a class="viewcode-back" href="../../../stateful/initializers/KaimingNormal.html#ivy.stateful.initializers.KaimingNormal.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fan_mode</span><span class="o">=</span><span class="s2">&quot;fan_in&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A Kaiming normal initializer, also known as He Initialization, is an</span>
 <span class="sd">        method for initializing layers that takes into account the non-linearity</span>
 <span class="sd">        of activation functions. It uses a normal distibution centered at `mean` with</span>
@@ -411,7 +413,7 @@
         <span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal variables for the layer</span>
 
 <span class="sd">        Parameters</span>

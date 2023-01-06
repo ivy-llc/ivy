@@ -94,9 +94,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
@@ -130,6 +131,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
@@ -196,7 +198,7 @@ The standard only mandates a subset of required behaviour, which the Ivy functio
 This is the most <strong>important</strong> step, we should ensure that our data generation is complete and covers all of the possible inputs.
 We generate the input data inside the <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> decorator that wraps every test.</p></li>
 <li><p><strong>Pre-execution Test Processing</strong>: After the data is generated, more input processing is needed before testing the function.
-This is more specific to which functions are we testing, <a class="reference external" href="https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L37">core functions</a> require a different input processing form <a class="reference external" href="https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L379">frontend functions</a>.
+This is more specific to which functions are we testing, <a class="reference external" href="https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L37">core functions</a> require a different input processing from <a class="reference external" href="https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L379">frontend functions</a>.
 One of the required pre-processing step for any test function is converting the array input to valid framework specific array, later in the testing process we call the backend framework function, for example TensorFlow’s <code class="code docutils literal notranslate"><span class="pre">abs</span></code> function requires the input to be a <code class="code docutils literal notranslate"><span class="pre">tf.Tensor</span></code>, not an <cite>ivy.Array</cite>.</p></li>
 <li><p><strong>Test Execution</strong>: After the input data is generated and processed, we assert that the result of the functions is correct, this includes, asserting the result has the correct values, shape and data type.
 And that this is consistent across all of our backends.</p></li>
@@ -364,7 +366,7 @@ For example, in this code snippet here -:</p>
 </pre></div>
 </div>
 <p>Lets take a deeper look at <code class="code docutils literal notranslate"><span class="pre">ivy.abs</span></code>, according to the function signature, it accepts two arguments, <code class="code docutils literal notranslate"><span class="pre">x</span></code> which can be a Python numeric or an ivy.Array of numeric data type, and an <code class="code docutils literal notranslate"><span class="pre">out</span></code> optional output array.
-Using a lot of help from <a class="reference external" href="https://github.com/unifyai/ivy/tree/master/ivy_tests/test_ivy/helpers/hypothesis_helpers">test helpers</a>, we can simply generate a random input that covers all the possible combinations using <code class="code docutils literal notranslate"><span class="pre">dtype_and_values</span></code> composite strategy, specifying the the list of data types to sample from by also using another composite strategy <code class="code docutils literal notranslate"><span class="pre">get_dtypes</span></code> which samples a valid data types according to the backend that is tested.
+Using a lot of help from <a class="reference external" href="https://github.com/unifyai/ivy/tree/master/ivy_tests/test_ivy/helpers/hypothesis_helpers">test helpers</a>, we can simply generate a random input that covers all the possible combinations using <code class="code docutils literal notranslate"><span class="pre">dtype_and_values</span></code> composite strategy, specifying the list of data types to sample from by also using another composite strategy <code class="code docutils literal notranslate"><span class="pre">get_dtypes</span></code> which samples a valid data types according to the backend that is tested.
 For <code class="code docutils literal notranslate"><span class="pre">out</span></code> keyword argument, the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_test</span></code> decorator generates a boolean for whether we should provide an <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument or not, thankfully, the <cite>test_function</cite> helper function does a lot under the hood to properly create an array for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
 If the function does not support the <code class="code docutils literal notranslate"><span class="pre">out</span></code>, we should explicitly specify that we should not generate boolean flags for <code class="code docutils literal notranslate"><span class="pre">out</span></code> by setting <code class="code docutils literal notranslate"><span class="pre">with_out=False</span></code>, the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_test</span></code> in this case will not generate a value for <code class="code docutils literal notranslate"><span class="pre">with_out</span></code>.</p>
 <p>As  discussed above, the helper functions use the composite decorator, which helps in defining a series of custom strategies.
@@ -801,7 +803,7 @@ For the <code class="code docutils literal notranslate"><span class="pre">test_r
 <p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738436383445073">ivy tests channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297802826121326">ivy tests forum</a>!</p>
 <p><strong>Video</strong></p>
 <iframe width="420" height="315"
-src="https://www.youtube.com/embed/E6WgGp2_e5E" class="video">
+src="https://www.youtube.com/embed/ZI0_zdiJy2E" class="video">
 </iframe></section>
 </section>
 

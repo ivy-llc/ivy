@@ -53,9 +53,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="creation.html">Creation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data type</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_type/astype.html">astype</a></li>
@@ -74,6 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="data_type/default_dtype.html">default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/default_int_dtype.html">default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/default_uint_dtype.html">default_uint_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/default_complex_dtype.html">default_complex_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/function_supported_dtypes.html">function_supported_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/function_unsupported_dtypes.html">function_unsupported_dtypes</a></li>
@@ -83,22 +85,26 @@
 <li class="toctree-l2"><a class="reference internal" href="data_type/check_float.html">check_float</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/is_uint_dtype.html">is_uint_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/is_complex_dtype.html">is_complex_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/promote_types.html">promote_types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/set_default_dtype.html">set_default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/set_default_float_dtype.html">set_default_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/set_default_int_dtype.html">set_default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/set_default_uint_dtype.html">set_default_uint_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/set_default_complex_dtype.html">set_default_complex_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/type_promote_arrays.html">type_promote_arrays</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/unset_default_dtype.html">unset_default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/unset_default_float_dtype.html">unset_default_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/unset_default_int_dtype.html">unset_default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/unset_default_uint_dtype.html">unset_default_uint_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/unset_default_complex_dtype.html">unset_default_complex_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/valid_dtype.html">valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/promote_types_of_inputs.html">promote_types_of_inputs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/DefaultDtype.html">DefaultDtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/DefaultFloatDtype.html">DefaultFloatDtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/DefaultIntDtype.html">DefaultIntDtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/DefaultUintDtype.html">DefaultUintDtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/DefaultComplexDtype.html">DefaultComplexDtype</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
@@ -132,6 +138,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
@@ -180,9 +187,22 @@
   <section id="module-ivy.functional.ivy.data_type">
 <span id="data-type"></span><h1>Data type<a class="headerlink" href="#module-ivy.functional.ivy.data_type" title="Permalink to this heading"></a></h1>
 <dl class="py class">
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.DefaultComplexDtype">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">DefaultComplexDtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">complex_dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#DefaultComplexDtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.DefaultComplexDtype" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Ivy’s DefaultComplexDtype class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.DefaultComplexDtype.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">complex_dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#DefaultComplexDtype.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.DefaultComplexDtype.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.DefaultDtype">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">DefaultDtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#DefaultDtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.DefaultDtype" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Ivy’s DefaultDtype class.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.DefaultDtype.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#DefaultDtype.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.DefaultDtype.__init__" title="Permalink to this definition"></a></dt>
@@ -194,6 +214,7 @@
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.DefaultFloatDtype">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">DefaultFloatDtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#DefaultFloatDtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.DefaultFloatDtype" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Ivy’s DefaultFloatDtype class.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.DefaultFloatDtype.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#DefaultFloatDtype.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.DefaultFloatDtype.__init__" title="Permalink to this definition"></a></dt>
@@ -205,6 +226,7 @@
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.DefaultIntDtype">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">DefaultIntDtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#DefaultIntDtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.DefaultIntDtype" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Ivy’s DefaultIntDtype class.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.DefaultIntDtype.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#DefaultIntDtype.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.DefaultIntDtype.__init__" title="Permalink to this definition"></a></dt>
@@ -216,6 +238,7 @@
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.DefaultUintDtype">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">DefaultUintDtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uint_dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#DefaultUintDtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.DefaultUintDtype" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Ivy’s DefaultUintDtype class.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.DefaultUintDtype.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uint_dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#DefaultUintDtype.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.DefaultUintDtype.__init__" title="Permalink to this definition"></a></dt>
@@ -575,21 +598,75 @@ otherwise, <code class="docutils literal notranslate"><span class="pre">False</s
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> input:
-&gt;&gt;&gt; xType = ivy.float16
-&gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)
-&gt;&gt;&gt; print(yType)
-float16</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> inputs:
-&gt;&gt;&gt; xType = ivy.native_uint16
-&gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)
-&gt;&gt;&gt; print(yType)
-&lt;dtype:’uint16’&gt;</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">str</span></code> input:
-&gt;&gt;&gt; xType = ‘int32’
-&gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)
-&gt;&gt;&gt; print(yType)
-int32</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float16</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">yType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="n">xType</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">yType</span><span class="p">)</span>
+<span class="go">float16</span>
+</pre></div>
+</div>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_uint16</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">yType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="n">xType</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">yType</span><span class="p">)</span>
+<span class="go">&lt;dtype:&#39;uint16&#39;&gt;</span>
+</pre></div>
+</div>
+<p>With <code class="code docutils literal notranslate"><span class="pre">str</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xType</span> <span class="o">=</span> <span class="s1">&#39;int32&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">yType</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="n">xType</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">yType</span><span class="p">)</span>
+<span class="go">int32</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.default_complex_dtype">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">default_complex_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_native</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#default_complex_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.default_complex_dtype" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – Number or array for inferring the complex dtype. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>complex_dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ComplexDtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code>]]) – The float dtype to be returned. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>as_native</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – Whether to return the complex dtype as native dtype. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>Return <code class="docutils literal notranslate"><span class="pre">complex_dtype</span></code> as native or ivy dtype if provided, else</p></li>
+<li><p>if <code class="docutils literal notranslate"><span class="pre">input</span></code> is given, return its complex dtype, otherwise return the</p></li>
+<li><p><em>global default complex dtype.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_complex_dtype</span><span class="p">()</span>
+<span class="go">&#39;complex64&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_complex_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">ComplexDtype</span><span class="p">(</span><span class="s2">&quot;complex64&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_complex_dtype</span><span class="p">()</span>
+<span class="go">&#39;complex64&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_complex_dtype</span><span class="p">(</span><span class="n">complex_dtype</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">ComplexDtype</span><span class="p">(</span><span class="s2">&quot;complex128&quot;</span><span class="p">))</span>
+<span class="go">&#39;complex128&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_complex_dtype</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="mf">4294.967346</span><span class="p">)</span>
+<span class="go">&#39;complex64&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">9.8</span><span class="p">,</span><span class="mf">8.9</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_complex_dtype</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<span class="go">&#39;complex128&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1134,6 +1211,36 @@ the current framework.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.is_complex_dtype">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">is_complex_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#is_complex_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.is_complex_dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Determine whether the input data type is a complex dtype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]) – The array or data type to check</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Whether or not the array or data type is of a complex dtype</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">is_complex_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">ComplexDtype</span><span class="p">(</span><span class="s2">&quot;complex64&quot;</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">is_complex_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">(</span><span class="s2">&quot;complex128&quot;</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">is_complex_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">IntDtype</span><span class="p">(</span><span class="s2">&quot;int64&quot;</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.is_float_dtype">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">is_float_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#is_float_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.is_float_dtype" title="Permalink to this definition"></a></dt>
 <dd><p>Determine whether the input data type is a float dtype.</p>
@@ -1189,29 +1296,33 @@ the current framework.</p>
 <span class="go">False</span>
 </pre></div>
 </div>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
-&gt;&gt;&gt; x = ivy.array([1., 2., 3.])
-&gt;&gt;&gt; x.dtype
-float32</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
+<span class="go">float32</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="go">False</span>
 </pre></div>
 </div>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:
-&gt;&gt;&gt; x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], dtype=ivy.int16)
-&gt;&gt;&gt; print(ivy.is_int_dtype(x))
-True</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">Number</span></code> input:
-&gt;&gt;&gt; x = 1
-&gt;&gt;&gt; print(ivy.is_int_dtype(x))
-True</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3, 4, 5]))
-&gt;&gt;&gt; x.a.dtype
-float32
-&gt;&gt;&gt; x.b.dtype
-int32</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>With <code class="code docutils literal notranslate"><span class="pre">Number</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span><span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span>
+<span class="go">float32</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">dtype</span>
+<span class="go">int32</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="go">{</span>
 <span class="go">    a: false,</span>
 <span class="go">    b: true</span>
@@ -1344,6 +1455,29 @@ in the standard.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.set_default_complex_dtype">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_default_complex_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">complex_dtype</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#set_default_complex_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.set_default_complex_dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the ‘complex_dtype’ as the default data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>complex_dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The complex data type to be set as the default.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With :class: <cite>ivy.Dtype</cite> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_complex_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">ComplexDtype</span><span class="p">(</span><span class="s2">&quot;complex64&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_complex_dtype</span><span class="p">()</span>
+<span class="go">&#39;complex64&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_float_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">ComplexDtype</span><span class="p">(</span><span class="s2">&quot;complex128&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_complex_dtype</span><span class="p">()</span>
+<span class="go">&#39;complex128&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.set_default_dtype">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_default_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#set_default_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.set_default_dtype" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the datatype <cite>dtype</cite> as default data type.</p>
@@ -1353,32 +1487,48 @@ in the standard.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> input:
-&gt;&gt;&gt; ivy.set_default_dtype(ivy.bool)
-&gt;&gt;&gt; ivy.default_dtype_stack
-[‘bool’]
-&gt;&gt;&gt; ivy.unset_default_dtype()</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype_stack</span>
+<span class="go">[&#39;bool&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_dtype</span><span class="p">()</span>
+</pre></div>
+</div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_dtype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype_stack</span>
 <span class="go">[&#39;float64&#39;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_dtype</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> input:
-&gt;&gt;&gt; ivy.set_default_dtype(ivy.native_uint64)
-&gt;&gt;&gt; ivy.default_dtype_stack
-[‘uint64’]</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">native_uint64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype_stack</span>
+<span class="go">[&#39;uint64&#39;]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.set_default_float_dtype">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_default_float_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_dtype</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#set_default_float_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.set_default_float_dtype" title="Permalink to this definition"></a></dt>
-<dd><p>Summary.</p>
+<dd><p>Sets the ‘float_dtype’ as the default data type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>float_dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – </p>
+<dd class="field-odd"><p><strong>float_dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The float data type to be set as the default.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With :class: <cite>ivy.Dtype</cite> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_float_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">floatDtype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_float_dtype</span><span class="p">()</span>
+<span class="go">&#39;float64&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_float_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">floatDtype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_float_dtype</span><span class="p">()</span>
+<span class="go">&#39;float32&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1391,10 +1541,12 @@ in the standard.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With :class: <cite>ivy.Dtype</cite> input:
-&gt;&gt;&gt; ivy.set_default_int_dtype(ivy.intDtype(“int64”))
-&gt;&gt;&gt; ivy.default_int_dtype()
-‘int64’</p>
+<p>With :class: <cite>ivy.Dtype</cite> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_int_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">intDtype</span><span class="p">(</span><span class="s2">&quot;int64&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_int_dtype</span><span class="p">()</span>
+<span class="go">&#39;int64&#39;</span>
+</pre></div>
+</div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_int_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">intDtype</span><span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_int_dtype</span><span class="p">()</span>
 <span class="go">&#39;int32&#39;</span>
@@ -1446,6 +1598,24 @@ data type</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.unset_default_complex_dtype">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">unset_default_complex_dtype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#unset_default_complex_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.unset_default_complex_dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Reset the current default complex dtype to the previous state.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_complex_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_complex_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_complex_dtype_stack</span>
+<span class="go">[&#39;complex64&#39;,&#39;complex128&#39;]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_complex_dtype</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_complex_dtype_stack</span>
+<span class="go">[&#39;complex64&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.unset_default_dtype">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">unset_default_dtype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#unset_default_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.unset_default_dtype" title="Permalink to this definition"></a></dt>
 <dd><p>Reset the current default dtype to the previous state.</p>
@@ -1477,7 +1647,9 @@ data type</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_default_float_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_float_dtype_stack</span>
 <span class="go">[&#39;float32&#39;,&#39;float64&#39;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_float_dtype</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_float_dtype</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_float_dtype_stack</span>
 <span class="go">[&#39;float32&#39;]</span>
 </pre></div>

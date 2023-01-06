@@ -1,0 +1,22 @@
+Linear algebra
+==============
+
+.. automodule:: ivy.functional.ivy.experimental.linear_algebra
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Linear algebra
+
+   linear_algebra/diagflat.rst
+   linear_algebra/kron.rst
+   linear_algebra/matrix_exp.rst
+   linear_algebra/eig.rst
+   linear_algebra/eigvals.rst
+   linear_algebra/adjoint.rst
+

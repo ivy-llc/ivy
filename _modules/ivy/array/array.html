@@ -50,9 +50,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/device.html">Device</a></li>
@@ -86,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
@@ -275,22 +277,22 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The native array being wrapped in self.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The native array being wrapped in self.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Data type of the array elements&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Data type of the array elements&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Hardware device the array data resides on.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Hardware device the array data resides on.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mT</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transpose of a matrix (or a stack of matrices).</span>
 
 <span class="sd">        Returns</span>
@@ -306,22 +308,22 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Number of array dimensions (axes).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of array dimensions (axes).&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Array dimensions.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Array dimensions.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Number of elements in the array.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of elements in the array.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transpose of the array.</span>
 
 <span class="sd">        Returns</span>
@@ -444,7 +446,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Array.__pow__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__pow__">[docs]</a>    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.pow. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.pow also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
@@ -487,7 +489,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">power</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Array.__add__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.add. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.add also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
@@ -517,7 +519,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Array.__radd__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__radd__">[docs]</a>    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array reverse special method variant of ivy.add. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for ivy.add also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
@@ -550,7 +552,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Array.__sub__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__sub__">[docs]</a>    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.subtract. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.subtract also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
@@ -582,7 +584,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Array.__rsub__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rsub__">[docs]</a>    <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array reverse special method variant of ivy.subtract. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for ivy.subtract also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
@@ -639,7 +641,7 @@
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)])</span>
 
 <div class="viewcode-block" id="Array.__truediv__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__truediv__">[docs]</a>    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array reverse special method variant of ivy.divide. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for ivy.divide also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
@@ -693,7 +695,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Array.__abs__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__abs__">[docs]</a>    <span class="k">def</span> <span class="fm">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.abs. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.abs</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
@@ -750,7 +752,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">__dlpack_device__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Array.__lt__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__lt__">[docs]</a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.less. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.less</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
@@ -780,7 +782,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Array.__le__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__le__">[docs]</a>    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.less_equal. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.less_equal</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
@@ -810,7 +812,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Array.__eq__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.equal. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.equal</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
@@ -848,7 +850,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Array.__ne__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__ne__">[docs]</a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.not_equal. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.not_equal</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
@@ -886,7 +888,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Array.__gt__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__gt__">[docs]</a>    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.greater. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.greater</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
@@ -933,7 +935,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Array.__ge__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__ge__">[docs]</a>    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.greater_equal. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.bitwise_xor</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
@@ -1001,7 +1003,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_invert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Array.__xor__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__xor__">[docs]</a>    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.bitwise_xor. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.bitwise_xor</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
@@ -1059,7 +1061,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_left_shift</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Array.__rshift__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rshift__">[docs]</a>    <span class="k">def</span> <span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.bitwise_right_shift. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.bitwise_right_shift</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
@@ -1092,7 +1094,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Array.__rrshift__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rrshift__">[docs]</a>    <span class="k">def</span> <span class="fm">__rrshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array reverse special method variant of ivy.bitwise_right_shift.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring for</span>
 <span class="sd">        ivy.bitwise_right_shift also applies to this method with minimal changes.</span>

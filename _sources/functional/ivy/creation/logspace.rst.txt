@@ -3,6 +3,10 @@ logspace
 
 .. autofunction:: ivy.functional.ivy.creation.logspace
 
+.. autofunction:: ivy.array.array_methods.logspace
+
+.. autofunction:: ivy.container.container_methods.logspace
+
 .. autofunction:: ivy.container.container_methods.static_logspace
 |
 | **Supported Frameworks:**
@@ -31,5 +35,7 @@ logspace
    :caption: logspace
 
    logspace/logspace_functional.rst
+   logspace/logspace_array.rst
+   logspace/logspace_container.rst
    logspace/static_logspace_container.rst
 

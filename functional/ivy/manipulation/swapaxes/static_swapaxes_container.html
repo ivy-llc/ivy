@@ -53,9 +53,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../device.html">Device</a></li>
@@ -113,6 +114,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
@@ -169,8 +171,39 @@
 wraps the function, and so the docstring for <a href="../swapaxes/swapaxes_functional.html">ivy.swapaxes</a> also applies to
 this method with minimal changes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – Input container</p></li>
+<li><p><strong>axis0</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – First axis to be swapped.</p></li>
+<li><p><strong>axis1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Second axis to be swapped.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output array, for writing the result to. It must have a (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+shape that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul>
+<li><p><em>ret</em> – x with its axes permuted.</p></li>
+<li><p><em>&gt;&gt;&gt; a = ivy.array([[1, 2, 3], [4, 5, 6]])</em></p></li>
+<li><p><em>&gt;&gt;&gt; b = ivy.array([[7, 8, 9], [10, 11, 12]])</em></p></li>
+<li><p><em>&gt;&gt;&gt; x = ivy.Container(a = a, b = b)</em></p></li>
+<li><p><em>&gt;&gt;&gt; y = x.swapaxes(0, 1)</em></p></li>
+<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
+<li><p><em>{</em> –</p>
+<dl class="simple">
+<dt>a: ivy.array([[1, 4],</dt><dd><p>[2, 5],
+[3, 6]]),</p>
+</dd>
+<dt>b: ivy.array([[7, 10],</dt><dd><p>[8, 11],
+[9, 12]])</p>
+</dd>
+</dl>
+</li>
+<li><p><em>}</em></p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>

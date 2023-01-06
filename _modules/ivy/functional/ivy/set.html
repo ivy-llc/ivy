@@ -50,9 +50,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
@@ -86,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
@@ -162,7 +164,7 @@
     <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
 <span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x``, the first occurring indices</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x``, the first occurring indices</span>
 <span class="sd">    for each unique element in ``x``, the indices from the set of unique elements that</span>
 <span class="sd">    reconstruct ``x``, and the corresponding counts for each unique element in ``x``.</span>
 
@@ -234,163 +236,35 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
-
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0.0, std=1.0, shape=(2, 2))</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[0.607,1.14],[0.735,0.667]])ivy.array([0.607,0.667,0.735,1.14])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.randint(0, 10, shape=(2, 2), seed=0)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.unique_all(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    Results(values=ivy.array([1, 2, 5, 9]),</span>
+<span class="sd">            indices=ivy.array([3, 2, 1, 0]),</span>
+<span class="sd">            inverse_indices=ivy.array([[3, 2], [1, 0]]),</span>
+<span class="sd">           counts=ivy.array([1, 1, 1, 1]))</span>
 
-<span class="sd">    &gt;&gt;&gt; values, indices, inverse_indices, counts = ivy.unique_all(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(values)</span>
-<span class="sd">    ivy.array([0,3,2,1])ivy.array([[0,3],[2,1]])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(indices)</span>
-<span class="sd">    ivy.array([1,1,1,1])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(inverse_indices)</span>
-<span class="sd">    ivy.array([[1.52,0.381,0.857],[-0.0396,0.14,-0.166],[1.58,-0.828,-0.144]])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(counts)</span>
-<span class="sd">    ivy.array([-0.828,-0.166,-0.144,-0.0396,0.14,0.381,0.857,1.52,1.58])</span>
-
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0.0, std=1.0, shape=(3, 3))</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[-0.40501155,  1.77361575, -1.97776199],</span>
-<span class="sd">               [-0.36831157,  0.89148434, -0.9512272 ],</span>
-<span class="sd">               [ 0.67542176, -0.41985657,  0.23478023]])</span>
-
-<span class="sd">    &gt;&gt;&gt; values, indices, inverse_indices, counts = ivy.unique_all(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(values)</span>
-<span class="sd">    ivy.array([-1.97776199, -0.9512272 , -0.41985657, -0.40501155, -0.36831157,</span>
-<span class="sd">                0.23478023,  0.67542176,  0.89148434,  1.77361575])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(indices)</span>
-<span class="sd">    ivy.array([2, 5, 7, 0, 3, 8, 6, 4, 1])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(inverse_indices)</span>
-<span class="sd">    ivy.array([[3, 8, 0],</span>
-<span class="sd">               [4, 7, 1],</span>
-<span class="sd">               [6, 2, 5]])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(counts)</span>
-<span class="sd">    ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1])</span>
-
-<span class="sd">    With :class:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[ 2.1141,  0.8101,  0.9298,  0.8460],</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],</span>
 <span class="sd">    ...                       [-1.2119, -0.3519, -0.6252,  0.4033],</span>
 <span class="sd">    ...                       [ 0.7443,  0.2577, -0.3707, -0.0545],</span>
 <span class="sd">    ...                       [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],</span>
-<span class="sd">               [-1.2119, -0.3519, -0.6252,  0.4033],</span>
-<span class="sd">               [ 0.7443,  0.2577, -0.3707, -0.0545],</span>
-<span class="sd">               [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
-
 <span class="sd">    &gt;&gt;&gt; x[range(4), range(4)] = ivy.nan #Introduce NaN values</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[    nan,  0.8101,  0.9298,  0.8460],</span>
-<span class="sd">               [-1.2119,     nan, -0.6252,  0.4033],</span>
-<span class="sd">               [ 0.7443,  0.2577,     nan, -0.0545],</span>
-<span class="sd">               [-0.3238,  0.5944,  0.0775,     nan]])</span>
-
-<span class="sd">    &gt;&gt;&gt; values, indices, inverse_indices, counts = ivy.unique_all(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(values)</span>
-<span class="sd">    ivy.array([-1.2119, -0.6252,  0.4033,     nan,     nan,     nan,     nan, -0.3238,</span>
-<span class="sd">               -0.0545,  0.0775,  0.2577,  0.5944,  0.7443,  0.8101,  0.8460,  0.9298])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(indices)</span>
-<span class="sd">    ivy.array([ 4,  6,  7,  0,  5, 10, 15, 12, 11, 14,  9, 13,  8,  1,  3,  2])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(inverse_indices)</span>
-<span class="sd">    ivy.array([[ 3, 13, 15, 14],</span>
-<span class="sd">               [ 0,  3,  1,  2],</span>
-<span class="sd">               [12, 10,  3,  8],</span>
-<span class="sd">               [ 7, 11,  9,  3]])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(counts)</span>
-<span class="sd">    ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])</span>
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-
-<span class="sd">    With :class:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],</span>
-<span class="sd">    ...                [-1.2119, -0.3519, -0.6252,  0.4033],</span>
-<span class="sd">    ...                [ 0.7443,  0.2577, -0.3707, -0.0545],</span>
-<span class="sd">    ...                [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],</span>
-<span class="sd">               [-1.2119, -0.3519, -0.6252,  0.4033],</span>
-<span class="sd">               [ 0.7443,  0.2577, -0.3707, -0.0545],</span>
-<span class="sd">               [-0.3238,  0.5944,  0.0775, -0.4327]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x[range(4), range(4)] = ivy.nan #Introduce NaN values</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[    nan,  0.8101,  0.9298,  0.8460],</span>
-<span class="sd">               [-1.2119,     nan, -0.6252,  0.4033],</span>
-<span class="sd">               [ 0.7443,  0.2577,     nan, -0.0545],</span>
-<span class="sd">               [-0.3238,  0.5944,  0.0775,     nan]])</span>
-
-<span class="sd">    &gt;&gt;&gt; values, indices, inverse_indices, counts = x.unique_all()</span>
-<span class="sd">    &gt;&gt;&gt; print(values)</span>
-<span class="sd">    ivy.array([-1.2119, -0.6252,  0.4033,     nan,     nan,     nan,     nan, -0.3238,</span>
-<span class="sd">               -0.0545,  0.0775,  0.2577,  0.5944,  0.7443,  0.8101,  0.8460,  0.9298])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(indices)</span>
-<span class="sd">    ivy.array([ 4,  6,  7,  0,  5, 10, 15, 12, 11, 14,  9, 13,  8,  1,  3,  2])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(inverse_indices)</span>
-<span class="sd">    ivy.array([[ 3, 13, 15, 14],</span>
-<span class="sd">               [ 0,  3,  1,  2],</span>
-<span class="sd">               [12, 10,  3,  8],</span>
-<span class="sd">               [ 7, 11,  9,  3]])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(counts)</span>
-<span class="sd">    ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])</span>
-
-<span class="sd">    With :class:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[-2.176,  0.889,  1.175, -0.763],</span>
-<span class="sd">    ...                       [-0.071,  1.262, -0.456, -2.114],</span>
-<span class="sd">    ...                       [-0.349,  0.615, -0.594, -1.335],</span>
-<span class="sd">    ...                       [ 0.212,  0.457, -0.827,  0.209]])</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[-2.176,  0.889,  1.175, -0.763],</span>
-<span class="sd">               [-0.071,  1.262, -0.456, -2.114],</span>
-<span class="sd">               [-0.349,  0.615, -0.594, -1.335],</span>
-<span class="sd">               [ 0.212,  0.457, -0.827,  0.209]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x[range(4), range(4)] = ivy.nan #Introduce NaN values</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[   nan,  0.889,  1.175, -0.763],</span>
-<span class="sd">               [-0.071,    nan, -0.456, -2.114],</span>
-<span class="sd">               [-0.349,  0.615,    nan, -1.335],</span>
-<span class="sd">               [ 0.212,  0.457, -0.827,    nan]])</span>
-
-<span class="sd">    &gt;&gt;&gt; values, indices, inverse_indices, counts = x.unique_all()</span>
-<span class="sd">    &gt;&gt;&gt; print(values)</span>
-<span class="sd">    ivy.array([-2.114, -1.335, -0.827, -0.763, -0.456,</span>
-<span class="sd">               -0.349, -0.071,  0.212,  0.457,  0.615,</span>
-<span class="sd">                0.889,  1.175,    nan,    nan,    nan,</span>
-<span class="sd">                  nan])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(indices)</span>
-<span class="sd">    ivy.array([ 7, 11, 14,  3,  6,  8,  4, 12, 13,  9,  1,  2,  0,  5, 10, 15])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(inverse_indices)</span>
-<span class="sd">    ivy.array([[12, 10, 11,  3],</span>
-<span class="sd">               [ 6, 12,  4,  0],</span>
-<span class="sd">               [ 5,  9, 12,  1],</span>
-<span class="sd">               [ 7,  8,  2, 12]])</span>
-
-<span class="sd">    &gt;&gt;&gt; print(counts)</span>
-<span class="sd">    ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.unique_all(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    Results(values=ivy.array([-1.2119    , -0.62519997, -0.3238    , -0.0545    ,  0.0775    ,</span>
+<span class="sd">        0.2577    ,  0.40329999,  0.59439999,  0.74430001,  0.81010002,</span>
+<span class="sd">        0.84600002,  0.92979997,         nan,         nan,         nan,</span>
+<span class="sd">               nan]),</span>
+<span class="sd">        indices=ivy.array([ 4,  6, 12, 11, 14,  9,  7, 13,  8,  1,  3,  2,  0,  5, 10, 15]),</span>
+<span class="sd">        inverse_indices=ivy.array([[12,  9, 11, 10],</span>
+<span class="sd">                                   [ 0, 12,  1,  6],</span>
+<span class="sd">                                   [ 8,  5, 12,  3],</span>
+<span class="sd">                                   [ 2,  7,  4, 12]]),</span>
+<span class="sd">       counts=ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_all</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
@@ -403,7 +277,7 @@
 <span class="k">def</span> <span class="nf">unique_inverse</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x``, and the indices from the</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x``, and the indices from the</span>
 <span class="sd">     set of unique elements that reconstruct ``x``.</span>
 
 <span class="sd">     .. admonition:: Data-dependent output shape</span>
@@ -473,15 +347,13 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.unique_inverse(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    Results(values=ivy.array([1, 2, 3, 4, 5]),</span>
-<span class="sd">    inverse_indices=ivy.array([3, 4, 2, 1, 3, 0, 2]))</span>
+<span class="sd">            inverse_indices=ivy.array([3, 4, 2, 1, 3, 0, 2]))</span>
 
-<span class="sd">    With :class:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0.5,0.3,0.8,0.2,1.2,2.4,0.3])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0.5,0.3,0.8,0.2,1.2,2.4,0.3])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.ivy.unique_inverse(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    Results(values=ivy.array([0.2, 0.3, 0.5, 0.8, 1.2, 2.4]),</span>
-<span class="sd">    inverse_indices=ivy.array([2, 1, 3, 0, 4, 5, 1]))</span>
+<span class="sd">            inverse_indices=ivy.array([2, 1, 3, 0, 4, 5, 1]))</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
@@ -493,9 +365,6 @@
 <span class="sd">        a: (list[2], &lt;class ivy.array.array.Array&gt; shape=[5]),</span>
 <span class="sd">        b: (list[2], &lt;class ivy.array.array.Array&gt; shape=[6])</span>
 <span class="sd">    }</span>
-
-
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_inverse</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
@@ -511,7 +380,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x``.</span>
 
 <span class="sd">    .. admonition:: Data-dependent output shape</span>
 <span class="sd">        :class: important</span>
@@ -574,7 +443,7 @@
 <span class="k">def</span> <span class="nf">unique_counts</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the unique elements of an input array ``x`` and the corresponding counts for</span>
 <span class="sd">    each unique element in ``x``.</span>
 
@@ -637,21 +506,20 @@
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1,2,1,3,4,1,3])</span>
-<span class="sd">    &gt;&gt;&gt; y = unique_counts(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    Tuple([1,2,3,4],[3,1,2,1])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.asarray([1,2,3,4],[2,3,4,5],[3,4,5,6])</span>
-<span class="sd">    &gt;&gt;&gt; y = unique_counts(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    Tuple([1,2,3,4,5,6],[1,2,3,3,2,1])</span>
-
-<span class="sd">    With :class:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.unique_counts(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    Tuple([0.2,0.3,0.4,1.4,2.3],[3,1,1,1,1]</span>
+<span class="sd">    Results(values=ivy.array([1, 2, 3, 4]), counts=ivy.array([3, 1, 2, 1]))</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.asarray([[1,2,3,4],[2,3,4,5],[3,4,5,6]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.unique_counts(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    Results(values=ivy.array([1, 2, 3, 4, 5, 6]), counts=ivy.array([1, 2, 3, 3, 2, 1]))</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.unique_counts(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    Results(values=ivy.array([0.2       , 0.30000001, 0.40000001, 1.39999998, 2.29999995]),</span>
+<span class="sd">            counts=ivy.array([3, 1, 1, 1, 1]))</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 

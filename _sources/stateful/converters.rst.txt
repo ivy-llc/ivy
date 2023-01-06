@@ -14,6 +14,9 @@ Converters
    :caption: Converters
 
    converters/to_ivy_module.rst
+   converters/ModuleConverters.rst
+   converters/MyTorchModule.rst
+   converters/MyTFModule.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`converters forum`: https://discord.com/channels/799879767196958751/1028300734355226725

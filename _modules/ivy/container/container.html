@@ -50,9 +50,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/device.html">Device</a></li>
@@ -86,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
@@ -274,7 +276,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Container.__pow__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__pow__">[docs]</a>    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the power operator, calling</span>
 <span class="sd">        :code:`operator.pow` for each of the corresponding leaves of</span>
 <span class="sd">        the two containers.</span>
@@ -323,7 +325,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">power</span><span class="o">**</span><span class="n">x</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Container.__add__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the add operator, calling :code:`operator.add`</span>
 <span class="sd">        for each of the corresponding leaves of the two containers.</span>
 
@@ -388,7 +390,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.__radd__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__radd__">[docs]</a>    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container reverse special method for the add operator, calling</span>
 <span class="sd">        :code:`operator.add` for each of the corresponding leaves of the two containers.</span>
 
@@ -422,7 +424,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.__sub__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__sub__">[docs]</a>    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the subtract operator, calling</span>
 <span class="sd">        :code:`operator.sub` for each of the corresponding leaves of the two containers.</span>
 
@@ -487,7 +489,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.__rsub__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__rsub__">[docs]</a>    <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container reverse special method for the subtract operator, calling</span>
 <span class="sd">        :code:`operator.sub` for each of the corresponding leaves of the two containers.</span>
 
@@ -531,7 +533,7 @@
         <span class="p">)</span>
 
 <div class="viewcode-block" id="Container.__truediv__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__truediv__">[docs]</a>    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the divide operator, calling</span>
 <span class="sd">        :code:`operator.truediv` for each of the corresponding leaves of</span>
 <span class="sd">        the two containers.</span>
@@ -599,7 +601,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">other</span> <span class="o">//</span> <span class="n">x</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Container.__abs__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__abs__">[docs]</a>    <span class="k">def</span> <span class="fm">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the abs operator, calling</span>
 <span class="sd">        :code:`operator.abs` for each of the corresponding leaves of the</span>
 <span class="sd">        two containers.</span>
@@ -631,7 +633,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.__lt__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__lt__">[docs]</a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the less operator, calling</span>
 <span class="sd">        :code:`operator.lt` for each of the corresponding leaves of the two containers.</span>
 
@@ -669,7 +671,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">other</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.__le__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__le__">[docs]</a>    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the less_equal operator, calling</span>
 <span class="sd">        :code:`operator.le` for each of the corresponding leaves of the two containers.</span>
 
@@ -707,7 +709,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.__eq__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the equal operator, calling</span>
 <span class="sd">        :code:`operator.eq` for each of the corresponding leaves of the two containers.</span>
 
@@ -769,7 +771,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.__ne__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__ne__">[docs]</a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the not_equal operator, calling</span>
 <span class="sd">        :code:`operator.ne` for each of the corresponding leaves of the two containers.</span>
 
@@ -831,7 +833,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">other</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.__gt__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__gt__">[docs]</a>    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the greater operator, calling</span>
 <span class="sd">        :code:`operator.gt` for each of the corresponding leaves of the two containers.</span>
 
@@ -869,7 +871,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">other</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.__ge__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__ge__">[docs]</a>    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the greater_equal operator, calling</span>
 <span class="sd">        :code:`operator.ge` for each of the corresponding leaves of the two containers.</span>
 
@@ -930,7 +932,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">not_</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Container.__xor__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__xor__">[docs]</a>    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the ge operator, calling</span>
 <span class="sd">        :code:`operator.ge` for each of the corresponding leaves of</span>
 <span class="sd">        the two containers.</span>
@@ -972,7 +974,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">other</span> <span class="o">!=</span> <span class="n">x</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Container.__rshift__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__rshift__">[docs]</a>    <span class="k">def</span> <span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container special method for the right shift operator, calling</span>
 <span class="sd">        :code:`operator.rshift` for each of the corresponding leaves of the</span>
 <span class="sd">        two containers.</span>
@@ -1041,7 +1043,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.__rrshift__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__rrshift__">[docs]</a>    <span class="k">def</span> <span class="fm">__rrshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container reverse special method for the right shift operator, calling</span>
 <span class="sd">        :code:`operator.rshift` for each of the corresponding leaves of the two</span>
 <span class="sd">        containers.</span>

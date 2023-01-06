@@ -1,0 +1,38 @@
+Manipulation
+============
+
+.. automodule:: ivy.functional.ivy.experimental.manipulation
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Manipulation
+
+   manipulation/flatten.rst
+   manipulation/moveaxis.rst
+   manipulation/ndenumerate.rst
+   manipulation/ndindex.rst
+   manipulation/heaviside.rst
+   manipulation/flipud.rst
+   manipulation/vstack.rst
+   manipulation/hstack.rst
+   manipulation/rot90.rst
+   manipulation/top_k.rst
+   manipulation/fliplr.rst
+   manipulation/i0.rst
+   manipulation/pad.rst
+   manipulation/vsplit.rst
+   manipulation/dsplit.rst
+   manipulation/atleast_1d.rst
+   manipulation/dstack.rst
+   manipulation/atleast_2d.rst
+   manipulation/atleast_3d.rst
+   manipulation/take_along_axis.rst
+   manipulation/hsplit.rst
+   manipulation/broadcast_shapes.rst
+
