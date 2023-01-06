@@ -10,6 +10,10 @@ $ivy-green-gradient-border: linear-gradient(to right, $ivy-green, $ivy-grey) 1;
 $ivy-gradient-border-ending-point: 15%;
 $ivy-gradient-border-space-below-title: 3%;
 
+// media screen size
+$screen-small: 640px;
+$screen-large: 1024px;
+
 // configure default globals //
 
 // font
@@ -70,12 +74,38 @@ h3 {
 
 /*-- scss:defaults --*/
 
+@media screen and (max-width: $screen-small) {
+    .rwd-gallery-layout {
+        grid-template-columns: 100%;
+    }
+}
+
+@media screen and (min-width: $screen-small) and (max-width: $screen-large) {
+    .rwd-gallery-layout {
+        grid-template-columns: 50% 50%;
+    }
+}
+
+@media screen and (min-width: $screen-large) {
+    .rwd-gallery-layout {
+        grid-template-columns: 33% 33% 33%;
+    }
+}
+
+.notebook-grid-gallery {
+    display: grid;
+    grid-row-gap: 2%;
+    grid-auto-rows: 1fr;
+}
+
 .notebook-card {
     color: black;
     border-radius: 20px;
+    border: 2px solid $ivy-light-grey;
     background-color: $ivy-grey;
-    margin: 5% 2%;
-    padding: 5% 10%;
+    margin: auto 2%;
+    padding: 5% 5%;
+    height: 100%;
 }
 
 .notebook-card-title {
