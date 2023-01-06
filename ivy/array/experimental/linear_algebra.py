@@ -116,5 +116,11 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Examples
         --------
+        >>> A = ivy.arange(2 * 3).reshape((2, 3))
+        >>> B = ivy.arange(3 * 2).reshape((3, 2))
+        >>> C = ivy.arange(2 * 2).reshape((2, 2))
+        >>> A.multi_dot((B, C))
+        ivy.array([[ 26,  49],
+                   [ 80, 148]])
         """
         return ivy.multi_dot((self._data, *x), out=out)
