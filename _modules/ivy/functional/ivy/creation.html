@@ -1430,16 +1430,14 @@
 <span class="sd">            [4, 1],</span>
 <span class="sd">            [4, 1]])</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
-<span class="sd">        &gt;&gt;&gt; xv, yv = ivy.meshgrid(x, y, sparse=True)</span>
-<span class="sd">        &gt;&gt;&gt; print(xv)</span>
-<span class="sd">        ivy.array([[1, 2, 3]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; xv, yv = ivy.meshgrid(x, y, sparse=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(xv)</span>
+<span class="sd">    ivy.array([[1, 2, 3]])</span>
 
-<span class="sd">        &gt;&gt;&gt; print(yv)</span>
-<span class="sd">        ivy.array([[4],</span>
-<span class="sd">                [5],</span>
-<span class="sd">                [6]])</span>
+<span class="sd">    &gt;&gt;&gt; print(yv)</span>
+<span class="sd">    ivy.array([[4], [5], [6]])</span>
 
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
