@@ -8,6 +8,7 @@ import ivy
 import ivy.functional.frontends.jax as jax_frontend
 import ivy.functional.frontends.numpy as np_frontend
 
+
 def _is_jax_frontend_array(x):
     return isinstance(x, jax_frontend.DeviceArray)
 
@@ -96,6 +97,8 @@ def to_ivy_dtype(dtype):
         return dtype
     if dtype in (int, float, bool) or ivy.is_native_dtype(dtype):
         return ivy.as_ivy_dtype(dtype)
+    if isinstance(dtype, np_frontend.dtype):
+        return dtype._ivy_dtype
     return np_frontend.to_ivy_dtype(dtype)
 
 
