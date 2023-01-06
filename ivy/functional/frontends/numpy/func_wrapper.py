@@ -19,9 +19,9 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
                 **dict(
                     zip(
                         list(inspect.signature(fn).parameters.keys())[
-                            dtype_pos + 1 : len(args)
+                            dtype_pos + 1: len(args)
                         ],
-                        args[dtype_pos + 1 :],
+                        args[dtype_pos + 1:],
                     )
                 ),
                 **kwargs,
@@ -30,10 +30,6 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
         elif len(args) == (dtype_pos + 1):
             dtype = args[dtype_pos]
             args = args[:-1]
-        if not dtype or isinstance(dtype, str):
-            return fn(*args, dtype=dtype, **kwargs)
-        if isinstance(dtype, np_frontend.dtype):
-            return fn(*args, dtype=dtype.ivy_dtype, **kwargs)
         return fn(*args, dtype=np_frontend.to_ivy_dtype(dtype), **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
