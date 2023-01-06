@@ -64,10 +64,10 @@ Configurable Mode for Stack Trace
 Due to the transpilation nature of Ivy, user can code in the frontend framework
 which they are familiar with, then run their code with another backend
 framework. For instance, someone who is familiar with NumPy can run their code
-with a PyTorch backend via Ivy's NumPy frontend. Given their total lack of
-familiarity of certain backend frameworks (which is PyTorch in the above scenario),
+with a JAX backend via Ivy's NumPy frontend. Given their total lack of
+familiarity of certain backend frameworks (which is JAX in the above scenario),
 they might not want to see stack traces which go right down through Ivy
-functions and through PyTorch functions.
+functions and through JAX functions.
 
 Therefore, options are made available for the stack traces to either truncate
 at the frontend or ivy level, or in other cases, no truncation at all.
@@ -76,36 +76,61 @@ Let's look at the 3 different modes with example of :code:`ivy.all` below!
 
 1. Full
 
-This is the default mode and keeps the complete stack traces. All frontend and
-ivy specific stack traces are displayed.
+This is the default mode and keeps the complete stack traces. All :code:`numpy`
+frontend, ivy specific and native :code:`jax` stack traces are displayed.
 
 .. code-block:: none
 
     >>> ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
-    ...
-    File ".../ivy/ivy/func_wrapper.py", line 124, in new_fn
-      return fn(*new_args, **new_kwargs)
-    File ".../ivy/ivy/func_wrapper.py", line 186, in new_fn
-      ret = fn(*args, **kwargs)
-    File ".../ivy/ivy/functional/backends/torch/utility.py", line 19, in all
-      return torch.all(x, dim=axis, keepdim=keepdims, out=out)
-
-    During the handling of the above exception, another exception occurred:
-
-    ...
-    File ".../ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py", line 15, in all
-      ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
-    File ".../ivy/ivy/func_wrapper.py", line 82, in new_fn
+    File "/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py", line 118, in new_fn
       return fn(*args, **kwargs)
-    File ".../ivy/ivy/exceptions.py", line 120, in new_fn
+    File "/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py", line 413, in new_fn
+      return fn(*args, **kwargs)
+    File "/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py", line 347, in new_fn
+      return fn(*args, **kwargs)
+    File "/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py", line 124, in new_fn
+      return fn(*new_args, **new_kwargs)
+    File "/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py", line 186, in new_fn
+      ret = fn(*args, **kwargs)
+    File "/Users/julia/Documents/Ivy/ivy/ivy/functional/backends/jax/utility.py", line 18, in all
+      return jnp.all(x, axis, keepdims=keepdims)
+    File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 219, in all
+      return _reduce_all(a, axis=_ensure_optional_axes(axis), out=out,
+    File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 213, in _reduce_all
+      return _reduction(a, "all", np.all, lax.bitwise_and, True, preproc=_cast_to_bool,
+    File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 80, in _reduction
+      pos_dims, dims = _reduction_dims(a, axis)
+    File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 113, in _reduction_dims
+      canon_axis = tuple(_canonicalize_axis_allow_named(x, np.ndim(a))
+    File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 113, in <genexpr>
+      canon_axis = tuple(_canonicalize_axis_allow_named(x, np.ndim(a))
+    File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 106, in _canonicalize_axis_allow_named
+      return maybe_named_axis(x, lambda i: _canonicalize_axis(i, rank), lambda name: name)
+    File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 106, in <lambda>
+      return maybe_named_axis(x, lambda i: _canonicalize_axis(i, rank), lambda name: name)
+
+  During the handling of the above exception, another exception occurred:
+
+    File "<stdin>", line 1, in <module>
+    File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py", line 295, in new_fn
+      ret = fn(*args, **kwargs)
+    File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py", line 262, in new_fn
+      return fn(*ivy_args, **ivy_kwargs)
+    File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py", line 354, in new_fn
+      ret = fn(*args, **kwargs)
+    File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py", line 20, in all
+      ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+    File "/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py", line 82, in new_fn
+      return fn(*args, **kwargs)
+    File "/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py", line 121, in new_fn
       raise ivy.exceptions.IvyError(fn.__name__, str(e))
 
-    IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)
+  IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
 
 2. Frontend-only
 
 This option displays only frontend-related stack traces. If compared with the
-stack traces in the :code:`full` mode above, the :code:`torch` related traces
+stack traces in the :code:`full` mode above, the :code:`jax` related traces
 are pruned. Only the :code:`numpy` frontend related errors are shown.
 A message is also displayed to inform that the traces are truncated and
 the instructions to switch it back to the :code:`full` mode is included.
@@ -114,116 +139,176 @@ the instructions to switch it back to the :code:`full` mode is included.
 
     >>> ivy.set_exception_trace_mode('frontend')
     >>> ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
-
-    <stack trace is truncated to frontend specific files, call
-    `ivy.set_exception_trace_mode('full')` to view the full trace>
+    <stack trace is truncated to frontend specific files, call `ivy.set_exception_trace_mode('full')` to view the full trace>
 
     During the handling of the above exception, another exception occurred:
 
-    <stack trace is truncated to frontend specific files, call
-    `ivy.set_exception_trace_mode('full')` to view the full trace>
-      ...
-      File ".../ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py", line 15, in all
+    <stack trace is truncated to frontend specific files, call `ivy.set_exception_trace_mode('full')` to view the full trace>
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py", line 295, in new_fn
+        ret = fn(*args, **kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py", line 262, in new_fn
+        return fn(*ivy_args, **ivy_kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py", line 354, in new_fn
+        ret = fn(*args, **kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py", line 20, in all
         ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
 
-    IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)
+    IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
 
 3. Ivy specific
 
-This option displays only ivy-related stack traces. If compared with the
-stack traces in the :code:`frontend` mode above, the :code:`torch` related traces
-are available again. A message is also displayed to inform that the traces are
-truncated and the instructions to switch it back to the :code:`full` mode
-is included.
+This option displays only ivy-related stack traces. If compared to the different
+stack traces modes above, the ivy backend :code:`jax` related
+traces (which were hidden in the :code:`frontend` mode) are available again
+and the ivy frontend :code:`numpy` related traces remain visible.
+However, the native :code:`jax` traces remain hidden because they are not
+ivy-specific.
+A message is also displayed to inform that the traces are truncated and the
+instructions to switch it back to the :code:`full` mode is included.
 
 .. code-block:: none
 
     >>> ivy.set_exception_trace_mode('ivy')
     >>> ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
-
-    <stack trace is truncated to ivy specific files, call
-    `ivy.set_exception_trace_mode('full')` to view the full trace>
-      ...
-      File ".../ivy/ivy/func_wrapper.py", line 186, in new_fn
+    <stack trace is truncated to ivy specific files, call `ivy.set_exception_trace_mode('full')` to view the full trace>
+      File "/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py", line 118, in new_fn
+        return fn(*args, **kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py", line 413, in new_fn
+        return fn(*args, **kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py", line 347, in new_fn
+        return fn(*args, **kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py", line 124, in new_fn
+        return fn(*new_args, **new_kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py", line 186, in new_fn
         ret = fn(*args, **kwargs)
-      File ".../ivy/ivy/functional/backends/torch/utility.py", line 19, in all
-        return torch.all(x, dim=axis, keepdim=keepdims, out=out)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/backends/jax/utility.py", line 18, in all
+        return jnp.all(x, axis, keepdims=keepdims)
 
     During the handling of the above exception, another exception occurred:
 
     <stack trace is truncated to ivy specific files, call `ivy.set_exception_trace_mode('full')` to view the full trace>
-      ...
-      File ".../ivy/ivy/exceptions.py", line 121, in new_fn
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py", line 295, in new_fn
+        ret = fn(*args, **kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py", line 262, in new_fn
+        return fn(*ivy_args, **ivy_kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py", line 354, in new_fn
+        ret = fn(*args, **kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py", line 20, in all
+        ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py", line 82, in new_fn
+        return fn(*args, **kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py", line 121, in new_fn
         raise ivy.exceptions.IvyError(fn.__name__, str(e))
 
-    IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)
+    IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
 
 Ivy :code:`func_wrapper` Pruning
 --------------------------------
 
 Due to the wrapping operations in Ivy, a long list of less informative
-:code:`func_wrapper` traces is often seen in the stack. An example is shown
-below:
-
-.. code-block:: none
-
-    >>> ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
-      ...
-      File ".../ivy/ivy/func_wrapper.py", line 462, in new_fn
-        return fn(*args, **kwargs)
-      File ".../ivy/ivy/func_wrapper.py", line 402, in new_fn
-        return fn(*args, **kwargs)
-      File ".../ivy/ivy/func_wrapper.py", line 124, in new_fn
-        return fn(*new_args, **new_kwargs)
-      File ".../ivy/ivy/func_wrapper.py", line 186, in new_fn
-        ret = fn(*args, **kwargs)
-      File ".../ivy/ivy/functional/backends/torch/utility.py", line 19, in all
-        return torch.all(x, dim=axis, keepdim=keepdims, out=out)
-
-    During the handling of the above exception, another exception occurred:
-
-      File "<stdin>", line 1, in <module>
-      File ".../ivy/ivy/functional/frontends/numpy/func_wrapper.py", line 285, in new_fn
-        ret = fn(*args, **kwargs)
-      File ".../ivy/ivy/functional/frontends/numpy/func_wrapper.py", line 263, in new_fn
-        return fn(*ivy_args, **ivy_kwargs)
-      ...
-
-    IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)
-
+:code:`func_wrapper` traces is often seen in the stack.
 Including all of these wrapper functions in the stack trace can be very
 unwieldy, thus they can be prevented entirely by setting
 :code:`ivy.set_show_func_wrapper_trace_mode(False)`.
+Examples are shown below to demonstrate the combination of this mode and the
+3 different stack traces mode explained above.
+
+1. Full
+
+The :code:`func_wrapper` related traces have been hidden. All other traces
+such as ivy-specific, frontend-related and the native traces remain visible.
+A message is displayed as well to the user so that they are aware of the
+pruning. The instructions to recover the :code:`func_wrapper` traces are
+shown too.
 
 .. code-block:: none
 
     >>> ivy.set_show_func_wrapper_trace_mode(False)
     >>> ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
-
-    <func_wrapper.py stack trace is squashed, call
-    `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>
-      File ".../ivy/ivy/exceptions.py", line 118, in new_fn
+    <func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>
+      File "/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py", line 118, in new_fn
         return fn(*args, **kwargs)
-      File ".../ivy/ivy/functional/backends/torch/utility.py", line 19, in all
-        return torch.all(x, dim=axis, keepdim=keepdims, out=out)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/backends/jax/utility.py", line 18, in all
+        return jnp.all(x, axis, keepdims=keepdims)
+      File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 219, in all
+        return _reduce_all(a, axis=_ensure_optional_axes(axis), out=out,
+      File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 213, in _reduce_all
+        return _reduction(a, "all", np.all, lax.bitwise_and, True, preproc=_cast_to_bool,
+      File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 80, in _reduction
+        pos_dims, dims = _reduction_dims(a, axis)
+      File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 113, in _reduction_dims
+        canon_axis = tuple(_canonicalize_axis_allow_named(x, np.ndim(a))
+      File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 113, in <genexpr>
+        canon_axis = tuple(_canonicalize_axis_allow_named(x, np.ndim(a))
+      File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 106, in _canonicalize_axis_allow_named
+        return maybe_named_axis(x, lambda i: _canonicalize_axis(i, rank), lambda name: name)
+      File "/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py", line 106, in <lambda>
+        return maybe_named_axis(x, lambda i: _canonicalize_axis(i, rank), lambda name: name)
 
     During the handling of the above exception, another exception occurred:
 
-    <func_wrapper.py stack trace is squashed, call
-    `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>
+    <func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>
       File "<stdin>", line 1, in <module>
-      File ".../ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py", line 15, in all
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py", line 20, in all
         ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
-      File ".../ivy/ivy/exceptions.py", line 121, in new_fn
+      File "/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py", line 121, in new_fn
         raise ivy.exceptions.IvyError(fn.__name__, str(e))
 
-    IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)
+    IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
 
-From the above example, it can be seen that the :code:`func_wrapper` related
-traces have been hidden. A message is displayed as well to the user so that
-they are aware of the pruning. The instructions to recover the
-:code:`func_wrapper` traces are shown too.
+2. Frontend-only
 
+In the frontend-only stack trace mode, the ivy backend wrapping traces were
+hidden but the frontend wrappers were still visible. By configuring the func
+wrapper trace mode, the frontend wrappers will also be hidden. This can be
+observed from the example below.
+
+.. code-block:: none
+
+    >>> ivy.set_exception_trace_mode('frontend')
+    >>> ivy.set_show_func_wrapper_trace_mode(False)
+    >>> ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+    <stack trace is truncated to frontend specific files, call `ivy.set_exception_trace_mode('full')` to view the full trace>
+    <func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>
+
+    During the handling of the above exception, another exception occurred:
+
+    <stack trace is truncated to frontend specific files, call `ivy.set_exception_trace_mode('full')` to view the full trace>
+    <func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py", line 20, in all
+        ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+
+    IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
+
+3. Ivy specific
+
+As the wrappers occur in :code:`ivy` itself, all backend and frontend wrappers
+remain visible in the ivy-specific mode. By hidding the func wrapper traces,
+the stack becomes cleaner and displays the ivy backend and frontend
+exception messages only.
+
+.. code-block:: none
+
+    >>> ivy.set_exception_trace_mode('frontend')
+    >>> ivy.set_show_func_wrapper_trace_mode(False)
+    >>> ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+    <stack trace is truncated to ivy specific files, call `ivy.set_exception_trace_mode('full')` to view the full trace>
+    <func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>
+      File "/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py", line 118, in new_fn
+        return fn(*args, **kwargs)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/backends/jax/utility.py", line 18, in all
+        return jnp.all(x, axis, keepdims=keepdims)
+
+    During the handling of the above exception, another exception occurred:
+
+    <stack trace is truncated to ivy specific files, call `ivy.set_exception_trace_mode('full')` to view the full trace>
+    <func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>
+      File "/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py", line 20, in all
+        ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+      File "/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py", line 121, in new_fn
+        raise ivy.exceptions.IvyError(fn.__name__, str(e))
+
+    IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
 
 @handle_exceptions Decorator
 ----------------------------
@@ -371,3 +456,11 @@ Instead of coding a conditional block and raising an exception if the conditions
 This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
 
 If you have any questions, please feel free to reach out on `discord`_ in the `exception handling channel`_ or in the `exception handling forum`_!
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/eTc24eG9P_s" class="video">
+    </iframe>

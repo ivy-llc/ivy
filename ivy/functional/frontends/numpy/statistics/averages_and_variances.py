@@ -1,15 +1,16 @@
 # global
 import ivy
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
 )
 
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def mean(
     x,
     /,
@@ -33,7 +34,7 @@ def mean(
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def nanmean(
     a,
     /,
@@ -68,31 +69,34 @@ def nanmean(
     return ret
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def std(
     x,
     /,
     *,
     axis=None,
-    correction=0.0,
+    ddof=0.0,
     keepdims=False,
     out=None,
     dtype=None,
     where=True,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-
-    ret = ivy.std(x, axis=axis, correction=correction, keepdims=keepdims, out=out)
+    if dtype is None:
+        if ivy.is_int_dtype(x.dtype):
+            dtype = ivy.float64
+        else:
+            dtype = x.dtype
+    ret = ivy.std(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret.astype(dtype, copy=False)
 
-    return ret
 
-
-# @from_zero_dim_arrays_to_float
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
     axis = tuple(axis) if isinstance(axis, list) else axis
     global avg
@@ -123,23 +127,16 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
         return avg.astype(dtype), weights_sum
     else:
         return avg.astype(dtype)
-    
-    
-@from_zero_dim_arrays_to_float
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def nanstd(
-        a,
-        /,
-        *,
-        axis=None, 
-        dtype=None, 
-        out=None, 
-        ddof=0, 
-        keepdims=False,
-        where=True
-):        
+    a, /, *, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=True
+):
     a = a[~ivy.isnan(a)]
     axis = tuple(axis) if isinstance(axis, list) else axis
-    
+
     if dtype:
         a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
 
@@ -201,3 +198,42 @@ def cov(x, y=None, bias=False, dtype=None, fweights=None, aweights=None, ddof=No
         c = ivy.stable_divide(ivy.matmul(x, x_t), norm).astype(dtype)
 
         return c
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
+    is_nan = ivy.isnan(a)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    if not ivy.any(is_nan):
+        if dtype:
+            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+        else:
+            dtype = "float" if ivy.is_int_dtype(a) else a.dtype
+
+        ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            where = ivy.array(where, dtype=ivy.bool)
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    else:
+        a = [i for i in a if ivy.isnan(i) is False]
+
+        if dtype:
+            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+        else:
+            dtype = "float" if ivy.is_int_dtype(a) else a.dtype
+
+        ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            where = ivy.array(where, dtype=ivy.bool)
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    all_nan = ivy.isnan(ret)
+    if ivy.all(all_nan):
+        ret = ivy.astype(ret, ivy.array([float("inf")]))
+    return ret

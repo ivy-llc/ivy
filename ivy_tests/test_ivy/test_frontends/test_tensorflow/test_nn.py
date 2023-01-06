@@ -33,6 +33,20 @@ def _x_and_filters(
         stride = dilations
     else:
         stride = draw(helpers.ints(min_value=stride_min, max_value=stride_max))
+
+    # Infer type from data_format if it is passed as None
+    if type is None:
+        type_data_format_mapping = {
+            "1d": ["NWC", "NCW"],
+            "2d": ["NHWC", "NCHW"],
+            "3d": ["NDHWC", "NCDHW"],
+        }
+        type = [
+            typ
+            for typ in type_data_format_mapping
+            if data_format in type_data_format_mapping[typ]
+        ][0]
+
     if type == "1d":
         if not transpose:
             filter_shape = draw(
@@ -86,6 +100,7 @@ def _x_and_filters(
                     helpers.ints(min_value=3, max_value=5),
                     helpers.ints(min_value=1, max_value=3),
                     helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=1),
                 )
             )
         elif not transpose:
@@ -187,7 +202,7 @@ def _x_and_filters(
                     helpers.ints(min_value=1, max_value=5),
                     helpers.ints(min_value=d_in, max_value=d_in),
                     helpers.ints(min_value=min_x_depth, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=min_x_height, max_value=100),
                     helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
@@ -610,6 +625,45 @@ def test_tensorflow_conv3d_transpose(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.depthwise_conv2d",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="depthwise",
+    ),
+)
+def test_tensorflow_depthwise_conv2d(
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    stride = 1 if dilation > 1 else stride
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filter=filters,
+        strides=[1, stride, stride, 1],
+        padding=padding,
+        data_format=data_format,
+        dilations=[dilation, dilation],
+    )
+
+
 # TODO: test with other dtypes
 @handle_frontend_test(
     fn_tree="tensorflow.nn.batch_normalization",
@@ -1003,4 +1057,47 @@ def test_tensorflow_bias_add(
         value=value[0],
         bias=bias,
         data_format=data_format,
+    )
+
+
+# convolution
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.convolution",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NWC", "NHWC", "NDHWC"]),
+        padding=st.sampled_from(["SAME", "VALID"]),
+        # Tensorflow backprop doesn't support dilations more than 1 on CPU
+        dilation_min=1,
+        dilation_max=1,
+        type=None,
+        transpose=False,
+    ),
+)
+def test_tensorflow_convolution(
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filters=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
     )

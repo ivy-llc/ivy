@@ -99,6 +99,7 @@ def astype_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.astype",
     dtype_and_x_and_cast_dtype=astype_helper(),
+    test_gradients=st.just(False),
 )
 def test_astype(
     *,
@@ -142,6 +143,7 @@ def broadcastable_arrays(draw, dtypes):
     arrays=broadcastable_arrays(dtypes_shared("num_arrays")),
     input_dtypes=dtypes_shared("num_arrays"),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_broadcast_arrays(
     *,
@@ -181,6 +183,7 @@ def test_broadcast_arrays(
     fn_tree="functional.ivy.broadcast_to",
     array_and_shape=helpers.array_and_broadcastable_shape(dtype_shared),
     input_dtype=dtype_shared,
+    test_gradients=st.just(False),
 )
 def test_broadcast_to(
     *,
@@ -221,6 +224,7 @@ def test_broadcast_to(
     ),
     to_dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_can_cast(
     *,
@@ -274,6 +278,7 @@ def _array_or_type(draw, float_or_int):
     native_array_flags=st.just([False]),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_finfo(
     *,
@@ -317,6 +322,7 @@ def test_finfo(
     native_array_flags=st.just([False]),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_iinfo(
     *,
@@ -360,6 +366,7 @@ def test_iinfo(
         shared_dtype=False,
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_result_type(
     *,
@@ -490,6 +497,7 @@ def test_default_dtype(
     as_native=st.booleans(),
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_dtype(
     *,
@@ -530,6 +538,8 @@ def test_dtype(
     input_dtype=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_dtype_bits(
     *,
@@ -563,6 +573,7 @@ def test_dtype_bits(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_is_bool_dtype(
     *,
@@ -592,6 +603,7 @@ def test_is_bool_dtype(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_is_float_dtype(
     *,
@@ -621,6 +633,7 @@ def test_is_float_dtype(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_is_int_dtype(
     *,
@@ -650,8 +663,39 @@ def test_is_int_dtype(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_is_uint_dtype(
+    *,
+    dtype_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x = dtype_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        dtype_in=x[0],
+    )
+
+
+# is_complex_dtype
+@handle_test(
+    fn_tree="functional.ivy.is_complex_dtype",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=False)
+    ),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_is_complex_dtype(
     *,
     dtype_x,
     test_flags,
@@ -683,6 +727,7 @@ def test_is_uint_dtype(
     ),
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_promote_types(
     *,
@@ -720,6 +765,7 @@ def test_promote_types(
     ),
     test_with_out=st.just(False),
     container_flags=st.just([False]),
+    test_gradients=st.just(False),
 )
 def test_type_promote_arrays(
     *,
@@ -749,6 +795,7 @@ def test_type_promote_arrays(
     fn_tree="functional.ivy.default_float_dtype",
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     as_native=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_default_float_dtype(
     *,
@@ -780,6 +827,7 @@ def test_default_float_dtype(
     fn_tree="functional.ivy.default_int_dtype",
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("integer")),
     as_native=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_default_int_dtype(
     *,
@@ -805,6 +853,38 @@ def test_default_int_dtype(
     assert ivy.default_int_dtype() == ivy.int32
 
 
+# default_complex_dtype
+@handle_test(
+    fn_tree="functional.ivy.default_complex_dtype",
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("complex")),
+    as_native=st.booleans(),
+    test_gradients=st.just(False),
+)
+def test_default_complex_dtype(
+    *,
+    dtype_x,
+    as_native,
+):
+    complex_dtype, x = dtype_x
+    res = ivy.default_complex_dtype(
+        input=input,
+        complex_dtype=complex_dtype[0],
+        as_native=as_native,
+    )
+    assert (
+        isinstance(res, ivy.Dtype)
+        or isinstance(res, typing.get_args(ivy.NativeDtype))
+        or isinstance(res, ivy.NativeDtype)
+        or isinstance(res, str)
+    )
+    assert (
+        ivy.default_complex_dtype(input=None, complex_dtype=None, as_native=False)
+        == ivy.complex64
+    )
+    assert ivy.default_complex_dtype(complex_dtype=ivy.complex64) == ivy.complex64
+    assert ivy.default_complex_dtype() == ivy.complex64
+
+
 @st.composite
 def dtypes_list(draw):
     num = draw(st.one_of(helpers.ints(min_value=1, max_value=5)))
@@ -821,50 +901,55 @@ def _composition_1():
     return ivy.relu().argmax()
 
 
+_composition_1.test_unsupported_dtypes = {
+    "numpy": ("bfloat16",),
+    "jax": (),
+    "tensorflow": ("complex64", "complex128"),
+    "torch": (
+        "uint16",
+        "uint32",
+        "uint64",
+        "float16",
+        "complex64",
+        "complex128",
+    ),
+}
+
+
 def _composition_2():
     a = ivy.floor
     return ivy.ceil() or a
+
+
+_composition_2.test_unsupported_dtypes = {
+    "numpy": ("bfloat16", "complex64", "complex128"),
+    "jax": ("complex64", "complex128"),
+    "tensorflow": ("complex64", "complex128"),
+    "torch": ("uint16", "uint32", "uint64", "float16", "complex64", "complex128"),
+}
 
 
 # function_unsupported_dtypes
 @handle_test(
     fn_tree="functional.ivy.function_supported_dtypes",
     func=st.sampled_from([_composition_1, _composition_2]),
-    expected=helpers.get_dtypes("valid"),
 )
-def test_function_supported_dtypes(
-    *,
-    func,
-    expected,
-):
+def test_function_supported_dtypes(*, func):
     res = ivy.function_supported_dtypes(func)
-    exp = set.intersection(set(expected), set(ivy.valid_dtypes))
-
-    # Since float16 is only not valid for the torch backend, we remove from expected
-    if "torch" in ivy.current_backend_str():
-        exp.remove("float16")
-
+    exp = set(ivy.all_dtypes).difference(
+        set(func.test_unsupported_dtypes[ivy.current_backend_str()])
+    )
     assert set(tuple(exp)) == set(res)
 
 
 # function_unsupported_dtypes
 @handle_test(
     fn_tree="functional.ivy.function_unsupported_dtypes",
-    func=st.sampled_from([_composition_1, _composition_2]),
-    expected=st.just([]),
+    func=st.sampled_from([_composition_2]),
 )
-def test_function_unsupported_dtypes(
-    *,
-    func,
-    expected,
-):
+def test_function_unsupported_dtypes(*, func):
     res = ivy.function_unsupported_dtypes(func)
-    exp = set.union(set(expected), set(ivy.invalid_dtypes))
-
-    # Since float16 is only not valid for the torch backend, we add to expected
-    if "torch" in ivy.current_backend_str():
-        exp.add("float16")
-
+    exp = func.test_unsupported_dtypes[ivy.current_backend_str()]
     assert set(tuple(exp)) == set(res)
 
 
@@ -1041,6 +1126,25 @@ def test_unset_default_int_dtype(
     assert (
         stack_size_before == stack_size_after
     ), f"Default int dtype not unset. Stack size= {stack_size_after!r}"
+
+
+# unset_default_complex_dtype
+@handle_test(
+    fn_tree="functional.ivy.unset_default_complex_dtype",
+    dtype=helpers.get_dtypes("complex", full=False),
+)
+def test_unset_default_complex_dtype(
+    *,
+    dtype,
+):
+    dtype = dtype[0]
+    stack_size_before = len(ivy.default_complex_dtype_stack)
+    ivy.set_default_complex_dtype(dtype)
+    ivy.unset_default_complex_dtype()
+    stack_size_after = len(ivy.default_complex_dtype_stack)
+    assert (
+        stack_size_before == stack_size_after
+    ), f"Default float dtype not unset. Stack size= {stack_size_after!r}"
 
 
 # valid_dtype

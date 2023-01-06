@@ -51,7 +51,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Boolean, whether or not x is a native array.
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "is_native_array",
             x,
             exclusive=exclusive,
@@ -149,7 +149,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Boolean, whether or not x is an array.
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "is_ivy_array",
             x,
             exclusive=exclusive,
@@ -250,7 +250,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Boolean, whether or not x is an array.
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "is_array",
             x,
             exclusive=exclusive,
@@ -367,7 +367,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "clip_vector_norm",
             x,
             max_norm,
@@ -495,7 +495,7 @@ class ContainerWithGeneral(ContainerBase):
         """
         # inplace update the leaves
         cont = x
-        cont = ContainerBase.cont_multi_map_in_static_method(
+        cont = ContainerBase.cont_multi_map_in_function(
             "inplace_update",
             cont,
             val,
@@ -632,7 +632,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "inplace_decrement",
             x,
             val,
@@ -774,7 +774,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "inplace_increment",
             x,
             val,
@@ -882,7 +882,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             True if support, raises exception otherwise`
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "assert_supports_inplace",
             x,
             key_chains=key_chains,
@@ -1004,7 +1004,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "all_equal",
             x1,
             *xs,
@@ -1163,8 +1163,36 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with the final dimension expanded of arrays at its leaves,
             and the encodings stored in this channel.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([1,2]),
+        ...                   b = ivy.array([3,4]))
+        >>> y = 1.5
+        >>> z = ivy.Container.static_fourier_encode(x,y)
+        >>> print(z)
+        {
+            a: (<classivy.array.array.Array>shape=[2,9]),
+            b: (<classivy.array.array.Array>shape=[2,9])
+        }
+
+        >>> x = ivy.Container(a = ivy.array([3,10]),
+        ...                   b = ivy.array([4,8]))
+        >>> y = 2.5
+        >>> z = ivy.Container.static_fourier_encode(x,y,num_bands=3)
+        >>> print(z)
+        {
+            a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,
+                    3.6739404e-16, -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
+                    [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15, -1.2246468e-15,
+                    1.0000000e+00,  1.0000000e+00,  1.0000000e+00]]),
+            b: ivy.array([[ 4.00000000e+00, -4.89858720e-16, -4.89858720e-16,
+                    -4.89858720e-16, 1.00000000e+00,  1.00000000e+00,  1.00000000e+00],
+                    [ 8.00000000e+00, -9.79717439e-16, -9.79717439e-16, -9.79717439e-16,
+                    1.00000000e+00,  1.00000000e+00,  1.00000000e+00]])
+        }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "fourier_encode",
             x,
             max_freq,
@@ -1231,6 +1259,34 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with the final dimension expanded of arrays at its leaves,
             and the encodings stored in this channel.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([1,2]),
+        ...                   b = ivy.array([3,4]))
+        >>> y = 1.5
+        >>> z = x.fourier_encode(y)
+        >>> print(z)
+        {
+            a: (<classivy.array.array.Array>shape=[2,9]),
+            b: (<classivy.array.array.Array>shape=[2,9])
+        }
+
+        >>> x = ivy.Container(a = ivy.array([3,10]),
+        ...                   b = ivy.array([4,8]))
+        >>> y = 2.5
+        >>> z = x.fourier_encode(y,num_bands=3)
+        >>> print(z)
+        {
+            a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,
+                    3.6739404e-16,-1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
+                    [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15,
+                    -1.2246468e-15, 1.0000000e+00,  1.0000000e+00,  1.0000000e+00]]),
+            b: ivy.array([[4.00000000e+00, -4.89858720e-16, -4.89858720e-16,
+                    -4.89858720e-16, 1.00000000e+00,  1.00000000e+00,  1.00000000e+00],
+                    [ 8.00000000e+00, -9.79717439e-16, -9.79717439e-16, -9.79717439e-16,
+                    1.00000000e+00,  1.00000000e+00,  1.00000000e+00]])
+        }
         """
         return self.static_fourier_encode(
             self,
@@ -1322,7 +1378,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "gather",
             params,
             indices,
@@ -1438,7 +1494,7 @@ class ContainerWithGeneral(ContainerBase):
             entire container.
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "has_nans",
             self,
             include_infs=include_infs,
@@ -1565,7 +1621,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "scatter_nd",
             indices,
             updates,
@@ -1723,7 +1779,7 @@ class ContainerWithGeneral(ContainerBase):
         ref
             New container of given shape, with the values updated at the indices.
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "scatter_flat",
             indices,
             updates,
@@ -1847,7 +1903,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "gather_nd",
             params,
             indices,
@@ -1988,7 +2044,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "einops_reduce",
             x,
             pattern,
@@ -2142,7 +2198,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "einops_repeat",
             x,
             pattern,
@@ -2296,7 +2352,7 @@ class ContainerWithGeneral(ContainerBase):
             b: false
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "value_is_nan",
             x,
             include_infs=include_infs,
@@ -2443,7 +2499,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "to_numpy",
             x,
             copy=copy,
@@ -2576,7 +2632,7 @@ class ContainerWithGeneral(ContainerBase):
             b: 3
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "to_scalar",
             x,
             key_chains=key_chains,
@@ -2691,7 +2747,7 @@ class ContainerWithGeneral(ContainerBase):
         {a:[0,1,2]}
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "to_list",
             x,
             key_chains=key_chains,
@@ -2848,7 +2904,7 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([0.909, 2.5])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "stable_divide",
             numerator,
             denominator,
@@ -2991,7 +3047,7 @@ class ContainerWithGeneral(ContainerBase):
             numerically stable power.
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "stable_pow",
             base,
             exponent,
@@ -3096,8 +3152,44 @@ class ContainerWithGeneral(ContainerBase):
         -------
             ivy.Container with each array having einops.rearrange applied.
 
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3],
+        ...                                [-4, -5, -6]]),
+        ...                 b=ivy.array([[7, 8, 9],
+        ...                             [10, 11, 12]]))
+        >>> y = ivy.static_einops_rearrange(x, "height width -> width height")
+        >>> print(y)
+        {
+            a: ivy.array([[1, -4],
+                        [2, -5],
+                        [3, -6]]),
+            b: ivy.array([[7, 10],
+                        [8, 11],
+                        [9, 12]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[[ 1,  2,  3],
+        ...                  [ 4,  5,  6]],
+        ...               [[ 7,  8,  9],
+        ...                  [10, 11, 12]]]))
+        >>> y = ivy.static_einops_rearrange(x, "c h w -> c (h w)")
+        >>> print(y)
+        {
+            a: (<class ivy.array.array.Array> shape=[2, 6])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3, 4, 5, 6],
+        ...               [7, 8, 9, 10, 11, 12]]))
+        >>> y = ivy.static_einops_rearrange(x, "c (h w) -> (c h) w", h=2, w=3)
+        {
+            a: (<class ivy.array.array.Array> shape=[4, 3])
+        }
+
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "einops_rearrange",
             x,
             pattern,
@@ -3149,6 +3241,40 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
             ivy.Container with each array having einops.rearrange applied.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3],
+        ...                                [-4, -5, -6]]),
+        ...                 b=ivy.array([[7, 8, 9],
+        ...                              [10, 11, 12]]))
+        >>> y = x.einops_rearrange("height width -> width height")
+        >>> print(y)
+        {
+            a: ivy.array([[1, -4],
+                        [2, -5],
+                        [3, -6]]),
+            b: ivy.array([[7, 10],
+                        [8, 11],
+                        [9, 12]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[[ 1,  2,  3],
+        ...                  [ 4,  5,  6]],
+        ...               [[ 7,  8,  9],
+        ...                  [10, 11, 12]]]))
+        >>> y = x.einops_rearrange("c h w -> c (h w)")
+        >>> print(y)
+        {
+            a: (<class ivy.array.array.Array> shape=[2, 6])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3, 4, 5, 6],
+        ...               [7, 8, 9, 10, 11, 12]]))
+        >>> y = x.einops_rearrange("c (h w) -> (c h) w", h=2, w=3)
+        {
+            a: (<class ivy.array.array.Array> shape=[4, 3])
+        }
 
         """
         return self.static_einops_rearrange(
@@ -3222,7 +3348,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "clip_matrix_norm",
             x,
             max_norm,
@@ -3372,7 +3498,7 @@ class ContainerWithGeneral(ContainerBase):
             b: false
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "supports_inplace_updates",
             x,
             key_chains=key_chains,
@@ -3516,7 +3642,7 @@ class ContainerWithGeneral(ContainerBase):
             c: ivy.array(2)
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "get_num_dims",
             x,
             as_array=as_array,

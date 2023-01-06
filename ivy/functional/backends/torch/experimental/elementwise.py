@@ -52,6 +52,19 @@ def fmax(
 fmax.support_native_out = True
 
 
+def fmin(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fmin(x1, x2, out=None)
+
+
+fmin.support_native_out = True
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
@@ -131,7 +144,6 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, list):
         axis = tuple(axis)
@@ -150,10 +162,9 @@ def count_nonzero(
         for d in sorted(axis, reverse=True):
             x = x.unsqueeze(d)
         return x
-    return x.unsqueeze(axis)
-
-
-count_nonzero.support_native_out = False
+    elif isinstance(x, int):
+        return x.unsqueeze(axis)
+    return x
 
 
 def nansum(
@@ -200,30 +211,6 @@ def isclose(
 
 
 isclose.support_native_out = False
-
-
-def isposinf(
-    x: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.isposinf(x, out=out)
-
-
-isposinf.support_native_out = True
-
-
-def isneginf(
-    x: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.isneginf(x, out=out)
-
-
-isneginf.support_native_out = True
 
 
 def angle(
@@ -285,8 +272,16 @@ def diff(
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
 ) -> torch.Tensor:
     x = x if type(x) == torch.Tensor else torch.Tensor(x)
-    prepend = prepend if type(prepend) == torch.Tensor else torch.Tensor(prepend)
-    append = append if type(append) == torch.Tensor else torch.Tensor(append)
+    prepend = (
+        prepend
+        if type(prepend) == torch.Tensor or prepend is None
+        else torch.Tensor(prepend)
+    )
+    append = (
+        append
+        if type(append) == torch.Tensor or append is None
+        else torch.Tensor(append)
+    )
     return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
 
 
@@ -352,10 +347,10 @@ def zeta(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.special.zeta(x, q)
+    return torch.special.zeta(x, q, out=out)
 
 
-zeta.support_native_out = False
+zeta.support_native_out = True
 
 
 def gradient(
@@ -377,3 +372,9 @@ def gradient(
     if len(grad) == 1:
         return grad[0]
     return grad
+
+
+def xlogy(
+    x: torch.tensor, y: torch.tensor, /, *, out: Optional[torch.tensor] = None
+) -> torch.tensor:
+    return torch.xlogy(x, y, out=out)

@@ -84,7 +84,6 @@ def test_function(
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: bool = True,
-    test_gradients: bool = False,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
     ground_truth_backend: str,
@@ -99,6 +98,10 @@ def test_function(
     ----------
     input_dtypes
         data types of the input arguments in order.
+    test_flags
+        FunctionTestFlags object that stores all testing flags, including:
+        num_positional_args, with_out, instance_method, as_variable,
+        native_arrays, container, gradient
     fw
         current backend (framework).
     fn_name
@@ -109,8 +112,6 @@ def test_function(
         absolute tolerance value.
     test_values
         if True, test for the correctness of the resulting values.
-    test_gradients
-        if True, test for the correctness of gradients.
     xs_grad_idxs
         Indices of the input arrays to compute gradients with respect to. If None,
         gradients are returned with respect to all input arrays. (Default value = None)
@@ -143,12 +144,16 @@ def test_function(
     >>> native_array_flags = False
     >>> container_flags = False
     >>> instance_method = False
+    >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
+        instance_method,
+        as_variable,
+        native_arrays,
+        container_flags,
+        none)
     >>> fw = "torch"
     >>> fn_name = "abs"
     >>> x = np.array([-1])
-    >>> test_function(input_dtypes, as_variable_flags, with_out,\
-                            num_positional_args, native_array_flags,\
-                            container_flags, instance_method, fw, fn_name, x=x)
+    >>> test_function(input_dtypes, test_flags, fw, fn_name, x=x)
 
     >>> input_dtypes = ['float64', 'float32']
     >>> as_variable_flags = [False, True]
@@ -157,14 +162,17 @@ def test_function(
     >>> native_array_flags = [True, False]
     >>> container_flags = [False, False]
     >>> instance_method = False
+    >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
+        instance_method,
+        as_variable,
+        native_arrays,
+        container_flags,
+        none)
     >>> fw = "numpy"
     >>> fn_name = "add"
     >>> x1 = np.array([1, 3, 4])
     >>> x2 = np.array([-3, 15, 24])
-    >>> test_function(input_dtypes, as_variable_flags, with_out,\
-                            num_positional_args, native_array_flags,\
-                             container_flags, instance_method,\
-                              fw, fn_name, x1=x1, x2=x2)
+    >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
     _assert_dtypes_are_valid(input_dtypes)
     # split the arguments into their positional and keyword components
@@ -300,6 +308,16 @@ def test_function(
         ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
             ivy.__dict__[fn_name], *args, **kwargs
         )
+        if test_flags.with_out:
+            test_ret_from_gt = ret_from_gt
+            if isinstance(ret_from_gt, tuple):
+                test_ret_from_gt = ret_from_gt[
+                    getattr(ivy.__dict__[fn_name], "out_index")
+                ]
+            out_from_gt = ivy.zeros_like(test_ret_from_gt)
+            ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
+                ivy.__dict__[fn_name], *args, **kwargs, out=out_from_gt
+            )
     except Exception as e:
         ivy.unset_backend()
         raise e
@@ -308,10 +326,11 @@ def test_function(
     # gradient test
     fw = ivy.current_backend_str()
     if (
-        test_gradients
+        test_flags.test_gradients
         and not fw == "numpy"
         and not instance_method
         and "bool" not in input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
     ):
         if fw in fw_list:
             if ivy.nested_argwhere(
@@ -1102,7 +1121,12 @@ def test_method(
     ivy.unset_backend()
     # gradient test
     fw = ivy.current_backend_str()
-    if test_gradients and not fw == "numpy" and "bool" not in method_input_dtypes:
+    if (
+        test_gradients
+        and not fw == "numpy"
+        and "bool" not in method_input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in method_input_dtypes)
+    ):
         if fw in fw_list:
             if ivy.nested_argwhere(
                 method_all_as_kwargs_np,

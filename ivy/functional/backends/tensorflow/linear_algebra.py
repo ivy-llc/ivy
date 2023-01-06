@@ -274,6 +274,12 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+
+    _expand_dims = False
+    if len(tuple(x.shape)) == 2:  # ndim doesn't work for tf.Variable
+        x = tf.expand_dims(x, axis=0)
+        _expand_dims = True
+
     if ord == -float("inf"):
         reduce_min = tf.reduce_min(
             tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True), axis=axis
@@ -299,6 +305,8 @@ def matrix_norm(
         ret = tf.reshape(ret, x.shape[:-2] + (1, 1))
     else:
         ret = tf.reshape(ret, x.shape[:-2])
+    if _expand_dims:
+        ret = tf.squeeze(ret, axis=0)
     return ret
 
 

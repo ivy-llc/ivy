@@ -78,6 +78,7 @@ atan.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def atan2(
     x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -97,6 +98,7 @@ atanh.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_and(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -112,6 +114,7 @@ bitwise_and.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_invert(
     x: Union[int, bool, np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -122,6 +125,7 @@ bitwise_invert.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_left_shift(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -137,6 +141,7 @@ bitwise_left_shift.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_or(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -152,6 +157,7 @@ bitwise_or.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_right_shift(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -167,6 +173,7 @@ bitwise_right_shift.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_xor(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -181,6 +188,7 @@ def bitwise_xor(
 bitwise_xor.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 @_scalar_output_to_0d_array
 def ceil(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
@@ -264,6 +272,7 @@ expm1.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def floor(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
         ret = np.copy(x)
@@ -278,6 +287,7 @@ floor.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def floor_divide(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
@@ -328,11 +338,21 @@ isfinite.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def isinf(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.isinf(x, out=out)
-
-
-isinf.support_native_out = True
+def isinf(
+    x: np.ndarray,
+    /,
+    *,
+    detect_positive: bool = True,
+    detect_negative: bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if detect_negative and detect_positive:
+        return np.isinf(x)
+    elif detect_negative:
+        return np.isneginf(x)
+    elif detect_positive:
+        return np.isposinf(x)
+    return np.full_like(x, False, dtype=np.bool)
 
 
 @_scalar_output_to_0d_array
@@ -406,6 +426,7 @@ log2.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def logaddexp(
     x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -520,6 +541,7 @@ pow.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def remainder(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
@@ -726,6 +748,7 @@ reciprocal.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def deg2rad(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.deg2rad(x, out=out)
 
@@ -734,6 +757,7 @@ deg2rad.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.rad2deg(x, out=out)
 

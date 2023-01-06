@@ -94,6 +94,12 @@ def _get_function_list(func):
                     ),
                 )
             elif isinstance(nodef, ast.Attribute):
+                if (
+                    hasattr(nodef, "value")
+                    and hasattr(nodef.value, "id")
+                    and nodef.value.id != "ivy"
+                ):
+                    continue
                 names[nodef.attr] = getattr(
                     func,
                     "__self__",
@@ -783,10 +789,11 @@ default_dtype_stack = list()
 default_float_dtype_stack = list()
 default_int_dtype_stack = list()
 default_uint_dtype_stack = list()
+default_complex_dtype_stack = list()
 
 
 class DefaultDtype:
-    """"""
+    """Ivy's DefaultDtype class."""
 
     def __init__(self, dtype: ivy.Dtype):
         self._dtype = dtype
@@ -801,7 +808,7 @@ class DefaultDtype:
 
 
 class DefaultFloatDtype:
-    """"""
+    """Ivy's DefaultFloatDtype class."""
 
     def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
@@ -816,7 +823,7 @@ class DefaultFloatDtype:
 
 
 class DefaultIntDtype:
-    """"""
+    """Ivy's DefaultIntDtype class."""
 
     def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
@@ -831,7 +838,7 @@ class DefaultIntDtype:
 
 
 class DefaultUintDtype:
-    """"""
+    """Ivy's DefaultUintDtype class."""
 
     def __init__(self, uint_dtype: ivy.UintDtype):
         self._uint_dtype = uint_dtype
@@ -842,6 +849,21 @@ class DefaultUintDtype:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_uint_dtype()
+        return self
+
+
+class DefaultComplexDtype:
+    """Ivy's DefaultComplexDtype class."""
+
+    def __init__(self, complex_dtype: ivy.Dtype):
+        self._complex_dtype = complex_dtype
+
+    def __enter__(self):
+        set_default_complex_dtype(self._complex_dtype)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        unset_default_complex_dtype()
         return self
 
 
@@ -923,6 +945,16 @@ def _check_float64(input) -> bool:
     return False
 
 
+def _check_complex128(input) -> bool:
+    if ivy.is_array(input):
+        return ivy.dtype(input) == "complex128"
+    elif isinstance(input, np.ndarray):
+        return str(input.dtype) == "complex128"
+    if hasattr(input, "real") and hasattr(input, "imag"):
+        return _check_float64(input.real) and _check_float64(input.imag)
+    return False
+
+
 @handle_exceptions
 def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype, str]:
     """Determines the closest valid datatype to the datatype passed as input.
@@ -940,18 +972,21 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     Examples
     --------
     With :class:`ivy.Dtype` input:
+
     >>> xType = ivy.float16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     float16
 
     With :class:`ivy.NativeDtype` inputs:
+
     >>> xType = ivy.native_uint16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     <dtype:'uint16'>
 
     With :code:`str` input:
+
     >>> xType = 'int32'
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
@@ -1091,6 +1126,8 @@ def infer_default_dtype(
         default_dtype = ivy.default_float_dtype(as_native=as_native)
     elif ivy.is_uint_dtype(dtype):
         default_dtype = ivy.default_uint_dtype(as_native=as_native)
+    elif ivy.is_complex_dtype(dtype):
+        default_dtype = ivy.default_complex_dtype(as_native=as_native)
     else:
         default_dtype = ivy.default_int_dtype(as_native=as_native)
     return default_dtype
@@ -1126,8 +1163,12 @@ def default_dtype(
         return ivy.as_ivy_dtype(dtype)
     as_native = ivy.default(as_native, False)
     if ivy.exists(item):
-        if isinstance(item, (list, tuple, dict)) and len(item) == 0:
+        if hasattr(item, "override_dtype_check"):
+            return item.override_dtype_check()
+        elif isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
+        elif ivy.is_complex_dtype(item):
+            return ivy.default_complex_dtype(input=item, as_native=as_native)
         elif ivy.is_float_dtype(item):
             return ivy.default_float_dtype(input=item, as_native=as_native)
         elif ivy.is_int_dtype(item):
@@ -1358,6 +1399,103 @@ def default_uint_dtype(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+def default_complex_dtype(
+    *,
+    input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    complex_dtype: Optional[Union[ivy.ComplexDtype, ivy.NativeDtype]] = None,
+    as_native: Optional[bool] = False,
+) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
+    """
+    Parameters
+    ----------
+    input
+        Number or array for inferring the complex dtype.
+    complex_dtype
+        The float dtype to be returned.
+    as_native
+        Whether to return the complex dtype as native dtype.
+
+    Returns
+    -------
+        Return ``complex_dtype`` as native or ivy dtype if provided, else
+        if ``input`` is given, return its complex dtype, otherwise return the
+        global default complex dtype.
+
+    Examples
+    --------
+    >>> ivy.default_complex_dtype()
+    'complex64'
+
+    >>> ivy.set_default_complex_dtype(ivy.ComplexDtype("complex64"))
+    >>> ivy.default_complex_dtype()
+    'complex64'
+
+    >>> ivy.default_complex_dtype(complex_dtype=ivy.ComplexDtype("complex128"))
+    'complex128'
+
+    >>> ivy.default_complex_dtype(input=4294.967346)
+    'complex64'
+
+    >>> x = ivy.array([9.8,8.9], dtype="complex128")
+    >>> ivy.default_complex_dtype(input=x)
+    'complex128'
+    """
+    global default_complex_dtype_stack
+    if ivy.exists(complex_dtype):
+        if as_native is True:
+            return ivy.as_native_dtype(complex_dtype)
+        return ivy.ComplexDtype(ivy.as_ivy_dtype(complex_dtype))
+    as_native = ivy.default(as_native, False)
+    if ivy.exists(input):
+        if ivy.is_array(input):
+            ret = ivy.dtype(input)
+        elif isinstance(input, np.ndarray):
+            ret = str(input.dtype)
+        elif isinstance(input, (list, tuple, dict)):
+            if ivy.nested_argwhere(
+                input,
+                lambda x: _check_complex128(x),
+                stop_after_n_found=1,
+            ):
+                ret = ivy.complex128
+            else:
+                if not default_complex_dtype_stack:
+                    def_dtype = default_dtype()
+                    if ivy.is_complex_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "complex64"
+                else:
+                    ret = default_complex_dtype_stack[-1]
+        elif isinstance(input, Number):
+            if _check_complex128(input):
+                ret = ivy.complex128
+            else:
+                if not default_complex_dtype_stack:
+                    def_dtype = default_dtype()
+                    if ivy.is_complex_dtype(def_dtype):
+                        ret = def_dtype
+                    else:
+                        ret = "complex64"
+                else:
+                    ret = default_complex_dtype_stack[-1]
+    else:
+        if not default_complex_dtype_stack:
+            def_dtype = default_dtype()
+            if ivy.is_complex_dtype(def_dtype):
+                ret = def_dtype
+            else:
+                ret = "complex64"
+        else:
+            ret = default_complex_dtype_stack[-1]
+    if as_native:
+        return ivy.as_native_dtype(ret)
+    return ivy.ComplexDtype(ivy.as_ivy_dtype(ret))
+
+
+@inputs_to_native_arrays
+@handle_nestable
+@handle_exceptions
 def dtype(
     x: Union[ivy.Array, ivy.NativeArray], *, as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
@@ -1583,36 +1721,39 @@ def is_int_dtype(
 
     Examples
     --------
-     With :class:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
+
     >>> x = ivy.is_int_dtype(ivy.float64)
     >>> print(x)
     False
 
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([1., 2., 3.])
     >>> x.dtype
     float32
-
     >>> print(ivy.is_int_dtype(x))
     False
 
     With :class:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], dtype=ivy.int16)
     >>> print(ivy.is_int_dtype(x))
     True
 
     With :code:`Number` input:
+
     >>> x = 1
     >>> print(ivy.is_int_dtype(x))
     True
 
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3, 4, 5]))
     >>> x.a.dtype
     float32
     >>> x.b.dtype
     int32
-
     >>> print(ivy.is_int_dtype(x))
     {
         a: false,
@@ -1756,6 +1897,49 @@ def is_uint_dtype(
     return "uint" in as_ivy_dtype(dtype_in)
 
 
+@inputs_to_native_arrays
+@handle_nestable
+@handle_exceptions
+def is_complex_dtype(
+    dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
+    /,
+) -> complex:
+    """Determine whether the input data type is a complex dtype.
+
+    Parameters
+    ----------
+    dtype_in
+        The array or data type to check
+
+    Returns
+    -------
+    ret
+        Whether or not the array or data type is of a complex dtype
+
+    Examples
+    --------
+    >>> ivy.is_complex_dtype(ivy.ComplexDtype("complex64"))
+    True
+
+    >>> ivy.is_complex_dtype(ivy.Dtype("complex128"))
+    True
+
+    >>> ivy.is_complex_dtype(ivy.IntDtype("int64"))
+    False
+    """
+    if ivy.is_array(dtype_in):
+        dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, np.ndarray):
+        return "complex" in dtype_in.dtype.name
+    elif isinstance(dtype_in, Number):
+        return isinstance(dtype_in, (complex, np.complexfloating))
+    elif isinstance(dtype_in, (list, tuple, dict)):
+        return ivy.nested_argwhere(
+            dtype_in, lambda x: isinstance(x, (complex, np.complexfloating))
+        )
+    return "complex" in as_ivy_dtype(dtype_in)
+
+
 @handle_exceptions
 def promote_types(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
@@ -1808,6 +1992,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
     Examples
     --------
     With :class:`ivy.Dtype` input:
+
     >>> ivy.set_default_dtype(ivy.bool)
     >>> ivy.default_dtype_stack
     ['bool']
@@ -1819,6 +2004,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
     >>> ivy.unset_default_dtype()
 
     With :class:`ivy.NativeDtype` input:
+
     >>> ivy.set_default_dtype(ivy.native_uint64)
     >>> ivy.default_dtype_stack
     ['uint64']
@@ -1830,12 +2016,25 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
 
 @handle_exceptions
 def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
-    """Summary.
+    """
+    Sets the 'float_dtype' as the default data type.
 
     Parameters
     ----------
     float_dtype
+        The float data type to be set as the default.
 
+    Examples
+    --------
+    With :class: `ivy.Dtype` input:
+
+    >>> ivy.set_default_float_dtype(ivy.floatDtype("float64"))
+    >>> ivy.default_float_dtype()
+    'float64'
+
+    >>> ivy.set_default_float_dtype(ivy.floatDtype("float32"))
+    >>> ivy.default_float_dtype()
+    'float32'
     """
     float_dtype = ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
     global default_float_dtype_stack
@@ -1855,6 +2054,7 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
     Examples
     --------
     With :class: `ivy.Dtype` input:
+
     >>> ivy.set_default_int_dtype(ivy.intDtype("int64"))
     >>> ivy.default_int_dtype()
     'int64'
@@ -1890,6 +2090,33 @@ def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str], /):
     uint_dtype = ivy.UintDtype(ivy.as_ivy_dtype(uint_dtype))
     global default_uint_dtype_stack
     default_uint_dtype_stack.append(uint_dtype)
+
+
+@handle_exceptions
+def set_default_complex_dtype(complex_dtype: Union[ivy.Dtype, str], /):
+    """
+    Sets the 'complex_dtype' as the default data type.
+
+    Parameters
+    ----------
+    complex_dtype
+        The complex data type to be set as the default.
+
+    Examples
+    --------
+    With :class: `ivy.Dtype` input:
+
+    >>> ivy.set_default_complex_dtype(ivy.ComplexDtype("complex64"))
+    >>> ivy.default_complex_dtype()
+    'complex64'
+
+    >>> ivy.set_default_float_dtype(ivy.ComplexDtype("complex128"))
+    >>> ivy.default_complex_dtype()
+    'complex128'
+    """
+    complex_dtype = ivy.ComplexDtype(ivy.as_ivy_dtype(complex_dtype))
+    global default_complex_dtype_stack
+    default_complex_dtype_stack.append(complex_dtype)
 
 
 @handle_exceptions
@@ -1953,6 +2180,7 @@ def unset_default_float_dtype():
     >>> ivy.set_default_float_dtype(ivy.float64)
     >>> ivy.default_float_dtype_stack
     ['float32','float64']
+
     >>> ivy.unset_default_float_dtype()
     >>> ivy.default_float_dtype_stack
     ['float32']
@@ -2002,6 +2230,26 @@ def unset_default_uint_dtype():
     global default_uint_dtype_stack
     if default_uint_dtype_stack:
         default_uint_dtype_stack.pop(-1)
+
+
+@handle_exceptions
+def unset_default_complex_dtype():
+    """Reset the current default complex dtype to the previous state.
+
+    Examples
+    --------
+    >>> ivy.set_default_complex_dtype(ivy.complex64)
+    >>> ivy.set_default_complex_dtype(ivy.complex128)
+    >>> ivy.default_complex_dtype_stack
+    ['complex64','complex128']
+
+    >>> ivy.unset_default_complex_dtype()
+    >>> ivy.default_complex_dtype_stack
+    ['complex64']
+    """
+    global default_complex_dtype_stack
+    if default_complex_dtype_stack:
+        default_complex_dtype_stack.pop(-1)
 
 
 @handle_exceptions

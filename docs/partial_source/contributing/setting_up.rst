@@ -32,7 +32,7 @@ Depending on your preferred mode of cloning, any of the below should work:
 
 .. code-block:: none
 
-    gh repo clone --recurse-submodules unifyai/ivy your_folder
+    gh repo clone unifyai/ivy your_folder -- --recurse-submodules
 
 PyCharm
 -------
@@ -233,6 +233,9 @@ MacOS
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
 
+**Important Note**
+
+When setting up on an M1 Mac, you would have to update the Dockerfile to install libraries from :code:`requirements/optional_m1_1.txt` and :code:`requirements/optional_m1_2.txt` instead of :code:`requirements/optional.txt`.
 
 **Video**
 

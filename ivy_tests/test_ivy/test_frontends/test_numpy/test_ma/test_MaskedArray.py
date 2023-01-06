@@ -1,13 +1,76 @@
-# # global
-# from hypothesis import strategies as st
+# global
+from hypothesis import given, strategies as st
+
 # import numpy as np
 
-# # local
-# import ivy
-# from ivy.functional.frontends.numpy.ma.MaskedArray import MaskedArray
-# import ivy_tests.test_ivy.helpers as helpers
+# local
+import ivy
+from ivy.functional.frontends.numpy.ma.MaskedArray import MaskedArray
+import ivy_tests.test_ivy.helpers as helpers
+
 # from ivy_tests.test_ivy.helpers import handle_frontend_test
 # import ivy.functional.backends.torch as ivy_torch
+
+
+@st.composite
+def _array_mask(draw):
+    dtype = draw(helpers.get_dtypes("valid", full=False))
+    dtypes, x_mask = draw(
+        helpers.dtype_and_values(
+            num_arrays=2,
+            dtype=[dtype[0], "bool"],
+        )
+    )
+    return dtype[0], x_mask
+
+
+# data
+@given(dtype_x_mask=_array_mask())
+def test_numpy_maskedarray_property_data(dtype_x_mask):
+    dtype, data = dtype_x_mask
+    x = MaskedArray(data[0], mask=data[1], dtype=dtype)
+    assert ivy.all(x.data == ivy.array(data[0]))
+
+
+# mask
+@given(dtype_x_mask=_array_mask())
+def test_numpy_maskedarray_property_mask(dtype_x_mask):
+    dtype, data = dtype_x_mask
+    x = MaskedArray(data[0], mask=ivy.array(data[1]), dtype=dtype, shrink=False)
+    assert ivy.all(x.mask == ivy.array(data[1]))
+
+
+# fill_value
+@given(
+    dtype_x_mask=_array_mask(),
+    fill=st.integers(),
+)
+def test_numpy_maskedarray_property_fill_value(
+    dtype_x_mask,
+    fill,
+):
+    dtype, data = dtype_x_mask
+    x = MaskedArray(data[0], mask=data[1], dtype=dtype, fill_value=fill)
+    assert x.fill_value == ivy.array(fill, dtype=dtype)
+
+
+# hardmask
+@given(
+    dtype_x_mask=_array_mask(),
+    hard=st.booleans(),
+)
+def test_numpy_maskedarray_property_hardmask(dtype_x_mask, hard):
+    dtype, data = dtype_x_mask
+    x = MaskedArray(data[0], mask=data[1], dtype=dtype, hard_mask=hard)
+    assert x.hardmask == hard
+
+
+# dtype
+@given(dtype_x_mask=_array_mask())
+def test_numpy_maskedarray_property_dtype(dtype_x_mask):
+    dtype, data = dtype_x_mask
+    x = MaskedArray(data[0], mask=data[1], dtype=dtype)
+    assert x.dtype == dtype
 
 
 # @st.composite

@@ -5,32 +5,55 @@ import ivy
 import ivy.functional.frontends.numpy as np_frontend
 
 
+def to_ivy_dtype(dtype_in):
+    if dtype_in is None:
+        return
+    if isinstance(dtype_in, ivy.Dtype):
+        return dtype_in
+    if isinstance(dtype_in, str):
+        if dtype_in.strip("><=") in np_frontend.numpy_str_to_type_table:
+            return ivy.Dtype(np_frontend.numpy_str_to_type_table[dtype_in.strip("><=")])
+        return ivy.Dtype(dtype_in)
+    if ivy.is_native_dtype(dtype_in):
+        return ivy.as_ivy_dtype(dtype_in)
+    if dtype_in in (int, float, bool):
+        return {int: ivy.int64, float: ivy.float64, bool: ivy.bool}[dtype_in]
+    if isinstance(dtype_in, np_frontend.dtype):
+        return dtype_in.ivy_dtype
+    if issubclass(dtype_in, np_frontend.generic):
+        return np_frontend.numpy_scalar_to_dtype[dtype_in]
+    else:
+        ivy.as_ivy_dtype(dtype_in)
+
+
 class dtype:
-    def __init__(self, dtype, align=False, copy=False):
+    def __init__(self, dtype_in, align=False, copy=False):
         self._ivy_dtype = (
-            ivy.Dtype(dtype) if not isinstance(dtype, ivy.Dtype) else dtype
+            to_ivy_dtype(dtype_in)
+            if not isinstance(dtype_in, dtype)
+            else dtype_in._ivy_dtype
         )
 
     def __repr__(self):
         return "ivy.frontends.numpy.dtype('" + self._ivy_dtype + "')"
 
     def __ge__(self, other):
-        if isinstance(other, str):
+        try:
             other = dtype(other)
-
-        if not isinstance(other, dtype):
+        except TypeError:
             raise ivy.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
             )
 
-        return self == np_frontend.promote_numpy_dtypes(self, other)
+        return self == np_frontend.promote_numpy_dtypes(
+            self._ivy_dtype, other._ivy_dtype
+        )
 
     def __gt__(self, other):
-        if isinstance(other, str):
+        try:
             other = dtype(other)
-
-        if not isinstance(other, dtype):
+        except TypeError:
             raise ivy.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
@@ -39,28 +62,32 @@ class dtype:
         return self >= other and self != other
 
     def __lt__(self, other):
-        if isinstance(other, str):
+        try:
             other = dtype(other)
-
-        if not isinstance(other, dtype):
+        except TypeError:
             raise ivy.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
             )
 
-        return self != np_frontend.promote_numpy_dtypes(self, other)
+        return self != np_frontend.promote_numpy_dtypes(
+            self._ivy_dtype, other._ivy_dtype
+        )
 
     def __le__(self, other):
-        if isinstance(other, str):
+        try:
             other = dtype(other)
-
-        if not isinstance(other, dtype):
+        except TypeError:
             raise ivy.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
             )
 
         return self < other or self == other
+
+    @property
+    def type(self):
+        return np_frontend.numpy_dtype_to_scalar[self._ivy_dtype]
 
     @property
     def alignment(self):
@@ -126,3 +153,7 @@ class dtype:
     @property
     def subtype(self):
         return None
+
+    @property
+    def ivy_dtype(self):
+        return self._ivy_dtype

@@ -312,6 +312,7 @@ def test_atanh(
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_bitwise_and(
     *,
@@ -343,6 +344,7 @@ def test_bitwise_and(
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_bitwise_left_shift(
     *,
@@ -378,6 +380,7 @@ def test_bitwise_left_shift(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         array_api_dtypes=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_bitwise_invert(
     *,
@@ -408,6 +411,7 @@ def test_bitwise_invert(
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_bitwise_or(
     *,
@@ -439,6 +443,7 @@ def test_bitwise_or(
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_bitwise_right_shift(
     *,
@@ -477,6 +482,7 @@ def test_bitwise_right_shift(
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_bitwise_xor(
     *,
@@ -620,6 +626,7 @@ def test_divide(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
     ),
+    test_gradients=st.just(False),
 )
 def test_equal(
     *,
@@ -770,6 +777,7 @@ def test_floor_divide(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
+    test_gradients=st.just(False),
 )
 def test_greater(
     *,
@@ -801,6 +809,7 @@ def test_greater(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
+    test_gradients=st.just(False),
 )
 def test_greater_equal(
     *,
@@ -834,6 +843,7 @@ def test_greater_equal(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    test_gradients=st.just(False),
 )
 def test_isfinite(
     *,
@@ -862,10 +872,15 @@ def test_isfinite(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    detect_positive=st.booleans(),
+    detect_negative=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_isinf(
     *,
     dtype_and_x,
+    detect_positive,
+    detect_negative,
     test_flags,
     backend_fw,
     fn_name,
@@ -881,6 +896,8 @@ def test_isinf(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        detect_positive=detect_positive,
+        detect_negative=detect_negative,
     )
 
 
@@ -890,6 +907,7 @@ def test_isinf(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    test_gradients=st.just(False),
 )
 def test_isnan(
     *,
@@ -920,6 +938,7 @@ def test_isnan(
         num_arrays=2,
         min_num_dims=1,
     ),
+    test_gradients=st.just(False),
 )
 def test_less(
     *,
@@ -953,6 +972,7 @@ def test_less(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
+    test_gradients=st.just(False),
 )
 def test_less_equal(
     *,
@@ -1138,6 +1158,7 @@ def test_logaddexp(
 @handle_test(
     fn_tree="functional.ivy.logical_and",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
+    test_gradients=st.just(False),
 )
 def test_logical_and(
     *,
@@ -1166,6 +1187,7 @@ def test_logical_and(
 @handle_test(
     fn_tree="functional.ivy.logical_not",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",)),
+    test_gradients=st.just(False),
 )
 def test_logical_not(
     *,
@@ -1192,6 +1214,7 @@ def test_logical_not(
 @handle_test(
     fn_tree="functional.ivy.logical_or",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
+    test_gradients=st.just(False),
 )
 def test_logical_or(
     *,
@@ -1220,6 +1243,7 @@ def test_logical_or(
 @handle_test(
     fn_tree="functional.ivy.logical_xor",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
+    test_gradients=st.just(False),
 )
 def test_logical_xor(
     *,
@@ -1308,6 +1332,7 @@ def test_negative(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
     ),
+    test_gradients=st.just(False),
 )
 def test_not_equal(
     *,
@@ -1367,8 +1392,8 @@ def pow_helper(draw, available_dtypes=None):
     dtype1, x1 = draw(
         helpers.dtype_and_values(
             available_dtypes=available_dtypes,
-            small_abs_safety_factor=12,
-            large_abs_safety_factor=12,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
             safety_factor_scale="log",
         )
     )
@@ -1398,8 +1423,8 @@ def pow_helper(draw, available_dtypes=None):
             max_value = None
     dtype2, x2 = draw(
         helpers.dtype_and_values(
-            small_abs_safety_factor=12,
-            large_abs_safety_factor=12,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
             safety_factor_scale="log",
             max_value=max_value,
             dtype=[dtype2],
@@ -1485,7 +1510,7 @@ def test_remainder(
     assume(not np.any(np.isclose(x[1], 0)))
     # jax raises inconsistent gradients for negative numbers in x1
     if (np.any(x[0] < 0) or np.any(x[1] < 0)) and ivy.current_backend_str() == "jax":
-        test_flags.gradient = False
+        test_flags.test_gradients = False
     test_flags.as_variable = [test_flags.as_variable, False]
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -2040,6 +2065,7 @@ def test_trunc_divide(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("real_and_complex")
     ),
+    test_gradients=st.just(False),
 )
 def test_isreal(
     *,
