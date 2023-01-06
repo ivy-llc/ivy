@@ -1764,10 +1764,10 @@ def _composition_2():
 
 _composition_2.test_unsupported_devices_and_dtypes = {
     "cpu": {
-        "numpy": ("bfloat16",),
-        "jax": (),
-        "tensorflow": (),
-        "torch": ("uint16", "uint32", "uint64", "float16"),
+        "numpy": ("bfloat16", "complex64", "complex128"),
+        "jax": ("complex64", "complex128"),
+        "tensorflow": ("complex64", "complex128"),
+        "torch": ("uint16", "uint32", "uint64", "float16", "complex64", "complex128"),
     },
     "gpu": {
         "numpy": ivy.all_dtypes,
