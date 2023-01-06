@@ -347,8 +347,9 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         x
             sequence of matrices to multiply.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a valid
+            shape, i.e. the resulting shape after applying regular matrix multiplication
+            to the inputs.
 
         Returns
         -------
