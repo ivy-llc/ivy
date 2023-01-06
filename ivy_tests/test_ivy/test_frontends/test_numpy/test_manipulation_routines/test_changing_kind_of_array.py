@@ -13,7 +13,7 @@ from hypothesis import strategies as st
     like=helpers.get_dtypes("valid"),
 )
 def test_numpy_asanyarray(
-    data_and_x,
+    dtype_and_x,
     dtype,
     order,
     *,
