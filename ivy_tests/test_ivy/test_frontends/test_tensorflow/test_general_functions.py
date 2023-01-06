@@ -1100,6 +1100,11 @@ def test_tensorflow_transpose(
     conjugate,
     as_variable,
     num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
