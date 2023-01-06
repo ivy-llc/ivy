@@ -33,7 +33,7 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
         if not dtype or isinstance(dtype, str):
             return fn(*args, dtype=dtype, **kwargs)
         if isinstance(dtype, np_frontend.dtype):
-            return fn(*args, dtype=dtype._ivy_dtype, **kwargs)
+            return fn(*args, dtype=dtype.ivy_dtype, **kwargs)
         return fn(*args, dtype=np_frontend.to_ivy_dtype(dtype), **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
