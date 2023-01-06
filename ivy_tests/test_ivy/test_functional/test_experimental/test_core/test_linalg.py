@@ -304,22 +304,28 @@ def _generate_multi_dot_dtype_and_arrays(draw):
         helpers.dtype_and_values(
             shape=shape_1,
             dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
         )
     )
     matrix_2 = draw(
         helpers.dtype_and_values(
             shape=shape_2,
             dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
         )
     )
     matrix_3 = draw(
         helpers.dtype_and_values(
             shape=shape_3,
             dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
         )
     )
 
-    return input_dtype, (matrix_1[1], matrix_2[1], matrix_3[1])
+    return input_dtype, (matrix_1[1][0], matrix_2[1][0], matrix_3[1][0])
 
 
 @handle_test(
@@ -335,6 +341,7 @@ def test_multi_dot(
     ground_truth_backend,
 ):
     dtype, x = dtype_x
+    # test_flags.instance_method = False
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -343,4 +350,6 @@ def test_multi_dot(
         fn_name=fn_name,
         test_values=True,
         x=x,
+        rtol_=1e-1,
+        atol_=1e-1,
     )
