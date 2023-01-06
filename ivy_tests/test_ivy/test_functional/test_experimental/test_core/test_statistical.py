@@ -241,9 +241,10 @@ def test_quantile(
 @handle_test(
     fn_tree="functional.ivy.experimental.corrcoef",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float64"],
+        available_dtypes=["float32", "float64"],
         num_arrays=2,
         shared_dtype=True,
+        abs_smallest_val=1e-5,
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=3,
@@ -252,9 +253,8 @@ def test_quantile(
         max_value=100,
         allow_nan=False,
     ),
-    # rowvar=st.booleans(),
+    rowvar=st.booleans(),
     test_gradients=st.just(False),
-    rowvar=st.just(True),
 )
 def test_corrcoef(
     *,
@@ -277,6 +277,4 @@ def test_corrcoef(
         x=x[0],
         y=x[1],
         rowvar=rowvar,
-        rtol_=1e-3,
-        atol_=1e-3,
     )
