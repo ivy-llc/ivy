@@ -83,7 +83,8 @@ def corrcoef(
     if y is None:
         xarr = x
     else:
-        xarr = tf.concat([x, y], axis=0) if rowvar else tf.concat([x, y], axis=1)
+        axis = 0 if rowvar else 1
+        xarr = tf.concat([x, y], axis=axis)
 
     if rowvar:
         mean_t = tf.reduce_mean(xarr, axis=1, keepdims=True)
