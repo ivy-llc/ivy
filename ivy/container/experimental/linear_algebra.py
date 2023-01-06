@@ -337,6 +337,39 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.multi_dot. This method simply wraps
+        the function, and so the docstring for ivy.multi_dot also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            sequence of matrices to multiply.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            dot product of the arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+        
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)), y=ivy.arange(2 * 3).reshape((2, 3)))
+        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)), y=ivy.arange(3 * 2).reshape((3, 2)))
+        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)), y=ivy.arange(2 * 2).reshape((2, 2)))
+        >>> ivy.Container.static_multi_dot((a, b, c))
+        {
+            x: ivy.array([[26, 49], 
+                          [80, 148]]),
+            y: ivy.array([[26, 49], 
+                          [80, 148]])
+        }
+        """
         return ContainerBase.cont_multi_map_in_function(
             "multi_dot",
             x,
@@ -365,6 +398,16 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)), y=ivy.arange(2 * 3).reshape((2, 3)))
+        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)), y=ivy.arange(3 * 2).reshape((3, 2)))
+        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)), y=ivy.arange(2 * 2).reshape((2, 2)))
+        >>> a.multi_dot((b, c))
+        {
+            x: ivy.array([[26, 49], 
+                          [80, 148]]),
+            y: ivy.array([[26, 49], 
+                          [80, 148]])
+        }
         """
         return self.static_multi_dot(
             (self, *arrays),
