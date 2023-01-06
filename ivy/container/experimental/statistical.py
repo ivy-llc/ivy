@@ -607,7 +607,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         --------
         >>> a = ivy.Container(w=ivy.array([[1., 2.], [3., 4.]]), \
                                  z=ivy.array([[0., 1., 2.], [2., 1., 0.]]))
-        >>> ivy.Container.static_moveaxis(a)
+        >>> ivy.Container.corrcoef(a)
         {
             w: ivy.array([[1., 1.], 
                           [1., 1.]]),
@@ -659,7 +659,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         --------
         >>> a = ivy.Container(w=ivy.array([[1., 2.], [3., 4.]]), \
                                  z=ivy.array([[0., 1., 2.], [2., 1., 0.]]))
-        >>> ivy.Container.static_moveaxis(a)
+        >>> ivy.Container.corrcoef(a)
         {
             w: ivy.array([[1., 1.], 
                           [1., 1.]]),
