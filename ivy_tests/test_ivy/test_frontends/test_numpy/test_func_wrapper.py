@@ -126,7 +126,7 @@ def _zero_dim_to_scalar_helper(draw):
 
 def _zero_dim_to_scalar_checks(x, ret_x):
     if len(x.shape) > 0:
-        assert ivy.all(ret_x == ivy.array(x))
+        assert ivy.all(ivy.array(ret_x) == ivy.array(x))
     else:
         assert issubclass(type(ret_x), np_frontend.generic)
         assert ret_x.ivy_array == ivy.array(x)
