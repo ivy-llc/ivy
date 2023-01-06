@@ -3,6 +3,7 @@ project:
   output-dir: docs
 
 website:
+  page-navigation: true
   sidebar:
     logo: "assets/img/ivy_logo.png"
     collapse-level: 1
@@ -13,3 +14,4 @@ website:
 format:
   html:
     theme: assets/css/custom.scss
+    code-overflow: scroll
