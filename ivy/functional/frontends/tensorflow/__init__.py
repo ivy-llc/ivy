@@ -255,9 +255,15 @@ def promote_types_of_tensorflow_inputs(
     expect an array-like or tensor-like objects, otherwise it might give
     unexpected results.
     """
-    if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
-        not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
-    ):
+    type1 = ivy.default_dtype(item=x1).strip("u123456789")
+    type2 = ivy.default_dtype(item=x2).strip("u123456789")
+    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
+        x1 = ivy.asarray(x1)
+        x2 = ivy.asarray(x2, dtype=x1.dtype)
+    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
+        x1 = ivy.asarray(x1, dtype=x2.dtype)
+        x2 = ivy.asarray(x2)
+    else:
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
         promoted = promote_tensorflow_types(
@@ -265,12 +271,6 @@ def promote_types_of_tensorflow_inputs(
         )
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
-    elif hasattr(x1, "dtype"):
-        x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2, dtype=x1.dtype)
-    else:
-        x1 = ivy.asarray(x1, dtype=x2.dtype)
-        x2 = ivy.asarray(x2)
     return x1, x2
 
 
@@ -287,9 +287,9 @@ from . import nest
 from . import nn
 from . import quantization
 from . import random
+from . import general_functions
+from .general_functions import *
 from . import raw_ops
 from . import sets
 from . import signal
 from . import sparse
-from . import general_functions
-from .general_functions import *

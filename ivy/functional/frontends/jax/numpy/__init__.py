@@ -24,7 +24,6 @@ float32 = dtype("float32")
 float64 = dtype("float64")
 complex64 = dtype("complex64")
 complex128 = dtype("complex128")
-complex256 = dtype("complex256")
 bool = dtype("bool")
 
 
@@ -45,7 +44,6 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
         ivy.bfloat16,
     ],
     ivy.int8: [
@@ -58,7 +56,6 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
         ivy.bfloat16,
     ],
     ivy.int16: [
@@ -69,7 +66,6 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.int32: [
         ivy.int32,
@@ -77,14 +73,12 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.int64: [
         ivy.int64,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.uint8: [
         ivy.int16,
@@ -99,7 +93,6 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
         ivy.bfloat16,
     ],
     ivy.uint16: [
@@ -112,7 +105,6 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.uint32: [
         ivy.int64,
@@ -121,14 +113,12 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.uint64: [
         ivy.uint64,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.float16: [
         ivy.float16,
@@ -136,31 +126,26 @@ jax_numpy_casting_table = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.float32: [
         ivy.float32,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.float64: [
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
-    ivy.complex64: [ivy.complex64, ivy.complex128, ivy.complex256, ivy.bfloat16],
-    ivy.complex128: [ivy.complex128, ivy.complex256, ivy.bfloat16],
-    ivy.complex256: [ivy.complex256, ivy.bfloat16],
+    ivy.complex64: [ivy.complex64, ivy.complex128, ivy.bfloat16],
+    ivy.complex128: [ivy.complex128, ivy.bfloat16],
     ivy.bfloat16: [
         ivy.bfloat16,
         ivy.float32,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
 }
 
@@ -225,10 +210,10 @@ jax_promotion_table = {
     (ivy.uint64, ivy.uint16): ivy.uint64,
     (ivy.uint64, ivy.uint32): ivy.uint64,
     (ivy.uint64, ivy.uint64): ivy.uint64,
-    (ivy.uint64, ivy.int8): float,
-    (ivy.uint64, ivy.int16): float,
-    (ivy.uint64, ivy.int32): float,
-    (ivy.uint64, ivy.int64): float,
+    (ivy.uint64, ivy.int8): ivy.float64,
+    (ivy.uint64, ivy.int16): ivy.float64,
+    (ivy.uint64, ivy.int32): ivy.float64,
+    (ivy.uint64, ivy.int64): ivy.float64,
     (ivy.uint64, ivy.bfloat16): ivy.bfloat16,
     (ivy.uint64, ivy.float16): ivy.float16,
     (ivy.uint64, ivy.float32): ivy.float32,
@@ -237,7 +222,7 @@ jax_promotion_table = {
     (ivy.int8, ivy.uint8): ivy.int16,
     (ivy.int8, ivy.uint16): ivy.int32,
     (ivy.int8, ivy.uint32): ivy.int64,
-    (ivy.int8, ivy.uint64): float,
+    (ivy.int8, ivy.uint64): ivy.float64,
     (ivy.int8, ivy.int8): ivy.int8,
     (ivy.int8, ivy.int16): ivy.int16,
     (ivy.int8, ivy.int32): ivy.int32,
@@ -250,7 +235,7 @@ jax_promotion_table = {
     (ivy.int16, ivy.uint8): ivy.int16,
     (ivy.int16, ivy.uint16): ivy.int32,
     (ivy.int16, ivy.uint32): ivy.int64,
-    (ivy.int16, ivy.uint64): float,
+    (ivy.int16, ivy.uint64): ivy.float64,
     (ivy.int16, ivy.int8): ivy.int16,
     (ivy.int16, ivy.int16): ivy.int16,
     (ivy.int16, ivy.int32): ivy.int32,
@@ -263,7 +248,7 @@ jax_promotion_table = {
     (ivy.int32, ivy.uint8): ivy.int32,
     (ivy.int32, ivy.uint16): ivy.int32,
     (ivy.int32, ivy.uint32): ivy.int64,
-    (ivy.int32, ivy.uint64): float,
+    (ivy.int32, ivy.uint64): ivy.float64,
     (ivy.int32, ivy.int8): ivy.int32,
     (ivy.int32, ivy.int16): ivy.int32,
     (ivy.int32, ivy.int32): ivy.int32,
@@ -276,7 +261,7 @@ jax_promotion_table = {
     (ivy.int64, ivy.uint8): ivy.int64,
     (ivy.int64, ivy.uint16): ivy.int64,
     (ivy.int64, ivy.uint32): ivy.int64,
-    (ivy.int64, ivy.uint64): float,
+    (ivy.int64, ivy.uint64): ivy.float64,
     (ivy.int64, ivy.int8): ivy.int64,
     (ivy.int64, ivy.int16): ivy.int64,
     (ivy.int64, ivy.int32): ivy.int64,
@@ -307,7 +292,7 @@ jax_promotion_table = {
     (ivy.float16, ivy.int16): ivy.float16,
     (ivy.float16, ivy.int32): ivy.float16,
     (ivy.float16, ivy.int64): ivy.float16,
-    (ivy.float16, ivy.bfloat16): ivy.float64,
+    (ivy.float16, ivy.bfloat16): ivy.float32,
     (ivy.float16, ivy.float16): ivy.float16,
     (ivy.float16, ivy.float32): ivy.float32,
     (ivy.float16, ivy.float64): ivy.float64,
@@ -380,21 +365,21 @@ def promote_types_of_jax_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
-    if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
-        not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
-    ):
+    type1 = ivy.default_dtype(item=x1).strip("u123456789")
+    type2 = ivy.default_dtype(item=x2).strip("u123456789")
+    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
+        x1 = ivy.asarray(x1)
+        x2 = ivy.asarray(x2, dtype=x1.dtype)
+    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
+        x1 = ivy.asarray(x1, dtype=x2.dtype)
+        x2 = ivy.asarray(x2)
+    else:
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
         if x1.dtype != x2.dtype:
             promoted = promote_types_jax(x1.dtype, x2.dtype)
             x1 = ivy.asarray(x1, dtype=promoted)
             x2 = ivy.asarray(x2, dtype=promoted)
-    elif hasattr(x1, "dtype"):
-        x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2, dtype=x1.dtype)
-    else:
-        x1 = ivy.asarray(x1, dtype=x2.dtype)
-        x2 = ivy.asarray(x2)
     return x1, x2
 
 
@@ -402,9 +387,17 @@ from . import fft
 from . import linalg
 from . import creation
 from .creation import *
-from . import name_space_functions
-from .name_space_functions import *
 from . import dtype
 from .dtype import can_cast, promote_types
-
-from .._src.numpy.lax_numpy import _rewriting_take
+from . import indexing
+from .indexing import *
+from . import logic
+from .logic import *
+from . import manipulations
+from .manipulations import *
+from . import mathematical_functions
+from .mathematical_functions import *
+from . import statistical
+from .statistical import *
+from . import searching_sorting
+from .searching_sorting import *

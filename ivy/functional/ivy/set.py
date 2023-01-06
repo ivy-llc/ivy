@@ -100,163 +100,35 @@ def unique_all(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.random_normal(mean=0.0, std=1.0, shape=(2, 2))
-    >>> print(x)
-    ivy.array([[0.607,1.14],[0.735,0.667]])ivy.array([0.607,0.667,0.735,1.14])
+    >>> x = ivy.randint(0, 10, shape=(2, 2), seed=0)
+    >>> z = ivy.unique_all(x)
+    >>> print(z)
+    Results(values=ivy.array([1, 2, 5, 9]),
+            indices=ivy.array([3, 2, 1, 0]),
+            inverse_indices=ivy.array([[3, 2], [1, 0]]),
+           counts=ivy.array([1, 1, 1, 1]))
 
-    >>> values, indices, inverse_indices, counts = ivy.unique_all(x)
-    >>> print(values)
-    ivy.array([0,3,2,1])ivy.array([[0,3],[2,1]])
-
-    >>> print(indices)
-    ivy.array([1,1,1,1])
-
-    >>> print(inverse_indices)
-    ivy.array([[1.52,0.381,0.857],[-0.0396,0.14,-0.166],[1.58,-0.828,-0.144]])
-
-    >>> print(counts)
-    ivy.array([-0.828,-0.166,-0.144,-0.0396,0.14,0.381,0.857,1.52,1.58])
-
-
-    >>> x = ivy.random_normal(mean=0.0, std=1.0, shape=(3, 3))
-    >>> print(x)
-    ivy.array([[-0.40501155,  1.77361575, -1.97776199],
-               [-0.36831157,  0.89148434, -0.9512272 ],
-               [ 0.67542176, -0.41985657,  0.23478023]])
-
-    >>> values, indices, inverse_indices, counts = ivy.unique_all(x)
-    >>> print(values)
-    ivy.array([-1.97776199, -0.9512272 , -0.41985657, -0.40501155, -0.36831157,
-                0.23478023,  0.67542176,  0.89148434,  1.77361575])
-
-    >>> print(indices)
-    ivy.array([2, 5, 7, 0, 3, 8, 6, 4, 1])
-
-    >>> print(inverse_indices)
-    ivy.array([[3, 8, 0],
-               [4, 7, 1],
-               [6, 2, 5]])
-
-    >>> print(counts)
-    ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[ 2.1141,  0.8101,  0.9298,  0.8460],
+    >>> x = ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],
     ...                       [-1.2119, -0.3519, -0.6252,  0.4033],
     ...                       [ 0.7443,  0.2577, -0.3707, -0.0545],
     ...                       [-0.3238,  0.5944,  0.0775, -0.4327]])
-    >>> print(x)
-    ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],
-               [-1.2119, -0.3519, -0.6252,  0.4033],
-               [ 0.7443,  0.2577, -0.3707, -0.0545],
-               [-0.3238,  0.5944,  0.0775, -0.4327]])
-
     >>> x[range(4), range(4)] = ivy.nan #Introduce NaN values
-    >>> print(x)
-    ivy.array([[    nan,  0.8101,  0.9298,  0.8460],
-               [-1.2119,     nan, -0.6252,  0.4033],
-               [ 0.7443,  0.2577,     nan, -0.0545],
-               [-0.3238,  0.5944,  0.0775,     nan]])
-
-    >>> values, indices, inverse_indices, counts = ivy.unique_all(x)
-    >>> print(values)
-    ivy.array([-1.2119, -0.6252,  0.4033,     nan,     nan,     nan,     nan, -0.3238,
-               -0.0545,  0.0775,  0.2577,  0.5944,  0.7443,  0.8101,  0.8460,  0.9298])
-
-    >>> print(indices)
-    ivy.array([ 4,  6,  7,  0,  5, 10, 15, 12, 11, 14,  9, 13,  8,  1,  3,  2])
-
-    >>> print(inverse_indices)
-    ivy.array([[ 3, 13, 15, 14],
-               [ 0,  3,  1,  2],
-               [12, 10,  3,  8],
-               [ 7, 11,  9,  3]])
-
-    >>> print(counts)
-    ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
-
-    Instance Method Examples
-    ------------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],
-    ...                [-1.2119, -0.3519, -0.6252,  0.4033],
-    ...                [ 0.7443,  0.2577, -0.3707, -0.0545],
-    ...                [-0.3238,  0.5944,  0.0775, -0.4327]])
-    >>> print(x)
-    ivy.array([[ 2.1141,  0.8101,  0.9298,  0.8460],
-               [-1.2119, -0.3519, -0.6252,  0.4033],
-               [ 0.7443,  0.2577, -0.3707, -0.0545],
-               [-0.3238,  0.5944,  0.0775, -0.4327]])
-
-    >>> x[range(4), range(4)] = ivy.nan #Introduce NaN values
-    >>> print(x)
-    ivy.array([[    nan,  0.8101,  0.9298,  0.8460],
-               [-1.2119,     nan, -0.6252,  0.4033],
-               [ 0.7443,  0.2577,     nan, -0.0545],
-               [-0.3238,  0.5944,  0.0775,     nan]])
-
-    >>> values, indices, inverse_indices, counts = x.unique_all()
-    >>> print(values)
-    ivy.array([-1.2119, -0.6252,  0.4033,     nan,     nan,     nan,     nan, -0.3238,
-               -0.0545,  0.0775,  0.2577,  0.5944,  0.7443,  0.8101,  0.8460,  0.9298])
-
-    >>> print(indices)
-    ivy.array([ 4,  6,  7,  0,  5, 10, 15, 12, 11, 14,  9, 13,  8,  1,  3,  2])
-
-    >>> print(inverse_indices)
-    ivy.array([[ 3, 13, 15, 14],
-               [ 0,  3,  1,  2],
-               [12, 10,  3,  8],
-               [ 7, 11,  9,  3]])
-
-    >>> print(counts)
-    ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[-2.176,  0.889,  1.175, -0.763],
-    ...                       [-0.071,  1.262, -0.456, -2.114],
-    ...                       [-0.349,  0.615, -0.594, -1.335],
-    ...                       [ 0.212,  0.457, -0.827,  0.209]])
-    >>> print(x)
-    ivy.array([[-2.176,  0.889,  1.175, -0.763],
-               [-0.071,  1.262, -0.456, -2.114],
-               [-0.349,  0.615, -0.594, -1.335],
-               [ 0.212,  0.457, -0.827,  0.209]])
-
-    >>> x[range(4), range(4)] = ivy.nan #Introduce NaN values
-    >>> print(x)
-    ivy.array([[   nan,  0.889,  1.175, -0.763],
-               [-0.071,    nan, -0.456, -2.114],
-               [-0.349,  0.615,    nan, -1.335],
-               [ 0.212,  0.457, -0.827,    nan]])
-
-    >>> values, indices, inverse_indices, counts = x.unique_all()
-    >>> print(values)
-    ivy.array([-2.114, -1.335, -0.827, -0.763, -0.456,
-               -0.349, -0.071,  0.212,  0.457,  0.615,
-                0.889,  1.175,    nan,    nan,    nan,
-                  nan])
-
-    >>> print(indices)
-    ivy.array([ 7, 11, 14,  3,  6,  8,  4, 12, 13,  9,  1,  2,  0,  5, 10, 15])
-
-    >>> print(inverse_indices)
-    ivy.array([[12, 10, 11,  3],
-               [ 6, 12,  4,  0],
-               [ 5,  9, 12,  1],
-               [ 7,  8,  2, 12]])
-
-    >>> print(counts)
-    ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+    >>> z = ivy.unique_all(x)
+    >>> print(z)
+    Results(values=ivy.array([-1.2119    , -0.62519997, -0.3238    , -0.0545    ,  0.0775    ,
+        0.2577    ,  0.40329999,  0.59439999,  0.74430001,  0.81010002,
+        0.84600002,  0.92979997,         nan,         nan,         nan,
+               nan]),
+        indices=ivy.array([ 4,  6, 12, 11, 14,  9,  7, 13,  8,  1,  3,  2,  0,  5, 10, 15]),
+        inverse_indices=ivy.array([[12,  9, 11, 10],
+                                   [ 0, 12,  1,  6],
+                                   [ 8,  5, 12,  3],
+                                   [ 2,  7,  4, 12]]),
+       counts=ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))
 
     """
     return ivy.current_backend(x).unique_all(x)
@@ -339,15 +211,13 @@ def unique_inverse(
     >>> y = ivy.unique_inverse(x)
     >>> print(y)
     Results(values=ivy.array([1, 2, 3, 4, 5]),
-    inverse_indices=ivy.array([3, 4, 2, 1, 3, 0, 2]))
+            inverse_indices=ivy.array([3, 4, 2, 1, 3, 0, 2]))
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0.5,0.3,0.8,0.2,1.2,2.4,0.3])
+    >>> x = ivy.array([0.5,0.3,0.8,0.2,1.2,2.4,0.3])
     >>> y = ivy.ivy.unique_inverse(x)
     >>> print(y)
     Results(values=ivy.array([0.2, 0.3, 0.5, 0.8, 1.2, 2.4]),
-    inverse_indices=ivy.array([2, 1, 3, 0, 4, 5, 1]))
+            inverse_indices=ivy.array([2, 1, 3, 0, 4, 5, 1]))
 
     With :class:`ivy.Container` input:
 
@@ -359,9 +229,6 @@ def unique_inverse(
         a: (list[2], <class ivy.array.array.Array> shape=[5]),
         b: (list[2], <class ivy.array.array.Array> shape=[6])
     }
-
-
-
     """
     return ivy.current_backend(x).unique_inverse(x)
 
@@ -503,21 +370,20 @@ def unique_counts(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1,2,1,3,4,1,3])
-    >>> y = unique_counts(x)
-    >>> print(y)
-    Tuple([1,2,3,4],[3,1,2,1])
-
-    >>> x = ivy.asarray([1,2,3,4],[2,3,4,5],[3,4,5,6])
-    >>> y = unique_counts(x)
-    >>> print(y)
-    Tuple([1,2,3,4,5,6],[1,2,3,3,2,1])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
     >>> y = ivy.unique_counts(x)
     >>> print(y)
-    Tuple([0.2,0.3,0.4,1.4,2.3],[3,1,1,1,1]
+    Results(values=ivy.array([1, 2, 3, 4]), counts=ivy.array([3, 1, 2, 1]))
+
+    >>> x = ivy.asarray([[1,2,3,4],[2,3,4,5],[3,4,5,6]])
+    >>> y = ivy.unique_counts(x)
+    >>> print(y)
+    Results(values=ivy.array([1, 2, 3, 4, 5, 6]), counts=ivy.array([1, 2, 3, 3, 2, 1]))
+
+    >>> x = ivy.array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
+    >>> y = ivy.unique_counts(x)
+    >>> print(y)
+    Results(values=ivy.array([0.2       , 0.30000001, 0.40000001, 1.39999998, 2.29999995]),
+            counts=ivy.array([3, 1, 1, 1, 1]))
 
     With :class:`ivy.Container` input:
 

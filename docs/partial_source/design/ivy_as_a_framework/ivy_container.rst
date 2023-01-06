@@ -258,15 +258,15 @@ For example, if the container mainly contains arrays (such as the weights of a n
                       'w': ivy.array([[1.5, 2.3, 0.9]])}})
 
    # save and load as hdf5
-   weights.to_disk_as_hdf5('weights.hdf5')
-   loaded = ivy.Container.from_disk_as_hdf5('weights.hdf5')
-   assert ivy.Container.identical(
+   weights.cont_to_disk_as_hdf5('weights.hdf5')
+   loaded = ivy.Container.cont_from_disk_as_hdf5('weights.hdf5')
+   assert ivy.Container.cont_identical(
           [loaded, weights], same_arrays=False)
 
    # save and load as pickled
-   weights.to_disk_as_pickled('weights.pickled')
-   loaded = ivy.Container.from_disk_as_pickled('weights.pickled')
-   assert ivy.Container.identical(
+   weights.cont_to_disk_as_pickled('weights.pickled')
+   loaded = ivy.Container.cont_from_disk_as_pickled('weights.pickled')
+   assert ivy.Container.cont_identical(
           [loaded, weights], same_arrays=False)
 
 Alternatively, if the container mainly stored experiment configuration data, then the following can be used.
@@ -281,7 +281,7 @@ Alternatively, if the container mainly stored experiment configuration data, the
                         'optim': 'ADAM'}})
 
    # save and load as json
-   config.to_disk_as_json('config.json')
+   config.cont_to_disk_as_json('config.json')
 
    # config.json contents -------------#
    # {                                 #
@@ -297,8 +297,8 @@ Alternatively, if the container mainly stored experiment configuration data, the
    # }                                 #
    # ----------------------------------#
 
-   loaded = ivy.Container.from_disk_as_json('config.json')
-   assert (config == loaded).all_true()
+   loaded = ivy.Container.cont_from_disk_as_json('config.json')
+   assert (config == loaded).cont_all_true()
 
 Comparisons
 -----------

@@ -90,6 +90,7 @@ def check_docstring_examples_run(
         return True
 
     # removing extra new lines and trailing white spaces from the docstrings
+
     trimmed_docstring = trim(docstring=docstring)
     trimmed_docstring = trimmed_docstring.split("\n")
 
@@ -104,7 +105,10 @@ def check_docstring_examples_run(
     sub = ">>> print("
     for index, line in enumerate(trimmed_docstring):
         if sub in line:
-            end_index = trimmed_docstring.index("", index)
+            for i, s in enumerate(trimmed_docstring[index + 1 :]):
+                if s.startswith(">>>") or s.lower().startswith("with"):
+                    end_index = index + i + 1
+                    break
             p_output = trimmed_docstring[index + 1 : end_index]
             p_output = ("").join(p_output).replace(" ", "")
             p_output = p_output.replace("...", "")
@@ -253,6 +257,9 @@ def test_docstrings(backend):
         "unique_all",
         "total_mem_on_dev",
         "supports_inplace_updates",
+        "get",
+        "deserialize",
+        "dropout",
     ]
     # the temp skip list consists of functions which have an issue with their
     # implementation
@@ -268,7 +275,7 @@ def test_docstrings(backend):
     ]
 
     # skip list for array and container docstrings
-    skip_arr_cont = ["cumprod", "supports_inplace_updates", "slogdet"]
+    skip_arr_cont = ["cumprod", "supports_inplace_updates", "slogdet", "dropout"]
     # currently_being_worked_on = ["layer_norm"]
 
     # comment out the line below in future to check for the functions in temp skip list

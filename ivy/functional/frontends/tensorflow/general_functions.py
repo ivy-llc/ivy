@@ -82,6 +82,11 @@ def einsum(equation, *inputs, **kwargs):
 
 
 @to_ivy_arrays_and_back
+def reshape(tensor, shape, name=None):
+    return ivy.reshape(tensor, shape=shape)
+
+
+@to_ivy_arrays_and_back
 def rank(input, **kwargs):
     return ivy.astype(ivy.array(input.ndim), ivy.int32)
 
@@ -122,6 +127,15 @@ def shape(input, out_type=ivy.int32, name=None):
         return ivy.array(ivy.shape(input), dtype="int64")
 
 
+@to_ivy_arrays_and_back
+def shape_n(input, out_type=ivy.int32, name=None):
+    out_type = to_ivy_dtype(out_type)
+    if out_type in ["int32", "int64"]:
+        return [ivy.array(ivy.shape(i), dtype=out_type) for i in input]
+    else:
+        return [ivy.array(ivy.shape(i), dtype="int64") for i in input]
+
+
 @with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
@@ -152,8 +166,17 @@ def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
 
 
 @to_ivy_arrays_and_back
+def identity(input, name=None):
+    return ivy.copy_array(input)
+
+
 def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def is_tensor(x, name=None):
+    return ivy.is_array(x)
 
 
 @to_ivy_arrays_and_back
@@ -170,3 +193,63 @@ def gather_nd(params, indices, batch_dims=0, name=None):
 def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
     paddings = paddings.to_list() if ivy.is_array(paddings) else paddings
     return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
+
+
+@to_ivy_arrays_and_back
+def transpose(a, perm=None, conjugate=False, name="transpose"):
+    # handle conjugate when ivy supports complex numbers
+    if perm is not None:
+        return ivy.permute_dims(a, axes=perm)
+    n = a.ndim
+    perm = ivy.arange(n - 1, -1, -1)
+    return ivy.permute_dims(a, axes=perm)
+
+
+@to_ivy_arrays_and_back
+def strided_slice(
+    input_,
+    begin,
+    end,
+    strides=None,
+    begin_mask=0,
+    end_mask=0,
+    ellipsis_mask=0,
+    new_axis_mask=0,
+    shrink_axis_mask=0,
+    var=None,
+    name=None,
+):
+    def num_to_bit_list(number):
+        return list(map(int, "{:0{size}b}".format(number, size=len(input_.shape))))
+
+    begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask = list(
+        map(
+            num_to_bit_list,
+            [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask],
+        )
+    )
+
+    full_slice = ()
+    need_ellipsis = False
+    if len(input_.shape) - len(begin.shape) > 0:
+        need_ellipsis = True
+    for i, _ in enumerate(begin.shape):
+        if need_ellipsis and ellipsis_mask[i]:
+            full_slice += (...,)
+            need_ellipsis = False
+        else:
+            if new_axis_mask[i]:
+                full_slice += (ivy.newaxis,)
+            else:
+                if not begin_mask[i] or shrink_axis_mask[i]:
+                    begin_i = int(begin[i])
+                else:
+                    begin_i = None
+                if shrink_axis_mask[i]:
+                    end_i = begin_i + 1
+                elif end_mask[i]:
+                    end_i = None
+                else:
+                    end_i = int(end[i])
+                full_slice += (slice(begin_i, end_i, int(strides[i])),)
+    return input_[full_slice]

@@ -8,19 +8,9 @@ def is_tensor(obj):
     return ivy.is_array(obj)
 
 
-# def is_storage(obj):
-# 	return ivy.is_storage(obj)
-
-# def is_complex(obj):
-# 	return ivy.is_complex(obj)
-
-# def is_conj(obj):
-# 	return ivy.is_conj(obj)
-
-
 @to_ivy_arrays_and_back
 def numel(input):
-    return input.size
+    return ivy.astype(ivy.array(input.size), ivy.int64)
 
 
 @to_ivy_arrays_and_back
