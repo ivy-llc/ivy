@@ -225,9 +225,7 @@ def check_inplace_sizes_valid(var, data):
 def check_shapes_broadcastable(var, data):
     if not check_one_way_broadcastable(var, data):
         raise ivy.exceptions.IvyException(
-            "Could not broadcast shape {} to shape {}.".format(
-                data, var
-            )
+            "Could not broadcast shape {} to shape {}.".format(data, var)
         )
 
 
