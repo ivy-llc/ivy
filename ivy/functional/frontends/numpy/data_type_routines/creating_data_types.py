@@ -6,6 +6,8 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 def to_ivy_dtype(dtype_in):
+    if dtype_in is None:
+        return
     if isinstance(dtype_in, ivy.Dtype):
         return dtype_in
     if isinstance(dtype_in, str):
