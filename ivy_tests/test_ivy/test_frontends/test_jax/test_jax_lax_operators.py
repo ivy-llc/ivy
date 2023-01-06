@@ -1,6 +1,7 @@
 # global
 import numpy as np
 from hypothesis import assume, strategies as st
+import random
 
 # local
 import ivy
@@ -1878,6 +1879,77 @@ def test_jax_lax_dot(
         atol=1e-2,
         lhs=lhs,
         rhs=rhs,
+        precision=None,
+        preferred_element_type=dtype,
+    )
+
+
+@st.composite
+def _general_dot_helper(draw):
+
+    dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
+
+    lshape = draw(
+        st.lists(st.integers(min_value=0, max_value=10), min_size=1, unique=True)
+    )
+    ndims = len(lshape)
+    perm_id = random.sample(list(range(ndims)), ndims)
+    rshape = lshape[perm_id]
+
+    ldtype, lhs = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=lshape,
+        )
+    )
+    rdtype, rhs = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=rshape,
+        )
+    )
+
+    batch_n = draw(st.integers(min_value=0, max_value=len(lshape) - 1))
+    l_id = random.sample(list(range(ndims)), ndims)
+    r_id = l_id[perm_id]
+    lhs_contracting = lshape[l_id[:batch_n]]
+    rhs_contracting = rshape[r_id[:batch_n]]
+    lhs_batch = lshape[l_id[batch_n:]]
+    rhs_batch = rshape[r_id[batch_n:]]
+
+    return ldtype+rdtype, \
+        (lhs, rhs), \
+        (lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch), \
+        dtype
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.dot_general",
+    dtypes_lr_dims=_general_dot_helper(),
+)
+def test_jax_lax_dot_general(
+    *,
+    dtypes_lr_dims,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtypes, lr, dims, dtype = dtypes_lr_dims
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lhs=lr[0],
+        rhs=lr[1],
+        dimension_numbers=dims,
         precision=None,
         preferred_element_type=dtype,
     )
