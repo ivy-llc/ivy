@@ -322,6 +322,11 @@ def Pack(*, values, axis=0, name="Pack"):
     return ivy.stack(values, axis=axis)
 
 
+@to_ivy_arrays_and_back
+def Pad(*, input, paddings, name="Pad"):
+    return ivy.pad(input, paddings.to_list(), constant_values=0)
+
+
 Relu = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.keras.activations.relu,
