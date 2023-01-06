@@ -108,6 +108,12 @@ h3 {
     height: 100%;
 }
 
+.notebook-card:hover {
+    border: 2px solid $ivy-green;
+    border-radius: 20px;
+    background-color: $ivy-light-grey;
+}
+
 .notebook-card-title {
     font-size: x-large;
     font-weight: 500;
