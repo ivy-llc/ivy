@@ -324,7 +324,7 @@ def Pack(*, values, axis=0, name="Pack"):
 
 @to_ivy_arrays_and_back
 def Pad(*, input, paddings, name="Pad"):
-    return ivy.pad(input, paddings.to_list(), constant_values=0)
+    return ivy.constant_pad(input, paddings.to_list())
 
 
 Relu = to_ivy_arrays_and_back(
