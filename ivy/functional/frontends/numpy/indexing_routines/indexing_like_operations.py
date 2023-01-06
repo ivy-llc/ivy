@@ -14,6 +14,6 @@ def diag(v, k=0):
 
 
 @outputs_to_numpy_arrays
-def diag_indices(n, ndim):
-    idx = ivy.arange(n)
+def diag_indices(n, ndim=2):
+    idx = ivy.arange(n, dtype=int)
     return (idx,) * ndim
