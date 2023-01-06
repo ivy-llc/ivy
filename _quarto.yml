@@ -15,3 +15,9 @@ format:
   html:
     theme: assets/css/custom.scss
     code-overflow: scroll
+    jupyter: python3
+    monobackgroundcolor: "#f9f9f8"
+    execute:
+      echo: true
+      output: true
+      eval: true
