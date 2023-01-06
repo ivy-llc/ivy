@@ -238,10 +238,6 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             If rowvar is True (default), then each row represents a variable, with
             observations in the columns. Otherwise, the relationship is transposed:
             each column represents a variable, while the rows contain observations.
-            If the sub-classes methods does not implement keepdims any exceptions
-            will be raised.
-        dtype
-            The desired data type of returned tensor. Default is None.
 
         Returns
         -------
@@ -250,11 +246,14 @@ class ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
-        >>> a = ivy.array([[1, ivy.nan], [3, 4]])
+        >>> a = ivy.array([[0., 1., 2.], [2., 1., 0.]])
         >>> a.corrcoef()
-        ????
-        >>> a.corrcoef(axis=0)
-        ????
+            ivy.array([[ 1., -1.],
+                       [-1.,  1.]])
+        >>> a.corrcoef(rowvar=False)
+            ivy.array([[ 1., nan, -1.],
+                       [nan, nan, nan],
+                       [-1., nan,  1.]])
         """
         return ivy.corrcoef(
             self._data, y=y, rowvar=rowvar, out=out

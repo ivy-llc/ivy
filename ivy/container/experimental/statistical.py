@@ -572,7 +572,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
 
     @staticmethod
     def static_corrcoef(
-        input: ivy.Container,
+        x: ivy.Container,
         /,
         *,
         y: ivy.Container = None,
@@ -590,8 +590,14 @@ class ContainerWithStatisticalExperimental(ContainerBase):
 
         Parameters
         ----------
-        input
+        x
             Input container including arrays.
+        y
+            An additional input container.
+        rowvar
+            If rowvar is True (default), then each row represents a variable, with
+            observations in the columns. Otherwise, the relationship is transposed:
+            each column represents a variable, while the rows contain observations.
 
         Returns
         -------
@@ -600,17 +606,19 @@ class ContainerWithStatisticalExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.Container(x=ivy.array([[1, ivy.nan], [3, 4]]),\
-                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> a = ivy.Container(w=ivy.array([[1., 2.], [3., 4.]]), \
+                                 z=ivy.array([[0., 1., 2.], [2., 1., 0.]]))
         >>> ivy.Container.static_moveaxis(a)
         {
-            x: ???
-            y: ???
+            w: ivy.array([[1., 1.], 
+                          [1., 1.]]),
+            z: ivy.array([[1., -1.], 
+                          [-1., 1.]])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
             "corrcoef",
-            input,
+            x,
             y=y,
             rowvar=rowvar,
             key_chains=key_chains,
@@ -636,6 +644,12 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         ----------
         self
             Input container including arrays.
+        y
+            An additional input container.
+        rowvar
+            If rowvar is True (default), then each row represents a variable, with
+            observations in the columns. Otherwise, the relationship is transposed:
+            each column represents a variable, while the rows contain observations.
 
         Returns
         -------
@@ -644,12 +658,14 @@ class ContainerWithStatisticalExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.Container(x=ivy.array([[1, ivy.nan], [3, 4]]),\
-                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
-        >>> a.corrcoef()
+        >>> a = ivy.Container(w=ivy.array([[1., 2.], [3., 4.]]), \
+                                 z=ivy.array([[0., 1., 2.], [2., 1., 0.]]))
+        >>> ivy.Container.static_moveaxis(a)
         {
-            x: ????
-            y: ????
+            w: ivy.array([[1., 1.], 
+                          [1., 1.]]),
+            z: ivy.array([[1., -1.], 
+                          [-1., 1.]])
         }
         """
         return self.static_corrcoef(
