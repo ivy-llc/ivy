@@ -530,6 +530,7 @@ def test_tensorflow_normalize(
         tensor=x[0],
         ord=ord,
         axis=axis,
+        atol=1e-08,
     )
 
 
@@ -626,4 +627,91 @@ def test_tensorflow_matrix_transpose(
         frontend=frontend,
         fn_tree=fn_tree,
         a=x[0],
+    )
+
+
+@st.composite
+def _get_dtype_and_sequence_of_arrays(draw):
+    array_dtype = draw(helpers.get_dtypes("float", full=False))
+    arbitrary_size = draw(st.integers(min_value=2, max_value=10))
+    values = []
+    for i in range(arbitrary_size):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=array_dtype[0], shape=helpers.get_shape(), allow_nan=True
+                )
+            )
+        )
+    return array_dtype, values
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.global_norm",
+    dtype_and_input=_get_dtype_and_sequence_of_arrays(),
+)
+def test_tensorflow_global_norm(
+    *,
+    dtype_and_input,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        t_list=x,
+    )
+
+
+# cholesky
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.cholesky",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+)
+def test_tensorflow_linalg_cholesky(
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=dtype[0])
+    # make symmetric positive-definite beforehand
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-02,
+        input=x,
     )

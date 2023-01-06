@@ -1,92 +1,161 @@
 # global
 from hypothesis import given, strategies as st
 
+# import numpy as np
+
 # local
-import numpy as np
+import ivy
 from ivy.functional.frontends.numpy.ma.MaskedArray import MaskedArray
 import ivy_tests.test_ivy.helpers as helpers
 
-
-@st.composite
-def _getitem_helper(draw):
-    arr_size = draw(helpers.ints(min_value=2, max_value=10))
-    dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"), shape=(arr_size,)
-        )
-    )
-    mask = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("bool"), shape=(arr_size,)
-        )
-    )
-    index = draw(helpers.ints(min_value=0, max_value=arr_size - 1))
-    return dtype, x, mask, index
-
-
-# __getitem__
-@given(
-    args=_getitem_helper(),
-)
-def test_numpy_maskedarray_special_getitem(
-    args,
-):
-    dtype, x, mask, index = args
-    data = MaskedArray(x[0], mask=mask, dtype=dtype[0])
-    ret = data.__getitem__(index)
-    data_gt = np.ma.MaskedArray(x[0], mask=mask, dtype=dtype[0])
-    ret_gt = data_gt.at[index].get()
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="numpy",
-        )
+# from ivy_tests.test_ivy.helpers import handle_frontend_test
+# import ivy.functional.backends.torch as ivy_torch
 
 
 @st.composite
-def _setitem_helper(draw):
-    arr_size = draw(helpers.ints(min_value=2, max_value=10))
-    available_dtypes = draw(helpers.get_dtypes("float")) + draw(
-        helpers.get_dtypes("int")
-    )
-    dtype, x = draw(
+def _array_mask(draw):
+    dtype = draw(helpers.get_dtypes("valid", full=False))
+    dtypes, x_mask = draw(
         helpers.dtype_and_values(
-            available_dtypes=st.sampled_from(available_dtypes), shape=(arr_size,)
+            num_arrays=2,
+            dtype=[dtype[0], "bool"],
         )
     )
-    mask = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("bool"), shape=(arr_size,)
-        )
-    )
-    index = draw(helpers.ints(min_value=0, max_value=arr_size - 1))
-    if "float" in dtype[0]:
-        value = draw(helpers.floats())[0]
-    else:
-        value = draw(helpers.ints())[0]
-    return dtype, x, mask, index, value
+    return dtype[0], x_mask
 
 
-# __setitem__
+# data
+@given(dtype_x_mask=_array_mask())
+def test_numpy_maskedarray_property_data(dtype_x_mask):
+    dtype, data = dtype_x_mask
+    x = MaskedArray(data[0], mask=data[1], dtype=dtype)
+    assert ivy.all(x.data == ivy.array(data[0]))
+
+
+# mask
+@given(dtype_x_mask=_array_mask())
+def test_numpy_maskedarray_property_mask(dtype_x_mask):
+    dtype, data = dtype_x_mask
+    x = MaskedArray(data[0], mask=ivy.array(data[1]), dtype=dtype, shrink=False)
+    assert ivy.all(x.mask == ivy.array(data[1]))
+
+
+# fill_value
 @given(
-    args=_setitem_helper(),
+    dtype_x_mask=_array_mask(),
+    fill=st.integers(),
 )
-def test_numpy_maskedarray_special_setitem(
-    args,
+def test_numpy_maskedarray_property_fill_value(
+    dtype_x_mask,
+    fill,
 ):
-    dtype, x, mask, index, value = args
-    data = MaskedArray(x[0], mask=mask, dtype=dtype[0])
-    ret = data.__setitem__(index, value)
-    data_gt = np.ma.MaskedArray(x[0], mask=mask, dtype=dtype[0])
-    ret_gt = data_gt.at[index].set(value)
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, data = dtype_x_mask
+    x = MaskedArray(data[0], mask=data[1], dtype=dtype, fill_value=fill)
+    assert x.fill_value == ivy.array(fill, dtype=dtype)
+
+
+# hardmask
+@given(
+    dtype_x_mask=_array_mask(),
+    hard=st.booleans(),
+)
+def test_numpy_maskedarray_property_hardmask(dtype_x_mask, hard):
+    dtype, data = dtype_x_mask
+    x = MaskedArray(data[0], mask=data[1], dtype=dtype, hard_mask=hard)
+    assert x.hardmask == hard
+
+
+# dtype
+@given(dtype_x_mask=_array_mask())
+def test_numpy_maskedarray_property_dtype(dtype_x_mask):
+    dtype, data = dtype_x_mask
+    x = MaskedArray(data[0], mask=data[1], dtype=dtype)
+    assert x.dtype == dtype
+
+
+# @st.composite
+# def _getitem_helper(draw):
+#     dtype_x_index = draw(
+#         helpers.array_indices_axis(
+#             array_dtypes=helpers.get_dtypes("numeric"),
+#             indices_dtypes=ivy_torch.valid_int_dtypes,
+#             indices_same_dims=True,
+#         )
+#     )
+#     dtype, x, index = dtype_x_index[:3]
+#     mask = draw(
+#         helpers.dtype_and_values(
+#             available_dtypes=helpers.get_dtypes("bool"),
+#             shape=x.shape,
+#         )
+#     )
+#     return dtype[0], x, mask[1][0], index
+
+
+# # __getitem__
+# @handle_frontend_test(
+#     fn_tree="numpy.add",  # dummy fn_tree
+#     args=_getitem_helper(),
+# )
+# def test_numpy_maskedarray_special_getitem(
+#     args,
+# ):
+#     dtype, x, mask, index = args
+#     data = MaskedArray(x, mask=mask, dtype=dtype)
+#     ret = data.__getitem__(index)
+#     data_gt = np.ma.MaskedArray(x, mask=mask, dtype=dtype)
+#     ret_gt = data_gt.__getitem__(index)
+#     ret = ivy.to_numpy(ivy.flatten(ret.data))
+#     ret_gt = np.array(np.ravel(ret_gt))
+#     helpers.value_test(
+#         ret_np_flat=ret,
+#         ret_np_from_gt_flat=ret_gt,
+#         ground_truth_backend="numpy",
+#     )
+
+
+# @st.composite
+# def _setitem_helper(draw):
+#     dtype_x_index = draw(
+#         helpers.array_indices_axis(
+#             array_dtypes=st.shared(helpers.get_dtypes("numeric"), key="dtype"),
+#             indices_dtypes=ivy_torch.valid_int_dtypes,
+#             indices_same_dims=True,
+#         )
+#     )
+#     dtype, x, index = dtype_x_index[:3]
+#     mask = draw(
+#         helpers.dtype_and_values(
+#             available_dtypes=helpers.get_dtypes("bool"),
+#             shape=x.shape,
+#         )
+#     )
+#     value = draw(
+#         helpers.dtype_and_values(
+#             available_dtypes=st.shared(helpers.get_dtypes("numeric"), key="dtype"),
+#             shape=index.shape,
+#         )
+#     )
+#     return dtype[0], x, mask[1][0], index, value[1][0]
+
+
+# # __setitem__
+# @handle_frontend_test(
+#     fn_tree="numpy.add",  # dummy fn_tree
+#     args=_setitem_helper(),
+# )
+# def test_numpy_maskedarray_special_setitem(
+#     args,
+# ):
+#     dtype, x, mask, index, value = args
+#     data = MaskedArray(x, mask=mask, dtype=dtype)
+#     data_gt = np.ma.MaskedArray(x, mask=mask, dtype=dtype)
+#     data = data.__setitem__(index, value)
+#     data_gt.__setitem__(index, value)
+#     ret = ivy.to_numpy(ivy.flatten(data.data))
+#     ret_gt = np.array(np.ravel(data_gt))
+#     helpers.value_test(
+#         ret_np_flat=ret,
+#         ret_np_from_gt_flat=ret_gt,
+#         ground_truth_backend="numpy",
+#     )

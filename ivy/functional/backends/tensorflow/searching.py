@@ -18,12 +18,22 @@ def argmax(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = x.numpy().argmax(axis=axis, keepdims=keepdims)
+    if select_last_index:
+        x = tf.experimental.numpy.flip(x, axis=axis)
+        ret = x.numpy().argmax(axis=axis, keepdims=keepdims)
+        if axis is not None:
+            ret = x.shape[axis] - ret - 1
+        else:
+            ret = tf.size(x, out_type=tf.int64) - ret - 1
+    else:
+        ret = x.numpy().argmax(axis=axis, keepdims=keepdims)
     if output_dtype is not None:
-        ret = tf.cast(ret, output_dtype)
-    return tf.convert_to_tensor(ret, dtype=ret.dtype)
+        output_dtype = ivy.as_native_dtype(output_dtype)
+        return tf.cast(ret, output_dtype)
+    return tf.convert_to_tensor(ret)
 
 
 def argmin(
@@ -33,17 +43,22 @@ def argmin(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[tf.dtypes.DType] = None,
+    select_last_index: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
-    # The returned array must have the default array index data type.
+    if select_last_index:
+        x = tf.experimental.numpy.flip(x, axis=axis)
+        ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
+        if axis is not None:
+            ret = x.shape[axis] - ret - 1
+        else:
+            ret = tf.size(x, out_type=tf.dtypes.int64) - ret - 1
+    else:
+        ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
     if output_dtype is not None:
         output_dtype = ivy.as_native_dtype(output_dtype)
-        if output_dtype not in (tf.int32, tf.int64):
-            return tf.convert_to_tensor(ret, dtype=tf.int64)
-        else:
-            return tf.convert_to_tensor(ret, dtype=output_dtype)
-    return tf.convert_to_tensor(ret, dtype=tf.int64)
+        return tf.cast(ret, output_dtype)
+    return tf.convert_to_tensor(ret)
 
 
 def nonzero(

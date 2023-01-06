@@ -664,6 +664,41 @@ class ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.atleast_2d(self._data, *arys)
 
+    def atleast_3d(
+        self: ivy.Array, *arys: Union[ivy.Array, bool, Number]
+    ) -> List[ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.atleast_3d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_3d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array. Cannot be a scalar input.
+        arys
+            An arbitrary number of input arrays.
+
+        Returns
+        -------
+        ret
+            List of arrays, each with a.ndim >= 3. Copies are made only if necessary
+            and views with three or more dimensions are returned. For example, a 1-D
+            array of shape (N,) becomes a view of shape (1, N, 1), and a 2-D array
+            of shape (M, N) becomes a view of shape (M, N, 1).
+
+        Examples
+        --------
+        >>> a1 = ivy.array([[1,2,3]])
+        >>> a2 = ivy.array([4,8])
+        >>> a1.atleast_3d(a2,5,6)
+        [ivy.array([[[1],
+                [2],
+                [3]]]), ivy.array([[[4],
+                [8]]]), ivy.array([[[5]]]), ivy.array([[[6]]])]
+        """
+        return ivy.atleast_3d(self._data, *arys)
+
     def take_along_axis(
         self: ivy.Array,
         indices: ivy.Array,
@@ -702,3 +737,55 @@ class ArrayWithManipulationExperimental(abc.ABC):
         ivy.array([[4, 3, 3], [1, 1, 1]])
         """
         return ivy.take_along_axis(self._data, indices, axis, out=out)
+
+    def hsplit(
+        self: ivy.Array,
+        indices_or_sections: Union[int, Tuple[int]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.hsplit. This method simply
+        wraps the function, and so the docstring for ivy.hsplit also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        indices_or_sections
+            If indices_or_sections is an integer n, the array is split into n sections.
+            If the array is divisible by n horizontally, each section will be of
+            equal size. If input is not divisible by n, the sizes of the first
+            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
+            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is a tuple of ints, then input is split at each of
+            the indices in the tuple.
+        out
+            Optional output, for writing the result to.
+
+        Returns
+        -------
+        ret
+            input array split horizontally.
+
+        Examples
+        --------
+        >>> ary = ivy.array(
+            [[0.,  1., 2., 3.],
+             [4.,  5., 6,  7.],
+             [8.,  9., 10., 11.],
+             [12., 13., 14., 15.]]
+            )
+        >>> ary.hsplit(2)
+        [ivy.array([[ 0.,  1.],
+                    [ 4.,  5.],
+                    [ 8.,  9.],
+                    [12., 13.]]),
+         ivy.array([[ 2.,  3.],
+                    [ 6.,  7.],
+                    [10., 11.],
+                    [14., 15.]]))
+        """
+        return ivy.hsplit(self._data, indices_or_sections, out=out)

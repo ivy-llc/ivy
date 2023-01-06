@@ -258,15 +258,15 @@ For example, if the container mainly contains arrays (such as the weights of a n
                       'w': ivy.array([[1.5, 2.3, 0.9]])}})
 
    # save and load as hdf5
-   weights.to_disk_as_hdf5('weights.hdf5')
-   loaded = ivy.Container.from_disk_as_hdf5('weights.hdf5')
-   assert ivy.Container.identical(
+   weights.cont_to_disk_as_hdf5('weights.hdf5')
+   loaded = ivy.Container.cont_from_disk_as_hdf5('weights.hdf5')
+   assert ivy.Container.cont_identical(
           [loaded, weights], same_arrays=False)
 
    # save and load as pickled
-   weights.to_disk_as_pickled('weights.pickled')
-   loaded = ivy.Container.from_disk_as_pickled('weights.pickled')
-   assert ivy.Container.identical(
+   weights.cont_to_disk_as_pickled('weights.pickled')
+   loaded = ivy.Container.cont_from_disk_as_pickled('weights.pickled')
+   assert ivy.Container.cont_identical(
           [loaded, weights], same_arrays=False)
 
 Alternatively, if the container mainly stored experiment configuration data, then the following can be used.
@@ -281,7 +281,7 @@ Alternatively, if the container mainly stored experiment configuration data, the
                         'optim': 'ADAM'}})
 
    # save and load as json
-   config.to_disk_as_json('config.json')
+   config.cont_to_disk_as_json('config.json')
 
    # config.json contents -------------#
    # {                                 #
@@ -297,8 +297,8 @@ Alternatively, if the container mainly stored experiment configuration data, the
    # }                                 #
    # ----------------------------------#
 
-   loaded = ivy.Container.from_disk_as_json('config.json')
-   assert (config == loaded).all_true()
+   loaded = ivy.Container.cont_from_disk_as_json('config.json')
+   assert (config == loaded).cont_all_true()
 
 Comparisons
 -----------
@@ -312,10 +312,10 @@ We can then very quickly find conflicting leaves.
 
     cnt0 = ivy.Container({'a': ivy.array([0.]),
                       'b': ivy.array([1.])})
-    cnt1 = cnt0.deep_copy()
+    cnt1 = cnt0.cont_deep_copy()
     cnt1.b = ivy.array([0.])
 
-    print(ivy.Container.diff(cnt0, cnt1))
+    print(ivy.Container.cont_diff(cnt0, cnt1))
 
     {
         a: ivy.array([0.]),
@@ -326,7 +326,7 @@ We can then very quickly find conflicting leaves.
     }
 
 Or perhaps we saved JSON configuration files to disk for two different experiment runs, and then want to quickly see their differences.
-The :meth:`ivy.Container.diff` method will also detect differences in the hierarchical structure and key name differences.
+The :meth:`ivy.Container.cont_diff` method will also detect differences in the hierarchical structure and key name differences.
 
 .. code-block:: python
 
@@ -340,7 +340,7 @@ The :meth:`ivy.Container.diff` method will also detect differences in the hierar
             'dropout': 0.5,
             'lr': 0.1})
 
-    print(ivy.Container.diff(config0, config1))
+    print(ivy.Container.cont_diff(config0, config1))
 
     {
         batch_size: {
@@ -355,7 +355,7 @@ The :meth:`ivy.Container.diff` method will also detect differences in the hierar
             diff_0: ADAM
         }
     }
-The :meth:`ivy.Container.diff` method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.
+The :meth:`ivy.Container.cont_diff` method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.
 
 Customized Representations
 -------------------------
@@ -395,7 +395,7 @@ All nested structures below this depth are truncated into single keys with a â€œ
 
 .. code-block:: python
 
-    weights.flatten_key_chains(above_height=1)
+    weights.cont_flatten_key_chains(above_height=1)
 
     {
         decoder__l0: {
@@ -430,7 +430,7 @@ All nested structures above this height are truncated into single keys with a â€
 
 .. code-block:: python
 
-    weights.flatten_key_chains(below_depth=1)
+    weights.cont_flatten_key_chains(below_depth=1)
 
     {
         decoder: {
@@ -457,7 +457,7 @@ All nested structures above this height are truncated into single keys with a â€
 
 These are very useful methods when stepping through code and debugging complex nested structures such as the weights of a network.
 
-There are also methods: :code:`with_print_limit` for controlling the printable size of arrays before the shape is instead displayed, :code:`with_key_length_limit` for setting the maximum key length before string clipping, :code:`with_print_indent` for controlling the nested indent, and many more.
+There are also methods: :code:`cont_with_print_limit` for controlling the printable size of arrays before the shape is instead displayed, :code:`cont_with_key_length_limit` for setting the maximum key length before string clipping, :code:`cont_with_print_indent` for controlling the nested indent, and many more.
 Check out the `docs <https://lets-unify.ai/ivy/core/container.html>`_ for more details!
 
 Use Cases
@@ -542,7 +542,7 @@ However the recursive methods of the Ivy Container make things even more conveni
 Configuration
 --------------
 
-As briefly alluded to when explaining the :meth:`ivy.Container.diff` method, the container class is also the ideal data type for storing experiment configurations.
+As briefly alluded to when explaining the :meth:`ivy.Container.cont_diff` method, the container class is also the ideal data type for storing experiment configurations.
 Configurations can either first be stored to disk as a JSON file and then loaded into the :class:`ivy.Container` for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.
 
 Data loading
@@ -569,17 +569,17 @@ This is useful if we need to recursively unroll the entire batch in the time dim
             self._count = 0
 
         def __next__(self):
-            cnt = self._cnt.copy()
+            cnt = self._cnt.cont_copy()
 
             # image filenames
-            img_fnames = ivy.Container.list_stack(
-                [cnt.imgs.map(
+            img_fnames = ivy.Container.cont_list_stack(
+                [cnt.imgs.cont_map(
                     lambda fname, _: fname.format(self._count + i)
                 ) for i in range(self._batch_size)], 0
             )
 
             # load from disk
-            loaded_imgs = img_fnames.map(
+            loaded_imgs = img_fnames.cont_map(
                 lambda fnames, _: np.concatenate(
                     [np.expand_dims(cv2.imread(fname, -1), 0)
                      for fname in fnames], 0
