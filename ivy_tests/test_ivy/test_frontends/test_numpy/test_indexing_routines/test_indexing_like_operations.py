@@ -45,3 +45,18 @@ def test_numpy_diagonal(
         axis1=axis[0],
         axis2=axis[1],
     )
+
+@handle_frontend_test(
+    fn_tree="numpy.diag",
+    dtype_x_axis=helpers.dtype_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_axes_size=2,
+        max_axes_size=2,
+        valid_axis=True,
+    ),
+    offset=st.integers(min_value=-1, max_value=1),
+)
+def test_numpy_diag():
+    pass
+ivy.
