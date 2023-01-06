@@ -50,22 +50,6 @@ def random_normal(
         np.random.seed(seed)
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
-# def random_geometric(
-#     *,
-#     p: Union[float, np.ndarray],
-#     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-#     device: str,
-#     dtype: np.dtype,
-#     seed: Optional[int] = None,
-#     out: Optional[np.ndarray] = None,
-# ) -> np.ndarray:
-#     shape = _check_bounds_and_get_shape(p, p, shape)
-#     if seed:
-#         np.random.seed(seed)
-#     return np.asarray(np.random.geometric(p, shape), dtype=dtype)
-
-
-
 @with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
