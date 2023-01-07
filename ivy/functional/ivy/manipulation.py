@@ -399,6 +399,7 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     order: Optional[str] = "C",
+    allowzero: Optional[bool] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gives a new shape to an array without changing its data.
@@ -499,7 +500,9 @@ def reshape(
 
     """
     ivy.assertions.check_elem_in_list(order, ["C", "F"])
-    return current_backend(x).reshape(x, shape=shape, copy=copy, out=out, order=order)
+    return current_backend(x).reshape(
+        x, shape=shape, copy=copy, allowzero=allowzero, out=out, order=order
+    )
 
 
 @to_native_arrays_and_back
@@ -1240,7 +1243,7 @@ def swapaxes(
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    reps: Iterable[int],
+    repeats: Iterable[int],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1250,7 +1253,7 @@ def tile(
     ----------
     x
         Input array.
-    reps
+    repeats
         The number of repetitions of x along each axis.
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -1308,7 +1311,7 @@ def tile(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).tile(x, reps, out=out)
+    return current_backend(x).tile(x, repeats, out=out)
 
 
 @to_native_arrays_and_back

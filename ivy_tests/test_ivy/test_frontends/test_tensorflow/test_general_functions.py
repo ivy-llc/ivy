@@ -1008,6 +1008,73 @@ def test_tensorflow_gather_nd(
     )
 
 
+@st.composite
+def _pad_helper(draw):
+    mode = draw(
+        st.sampled_from(
+            [
+                "constant",
+                "reflect",
+                "symmetric",
+            ]
+        )
+    )
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            ret_shape=True,
+            min_num_dims=1,
+            min_value=-100,
+            max_value=100,
+        )
+    )
+    ndim = len(shape)
+    min_dim = min(shape)
+    paddings = draw(
+        st.lists(
+            st.tuples(
+                st.integers(min_value=0, max_value=min_dim - 1),
+                st.integers(min_value=0, max_value=min_dim - 1),
+            ),
+            min_size=ndim,
+            max_size=ndim,
+        )
+    )
+    constant_values = draw(st.integers(min_value=0, max_value=4))
+    return dtype, input[0], paddings, mode, constant_values
+
+
+# pad
+@handle_frontend_test(
+    fn_tree="tensorflow.pad",
+    dtype_and_values_and_other=_pad_helper(),
+)
+def test_tensorflow_pad(
+    dtype_and_values_and_other,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, tensor, paddings, mode, constant_values = dtype_and_values_and_other
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=tensor,
+        paddings=paddings,
+        mode=mode,
+        constant_values=constant_values,
+    )
+
+
 # transpose
 @st.composite
 def _get_perm_helper(draw):
