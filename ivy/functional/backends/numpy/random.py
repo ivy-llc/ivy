@@ -50,7 +50,6 @@ def random_normal(
         np.random.seed(seed)
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
-
 @with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,

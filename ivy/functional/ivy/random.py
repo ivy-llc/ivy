@@ -312,6 +312,8 @@ def random_normal(
     )
 
 
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
