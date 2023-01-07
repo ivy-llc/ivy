@@ -8,9 +8,7 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class ContainerWithGradients(ContainerBase):
     @staticmethod
-    def static_variable_data(
-    x: ivy.Container
-    ) -> ivy.Container:
+    def static_variable_data(x: ivy.Container) -> ivy.Container:
         """
         ivy.Container static method variant of ivy._variable_data. This method simply
         wraps the function, and so the docstring for ivy._variable_data also applies
@@ -51,7 +49,8 @@ class ContainerWithGradients(ContainerBase):
 
         With multiple :code:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.Container(a=ivy.array([2, -1, 0])), b=ivy.array([0., -0.4, 8]))
+        >>> x = ivy.Container(a=ivy.Container(a=ivy.array([2, -1, 0])), \
+            b=ivy.array([0., -0.4, 8]))
         >>> x.variable_data()
         {
             a: {
@@ -63,11 +62,7 @@ class ContainerWithGradients(ContainerBase):
         return ivy.gradients._variable_data(x)
 
     def variable_data(
-    self: ivy.Container,
-    # key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-    # to_apply: bool = True,
-    # prune_unapplied: bool = False,
-    # map_sequences: bool = False,
+        self: ivy.Container,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy._variable_data. This method simply
@@ -99,10 +94,7 @@ class ContainerWithGradients(ContainerBase):
         --------
         ##TODO: write examples
         """
-        return self.static_variable_data(
-            self
-        )
-
+        return self.static_variable_data(self)
 
     @staticmethod
     def static_stop_gradient(
