@@ -383,6 +383,7 @@ array = asarray
 def copy_array(
     x: Union[tf.Tensor, tf.Variable],
     *,
+    to_ivy_array: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.identity(x)
