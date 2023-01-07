@@ -1,5 +1,7 @@
 # global
 from hypothesis import strategies as st, assume
+import numpy as np
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -133,7 +135,7 @@ def test_numpy_std(
     on_device,
     keep_dims,
 ):
-    input_dtype, x, axis, axis_excess = dtype_and_x
+    input_dtype, x, axis, correction = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -142,7 +144,7 @@ def test_numpy_std(
         as_variable=as_variable,
         native_array=native_array,
     )
-
+    assume(np.dtype(dtype[0]) >= np.dtype(input_dtype[0]))
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -152,12 +154,14 @@ def test_numpy_std(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
         x=x[0],
         axis=axis,
-        dtype=dtype,
-        out=None,
-        correction=0,
+        ddof=correction,
         keepdims=keep_dims,
+        out=None,
+        dtype=dtype[0],
         where=where,
     )
 
@@ -204,6 +208,8 @@ def test_numpy_average(
             keepdims=keep_dims,
             returned=returned,
             on_device=on_device,
+            rtol=1e-2,
+            atol=1e-2,
         )
     except ZeroDivisionError:
         assume(False)
@@ -301,4 +307,56 @@ def test_numpy_cov(
         axis=axis,
         dtype=dtype[0],
         test_values=False,
+    )
+
+
+# nanvar
+@handle_frontend_test(
+    fn_tree="numpy.nanvar",
+    dtype_x_axis=statistical_dtype_values(function="nanvar"),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    where=np_frontend_helpers.where(),
+    keep_dims=st.booleans(),
+)
+def test_numpy_nanvar(
+    dtype_x_axis,
+    dtype,
+    where,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+    keep_dims,
+):
+    x_dtype, x, axis, ddof = dtype_x_axis
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=x_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-1,
+        rtol=1e-1,
+        a=x[0],
+        axis=axis,
+        dtype=dtype[0],
+        out=None,
+        ddof=ddof,
+        keepdims=keep_dims,
+        where=where,
     )

@@ -74,6 +74,29 @@ fmax.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+def fmin(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fmin(
+        x1,
+        x2,
+        out=None,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    )
+
+
+fmin.support_native_out = True
+
+
+@_scalar_output_to_0d_array
 def trapz(
     y: np.ndarray,
     /,
@@ -136,7 +159,6 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
@@ -144,9 +166,6 @@ def count_nonzero(
     if np.isscalar(ret):
         return np.array(ret, dtype=dtype)
     return ret.astype(dtype)
-
-
-count_nonzero.support_native_out = False
 
 
 def nansum(
@@ -269,6 +288,7 @@ def diff(
 diff.support_native_out = False
 
 
+@_scalar_output_to_0d_array
 def allclose(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -279,10 +299,10 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> bool:
-    return np.array(np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan))
+    return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-isclose.support_native_out = False
+allclose.support_native_out = False
 
 
 def fix(
@@ -317,15 +337,15 @@ def zeta(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    inf_indices = np.union1d(np.array(np.where(x == 1.0)), np.array(np.where(q <= 0)))
-    nan_indices = np.where(x <= 0)
+    inf_indices = np.where(x == 1)
+    nan_indices = np.where((x < 1) | (x != 1 & q <= 0))
     n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x
         n, res = n + 1, res + term
     ret = np.round(res, decimals=4)
-    ret[inf_indices] = np.inf
     ret[nan_indices] = np.nan
+    ret[inf_indices] = np.inf
     return ret
 
 

@@ -900,6 +900,33 @@ def test_tensorflow_stack(
     )
 
 
+# is_tensor
+@handle_frontend_test(
+    fn_tree="tensorflow.is_tensor",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_tensorflow_is_tensor(
+    *,
+    dtype_and_x,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=[False],
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        x=x[0],
+    )
+
+
 # gather
 @handle_frontend_test(
     fn_tree="tensorflow.gather",
@@ -981,6 +1008,73 @@ def test_tensorflow_gather_nd(
     )
 
 
+@st.composite
+def _pad_helper(draw):
+    mode = draw(
+        st.sampled_from(
+            [
+                "constant",
+                "reflect",
+                "symmetric",
+            ]
+        )
+    )
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            ret_shape=True,
+            min_num_dims=1,
+            min_value=-100,
+            max_value=100,
+        )
+    )
+    ndim = len(shape)
+    min_dim = min(shape)
+    paddings = draw(
+        st.lists(
+            st.tuples(
+                st.integers(min_value=0, max_value=min_dim - 1),
+                st.integers(min_value=0, max_value=min_dim - 1),
+            ),
+            min_size=ndim,
+            max_size=ndim,
+        )
+    )
+    constant_values = draw(st.integers(min_value=0, max_value=4))
+    return dtype, input[0], paddings, mode, constant_values
+
+
+# pad
+@handle_frontend_test(
+    fn_tree="tensorflow.pad",
+    dtype_and_values_and_other=_pad_helper(),
+)
+def test_tensorflow_pad(
+    dtype_and_values_and_other,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, tensor, paddings, mode, constant_values = dtype_and_values_and_other
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=tensor,
+        paddings=paddings,
+        mode=mode,
+        constant_values=constant_values,
+    )
+
+
 # transpose
 @st.composite
 def _get_perm_helper(draw):
@@ -1039,19 +1133,23 @@ def _strided_slice_helper(draw):
     ndims = len(shape)
     masks = draw(
         st.lists(
-            st.integers(min_value=0, max_value=2 ** ndims - 1),
-            min_size=5,
-            max_size=5
-        ).filter(lambda x: bin(x[2])[2:].count('1') <= 1)  # maximum one ellipse
+            st.integers(min_value=0, max_value=2**ndims - 1), min_size=5, max_size=5
+        ).filter(
+            lambda x: bin(x[2])[2:].count("1") <= 1
+        )  # maximum one ellipse
     )
     begin, end, strides = [], [], []
     n_omit = np.random.randint(0, ndims)
     sub_shape = shape[:-n_omit]
     for i in sub_shape:
         begin += [draw(st.integers(min_value=0, max_value=i - 1))]
-        end += [draw(
-            st.integers(min_value=0, max_value=i - 1).filter(lambda x: x != begin[-1])
-        )]
+        end += [
+            draw(
+                st.integers(min_value=0, max_value=i - 1).filter(
+                    lambda x: x != begin[-1]
+                )
+            )
+        ]
         if begin[-1] < end[-1]:
             strides += [draw(st.integers(min_value=1))]
         else:
@@ -1077,7 +1175,7 @@ def test_tensorflow_strided_slice(
     dtype, x, begin, end, strides, masks = dtype_x_params
     try:
         helpers.test_frontend_function(
-            input_dtypes=dtype + 3 * ['int64'] + 5 * ['int32'],
+            input_dtypes=dtype + 3 * ["int64"] + 5 * ["int32"],
             as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
@@ -1096,6 +1194,6 @@ def test_tensorflow_strided_slice(
             shrink_axis_mask=masks[4],
         )
     except Exception as e:
-        if hasattr(e, 'message'):
+        if hasattr(e, "message"):
             if "only stride 1 allowed on non-range indexing" in e.message:
                 assume(False)

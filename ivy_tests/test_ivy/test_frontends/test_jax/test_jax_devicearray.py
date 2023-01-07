@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import given, strategies as st, assume
 import numpy as np
 
 # local
@@ -7,9 +7,68 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _array_and_index
+from ivy.functional.frontends.jax import DeviceArray
 
 
 CLASS_TREE = "ivy.functional.frontends.jax.DeviceArray"
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_jax_devicearray_property_ivy_array(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = DeviceArray(data[0])
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
+    ret_gt = helpers.flatten_and_to_np(ret=data[0])
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_jax_devicearray_property_dtype(
+    dtype_x,
+):
+    dtype, data = dtype_x
+    x = DeviceArray(data[0])
+    assert x.dtype.ivy_dtype == dtype[0]
+
+
+@st.composite
+def _at_helper(draw):
+    _, data, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=2,
+            shared_dtype=True,
+            min_num_dims=1,
+            ret_shape=True,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_tuple=True))
+    index = ()
+    for a in axis:
+        index = index + (draw(st.integers(min_value=0, max_value=shape[a] - 1)),)
+    return data, index
+
+
+@given(
+    x_y_index=_at_helper(),
+)
+def test_jax_devicearray_property_at(x_y_index):
+    xy, idx = x_y_index
+    x = DeviceArray(xy[0])
+    y = DeviceArray(xy[1])
+    x_set = x.at[idx].set(y[idx])
+    assert x_set[idx] == y[idx]
+    assert x.at[idx].get() == x[idx]
 
 
 @handle_frontend_method(

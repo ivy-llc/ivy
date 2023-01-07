@@ -151,6 +151,46 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.fmax(self._data, x2, out=out)
 
+    def fmin(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.fmin. This method simply
+        wraps the function, and so the docstring for ivy.fmin also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+        x1
+            First input array.
+        x2
+            Second input array
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with element-wise minimums.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([2, 3, 4])
+        >>> x2 = ivy.array([1, 5, 2])
+        >>> ivy.fmin(x1, x2)
+        ivy.array([1, 3, 2])
+
+        >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+        >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+        >>> x1.fmin(x2)
+        ivy.array([ 0.,  0., nan])
+        """
+        return ivy.fmin(self._data, x2, out=out)
+
     def trapz(
         self: ivy.Array,
         /,

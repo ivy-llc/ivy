@@ -16,6 +16,8 @@ from ivy.functional.ivy.gradients import (
 
 
 def variable(x, /):
+    if ivy.is_int_dtype(x.dtype):
+        x = ivy.astype(x, ivy.default_float_dtype()).to_native()
     if not x.is_leaf:
         return x.detach().requires_grad_()
     return x.clone().requires_grad_()

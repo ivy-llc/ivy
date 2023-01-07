@@ -212,6 +212,49 @@ def fmax(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def fmin(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Computes the element-wise minimums of two arrays. Differs from ivy.minimum
+    in the case where one of the elements is NaN. ivy.minimum returns the NaN element
+    while ivy.fmin returns the non-NaN element.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise minimums.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmin(x1, x2)
+    ivy.array([1, 3, 2])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmin(x1, x2)
+    ivy.array([ 0.,  0., nan])
+    """
+    return ivy.current_backend().fmin(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def trapz(
     y: ivy.Array,
     /,
@@ -389,7 +432,6 @@ def copysign(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_exceptions
 def count_nonzero(
@@ -399,7 +441,6 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[Union[int, ivy.Array]] = None,
 ) -> ivy.Array:
     """Counts the number of non-zero values in the array a.
 
@@ -417,8 +458,6 @@ def count_nonzero(
         will broadcast correctly against the input array.
     dtype
         optional output dtype. Default is of type integer.
-    out
-        optional output array, for writing the result to.
 
     Returns
     -------
@@ -439,7 +478,7 @@ def count_nonzero(
     ivy.array([[[3, 4]]])
     """
     return ivy.current_backend().count_nonzero(
-        a, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        a, axis=axis, keepdims=keepdims, dtype=dtype
     )
 
 
