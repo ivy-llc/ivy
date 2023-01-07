@@ -26,8 +26,7 @@ def is_variable(x, /, *, exclusive=False):
     return isinstance(x, tf.Variable)
 
 
-def variable_data(x: tf.Variable,
- /) -> tf.Variable:
+def variable_data(x: tf.Variable, /) -> tf.Variable:
     return x.value()
 
 
