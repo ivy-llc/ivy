@@ -510,13 +510,14 @@ def Xlogy(*, x, y, name="Xlogy"):
 
 @to_ivy_arrays_and_back
 def Conv3D(
+    *,
     input,
     filter,
     strides,
     padding,
     data_format="NDHWC",
     dilations=[1, 1, 1, 1, 1],
-    name=None,
+    name="Conv3D",
 ):
     # ivy.backends.tensorflow expects strides and dilations to be
     # a single integer value or a list of 3 values whereas the raw op
