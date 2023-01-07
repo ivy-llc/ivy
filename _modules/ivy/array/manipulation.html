@@ -836,6 +836,31 @@
 <span class="sd">        ivy.Array instance method variant of ivy.zero_pad. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.zero_pad also applies</span>
 <span class="sd">        to this method with minimal changes.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input array to pad.</span>
+<span class="sd">        pad_width</span>
+<span class="sd">            Number of values padded to the edges of each axis. Specified as</span>
+<span class="sd">            ((before_1, after_1), … (before_N, after_N)),</span>
+<span class="sd">            where N is number of axes of x.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+<span class="sd">            It must have a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Padded array of rank equal to x with shape increased according to pad_width.</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1., 2., 3.,4, 5, 6])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.zero_pad(pad_width = [[2, 3]])</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 0., 0., 0.])</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zero_pad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">pad_width</span><span class="o">=</span><span class="n">pad_width</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
