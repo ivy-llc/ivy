@@ -1481,7 +1481,10 @@ array = asarray
 @handle_nestable
 @handle_exceptions
 def copy_array(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], 
+    *, 
+    to_ivy_array: Optional[bool] = True, 
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Copy an array.
 
@@ -1489,6 +1492,9 @@ def copy_array(
     ----------
     x
         array, input array containing elements to copy.
+    to_ivy_array
+        boolean, if True the returned array will be an ivy.Array instance otherwise 
+        ivy.NativeArray, defaults to True.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
