@@ -350,5 +350,5 @@ def fix(x, out=None):
 
 
 @to_ivy_arrays_and_back
- def cos(x):
-     return ivy.cos(x)
+def cos(x):
+    return ivy.cos(x)
