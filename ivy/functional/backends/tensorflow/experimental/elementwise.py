@@ -9,7 +9,7 @@ from .. import backend_version
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import tensorflow_probability as tfp
-
+from tensorflow.python.ops.numpy_ops import np_config
 
 def sinc(
     x: Union[tf.Tensor, tf.Variable],
@@ -157,6 +157,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    np_config.enable_numpy_behavior()
     return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
