@@ -1781,7 +1781,7 @@ class ContainerWithManipulation(ContainerBase):
         With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a = ivy.array([1., 2., 3.]), b = ivy.array([3., 4., 5.]))
-        >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
+        >>> y = x.zero_pad(pad_width = [[2, 3]])
         >>> print(y)
         {
             a: ivy.array([0., 0., 1., 2., 3., 0., 0., 0.]),
