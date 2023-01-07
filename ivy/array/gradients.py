@@ -9,12 +9,12 @@ import ivy
 
 
 class ArrayWithGradients(abc.ABC):
-    def variable_data(self: ivy.Array
-    )-> ivy.Array:
+    def variable_data(self: ivy.Array) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.gradients._variable_data. This method \
-        simply wraps the function, and so the docstring for ivy.gradients._variable_data \
-        also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.gradients._variable_data. \
+        This method simply wraps the function, and so the docstring for \
+        ivy.gradients._variable_data also applies to this method \
+        with minimal changes.
         
         Parameters
         ----------
@@ -36,7 +36,6 @@ class ArrayWithGradients(abc.ABC):
         [5]])
         """
         return ivy.gradients._variable_data(self)
-
 
     def stop_gradient(
         self: ivy.Array,
