@@ -353,7 +353,7 @@ def x_and_ifft(draw):
             max_value=1e+10,
         )
     )
-    dim = draw(st.integers(1-len(list(x_dim)), len(list(x_dim))-1))
+    dim = draw(st.integers(1 - len(list(x_dim)), len(list(x_dim)) - 1))
     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
     n = draw(st.integers(min_fft_points, 256))
     return dtype, x, dim, norm, n
