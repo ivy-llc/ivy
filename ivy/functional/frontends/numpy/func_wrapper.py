@@ -19,9 +19,9 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
                 **dict(
                     zip(
                         list(inspect.signature(fn).parameters.keys())[
-                            dtype_pos + 1: len(args)
+                            dtype_pos + 1 : len(args)
                         ],
-                        args[dtype_pos + 1:],
+                        args[dtype_pos + 1 :],
                     )
                 ),
                 **kwargs,
