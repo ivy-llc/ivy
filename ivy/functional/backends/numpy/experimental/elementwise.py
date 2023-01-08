@@ -338,7 +338,9 @@ def zeta(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     inf_indices = np.where(x == 1)
-    nan_indices1 = np.intersect1d(np.array(np.where(x != 1)), np.array(np.where(q <= 0)))
+    nan_indices1 = np.intersect1d(
+        np.array(np.where(x != 1)), np.array(np.where(q <= 0))
+    )
     nan_indices2 = np.where(x < 1)
     n, res = 1, 1 / q**x
     while n < 10000:
