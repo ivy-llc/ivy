@@ -159,7 +159,6 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
@@ -167,9 +166,6 @@ def count_nonzero(
     if np.isscalar(ret):
         return np.array(ret, dtype=dtype)
     return ret.astype(dtype)
-
-
-count_nonzero.support_native_out = False
 
 
 def nansum(
@@ -342,13 +338,15 @@ def zeta(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     inf_indices = np.where(x == 1)
-    nan_indices = np.where((x < 1) | (x != 1 & q <= 0))
+    nan_indices1 = np.intersect1d(np.array(np.where(x != 1)), np.array(np.where(q <= 0)))
+    nan_indices2 = np.where(x < 1)
     n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x
         n, res = n + 1, res + term
     ret = np.round(res, decimals=4)
-    ret[nan_indices] = np.nan
+    ret[nan_indices1] = np.nan
+    ret[nan_indices2] = np.nan
     ret[inf_indices] = np.inf
     return ret
 

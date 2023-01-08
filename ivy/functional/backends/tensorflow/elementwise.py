@@ -540,7 +540,7 @@ def pow(
     return tf.experimental.numpy.power(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def remainder(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -559,7 +559,7 @@ def remainder(
     return tf.experimental.numpy.remainder(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def round(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -651,6 +651,7 @@ def tanh(
     return tf.tanh(x)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def trunc(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -677,6 +678,7 @@ def trunc(
 # ------#
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def erf(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -693,6 +695,7 @@ def erf(
             "uint16",
             "uint32",
             "uint64",
+            "complex",
         )
     },
     backend_version,
@@ -721,6 +724,7 @@ def maximum(
             "uint16",
             "uint32",
             "uint64",
+            "complex",
         )
     },
     backend_version,
