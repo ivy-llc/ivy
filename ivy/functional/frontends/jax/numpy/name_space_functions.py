@@ -644,3 +644,5 @@ def negative(
 
 
 
+def isfinite(x, /):
+    return ivy.isfinite(x)
