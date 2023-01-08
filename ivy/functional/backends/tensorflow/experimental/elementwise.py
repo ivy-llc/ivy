@@ -11,6 +11,7 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_config
 
+
 def sinc(
     x: Union[tf.Tensor, tf.Variable],
     /,
