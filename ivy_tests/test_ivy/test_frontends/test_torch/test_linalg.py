@@ -759,3 +759,37 @@ def test_torch_solve(
         input=input,
         other=other,
     )
+
+#eigvals
+@handle_frontend_test(
+    fn_tree="torch.linalg.eigvals",
+    dtype_x=_get_dtype_and_square_matrix(),
+    
+)
+def test_torch_eigvals(
+    *,
+    dtype_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+    )
+
+    
+
+
+    
