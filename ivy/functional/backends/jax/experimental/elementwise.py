@@ -231,7 +231,9 @@ def zeta(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     inf_indices = jnp.where(x == 1)
-    nan_indices1 = jnp.intersect1d(jnp.array(jnp.where(x != 1)), jnp.array(jnp.where(q <= 0)))
+    nan_indices1 = jnp.intersect1d(
+        jnp.array(jnp.where(x != 1)), jnp.array(jnp.where(q <= 0))
+    )
     nan_indices2 = jnp.where(x < 1)
     n, res = 1, 1 / q**x
     while n < 10000:
