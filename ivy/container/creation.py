@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Tuple, Dict, Sequence
+from typing import Optional, Union, List, Tuple, Dict, Sequence, Any, Type
 from numbers import Number
 import numpy as np
 
@@ -761,7 +761,7 @@ class ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def static_meshgrid(
-        *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
+        *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], ivy.Container],
         sparse: bool = False,
         indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -769,6 +769,100 @@ class ContainerWithCreation(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.meshgrid. This method simply
+        wraps the function, and so the docstring for ivy.meshgrid also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        arrays
+            an arbitrary number of one-dimensional containers representing grid coordinates.
+            Each array should have the same numeric data type.
+        sparse
+            if True, a sparse grid is returned in order to conserve memory. Default: ``False``.
+        indexing
+            Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
+            one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
+            respectively), the ``indexing`` keyword has no effect and should be ignored.
+            Default: ``'xy'``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+
+        Returns
+        -------
+        ret
+            container of N arrays, where ``N`` is the number of provided one-dimensional input
+            arrays. Each returned array must have rank ``N``. For ``N`` one-dimensional
+            arrays having lengths ``Ni = len(xi)``,
+
+            - if matrix indexing ``ij``, then each returned array must have the shape
+              ``(N1, N2, N3, ..., Nn)``.
+            - if Cartesian indexing ``xy``, then each returned array must have shape
+              ``(N2, N1, N3, ..., Nn)``.
+
+            Accordingly, for the two-dimensional case with input one-dimensional arrays of
+            length ``M`` and ``N``, if matrix indexing ``ij``, then each returned array must
+            have shape ``(M, N)``, and, if Cartesian indexing ``xy``, then each returned
+            array must have shape ``(N, M)``.
+
+            Similarly, for the three-dimensional case with input one-dimensional arrays of
+            length ``M``, ``N``, and ``P``, if matrix indexing ``ij``, then each returned
+            array must have shape ``(M, N, P)``, and, if Cartesian indexing ``xy``, then
+            each returned array must have shape ``(N, M, P)``.
+
+            Each returned array should have the same data type as the input arrays.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> import ivy.container.creation.static_meshgrid as static_meshgrid
+        >>> x = ivy.array([1, 2])
+        >>> y = ivy.Container(a=ivy.array([4, 5]))
+        >>> xv, yv = static_meshgrid(x, y)
+        >>> print(xv)
+        {
+            a: ivy.array([[1, 2],
+                        [1, 2]])
+        }
+
+        >>> print(yv)
+        {
+            a: ivy.array([[4, 4],
+                        [5, 5]])
+        }
+
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> import ivy.container.creation.static_meshgrid as static_meshgrid
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]))
+        >>> y = ivy.Container(a=ivy.array([4, 5]))
+        >>> xv, yv = static_meshgrid(x, y)
+        >>> print(xv)
+        {
+            a: ivy.array([[1, 2, 3],
+                        [1, 2, 3]])
+        }
+
+        >>> print(yv)
+        {
+            a: ivy.array([[4, 4, 4],
+                        [5, 5, 5]])
+        }
+
+        """
         return ContainerBase.cont_multi_map_in_function(
             "meshgrid",
             *arrays,
@@ -783,7 +877,7 @@ class ContainerWithCreation(ContainerBase):
     def meshgrid(
         self: ivy.Container,
         /,
-        *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
+        *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], ivy.Container],
         sparse: bool = False,
         indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -791,6 +885,80 @@ class ContainerWithCreation(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.meshgrid. This method simply
+        wraps the function, and so the docstring for ivy.meshgrid also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            an one-dimensional container representing grid coordinates.
+            Each array should have the same numeric data type.
+        arrays
+            an arbitray number of one-dimensional containers representing grid coordinates.
+            Each array should have the same numeric data type.
+        sparse
+            if True, a sparse grid is returned in order to conserve memory. Default: ``False``.
+        indexing
+            Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
+            one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
+            respectively), the ``indexing`` keyword has no effect and should be ignored.
+            Default: ``'xy'``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+
+        Returns
+        -------
+        ret
+            Container of N arrays, where ``N`` is the number of provided one-dimensional input
+            arrays. Each returned array must have rank ``N``. For ``N`` one-dimensional
+            arrays having lengths ``Ni = len(xi)``,
+
+            - if matrix indexing ``ij``, then each returned array must have the shape
+              ``(N1, N2, N3, ..., Nn)``.
+            - if Cartesian indexing ``xy``, then each returned array must have shape
+              ``(N2, N1, N3, ..., Nn)``.
+
+            Accordingly, for the two-dimensional case with input one-dimensional arrays of
+            length ``M`` and ``N``, if matrix indexing ``ij``, then each returned array must
+            have shape ``(M, N)``, and, if Cartesian indexing ``xy``, then each returned
+            array must have shape ``(N, M)``.
+
+            Similarly, for the three-dimensional case with input one-dimensional arrays of
+            length ``M``, ``N``, and ``P``, if matrix indexing ``ij``, then each returned
+            array must have shape ``(M, N, P)``, and, if Cartesian indexing ``xy``, then
+            each returned array must have shape ``(N, M, P)``.
+
+            Each returned array should have the same data type as the input arrays.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]))
+        >>> y = ivy.Container(a=ivy.array([4, 5]))
+        >>> xv = x.meshgrid(y)
+        >>> print(xv)
+        {
+            a: ivy.array([[1, 2, 3],
+                        [1, 2, 3]]),
+            b: ivy.array([[4, 4, 4],
+                        [5, 5, 5]])
+        }
+
+
+
+        """
         return self.static_meshgrid(
             tuple([self] + list(arrays)),
             sparse,

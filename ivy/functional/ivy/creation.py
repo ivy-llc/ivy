@@ -1258,7 +1258,7 @@ def meshgrid(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-    the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
+    the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/array_api.meshgrid.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1283,6 +1283,8 @@ def meshgrid(
 
     >>> x = ivy.array([1, 2, 5])
     >>> y = ivy.array([4, 1])
+    >>> xv = ivy.zeros((3, 2))
+    >>> yv = ivy.zeros((3, 2))
     >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
     >>> print(xv)
     ivy.array([[1, 1],
@@ -1303,18 +1305,6 @@ def meshgrid(
     >>> print(yv)
     ivy.array([[4], [5], [6]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1, 2])
-    >>> y = ivy.native_array([3, 4])
-    >>> xv, yv = ivy.meshgrid(x, y)
-    >>> print(xv)
-    ivy.array([[1, 2],
-            [1, 2]])
-
-    >>> print(yv)
-    ivy.array([[3, 3],
-            [4, 4]])
 
     """
     return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
