@@ -3090,10 +3090,7 @@ def test_tensorflow_Pack(
 
 
 @st.composite
-def _pad_helper(draw, *, padding_types=None):
-    if padding_types is None:
-        padding_types = ["int32", "int64"]
-
+def _pad_helper(draw):
     dtype, input, shape = draw(
         helpers.dtype_and_values(
             min_num_dims=1,
@@ -3103,7 +3100,7 @@ def _pad_helper(draw, *, padding_types=None):
     ndim = len(shape)
     padding_dtype, paddings = draw(
         helpers.dtype_and_values(
-            available_dtypes=padding_types,
+            available_dtypes=["int32", "int64"],
             shape=(ndim, 2),
             min_value=0,
             max_value=10,
