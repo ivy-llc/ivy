@@ -5,6 +5,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
 )
+import ivy.functional.frontends.numpy as np_frontend
 
 
 @handle_numpy_dtype
@@ -13,7 +14,12 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 def concatenate(arrays, /, axis=0, out=None, *, dtype=None, casting="same_kind"):
     if dtype:
         arrays = [ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype)) for a in arrays]
-    return ivy.concat(arrays, axis=axis, out=out)
+    out_dtype = ivy.dtype(arrays[0])
+    for i in arrays:
+        out_dtype = ivy.as_ivy_dtype(
+            np_frontend.promote_numpy_dtypes(i.dtype, out_dtype)
+        )
+    return ivy.concat(arrays, axis=axis, out=out).astype(out_dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
