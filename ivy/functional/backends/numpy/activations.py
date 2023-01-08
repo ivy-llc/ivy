@@ -18,8 +18,10 @@ def relu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 relu.support_native_out = True
 
-def hardswish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return x * np.minimum(np.maximum(x+3, 0, out=out, dtype=x.dtype),6,out=out, dtype=x.dtype) / 6
+def hardswish(
+    x: np.ndarray, /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return x * np.minimum(np.maximum(x + 3, 0, out=out, dtype=x.dtype), 6, out=out, dtype=x.dtype) / 6
 
 
 def leaky_relu(

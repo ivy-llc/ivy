@@ -24,7 +24,9 @@ def gelu(
 ) -> JaxArray:
     return jax.nn.gelu(x, approximate)
 
-def hardswish(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def hardswish(
+    x: JaxArray, /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
     return jax.nn.hard_swish(x)
 
 def leaky_relu(
