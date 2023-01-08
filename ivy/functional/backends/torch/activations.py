@@ -19,9 +19,7 @@ def relu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.relu(x)
 
 @with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
-def hardswish(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def hardswish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.hardswish(x)
 
 @with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
