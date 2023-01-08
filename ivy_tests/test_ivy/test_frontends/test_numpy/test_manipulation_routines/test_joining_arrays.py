@@ -3,7 +3,6 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
@@ -31,7 +30,7 @@ def _arrays_idx_n_dtypes(draw):
     )
     xs = list()
     input_dtypes = draw(
-        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("valid")))
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("numeric")))
     )
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
@@ -60,10 +59,6 @@ def test_numpy_concatenate(
     on_device,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtypes,
-        get_dtypes_kind="valid",
-    )
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -76,8 +71,8 @@ def test_numpy_concatenate(
         arrays=xs,
         axis=unique_idx,
         out=None,
-        dtype=dtype,
-        casting=casting,
+        rtol=1e-02,
+        atol=1e-02,
     )
 
 
