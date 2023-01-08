@@ -624,6 +624,7 @@ def dropout1d(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_exceptions
+@handle_nestable
 @handle_array_like
 def ifft(
         x: Union[ivy.Array, ivy.NativeArray],

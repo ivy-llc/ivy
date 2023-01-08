@@ -1,3 +1,4 @@
+import math
 from typing import Union, Optional, Tuple, Literal
 import tensorflow as tf
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -174,13 +175,13 @@ def _ifft_norm(
     *,
     norm: str = "backward",
 ):
-    n = tf.constant(x.shape[dim])
+    n = x.shape[dim]
     if norm == "backward":
-        return x / n
-    elif norm == "ortho":
-        return x / tf.sqrt(n)
-    elif norm == "forward":
         return x
+    elif norm == "ortho":
+        return x * math.sqrt(n)
+    elif norm == "forward":
+        return x * n
     else:
         raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
@@ -299,6 +300,7 @@ def ifft(
         permute[dim], permute[-1] = permute[-1], permute[dim]
         x = tf.transpose(x, permute)
         ret = tf.signal.ifft(x, operation_name)
+        ret = tf.transpose(ret, permute)
         del permute
     else:
         ret = tf.signal.ifft(x, operation_name)

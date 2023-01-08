@@ -548,4 +548,4 @@ def ifft(
         raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return np.fft.ifft(x, n, dim, norm)
+    return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)

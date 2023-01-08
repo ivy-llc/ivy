@@ -347,13 +347,13 @@ def x_and_ifft(draw):
     )
     x = draw(
         helpers.array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=tuple(x_dim),
+            min_value=-1e-10,
+            max_value=1e+10,
         )
     )
-    dim = draw(
-        helpers.get_axis(shape=x_dim, allow_neg=True, allow_none=False, max_size=1)
-    )
+    dim = draw(st.integers(1-len(list(x_dim)), len(list(x_dim))-1))
     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
     n = draw(st.integers(min_fft_points, 256))
     return dtype, x, dim, norm, n
@@ -362,7 +362,6 @@ def x_and_ifft(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.ifft",
     d_x_d_n_n=x_and_ifft(),
-    ground_truth_backend="numpy",
     test_gradients=st.just(False),
 )
 def test_ifft(
@@ -371,11 +370,9 @@ def test_ifft(
         test_flags,
         backend_fw,
         fn_name,
-        test_gradients,
         ground_truth_backend,
 ):
     dtype, x, dim, norm, n = d_x_d_n_n
-    test_flags.test_gradients = test_gradients
 
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
