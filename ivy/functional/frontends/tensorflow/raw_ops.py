@@ -506,8 +506,3 @@ def Xlogy(*, x, y, name="Xlogy"):
     if (x == 0).all():
         return 0.0
     return ivy.multiply(x, ivy.log(y))
-
-
-LinSpace = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.general_functions.linspace)
-)
