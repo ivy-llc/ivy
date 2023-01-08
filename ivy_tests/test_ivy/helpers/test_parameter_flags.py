@@ -30,6 +30,7 @@ BuiltAsVariableStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltInstanceStrategy = st.booleans()
 BuiltWithOutStrategy = st.booleans()
+BuiltInplaceStrategy = st.booleans()
 BuiltGradientStrategy = st.booleans()
 
 
@@ -38,6 +39,7 @@ flags_mapping = {
     "native_array": "_BuiltNativeArray",
     "container": "_BuiltContainer",
     "with_out": "_BuiltWithOut",
+    "inplace": "_BuiltInplace",
     "instance_method": "_BuiltInstance",
     "test_gradients": "_BuiltGradient",
 }
@@ -105,5 +107,52 @@ def function_flags(
             as_variable=as_variable,
             native_arrays=native_arrays,
             container=container_flags,
+        )
+    )
+
+
+class FrontendFunctionTestFlags:
+    def __init__(
+        self,
+        num_positional_args,
+        with_out,
+        inplace,
+        as_variable,
+        native_arrays,
+    ):
+        self.num_positional_args = num_positional_args
+        self.with_out = with_out
+        self.inplace = inplace
+        self.native_arrays = native_arrays
+        self.as_variable = as_variable
+
+    def __str__(self):
+        return (
+            f"num_positional_args={self.num_positional_args}. "
+            f"with_out={self.with_out}. "
+            f"inplace={self.inplace}. "
+            f"native_arrays={self.native_arrays}. "
+            f"as_variable={self.as_variable}. "
+        )
+
+
+@st.composite
+def frontend_function_flags(
+    draw,
+    *,
+    num_positional_args,
+    with_out,
+    inplace,
+    as_variable,
+    native_arrays,
+):
+    return draw(
+        st.builds(
+            FrontendFunctionTestFlags,
+            num_positional_args=num_positional_args,
+            with_out=with_out,
+            inplace=inplace,
+            as_variable=as_variable,
+            native_arrays=native_arrays,
         )
     )
