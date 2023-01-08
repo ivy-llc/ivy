@@ -10,13 +10,25 @@ def cat(tensors, dim=0, *, out=None):
 
 @to_ivy_arrays_and_back
 def chunk(input, chunks, dim=0):
-    ret = ivy.split(input, num_or_size_splits=chunks, axis=dim, with_remainder=True)
-    if isinstance(ret, list):
-        for i, x in enumerate(ret):
-            ret[i] = x.astype(input.dtype)
-        return ret
+    if ivy.shape(input) == ():
+        return [input]
     else:
-        return ret.astype(input.dtype)
+        dim_size = ivy.shape(input)[dim]
+        chunk_size = dim_size // chunks
+        if chunk_size == 0:
+            return ivy.split(input, num_or_size_splits=dim_size, axis=dim)
+        else:
+            remainder = dim_size % chunks
+            if remainder == 0:
+                return ivy.split(input, num_or_size_splits=chunks, axis=dim)
+            else:
+                return ivy.split(
+                    input,
+                    num_or_size_splits=tuple(
+                        [chunk_size + remainder] + [chunk_size] * (chunks - 1)
+                    ),
+                    axis=dim,
+                )
 
 
 @to_ivy_arrays_and_back
@@ -124,7 +136,7 @@ def tile(input, dims):
         res = ivy.tile(input, tup)
 
     else:
-        res = ivy.tile(input, reps=dims, out=None)
+        res = ivy.tile(input, repeats=dims, out=None)
     return res
 
 
@@ -161,3 +173,8 @@ def dstack(tensors, *, out=None):
 @to_ivy_arrays_and_back
 def take_along_dim(input, indices, dim, *, out=None):
     return ivy.take_along_axis(input, indices, dim, out=out)
+
+
+@to_ivy_arrays_and_back
+def vstack(tensors, *, out=None):
+    return ivy.vstack(tensors, out=out)

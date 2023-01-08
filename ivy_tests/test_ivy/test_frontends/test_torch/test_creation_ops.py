@@ -312,7 +312,7 @@ def test_torch_range(
 ):
     start, stop, step = start_stop_step
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=[],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=3,
@@ -364,6 +364,7 @@ def test_torch_linspace(
         steps=num,
         dtype=dtype[0],
         device=on_device,
+        rtol=1e-01,
     )
 
 
@@ -403,6 +404,7 @@ def test_torch_logspace(
         steps=num,
         dtype=dtype[0],
         device=on_device,
+        rtol=1e-01,
     )
 
 

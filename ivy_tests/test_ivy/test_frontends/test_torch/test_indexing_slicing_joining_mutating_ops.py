@@ -282,22 +282,18 @@ def test_torch_swapdims(
 # reshape
 @st.composite
 def dtypes_x_reshape(draw):
-    shape = draw(
-        helpers.get_shape(
-            allow_none=False,
-            min_num_dims=1,
-            max_num_dims=3,
-            min_dim_size=1,
-            max_dim_size=3,
-        )
-    )
+    shape = draw(helpers.get_shape(min_num_dims=1))
     dtypes, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             shape=shape,
         )
     )
-    shape = draw(helpers.reshape_shapes(shape=shape))
+    shape = draw(
+        helpers.get_shape(min_num_dims=1).filter(
+            lambda s: math.prod(s) == math.prod(shape)
+        )
+    )
     return dtypes, x, shape
 
 
@@ -942,4 +938,36 @@ def test_torch_take_along_dim(
         input=value,
         indices=indices,
         dim=axis,
+    )
+
+
+# vstack
+@handle_frontend_test(
+    fn_tree="torch.vstack",
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_vstack(
+    *,
+    dtype_value_shape,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, value = dtype_value_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=value,
     )

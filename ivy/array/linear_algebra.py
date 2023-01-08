@@ -48,7 +48,6 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-
         With :class:`ivy.Array` instance inputs:
 
         >>> x = ivy.array([1., 4.])

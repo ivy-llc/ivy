@@ -493,9 +493,7 @@ class ModuleHelpers(abc.ABC):
         )
 
     def _add_submod_enter(self):
-        """
-        Add key chains to submod_call_order variable of the top module.
-        """
+        """Add key chains to submod_call_order variable of the top module."""
         sco = self.top_mod().submod_call_order
         key_chain = self.mod_with_top_mod_key_chain()
         for key in key_chain[:-1]:
