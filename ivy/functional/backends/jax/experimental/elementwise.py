@@ -230,17 +230,30 @@ def zeta(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    inf_indices = jnp.equal(x, 1)
-    temp = jnp.logical_and(jnp.not_equal(x, 1), jnp.less_equal(q, 0))
-    nan_indices = jnp.logical_or(temp, jnp.less(x,1))
+    arr_shape = q.shape
+    x, q = x.flatten(), q.flatten()
+
+    inf_indices1 = jnp.where(x == 1)
+    inf_indices2 = jnp.intersect1d(
+        jnp.array(jnp.where(q == 0)), jnp.array(jnp.where(x > 1))
+    )
+    inf_indices3 = jnp.intersect1d(
+        jnp.array(jnp.where(q <= -1)), jnp.array(jnp.where(x > 1))
+    )
+    nan_indices = jnp.where(x < 1.)
+
     n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x
         n, res = n + 1, res + term
     ret = jnp.round(res, decimals=4)
+    
+    ret = ret.at[inf_indices1].set(jnp.inf)
+    ret = ret.at[inf_indices2].set(jnp.inf)
+    ret = ret.at[inf_indices3].set(jnp.inf)
     ret = ret.at[nan_indices].set(jnp.nan)
-    ret = ret.at[inf_indices].set(jnp.inf)
-    return ret
+    
+    return ret.reshape(arr_shape)
 
 
 # def gradient(

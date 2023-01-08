@@ -337,17 +337,29 @@ def zeta(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    inf_indices = np.equal(x, 1)
-    temp = np.logical_and(np.not_equal(x, 1), np.less_equal(q, 0))
-    nan_indices = np.logical_or(temp, np.less(x,1))
+    arr_shape = q.shape
+    x, q = x.flatten(), q.flatten()
+
+    inf_indices1 = np.where(x == 1)
+    inf_indices2 = np.intersect1d(
+        np.array(np.where(q == 0)), np.array(np.where(x > 1))
+    )
+    inf_indices3 = np.intersect1d(
+        np.array(np.where(q <= -1)), np.array(np.where(x > 1))
+    )
+    nan_indices = np.where(x < 1.)
+
     n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x
         n, res = n + 1, res + term
     ret = np.round(res, decimals=4)
+    ret[inf_indices1] = np.inf
+    ret[inf_indices2] = np.inf
+    ret[inf_indices3] = np.inf
     ret[nan_indices] = np.nan
-    ret[inf_indices] = np.inf
-    return ret
+
+    return ret.reshape(arr_shape)
 
 
 zeta.support_native_out = False
