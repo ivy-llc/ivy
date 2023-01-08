@@ -278,12 +278,12 @@ def test_jax_numpy_asarray(
 
 # int16
 @handle_frontend_test(
-    fn_tree="jax.lax.int16",
+    fn_tree="jax.numpy.int16",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
     ),
 )
-def test_jax_lax_int16(
+def test_jax_numpy_int16(
     *,
     dtype_and_x,
     as_variable,
