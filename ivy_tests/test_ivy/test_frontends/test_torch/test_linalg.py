@@ -764,11 +764,7 @@ def test_torch_solve(
 # eigvals
 @handle_frontend_test(
     fn_tree="torch.linalg.eigvals",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=2,
-    ),
+    dtype_and_x=_get_dtype_and_square_matrix(),
 )
 def test_torch_eigvals(
     *,
@@ -791,5 +787,5 @@ def test_torch_eigvals(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        input=x,
     )
