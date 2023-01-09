@@ -1,15 +1,19 @@
+#global import
 import ivy
-
-from functools import partial
-
-try:
-    from jax._src.prng import PRNGKeyArray as _PRNGKeyArray
-except ImportError:
-    from types import SimpleNamespace
-
-    random = SimpleNamespace
+import jax
+from jax.config import config
+from typing import Optional, Union, Sequence
 
 
-def PRNGKey(seed: int) -> ivy.Array:
-    ivy.seed(seed_value=seed)
-    return random().PRNG(seed)
+def __init__(self):
+    self.key = PRNGKey(0)
+def _setRNG(key):
+    global RNG
+    RNG.key = key
+
+
+
+def PRNGKey() ->ivy.Array:
+    ivy.seed(seed_value=RNG.key)
+    return ivy.randint(RNG.key)
+    

@@ -294,6 +294,11 @@ def test_seed(seed_val):
     # smoke test
     ivy.seed(seed_value=seed_val)
 
+#PRNGKey
+def test_PRNG_key(seed):
+    if test_seed(seed):
+        assert PRNGKey()
+    return false    
 
 # shuffle
 @handle_test(
