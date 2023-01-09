@@ -140,5 +140,10 @@ def logical_and(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def invert(x, /):
+    return ivy.bitwise_invert(x)
+
+
+@to_ivy_arrays_and_back
 def isinf(x, /):
     return ivy.isinf(x)
