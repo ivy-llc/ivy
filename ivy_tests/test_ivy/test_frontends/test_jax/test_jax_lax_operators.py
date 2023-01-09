@@ -1927,7 +1927,7 @@ def _general_dot_helper(draw):
         pref_dtype = pref
     else:
         pref_dtype = None
-    return ldtype+rdtype, \
+    return ldtype + rdtype, \
         (lhs[0], rhs[0]), \
         ((lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch)), \
         pref_dtype

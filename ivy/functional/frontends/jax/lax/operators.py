@@ -163,7 +163,11 @@ def dot(lhs, rhs, precision=None, preferred_element_type=None):
 
 
 @to_ivy_arrays_and_back
-def dot_general(lhs, rhs, dimension_numbers, precision=None, preferred_element_type=None):
+def dot_general(lhs,
+                rhs,
+                dimension_numbers,
+                precision=None,
+                preferred_element_type=None):
     (lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch) = dimension_numbers
     assert len(lhs.shape) == len(rhs.shape)
     ivy.assertions.check_less(
