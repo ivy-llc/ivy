@@ -304,7 +304,6 @@ _all_ivy_dtypes_str = (
     "float64",
     "complex64",
     "complex128",
-    "complex256",
     "bool",
 )
 
@@ -325,7 +324,6 @@ float64 = FloatDtype("float64")
 double = float64
 complex64 = ComplexDtype("complex64")
 complex128 = ComplexDtype("complex128")
-complex256 = ComplexDtype("complex256")
 bool = Dtype("bool")
 
 # native data types
@@ -344,7 +342,6 @@ native_float64 = FloatDtype("float64")
 native_double = native_float64
 native_complex64 = ComplexDtype("complex64")
 native_complex128 = ComplexDtype("complex128")
-native_complex256 = ComplexDtype("complex256")
 native_bool = Dtype("bool")
 
 # all
@@ -363,7 +360,6 @@ all_dtypes = (
     float64,
     complex64,
     complex128,
-    complex256,
     bool,
 )
 all_numeric_dtypes = (
@@ -405,7 +401,6 @@ all_uint_dtypes = (
 all_complex_dtypes = (
     complex64,
     complex128,
-    complex256,
 )
 
 # valid data types
@@ -509,7 +504,6 @@ extra_promotion_table = {
     (bool, float32): float32,
     (bool, complex64): complex64,
     (bool, complex128): complex128,
-    (bool, complex256): complex256,
     (uint16, bool): uint16,
     (int32, bool): int32,
     (float16, bool): float16,
@@ -524,7 +518,6 @@ extra_promotion_table = {
     (float32, bool): float32,
     (complex64, bool): complex64,
     (complex128, bool): complex128,
-    (complex256, bool): complex256,
     (uint64, int8): float64,
     (int8, uint64): float64,
     (uint64, int16): float64,
@@ -604,33 +597,58 @@ extra_promotion_table = {
     (float32, bfloat16): float32,
     (bfloat16, float64): float64,
     (float64, bfloat16): float64,
-    (complex64, complex64): complex64,
-    (complex64, complex128): complex128,
-    (complex64, complex256): complex256,
-    (complex128, complex64): complex128,
-    (complex128, complex128): complex128,
-    (complex128, complex256): complex256,
-    (complex256, complex64): complex256,
-    (complex256, complex128): complex256,
-    (complex256, complex256): complex256,
+    (complex64, int8): complex64,
+    (int8, complex64): complex64,
+    (complex64, int16): complex64,
+    (int16, complex64): complex64,
+    (complex64, int32): complex64,
+    (int32, complex64): complex64,
+    (complex64, int64): complex64,
+    (int64, complex64): complex64,
+    (complex64, uint8): complex64,
+    (uint8, complex64): complex64,
+    (complex64, uint16): complex64,
+    (uint16, complex64): complex64,
+    (complex64, uint32): complex64,
+    (uint32, complex64): complex64,
+    (complex64, uint64): complex64,
+    (uint64, complex64): complex64,
     (complex64, float16): complex64,
     (float16, complex64): complex64,
     (complex64, float32): complex64,
     (float32, complex64): complex64,
     (complex64, float64): complex128,
     (float64, complex64): complex128,
+    (complex64, bfloat16): complex64,
+    (bfloat16, complex64): complex64,
+    (complex64, complex64): complex64,
+    (complex64, complex128): complex128,
+    (complex128, int8): complex128,
+    (int8, complex128): complex128,
+    (complex128, int16): complex128,
+    (int16, complex128): complex128,
+    (complex128, int32): complex128,
+    (int32, complex128): complex128,
+    (complex128, int64): complex128,
+    (int64, complex128): complex128,
+    (complex128, uint8): complex128,
+    (uint8, complex128): complex128,
+    (complex128, uint16): complex128,
+    (uint16, complex128): complex128,
+    (complex128, uint32): complex128,
+    (uint32, complex128): complex128,
+    (complex128, uint64): complex128,
+    (uint64, complex128): complex128,
     (complex128, float16): complex128,
     (float16, complex128): complex128,
     (complex128, float32): complex128,
     (float32, complex128): complex128,
     (complex128, float64): complex128,
     (float64, complex128): complex128,
-    (complex256, float16): complex256,
-    (float16, complex256): complex256,
-    (complex256, float32): complex256,
-    (float32, complex256): complex256,
-    (complex256, float64): complex256,
-    (float64, complex256): complex256,
+    (complex128, bfloat16): complex128,
+    (bfloat16, complex128): complex128,
+    (complex128, complex64): complex128,
+    (complex128, complex128): complex128,
 }
 
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}

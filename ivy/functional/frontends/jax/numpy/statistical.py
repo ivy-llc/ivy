@@ -157,15 +157,17 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
         new_axis = [0] * len(axis)
         for i, v in enumerate(axis):
             if not -a_ndim <= v < a_ndim:
-                raise ValueError(f"axis {v} is out of bounds for array of \
-                    dimension {a_ndim}")
+                raise ValueError(
+                    f"axis {v} is out of bounds for array of \
+                    dimension {a_ndim}"
+                )
             if v < 0:
                 new_axis[i] = v + a_ndim
             else:
                 new_axis[i] = v
         axis = tuple(new_axis)
-    
-    if weights is None: 
+
+    if weights is None:
         ret = ivy.mean(a, axis=axis, keepdims=keepdims)
         if axis is None:
             fill_value = int(a.size) if ivy.is_int_dtype(ret) else float(a.size)
@@ -192,24 +194,31 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
         # Make sure the dimensions work out
         if a_shape != weights_shape:
             if len(weights_shape) != 1:
-                raise ValueError("1D weights expected when shapes of a and \
-                    weights differ.")
+                raise ValueError(
+                    "1D weights expected when shapes of a and \
+                    weights differ."
+                )
             if axis is None:
-                raise ValueError("Axis must be specified when shapes of a and \
-                    weights differ.")
+                raise ValueError(
+                    "Axis must be specified when shapes of a and \
+                    weights differ."
+                )
             elif isinstance(axis, tuple):
-                raise ValueError("Single axis expected when shapes of a and \
-                    weights differ") 
+                raise ValueError(
+                    "Single axis expected when shapes of a and \
+                    weights differ"
+                )
             elif not weights.shape[0] == a.shape[axis]:
-                raise ValueError("Length of weights not compatible with \
-                    specified axis.")
-        
+                raise ValueError(
+                    "Length of weights not compatible with \
+                    specified axis."
+                )
+
             weights = ivy.broadcast_to(
-                weights, 
-                shape=(a_ndim - 1) * (1,) + weights_shape
+                weights, shape=(a_ndim - 1) * (1,) + weights_shape
             )
             weights = ivy.moveaxis(weights, -1, axis)
-    
+
         weights_sum = ivy.sum(weights, axis=axis)
         ret = ivy.sum(a * weights, axis=axis, keepdims=keepdims) / weights_sum
 

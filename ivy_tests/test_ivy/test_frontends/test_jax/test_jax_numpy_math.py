@@ -2077,7 +2077,7 @@ def test_jax_numpy_fix(
     on_device,
     fn_tree,
     frontend,
-    with_out
+    with_out,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(

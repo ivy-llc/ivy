@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("bool"),
+                available_dtypes=("bool",),
                 num_arrays=2,
             )
         ],
@@ -62,7 +62,7 @@ def test_numpy_logical_and(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("bool"),
+                available_dtypes=("bool",),
                 num_arrays=2,
             )
         ],
@@ -114,8 +114,7 @@ def test_numpy_logical_or(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("bool"),
-                num_arrays=2,
+                available_dtypes=("bool",),
             )
         ],
         get_dtypes_kind="bool",
@@ -133,7 +132,7 @@ def test_numpy_logical_not(
     fn_tree,
     frontend,
 ):
-    dtypes, x, casting, dtype = dtypes_values_casting
+    dtypes, x, casting, _ = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=dtypes,
@@ -154,7 +153,7 @@ def test_numpy_logical_not(
         where=where,
         casting=casting,
         order="K",
-        dtype=dtype,
+        dtype="bool",
         subok=True,
     )
 
@@ -165,7 +164,7 @@ def test_numpy_logical_not(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("bool"),
+                available_dtypes=("bool",),
                 num_arrays=2,
             )
         ],

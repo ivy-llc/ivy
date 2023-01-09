@@ -38,7 +38,6 @@ native_float32 = np.dtype("float32")
 native_float64 = np.dtype("float64")
 native_complex64 = np.dtype("complex64")
 native_complex128 = np.dtype("complex128")
-native_complex256 = np.dtype("complex256")
 native_double = native_float64
 native_bool = np.dtype("bool")
 
@@ -58,7 +57,6 @@ valid_dtypes = (
     ivy.float64,
     ivy.complex64,
     ivy.complex128,
-    ivy.complex256,
     ivy.bool,
 )
 valid_numeric_dtypes = (
@@ -86,7 +84,7 @@ valid_int_dtypes = (
 )
 valid_float_dtypes = (ivy.float16, ivy.float32, ivy.float64)
 valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
-valid_complex_dtypes = (ivy.complex64, ivy.complex128, ivy.complex256)
+valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
 # invalid data types
 invalid_dtypes = (ivy.bfloat16,)

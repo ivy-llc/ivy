@@ -1294,16 +1294,14 @@ def meshgrid(
             [4, 1],
             [4, 1]])
 
-        >>> x = ivy.array([1, 2, 3])
-        >>> y = ivy.array([4, 5, 6])
-        >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
-        >>> print(xv)
-        ivy.array([[1, 2, 3]])
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
+    >>> print(xv)
+    ivy.array([[1, 2, 3]])
 
-        >>> print(yv)
-        ivy.array([[4],
-                [5],
-                [6]])
+    >>> print(yv)
+    ivy.array([[4], [5], [6]])
 
     With :class:`ivy.NativeArray` input:
 

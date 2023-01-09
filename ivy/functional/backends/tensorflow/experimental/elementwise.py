@@ -9,6 +9,7 @@ from .. import backend_version
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import tensorflow_probability as tfp
+from tensorflow.python.ops.numpy_ops import np_config
 
 
 def sinc(
@@ -140,7 +141,6 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype is None:
         return tf.math.count_nonzero(a, axis=axis, keepdims=keepdims, name=None)
@@ -158,6 +158,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    np_config.enable_numpy_behavior()
     return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
