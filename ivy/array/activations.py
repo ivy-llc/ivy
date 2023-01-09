@@ -61,7 +61,7 @@ class ArrayWithActivations(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([-1.2, -0.6, 1.5])
-        >>> y = ivy.gelu(x)
+        >>> y = x.gelu()
         >>> print(y)
         ivy.array([-0.138, -0.165, 1.4])
         """
