@@ -295,7 +295,7 @@ def unique_values(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
+ 
     """
     return ivy.current_backend(x).unique_values(x, out=out)
 

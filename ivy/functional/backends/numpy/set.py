@@ -77,4 +77,4 @@ def unique_values(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.n
         ).astype(x.dtype)
     else:
         unique = np.unique(x.flatten()).astype(x.dtype)
-    return unique
+    return unique 
