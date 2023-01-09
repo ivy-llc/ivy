@@ -10,7 +10,7 @@ from hypothesis import strategies as st
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     dtype=helpers.get_dtypes("valid", full=False),
     order=st.sampled_from(["C", "F", "A", "K"]),
-    like=helpers.get_dtypes("valid"),
+    like=helpers.dtype_and_values(num_arrays=1),
 )
 def test_numpy_asanyarray(
     dtype_and_x,
