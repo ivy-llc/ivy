@@ -1256,10 +1256,6 @@ def meshgrid(
         Each returned array should have the same data type as the input arrays.
 
 
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-    the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/array_api.meshgrid.html>`_ # noqa
-    in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -1305,7 +1301,17 @@ def meshgrid(
     >>> print(yv)
     ivy.array([[4], [5], [6]])
 
+    With :class:`ivy.NativeArray` input:
 
+    >>> x = ivy.native_array([1, 2])
+    >>> y = ivy.native_array([3, 4])
+    >>> xv, yv = ivy.meshgrid(x, y)
+    >>> print(xv)
+    ivy.array([[1, 2],
+            [1, 2]])
+    >>> print(yv)
+    ivy.array([[3, 3],
+            [4, 4]])
     """
     return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
 

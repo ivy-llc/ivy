@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Tuple, Dict, Sequence, Any, Type
+from typing import Optional, Union, List, Tuple, Dict, Sequence
 from numbers import Number
 import numpy as np
 
