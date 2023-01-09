@@ -717,7 +717,6 @@ def test_torch_svdvals(
     )
 
 
-
 # solve
 @handle_frontend_test(
     fn_tree="torch.linalg.solve",
@@ -777,7 +776,7 @@ def _tensorinv_helper(draw):
         result.append(x)
         return np.array(result)
     ind = draw(helpers.ints(min_value=1, max_value=6))
-    product_half = draw(helpers.ints(min_value=2,max_value=25))
+    product_half = draw(helpers.ints(min_value=2, max_value=25))
     factors_list = factors(product_half)
     shape = ()
     while len(shape) < ind and ind > 2:
