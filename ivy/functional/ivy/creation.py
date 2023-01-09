@@ -1224,7 +1224,8 @@ def meshgrid(
         an arbitrary number of one-dimensional arrays representing grid coordinates.
         Each array should have the same numeric data type.
     sparse
-        if True, a sparse grid is returned in order to conserve memory. Default: ``False``.
+        if True, a sparse grid is returned in order to conserve memory.
+        Default: ``False``.
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
