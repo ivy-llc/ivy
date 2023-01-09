@@ -731,7 +731,7 @@ def _tensorinv_helper(draw):
             i += 1
         result.append(x)
         return np.array(result)
-    ind = draw(helpers.ints(min_value=1, max_value=5))
+    ind = draw(helpers.ints(min_value=1, max_value=6))
     product_half = draw(helpers.ints(min_value=2,max_value=25))
     factors_list = factors(product_half)
     shape = ()
@@ -739,31 +739,22 @@ def _tensorinv_helper(draw):
         while np.prod(shape) < product_half:
             a = factors_list[np.random.randint(len(factors_list))]
             shape += (a,)
-        if np.prod(shape) > product_half:
+        if np.prod(shape) > product_half or len(shape) > ind:
             shape = ()
-        while len(shape) < ind:
+        while len(shape) < ind and shape != ():
             shape += (1,)
-        if np.prod(shape) == product_half and len(shape) == ind:
+        if np.prod(shape) == product_half:
             shape += shape[::-1]
             break
-    if ind == 1:
+    if ind == 1 and shape == ():
         shape += (product_half, product_half)
-    if ind == 2:
+    if ind == 2 and shape == ():
         shape += (1, product_half, product_half, 1)
     shape_cor = ()
     for i in shape:
         shape_cor += (int(i),)
-    dim_number = len(shape_cor)
-    dtype, input = draw(helpers.dtype_and_values(
-            available_dtypes=draw(helpers.get_dtypes("float")),
-            shape=shape_cor,
-            min_num_dims=dim_number,
-            max_num_dims=dim_number,
-            min_value=-100,
-            max_value=100,
-        ).filter(lambda x: np.linalg.det(x) > sys.float_info.epsilon)
-    )
-
+    dtype = draw(helpers.get_dtypes("float"))
+    input = np.random.rand(*shape_cor)
     return dtype, input, ind
 
 
