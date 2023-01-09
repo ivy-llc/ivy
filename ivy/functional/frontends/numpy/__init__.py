@@ -26,7 +26,6 @@ numpy_promotion_table = {
     (ivy.bool, ivy.float64): ivy.float64,
     (ivy.bool, ivy.complex64): ivy.complex64,
     (ivy.bool, ivy.complex128): ivy.complex128,
-    (ivy.bool, ivy.complex256): ivy.complex256,
     (ivy.bool, ivy.bool): ivy.bool,
     (ivy.int8, ivy.bool): ivy.int8,
     (ivy.int8, ivy.int8): ivy.int8,
@@ -172,15 +171,9 @@ numpy_promotion_table = {
     (ivy.complex64, ivy.bool): ivy.complex64,
     (ivy.complex64, ivy.complex64): ivy.complex64,
     (ivy.complex64, ivy.complex128): ivy.complex128,
-    (ivy.complex64, ivy.complex256): ivy.complex256,
     (ivy.complex128, ivy.bool): ivy.complex128,
     (ivy.complex128, ivy.complex64): ivy.complex128,
     (ivy.complex128, ivy.complex128): ivy.complex128,
-    (ivy.complex128, ivy.complex256): ivy.complex256,
-    (ivy.complex256, ivy.bool): ivy.complex256,
-    (ivy.complex256, ivy.complex64): ivy.complex256,
-    (ivy.complex256, ivy.complex128): ivy.complex256,
-    (ivy.complex256, ivy.complex256): ivy.complex256,
 }
 
 numpy_str_to_type_table = {
@@ -199,7 +192,6 @@ numpy_str_to_type_table = {
     "E": "bfloat16",
     "F": "complex64",
     "D": "complex128",
-    "G": "complex256",
     "f2": "float16",
     "f4": "float32",
     "f8": "float64",
@@ -213,7 +205,6 @@ numpy_str_to_type_table = {
     "u8": "uint64",
     "c8": "complex64",
     "c16": "complex128",
-    "c32": "complex256",
 }
 
 numpy_type_to_str_and_num_table = {
@@ -232,7 +223,6 @@ numpy_type_to_str_and_num_table = {
     "bfloat16": ("E", 256),
     "complex64": ("F", 14),
     "complex128": ("D", 15),
-    "complex256": ("G", 16),
 }
 
 numpy_scalar_to_dtype = {
@@ -259,7 +249,6 @@ numpy_scalar_to_dtype = {
     complexfloating: ivy.complex128,
     csingle: ivy.complex64,
     complex_: ivy.complex128,
-    clongfloat: ivy.complex256,
 }
 
 numpy_dtype_to_scalar = {v: k for k, v in numpy_scalar_to_dtype.items()}
@@ -280,7 +269,6 @@ numpy_casting_rules = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.int8: [
         ivy.int8,
@@ -292,7 +280,6 @@ numpy_casting_rules = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.int16: [
         ivy.int16,
@@ -302,10 +289,9 @@ numpy_casting_rules = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
-    ivy.int32: [ivy.int32, ivy.int64, ivy.float64, ivy.complex128, ivy.complex256],
-    ivy.int64: [ivy.int64, ivy.float64, ivy.complex128, ivy.complex256],
+    ivy.int32: [ivy.int32, ivy.int64, ivy.float64, ivy.complex128],
+    ivy.int64: [ivy.int64, ivy.float64, ivy.complex128],
     ivy.uint8: [
         ivy.uint8,
         ivy.uint16,
@@ -319,7 +305,6 @@ numpy_casting_rules = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.uint16: [
         ivy.uint16,
@@ -331,7 +316,6 @@ numpy_casting_rules = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.uint32: [
         ivy.uint32,
@@ -339,28 +323,24 @@ numpy_casting_rules = {
         ivy.int64,
         ivy.float64,
         ivy.complex128,
-        ivy.complex256,
     ],
-    ivy.uint64: [ivy.uint64, ivy.float64, ivy.complex128, ivy.complex256],
+    ivy.uint64: [ivy.uint64, ivy.float64, ivy.complex128],
     ivy.float16: [
         ivy.float16,
         ivy.float32,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.float32: [
         ivy.float32,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
-    ivy.float64: [ivy.float64, ivy.complex128, ivy.complex256],
-    ivy.complex64: [ivy.complex64, ivy.complex128, ivy.complex256],
-    ivy.complex128: [ivy.complex128, ivy.complex256],
-    ivy.complex256: [ivy.complex256],
+    ivy.float64: [ivy.float64, ivy.complex128],
+    ivy.complex64: [ivy.complex64, ivy.complex128],
+    ivy.complex128: [ivy.complex128],
 }
 
 

@@ -711,7 +711,6 @@ def array_values(
                 "float64": {"cast_type": "float64", "width": 64},
                 "complex64": {"cast_type": "complex64", "width": 32},
                 "complex128": {"cast_type": "complex128", "width": 64},
-                "complex256": {"cast_type": "complex256", "width": 64},
             }
             # The smallest possible value is determined by one of the arguments
             if min_value > -abs_smallest_val or max_value < abs_smallest_val:

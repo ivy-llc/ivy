@@ -16,7 +16,15 @@ from ivy.functional.ivy.random import (
 
 
 # dirichlet
-@with_unsupported_dtypes({"2.9.1 and below": ("blfoat16", "float16",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "blfoat16",
+            "float16",
+        )
+    },
+    backend_version,
+)
 def dirichlet(
     alpha: Union[tf.Tensor, tf.Variable, float, Sequence[float]],
     /,
@@ -90,13 +98,13 @@ def gamma(
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def poisson(
-        lam: Union[float, tf.Tensor, tf.Variable],
-        *,
-        shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-        device: str,
-        dtype: DType,
-        seed: Optional[int] = None,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    lam: Union[float, tf.Tensor, tf.Variable],
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: str,
+    dtype: DType,
+    seed: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     lam = tf.cast(lam, "float32")
     with tf.device(device):
