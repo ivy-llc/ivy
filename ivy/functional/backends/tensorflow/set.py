@@ -87,4 +87,4 @@ def unique_values(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.unique(tf.reshape(x, [-1]))[0]
-    return tf.sort(ret) 
+    return tf.sort(ret)  
