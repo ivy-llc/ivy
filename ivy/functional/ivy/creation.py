@@ -158,9 +158,9 @@ class NestedSequence(Protocol[_T_co]):
 @handle_exceptions
 def arange(
     start: Number,
+    /,
     stop: Optional[Number] = None,
     step: Optional[Number] = 1,
-    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -1294,16 +1294,14 @@ def meshgrid(
             [4, 1],
             [4, 1]])
 
-        >>> x = ivy.array([1, 2, 3])
-        >>> y = ivy.array([4, 5, 6])
-        >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
-        >>> print(xv)
-        ivy.array([[1, 2, 3]])
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
+    >>> print(xv)
+    ivy.array([[1, 2, 3]])
 
-        >>> print(yv)
-        ivy.array([[4],
-                [5],
-                [6]])
+    >>> print(yv)
+    ivy.array([[4], [5], [6]])
 
     With :class:`ivy.NativeArray` input:
 

@@ -4,6 +4,8 @@ import numpy as np
 
 import ivy
 
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+
 
 def diagflat(
     x: np.ndarray,
@@ -108,3 +110,25 @@ def eig(x: np.ndarray, /) -> Tuple[np.ndarray]:
 
 
 eig.support_native_out = False
+
+
+def eigvals(x: np.ndarray, /) -> np.ndarray:
+    if ivy.dtype(x) == ivy.float16:
+        x = x.astype(np.float32)
+    e = np.linalg.eigvals(x)
+    return e.astype(complex)
+
+
+eigvals.support_native_out = False
+
+
+def adjoint(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    _check_valid_dimension_size(x)
+    axes = [x for x in range(len(x.shape))]
+    axes[-1], axes[-2] = axes[-2], axes[-1]
+    return np.conjugate(np.transpose(x, axes=axes))

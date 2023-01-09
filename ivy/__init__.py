@@ -68,6 +68,8 @@ class Dtype(str):
             dtype_str = default_int_dtype()
         if dtype_str is builtins.float:
             dtype_str = default_float_dtype()
+        if dtype_str is builtins.complex:
+            dtype_str = default_complex_dtype()
         if dtype_str is builtins.bool:
             dtype_str = "bool"
         if not isinstance(dtype_str, str):
@@ -139,6 +141,10 @@ class Dtype(str):
     @property
     def is_uint_dtype(self):
         return is_uint_dtype(self)
+
+    @property
+    def is_complex_dtype(self):
+        return is_complex_dtype(self)
 
     @property
     def dtype_bits(self):
@@ -247,6 +253,10 @@ class ComplexDtype(Dtype):
             raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
 
+    @property
+    def info(self):
+        return finfo(self)
+
 
 class Node(str):
     # ToDo: add formatting checks once multi-node is supported
@@ -294,7 +304,6 @@ _all_ivy_dtypes_str = (
     "float64",
     "complex64",
     "complex128",
-    "complex256",
     "bool",
 )
 
@@ -315,7 +324,6 @@ float64 = FloatDtype("float64")
 double = float64
 complex64 = ComplexDtype("complex64")
 complex128 = ComplexDtype("complex128")
-complex256 = ComplexDtype("complex256")
 bool = Dtype("bool")
 
 # native data types
@@ -332,9 +340,8 @@ native_float16 = FloatDtype("float16")
 native_float32 = FloatDtype("float32")
 native_float64 = FloatDtype("float64")
 native_double = native_float64
-complex64 = ComplexDtype("complex64")
-complex128 = ComplexDtype("complex128")
-complex256 = ComplexDtype("complex256")
+native_complex64 = ComplexDtype("complex64")
+native_complex128 = ComplexDtype("complex128")
 native_bool = Dtype("bool")
 
 # all
@@ -351,6 +358,8 @@ all_dtypes = (
     float16,
     float32,
     float64,
+    complex64,
+    complex128,
     bool,
 )
 all_numeric_dtypes = (
@@ -392,7 +401,6 @@ all_uint_dtypes = (
 all_complex_dtypes = (
     complex64,
     complex128,
-    complex256,
 )
 
 # valid data types
@@ -494,6 +502,8 @@ extra_promotion_table = {
     (bool, uint32): uint32,
     (bool, uint8): uint8,
     (bool, float32): float32,
+    (bool, complex64): complex64,
+    (bool, complex128): complex128,
     (uint16, bool): uint16,
     (int32, bool): int32,
     (float16, bool): float16,
@@ -506,6 +516,8 @@ extra_promotion_table = {
     (uint32, bool): uint32,
     (uint8, bool): uint8,
     (float32, bool): float32,
+    (complex64, bool): complex64,
+    (complex128, bool): complex128,
     (uint64, int8): float64,
     (int8, uint64): float64,
     (uint64, int16): float64,
@@ -587,13 +599,20 @@ extra_promotion_table = {
     (float64, bfloat16): float64,
     (complex64, complex64): complex64,
     (complex64, complex128): complex128,
-    (complex64, complex256): complex256,
     (complex128, complex64): complex128,
     (complex128, complex128): complex128,
-    (complex128, complex256): complex256,
-    (complex256, complex64): complex256,
-    (complex256, complex128): complex256,
-    (complex256, complex256): complex256,
+    (complex64, float16): complex64,
+    (float16, complex64): complex64,
+    (complex64, float32): complex64,
+    (float32, complex64): complex64,
+    (complex64, float64): complex128,
+    (float64, complex64): complex128,
+    (complex128, float16): complex128,
+    (float16, complex128): complex128,
+    (complex128, float32): complex128,
+    (float32, complex128): complex128,
+    (complex128, float64): complex128,
+    (float64, complex128): complex128,
 }
 
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}
@@ -860,7 +879,7 @@ def set_array_significant_figures(sig_figs):
 
 
 def unset_array_significant_figures():
-    """"""
+    """Unset the currently set array significant figures."""
     global array_significant_figures_stack
     if array_significant_figures_stack:
         array_significant_figures_stack.pop(-1)
@@ -913,7 +932,7 @@ def set_array_decimal_values(dec_vals):
 
 
 def unset_array_decimal_values():
-    """"""
+    """Unset the currently set array decimal values."""
     global array_decimal_values_stack
     if array_decimal_values_stack:
         array_decimal_values_stack.pop(-1)
@@ -949,7 +968,7 @@ def set_warning_level(warn_level):
 
 
 def unset_warning_level():
-    """"""
+    """Unset the currently set warning level."""
     global warning_level_stack
     if warning_level_stack:
         warning_level_stack.pop(-1)
@@ -1000,7 +1019,7 @@ def set_nan_policy(warn_level):
 
 
 def unset_nan_policy():
-    """"""
+    """Unset the currently set nan policy."""
     global nan_policy_stack
     if nan_policy_stack:
         nan_policy_stack.pop(-1)

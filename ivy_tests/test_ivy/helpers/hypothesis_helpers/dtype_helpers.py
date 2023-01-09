@@ -56,6 +56,9 @@ def get_dtypes(
                     framework.valid_complex_dtypes
                 )
             ),
+            "float_and_complex": tuple(
+                set(framework.valid_float_dtypes).union(framework.valid_complex_dtypes)
+            ),
             "bool": tuple(
                 set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
             ),
@@ -182,24 +185,29 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     ret
         A tuple of inputs and castable dtype.
     """
+    bound_dtype_bits = (
+        lambda d: ivy.dtype_bits(d) / 2
+        if ivy.is_complex_dtype(d)
+        else ivy.dtype_bits(d)
+    )
 
     def cast_filter(d):
         if ivy.is_int_dtype(d):
             max_val = ivy.iinfo(d).max
-        elif ivy.is_float_dtype(d):
+        elif ivy.is_float_dtype(d) or ivy.is_complex_dtype(d):
             max_val = ivy.finfo(d).max
         else:
             max_val = 1
         if x is None:
             if ivy.is_int_dtype(dtype):
                 max_x = ivy.iinfo(dtype).max
-            elif ivy.is_float_dtype(dtype):
+            elif ivy.is_float_dtype(dtype) or ivy.is_complex_dtype(dtype):
                 max_x = ivy.finfo(dtype).max
             else:
                 max_x = 1
         else:
             max_x = np.max(np.abs(np.asarray(x)))
-        return max_x <= max_val and ivy.dtype_bits(d) >= ivy.dtype_bits(dtype)
+        return max_x <= max_val and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
 
     cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
     if x is None:

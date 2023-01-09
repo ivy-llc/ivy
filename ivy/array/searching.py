@@ -89,6 +89,7 @@ class ArrayWithSearching(abc.ABC):
         axis: Optional[int] = None,
         keepdims: bool = False,
         output_dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
+        select_last_index: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -140,7 +141,12 @@ class ArrayWithSearching(abc.ABC):
                    [1]])
         """
         return ivy.argmin(
-            self._data, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            output_dtype=output_dtype,
+            select_last_index=select_last_index,
+            out=out,
         )
 
     def nonzero(
