@@ -70,3 +70,29 @@ def quantile(
         a, q, axis=axis, interpolation=interpolation, keepdims=keepdims
     )
     return result
+
+
+def corrcoef(
+    x: tf.Tensor,
+    /,
+    *,
+    y: tf.Tensor,
+    rowvar: Optional[bool] = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    if y is None:
+        xarr = x
+    else:
+        axis = 0 if rowvar else 1
+        xarr = tf.concat([x, y], axis=axis)
+
+    if rowvar:
+        mean_t = tf.reduce_mean(xarr, axis=1, keepdims=True)
+        cov_t = ((xarr - mean_t) @ tf.transpose(xarr - mean_t)) / (x.shape[1] - 1)
+    else:
+        mean_t = tf.reduce_mean(xarr, axis=0, keepdims=True)
+        cov_t = (tf.transpose(xarr - mean_t) @ (xarr - mean_t)) / (x.shape[1] - 1)
+
+    cov2_t = tf.linalg.diag(1 / tf.sqrt(tf.linalg.diag_part(cov_t)))
+    cor = cov2_t @ cov_t @ cov2_t
+    return cor

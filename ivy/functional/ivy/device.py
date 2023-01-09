@@ -37,7 +37,7 @@ max_chunk_sizes = dict()
 
 
 class DefaultDevice:
-    """"""
+    """Ivy Device Class"""
 
     def __init__(
         self,
@@ -657,7 +657,7 @@ def default_device(
     as_native: bool = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """Returns the input device or the default device.
-    If the as native flag is set, the device will be converted to a native device.
+    If the as_native flag is set, the device will be converted to a native device.
     If the item is provided, the item's device is returned.
     If the device is not provided, the last default device is returned.
     If a default device has not been set, the first gpu is returned if available,

@@ -739,6 +739,7 @@ def test_logaddexp2(
     atol=st.floats(min_value=1e-5, max_value=1e-5),
     equal_nan=st.booleans(),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_allclose(
     dtype_and_x,

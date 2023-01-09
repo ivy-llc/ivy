@@ -20,6 +20,9 @@ class _IndexUpdateHelper:
     def __getitem__(self, index):
         return _IndexUpdateRef(self.array, index)
 
+    def __setitem__(self, index):
+        return _IndexUpdateRef(self.array, index)
+
     def __repr__(self):
         return f"_IndexUpdateHelper({repr(self.array)})"
 
@@ -48,5 +51,8 @@ class _IndexUpdateRef:
 
     def set(self, values, indices_are_sorted=False, unique_indices=False, mode=None):
         ret = ivy.copy_array(self.array)  # break inplace op
-        ret[self.index] = values
+        if hasattr(values, "ivy_array"):
+            ret[self.index] = values.ivy_array
+        else:
+            ret[self.index] = values
         return jax_frontend.DeviceArray(ret)
