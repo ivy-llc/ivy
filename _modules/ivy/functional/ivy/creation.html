@@ -1794,7 +1794,56 @@
 <span class="sd">    ret</span>
 <span class="sd">        Tensor of zeros with the same shape and type as a, unless dtype provided which</span>
 <span class="sd">        overrides.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
 
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 1])</span>
+<span class="sd">    &gt;&gt;&gt; y = 5</span>
+<span class="sd">    &gt;&gt;&gt; z = x.one_hot(5)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([[0., 0., 0., 1., 0.],</span>
+<span class="sd">    ...    [0., 1., 0., 0., 0.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0])</span>
+<span class="sd">    &gt;&gt;&gt; y = 5</span>
+<span class="sd">    &gt;&gt;&gt; ivy.one_hot(x, y)</span>
+<span class="sd">    ivy.array([[1., 0., 0., 0., 0.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0])</span>
+<span class="sd">    &gt;&gt;&gt; y = 5</span>
+<span class="sd">    &gt;&gt;&gt; ivy.one_hot(x, 5, out=z)</span>
+<span class="sd">    ivy.array([[1., 0., 0., 0., 0.]])</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([[1., 0., 0., 0., 0.]])</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2]), \</span>
+<span class="sd">        b=ivy.array([3, 1]), c=ivy.array([2, 3]))</span>
+<span class="sd">    &gt;&gt;&gt; y = 5</span>
+<span class="sd">    &gt;&gt;&gt; z = x.one_hot(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[0., 1., 0., 0., 0.], </span>
+<span class="sd">                    [0., 0., 1., 0., 0.]]),</span>
+<span class="sd">        b: ivy.array([[0., 0., 0., 1., 0.], </span>
+<span class="sd">                    [0., 1., 0., 0., 0.]]),</span>
+<span class="sd">        c: ivy.array([[0., 0., 1., 0., 0.], </span>
+<span class="sd">                    [0., 0., 0., 1., 0.]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2]), \</span>
+<span class="sd">        b=ivy.array([]), c=ivy.native_array([4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = 7</span>
+<span class="sd">    &gt;&gt;&gt; z = x.one_hot(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[0., 0., 1., 0., 0., 0., 0.]]),</span>
+<span class="sd">        b: ivy.array([], shape=(0, 7)),</span>
+<span class="sd">        c: ivy.array([[0., 0., 0., 0., 1., 0., 0.]])</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span>
         <span class="n">indices</span><span class="p">,</span>
