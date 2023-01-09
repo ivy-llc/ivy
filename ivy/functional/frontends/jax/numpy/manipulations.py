@@ -111,3 +111,7 @@ def append(arr, values, axis=None):
         return ivy.concat((ivy.flatten(arr), ivy.flatten(values)), axis=0)
     else:
         return ivy.concat((arr, values), axis=axis)
+
+@to_ivy_arrays_and_back
+def tril_indices(n_rows, n_cols=None, k=None):
+    return ivy.tril_indices(n_rows, n_cols, k)
