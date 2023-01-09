@@ -5,14 +5,21 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+inf = float("inf")
+
 
 @st.composite
 def _embedding_helper(draw):
     dtype_weight, weight = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=[
+            x for x in draw(helpers.get_dtypes("numeric"))
+            if 'float' in x or 'complex' in x
+        ],
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=1,
+        min_value=-1e04,
+        max_value=1e04,
     ))
     num_embeddings, embedding_dim = weight[0].shape
     dtype_indices, indices = draw(helpers.dtype_and_values(
@@ -29,10 +36,19 @@ def _embedding_helper(draw):
 @handle_frontend_test(
     fn_tree="torch.nn.functional.embedding",
     dtypes_indices_weights=_embedding_helper(),
+    max_norm=st.floats(min_value=0, exclude_min=True),
+    p=st.one_of(
+        st.sampled_from(
+            [inf, -inf]),
+        st.integers(min_value=1, max_value=2),
+        st.floats(min_value=1.0, max_value=2.0)
+    ),
 )
 def test_torch_embedding(
     *,
     dtypes_indices_weights,
+    max_norm,
+    p,
     as_variable,
     with_out,
     num_positional_args,
@@ -53,4 +69,7 @@ def test_torch_embedding(
         on_device=on_device,
         input=indices,
         weight=weight,
+        padding_idx=None,
+        max_norm=max_norm,
+        norm_type=p,
     )

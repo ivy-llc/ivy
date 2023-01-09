@@ -21,5 +21,8 @@ def embedding(
         device=weight.device
     )
     for i, x in ivy.ndenumerate(input):
-        ret[i] = weight[x, :]
+        if ivy.exists(max_norm):
+            ret[i] = ivy.clip_vector_norm(weight[x, :], max_norm, p=norm_type)
+        else:
+            ret[i] = weight[x, :]
     return ret
