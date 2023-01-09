@@ -86,4 +86,4 @@ def unique_values(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray
         ).astype(x.dtype)
     else:
         unique = jnp.unique(x.flatten()).astype(x.dtype)
-    return unique
+    return unique  
