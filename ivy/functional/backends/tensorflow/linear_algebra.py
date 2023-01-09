@@ -33,6 +33,7 @@ def cholesky(
     return ret
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: tf.Tensor,
     x2: Optional[tf.Tensor] = None,
@@ -46,6 +47,9 @@ def cov(
     dtype: Optional[type] = None,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
+
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+
     if ddof is not None and ddof != int(ddof):
         raise ValueError("ddof must be integer")
 
@@ -58,9 +62,9 @@ def cov(
 
     if dtype is None:
         if x2 is None:
-            dtype = tf.experimental.numpy.result_type(x1, tf.float32)
+            dtype = tf.experimental.numpy.result_type(x1, tf.float64)
         else:
-            dtype = tf.experimental.numpy.result_type(x1, x2, tf.float32)
+            dtype = tf.experimental.numpy.result_type(x1, x2, tf.float64)
 
     if ddof is None:
         if bias == 0:
@@ -81,7 +85,6 @@ def cov(
 
     w = None
     if fweights is not None:
-
         fweights = tf.cast(fweights, dtype=dtype)
 
         if len(tf.shape(fweights)) > 1:

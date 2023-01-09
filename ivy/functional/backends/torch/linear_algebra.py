@@ -39,6 +39,7 @@ def cholesky(
 cholesky.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: torch.Tensor,
     x2: Optional[torch.Tensor] = None,
@@ -52,6 +53,9 @@ def cov(
     dtype: Optional[type] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+
     if x1.dim() > 2:
         raise ValueError("x1 has more than 2 dimensions")
 
@@ -59,12 +63,11 @@ def cov(
         if x2.dim() > 2:
             raise ValueError("x2 has more than 2 dimensions")
 
-    corr = int(not bias)
-    if ddof is not None:
-        if ddof == 1:
-            corr = int(False)
+    if ddof is None:
+        if bias == 0:
+            ddof = 1
         else:
-            corr = int(True)
+            ddof = 0
 
     if dtype is not None:
         x1 = x1.type(dtype)
@@ -73,18 +76,18 @@ def cov(
 
     if x2 is None:
         if rowVar is True:
-            return torch.cov(x1, correction=corr, fweights=fweights, aweights=aweights)
+            return torch.cov(x1, correction=ddof, fweights=fweights, aweights=aweights)
         else:
             return torch.cov(
                 torch.transpose(x1, 0, 1),
-                correction=corr,
+                correction=ddof,
                 fweights=fweights,
                 aweights=aweights,
             )
     else:
-        combined = torch.vstack((x1, x2))
+        combined = torch.cat((x1, x2), dim=0)
         return torch.cov(
-            combined, correction=corr, fweights=fweights, aweights=aweights
+            combined, correction=ddof, fweights=fweights, aweights=aweights
         )
 
 

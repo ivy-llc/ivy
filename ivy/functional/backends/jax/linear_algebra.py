@@ -31,6 +31,7 @@ def cholesky(
     return ret
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: JaxArray,
     x2: Optional[JaxArray] = None,
@@ -44,6 +45,8 @@ def cov(
     dtype: Optional[type] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+
     if jnp.ndim(x1) > 2:
         raise ValueError("x1 has more than 2 dimensions")
 

@@ -251,19 +251,19 @@ def _get_dtype_and_vector(draw):
 
 
 @st.composite
-def dtype_value1_value2_cov(
+def _get_dtype_value1_value2_for_cov(
     draw,
     available_dtypes,
+    min_num_dims,
+    max_num_dims,
+    min_dim_size,
+    max_dim_size,
     abs_smallest_val=None,
     min_value=None,
     max_value=None,
     allow_inf=False,
     exclude_min=False,
     exclude_max=False,
-    min_num_dims=1,
-    max_num_dims=2,
-    min_dim_size=1,
-    max_dim_size=10,
     large_abs_safety_factor=4,
     small_abs_safety_factor=4,
     safety_factor_scale="log",
@@ -302,13 +302,14 @@ def dtype_value1_value2_cov(
 
     # modifiers: rowVar, bias, ddof
     mods = [draw(helpers.ints(min_value=0, max_value=1)) for _ in range(3)]
-    # fweights = [draw(helpers.ints(min_value=0, max_value=5)) for _ in range(shape[0])]
-    # aweights = [draw(helpers.floats(min_value=0.1, max_value=5)) for _ in range(shape[0])]
+    dims = len([item for sublist in values for item in sublist])
+
+    fweights = [draw(helpers.ints(min_value=1, max_value=10)) for _ in range(dims)]
+    aweights = [draw(helpers.floats(min_value=1, max_value=10)) for _ in range(dims)]
+
     fweights = None
     aweights = None
     value1, value2 = values[0], values[1]
-    # if value2 == []:
-    #     value2 = None
 
     return [dtype], value1, value2, mods[0], mods[1], mods[2], fweights, aweights
 
@@ -1323,11 +1324,11 @@ def test_cholesky(
 # cov
 @handle_test(
     fn_tree="functional.ivy.cov",
-    dtype_x1_x2=dtype_value1_value2_cov(
+    dtype_x1_x2=_get_dtype_value1_value2_for_cov(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         max_num_dims=2,
-        min_dim_size=1,
+        min_dim_size=2,
         max_dim_size=5,
         min_value=-1e10,
         max_value=1e10,
