@@ -2092,3 +2092,43 @@ def test_jax_numpy_fix(
         test_values=False,
         x=x[0],
     )
+
+
+# floor_divide
+@handle_frontend_test(
+    fn_tree="jax.numpy.floor_divide",
+    dtype_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=2.0,
+        max_value=20.0,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+)
+def test_jax_numpy_floor_divide(
+    *,
+    dtype_values,
+    as_variable,
+    native_array,
+    num_positional_args,
+    frontend,
+    fn_tree,
+    on_device,
+    with_out,
+):
+    input_dtype, x = dtype_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        on_device=on_device,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        x1=x[0],
+        x2=x[1],
+    )
