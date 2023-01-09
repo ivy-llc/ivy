@@ -8,19 +8,7 @@ from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 
 @to_ivy_arrays_and_back
 def norm(input, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
-    # If dim is an int, the vector norm will be computed.
-    if (type(dim) is int or (type(dim) is tuple and len(dim) == 1)):
-        if ord is None:
-            ord = 2
-        return ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord, dtype=dtype, 
-                               out=out)
-    # If dim is a 2-tuple, the matrix norm will be computed.
-    elif (type(dim) is tuple and len(dim) == 2):
-        if ord is None:
-            ord = 'fro'
-        return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
-    # If dim is None
-    else:
+    if dim is None:
         # and ord= None, A will be flattened to 1D 
         # and the 2-norm of the resulting vector will be computed.
         if ord is None:  
@@ -38,6 +26,18 @@ def norm(input, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
                 return ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord, 
                                        dtype=dtype, out=out)
             
+    # If dim is an int, the vector norm will be computed.
+    elif (type(dim) is int or (type(dim) is tuple and len(dim) == 1)):
+        if ord is None:
+            ord = 2
+        return ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord, dtype=dtype, 
+                               out=out)
+    # If dim is a 2-tuple, the matrix norm will be computed.
+    elif (type(dim) is tuple and len(dim) == 2):
+        if ord is None:
+            ord = 'fro'
+        return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+                    
 
 @to_ivy_arrays_and_back
 def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
