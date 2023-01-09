@@ -152,3 +152,30 @@ def test_numpy_normal(
         scale=scale,
         size=size,
     )
+
+
+# shuffle
+@handle_frontend_test(
+    fn_tree="numpy.random.shuffle",
+    input_dtypes=helpers.get_dtypes("numeric"),
+)
+def test_numpy_shuffle(
+        input_dtypes,
+        as_variable,
+        num_positional_args,
+        native_array,
+        frontend,
+        fn_tree,
+        on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+    )
