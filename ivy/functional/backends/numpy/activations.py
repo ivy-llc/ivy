@@ -35,7 +35,7 @@ def gelu(
         ret = 0.5 * x * (1 + np.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))
     else:
         ret = 0.5 * x * (1 + ivy.erf(x / np.sqrt(2)))
-    return np.astype(ret, x.dtype, copy=False)
+    return ivy.astype(ret, x.dtype, copy=False)
 
 
 def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
