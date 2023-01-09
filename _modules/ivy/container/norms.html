@@ -151,8 +151,8 @@
         <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">weight</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">bias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">,</span>
         <span class="n">new_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -168,10 +168,10 @@
 <span class="sd">            Input container</span>
 <span class="sd">        normalized_idxs</span>
 <span class="sd">            Indices to apply the normalization to.</span>
-<span class="sd">        weight</span>
+<span class="sd">        scale</span>
 <span class="sd">            Learnable gamma variables for elementwise post-multiplication,</span>
 <span class="sd">            default is ``None``.</span>
-<span class="sd">        bias</span>
+<span class="sd">        b</span>
 <span class="sd">            Learnable beta variables for elementwise post-addition, default is ``None``.</span>
 <span class="sd">        epsilon</span>
 <span class="sd">            small constant to add to the denominator, use global ivy._MIN_BASE by</span>
@@ -194,7 +194,7 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]),</span>
 <span class="sd">        ...                    &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
 <span class="sd">        &gt;&gt;&gt; normalized_idxs = [0]</span>
-<span class="sd">        &gt;&gt;&gt; norm = x.layer_norm(normalized_idxs, epsilon=1.25, weight=0.3)</span>
+<span class="sd">        &gt;&gt;&gt; norm = x.layer_norm(normalized_idxs, epsilon=1.25, scale=0.3)</span>
 <span class="sd">        &gt;&gt;&gt; print(norm)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([-0.342, 0.0427, 0.299]),</span>
@@ -209,7 +209,7 @@
 <span class="sd">        &gt;&gt;&gt; normalized_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
 <span class="sd">        &gt;&gt;&gt; new_std = ivy.Container({&#39;a&#39;: 1.25, &#39;b&#39;: 1.5})</span>
 <span class="sd">        &gt;&gt;&gt; bias = ivy.Container({&#39;a&#39;: [0.2, 0.5, 0.7], &#39;b&#39;: 0.3})</span>
-<span class="sd">        &gt;&gt;&gt; norm = x.layer_norm(normalized_idxs, new_std=new_std, bias=bias)</span>
+<span class="sd">        &gt;&gt;&gt; norm = x.layer_norm(normalized_idxs, new_std=new_std, b=b)</span>
 <span class="sd">        &gt;&gt;&gt; print(norm)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([-1.62, 0.203, 1.42]),</span>
@@ -221,8 +221,8 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">normalized_idxs</span><span class="p">,</span>
-            <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span>
-            <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
+            <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span>
             <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span><span class="p">,</span>
             <span class="n">new_std</span><span class="o">=</span><span class="n">new_std</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
