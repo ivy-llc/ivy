@@ -380,8 +380,11 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
             <span class="k">yield</span> <span class="n">t</span><span class="p">,</span> <span class="nb">input</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-                <span class="k">yield from</span> <span class="n">_ndenumerate</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="p">,))</span>
+            <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+                <span class="k">yield</span> <span class="n">t</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_scalar</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+                    <span class="k">yield from</span> <span class="n">_ndenumerate</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="p">,))</span>
 
     <span class="k">return</span> <span class="n">_ndenumerate</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span></div>
 
