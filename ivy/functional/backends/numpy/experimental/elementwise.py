@@ -337,8 +337,9 @@ def zeta(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    inf_indices = np.where(x == 1)
-    nan_indices = np.where((x < 1) | (x != 1 & q <= 0))
+    inf_indices = np.equal(x, 1)
+    temp = np.logical_and(np.not_equal(x, 1), np.less_equal(q, 0))
+    nan_indices = np.logical_or(temp, np.less(x, 1))
     n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x
