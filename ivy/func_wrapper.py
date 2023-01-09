@@ -195,6 +195,7 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     new_fn.outputs_to_ivy_arrays = True
     return new_fn
 
+
 def output_to_native_arrays(fn: Callable) -> Callable:
     """
     Calls the function, and then converts all `ivy.Array` instances in
@@ -212,6 +213,7 @@ def output_to_native_arrays(fn: Callable) -> Callable:
     -------
         The return of the function, with ivy arrays as native arrays.
     """
+
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         ret = fn(*args, **kwargs)
@@ -220,12 +222,14 @@ def output_to_native_arrays(fn: Callable) -> Callable:
     new_fn.outputs_to_native_arrays = True
     return new_fn
 
+
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-  """
-  Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
-  and return arrays are all converted to `ivy.NativeArray` instances.
-  """
-  return output_to_native_arrays(inputs_to_ivy_arrays(fn))
+    """
+    Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
+    and return arrays are all converted to `ivy.NativeArray` instances.
+    """
+    return output_to_native_arrays(inputs_to_ivy_arrays(fn))
+
 
 def to_native_arrays_and_back(fn: Callable) -> Callable:
     """

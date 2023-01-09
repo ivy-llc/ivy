@@ -489,6 +489,59 @@ def test_jax_numpy_max(
     )
 
 
+# average
+@handle_frontend_test(
+    fn_tree="jax.numpy.average",
+    dtype_x_axis=helpers.dtype_values_axis(
+        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        valid_axis=True,
+        allow_neg_axes=False,
+        min_axes_size=1,
+    ),
+    returned=st.booleans(),
+)
+def test_jax_numpy_average(
+    *,
+    dtype_x_axis,
+    returned,
+    num_positional_args,
+    with_out,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtype, x, axis = dtype_x_axis
+
+    if isinstance(axis, tuple):
+        axis = axis[0]
+
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=2e-2,
+        rtol=2e-2,
+        a=x[0],
+        axis=axis,
+        weights=x[1],
+        returned=returned,
+    )
+
+
 # nanmax
 @handle_frontend_test(
     fn_tree="jax.numpy.nanmax",
