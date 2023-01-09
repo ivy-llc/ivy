@@ -366,7 +366,7 @@ class ContainerWithActivations(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.9, -1.]))
-        >>> y = ivy.gelu(x)
+        >>> y = x.gelu()
             print(y)
             {
                  a: ivy.array([0.841, 1.95]),
