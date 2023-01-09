@@ -84,5 +84,12 @@ def nanargmax(a, /, *, axis=None, out=None, keepdims=False):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def nanargmin(a, /, *, axis=None, out=None, keepdims=False):
+    a = _nanargminmax(a, axis=axis)
+    return ivy.argmin(a, axis=axis, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def extract(a, condition):
     return ivy.take(ivy.ravel(a), ivy.nonzero(ivy.ravel(condition))[0])
