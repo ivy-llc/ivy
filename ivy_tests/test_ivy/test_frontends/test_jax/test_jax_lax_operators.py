@@ -1886,41 +1886,51 @@ def test_jax_lax_dot(
 
 @st.composite
 def _general_dot_helper(draw):
-
-    dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
-
+    input_dtype = draw(helpers.get_dtypes("numeric", full=False))
     lshape = draw(
-        st.lists(st.integers(min_value=0, max_value=10), min_size=1, unique=True)
+        st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=52)
     )
     ndims = len(lshape)
     perm_id = random.sample(list(range(ndims)), ndims)
-    rshape = lshape[perm_id]
-
+    rshape = [lshape[i] for i in perm_id]
     ldtype, lhs = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            dtype=input_dtype,
+            min_value=-1e04,
+            max_value=1e04,
             shape=lshape,
         )
     )
     rdtype, rhs = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            dtype=input_dtype,
+            min_value=-1e04,
+            max_value=1e04,
             shape=rshape,
         )
     )
-
-    batch_n = draw(st.integers(min_value=0, max_value=len(lshape) - 1))
-    l_id = random.sample(list(range(ndims)), ndims)
-    r_id = l_id[perm_id]
-    lhs_contracting = lshape[l_id[:batch_n]]
-    rhs_contracting = rshape[r_id[:batch_n]]
-    lhs_batch = lshape[l_id[batch_n:]]
-    rhs_batch = rshape[r_id[batch_n:]]
-
+    ind_list = list(range(ndims))
+    batch_n = draw(st.integers(min_value=1, max_value=len(lshape) - 1))
+    lhs_batch = random.sample(ind_list, batch_n)
+    rhs_batch = [perm_id.index(i) for i in lhs_batch]
+    lhs_contracting = [i for i in ind_list if i not in lhs_batch]
+    rhs_contracting = [perm_id.index(i) for i in lhs_contracting]
+    is_pref = draw(st.booleans())
+    if is_pref:
+        dtype, pref = draw(
+            helpers.get_castable_dtype(
+                draw(helpers.get_dtypes("numeric")),
+                input_dtype[0]
+            )
+        )
+        assume(can_cast(dtype, pref))
+        pref_dtype = pref
+    else:
+        pref_dtype = None
     return ldtype+rdtype, \
-        (lhs, rhs), \
-        (lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch), \
-        dtype
+        (lhs[0], rhs[0]), \
+        ((lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch)), \
+        pref_dtype
 
 
 @handle_frontend_test(
