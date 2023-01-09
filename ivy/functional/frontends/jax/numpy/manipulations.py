@@ -112,6 +112,7 @@ def append(arr, values, axis=None):
     else:
         return ivy.concat((arr, values), axis=axis)
 
+
 @to_ivy_arrays_and_back
-def tril_indices(n_rows, n_cols=None, k=None):
-    return ivy.tril_indices(n_rows, n_cols, k)
+def tril_indices(n_rows, n_cols=None, k=None, device=None):
+    return ivy.tril_indices(n_rows, n_cols, k, device=device)
