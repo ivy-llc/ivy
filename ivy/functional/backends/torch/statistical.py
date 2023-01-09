@@ -16,6 +16,7 @@ from . import backend_version
 # -------------------#
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def min(
     x: torch.Tensor,
     /,
@@ -37,6 +38,7 @@ def min(
 min.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def max(
     x: torch.Tensor,
     /,
@@ -164,8 +166,8 @@ def sum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
+    if dtype is None and not ivy.is_bool_dtype(x):
+        dtype = x.dtype
     if axis == ():
         return x.type(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -217,10 +219,11 @@ def var(
 )
 def cumprod(
     x: torch.Tensor,
+    /,
+    *,
     axis: int = 0,
     exclusive: bool = False,
     reverse: bool = False,
-    *,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:

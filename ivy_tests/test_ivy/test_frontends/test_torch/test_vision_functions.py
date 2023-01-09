@@ -171,3 +171,70 @@ def test_torch_pad(
         mode=mode,
         value=value,
     )
+
+
+@st.composite
+def _upsample_bilinear_helper(draw):
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            ret_shape=True,
+            min_num_dims=4,
+            max_num_dims=4,
+            min_dim_size=1,
+            max_dim_size=1000,
+            min_value=-1e05,
+            max_value=1e05,
+        )
+    )
+    size = None
+    scale_factor = None
+    is_size_used = draw(st.booleans())
+    is_int = draw(st.booleans())
+    if is_size_used and is_int:
+        size = draw(helpers.ints(min_value=shape[2]))
+    elif is_size_used and not is_int:
+        size = (
+            draw(helpers.ints(min_value=shape[2])),
+            draw(helpers.ints(min_value=shape[3])),
+        )
+    elif not is_size_used and is_int:
+        scale_factor = draw(helpers.ints(min_value=1))
+    elif not is_size_used and not is_int:
+        scale_factor = (
+            draw(helpers.ints(min_value=shape[2])),
+            draw(helpers.ints(min_value=shape[3])),
+        )
+
+    return dtype, input[0], size, scale_factor
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.upsample_bilinear",
+    dtype_and_input_and_other=_upsample_bilinear_helper(),
+)
+def test_torch_upsample_bilinear(
+    *,
+    dtype_and_input_and_other,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, input, size, scale_factor = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        size=size,
+        scale_factor=scale_factor,
+    )

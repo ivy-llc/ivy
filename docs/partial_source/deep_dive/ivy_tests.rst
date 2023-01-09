@@ -53,6 +53,8 @@ Ivy Tests
 .. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
 .. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
 .. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
+.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html#ci-pipeline
+.. _`setting up`: https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing
 
 
 On top of the Array API `test suite`_, which is included as a submodule mapped to the folder :code:`test_array_api`, there is also a collection of Ivy tests, located in subfolder `test_ivy`_.
@@ -78,7 +80,7 @@ Testing Pipeline
    We generate the input data inside the :code:`@given` decorator that wraps every test.
 
 2. **Pre-execution Test Processing**: After the data is generated, more input processing is needed before testing the function.
-   This is more specific to which functions are we testing, `core functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L37>`_ require a different input processing form `frontend functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L379>`_.
+   This is more specific to which functions are we testing, `core functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L37>`_ require a different input processing from `frontend functions <https://github.com/unifyai/ivy/blob/e1acb3228d15697acb6f1e14602336fef6d23bd5/ivy_tests/test_ivy/helpers/function_testing.py#L379>`_.
    One of the required pre-processing step for any test function is converting the array input to valid framework specific array, later in the testing process we call the backend framework function, for example TensorFlow's :code:`abs` function requires the input to be a :code:`tf.Tensor`, not an `ivy.Array`.
 
 3. **Test Execution**: After the input data is generated and processed, we assert that the result of the functions is correct, this includes, asserting the result has the correct values, shape and data type.
@@ -300,7 +302,7 @@ For example, in this code snippet here -:
     )
 
 Lets take a deeper look at :code:`ivy.abs`, according to the function signature, it accepts two arguments, :code:`x` which can be a Python numeric or an ivy.Array of numeric data type, and an :code:`out` optional output array.
-Using a lot of help from `test helpers`_, we can simply generate a random input that covers all the possible combinations using :code:`dtype_and_values` composite strategy, specifying the the list of data types to sample from by also using another composite strategy :code:`get_dtypes` which samples a valid data types according to the backend that is tested.
+Using a lot of help from `test helpers`_, we can simply generate a random input that covers all the possible combinations using :code:`dtype_and_values` composite strategy, specifying the list of data types to sample from by also using another composite strategy :code:`get_dtypes` which samples a valid data types according to the backend that is tested.
 For :code:`out` keyword argument, the :code:`@handle_test` decorator generates a boolean for whether we should provide an :code:`out` argument or not, thankfully, the `test_function` helper function does a lot under the hood to properly create an array for the :code:`out` argument.
 If the function does not support the :code:`out`, we should explicitly specify that we should not generate boolean flags for :code:`out` by setting :code:`with_out=False`, the :code:`@handle_test` in this case will not generate a value for :code:`with_out`.
 
@@ -724,6 +726,16 @@ So when should :func:`test_array_function` be used?
 The rule is simple, if the test should not pass any arrays in the input, then we should not use the helper :func:`test_array_function`.
 For example, :func:`ivy.num_gpus` does not receive any arrays in the input, and so we should not make us of :func:`test_array_function` in the test implementation.
 
+Running Ivy Tests
+-----------------
+
+The CI Pipeline runs the entire collection of Ivy Tests for the module that is being updated on every push to the repo.
+
+You will need to make sure the Ivy Test is passing for each Ivy function you introduce/modify.
+If a test fails on the CI, you can see details about the failure under `Details -> Run Ivy <module> Tests` as shown in `CI Pipeline`_.
+
+You can also run the tests locally before making a PR. See the relevant `setting up`_ section for instructions on how to do so.
+
 Re-Running Failed Ivy Tests
 ---------------------------
 
@@ -775,5 +787,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `i
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/E6WgGp2_e5E" class="video">
+    src="https://www.youtube.com/embed/2AwWuHIe2h8" class="video">
     </iframe>

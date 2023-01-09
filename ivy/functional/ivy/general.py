@@ -161,7 +161,7 @@ def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
 ) -> bool:
     """
-    Determines whether the input x is an Ivy Array.
+    Determines whether the input x is a valid Ivy Array.
 
     Parameters
     ----------
@@ -174,7 +174,7 @@ def is_ivy_array(
     Returns
     -------
     ret
-        Boolean, whether or not x is an array.
+        Boolean, whether or not x is a valid Ivy Array.
 
     Examples
     --------
@@ -1024,6 +1024,31 @@ def fourier_encode(
         New array with the final dimension expanded, and the encodings stored in this
         channel.
 
+    Examples
+    --------
+    >>> x = ivy.array([1,2,3])
+    >>> y = 1.5
+    >>> z = ivy.fourier_encode(x,y)
+    >>> print(z)
+    ivy.array([[ 1.0000000e+00, 1.2246468e-16, 0.0000000e+00, 0.0000000e+00,
+                 0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
+                 1.0000000e+00],
+               [ 2.0000000e+00, -2.4492936e-16, 0.0000000e+00, 0.0000000e+00,
+                 0.0000000e+00, 1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
+                 1.0000000e+00],
+               [ 3.0000000e+00, 3.6739404e-16, 0.0000000e+00, 0.0000000e+00,
+                 0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
+                 1.0000000e+00]])
+
+
+    >>> x = ivy.array([3,10])
+    >>> y = 2.5
+    >>> z = ivy.fourier_encode(x,y, num_bands=3)
+    >>> print(z)
+    ivy.array([[ 3.0000000e+00,  3.6739404e-16,  3.6739404e-16, 3.6739404e-16,
+                -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
+               [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15, -1.2246468e-15,
+                 1.0000000e+00,  1.0000000e+00,  1.0000000e+00]])
     """
     x_in = x
     dim = x.shape[-1]
@@ -1062,7 +1087,7 @@ def fourier_encode(
     return sin_x, cos_x
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 @handle_array_like
@@ -1658,6 +1683,35 @@ def einops_rearrange(
     ret
         New array with einops.rearrange having been applied.
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1, 2, 3],
+    ...               [-4, -5, -6]])
+    >>> y = ivy.einops_rearrange(x, "height width -> width height")
+    >>> print(y)
+    ivy.array([[ 1, -4],
+       [ 2, -5],
+       [ 3, -6]])
+
+    >>> x = ivy.array([[[ 1,  2,  3],
+    ...                  [ 4,  5,  6]],
+    ...               [[ 7,  8,  9],
+    ...                  [10, 11, 12]]])
+    >>> y = ivy.einops_rearrange(x, "c h w -> c (h w)")
+    >>> print(y)
+    ivy.array([[ 1,  2,  3,  4,  5,  6],
+       [ 7,  8,  9, 10, 11, 12]])
+
+    >>> x = ivy.array([[1, 2, 3, 4, 5, 6]
+    ...               [7, 8, 9, 10, 11, 12]])
+    >>> y = ivy.einops_rearrange(x, "c (h w) -> (c h) w", h=2, w=3)
+    ivy.array([[ 1,  2,  3],
+       [ 4,  5,  6],
+       [ 7,  8,  9],
+       [10, 11, 12]])
+
     """
     ret = einops.rearrange(x, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
@@ -1722,6 +1776,7 @@ def einops_reduce(
         a: ivy.array([-2.29, 10.5]),
         b: ivy.array([-1.4, 6.21])
     }
+
     """
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
@@ -1827,14 +1882,11 @@ def set_min_denominator(val: float) -> None:
     val
         The value to set the global minimum denominator to.
 
-
     Examples
     --------
     >>> x = ivy.get_min_denominator()
     >>> print(x)
     1e-12
-
-    To set the minimum denominator to 1e-13
 
     >>> ivy.set_min_denominator(1e-13)
     >>> y = ivy.get_min_denominator()
@@ -1875,14 +1927,11 @@ def set_min_base(val: float) -> None:
     val
         The new value to set the minimum base to.
 
-
     Examples
     --------
     >>> x = ivy.get_min_base()
     >>> print(x)
     1e-05
-
-    To set the minimum base to 1e-04
 
     >>> ivy.set_min_base(1e-04)
     >>> y = ivy.get_min_base()
@@ -2075,15 +2124,12 @@ def set_queue_timeout(timeout: float):
         The timeout when waiting for containers to arrive from the queues.
         To be set in seconds.
 
-
     Examples
     --------
     >>> x = ivy.set_queue_timeout(10)
     >>> x = ivy.get_queue_timeout()
     >>> print(x)
     10.0
-
-    To set the timeout for example 30 seconds
 
     >>> ivy.set_queue_timeout(30)
     >>> y = ivy.get_queue_timeout()
@@ -2163,13 +2209,12 @@ def set_tmp_dir(tmp_dr: str) -> None:
     ----------
     tmp_dr
         The new directory for saving temporary files
+
     Examples
     --------
     >>> x = ivy.get_tmp_dir()
     >>> print(x)
     /tmp
-
-    To set the temp base to 1e-04
 
     >>> ivy.set_tmp_dir("/my_tmp")
     >>> y = ivy.get_tmp_dir()
@@ -2317,10 +2362,11 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 
 @to_native_arrays_and_back
+@handle_nestable
 @handle_array_like
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
-    query: Union[ivy.Array, ivy.NativeArray],
+    query: Union[ivy.Array, ivy.NativeArray, Tuple],
 ) -> ivy.Array:
     """
      Gather slices from x according to query array, identical to x[query].
@@ -2602,7 +2648,7 @@ def scatter_nd(
     >>> print(scatter)
     ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
 
-    scatter into an empty array, With :class:`ivy.Container` input:
+    With scatter into an empty array, With :class:`ivy.Container` input:
 
     >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
     ...                         b=ivy.array([[5],[1],[2]]))
@@ -2617,7 +2663,7 @@ def scatter_nd(
         b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
     }
 
-    scatter into an array, With :class:`ivy.Container` and :class:`ivy.Array` input:
+    With :class:`ivy.Container` and :class:`ivy.Array` input:
 
     >>> indices = ivy.array([[4],[3],[1]])
     >>> updates = ivy.Container(a=ivy.array([10, 20, 30]),

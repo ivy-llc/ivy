@@ -27,6 +27,7 @@ def test_layer_norm_layer(
     method_as_variable: pf.AsVariableFlags,
     method_native_array: pf.NativeArrayFlags,
     method_container: pf.ContainerFlags,
+    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
@@ -54,4 +55,5 @@ def test_layer_norm_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        test_gradients=test_gradients,
     )

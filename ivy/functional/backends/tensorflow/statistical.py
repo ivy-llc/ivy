@@ -14,6 +14,7 @@ from . import backend_version
 # -------------------#
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def min(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -26,6 +27,7 @@ def min(
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def max(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -112,8 +114,8 @@ def sum(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
+    if dtype is None and not ivy.is_bool_dtype(x):
+        dtype = x.dtype
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
 
@@ -157,10 +159,11 @@ def var(
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     axis: int = 0,
     exclusive: bool = False,
     reverse: bool = False,
-    *,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -170,7 +173,8 @@ def cumprod(
             dtype = ivy.default_int_dtype()
         else:
             dtype = _infer_dtype(x.dtype)
-    x = ivy.astype(x, dtype, copy=False)
+        dtype = ivy.as_native_dtype(dtype)
+    x = tf.cast(x, dtype)
     return tf.math.cumprod(x, axis, exclusive, reverse)
 
 
@@ -189,7 +193,8 @@ def cumsum(
             dtype = ivy.default_int_dtype()
         else:
             dtype = _infer_dtype(x.dtype)
-    x = ivy.astype(x, dtype, copy=False)
+        dtype = ivy.as_native_dtype(dtype)
+    x = tf.cast(x, dtype)
     return tf.math.cumsum(x, axis, exclusive, reverse)
 
 
@@ -199,7 +204,5 @@ def einsum(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = _get_promoted_type_of_operands(operands)
-    operands = (
-        ivy.astype(operand, tf.float32, copy=False).to_native() for operand in operands
-    )
-    return ivy.astype(tf.einsum(equation, *operands), dtype, copy=False)
+    operands = (tf.cast(operand, tf.float32) for operand in operands)
+    return tf.cast(tf.einsum(equation, *operands), dtype)

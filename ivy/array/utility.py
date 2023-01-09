@@ -59,6 +59,12 @@ class ArrayWithUtility(abc.ABC):
         >>> y = x.all()
         >>> print(y)
         ivy.array(False)
+
+        >>> x = ivy.array([[[0, 1], [0, 0]], [[1, 2], [3, 4]]])
+        >>> y = x.all(axis=1)
+        >>> print(y)
+        ivy.array([[False, False],
+               [ True,  True]])
         """
         return ivy.all(self._data, axis=axis, keepdims=keepdims, out=out)
 
@@ -114,5 +120,11 @@ class ArrayWithUtility(abc.ABC):
         >>> y = x.any()
         >>> print(y)
         ivy.array(True)
+
+        >>> x = ivy.array([[[0, 1], [0, 0]], [[1, 2], [3, 4]]])
+        >>> y = x.any(axis=2)
+        >>> print(y)
+        ivy.array([[ True, False],
+               [ True,  True]])
         """
         return ivy.any(self._data, axis=axis, keepdims=keepdims, out=out)

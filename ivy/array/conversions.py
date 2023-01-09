@@ -17,7 +17,9 @@ def _to_native(x: Any, inplace: bool = False) -> Any:
     if isinstance(x, ivy.Array):
         return x.data
     elif isinstance(x, ivy.Container):
-        return x.map(lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace)
+        return x.cont_map(
+            lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace
+        )
     return x
 
 
@@ -60,7 +62,7 @@ def to_ivy(
         the input in its native framework form in the case of ivy.Array or instances.
     """
     if nested:
-        return ivy.nested_map(x, _to_ivy, include_derived)
+        return ivy.nested_map(x, _to_ivy, include_derived, shallow=False)
     return _to_ivy(x)
 
 
@@ -89,8 +91,8 @@ def args_to_ivy(
         instances.
 
     """
-    native_args = ivy.nested_map(args, _to_ivy, include_derived)
-    native_kwargs = ivy.nested_map(kwargs, _to_ivy, include_derived)
+    native_args = ivy.nested_map(args, _to_ivy, include_derived, shallow=False)
+    native_kwargs = ivy.nested_map(kwargs, _to_ivy, include_derived, shallow=False)
     return native_args, native_kwargs
 
 
@@ -126,7 +128,10 @@ def to_native(
     """
     if nested:
         return ivy.nested_map(
-            x, lambda x: _to_native(x, inplace=cont_inplace), include_derived
+            x,
+            lambda x: _to_native(x, inplace=cont_inplace),
+            include_derived,
+            shallow=False,
         )
     return _to_native(x, inplace=cont_inplace)
 
@@ -164,10 +169,12 @@ def args_to_native(
         args,
         lambda x: _to_native(x, inplace=cont_inplace),
         include_derived,
+        shallow=False,
     )
     native_kwargs = ivy.nested_map(
         kwargs,
         lambda x: _to_native(x, inplace=cont_inplace),
         include_derived,
+        shallow=False,
     )
     return native_args, native_kwargs

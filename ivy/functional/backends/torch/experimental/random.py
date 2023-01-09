@@ -6,7 +6,10 @@ import torch
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import (
+    _check_bounds_and_get_shape,
+    _check_shapes_broadcastable,
+)
 
 
 # dirichlet
@@ -61,3 +64,23 @@ def gamma(
     if seed is not None:
         torch.manual_seed(seed)
     return torch.distributions.gamma.Gamma(alpha, beta).sample(shape).to(device, dtype)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
+def poisson(
+    lam: Union[float, torch.Tensor],
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: torch.device,
+    dtype: torch.dtype,
+    seed: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+):
+    lam = torch.tensor(lam, device=device, dtype=torch.float32)
+    if seed:
+        torch.manual_seed(seed)
+    if shape is None:
+        return torch.poisson(lam).type(dtype).to(device)
+    _check_shapes_broadcastable(shape, lam.shape)
+    lam = torch.broadcast_to(lam, tuple(shape))
+    return torch.poisson(lam).type(dtype).to(device)

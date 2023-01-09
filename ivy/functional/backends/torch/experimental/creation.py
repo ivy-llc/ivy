@@ -95,14 +95,15 @@ vorbis_window.support_native_out = False
 
 
 def hann_window(
-    window_length: int,
+    size: int,
+    /,
+    *,
     periodic: Optional[bool] = True,
     dtype: Optional[torch.dtype] = None,
-    *,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     return torch.hann_window(
-        window_length,
+        size,
         periodic=periodic,
         dtype=dtype,
         layout=torch.strided,
@@ -112,3 +113,24 @@ def hann_window(
 
 
 hann_window.support_native_out = False
+
+
+def tril_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: Optional[int] = 0,
+    /,
+    *,
+    device: torch.device,
+) -> Tuple[torch.Tensor, ...]:
+
+    n_cols = n_rows if n_cols is None else n_cols
+
+    if n_rows <= 0 or n_cols <= 0:
+        n_rows, n_cols = 0, 0
+
+    return tuple(
+        torch.tril_indices(
+            row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
+        )
+    )

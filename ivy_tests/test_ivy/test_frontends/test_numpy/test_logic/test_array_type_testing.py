@@ -1,4 +1,5 @@
 # global
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -8,14 +9,20 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @handle_frontend_test(
     fn_tree="numpy.isfinite",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                min_value=-np.inf,
+                max_value=np.inf,
+            )
+        ],
+        special=True,
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_isfinite(
-    *,
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     with_out,
     as_variable,
@@ -25,19 +32,15 @@ def test_numpy_isfinite(
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="float",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -57,14 +60,20 @@ def test_numpy_isfinite(
 
 @handle_frontend_test(
     fn_tree="numpy.isinf",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                min_value=-np.inf,
+                max_value=np.inf,
+            )
+        ],
+        special=True,
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_isinf(
-    *,
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     with_out,
     as_variable,
@@ -74,19 +83,15 @@ def test_numpy_isinf(
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="float",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -106,14 +111,21 @@ def test_numpy_isinf(
 
 @handle_frontend_test(
     fn_tree="numpy.isnan",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                min_value=-np.inf,
+                max_value=np.inf,
+                allow_nan=True,
+            )
+        ],
+        special=True,
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_isnan(
-    *,
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     with_out,
     as_variable,
@@ -123,19 +135,15 @@ def test_numpy_isnan(
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="float",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,

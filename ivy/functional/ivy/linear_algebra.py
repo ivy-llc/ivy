@@ -111,7 +111,6 @@ def cholesky(
                [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
                [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
 
-    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
     >>> u = ivy.cholesky(x, upper='false')
@@ -481,10 +480,6 @@ def diagonal(
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
-    out
-        optional output array to write the result in. Must have the same number
-        of dimensions as the function output.
-
     Returns
     -------
     ret
@@ -572,32 +567,30 @@ def diagonal(
     ivy.array([[3.],
                [4.]])
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[1., 2.],
-    ...                       [3., 4.]])
+    >>> x = ivy.array([[1., 2.],
+    ...                [3., 4.]])
     >>> d = ivy.diagonal(x)
     >>> print(d)
     ivy.array([1., 4.])
 
-    >>> x = ivy.native_array([[[ 0,  1,  2],
-    ...                        [ 3,  4,  5],
-    ...                        [ 6,  7,  8]],
-    ...                       [[ 9, 10, 11],
-    ...                        [12, 13, 14],
-    ...                        [15, 16, 17]],
-    ...                       [[18, 19, 20],
-    ...                        [21, 22, 23],
-    ...                        [24, 25, 26]]])
+    >>> x = ivy.array([[[ 0,  1,  2],
+    ...                 [ 3,  4,  5],
+    ...                 [ 6,  7,  8]],
+    ...                [[ 9, 10, 11],
+    ...                 [12, 13, 14],
+    ...                 [15, 16, 17]],
+    ...                [[18, 19, 20],
+    ...                 [21, 22, 23],
+    ...                 [24, 25, 26]]])
     >>> d = ivy.diagonal(x, offset=1, axis1=1, axis2=-1)
     >>> print(d)
     ivy.array([[ 1,  5],
                [10, 14],
                [19, 23]])
 
-    >>> x = ivy.native_array([[0, 1, 2],
-    ...                       [3, 4, 5],
-    ...                       [6, 7, 8]])
+    >>> x = ivy.array([[0, 1, 2],
+    ...                [3, 4, 5],
+    ...                [6, 7, 8]])
     >>> d = ivy.diagonal(x)
     >>> print(d)
     ivy.array([0, 4, 8])
@@ -623,6 +616,66 @@ def diagonal(
     return current_backend(x).diagonal(
         x, offset=offset, axis1=axis1, axis2=axis2, out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like
+def eig(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
+    """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
+    symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
+    matrices) and ``L`` is a vector (or a stack of vectors).
+
+    .. note::
+       The function ``eig`` currently behaves like ``eigh``, as
+       it requires complex number support, once complex numbers are supported,
+       x does not need to be a complex Hermitian or real symmetric matrix.
+
+
+    Parameters
+    ----------
+    x
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions form
+        square matrices. Must have a floating-point data type.
+
+    Returns
+    -------
+    ret
+        a namedtuple (``eigenvalues``, ``eigenvectors``) whose
+
+        -   first element must have the field name ``eigenvalues`` (corresponding to
+            ``L`` above) and must be an array consisting of computed eigenvalues. The
+            array containing the eigenvalues must have shape ``(..., M)``.
+        -   second element have have the field name ``eigenvectors`` (corresponding to
+            ``Q`` above) and must be an array where the columns of the inner most
+            matrices contain the computed eigenvectors. These matrices must be
+            orthogonal. The array containing the eigenvectors must have shape
+            ``(..., M, M)``.
+
+        -   Each returned array must have the same floating-point data type as ``x``.
+
+    .. note::
+       Eigenvalue sort order is left unspecified and is thus implementation-dependent.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    """
+    return current_backend(x).eig(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -752,8 +805,6 @@ def eigvalsh(
     >>> print(y)
     ivy.array([[-1.,  3.]])
 
-    Using out
-
     >>> x = ivy.array([[[3.0,2.0],[2.0,3.0]]])
     >>> y = ivy.zeros([1,2])
     >>> ivy.eigvalsh(x, out=y)
@@ -764,8 +815,6 @@ def eigvalsh(
     >>> ivy.eigvalsh(x, out=x)
     >>> print(x)
     ivy.array([[1., 5.]])
-
-    Using UPLO
 
     >>> x = ivy.array([[[2.0,3.0,6.0],[3.0,4.0,5.0],[6.0,5.0,9.0]],
     ... [[1.0,1.0,1.0],[1.0,2.0,2.0],[1.0,2.0,2.0]]])
@@ -856,6 +905,7 @@ def inv(
     x
         input array having shape ``(..., M, M)`` and whose innermost two dimensions form
         square matrices. Should have a floating-point data type.
+
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -887,14 +937,10 @@ def inv(
     >>> print(y)
     ivy.array([[-2., 1.],[1.5, -0.5]])
 
-    Using inplace
-
     >>> x = ivy.array([[1.0, 2.0], [5.0, 5.0]])
     >>> ivy.inv(x, out=x)
     >>> print(x)
     ivy.array([[-1., 0.4],[1., -0.2]])
-
-    Inverses of several matrices can be computed at once:
 
     >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]],
     ...                [[1.0, 3.0], [3.0, 5.0]]])
@@ -953,6 +999,10 @@ def matmul(
     x2
         second input array. Should have a numeric data type. Must have at least one
         dimension.
+    transpose_a
+        if True, ``x1`` is transposed before multiplication.
+    transpose_b
+        if True, ``x2`` is transposed before multiplication.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1027,13 +1077,12 @@ def matmul(
     >>> print(z)
     ivy.array(32.)
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[1., 2.], [0., 1.]])
-    >>> y = ivy.native_array([[2., 0.], [0., 3.]])
-    >>> z = ivy.matmul(x, y)
+    >>> x = ivy.array([[1., 2.], [0., 1.]])
+    >>> y = ivy.array([[2., 0.], [0., 3.]])
+    >>> z = ivy.matmul(x, y, transpose_b=True)
     >>> print(z)
-    ivy.array([[2., 6.],[0., 3.]])
+    ivy.array([[2., 6.],
+           [0., 3.]])
 
     With :class:`ivy.Container` inputs:
 
@@ -1058,13 +1107,12 @@ def matmul(
         b: ivy.array(9.)
     }
 
-    With a combination of :class:`ivy.NativeArray` and :class:`ivy.Array` inputs:
-
-    >>> x = ivy.native_array([[1., 2.], [0., 3.]])
+    >>> x = ivy.array([[1., 2.], [0., 3.]])
     >>> y = ivy.array([[1.], [3.]])
-    >>> z = ivy.matmul(x, y)
+    >>> z = ivy.matmul(x, y, transpose_a=True)
     >>> print(z)
-    ivy.array([[7.],[9.]])
+    ivy.array([[ 1.],
+       [11.]])
 
     """
     return current_backend(x1).matmul(
@@ -1256,6 +1304,57 @@ def matrix_power(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    With :code: 'ivy.Array' inputs:
+
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> ivy.matrix_power(x,1)
+    ivy.array([[1., 2.],
+               [3., 4.]])
+
+    >>> x = ivy.array([[3., 2.], [-5., -3.]])
+    >>> ivy.matrix_power(x,-1)
+    ivy.array([[-3., -2.],
+               [ 5.,  3.]])
+
+    >>> x = ivy.array([[4., -1.], [0., 2.]])
+    >>> ivy.matrix_power(x,0)
+    ivy.array([[1., 0.],
+               [0., 1.]])
+
+    >>> x = ivy.array([[1., 2.], [0., 1.]])
+    >>> ivy.matrix_power(x,5)
+    ivy.array([[ 1., 10.],
+               [ 0.,  1.]])
+
+    >>> x = ivy.array([[1/2, 0.], [0., -1/3]])
+    >>> ivy.matrix_power(x,-2)
+    ivy.array([[4., 0.],
+               [0., 9.]])
+
+
+    With :code: 'ivy.NativeArray' inputs:
+
+    >>> x = ivy.native_array([[1., 2., 3.], [6., 5., 4.], [7., 8., 9.]])
+    >>> ivy.matrix_power(x,2)
+    ivy.array([[ 34.,  36.,  38.],
+               [ 64.,  69.,  74.],
+               [118., 126., 134.]])
+
+
+    With :code: 'ivy.Container' inputs:
+
+    >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]),
+                          b = ivy.array([[1., 0.], [0., 0.]]))
+    >>> ivy.matrix_power(x,3)
+    {
+        a: ivy.array([[37., 54.],
+                      [81., 118.]]),
+        b: ivy.array([[1., 0.],
+                      [0., 0.]])
+    }
+
     """
     return current_backend(x).matrix_power(x, n, out=out)
 
@@ -1421,9 +1520,7 @@ def matrix_transpose(
     ivy.array([[2., 1.],
        [3., 2.]])
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[0., 1., 2.], [1., 2., 3.]])
+    >>> x = ivy.array([[0., 1., 2.], [1., 2., 3.]])
     >>> y = ivy.matrix_transpose(x)
     >>> print(y)
     ivy.array([[0., 1.],
@@ -1669,54 +1766,26 @@ def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """Computes the sign and natural logarithm of the determinant of an array.
-
+    """
+    Returns the sign and the natural logarithm of the absolute value of the determinant of a square matrix (or a stack of square matrices) ``x``.
+    .. note::
+       The purpose of this function is to calculate the determinant more accurately when the determinant is either very small or very large, as calling ``det`` may overflow or underflow.
+    
     Parameters
     ----------
-    x
-        input array having shape (..., M, M) and whose innermost two dimensions form
-        square matrices. Should have a floating-point data type.
-
+    x:
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices. Should have a real-valued floating-point data type.
+    
     Returns
     -------
-    ret
-        This function returns NamedTuple with two values -
-            sign:
-            An array containing a number representing the sign of the determinant
-            for each square matrix.
-
-            logabsdet:
-            An array containing natural log of the absolute determinant of each
-            square matrix.
-
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([[1.0, 2.0],
-    ...                [3.0, 4.0]])
-    >>> y = ivy.slogdet(x)
-    >>> print(y)
-    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
-    ...                                [3.0, 4.0]]),
-    ...                   b=ivy.array([[1.0, 2.0],
-    ...                                [2.0, 1.0]]))
-    >>> y = ivy.slogdet(x)
-    >>> print(y)
-    {
-        a: (list[2], <class ivy.array.array.Array> shape=[]),
-        b: (list[2], <class ivy.array.array.Array> shape=[])
-    }
-
+    ret:
+        a namedtuple (``sign``, ``logabsdet``) whose
+        -   first element must have the field name ``sign`` and must be an array containing a number representing the sign of the determinant for each square matrix.
+        -   second element must have the field name ``logabsdet`` and must be an array containing the determinant for each square matrix.
+        For a real matrix, the sign of the determinant must be either ``1``, ``0``, or ``-1``.
+        Each returned array must have shape ``shape(x)[:-2]`` and a real-valued floating-point data type determined by :ref:`type-promotion`.
+        .. note::
+           If a determinant is zero, then the corresponding ``sign`` should be ``0`` and ``logabsdet`` should be ``-infinity``; however, depending on the underlying algorithm, the returned result may differ. In all cases, the determinant should be equal to ``sign * exp(logsabsdet)`` (although, again, the result may be subject to numerical precision errors).
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -1727,6 +1796,43 @@ def slogdet(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[2.0, 1.0],
+    ...                [3.0, 4.0]])
+    >>> y = ivy.slogdet(x)
+    >>> print(y)
+    slogdet(sign=ivy.array(1.), logabsdet=ivy.array(1.609438))
+
+    >>> x = ivy.array([[1.2, 2.0, 3.1],
+    ...                [6.0, 5.2, 4.0],
+    ...                [9.0, 8.0, 7.0]])
+    >>> y = ivy.slogdet(x)
+    >>> print(y)
+    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(1.098611))
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
+    ...                                [3.0, 4.0]]),
+    ...                   b=ivy.array([[1.0, 2.0],
+    ...                                [2.0, 1.0]]))
+    >>> y = ivy.slogdet(x)
+    >>> print(y)
+    {
+        a: [
+            sign = ivy.array(-1.),
+            logabsdet = ivy.array(0.6931472)
+        ],
+        b: [
+            sign = ivy.array(-1.),
+            logabsdet = ivy.array(1.0986123)
+        ]
+    }
 
     """
     return current_backend(x).slogdet(x)
@@ -1802,7 +1908,6 @@ def svd(
     columns, ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh``
     is a matrix (or a stack of matrices) with orthonormal rows.
 
-
     Parameters
     ----------
     x
@@ -1874,7 +1979,7 @@ def svd(
     >>> print(U.shape, S.shape, Vh.shape)
     (9, 9) (6,) (6, 6)
 
-    Reconstruction from SVD, result is numerically close to x
+    With reconstruction from SVD, result is numerically close to x
 
     >>> reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)
     >>> print((reconstructed_x - x > 1e-3).sum())
@@ -1883,14 +1988,6 @@ def svd(
     >>> U, S, Vh = ivy.svd(x, full_matrices = False)
     >>> print(U.shape, S.shape, Vh.shape)
     (9, 6) (6,) (6, 6)
-
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
-    >>> U, S, Vh = ivy.svd(x)
-    >>> print(U.shape, S.shape, Vh.shape)
-    (3, 3) (3,) (3, 3)
 
 
     With :class:`ivy.Container` input:
@@ -1963,7 +2060,7 @@ def svdvals(
     >>> print(S.shape)
     (2,)
 
-    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
+    With comparison of the singular value S ivy.svdvals() by the result ivy.svd().
 
     >>> _, SS, _ = ivy.svd(x)
     >>> print(SS.shape)
@@ -1988,7 +2085,7 @@ def svdvals(
     >>> print(SS)
     ivy.array([10.3, 1.16, 0.615])
 
-    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
+    with comparison of singular value S ivy.svdvals() by the result ivy.svd().
 
     >>> error = (SS - S).abs()
     >>> print(error)
@@ -2120,6 +2217,51 @@ def tensordot(
 
     """
     return current_backend(x1, x2).tensordot(x1, x2, axes=axes, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like
+def tensorsolve(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+
+    ndim1 = ivy.get_num_dims(x1)
+    ndim2 = ivy.get_num_dims(x2)
+
+    if axes is not None:
+        allaxes = list(range(0, ndim1))
+        for k in axes:
+            allaxes.remove(k)
+            allaxes.insert(ndim1, k)
+
+        x1 = ivy.matrix_transpose(x1, allaxes)
+
+    old_shape = x1.shape[-(ndim1 - ndim2) :]
+
+    prod = 1
+    for k in old_shape:
+        prod *= k
+
+    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
+        raise ivy.exceptions.IvyException(
+            "Input arrays must satisfy the requirement \
+            prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
+        )
+
+    x1 = ivy.reshape(x1, (prod, prod))
+    x2 = ivy.flatten(x2)
+    res = ivy.solve(x1, x2)
+    res = ivy.reshape(res, old_shape)
+    return res
+    # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)
 
 
 @to_native_arrays_and_back
@@ -2312,8 +2454,9 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    keepdims: Optional[bool] = False,
+    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""Computes the vector norm of a vector (or batch of vectors) ``x``.
@@ -2327,7 +2470,7 @@ def vector_norm(
         vector norms. If an n-tuple, ``axis`` specifies the axes (dimensions) along
         which to compute batched vector norms. If ``None``, the vector norm must be
         computed over all array values (i.e., equivalent to computing the vector norm of
-        a flattened array). Negative indices must be supported. Default: ``None``.
+        a flattened array). Negative indices are also supported. Default: ``None``.
     keepdims
         If ``True``, the axes (dimensions) specified by ``axis`` must be included in the
         result as singleton dimensions, and, accordingly, the result must be compatible
@@ -2335,7 +2478,7 @@ def vector_norm(
         axes (dimensions) specified by ``axis`` must not be included in the result.
         Default: ``False``.
     ord
-        order of the norm. The following mathematical norms must be supported:
+        order of the norm. The following mathematical norms are supported:
 
         +------------------+----------------------------+
         | ord              | description                |
@@ -2349,16 +2492,12 @@ def vector_norm(
         | (int,float >= 1) | p-norm                     |
         +------------------+----------------------------+
 
-        The following non-mathematical "norms" must be supported:
+        The following non-mathematical "norms" are also supported:
 
         +------------------+--------------------------------+
         | ord              | description                    |
         +==================+================================+
         | 0                | sum(a != 0)                    |
-        +------------------+--------------------------------+
-        | -1               | 1./sum(1./abs(a))              |
-        +------------------+--------------------------------+
-        | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   |
         +------------------+--------------------------------+
         | -inf             | min(abs(a))                    |
         +------------------+--------------------------------+
@@ -2366,6 +2505,9 @@ def vector_norm(
         +------------------+--------------------------------+
 
         Default: ``2``.
+    dtype
+        data type that may be used to perform the computation more precisely. The input
+        array ``x`` gets cast to ``dtype`` before the function's computations.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2392,7 +2534,7 @@ def vector_norm(
 
     """
     return current_backend(x).vector_norm(
-        x, axis=axis, keepdims=keepdims, ord=ord, out=out
+        x, axis=axis, keepdims=keepdims, ord=ord, dtype=dtype, out=out
     )
 
 

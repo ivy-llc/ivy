@@ -1,4 +1,5 @@
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from collections import namedtuple
 
@@ -67,8 +68,23 @@ def std(input, dim, unbiased, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def prod(input, dim=None, keepdim=False, *, dtype=None, out=None):
-    return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
+# TODO: the original torch.prod places * right before `dtype`
+def prod(input, dim, *, keepdim=False, dtype=None):
+    if not dtype:
+        if "int" in input.dtype:
+            dtype = ivy.int64
+        elif "float" in input.dtype:
+            dtype = ivy.float32
+    return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 
 
 @to_ivy_arrays_and_back
@@ -120,3 +136,12 @@ def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
     )
     temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
     return temp_std, temp_mean
+
+
+@to_ivy_arrays_and_back
+def var_mean(input, dim, unbiased, keepdim=False, *, out=None):
+    temp_var = ivy.var(
+        input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
+    )
+    temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
+    return (temp_var, temp_mean)
