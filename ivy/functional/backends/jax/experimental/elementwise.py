@@ -223,6 +223,15 @@ def angle(
     return jnp.angle(z, deg=deg)
 
 
+def imag(
+    val: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.imag(val)
+
+
 def zeta(
     x: JaxArray,
     q: JaxArray,
