@@ -11,8 +11,7 @@ $ivy-gradient-border-ending-point: 15%;
 $ivy-gradient-border-space-below-title: 3%;
 
 // media screen size
-$screen-small: 640px;
-$screen-large: 1024px;
+$rwd-screen-size: 640px;
 
 // configure default globals //
 
@@ -74,21 +73,15 @@ h3 {
 
 /*-- scss:defaults --*/
 
-@media screen and (max-width: $screen-small) {
+@media screen and (max-width: $rwd-screen-size) {
     .rwd-gallery-layout {
         grid-template-columns: 100%;
     }
 }
 
-@media screen and (min-width: $screen-small) and (max-width: $screen-large) {
+@media screen and (min-width: $rwd-screen-size) {
     .rwd-gallery-layout {
         grid-template-columns: 50% 50%;
-    }
-}
-
-@media screen and (min-width: $screen-large) {
-    .rwd-gallery-layout {
-        grid-template-columns: 33% 33% 33%;
     }
 }
 
