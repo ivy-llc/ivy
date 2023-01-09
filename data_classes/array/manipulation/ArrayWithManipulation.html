@@ -751,19 +751,17 @@ this method with minimal changes.</p>
 <span class="sig-name descname"><span class="pre">zero_pad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.zero_pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.zero_pad" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.zero_pad. This method simply
 wraps the function, and so the docstring for ivy.zero_pad also applies
-to this method with minimal changes.
-:type self: <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>
-:param self: Input array to pad.
-:type pad_width: <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]
-:param pad_width: Number of values padded to the edges of each axis. Specified as</p>
-<blockquote>
-<div><p>((before_1, after_1), … (before_N, after_N)),
-where N is number of axes of x.</p>
-</div></blockquote>
+to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-It must have a shape that the inputs broadcast to.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Input array to pad.</p></li>
+<li><p><strong>pad_width</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – Number of values padded to the edges of each axis. Specified as
+((before_1, after_1), … (before_N, after_N)),
+where N is number of axes of x.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+It must have a shape that the inputs broadcast to.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
