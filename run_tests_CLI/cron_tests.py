@@ -26,6 +26,7 @@ for test_name in test_names_without_backend:
         test_names.append(test_backend)
 
 test_names = list(set(test_names))
+test_names.sort()
 
 # Run 150 tests in each iteration of the cron job
 num_tests = len(test_names)
