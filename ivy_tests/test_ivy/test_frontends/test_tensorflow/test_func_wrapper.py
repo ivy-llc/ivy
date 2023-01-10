@@ -1,22 +1,23 @@
 # global
-from hypothesis import given
+from hypothesis import given, strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy.functional.frontends.jax.func_wrapper import (
+from ivy.functional.frontends.tensorflow.func_wrapper import (
     inputs_to_ivy_arrays,
     outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
+    handle_tf_dtype,
 )
-from ivy.functional.frontends.jax.devicearray import DeviceArray
-import ivy.functional.frontends.jax as jax_frontend
+from ivy.functional.frontends.tensorflow.tensor import EagerTensor
+import ivy.functional.frontends.tensorflow as tf_frontend
+import ivy.functional.frontends.numpy as np_frontend
 
 
-def _fn(x, check_default=False):
-    if check_default and jax_frontend.config.jax_enable_x64:
-        ivy.assertions.check_equal(ivy.default_float_dtype(), "float64")
-        ivy.assertions.check_equal(ivy.default_int_dtype(), "int64")
+def _fn(x=None, dtype=None):
+    if ivy.exists(dtype):
+        return dtype
     return x
 
 
@@ -41,7 +42,7 @@ def test_inputs_to_ivy_arrays(dtype_and_x):
     assert ivy.all(input_native == output.data)
 
     # check for frontend array
-    input_frontend = DeviceArray(x[0])
+    input_frontend = EagerTensor(x[0])
     output = inputs_to_ivy_arrays(_fn)(input_frontend)
     assert isinstance(output, ivy.Array)
     assert input_frontend.dtype.ivy_dtype == output.dtype
@@ -56,12 +57,10 @@ def test_outputs_to_frontend_arrays(dtype_and_x):
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
-    output = outputs_to_frontend_arrays(_fn)(input_ivy, check_default=True)
-    assert isinstance(output, DeviceArray)
+    output = outputs_to_frontend_arrays(_fn)(input_ivy)
+    assert isinstance(output, EagerTensor)
     assert input_ivy.dtype == output.dtype.ivy_dtype
     assert ivy.all(input_ivy == output.ivy_array)
-
-    assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
 
 
 @given(
@@ -72,23 +71,47 @@ def test_to_ivy_arrays_and_back(dtype_and_x):
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
-    output = to_ivy_arrays_and_back(_fn)(input_ivy, check_default=True)
-    assert isinstance(output, DeviceArray)
+    output = to_ivy_arrays_and_back(_fn)(input_ivy)
+    assert isinstance(output, EagerTensor)
     assert input_ivy.dtype == output.dtype.ivy_dtype
     assert ivy.all(input_ivy == output.ivy_array)
 
     # check for native array
     input_native = ivy.native_array(input_ivy)
-    output = to_ivy_arrays_and_back(_fn)(input_native, check_default=True)
-    assert isinstance(output, DeviceArray)
+    output = to_ivy_arrays_and_back(_fn)(input_native)
+    assert isinstance(output, EagerTensor)
     assert ivy.as_ivy_dtype(input_native.dtype) == output.dtype.ivy_dtype
     assert ivy.all(input_native == output.ivy_array.data)
 
     # check for frontend array
-    input_frontend = DeviceArray(x[0])
-    output = to_ivy_arrays_and_back(_fn)(input_frontend, check_default=True)
-    assert isinstance(output, DeviceArray)
-    assert str(input_frontend.dtype) == str(output.dtype)
+    input_frontend = EagerTensor(x[0])
+    output = to_ivy_arrays_and_back(_fn)(input_frontend)
+    assert isinstance(output, EagerTensor)
+    assert input_frontend.dtype == output.dtype
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
 
-    assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
+
+@st.composite
+def _dtype_helper(draw):
+    return draw(
+        st.sampled_from(
+            [
+                draw(helpers.get_dtypes("valid", full=False))[0],
+                ivy.as_native_dtype(draw(helpers.get_dtypes("valid", full=False))[0]),
+                draw(
+                    st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.values()))
+                ),
+                draw(st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.keys()))),
+                np_frontend.dtype(draw(helpers.get_dtypes("valid", full=False))[0]),
+                draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
+            ]
+        )
+    )
+
+
+@given(
+    dtype=_dtype_helper(),
+)
+def test_handle_tf_dtype(dtype):
+    ret_dtype = handle_tf_dtype(_fn)(dtype=dtype)
+    assert isinstance(ret_dtype, ivy.Dtype)

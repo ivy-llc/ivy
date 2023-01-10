@@ -58,3 +58,14 @@ def quantile(
     return jnp.quantile(
         a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
     )
+
+
+def corrcoef(
+    x: JaxArray,
+    /,
+    *,
+    y: Optional[JaxArray] = None,
+    rowvar: Optional[bool] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.corrcoef(x, y=y, rowvar=rowvar)
