@@ -353,7 +353,7 @@ def imag(
     return tf.math.imag(input, name=None)
 
 
-@with_supported_dtypes({"2.11.0 and below": ("float32, float64,")}, backend_version)
+@with_supported_dtypes({"2.11.0 and below": ("float32", "float64",)}, backend_version)
 def zeta(
     x: Union[tf.Tensor, tf.Variable],
     q: Union[tf.Tensor, tf.Variable],
