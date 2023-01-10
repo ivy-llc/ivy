@@ -5,9 +5,9 @@ rot90
 
 .. autofunction:: ivy.array.array_methods.rot90
 
-.. autofunction:: ivy.container.container_methods.rot90
-
 .. autofunction:: ivy.container.container_methods.static_rot90
+
+.. autofunction:: ivy.container.container_methods.rot90
 |
 | **Supported Frameworks:**
 

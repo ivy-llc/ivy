@@ -13,36 +13,7 @@ Experimental
    :maxdepth: -1
    :caption: Experimental
 
-   experimental/max_pool1d.rst
-   experimental/max_pool2d.rst
-   experimental/max_pool3d.rst
-   experimental/avg_pool1d.rst
-   experimental/avg_pool2d.rst
-   experimental/avg_pool3d.rst
-   experimental/dct.rst
-   experimental/fft.rst
-   experimental/dropout1d.rst
-   experimental/ifft.rst
-   experimental/is_ivy_sparse_array.rst
-   experimental/is_native_sparse_array.rst
-   experimental/native_sparse_array.rst
-   experimental/native_sparse_array_to_indices_values_and_shape.rst
-   experimental/dirichlet.rst
-   experimental/beta.rst
-   experimental/gamma.rst
-   experimental/poisson.rst
-   experimental/logit.rst
-   experimental/median.rst
-   experimental/nanmean.rst
-   experimental/unravel_index.rst
-   experimental/quantile.rst
-   experimental/corrcoef.rst
-   experimental/diagflat.rst
-   experimental/kron.rst
-   experimental/matrix_exp.rst
-   experimental/eig.rst
-   experimental/eigvals.rst
-   experimental/adjoint.rst
+   experimental/l2_normalize.rst
    experimental/triu_indices.rst
    experimental/vorbis_window.rst
    experimental/hann_window.rst
@@ -73,10 +44,29 @@ Experimental
    experimental/take_along_axis.rst
    experimental/hsplit.rst
    experimental/broadcast_shapes.rst
+   experimental/logit.rst
    experimental/binary_cross_entropy_with_logits.rst
-   experimental/isin.rst
-   experimental/l2_normalize.rst
-   experimental/msort.rst
+   experimental/median.rst
+   experimental/nanmean.rst
+   experimental/unravel_index.rst
+   experimental/quantile.rst
+   experimental/corrcoef.rst
+   experimental/max_pool1d.rst
+   experimental/max_pool2d.rst
+   experimental/max_pool3d.rst
+   experimental/avg_pool1d.rst
+   experimental/avg_pool2d.rst
+   experimental/avg_pool3d.rst
+   experimental/dct.rst
+   experimental/fft.rst
+   experimental/dropout1d.rst
+   experimental/ifft.rst
+   experimental/diagflat.rst
+   experimental/kron.rst
+   experimental/matrix_exp.rst
+   experimental/eig.rst
+   experimental/eigvals.rst
+   experimental/adjoint.rst
    experimental/sinc.rst
    experimental/lcm.rst
    experimental/fmod.rst
@@ -104,6 +94,16 @@ Experimental
    experimental/zeta.rst
    experimental/gradient.rst
    experimental/xlogy.rst
+   experimental/is_ivy_sparse_array.rst
+   experimental/is_native_sparse_array.rst
+   experimental/native_sparse_array.rst
+   experimental/native_sparse_array_to_indices_values_and_shape.rst
+   experimental/dirichlet.rst
+   experimental/beta.rst
+   experimental/gamma.rst
+   experimental/poisson.rst
+   experimental/isin.rst
+   experimental/msort.rst
    experimental/SparseArray.rst
    experimental/NativeSparseArray.rst
 

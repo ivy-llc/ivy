@@ -5,9 +5,9 @@ vecdot
 
 .. autofunction:: ivy.array.array_methods.vecdot
 
-.. autofunction:: ivy.container.container_methods.vecdot
-
 .. autofunction:: ivy.container.container_methods.static_vecdot
+
+.. autofunction:: ivy.container.container_methods.vecdot
 |
 | **Supported Frameworks:**
 
