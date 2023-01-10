@@ -797,7 +797,7 @@ def _tensorinv_helper(draw):
     shape_cor = ()
     for i in shape:
         shape_cor += (int(i),)
-    shape_draw = (int(product_half),int(product_half))
+    shape_draw = (product_half, product_half)
     dtype, input = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
