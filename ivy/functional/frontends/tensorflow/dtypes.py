@@ -138,7 +138,8 @@ def as_dtype(type_value):
 
 @to_ivy_arrays_and_back
 def cast(x, dtype, name=None):
-    assert ivy.can_cast(x.dtype, dtype), "Cannot cast from {} to {}".format(
-        x.dtype, dtype
-    )
+    if ivy.is_array(x):
+        assert ivy.can_cast(x.dtype, dtype), "Cannot cast from {} to {}".format(
+            x.dtype, dtype
+        )
     return ivy.astype(x, dtype, copy=False)
