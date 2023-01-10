@@ -1006,6 +1006,8 @@ def test_jax_numpy_lcm(
     # https://github.com/tensorflow/tensorflow/issues/58955
     if ivy.current_backend_str() == "tensorflow":
         value_test = False
+    if ivy.current_backend_str() in ("jax", "numpy"):
+        assume(input_dtype[0] != "uint64" and input_dtype[1] != "uint64")
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1558,6 +1560,42 @@ def test_jax_numpy_fmax(
     )
 
 
+# fmin
+@handle_frontend_test(
+    fn_tree="jax.numpy.fmin",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        min_value=-np.inf,
+        max_value=np.inf,
+    ),
+)
+def test_jax_numpy_fmin(
+    *,
+    dtype_and_inputs,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, inputs = dtype_and_inputs
+    assume("bfloat16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=inputs[0],
+        x2=inputs[1],
+    )
+    
+    
 # maximum
 @handle_frontend_test(
     fn_tree="jax.numpy.maximum",
