@@ -50,7 +50,7 @@ def test_numpy_diagonal(
 @handle_frontend_test(
     fn_tree="numpy.diag",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=2,
         min_dim_size=2,
@@ -68,11 +68,6 @@ def test_numpy_diag(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="numeric",
-    )
-
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
