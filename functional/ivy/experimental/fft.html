@@ -21,7 +21,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="dropout1d" href="dropout1d.html" />
+    <link rel="next" title="ivy.fft" href="fft/fft_functional.html" />
     <link rel="prev" title="ivy.Container.static_dct" href="dct/static_dct_container.html" /> 
 </head>
 
@@ -61,8 +61,15 @@
 <li class="toctree-l2"><a class="reference internal" href="avg_pool2d.html">avg_pool2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="avg_pool3d.html">avg_pool3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dct.html">dct</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">fft</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">fft</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fft/fft_functional.html">ivy.fft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fft/fft_array.html">ivy.Array.fft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fft/fft_container.html">ivy.Container.fft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fft/static_fft_container.html">ivy.Container.static_fft</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="dropout1d.html">dropout1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ifft.html">ifft</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
@@ -162,8 +169,15 @@
 <li class="toctree-l2"><a class="reference internal" href="avg_pool2d.html">avg_pool2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="avg_pool3d.html">avg_pool3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dct.html">dct</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">fft</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">fft</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fft/fft_functional.html">ivy.fft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fft/fft_array.html">ivy.Array.fft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fft/fft_container.html">ivy.Container.fft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fft/static_fft_container.html">ivy.Container.static_fft</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="dropout1d.html">dropout1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ifft.html">ifft</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
@@ -378,11 +392,145 @@ inputs broadcast to.</p></li>
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.fft">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">fft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'backward'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/experimental.html#ArrayWithExperimental.fft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.fft" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.ifft. This method simply
+wraps the function, and so the docstring for ivy.ifft also applies to
+this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>) – Input volume <em>[…,d_in,…]</em>,
+where d_in indicates the dimension that needs FFT.</p></li>
+<li><p><strong>dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The dimension along which to take the one dimensional FFT.</p></li>
+<li><p><strong>norm</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional argument, “backward”, “ortho” or “forward”. Defaults to be (default: <code class="docutils literal notranslate"><span class="pre">'backward'</span></code>)
+“backward”.
+“backward” indicates no normalization.
+“ortho” indicates normalization by 1/sqrt(n).
+“forward” indicates normalization by 1/n.</p></li>
+<li><p><strong>n</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – Optional argument indicating the sequence length, if given, the input (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+would be padded with zero or truncated to length n before performing FFT.
+Should be a integer greater than 1.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – Optional output array, for writing the result to. It must have a shape (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Array containing the transformed input.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">/</span> <span class="mi">8</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">ivy.array([-3.44509285e-16+1.14423775e-17j,  8.00000000e+00-8.11483250e-16j,</span>
+<span class="go">            2.33486982e-16+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j,</span>
+<span class="go">            9.95799250e-17+2.33486982e-16j,  0.00000000e+00+7.66951701e-17j,</span>
+<span class="go">            1.14423775e-17+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.fft">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">fft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'backward'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.fft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.fft" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of <a href="./fft/fft_functional.html">ivy.fft</a>. This method simply wraps
+the function, and so the docstring for <a href="./fft/fft_functional.html">ivy.fft</a> also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – Container containing input volumes <em>[…,d_in,…]</em>,
+where d_in indicates the dimension that needs FFT.</p></li>
+<li><p><strong>dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The dimension along which to take the one dimensional FFT.</p></li>
+<li><p><strong>norm</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional argument, “backward”, “ortho” or “forward”. Defaults to be (default: <code class="docutils literal notranslate"><span class="pre">'backward'</span></code>)
+“backward”.
+“backward” indicates no normalization.
+“ortho” indicates normalization by 1/sqrt(n).
+“forward” indicates normalization by 1/n.</p></li>
+<li><p><strong>n</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – Optional argument indicating the sequence length, if given, the input would (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+be padded with zero or truncated to length n before performing FFT.
+Should be a integer greater than 1.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – Optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Container containing the transformed inputs.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">6.</span><span class="o">+</span><span class="mf">0.</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.</span><span class="o">+</span><span class="mf">2.</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.</span><span class="o">+</span><span class="mf">0.</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.</span><span class="o">-</span><span class="mf">2.</span><span class="n">j</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">/</span> <span class="mi">8</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dims</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">a: ivy.array([0.+0.j, 12.+0.j, 8.+0.j, 4.+0.j]),</span>
+<span class="go">b: ivy.array([-3.44509285e-16+1.14423775e-17j, 8.00000000e+00-8.11483250e-16j,</span>
+<span class="go">               2.33486982e-16+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j,</span>
+<span class="go">               9.95799250e-17+2.33486982e-16j, 0.00000000e+00+7.66951701e-17j,</span>
+<span class="go">               1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_fft">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_fft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'backward'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_fft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_fft" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container static method variant of ivy.fft. This method simply wraps
+the function, and so the docstring for ivy.fft also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – Container containing input volumes <em>[…,d_in,…]</em>,
+where d_in indicates the dimension that needs FFT.</p></li>
+<li><p><strong>dim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The dimension along which to take the one dimensional FFT.</p></li>
+<li><p><strong>norm</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional argument, “backward”, “ortho” or “forward”. Defaults to be (default: <code class="docutils literal notranslate"><span class="pre">'backward'</span></code>)
+“backward”.
+“backward” indicates no normalization.
+“ortho” indicates normalization by 1/sqrt(n).
+“forward” indicates normalization by 1/n.</p></li>
+<li><p><strong>n</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – Optional argument indicating the sequence length, if given, the input (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+would be padded with zero or truncated to length n before performing FFT.
+Should be a integer greater than 1.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – Optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The transformed input.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">6.</span><span class="o">+</span><span class="mf">0.</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.</span><span class="o">+</span><span class="mf">2.</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.</span><span class="o">+</span><span class="mf">0.</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.</span><span class="o">-</span><span class="mf">2.</span><span class="n">j</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">/</span> <span class="mi">8</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dims</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_fft</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">a: ivy.array([0.+0.j, 12.+0.j, 8.+0.j, 4.+0.j]),</span>
+<span class="go">b: ivy.array([-3.44509285e-16+1.14423775e-17j, 8.00000000e+00-8.11483250e-16j,</span>
+<span class="go">               2.33486982e-16+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j,</span>
+<span class="go">               9.95799250e-17+2.33486982e-16j, 0.00000000e+00+7.66951701e-17j,</span>
+<span class="go">               1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
 
@@ -390,7 +538,7 @@ inputs broadcast to.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="dct/static_dct_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_dct" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="dropout1d.html" class="btn btn-neutral float-right" title="dropout1d" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="fft/fft_functional.html" class="btn btn-neutral float-right" title="ivy.fft" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
