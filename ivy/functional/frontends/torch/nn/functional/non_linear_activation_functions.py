@@ -370,7 +370,7 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
     else:
         assert normalized_shape == shape[-len(normalized_shape) :]
         axis = list(range(len(shape) - len(normalized_shape), len(shape)))
-    return ivy.layer_norm(input, axis, weight=weight, bias=bias, epsilon=eps)
+    return ivy.layer_norm(input, axis, scale=weight, b=bias, epsilon=eps)
 
 
 @to_ivy_arrays_and_back
@@ -410,14 +410,12 @@ def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
             ivy.layer_norm(
                 input[:, i * groups : (i + 1) * groups, ...],
                 list(range(1, num_dims)),
-                weight=ivy.expand_dims(
+                scale=ivy.expand_dims(
                     weight[i * groups : (i + 1) * groups], axis=expand_dims
                 )
                 if weight is not None
                 else None,
-                bias=ivy.expand_dims(
-                    bias[i * groups : (i + 1) * groups], axis=expand_dims
-                )
+                b=ivy.expand_dims(bias[i * groups : (i + 1) * groups], axis=expand_dims)
                 if bias is not None
                 else None,
                 epsilon=eps,
@@ -513,7 +511,15 @@ def adaptive_avg_pool1d(input, output_size):
         return pooled_output
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def adaptive_avg_pool2d(input, output_size):
 
@@ -602,12 +608,8 @@ def adaptive_avg_pool2d(input, output_size):
             length = _expand_to_dim(length, -dim)
             return vals, length
 
-    vals, length_h = maybe_mask(
-        vals, length_h, range_max_h, dim=-2
-    )
-    vals, length_w = maybe_mask(
-        vals, length_w, range_max_w, dim=-1
-    )
+    vals, length_h = maybe_mask(vals, length_h, range_max_h, dim=-2)
+    vals, length_w = maybe_mask(vals, length_w, range_max_w, dim=-1)
 
     ret = None
     for i, j in product(range(vals.shape[-3]), range(vals.shape[-1])):

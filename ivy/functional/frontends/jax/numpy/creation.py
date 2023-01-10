@@ -64,8 +64,18 @@ def asarray(a, dtype=None, order=None):
 
 
 @to_ivy_arrays_and_back
+def int16(x):
+    return ivy.astype(x, ivy.int16, copy=False)
+
+
+@to_ivy_arrays_and_back
 def uint16(x):
     return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)
+
+
+@to_ivy_arrays_and_back
+def uint64(x):
+    return ivy.astype(x, ivy.UintDtype("uint64"), copy=False)
 
 
 @handle_numpy_dtype
@@ -84,3 +94,9 @@ def eye(N, M=None, k=0, dtype=None):
 @to_ivy_arrays_and_back
 def triu(m, k=0):
     return ivy.triu(m, k=k)
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def empty(shape, dtype=None):
+    return ivy.empty(shape, dtype=dtype)

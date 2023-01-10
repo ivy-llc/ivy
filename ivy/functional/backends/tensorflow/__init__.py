@@ -62,6 +62,8 @@ valid_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
+    ivy.complex64,
+    ivy.complex128,
     ivy.bool,
 )
 valid_numeric_dtypes = (
@@ -98,7 +100,7 @@ invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
-invalid_complex_dtypes = (ivy.complex256,)
+invalid_complex_dtypes = ()
 
 native_inplace_support = False
 
@@ -117,8 +119,6 @@ backend = "tensorflow"
 # local sub-modules
 from . import activations
 from .activations import *
-from . import compilation
-from .compilation import *
 from . import creation
 from .creation import *
 from . import data_type
@@ -151,3 +151,5 @@ from . import utility
 from .utility import *
 from . import experimental
 from .experimental import *
+from . import control_flow_ops
+from .control_flow_ops import *

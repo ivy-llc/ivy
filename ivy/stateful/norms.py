@@ -81,7 +81,7 @@ class LayerNorm(Module):
             inputs,
             self._normalized_idxs,
             epsilon=self._epsilon,
-            weight=self.v.weight if self._elementwise_affine else None,
-            bias=self.v.bias if self._elementwise_affine else None,
+            scale=self.v.weight if self._elementwise_affine else None,
+            b=self.v.bias if self._elementwise_affine else None,
             new_std=self._new_std,
         )

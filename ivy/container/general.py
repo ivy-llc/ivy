@@ -1163,6 +1163,34 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with the final dimension expanded of arrays at its leaves,
             and the encodings stored in this channel.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([1,2]),
+        ...                   b = ivy.array([3,4]))
+        >>> y = 1.5
+        >>> z = ivy.Container.static_fourier_encode(x,y)
+        >>> print(z)
+        {
+            a: (<classivy.array.array.Array>shape=[2,9]),
+            b: (<classivy.array.array.Array>shape=[2,9])
+        }
+
+        >>> x = ivy.Container(a = ivy.array([3,10]),
+        ...                   b = ivy.array([4,8]))
+        >>> y = 2.5
+        >>> z = ivy.Container.static_fourier_encode(x,y,num_bands=3)
+        >>> print(z)
+        {
+            a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,
+                    3.6739404e-16, -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
+                    [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15, -1.2246468e-15,
+                    1.0000000e+00,  1.0000000e+00,  1.0000000e+00]]),
+            b: ivy.array([[ 4.00000000e+00, -4.89858720e-16, -4.89858720e-16,
+                    -4.89858720e-16, 1.00000000e+00,  1.00000000e+00,  1.00000000e+00],
+                    [ 8.00000000e+00, -9.79717439e-16, -9.79717439e-16, -9.79717439e-16,
+                    1.00000000e+00,  1.00000000e+00,  1.00000000e+00]])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "fourier_encode",
@@ -1231,6 +1259,34 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with the final dimension expanded of arrays at its leaves,
             and the encodings stored in this channel.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([1,2]),
+        ...                   b = ivy.array([3,4]))
+        >>> y = 1.5
+        >>> z = x.fourier_encode(y)
+        >>> print(z)
+        {
+            a: (<classivy.array.array.Array>shape=[2,9]),
+            b: (<classivy.array.array.Array>shape=[2,9])
+        }
+
+        >>> x = ivy.Container(a = ivy.array([3,10]),
+        ...                   b = ivy.array([4,8]))
+        >>> y = 2.5
+        >>> z = x.fourier_encode(y,num_bands=3)
+        >>> print(z)
+        {
+            a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,
+                    3.6739404e-16,-1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
+                    [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15,
+                    -1.2246468e-15, 1.0000000e+00,  1.0000000e+00,  1.0000000e+00]]),
+            b: ivy.array([[4.00000000e+00, -4.89858720e-16, -4.89858720e-16,
+                    -4.89858720e-16, 1.00000000e+00,  1.00000000e+00,  1.00000000e+00],
+                    [ 8.00000000e+00, -9.79717439e-16, -9.79717439e-16, -9.79717439e-16,
+                    1.00000000e+00,  1.00000000e+00,  1.00000000e+00]])
+        }
         """
         return self.static_fourier_encode(
             self,
@@ -3096,6 +3152,42 @@ class ContainerWithGeneral(ContainerBase):
         -------
             ivy.Container with each array having einops.rearrange applied.
 
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3],
+        ...                                [-4, -5, -6]]),
+        ...                 b=ivy.array([[7, 8, 9],
+        ...                             [10, 11, 12]]))
+        >>> y = ivy.static_einops_rearrange(x, "height width -> width height")
+        >>> print(y)
+        {
+            a: ivy.array([[1, -4],
+                        [2, -5],
+                        [3, -6]]),
+            b: ivy.array([[7, 10],
+                        [8, 11],
+                        [9, 12]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[[ 1,  2,  3],
+        ...                  [ 4,  5,  6]],
+        ...               [[ 7,  8,  9],
+        ...                  [10, 11, 12]]]))
+        >>> y = ivy.static_einops_rearrange(x, "c h w -> c (h w)")
+        >>> print(y)
+        {
+            a: (<class ivy.array.array.Array> shape=[2, 6])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3, 4, 5, 6],
+        ...               [7, 8, 9, 10, 11, 12]]))
+        >>> y = ivy.static_einops_rearrange(x, "c (h w) -> (c h) w", h=2, w=3)
+        {
+            a: (<class ivy.array.array.Array> shape=[4, 3])
+        }
+
         """
         return ContainerBase.cont_multi_map_in_function(
             "einops_rearrange",
@@ -3149,6 +3241,40 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
             ivy.Container with each array having einops.rearrange applied.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3],
+        ...                                [-4, -5, -6]]),
+        ...                 b=ivy.array([[7, 8, 9],
+        ...                              [10, 11, 12]]))
+        >>> y = x.einops_rearrange("height width -> width height")
+        >>> print(y)
+        {
+            a: ivy.array([[1, -4],
+                        [2, -5],
+                        [3, -6]]),
+            b: ivy.array([[7, 10],
+                        [8, 11],
+                        [9, 12]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[[ 1,  2,  3],
+        ...                  [ 4,  5,  6]],
+        ...               [[ 7,  8,  9],
+        ...                  [10, 11, 12]]]))
+        >>> y = x.einops_rearrange("c h w -> c (h w)")
+        >>> print(y)
+        {
+            a: (<class ivy.array.array.Array> shape=[2, 6])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3, 4, 5, 6],
+        ...               [7, 8, 9, 10, 11, 12]]))
+        >>> y = x.einops_rearrange("c (h w) -> (c h) w", h=2, w=3)
+        {
+            a: (<class ivy.array.array.Array> shape=[4, 3])
+        }
 
         """
         return self.static_einops_rearrange(

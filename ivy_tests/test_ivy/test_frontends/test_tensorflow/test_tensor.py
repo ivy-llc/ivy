@@ -21,7 +21,24 @@ CLASS_TREE = "ivy.functional.frontends.tensorflow.EagerTensor"
 @given(
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
-def test_array_property_device(
+def test_tensorflow_tensor_property_ivy_array(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = EagerTensor(data[0])
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
+    ret_gt = helpers.flatten_and_to_np(ret=data[0])
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="tensorflow",
+    )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_tensorflow_tensor_property_device(
     dtype_x,
 ):
     _, data = dtype_x
@@ -35,7 +52,7 @@ def test_array_property_device(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_ndarray_property_dtype(
+def test_tensorflow_tensor_property_dtype(
     dtype_x,
 ):
     dtype, data = dtype_x
@@ -49,7 +66,7 @@ def test_numpy_ndarray_property_dtype(
         ret_shape=True,
     ),
 )
-def test_numpy_ndarray_property_shape(
+def test_tensorflow_tensor_property_shape(
     dtype_x,
 ):
     dtype, data, shape = dtype_x

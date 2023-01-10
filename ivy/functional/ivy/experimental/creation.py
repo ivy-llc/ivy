@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     to_native_arrays_and_back,
     handle_out_argument,
+    infer_dtype,
 )
 
 
@@ -153,12 +154,14 @@ def vorbis_window(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@infer_dtype
 @handle_exceptions
 def hann_window(
-    window_length: int,
+    size: int,
+    /,
+    *,
     periodic: Optional[bool] = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Generate a Hann window. The Hanning window
@@ -166,7 +169,7 @@ def hann_window(
 
     Parameters
     ----------
-    window_length
+    size
         the size of the returned window.
     periodic
         If True, returns a window to be used as periodic function.
@@ -191,7 +194,7 @@ def hann_window(
 
     """
     return ivy.current_backend().hann_window(
-        window_length, periodic, dtype=dtype, out=out
+        size, periodic=periodic, dtype=dtype, out=out
     )
 
 
