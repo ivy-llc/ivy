@@ -1919,18 +1919,19 @@ def _general_dot_helper(draw):
     if is_pref:
         dtype, pref = draw(
             helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("numeric")),
-                input_dtype[0]
+                draw(helpers.get_dtypes("numeric")), input_dtype[0]
             )
         )
         assume(can_cast(dtype, pref))
         pref_dtype = pref
     else:
         pref_dtype = None
-    return ldtype + rdtype, \
-        (lhs[0], rhs[0]), \
-        ((lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch)), \
-        pref_dtype
+    return (
+        ldtype + rdtype,
+        (lhs[0], rhs[0]),
+        ((lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch)),
+        pref_dtype,
+    )
 
 
 @handle_frontend_test(

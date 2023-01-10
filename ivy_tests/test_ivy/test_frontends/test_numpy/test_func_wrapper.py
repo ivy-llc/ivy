@@ -61,9 +61,7 @@ def test_inputs_to_ivy_arrays(dtype_x_shape):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_outputs_to_numpy_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
@@ -115,13 +113,17 @@ def test_to_ivy_arrays_and_back(dtype_x_shape):
 @st.composite
 def _zero_dim_to_scalar_helper(draw):
     dtype = draw(
-        helpers.get_dtypes("valid", full=False).filter(lambda x: 'bfloat16' not in x)
+        helpers.get_dtypes("valid", full=False).filter(lambda x: "bfloat16" not in x)
     )[0]
     shape = draw(helpers.get_shape())
-    return draw(st.one_of(
-        helpers.array_values(shape=shape, dtype=dtype),
-        st.lists(helpers.array_values(shape=shape, dtype=dtype), min_size=1).map(tuple)
-    ))
+    return draw(
+        st.one_of(
+            helpers.array_values(shape=shape, dtype=dtype),
+            st.lists(helpers.array_values(shape=shape, dtype=dtype), min_size=1).map(
+                tuple
+            ),
+        )
+    )
 
 
 def _zero_dim_to_scalar_checks(x, ret_x):
@@ -132,9 +134,7 @@ def _zero_dim_to_scalar_checks(x, ret_x):
         assert ret_x.ivy_array == ivy.array(x)
 
 
-@given(
-    x=_zero_dim_to_scalar_helper()
-)
+@given(x=_zero_dim_to_scalar_helper())
 def test_from_zero_dim_arrays_to_scalar(x):
     ret_x = from_zero_dim_arrays_to_scalar(_fn)(x=x)
     if isinstance(x, tuple):
@@ -147,13 +147,17 @@ def test_from_zero_dim_arrays_to_scalar(x):
 
 @st.composite
 def _dtype_helper(draw):
-    return draw(st.sampled_from([
-        draw(st.sampled_from([int, float, bool])),
-        ivy.as_native_dtype(draw(helpers.get_dtypes("valid", full=False))[0]),
-        np_frontend.dtype(draw(helpers.get_dtypes("valid", full=False))[0]),
-        draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
-        draw(st.sampled_from(list(np_frontend.numpy_str_to_type_table.keys()))),
-    ]))
+    return draw(
+        st.sampled_from(
+            [
+                draw(st.sampled_from([int, float, bool])),
+                ivy.as_native_dtype(draw(helpers.get_dtypes("valid", full=False))[0]),
+                np_frontend.dtype(draw(helpers.get_dtypes("valid", full=False))[0]),
+                draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
+                draw(st.sampled_from(list(np_frontend.numpy_str_to_type_table.keys()))),
+            ]
+        )
+    )
 
 
 @given(

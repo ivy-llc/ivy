@@ -235,7 +235,7 @@ def imag(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if(input.dtype != torch.complex64):
+    if input.dtype != torch.complex64:
         input = input.to(torch.complex64)
     return torch.imag(input)
 
