@@ -94,8 +94,9 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[jnp.dtype] = None,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if dtype is None:
         return jnp.count_nonzero(a, axis=axis, keepdims=keepdims)
     return jnp.array(jnp.count_nonzero(a, axis=axis, keepdims=keepdims), dtype=dtype)
@@ -222,6 +223,15 @@ def angle(
     return jnp.angle(z, deg=deg)
 
 
+def imag(
+    val: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.imag(val)
+
+
 def zeta(
     x: JaxArray,
     q: JaxArray,
@@ -229,8 +239,9 @@ def zeta(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    inf_indices = jnp.where(x == 1)
-    nan_indices = jnp.where((x < 1) | (x != 1 & q <= 0))
+    inf_indices = jnp.equal(x, 1)
+    temp = jnp.logical_and(jnp.not_equal(x, 1), jnp.less_equal(q, 0))
+    nan_indices = jnp.logical_or(temp, jnp.less(x, 1))
     n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x

@@ -541,6 +541,7 @@ pow.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def remainder(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
@@ -747,6 +748,7 @@ reciprocal.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def deg2rad(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.deg2rad(x, out=out)
 
@@ -755,6 +757,7 @@ deg2rad.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.rad2deg(x, out=out)
 

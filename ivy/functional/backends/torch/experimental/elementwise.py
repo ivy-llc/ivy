@@ -144,7 +144,6 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, list):
         axis = tuple(axis)
@@ -166,9 +165,6 @@ def count_nonzero(
     elif isinstance(x, int):
         return x.unsqueeze(axis)
     return x
-
-
-count_nonzero.support_native_out = False
 
 
 def nansum(
@@ -231,6 +227,20 @@ def angle(
 
 
 angle.support_native_out = True
+
+
+def imag(
+    input: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if input.dtype != torch.complex64:
+        input = input.to(torch.complex64)
+    return torch.imag(input)
+
+
+imag.support_native_out = False
 
 
 def nan_to_num(
