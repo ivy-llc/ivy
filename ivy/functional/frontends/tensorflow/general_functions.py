@@ -68,7 +68,7 @@ def constant(value, dtype=None, shape=None, name=None):
 
 
 @handle_tf_dtype
-def convert_to_tensor(value, dtype, dtype_hint, name=None):
+def convert_to_tensor(value, dtype=None, dtype_hint=None, name=None):
     if dtype:
         return EagerTensor(ivy.astype(value, dtype))
     elif dtype_hint:
