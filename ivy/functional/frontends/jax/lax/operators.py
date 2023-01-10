@@ -163,11 +163,9 @@ def dot(lhs, rhs, precision=None, preferred_element_type=None):
 
 
 @to_ivy_arrays_and_back
-def dot_general(lhs,
-                rhs,
-                dimension_numbers,
-                precision=None,
-                preferred_element_type=None):
+def dot_general(
+    lhs, rhs, dimension_numbers, precision=None, preferred_element_type=None
+):
     (lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch) = dimension_numbers
     assert len(lhs.shape) == len(rhs.shape)
     ivy.assertions.check_less(
@@ -192,8 +190,9 @@ def dot_general(lhs,
         lhs_out_axis_ids[lhs_axis] = None
         rhs_out_axis_ids[rhs_axis] = None
         batch_ids.append(shared_id)
-    out_axis_ids = list(filter(lambda x: x is not None,
-                               batch_ids + lhs_out_axis_ids + rhs_out_axis_ids))
+    out_axis_ids = list(
+        filter(lambda x: x is not None, batch_ids + lhs_out_axis_ids + rhs_out_axis_ids)
+    )
     char_list = [*string.ascii_letters]
     lhs_axis_ids = "".join(str(char_list[i]) for i in lhs_axis_ids)
     rhs_axis_ids = "".join(str(char_list[i]) for i in rhs_axis_ids)
