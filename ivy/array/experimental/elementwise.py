@@ -665,7 +665,6 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.angle(self._data, deg=deg, out=out)
 
-
     def imag(
         self: ivy.Array,
         /,
@@ -700,7 +699,6 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([2., 4., 6.])
         """
         return ivy.imag(self._data, out=out)
-
 
     def nan_to_num(
         self: ivy.Array,
