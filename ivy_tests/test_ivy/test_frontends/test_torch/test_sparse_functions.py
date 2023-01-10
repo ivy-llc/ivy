@@ -29,7 +29,8 @@ def _embedding_helper(draw):
         min_value=0,
         max_value=num_embeddings-1,
     ).filter(lambda x: x[1][0].shape[-1] == embedding_dim))
-    return dtype_indices+dtype_weight, indices[0], weight[0]
+    padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings-1))
+    return dtype_indices+dtype_weight, indices[0], weight[0], padding_idx
 
 
 # embedding
@@ -57,7 +58,7 @@ def test_torch_embedding(
     fn_tree,
     frontend,
 ):
-    dtypes, indices, weight = dtypes_indices_weights
+    dtypes, indices, weight, padding_idx = dtypes_indices_weights
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -69,7 +70,7 @@ def test_torch_embedding(
         on_device=on_device,
         input=indices,
         weight=weight,
-        padding_idx=None,
+        padding_idx=padding_idx,
         max_norm=max_norm,
         norm_type=p,
     )
