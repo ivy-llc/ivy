@@ -761,7 +761,8 @@ class ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def static_meshgrid(
-        *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], ivy.Container],
+        *arrays: Union[ivy.Array, ivy.NativeArray, List[Number],
+                       Tuple[Number], ivy.Container],
         sparse: bool = False,
         indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -777,15 +778,17 @@ class ContainerWithCreation(ContainerBase):
         Parameters
         ----------
         arrays
-            an arbitrary number of one-dimensional containers representing grid coordinates.
+            an arbitrary number of one-dimensional containers representing
+            grid coordinates.
             Each array should have the same numeric data type.
         sparse
-            if True, a sparse grid is returned in order to conserve memory. Default: ``False``.
+            if True, a sparse grid is returned in order to conserve memory.
+            Default: ``False``.
         indexing
-            Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
-            one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
-            respectively), the ``indexing`` keyword has no effect and should be ignored.
-            Default: ``'xy'``.
+            Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided
+            zero or one one-dimensional vector(s) (i.e., the zero- and one-d
+            cases, respectively), the ``indexing`` keyword has no effect and should
+            be ignored. Default: ``'xy'``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -802,24 +805,24 @@ class ContainerWithCreation(ContainerBase):
         Returns
         -------
         ret
-            container of N arrays, where ``N`` is the number of provided one-dimensional input
-            arrays. Each returned array must have rank ``N``. For ``N`` one-dimensional
-            arrays having lengths ``Ni = len(xi)``,
+            container of N arrays, where ``N`` is the number of provided one-dimensional
+            input arrays. Each returned array must have rank ``N``. For ``N``
+            one-dimensional arrays having lengths ``Ni = len(xi)``,
 
             - if matrix indexing ``ij``, then each returned array must have the shape
               ``(N1, N2, N3, ..., Nn)``.
             - if Cartesian indexing ``xy``, then each returned array must have shape
               ``(N2, N1, N3, ..., Nn)``.
 
-            Accordingly, for the two-dimensional case with input one-dimensional arrays of
-            length ``M`` and ``N``, if matrix indexing ``ij``, then each returned array must
-            have shape ``(M, N)``, and, if Cartesian indexing ``xy``, then each returned
-            array must have shape ``(N, M)``.
+            Accordingly, for the two-dimensional case with input one-dimensional
+            arrays of length ``M`` and ``N``, if matrix indexing ``ij``, then each
+            returned array must have shape ``(M, N)``, and, if Cartesian indexing ``xy``,
+            then each returned array must have shape ``(N, M)``.
 
-            Similarly, for the three-dimensional case with input one-dimensional arrays of
-            length ``M``, ``N``, and ``P``, if matrix indexing ``ij``, then each returned
-            array must have shape ``(M, N, P)``, and, if Cartesian indexing ``xy``, then
-            each returned array must have shape ``(N, M, P)``.
+            Similarly, for the three-dimensional case with input one-dimensional
+            arrays of length ``M``, ``N``, and ``P``, if matrix indexing ``ij``, then
+            each returned array must have shape ``(M, N, P)``, and, if Cartesian indexing
+            ``xy``, then each returned array must have shape ``(N, M, P)``.
 
             Each returned array should have the same data type as the input arrays.
 
@@ -877,7 +880,8 @@ class ContainerWithCreation(ContainerBase):
     def meshgrid(
         self: ivy.Container,
         /,
-        *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], ivy.Container],
+        *arrays: Union[ivy.Array, ivy.NativeArray, List[Number],
+                       Tuple[Number], ivy.Container],
         sparse: bool = False,
         indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -896,15 +900,17 @@ class ContainerWithCreation(ContainerBase):
             an one-dimensional container representing grid coordinates.
             Each array should have the same numeric data type.
         arrays
-            an arbitray number of one-dimensional containers representing grid coordinates.
+            an arbitrary number of one-dimensional containers representing
+            grid coordinates.
             Each array should have the same numeric data type.
         sparse
-            if True, a sparse grid is returned in order to conserve memory. Default: ``False``.
+            if True, a sparse grid is returned in order to conserve memory.
+            Default: ``False``.
         indexing
-            Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
-            one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
-            respectively), the ``indexing`` keyword has no effect and should be ignored.
-            Default: ``'xy'``.
+            Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero
+            or one one-dimensional vector(s) (i.e., the zero- and one-dimensional
+            cases, respectively), the ``indexing`` keyword has no effect and should
+            be ignored. Default: ``'xy'``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -921,24 +927,24 @@ class ContainerWithCreation(ContainerBase):
         Returns
         -------
         ret
-            Container of N arrays, where ``N`` is the number of provided one-dimensional input
-            arrays. Each returned array must have rank ``N``. For ``N`` one-dimensional
-            arrays having lengths ``Ni = len(xi)``,
+            container of N arrays, where ``N`` is the number of provided one-dimensional
+            input arrays. Each returned array must have rank ``N``. For ``N``
+            one-dimensional arrays having lengths ``Ni = len(xi)``,
 
             - if matrix indexing ``ij``, then each returned array must have the shape
               ``(N1, N2, N3, ..., Nn)``.
             - if Cartesian indexing ``xy``, then each returned array must have shape
               ``(N2, N1, N3, ..., Nn)``.
 
-            Accordingly, for the two-dimensional case with input one-dimensional arrays of
-            length ``M`` and ``N``, if matrix indexing ``ij``, then each returned array must
-            have shape ``(M, N)``, and, if Cartesian indexing ``xy``, then each returned
-            array must have shape ``(N, M)``.
+            Accordingly, for the two-dimensional case with input one-dimensional
+            arrays of length ``M`` and ``N``, if matrix indexing ``ij``, then each
+            returned array must have shape ``(M, N)``, and, if Cartesian indexing ``xy``,
+            then each returned array must have shape ``(N, M)``.
 
-            Similarly, for the three-dimensional case with input one-dimensional arrays of
-            length ``M``, ``N``, and ``P``, if matrix indexing ``ij``, then each returned
-            array must have shape ``(M, N, P)``, and, if Cartesian indexing ``xy``, then
-            each returned array must have shape ``(N, M, P)``.
+            Similarly, for the three-dimensional case with input one-dimensional
+            arrays of length ``M``, ``N``, and ``P``, if matrix indexing ``ij``, then
+            each returned array must have shape ``(M, N, P)``, and, if Cartesian indexing
+            ``xy``, then each returned array must have shape ``(N, M, P)``.
 
             Each returned array should have the same data type as the input arrays.
 
