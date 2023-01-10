@@ -816,13 +816,13 @@ class ContainerWithCreation(ContainerBase):
 
             Accordingly, for the two-dimensional case with input one-dimensional
             arrays of length ``M`` and ``N``, if matrix indexing ``ij``, then each
-            returned array must have shape ``(M, N)``, and, if Cartesian indexing ``xy``,
-            then each returned array must have shape ``(N, M)``.
+            returned array must have shape ``(M, N)``, and, if Cartesian indexing
+            ``xy``, then each returned array must have shape ``(N, M)``.
 
             Similarly, for the three-dimensional case with input one-dimensional
             arrays of length ``M``, ``N``, and ``P``, if matrix indexing ``ij``, then
-            each returned array must have shape ``(M, N, P)``, and, if Cartesian indexing
-            ``xy``, then each returned array must have shape ``(N, M, P)``.
+            each returned array must have shape ``(M, N, P)``, and, if Cartesian
+            indexing ``xy``, then each returned array must have shape ``(N, M, P)``.
 
             Each returned array should have the same data type as the input arrays.
 
@@ -938,19 +938,18 @@ class ContainerWithCreation(ContainerBase):
 
             Accordingly, for the two-dimensional case with input one-dimensional
             arrays of length ``M`` and ``N``, if matrix indexing ``ij``, then each
-            returned array must have shape ``(M, N)``, and, if Cartesian indexing ``xy``,
-            then each returned array must have shape ``(N, M)``.
+            returned array must have shape ``(M, N)``, and, if Cartesian indexing
+            ``xy``, then each returned array must have shape ``(N, M)``.
 
             Similarly, for the three-dimensional case with input one-dimensional
             arrays of length ``M``, ``N``, and ``P``, if matrix indexing ``ij``, then
-            each returned array must have shape ``(M, N, P)``, and, if Cartesian indexing
-            ``xy``, then each returned array must have shape ``(N, M, P)``.
+            each returned array must have shape ``(M, N, P)``, and, if Cartesian
+            indexing ``xy``, then each returned array must have shape ``(N, M, P)``.
 
             Each returned array should have the same data type as the input arrays.
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]))
         >>> y = ivy.Container(a=ivy.array([4, 5]))
         >>> xv = x.meshgrid(y)
