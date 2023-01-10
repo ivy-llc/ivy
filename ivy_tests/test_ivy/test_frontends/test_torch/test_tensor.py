@@ -89,6 +89,18 @@ def test_torch_tensor_property_dtype(
     ivy.assertions.check_equal(x.dtype, dtype[0])
 
 
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+    ),
+)
+def test_torch_tensor_property_shape(dtype_x):
+    dtype, data, shape = dtype_x
+    x = Tensor(data[0])
+    ivy.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
+
+
 # chunk
 @handle_frontend_method(
     class_tree=CLASS_TREE,
