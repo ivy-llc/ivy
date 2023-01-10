@@ -1840,7 +1840,6 @@ def test_jax_numpy_remainder(
 ):
     input_dtype, x = dtype_and_x
 
-    assume(not np.any(np.isclose(x[0], 0)))
     assume(not np.any(np.isclose(x[1], 0)))
 
     helpers.test_frontend_function(
