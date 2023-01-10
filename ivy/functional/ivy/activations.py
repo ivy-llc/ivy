@@ -388,6 +388,58 @@ def relu(
     return current_backend(x).relu(x, out=out)
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like
+def hardswish(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Applies the hardswish function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the hardswish activation of each element in
+        ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 0., 4.])
+    >>> y = ivy.hardswish(x)
+    >>> print(y)
+    ivy.array([0., 0., 4.])
+
+    >>> x = ivy.array([-4., -5., -8.])
+    >>> y = ivy.zeros(3)
+    >>> ivy.hardswish(x, out = y)
+    >>> print(y)
+    ivy.array([-0., -0., -0.])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-3., 4., 5.]), b=ivy.array([0., 5.]))
+    >>> x = ivy.hardswish(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([-0.,  4.,  5.]),
+        b: ivy.array([0., 5.])
+    }
+    """
+    return current_backend(x).hardswish(x, out=out)
+
+
 @integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
