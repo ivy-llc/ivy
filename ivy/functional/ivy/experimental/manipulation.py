@@ -244,8 +244,11 @@ def ndenumerate(
         if not hasattr(input, "__iter__"):
             yield t, input
         else:
-            for i, v in enumerate(input):
-                yield from _ndenumerate(v, t + (i,))
+            if input.shape == ():
+                yield t, ivy.to_scalar(input)
+            else:
+                for i, v in enumerate(input):
+                    yield from _ndenumerate(v, t + (i,))
 
     return _ndenumerate(input)
 

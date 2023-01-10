@@ -1703,6 +1703,99 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_angle(self, deg=deg, out=out)
 
     @staticmethod
+    def static_imag(
+        val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.imag. This method simply
+        wraps the function, and so the docstring for ivy.imag also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        val
+            Array-like input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns an Container including arrays with the imaginary part of complex numbers.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array(np.array([1+2j, 3+4j, 5+6j])),
+                                b=ivy.array(np.array([-2.25 + 4.75j, 3.25 + 5.75j])))
+        >>> x
+        {
+            a: ivy.array([1.+2.j, 3.+4.j, 5.+6.j]),
+            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+        }
+        >>> ivy.Container.static_imag(x)
+        {
+            a: ivy.array([2., 4., 6.]),
+            b: ivy.array([4.75, 5.75])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "imag",
+            val,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def imag(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.imag. This method simply
+        wraps the function, and so the docstring for ivy.imag also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        val
+            Array-like input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns an Container including arrays with the imaginary part of complex numbers.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array(np.array([1+2j, 3+4j, 5+6j])),
+                                b=ivy.array(np.array([-2.25 + 4.75j, 3.25 + 5.75j])))
+        >>> x
+        {
+            a: ivy.array([1.+2.j, 3.+4.j, 5.+6.j]),
+            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+        }
+        >>> x.imag()
+        {
+            a: ivy.array([2., 4., 6.]),
+            b: ivy.array([4.75, 5.75])
+        }
+        """
+        return self.static_imag(self, out=out)
+
+    @staticmethod
     def static_nan_to_num(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
