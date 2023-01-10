@@ -1,5 +1,5 @@
 import tensorflow as tf
-from typing import Union, Tuple
+from typing import Union
 
 
 def l2_normalize(x: Union[tf.Tensor, tf.Variable],

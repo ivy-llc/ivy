@@ -14,10 +14,11 @@ class ArrayWithNormsExperimental(abc.ABC):
         self
             Input array.
         axis
-            Axis along which to normalize. If ``None``, the whole array is normalized.
+            Axis along which to normalize. If ``None``, the whole array
+            is normalized.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
 
         Returns
         -------
@@ -32,5 +33,3 @@ class ArrayWithNormsExperimental(abc.ABC):
                    [0.6, 0.8]])
         """
         return ivy.l2_normalize(self, axis=axis, out=out)
-
-

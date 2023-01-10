@@ -1,10 +1,7 @@
 # global
 from hypothesis import strategies as st
-import hypothesis.extra.numpy as nph
 
 # local
-import numpy as np
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
