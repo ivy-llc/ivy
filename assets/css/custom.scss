@@ -118,3 +118,7 @@ h3 {
     border-bottom: 2px solid;
     border-image: $ivy-green-gradient-border;
 }
+
+#colab-button .quarto-figure .figure p {
+    text-align: left;
+}
