@@ -15,6 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         available_dtypes=helpers.get_dtypes("float"),
         num=1,
         returndtype=True,
+        force_int_axis=True,
     ),
     test_gradients=st.just(False),
 )
@@ -28,7 +29,6 @@ def test_l2_normalize(
     ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_and_x
-    d=0
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -37,6 +37,5 @@ def test_l2_normalize(
         fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
-        axis=axis[0],
+        axis=axis,
     )
-

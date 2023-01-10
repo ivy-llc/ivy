@@ -531,6 +531,7 @@ def arrays_and_axes(
     max_dim_size=10,
     num=2,
     returndtype=False,
+    force_int_axis=False,
 ):
     shapes = list()
     for _ in range(num):
@@ -560,13 +561,16 @@ def arrays_and_axes(
                 array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20)
             )
         )
-    all_axes_ranges = list()
-    for shape in shapes:
-        if None in all_axes_ranges:
-            all_axes_ranges.append(st.integers(0, len(shape) - 1))
-        else:
-            all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
-    axes = draw(st.tuples(*all_axes_ranges))
+    if force_int_axis:
+        axes = draw(st.one_of(st.integers(0, len(shape) - 1), st.none()))
+    else:
+        all_axes_ranges = list()
+        for shape in shapes:
+            if None in all_axes_ranges:
+                all_axes_ranges.append(st.integers(0, len(shape) - 1))
+            else:
+                all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
+        axes = draw(st.tuples(*all_axes_ranges))
     if returndtype:
         return dtype, arrays, axes
     return arrays, axes
