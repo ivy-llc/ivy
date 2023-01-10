@@ -212,3 +212,8 @@ class EagerTensor:
             "ivy.functional.frontends.tensorflow.EagerTensor object "
             "doesn't support assignment"
         )
+
+
+# Dummy Tensor class to help with compilation
+class Tensor(EagerTensor):
+    pass
