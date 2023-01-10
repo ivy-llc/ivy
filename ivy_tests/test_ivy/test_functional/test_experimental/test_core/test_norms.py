@@ -12,7 +12,9 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.l2_normalize",
     dtype_and_x=helpers.arrays_and_axes(
+        available_dtypes=helpers.get_dtypes("float"),
         num=1,
+        returndtype=True,
     ),
     test_gradients=st.just(False),
 )
@@ -25,16 +27,16 @@ def test_l2_normalize(
     on_device,
     ground_truth_backend,
 ):
-    x, axis = dtype_and_x
-
+    input_dtype, x, axis = dtype_and_x
+    d=0
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=[x[0].dtype],
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
-        axis=axis
+        axis=axis[0],
     )
 

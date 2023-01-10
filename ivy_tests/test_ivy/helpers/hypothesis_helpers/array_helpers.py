@@ -523,12 +523,14 @@ def array_indices_axis(
 @st.composite
 def arrays_and_axes(
     draw,
+    available_dtypes=get_dtypes("float"),
     allow_none=False,
     min_num_dims=1,
     max_num_dims=5,
     min_dim_size=1,
     max_dim_size=10,
     num=2,
+    returndtype=False,
 ):
     shapes = list()
     for _ in range(num):
@@ -542,11 +544,20 @@ def arrays_and_axes(
             )
         )
         shapes.append(shape)
+    if isinstance(available_dtypes, st._internal.SearchStrategy):
+        available_dtypes = draw(available_dtypes)
+
+    dtype = draw(
+        dtype_helpers.array_dtypes(
+            num_arrays=num,
+            available_dtypes=available_dtypes
+        )
+    )
     arrays = list()
     for shape in shapes:
         arrays.append(
             draw(
-                array_values(dtype="int32", shape=shape, min_value=-20, max_value=20)
+                array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20)
             )
         )
     all_axes_ranges = list()
@@ -556,6 +567,8 @@ def arrays_and_axes(
         else:
             all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
     axes = draw(st.tuples(*all_axes_ranges))
+    if returndtype:
+        return dtype, arrays, axes
     return arrays, axes
 
 
