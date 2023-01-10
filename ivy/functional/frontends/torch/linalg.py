@@ -149,10 +149,13 @@ def tensorinv(input, ind=2, *, out=None):
         prod_ind_end *= j
     assert prod_ind_end == prod_ind_start, f'{prod_cond}.'
     inverse_shape = shape_ind_start + shape_ind_end
-    input = ivy.reshape(input, shape=(prod_ind_end, -1))
+    input = ivy.reshape(input, shape=(prod_ind_end, prod_ind_end))
     inverse_shape_tuple = tuple([*inverse_shape])
     if len(ivy.shape(input)) > 1:
-        assert inv_ex(input, check_errors=True), f'{not_invertible}.'
+        try:
+            inv_ex(input, check_errors=True)
+        except RuntimeError:
+            print(f'{not_invertible}')
         inverse_tensor = ivy.inv(input)
     else:
         ret = ivy.reshape(input, shape=inverse_shape_tuple, out=out)
