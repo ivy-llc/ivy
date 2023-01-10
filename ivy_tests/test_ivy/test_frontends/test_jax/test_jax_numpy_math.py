@@ -1007,7 +1007,7 @@ def test_jax_numpy_lcm(
     if ivy.current_backend_str() == "tensorflow":
         value_test = False
     if ivy.current_backend_str() in ("jax", "numpy"):
-        assume(input_dtype[0]!="uint64" and input_dtype[1]!="uint64")
+        assume(input_dtype[0] != "uint64" and input_dtype[1] != "uint64")
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
