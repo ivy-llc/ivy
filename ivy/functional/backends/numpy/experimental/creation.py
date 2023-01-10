@@ -62,14 +62,15 @@ def tril_indices(
 
 
 def hann_window(
-    window_length: int,
+    size: int,
+    /,
+    *,
     periodic: Optional[bool] = True,
     dtype: Optional[np.dtype] = None,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    window_length = window_length + 1 if periodic is True else window_length
-    return np.array(np.hanning(window_length), dtype=dtype)
+    size = size + 1 if periodic is True else size
+    return np.array(np.hanning(size), dtype=dtype)
 
 
 hann_window.support_native_out = False

@@ -8,9 +8,11 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting
@@ -46,6 +48,7 @@ def array_equal(a1, a2, equal_nan=False):
     return ivy.array(ivy.array_equal(a1 * ~a1nan, a2 * ~a2nan))
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting
@@ -69,6 +72,7 @@ def greater(
     return ret
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting
@@ -92,6 +96,7 @@ def greater_equal(
     return ret
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting
@@ -115,6 +120,7 @@ def less(
     return ret
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting
@@ -138,6 +144,7 @@ def less_equal(
     return ret
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @handle_numpy_dtype
 @handle_numpy_casting

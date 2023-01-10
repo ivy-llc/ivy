@@ -65,6 +65,11 @@ def asarray(a, dtype=None, order=None):
 
 
 @to_ivy_arrays_and_back
+def int16(x):
+    return ivy.astype(x, ivy.int16, copy=False)
+
+
+@to_ivy_arrays_and_back
 def uint16(x):
     return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)
 

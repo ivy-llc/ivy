@@ -443,3 +443,114 @@ class ArrayWithLayersExperimental(abc.ABC):
             norm=norm,
             out=out,
         )
+
+    def fft(
+            self: ivy.Array,
+            dim: int,
+            /,
+            *,
+            norm: Optional[str] = "backward",
+            n: Optional[Union[int, Tuple[int]]] = None,
+            out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.ifft. This method simply
+        wraps the function, and so the docstring for ivy.ifft also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input volume *[...,d_in,...]*,
+            where d_in indicates the dimension that needs FFT.
+        dim
+            The dimension along which to take the one dimensional FFT.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        n
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing FFT.
+            Should be a integer greater than 1.
+        out
+            Optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Array containing the transformed input.
+
+        Examples
+        --------
+        >>> a = ivy.array((np.exp(2j * np.pi * np.arange(8) / 8)))
+        >>> a.fft(0)
+        ivy.array([-3.44509285e-16+1.14423775e-17j,  8.00000000e+00-8.11483250e-16j,
+                    2.33486982e-16+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j,
+                    9.95799250e-17+2.33486982e-16j,  0.00000000e+00+7.66951701e-17j,
+                    1.14423775e-17+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j])
+        """
+        return ivy.fft(
+            self._data,
+            dim,
+            norm=norm,
+            n=n,
+            out=out,
+        )
+
+    def ifft(
+        self: ivy.Array,
+        dim: int,
+        *,
+        norm: Optional[str] = "backward",
+        n: Optional[Union[int, Tuple[int]]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.ifft. This method simply
+        wraps the function, and so the docstring for ivy.ifft also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input volume *[...,d_in,...]*,
+            where d_in indicates the dimension that needs IFFT.
+        dim
+            The dimension along which to take the one dimensional IFFT.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        n
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing IFFT.
+            Should be a integer greater than 1.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Array containing the transformed input.
+
+        Examples
+        --------
+        >>> a = ivy.array((np.exp(2j * np.pi * np.arange(8) / 8)))
+        >>> a.ifft(0)
+        ivy.array([-4.30636606e-17+1.43029718e-18j,  0.00000000e+00+1.53080850e-17j,
+                    1.43029718e-18+1.53080850e-17j,  0.00000000e+00+9.58689626e-18j,
+                    1.24474906e-17+2.91858728e-17j,  0.00000000e+00+1.53080850e-17j,
+                    2.91858728e-17+1.53080850e-17j,  1.00000000e+00-1.01435406e-16j])
+        """
+        return ivy.ifft(
+            self._data,
+            dim,
+            norm=norm,
+            n=n,
+            out=out,
+        )

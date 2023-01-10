@@ -111,3 +111,8 @@ def append(arr, values, axis=None):
         return ivy.concat((ivy.flatten(arr), ivy.flatten(values)), axis=0)
     else:
         return ivy.concat((arr, values), axis=axis)
+
+
+@to_ivy_arrays_and_back
+def swapaxes(a, axis1, axis2):
+    return ivy.swapaxes(a, axis1, axis2)
