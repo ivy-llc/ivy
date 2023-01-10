@@ -75,6 +75,7 @@ Experimental
    experimental/broadcast_shapes.rst
    experimental/binary_cross_entropy_with_logits.rst
    experimental/isin.rst
+   experimental/l2_normalize.rst
    experimental/msort.rst
    experimental/sinc.rst
    experimental/lcm.rst
