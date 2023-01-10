@@ -1,6 +1,7 @@
 # global
 import numpy as np
 from hypothesis import assume, strategies as st
+import random
 
 # local
 import ivy
@@ -1878,6 +1879,88 @@ def test_jax_lax_dot(
         atol=1e-2,
         lhs=lhs,
         rhs=rhs,
+        precision=None,
+        preferred_element_type=dtype,
+    )
+
+
+@st.composite
+def _general_dot_helper(draw):
+    input_dtype = draw(helpers.get_dtypes("numeric", full=False))
+    lshape = draw(
+        st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=52)
+    )
+    ndims = len(lshape)
+    perm_id = random.sample(list(range(ndims)), ndims)
+    rshape = [lshape[i] for i in perm_id]
+    ldtype, lhs = draw(
+        helpers.dtype_and_values(
+            dtype=input_dtype,
+            min_value=-1e04,
+            max_value=1e04,
+            shape=lshape,
+        )
+    )
+    rdtype, rhs = draw(
+        helpers.dtype_and_values(
+            dtype=input_dtype,
+            min_value=-1e04,
+            max_value=1e04,
+            shape=rshape,
+        )
+    )
+    ind_list = list(range(ndims))
+    batch_n = draw(st.integers(min_value=1, max_value=len(lshape) - 1))
+    lhs_batch = random.sample(ind_list, batch_n)
+    rhs_batch = [perm_id.index(i) for i in lhs_batch]
+    lhs_contracting = [i for i in ind_list if i not in lhs_batch]
+    rhs_contracting = [perm_id.index(i) for i in lhs_contracting]
+    is_pref = draw(st.booleans())
+    if is_pref:
+        dtype, pref = draw(
+            helpers.get_castable_dtype(
+                draw(helpers.get_dtypes("numeric")), input_dtype[0]
+            )
+        )
+        assume(can_cast(dtype, pref))
+        pref_dtype = pref
+    else:
+        pref_dtype = None
+    return (
+        ldtype + rdtype,
+        (lhs[0], rhs[0]),
+        ((lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch)),
+        pref_dtype,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.dot_general",
+    dtypes_lr_dims=_general_dot_helper(),
+)
+def test_jax_lax_dot_general(
+    *,
+    dtypes_lr_dims,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtypes, lr, dims, dtype = dtypes_lr_dims
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lhs=lr[0],
+        rhs=lr[1],
+        dimension_numbers=dims,
         precision=None,
         preferred_element_type=dtype,
     )

@@ -102,7 +102,7 @@ def test_layer_norm(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, normalize_axis, weight, bias = values_tuple
+    dtype, x, normalize_axis, scale, b = values_tuple
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -116,7 +116,7 @@ def test_layer_norm(
         x=x[0],
         normalize_axis=normalize_axis,
         epsilon=epsilon,
-        weight=weight[0],
-        bias=bias[0],
+        scale=scale[0],
+        b=b[0],
         new_std=new_std,
     )

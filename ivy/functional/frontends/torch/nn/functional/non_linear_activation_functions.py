@@ -370,7 +370,7 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
     else:
         assert normalized_shape == shape[-len(normalized_shape) :]
         axis = list(range(len(shape) - len(normalized_shape), len(shape)))
-    return ivy.layer_norm(input, axis, weight=weight, bias=bias, epsilon=eps)
+    return ivy.layer_norm(input, axis, scale=weight, b=bias, epsilon=eps)
 
 
 @to_ivy_arrays_and_back
@@ -410,14 +410,12 @@ def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
             ivy.layer_norm(
                 input[:, i * groups : (i + 1) * groups, ...],
                 list(range(1, num_dims)),
-                weight=ivy.expand_dims(
+                scale=ivy.expand_dims(
                     weight[i * groups : (i + 1) * groups], axis=expand_dims
                 )
                 if weight is not None
                 else None,
-                bias=ivy.expand_dims(
-                    bias[i * groups : (i + 1) * groups], axis=expand_dims
-                )
+                b=ivy.expand_dims(bias[i * groups : (i + 1) * groups], axis=expand_dims)
                 if bias is not None
                 else None,
                 epsilon=eps,
