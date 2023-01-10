@@ -230,12 +230,12 @@ angle.support_native_out = False
 
 
 def imag(
-    val:np.ndarray,
+    val: np.ndarray,
     /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    
+
     return np.imag(val)
 
 
