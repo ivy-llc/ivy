@@ -562,7 +562,10 @@ def arrays_and_axes(
             )
         )
     if force_int_axis:
-        axes = draw(st.one_of(st.integers(0, len(shape) - 1), st.none()))
+        if len(shape) <= 2:
+            axes = draw(st.one_of(st.integers(0, len(shape) - 1), st.none()))
+        else:
+            axes = draw(st.integers(0, len(shape) - 1))
     else:
         all_axes_ranges = list()
         for shape in shapes:
