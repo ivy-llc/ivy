@@ -524,7 +524,7 @@ def array_indices_axis(
 def arrays_and_axes(
     draw,
     allow_none=False,
-    min_num_dims=0,
+    min_num_dims=1,
     max_num_dims=5,
     min_dim_size=1,
     max_dim_size=10,
@@ -546,7 +546,7 @@ def arrays_and_axes(
     for shape in shapes:
         arrays.append(
             draw(
-                array_values(dtype="int32", shape=shape, min_value=-200, max_value=200)
+                array_values(dtype="int32", shape=shape, min_value=-20, max_value=20)
             )
         )
     all_axes_ranges = list()

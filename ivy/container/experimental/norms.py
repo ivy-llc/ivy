@@ -20,5 +20,5 @@ class ContainerWithNormsExperimental(ContainerBase):
         )
 
     def l2_normalize(self, axis=None, out=None):
-        
+
         return self.static_l2_normalize(self, axis=axis, out=out)
