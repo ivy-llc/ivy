@@ -134,6 +134,8 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> ivy.Dty
         return ivy.default_int_dtype()
     if dtype_in is float:
         return ivy.default_float_dtype()
+    if dtype_in is complex:
+        return ivy.default_complex_dtype()
     if dtype_in is bool:
         return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
@@ -153,6 +155,8 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torc
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
         return ivy.default_float_dtype(as_native=True)
+    if dtype_in is complex:
+        return ivy.default_complex_dtype(as_native=True)
     if dtype_in is bool:
         return torch.bool
     if not isinstance(dtype_in, str):
@@ -184,7 +188,3 @@ def dtype_bits(dtype_in: Union[torch.dtype, str]) -> int:
         .replace("float", "")
         .replace("complex", "")
     )
-
-
-# ToDo:
-# 1. can_cast : Add support for complex64, complex128

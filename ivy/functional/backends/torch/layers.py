@@ -16,12 +16,7 @@ def _out_shape(x, strides, pad, dilations, filters):
 
 
 @with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -63,6 +58,7 @@ def conv1d(
         "1.11.0 and below": (
             "float16",
             "bfloat16",
+            "complex",
         )
     },
     backend_version,
@@ -126,12 +122,7 @@ def conv1d_transpose(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -188,6 +179,7 @@ def conv2d(
         "1.11.0 and below": (
             "float16",
             "bfloat16",
+            "complex",
         )
     },
     backend_version,
@@ -270,7 +262,16 @@ def conv2d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+            "complex",
+        )
+    },
+    backend_version,
+)
 # noinspection PyUnresolvedReferences
 def depthwise_conv2d(
     x: torch.Tensor,
@@ -283,12 +284,12 @@ def depthwise_conv2d(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = torch.tensor(x)
-    filters = torch.tensor(filters)
+    x = torch.as_tensor(x)
+    filters = torch.as_tensor(filters)
     strides = [strides] * 2 if isinstance(strides, int) else strides
     strides = [strides[1], strides[2]] if len(strides) == 4 else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    filters = ivy.squeeze(filters, 3) if filters.ndim == 4 else filters
+    filters = ivy.squeeze(filters, 3).to_native() if filters.ndim == 4 else filters
 
     f_w_after_dilation = filters.shape[1] + (
         (dilations[1] - 1) * (filters.shape[1] - 1)
@@ -323,7 +324,9 @@ def depthwise_conv2d(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")}, backend_version
+)
 # noinspection PyUnresolvedReferences
 def conv3d(
     x: torch.Tensor,
@@ -379,12 +382,7 @@ def conv3d(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -485,12 +483,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_dilated(
@@ -565,12 +558,7 @@ def conv_general_dilated(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_transpose(

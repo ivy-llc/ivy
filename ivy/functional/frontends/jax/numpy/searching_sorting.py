@@ -1,5 +1,5 @@
 # global
-import warnings
+import logging
 
 # local
 import ivy
@@ -32,7 +32,7 @@ def argwhere(a, /, *, size=None, fill_value=None):
 @to_ivy_arrays_and_back
 def argsort(a, axis=-1, kind="stable", order=None):
     if kind != "stable":
-        warnings.warn(
+        logging.warning(
             "'kind' argument to argsort is ignored; only 'stable' sorts "
             "are supported."
         )
@@ -45,3 +45,8 @@ def argsort(a, axis=-1, kind="stable", order=None):
 @to_ivy_arrays_and_back
 def msort(a):
     return ivy.msort(a)
+
+
+@to_ivy_arrays_and_back
+def nonzero(a, *, size=None, fill_value=None):
+    return ivy.nonzero(a, size=size, fill_value=fill_value)

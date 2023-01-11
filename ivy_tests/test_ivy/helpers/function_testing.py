@@ -84,7 +84,6 @@ def test_function(
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: bool = True,
-    test_gradients: bool = False,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
     ground_truth_backend: str,
@@ -113,8 +112,6 @@ def test_function(
         absolute tolerance value.
     test_values
         if True, test for the correctness of the resulting values.
-    test_gradients
-        if True, test for the correctness of gradients.
     xs_grad_idxs
         Indices of the input arrays to compute gradients with respect to. If None,
         gradients are returned with respect to all input arrays. (Default value = None)
@@ -313,8 +310,10 @@ def test_function(
         )
         if test_flags.with_out:
             test_ret_from_gt = ret_from_gt
-            if isinstance(ret, tuple):
-                test_ret_from_gt = ret[getattr(ivy.__dict__[fn_name], "out_index")]
+            if isinstance(ret_from_gt, tuple):
+                test_ret_from_gt = ret_from_gt[
+                    getattr(ivy.__dict__[fn_name], "out_index")
+                ]
             out_from_gt = ivy.zeros_like(test_ret_from_gt)
             ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
                 ivy.__dict__[fn_name], *args, **kwargs, out=out_from_gt
@@ -327,10 +326,11 @@ def test_function(
     # gradient test
     fw = ivy.current_backend_str()
     if (
-        test_gradients
+        test_flags.test_gradients
         and not fw == "numpy"
         and not instance_method
         and "bool" not in input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
     ):
         if fw in fw_list:
             if ivy.nested_argwhere(
@@ -1121,7 +1121,12 @@ def test_method(
     ivy.unset_backend()
     # gradient test
     fw = ivy.current_backend_str()
-    if test_gradients and not fw == "numpy" and "bool" not in method_input_dtypes:
+    if (
+        test_gradients
+        and not fw == "numpy"
+        and "bool" not in method_input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in method_input_dtypes)
+    ):
         if fw in fw_list:
             if ivy.nested_argwhere(
                 method_all_as_kwargs_np,

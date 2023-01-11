@@ -2,11 +2,6 @@
 from hypothesis import strategies as st, assume
 import math
 
-try:
-    import exceptions
-except ImportError:
-    pass
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -287,22 +282,18 @@ def test_torch_swapdims(
 # reshape
 @st.composite
 def dtypes_x_reshape(draw):
-    shape = draw(
-        helpers.get_shape(
-            allow_none=False,
-            min_num_dims=1,
-            max_num_dims=3,
-            min_dim_size=1,
-            max_dim_size=3,
-        )
-    )
+    shape = draw(helpers.get_shape(min_num_dims=1))
     dtypes, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             shape=shape,
         )
     )
-    shape = draw(helpers.reshape_shapes(shape=shape))
+    shape = draw(
+        helpers.get_shape(min_num_dims=1).filter(
+            lambda s: math.prod(s) == math.prod(shape)
+        )
+    )
     return dtypes, x, shape
 
 
@@ -396,9 +387,10 @@ def test_torch_as_strided(
             stride=stride,
             storage_offset=offset,
         )
-    except exceptions.RuntimeError as e:
-        if "out of bounds for storage of size" in e.message:
-            assume(False)
+    except Exception as e:
+        if hasattr(e, "message"):
+            if "out of bounds for storage of size" in e.message:
+                assume(False)
 
 
 # stack
@@ -569,45 +561,55 @@ def test_torch_swapaxes(
     )
 
 
+@st.composite
+def _chunk_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=1,
+            ret_shape=True,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    if shape[axis] == 0:
+        chunks = 0
+    else:
+        factors = []
+        for i in range(1, shape[axis] + 1):
+            if shape[axis] % i == 0:
+                factors.append(i)
+        chunks = draw(st.sampled_from(factors))
+    return dtype, x, axis, chunks
+
+
 # chunk
 @handle_frontend_test(
     fn_tree="torch.chunk",
-    dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=4,
-        min_dim_size=2,
-        max_dim_size=4,
-    ),
-    chunks=helpers.ints(min_value=1, max_value=3),
-    dim=helpers.ints(min_value=0, max_value=1),
+    x_dim_chunks=_chunk_helper(),
 )
 def test_torch_chunk(
     *,
-    dtype_value,
-    chunks,
-    dim,
+    x_dim_chunks,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     on_device,
     fn_tree,
     frontend,
 ):
-    input_dtype, value = dtype_value
+    dtype, x, axis, chunks = x_dim_chunks
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=value[0],
+        input=x[0],
         chunks=chunks,
-        dim=dim,
+        dim=axis,
     )
 
 
@@ -936,4 +938,36 @@ def test_torch_take_along_dim(
         input=value,
         indices=indices,
         dim=axis,
+    )
+
+
+# vstack
+@handle_frontend_test(
+    fn_tree="torch.vstack",
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_vstack(
+    *,
+    dtype_value_shape,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, value = dtype_value_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=value,
     )

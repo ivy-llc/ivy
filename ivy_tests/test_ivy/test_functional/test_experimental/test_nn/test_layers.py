@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_max_pool2d(
     *,
@@ -37,6 +38,7 @@ def test_max_pool2d(
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_max_pool1d(
     *,
@@ -64,6 +66,7 @@ def test_max_pool1d(
 @handle_test(
     fn_tree="functional.ivy.experimental.avg_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_avg_pool1d(
     *,
@@ -90,6 +93,7 @@ def test_avg_pool1d(
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_max_pool3d(
     *,
@@ -117,6 +121,7 @@ def test_max_pool3d(
 @handle_test(
     fn_tree="functional.ivy.experimental.avg_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_avg_pool3d(
     *,
@@ -144,6 +149,7 @@ def test_avg_pool3d(
 @handle_test(
     fn_tree="functional.ivy.experimental.avg_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    test_gradients=st.just(False),
 )
 def test_avg_pool2d(
     *,
@@ -199,6 +205,7 @@ def valid_dct(draw):
 @handle_test(
     fn_tree="dct",
     dtype_x_and_args=valid_dct(),
+    test_gradients=st.just(False),
 )
 def test_dct(
     dtype_x_and_args,
@@ -251,6 +258,7 @@ def x_and_fft(draw, dtypes):
     fn_tree="functional.ivy.experimental.fft",
     d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
     ground_truth_backend="numpy",
+    test_gradients=st.just(False),
 )
 def test_fft(
     *,
@@ -293,6 +301,7 @@ def test_fft(
     prob=helpers.floats(min_value=0, max_value=0.9),
     training=st.booleans(),
     data_format=st.sampled_from(["NWC", "NCW"]),
+    test_gradients=st.just(False),
 )
 def test_dropout1d(
     *,
@@ -325,3 +334,56 @@ def test_dropout1d(
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
+
+
+@st.composite
+def x_and_ifft(draw):
+    min_fft_points = 2
+    dtype = draw(helpers.get_dtypes("complex"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e-10,
+            max_value=1e+10,
+        )
+    )
+    dim = draw(st.integers(1 - len(list(x_dim)), len(list(x_dim)) - 1))
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    n = draw(st.integers(min_fft_points, 256))
+    return dtype, x, dim, norm, n
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.ifft",
+    d_x_d_n_n=x_and_ifft(),
+    test_gradients=st.just(False),
+)
+def test_ifft(
+        *,
+        d_x_d_n_n,
+        test_flags,
+        backend_fw,
+        fn_name,
+        ground_truth_backend,
+):
+    dtype, x, dim, norm, n = d_x_d_n_n
+
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x,
+        dim=dim,
+        norm=norm,
+        n=n,
+    )

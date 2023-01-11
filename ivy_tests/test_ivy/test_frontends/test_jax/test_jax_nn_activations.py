@@ -829,7 +829,7 @@ def test_jax_nn_hard_sigmoid(
 @handle_frontend_test(
     fn_tree="jax.nn.selu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",

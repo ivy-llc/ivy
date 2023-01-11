@@ -103,3 +103,16 @@ def take(
 @to_ivy_arrays_and_back
 def broadcast_to(arr, shape):
     return ivy.broadcast_to(arr, shape)
+
+
+@to_ivy_arrays_and_back
+def append(arr, values, axis=None):
+    if axis is None:
+        return ivy.concat((ivy.flatten(arr), ivy.flatten(values)), axis=0)
+    else:
+        return ivy.concat((arr, values), axis=axis)
+
+
+@to_ivy_arrays_and_back
+def swapaxes(a, axis1, axis2):
+    return ivy.swapaxes(a, axis1, axis2)

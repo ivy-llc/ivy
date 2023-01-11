@@ -942,3 +942,269 @@ class ContainerWithLayersExperimental(ContainerBase):
             norm=norm,
             out=out,
         )
+
+    @staticmethod
+    def static_fft(
+        x: ivy.Container,
+        dim: int,
+        /,
+        *,
+        norm: Optional[str] = "backward",
+        n: Optional[Union[int, Tuple[int]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """ivy.Container static method variant of ivy.fft. This method simply wraps
+        the function, and so the docstring for ivy.fft also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Container containing input volumes *[...,d_in,...]*,
+            where d_in indicates the dimension that needs FFT.
+        dim
+            The dimension along which to take the one dimensional FFT.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        n
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing FFT.
+            Should be a integer greater than 1.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The transformed input.
+
+        Examples
+        --------
+        >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
+        >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
+        >>> c = ivy.Container(a=a, b=b)
+        >>> dims = ivy.Container(a=0, b=0)
+        >>> ivy.Container.static_fft(c, dims)
+        {
+        a: ivy.array([0.+0.j, 12.+0.j, 8.+0.j, 4.+0.j]),
+        b: ivy.array([-3.44509285e-16+1.14423775e-17j, 8.00000000e+00-8.11483250e-16j,
+                       2.33486982e-16+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j,
+                       9.95799250e-17+2.33486982e-16j, 0.00000000e+00+7.66951701e-17j,
+                       1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "fft",
+            x,
+            dim,
+            norm=norm,
+            n=n,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def fft(
+        self: ivy.Container,
+        dim: int,
+        /,
+        *,
+        norm: Optional[str] = "backward",
+        n: Optional[Union[int, Tuple[int]]] = None,
+        out: Optional[ivy.Array] = None,
+    ):
+        """ivy.Container instance method variant of ivy.fft. This method simply wraps
+        the function, and so the docstring for ivy.fft also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container containing input volumes *[...,d_in,...]*,
+            where d_in indicates the dimension that needs FFT.
+        dim
+            The dimension along which to take the one dimensional FFT.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        n
+            Optional argument indicating the sequence length, if given, the input would
+            be padded with zero or truncated to length n before performing FFT.
+            Should be a integer greater than 1.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container containing the transformed inputs.
+
+        Examples
+        --------
+        >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
+        >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
+        >>> c = ivy.Container(a=a, b=b)
+        >>> dims = ivy.Container(a=0, b=0)
+        >>> c.fft(dims)
+        {
+        a: ivy.array([0.+0.j, 12.+0.j, 8.+0.j, 4.+0.j]),
+        b: ivy.array([-3.44509285e-16+1.14423775e-17j, 8.00000000e+00-8.11483250e-16j,
+                       2.33486982e-16+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j,
+                       9.95799250e-17+2.33486982e-16j, 0.00000000e+00+7.66951701e-17j,
+                       1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])
+        }
+        """
+        return self.static_fft(
+            self,
+            dim,
+            norm=norm,
+            n=n,
+            out=out,
+        )
+
+    @staticmethod
+    def static_ifft(
+            x: ivy.Container,
+            dim: int,
+            *,
+            norm: Optional[str] = "backward",
+            n: Optional[Union[int, Tuple[int]]] = None,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None,
+    ):
+        """ivy.Container static method variant of ivy.ifft. This method simply wraps
+        the function, and so the docstring for ivy.ifft also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Container containing input volumes *[...,d_in,...]*,
+            where d_in indicates the dimension that needs IFFT.
+        dim
+            The dimension along which to take the one dimensional IFFT.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        n
+            Optional argument indicating the sequence length, if given, the input would
+            be padded with zero or truncated to length n before performing IFFT.
+            Should be a integer greater than 1.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The transformed input.
+
+        Examples
+        --------
+        >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
+        >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
+        >>> c = ivy.Container(a=a, b=b)
+        >>> dims = ivy.Container(a=0, b=0)
+        >>> ivy.Container.static_ifft(c, dims)
+        {
+        a: ivy.array([0.+0.j, 1.+0.j, 2.+0.j, 3.+0.j]),
+        b: ivy.array([-4.30636606e-17+1.43029718e-18j, 0.00000000e+00+1.53080850e-17j,
+                       1.43029718e-18+1.53080850e-17j, 0.00000000e+00+9.58689626e-18j,
+                       1.24474906e-17+2.91858728e-17j, 0.00000000e+00+1.53080850e-17j,
+                       2.91858728e-17+1.53080850e-17j, 1.00000000e+00-1.01435406e-16j])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "ifft",
+            x,
+            dim,
+            norm=norm,
+            n=n,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def ifft(
+            self: ivy.Container,
+            dim: int,
+            *,
+            norm: Optional[str] = "backward",
+            n: Optional[Union[int, Tuple[int]]] = None,
+            out: Optional[ivy.Array] = None,
+    ):
+        """ivy.Container instance method variant of ivy.ifft. This method simply wraps
+        the function, and so the docstring for ivy.ifft also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container containing input volumes *[...,d_in,...]*,
+            where d_in indicates the dimension that needs IFFT.
+        dim
+            The dimension along which to take the one dimensional IFFT.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        n
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing IFFT.
+            Should be a integer greater than 1.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container containing the transformed inputs.
+
+        Examples
+        --------
+        >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
+        >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
+        >>> c = ivy.Container(a=a, b=b)
+        >>> dims = ivy.Container(a=0, b=0)
+        >>> c.ifft(dims)
+        {
+        a: ivy.array([0.+0.j, 1.+0.j, 2.+0.j, 3.+0.j]),
+        b: ivy.array([-4.30636606e-17+1.43029718e-18j, 0.00000000e+00+1.53080850e-17j,
+                       1.43029718e-18+1.53080850e-17j, 0.00000000e+00+9.58689626e-18j,
+                       1.24474906e-17+2.91858728e-17j, 0.00000000e+00+1.53080850e-17j,
+                       2.91858728e-17+1.53080850e-17j, 1.00000000e+00-1.01435406e-16j])
+        }
+        """
+        return self.static_ifft(
+            self,
+            dim,
+            norm=norm,
+            n=n,
+            out=out,
+        )

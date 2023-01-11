@@ -241,6 +241,8 @@ def ndenumerate(
     def _ndenumerate(input, t=None):
         if t is None:
             t = ()
+        if ivy.is_ivy_array(input) and input.shape == ():
+            input = ivy.to_scalar(input)
         if not hasattr(input, "__iter__"):
             yield t, input
         else:
@@ -1528,9 +1530,7 @@ def hsplit(
                     [10., 11.],
                     [14., 15.]]))
     """
-    return ivy.current_backend(ary).hsplit(
-        ary, indices_or_sections=indices_or_sections, out=out
-    )
+    return ivy.current_backend(ary).hsplit(ary, indices_or_sections, out=out)
 
 
 @handle_exceptions

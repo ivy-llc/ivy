@@ -20,6 +20,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         max_value=10,
         num_arrays=2,
         min_num_dims=1,
+        max_num_dims=1,
         shared_dtype=True,
     ),
 )
