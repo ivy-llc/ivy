@@ -306,3 +306,6 @@ def ifft(
         ret = tf.signal.ifft(x, operation_name)
     ret = _ifft_norm(ret, dim, norm=norm)
     return ret
+
+
+def embedding(

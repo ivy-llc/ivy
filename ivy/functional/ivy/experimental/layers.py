@@ -685,3 +685,50 @@ def ifft(
                 8.25501143e-17+4.32978028e-17j,  2.82842712e+00-2.86902654e-16j])
     """
     return ivy.current_backend(x).ifft(x, dim, norm=norm, n=n, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_exceptions
+@handle_nestable
+def embedding(
+        weights: Union[ivy.Array, ivy.NativeArray],
+        indices: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        max_norm: Optional[int] = None,
+        out=None
+) -> ivy.Array:
+    """Embeds a given tensor of indices using a given tensor of weights.
+
+    Parameters
+    ----------
+    weights
+        The weights tensor.
+    indices
+        The indices tensor.
+    max_norm
+        The maximum norm of the embeddings.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the embedding operation.
+
+    Examples
+    --------
+    >>> weights = ivy.array([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]])
+    >>> indices = ivy.array([0, 2])
+    >>> print(ivy.embedding(weights, indices, max_norm=5))
+    ivy.array([[1., 2., 3.],
+                [7., 8., 9.]])
+    """
+    ret = ivy.gather(weights, indices, axis=0)
+    if max_norm is not None:
+        ret = ivy.l2_normalize(ret,
+                               axis=-1,
+                               out=out)
+    return ret
