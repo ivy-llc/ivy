@@ -467,6 +467,7 @@ def test_nansum(
     ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
+    axis = tuple(axis)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
