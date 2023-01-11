@@ -880,7 +880,7 @@ def test_torch_tensorinv(
         input=x,
         ind=ind,
     )
-    
+
  # vander
 @handle_frontend_test(
     fn_tree="torch.linalg.vander",

@@ -6,6 +6,7 @@ import math
 import ivy
 import numpy as np
 from . import array_helpers, number_helpers, dtype_helpers
+from ivy.functional.ivy.layers import _deconv_length
 
 
 def matrix_is_stable(x, cond_limit=30):
@@ -430,7 +431,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         )
         for i in range(dim):
             output_shape.append(
-                ivy.deconv_length(
+                _deconv_length(
                     x_dim[i], strides, filter_shape[i], padding, dilations
                 )
             )
