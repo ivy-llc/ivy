@@ -30,15 +30,13 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     ),
     full_matrices=st.booleans(),
     compute_uv=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_svd(
     *,
     dtype_and_x,
     full_matrices,
     compute_uv,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -50,10 +48,6 @@ def test_jax_numpy_svd(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -91,13 +85,11 @@ def test_jax_numpy_svd(
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.det",
     dtype_and_x=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_det(
     *,
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -105,10 +97,6 @@ def test_jax_numpy_det(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -132,13 +120,11 @@ def test_jax_numpy_det(
         and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_eig(
     *,
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -153,10 +139,6 @@ def test_jax_numpy_eig(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -193,15 +175,13 @@ def test_jax_numpy_eig(
     ),
     UPLO=st.sampled_from(("L", "U")),
     symmetrize_input=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_eigh(
     *,
     dtype_and_x,
     UPLO,
     symmetrize_input,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -213,10 +193,6 @@ def test_jax_numpy_eigh(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -252,13 +228,11 @@ def test_jax_numpy_eigh(
         and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_inv(
     *,
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -266,10 +240,6 @@ def test_jax_numpy_inv(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
@@ -294,14 +264,12 @@ def test_jax_numpy_inv(
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     UPLO=st.sampled_from(("L", "U")),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_eigvalsh(
     *,
     dtype_and_x,
     UPLO,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -312,10 +280,6 @@ def test_jax_numpy_eigvalsh(
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -339,14 +303,12 @@ def test_jax_numpy_eigvalsh(
         max_value=5,
     ),
     mode=st.sampled_from(("reduced", "complete")),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_qr(
     *,
     dtype_and_x,
     mode,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -354,10 +316,6 @@ def test_jax_numpy_qr(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
@@ -382,13 +340,11 @@ def test_jax_numpy_qr(
         and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_eigvals(
     *,
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -400,10 +356,6 @@ def test_jax_numpy_eigvals(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -426,13 +378,11 @@ def test_jax_numpy_eigvals(
         and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
         and np.linalg.det(x[1][0]) != 0
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_cholesky(
     *,
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -444,10 +394,6 @@ def test_jax_numpy_cholesky(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -469,13 +415,11 @@ def test_jax_numpy_cholesky(
         ),
         num_arrays=1,
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_slogdet(
     *,
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -483,10 +427,6 @@ def test_jax_slogdet(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -498,13 +438,11 @@ def test_jax_slogdet(
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.matrix_rank",
     dtype_and_x=_matrix_rank_helper(),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_matrix_rank(
     *,
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -512,10 +450,6 @@ def test_jax_numpy_matrix_rank(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -538,13 +472,11 @@ def test_jax_numpy_matrix_rank(
         and np.linalg.det(x[1][0][:, :-1]) != 0
         and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_solve(
     *,
     dtype_and_data,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -554,10 +486,6 @@ def test_jax_numpy_solve(
     b = data[0][:, -1].reshape(-1, 1)
     helpers.test_frontend_function(
         input_dtypes=[input_dtype[0], input_dtype[0]],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -612,14 +540,12 @@ def norm_helper(draw):
     ),
     keepdims=st.booleans(),
     ord=st.sampled_from([None, np.inf, -np.inf, 1, -1, 2, -2]),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_norm(
     dtype_values_axis,
     keepdims,
     ord,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
     fn_tree,
     on_device,
@@ -631,10 +557,6 @@ def test_jax_numpy_norm(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -662,14 +584,12 @@ def test_jax_numpy_norm(
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     n=helpers.ints(min_value=1, max_value=8),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_matrix_power(
     *,
     dtype_and_x,
     n,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -677,10 +597,6 @@ def test_jax_numpy_matrix_power(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
@@ -732,13 +648,11 @@ def _get_solve_matrices(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.tensorsolve",
     a_and_b=_get_solve_matrices(),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_tensorsolve(
     *,
     a_and_b,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -746,10 +660,6 @@ def test_jax_numpy_tensorsolve(
     input_dtype, x, y = a_and_b
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -773,17 +683,14 @@ def test_jax_numpy_tensorsolve(
         small_abs_safety_factor=32,
         safety_factor_scale="log",
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_pinv(
-    dtype_and_x, as_variable, native_array, num_positional_args, frontend, fn_tree
+    dtype_and_x, frontend, fn_tree
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         a=x[0],
@@ -843,9 +750,6 @@ def _get_inv_square_matrices(draw):
 def test_jax_numpy_tensorinv(
     *,
     params,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -853,10 +757,6 @@ def test_jax_numpy_tensorinv(
     dtype, x, ind = params
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,

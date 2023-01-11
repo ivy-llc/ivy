@@ -24,12 +24,14 @@ def test_jax_numpy_array(
     ndmin,
     on_device,
     fn_tree,
+    test_flags,
     frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         object=x[0],
@@ -60,6 +62,7 @@ def test_jax_numpy_zeros_like(
     dtype_and_x,
     dtype,
     shape,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -68,6 +71,7 @@ def test_jax_numpy_zeros_like(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -93,11 +97,13 @@ def test_jax_numpy_arange(
     dtype,
     on_device,
     fn_tree,
+    test_flags,
     frontend,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         start=start,
@@ -126,11 +132,13 @@ def test_jax_numpy_zeros(
     shape,
     on_device,
     fn_tree,
+    test_flags,
     frontend,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         shape=shape,
@@ -154,6 +162,7 @@ def test_jax_numpy_zeros(
 def test_jax_numpy_ones(
     shape,
     dtype,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -161,6 +170,7 @@ def test_jax_numpy_ones(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         shape=shape,
@@ -188,6 +198,7 @@ def test_jax_numpy_ones_like(
     dtype_and_x,
     shape,
     dtype,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -196,6 +207,7 @@ def test_jax_numpy_ones_like(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -219,6 +231,7 @@ def test_jax_numpy_ones_like(
 )
 def test_jax_numpy_asarray(
     dtype_and_a,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -227,6 +240,7 @@ def test_jax_numpy_asarray(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=a,
@@ -247,12 +261,14 @@ def test_jax_numpy_int16(
     dtype_and_x,
     on_device,
     fn_tree,
+    test_flags,
     frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -272,6 +288,7 @@ def test_jax_numpy_uint16(
     dtype_and_x,
     on_device,
     fn_tree,
+    test_flags,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -279,6 +296,7 @@ def test_jax_numpy_uint16(
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
+            test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             x=x[0],
@@ -298,6 +316,7 @@ def test_jax_numpy_uint64(
     dtype_and_x,
     on_device,
     fn_tree,
+    test_flags,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -305,6 +324,7 @@ def test_jax_numpy_uint64(
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
+            test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             x=x[0],
@@ -326,6 +346,7 @@ def test_jax_numpy_uint64(
 )
 def test_jax_numpy_hstack(
     dtype_and_tup,
+    test_flags,
     frontend,
     fn_tree,
 ):
@@ -333,6 +354,7 @@ def test_jax_numpy_hstack(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         tup=x,
     )
@@ -355,11 +377,13 @@ def test_jax_numpy_eye(
     dtypes,
     on_device,
     fn_tree,
+    test_flags,
     frontend,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         N=n,
@@ -386,6 +410,7 @@ def test_jax_numpy_eye(
 def test_numpy_triu(
     dtype_and_x,
     k,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -394,6 +419,7 @@ def test_numpy_triu(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         m=x[0],
@@ -417,6 +443,7 @@ def test_numpy_triu(
 def test_jax_numpy_empty(
     shape,
     dtype,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -424,6 +451,7 @@ def test_jax_numpy_empty(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
