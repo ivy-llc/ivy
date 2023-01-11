@@ -418,6 +418,7 @@ def test_count_nonzero(
     keepdims,
     test_flags,
     on_device,
+    fn_name,
     backend_fw,
     ground_truth_backend,
 ):
