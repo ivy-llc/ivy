@@ -126,7 +126,20 @@ def range(
             len(args) == 1 or len(args) == 3,
             "only 1 or 3 positional arguments are supported",
         )
-    return ivy.arange(start, end, step, dtype=dtype, device=device)
+    range_vec = []
+    elem = start
+    while 1:
+        range_vec = range_vec + [elem]
+        elem += step
+        if start == end:
+            break
+        if start < end:
+            if elem > end:
+                break
+        else:
+            if elem < end:
+                break
+    return ivy.array(range_vec, dtype=dtype, device=device)
 
 
 @to_ivy_arrays_and_back

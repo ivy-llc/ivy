@@ -71,6 +71,8 @@ class ArrayWithLayers(abc.ABC):
         *,
         scale: bool = True,
         dtype: ivy.Dtype = None,
+        training_mode: bool = True,
+        seed: int = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -129,6 +131,8 @@ class ArrayWithLayers(abc.ABC):
             prob,
             scale=scale,
             dtype=dtype,
+            training_mode=training_mode,
+            seed=seed,
             out=out,
         )
 

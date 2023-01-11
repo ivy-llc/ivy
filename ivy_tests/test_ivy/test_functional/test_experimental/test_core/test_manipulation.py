@@ -471,6 +471,7 @@ def test_i0(
     ),
     order=st.sampled_from(["C", "F"]),
     test_gradients=st.just(False),
+    number_positional_args=st.just(1),
 )
 def test_flatten(
     *,

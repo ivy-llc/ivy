@@ -588,3 +588,104 @@ def test_jax_numpy_broadcast_to(
         arr=x[0],
         shape=shape,
     )
+
+
+# append
+@handle_frontend_test(
+    fn_tree="jax.numpy.append",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shape=helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=5,
+        ),
+        shared_dtype=True,
+        valid_axis=True,
+        allow_neg_axes=True,
+        force_int_axis=True,
+    ),
+)
+def test_jax_numpy_append(
+    dtype_values_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, values, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=values[0],
+        values=values[1],
+        axis=axis,
+    )
+
+
+# swapaxes
+@st.composite
+def _get_input_and_two_swapabble_axes(draw):
+    x_dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            ret_shape=True,
+            min_num_dims=1,
+            max_num_dims=10,
+        )
+    )
+
+    axis1 = draw(
+        helpers.ints(
+            min_value=-1 * len(x_shape),
+            max_value=len(x_shape) - 1,
+        )
+    )
+    axis2 = draw(
+        helpers.ints(
+            min_value=-1 * len(x_shape),
+            max_value=len(x_shape) - 1,
+        )
+    )
+    return x_dtype, x, axis1, axis2
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.swapaxes",
+    input_x_axis1_axis2=_get_input_and_two_swapabble_axes(),
+)
+def test_jax_numpy_swapaxes(
+    *,
+    input_x_axis1_axis2,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtype, x, axis1, axis2 = input_x_axis1_axis2
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis1=axis1,
+        axis2=axis2,
+    )

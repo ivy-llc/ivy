@@ -282,7 +282,7 @@ with_grads_stack = list()
 
 
 class GradientTracking:
-    """"""
+    """Gradient tracking Context Manager."""
 
     # noinspection PyShadowingNames
     def __init__(self, with_grads):
@@ -1142,7 +1142,9 @@ def adam_update(
     >>> step = 1
     >>> updated_weights = ivy.adam_update(w, dcdw, lr, mw_tm1, vw_tm1, step)
     >>> print(updated_weights)
-    (ivy.array([0.90000075, 1.90000164, 2.9000032 ]), ivy.array([0.05, 0.02, 0.01]), ivy.array([2.50000012e-04, 4.00000063e-05, 1.00000016e-05]))
+    (ivy.array([0.90000075, 1.90000164, 2.9000032 ]),
+    ivy.array([0.05, 0.02, 0.01]),
+    ivy.array([2.50000012e-04, 4.00000063e-05, 1.00000016e-05]))
 
     >>> w = ivy.array([[1., 2, 3],[4, 2, 4],[6, 4, 2]])
     >>> dcdw = ivy.array([[0.1, 0.2, 0.3],[0.4, 0.5, 0.1],[0.1, 0.5, 0.3]])
@@ -1155,26 +1157,27 @@ def adam_update(
     >>> epsilon = 1e-7
     >>> out = ivy.zeros_like(w)
     >>> stop_gradients = True
-    >>> updated_weights = ivy.adam_update(w, dcdw, lr, mw_tm1, vw_tm1, step, beta1=beta1,
-    ...                               beta2=beta2, epsilon=epsilon, out=out,
+    >>> updated_weights = ivy.adam_update(w, dcdw, lr, mw_tm1, vw_tm1, step,
+    ...                               beta1=beta1, beta2=beta2,
+    ...                               epsilon=epsilon, out=out,
     ...                               stop_gradients=stop_gradients)
-    >>> print(out)
-    ivy.array([[0.92558873, 1.92558754, 2.92558718],
-           [3.92558694, 1.92558682, 3.92558861],
-           [5.92558861, 3.92558694, 1.92558718]])
     >>> print(updated_weights)
-    (ivy.array([[0.92558873, 1.92558754, 2.92558718],
-           [3.92558694, 1.92558682, 3.92558861],
-           [5.92558861, 3.92558694, 1.92558718]]), ivy.array([[0.01, 0.02, 0.03],
-           [0.04, 0.05, 0.01],
-           [0.01, 0.05, 0.03]]), ivy.array([[1.00000016e-05, 4.00000063e-05, 9.00000086e-05],
-           [1.60000025e-04, 2.50000012e-04, 1.00000016e-05],
-           [1.00000016e-05, 2.50000012e-04, 9.00000086e-05]]))
+    (
+    ivy.array([[0.92558873, 1.92558754, 2.92558718],
+               [3.92558694, 1.92558682, 3.92558861],
+               [5.92558861, 3.92558694, 1.92558718]]),
+    ivy.array([[0.01, 0.02, 0.03],
+               [0.04, 0.05, 0.01],
+               [0.01, 0.05, 0.03]]),
+    ivy.array([[1.00000016e-05, 4.00000063e-05, 9.00000086e-05],
+               [1.60000025e-04, 2.50000012e-04, 1.00000016e-05],
+               [1.00000016e-05, 2.50000012e-04, 9.00000086e-05]])
+    )
 
     With one :class:`ivy.Container` input:
 
     >>> w = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))
-    >>> dcdw = ivy.array([1., 0.2, 0.4])
+    >>> dcdw = ivy.array([0.5, 0.2, 0.4])
     >>> mw_tm1 = ivy.array([0., 0., 0.])
     >>> vw_tm1 = ivy.array([0.])
     >>> lr = ivy.array(0.01)
@@ -1184,7 +1187,7 @@ def adam_update(
     ({
         a: ivy.array([1., 2., 3.]),
         b: ivy.array([4., 5., 6.])
-    }, ivy.array([0.1 , 0.02, 0.04]), ivy.array([0.01099, 0.01003, 0.01015]))
+    }, ivy.array([0.05, 0.02, 0.04]), ivy.array([0.01024, 0.01003, 0.01015]))
 
     With multiple :class:`ivy.Container` inputs:
 
@@ -1202,7 +1205,8 @@ def adam_update(
     >>> epsilon = 1e-7
     >>> stop_gradients = False
     >>> lr = ivy.array(0.001)
-    >>> updated_weights = ivy.adam_update(w, dcdw, lr, mw_tm1, vw_tm1, step, beta1=beta1,
+    >>> updated_weights = ivy.adam_update(w, dcdw, lr, mw_tm1, vw_tm1, step,
+    ...                               beta1=beta1,
     ...                               beta2=beta2, epsilon=epsilon,
     ...                               stop_gradients=stop_gradients)
     >>> print(updated_weights)

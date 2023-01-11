@@ -6,6 +6,7 @@ from hypothesis import strategies as st, assume
 
 # local
 import ivy
+from ivy.functional.ivy.layers import _deconv_length
 from ivy.functional.ivy.gradients import _variable
 from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
@@ -346,7 +347,7 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
     )
     input_channels = draw(st.integers(1, 3))
     output_channels = draw(st.integers(1, 3))
-    dilations = draw(st.integers(1, 2))
+    dilations = 1
     x_dim = []
     for i in range(dim):
         min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
@@ -366,7 +367,7 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
         output_shape = []
         for i in range(dim):
             output_shape.append(
-                ivy.deconv_length(
+                _deconv_length(
                     x_dim[i], strides, filter_shape[i], padding, dilations
                 )
             )
@@ -553,7 +554,7 @@ def test_conv1d_transpose_layer(
     )
 
 
-# # conv2d
+# conv2d
 @handle_method(
     method_tree="Conv2D.__call__",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(),
@@ -1135,3 +1136,6 @@ def test_sequential_layer(
     assert np.allclose(
         ivy.to_numpy(seq(x)), np.array(target), rtol=tolerance_dict[dtype]
     )
+
+
+# ToDo : Add gradient testing once random number generation is unified

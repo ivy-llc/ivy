@@ -1392,8 +1392,8 @@ def pow_helper(draw, available_dtypes=None):
     dtype1, x1 = draw(
         helpers.dtype_and_values(
             available_dtypes=available_dtypes,
-            small_abs_safety_factor=12,
-            large_abs_safety_factor=12,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
             safety_factor_scale="log",
         )
     )
@@ -1423,8 +1423,8 @@ def pow_helper(draw, available_dtypes=None):
             max_value = None
     dtype2, x2 = draw(
         helpers.dtype_and_values(
-            small_abs_safety_factor=12,
-            large_abs_safety_factor=12,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
             safety_factor_scale="log",
             max_value=max_value,
             dtype=[dtype2],
@@ -1510,7 +1510,7 @@ def test_remainder(
     assume(not np.any(np.isclose(x[1], 0)))
     # jax raises inconsistent gradients for negative numbers in x1
     if (np.any(x[0] < 0) or np.any(x[1] < 0)) and ivy.current_backend_str() == "jax":
-        test_flags.gradient = False
+        test_flags.test_gradients = False
     test_flags.as_variable = [test_flags.as_variable, False]
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,

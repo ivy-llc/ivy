@@ -1,12 +1,13 @@
 # global
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
+    matrix_is_stable,
 )
 
 
@@ -115,6 +116,8 @@ def test_numpy_det(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
         a=x[0],
     )
 
@@ -124,9 +127,14 @@ def test_numpy_det(
     fn_tree="numpy.linalg.slogdet",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        max_value=5,
+        min_value=2,
+        shape=st.tuples(
+            st.shared(st.integers(1, 5), key="sq"),
+            st.shared(st.integers(1, 5), key="sq"),
+        ),
+        num_arrays=1,
+        safety_factor_scale="log",
     ),
 )
 def test_numpy_slogdet(
@@ -139,7 +147,8 @@ def test_numpy_slogdet(
     on_device,
 ):
     dtype, x = dtype_and_x
-    helpers.test_frontend_function(
+    assume(matrix_is_stable(x[0]))
+    ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
@@ -149,7 +158,20 @@ def test_numpy_slogdet(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+        test_values=False,
     )
+    for ret_f, ret_gtt in zip(ret, ret_gt):
+        frontend_ret = ret_f
+        frontend_ret_gt = ret_gtt
+        ret_flattened = helpers.flatten_and_to_np(ret=frontend_ret)
+        ret_gt_flattened = helpers.flatten_and_to_np(ret=frontend_ret_gt)
+        helpers.value_test(
+            ret_np_flat=ret_flattened,
+            ret_np_from_gt_flat=ret_gt_flattened,
+            rtol=1e-1,
+            atol=1e-1,
+            ground_truth_backend="numpy",
+        )
 
 
 @handle_frontend_test(

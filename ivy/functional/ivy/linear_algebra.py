@@ -110,7 +110,6 @@ def cholesky(
                [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
                [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
 
-    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
     >>> u = ivy.cholesky(x, upper='false')
@@ -356,10 +355,6 @@ def diagonal(
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
-    out
-        optional output array to write the result in. Must have the same number
-        of dimensions as the function output.
-
     Returns
     -------
     ret
@@ -447,32 +442,30 @@ def diagonal(
     ivy.array([[3.],
                [4.]])
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[1., 2.],
-    ...                       [3., 4.]])
+    >>> x = ivy.array([[1., 2.],
+    ...                [3., 4.]])
     >>> d = ivy.diagonal(x)
     >>> print(d)
     ivy.array([1., 4.])
 
-    >>> x = ivy.native_array([[[ 0,  1,  2],
-    ...                        [ 3,  4,  5],
-    ...                        [ 6,  7,  8]],
-    ...                       [[ 9, 10, 11],
-    ...                        [12, 13, 14],
-    ...                        [15, 16, 17]],
-    ...                       [[18, 19, 20],
-    ...                        [21, 22, 23],
-    ...                        [24, 25, 26]]])
+    >>> x = ivy.array([[[ 0,  1,  2],
+    ...                 [ 3,  4,  5],
+    ...                 [ 6,  7,  8]],
+    ...                [[ 9, 10, 11],
+    ...                 [12, 13, 14],
+    ...                 [15, 16, 17]],
+    ...                [[18, 19, 20],
+    ...                 [21, 22, 23],
+    ...                 [24, 25, 26]]])
     >>> d = ivy.diagonal(x, offset=1, axis1=1, axis2=-1)
     >>> print(d)
     ivy.array([[ 1,  5],
                [10, 14],
                [19, 23]])
 
-    >>> x = ivy.native_array([[0, 1, 2],
-    ...                       [3, 4, 5],
-    ...                       [6, 7, 8]])
+    >>> x = ivy.array([[0, 1, 2],
+    ...                [3, 4, 5],
+    ...                [6, 7, 8]])
     >>> d = ivy.diagonal(x)
     >>> print(d)
     ivy.array([0, 4, 8])
@@ -787,6 +780,7 @@ def inv(
     x
         input array having shape ``(..., M, M)`` and whose innermost two dimensions form
         square matrices. Should have a floating-point data type.
+
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -880,6 +874,10 @@ def matmul(
     x2
         second input array. Should have a numeric data type. Must have at least one
         dimension.
+    transpose_a
+        if True, ``x1`` is transposed before multiplication.
+    transpose_b
+        if True, ``x2`` is transposed before multiplication.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -954,13 +952,12 @@ def matmul(
     >>> print(z)
     ivy.array(32.)
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[1., 2.], [0., 1.]])
-    >>> y = ivy.native_array([[2., 0.], [0., 3.]])
-    >>> z = ivy.matmul(x, y)
+    >>> x = ivy.array([[1., 2.], [0., 1.]])
+    >>> y = ivy.array([[2., 0.], [0., 3.]])
+    >>> z = ivy.matmul(x, y, transpose_b=True)
     >>> print(z)
-    ivy.array([[2., 6.],[0., 3.]])
+    ivy.array([[2., 6.],
+           [0., 3.]])
 
     With :class:`ivy.Container` inputs:
 
@@ -985,13 +982,12 @@ def matmul(
         b: ivy.array(9.)
     }
 
-    With a combination of :class:`ivy.NativeArray` and :class:`ivy.Array` inputs:
-
-    >>> x = ivy.native_array([[1., 2.], [0., 3.]])
+    >>> x = ivy.array([[1., 2.], [0., 3.]])
     >>> y = ivy.array([[1.], [3.]])
-    >>> z = ivy.matmul(x, y)
+    >>> z = ivy.matmul(x, y, transpose_a=True)
     >>> print(z)
-    ivy.array([[7.],[9.]])
+    ivy.array([[ 1.],
+       [11.]])
 
     """
     return current_backend(x1).matmul(
@@ -1399,9 +1395,7 @@ def matrix_transpose(
     ivy.array([[2., 1.],
        [3., 2.]])
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[0., 1., 2.], [1., 2., 3.]])
+    >>> x = ivy.array([[0., 1., 2.], [1., 2., 3.]])
     >>> y = ivy.matrix_transpose(x)
     >>> print(y)
     ivy.array([[0., 1.],

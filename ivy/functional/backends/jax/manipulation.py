@@ -75,9 +75,15 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     order: Optional[str] = "C",
+    allowzero: Optional[bool] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    if not allowzero:
+        shape = [
+            new_s if con else old_s
+            for new_s, con, old_s in zip(shape, jnp.array(shape) != 0, x.shape)
+        ]
     if copy:
         newarr = jnp.copy(x)
         return jnp.reshape(newarr, shape, order=order)
@@ -171,9 +177,9 @@ def repeat(
 
 
 def tile(
-    x: JaxArray, /, reps: Iterable[int], *, out: Optional[JaxArray] = None
+    x: JaxArray, /, repeats: Iterable[int], *, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.tile(x, reps)
+    return jnp.tile(x, repeats)
 
 
 def clip(

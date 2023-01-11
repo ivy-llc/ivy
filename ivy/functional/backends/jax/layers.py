@@ -5,9 +5,9 @@ import jax.lax as jlax
 import jax.numpy as jnp
 
 # local
-import ivy
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple, Optional, Sequence
+from ivy.functional.ivy.layers import _handle_padding, _deconv_length, _get_x_data_format
 
 # Extra #
 # ------#
@@ -66,7 +66,7 @@ def conv1d_transpose(
         x_shape = list(x.shape[1:2])
     else:
         x_shape = list(x.shape[2:])
-    out_w = ivy.deconv_length(
+    out_w = _deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
 
@@ -161,10 +161,10 @@ def conv2d_transpose(
         x_shape = list(x.shape[1:3])
     else:
         x_shape = list(x.shape[2:])
-    out_h = ivy.deconv_length(
+    out_h = _deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
-    out_w = ivy.deconv_length(
+    out_w = _deconv_length(
         x_shape[1], strides[1], filters.shape[1], padding, dilations[1]
     )
     if output_shape is None:
@@ -233,13 +233,13 @@ def conv3d_transpose(
         x_shape = list(x.shape[1:4])
     else:
         x_shape = list(x.shape[2:])
-    out_d = ivy.deconv_length(
+    out_d = _deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
-    out_h = ivy.deconv_length(
+    out_h = _deconv_length(
         x_shape[1], strides[1], filters.shape[1], padding, dilations[1]
     )
-    out_w = ivy.deconv_length(
+    out_w = _deconv_length(
         x_shape[2], strides[2], filters.shape[2], padding, dilations[2]
     )
     if output_shape is None:
@@ -322,11 +322,11 @@ def conv_general_dilated(
             for i in range(dims)
         ]
         for i in range(dims):
-            new_pad[i] = ivy.handle_padding(
+            new_pad[i] = _handle_padding(
                 x_shape[i], strides[i], filter_shape[i], padding
             )
         padding = [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)]
-    df = ivy.get_x_data_format(dims, data_format)
+    df = _get_x_data_format(dims, data_format)
     res = jlax.conv_general_dilated(
         x,
         filters,
@@ -362,13 +362,13 @@ def conv_general_transpose(
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     filters = jnp.swapaxes(filters, -1, -2)
-    df = ivy.get_x_data_format(dims, "channel_last")
+    df = _get_x_data_format(dims, "channel_last")
     filter_df = _get_filter_dataformat(dims)
     if data_format == "channel_first":
         x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
-    x_shape = list(x.shape[1 : dims + 1])
+    x_shape = list(x.shape[1: dims + 1])
     out_shape = [
-        ivy.deconv_length(
+        _deconv_length(
             x_shape[i], strides[i], filters.shape[i], padding, dilations[i]
         )
         for i in range(dims)
@@ -379,16 +379,16 @@ def conv_general_transpose(
         output_shape = [x.shape[0], *output_shape, filters.shape[-2]]
 
     diff = [-(output_shape[i + 1] - out_shape[i]) for i in range(dims)]
-    pad = [0] * dims
+    pad = []
     for i in range(dims):
-        pad[i] = _conv_transpose_padding(
+        pad += [_conv_transpose_padding(
             filters.shape[i], strides[i], padding, dilations[i], diff[i]
-        )
+        )]
     res = jnp.concatenate(
         [
             jlax.conv_transpose(
-                x[..., j : j + filters.shape[-1] // feature_group_count],
-                filters[..., j : j + filters.shape[-1] // feature_group_count],
+                x[..., j: j + filters.shape[-1] // feature_group_count],
+                filters[..., j: j + filters.shape[-1] // feature_group_count],
                 strides,
                 pad,
                 dilations,

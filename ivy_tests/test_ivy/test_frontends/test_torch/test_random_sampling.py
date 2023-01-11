@@ -88,3 +88,54 @@ def test_torch_manual_seed(
     split_index = fn_tree.rfind(".")
     _, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
     frontend_fw.__dict__[fn_name](seed)
+
+
+@handle_frontend_test(
+    fn_tree="torch.poisson",
+    dtype_and_lam=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        min_value=0,
+        max_value=100,
+        min_num_dims=0,
+        max_num_dims=10,
+        min_dim_size=1,
+    ),
+)
+def test_torch_poisson(
+    *,
+    dtype_and_lam,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    lam_dtype, lam = dtype_and_lam
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=lam_dtype,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            frontend=frontend,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            input=lam[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape

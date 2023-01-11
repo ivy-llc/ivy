@@ -333,7 +333,9 @@ class ArrayWithGradients(abc.ABC):
         >>> step = 2
         >>> updated_weights = w.adam_update(dcdw, lr, mw_tm1, vw_tm1, step)
         >>> print(updated_weights)
-        (ivy.array([0.92558753, 1.92558873, 2.92558718]), ivy.array([0.02, 0.01, 0.03]), ivy.array([4.00000063e-05, 1.00000016e-05, 9.00000086e-05]))
+        (ivy.array([0.92558753, 1.92558873, 2.92558718]),
+        ivy.array([0.02, 0.01, 0.03]),
+        ivy.array([4.00000063e-05, 1.00000016e-05, 9.00000086e-05]))
 
         """
         return ivy.adam_update(
@@ -423,8 +425,8 @@ class ArrayWithGradients(abc.ABC):
         >>> new_weights = w.lamb_update(dcdw, lr, mw_tm1, vw_tm1, step)
         >>> print(new_weights)
         (ivy.array([0.784, 1.78 , 2.78 ]),
-        ... ivy.array([0.05, 0.02, 0.01]),
-        ... ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))
+        ivy.array([0.05, 0.02, 0.01]),
+        ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))
 
         """
         return ivy.lamb_update(
