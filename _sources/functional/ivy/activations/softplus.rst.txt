@@ -5,9 +5,9 @@ softplus
 
 .. autofunction:: ivy.array.array_methods.softplus
 
-.. autofunction:: ivy.container.container_methods.softplus
-
 .. autofunction:: ivy.container.container_methods.static_softplus
+
+.. autofunction:: ivy.container.container_methods.softplus
 |
 | **Supported Frameworks:**
 

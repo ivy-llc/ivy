@@ -5,9 +5,9 @@ einops_rearrange
 
 .. autofunction:: ivy.array.array_methods.einops_rearrange
 
-.. autofunction:: ivy.container.container_methods.einops_rearrange
-
 .. autofunction:: ivy.container.container_methods.static_einops_rearrange
+
+.. autofunction:: ivy.container.container_methods.einops_rearrange
 |
 | **Supported Frameworks:**
 

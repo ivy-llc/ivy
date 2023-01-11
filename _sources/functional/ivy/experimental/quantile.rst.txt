@@ -5,9 +5,9 @@ quantile
 
 .. autofunction:: ivy.array.array_methods.quantile
 
-.. autofunction:: ivy.container.container_methods.static_quantile
-
 .. autofunction:: ivy.container.container_methods.quantile
+
+.. autofunction:: ivy.container.container_methods.static_quantile
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ fix
 
 .. autofunction:: ivy.array.array_methods.fix
 
-.. autofunction:: ivy.container.container_methods.fix
-
 .. autofunction:: ivy.container.container_methods.static_fix
+
+.. autofunction:: ivy.container.container_methods.fix
 |
 | **Supported Frameworks:**
 

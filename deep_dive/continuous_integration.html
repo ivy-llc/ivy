@@ -18,7 +18,6 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -71,6 +70,8 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Continuous Integration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#commit-push-pr-triggered-testing">Commit (Push/PR) Triggered Testing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-tests">Ivy Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementation">Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#a-top-down-view">A Top-Down View</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#storing-and-retrieving-the-mapping">Storing (and retrieving) the Mapping</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cloning-and-pushing-to-the-repository">Cloning and Pushing to the Repository</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#implementational-nitty-gritties">Implementational Nitty Gritties</a><ul>
@@ -130,15 +131,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/helpers.html">Helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
 <ul>
@@ -224,21 +225,18 @@ This makes sure that:</p>
 <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_frontends/test_torch/test_loss_functions.py::test_torch_cross_entropy</span></code></p>
 <p>Ivy’s Functional API functions <code class="code docutils literal notranslate"><span class="pre">binary_cross_entropy_with_logits</span></code>, <code class="code docutils literal notranslate"><span class="pre">test_cross_entropy</span></code>, <code class="code docutils literal notranslate"><span class="pre">test_binary_cross_entropy</span></code>, <code class="code docutils literal notranslate"><span class="pre">test_sparse_cross_entropy</span></code>, are precisely the ones impacted by the changes in the commit, and since the torch Frontend Functions torch_binary_cross_entropy, and torch_cross_entropy are wrapping these, the corresponding frontend tests are also impacted. No other Frontend function calls these underneath and hence are not triggered.</p>
 <p>How do we (or at least try to) achieve this?</p>
-<p>Implementation
-A Top-Down View:
-In order to implement this, we use the magic of Test Coverage!
-Test Coverage refers to finding statements (lines) in your code that are executed (or could have been executed), on running a particular test. For example, (TODO: Give an example of Ivy Test and its coverage).</p>
+</section>
+<section id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this heading"></a></h2>
+</section>
+<section id="a-top-down-view">
+<h2>A Top-Down View<a class="headerlink" href="#a-top-down-view" title="Permalink to this heading"></a></h2>
+<p>In order to implement this, we use the magic of Test Coverage!
+Test Coverage refers to finding statements (lines) in your code that are executed (or could have been executed), on running a particular test.</p>
 <p>We use the Python Coverage Package (<a class="reference external" href="https://coverage.readthedocs.io/en/7.0.0/">https://coverage.readthedocs.io/en/7.0.0/</a>) for determining the Test Coverage of our tests.</p>
 <p>The way it works is by running a particular pytest, and then logging each line (of our code) that was executed (or could have been executed) by the test.</p>
 <p>Computing Test Coverage for all Ivy tests, allows us to find, for each line of code, which tests affect the same. We create a Dictionary (Mapping) to store this information as follows (The actual Mapping we prepare is a bit different from this design, but we will follow this for now due to Pedagogical Purposes):</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{flalign}
-\{ \\
- \ \ \ \ &quot;f_1&quot;: [\{\}, \{&quot;t_1&quot;,&quot;t_3&quot;,&quot;t_7&quot;\}, …, \{&quot;t_10&quot;,&quot;t_11&quot;,&quot;t_15&quot;\}], \\
- \ \ \ \ … \\
- \ \ \ \ &quot;f_m&quot;: [\{\}, \{&quot;t_11&quot;,&quot;t_23&quot;,&quot;t_37&quot;\}, …, \{&quot;t_32&quot;,&quot;t_54&quot;,&quot;t_65&quot;\}] \\
-\}
-\end{flalign}\end{split}\]</div>
+<img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping.png?raw=true" />
 <p>The dictionary thus stores a list for each file f1 … fm. The list is a sequence encapsulating the lines of the file. Each index of the list contains a set of tests, which are mapped to the corresponding line in the file.</p>
 <p>So Yeah, Given this Mapping for a commit, We can just follow the below procedure:
 Find the files which are changed in the commit, and check for lines that are added/deleted/updated in the file.
@@ -363,16 +361,7 @@ git clone --single-branch --depth 1 --branch &quot;$TARGET_BRANCH&quot; git@gith
 <section id="storage-space-unifyai-mapping">
 <h3>Storage Space (unifyai/Mapping)<a class="headerlink" href="#storage-space-unifyai-mapping" title="Permalink to this heading"></a></h3>
 <p>The GitHub Repository allows only storing 100 MB of files per commit. The current design of the mapping takes a huge space as test names are long strings and are stored repeatedly for each line that is impacted by the tests. In order to reduce the space requirement for storing the Mapping, we restructure the Mapping as follows:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{flalign}
-\{ \\
- \ \ \ \ &quot;index\_mapping&quot;:\ [t_1, t_2, …, t_n], \\
- \ \ \ \ &quot;test\_mapping&quot;:\ \{&quot;t_1&quot;: 1, &quot;t_2&quot;: 2, …, &quot;t_n&quot;: n\}, \\
- \ \ \ \ &quot;f_1&quot;: [\{\}, \{&quot;1&quot;,&quot;3&quot;,&quot;7&quot;\}, …, \{&quot;10&quot;,&quot;11&quot;,&quot;15&quot;\}], \\
- \ \ \ \ … \\
- \ \ \ \ &quot;f_m&quot;: [\{\}, \{&quot;11&quot;,&quot;23&quot;,&quot;37&quot;\}, …, \{&quot;32&quot;,&quot;54&quot;,&quot;65&quot;\}] \\
-\}
-\end{flalign}\end{split}\]</div>
+<img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping2.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping2.png?raw=true" />
 <p>We include the <code class="code docutils literal notranslate"><span class="pre">index_mapping</span></code> and the <code class="code docutils literal notranslate"><span class="pre">test_mapping</span></code> fields, which map indices to tests and tests to indices, respectively. This allows us to just store the test index for each line in the Mapping, reducing the storage requirement significantly.</p>
 </section>
 <section id="determine-test-coverage-workflow">
@@ -400,11 +389,13 @@ git clone --single-branch --depth 1 --branch &quot;$TARGET_BRANCH&quot; git@gith
 <p>The Synchronized Object here is the unifyai/Mapping Repository, and is accessed
 through push (Write) and pull (Read) to the Repository.
 The Determine Test Coverage Workflow and the Intelligent Tests Workflow can run concurrently, while both of them write to the Mapping Repository.
-Consider the following Case for Runner 2:
-#. The Determine Test Coverage workflow has been running, and is about to complete for Runner 2. Meanwhile, a commit made on the master triggers the intelligent-tests workflow.
-#. The runner 2 in the intelligent-tests workflow, pulls the Mapping from the master2 branch of unifyai/Mapping repository, and starts running the determined tests (based on changes made in the commit).
-#. The det-test-coverage workflow completes for runner2, which makes a push to the corresponding branch in the unifyai/Mapping Repository.
-#. The runner 2 in the intelligent-tests workflow also completes, and pushes the updated repository</p>
+Consider the following Case for Runner 2:</p>
+<ol class="arabic simple">
+<li><p>The Determine Test Coverage workflow has been running, and is about to complete for Runner 2. Meanwhile, a commit made on the master triggers the intelligent-tests workflow.</p></li>
+<li><p>The runner 2 in the intelligent-tests workflow, pulls the Mapping from the master2 branch of unifyai/Mapping repository, and starts running the determined tests (based on changes made in the commit).</p></li>
+<li><p>The det-test-coverage workflow completes for runner2, which makes a push to the corresponding branch in the unifyai/Mapping Repository.</p></li>
+<li><p>The runner 2 in the intelligent-tests workflow also completes, and pushes the updated repository</p></li>
+</ol>
 <p>Thus, in the end, the push from the det-test-coverage would be completely ignored, and the system would not be recalibrated.
 Further, For some other Runner(s), the final push may be done by the Determine Test Coverage Workflow, and thus, the test distribution in itself might be corrupted (Overlapping Tests and Missing Tests).</p>
 <p>We handle the Race Condition as follows:</p>
@@ -430,9 +421,21 @@ The Test Results update the corresponding cell on the Dashboards.</p>
 </section>
 <section id="manually-dispatched-workflows">
 <h2>Manually Dispatched Workflows<a class="headerlink" href="#manually-dispatched-workflows" title="Permalink to this heading"></a></h2>
-<p>Manual Tests
-Manual Tests (PR)</p>
-<p>==TODO==</p>
+<p>In order to trigger any particular test for any reason (maybe Intelligent Testing missed the Test), you can
+follow the following steps:</p>
+<ol class="arabic simple">
+<li><p>Visit <a class="reference external" href="https://github.com/unifyai/ivy/actions/workflows/manual-tests.yml">GitHub Actions</a></p></li>
+<li><p>Click on Run Workflow</p></li>
+<li><p>Add the Name of the test as: <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_</span></code></p></li>
+<li><p>If you want the test to be triggered for a particular Backend, append it with a “,” as: <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,tensorflow</span></code></p></li>
+<li><p>Check the result there and then itself, or wait (for ~20 minutes) for the dashboard to update.</p></li>
+</ol>
+<p>Manual Tests are also available for PRs.
+You can also run the Manual Tests Workflow on a Fork Repository (while reviewing PRs), as follows:</p>
+<p>1. Visit <a class="reference external" href="https://github.com/RashulChutani/ivy/actions/workflows/manual-tests-pr.yml">https://github.com/RashulChutani/ivy/actions/workflows/manual-tests-pr.yml</a> by going to the
+“Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
+2. Trigger the Workflow by following Steps 2-4 described above.</p>
+<p>This might take some time to run as the Fork may have limited runners.</p>
 </section>
 <section id="ci-pipeline">
 <h2>CI Pipeline ➡️<a class="headerlink" href="#ci-pipeline" title="Permalink to this heading"></a></h2>
@@ -466,14 +469,8 @@ The rest of the procedure remains the same as given in the Push section above.</
 <section id="dashboard">
 <h2>Dashboard<a class="headerlink" href="#dashboard" title="Permalink to this heading"></a></h2>
 <p>In order to view the status of the tests, at any point in time, we maintain a dashboard containing the results of the latest Workflow that ran each test.
-These are the links to the Dashboard for the given workflows:</p>
-<ol class="arabic simple">
-<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/array_api_dashboard.md">Array API Tests</a></p></li>
-<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_core_dashboard.md">Ivy Core Tests</a></p></li>
-<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_nn_dashboard.md">Ivy NN Tests</a></p></li>
-<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/stateful_dashboard.md">Ivy Stateful Tests</a></p></li>
-</ol>
-<p>The status badges are clickable, and will take you directly to the Action log of the latest workflow that ran the corresponding test.</p>
+The Dashboards are available on the <code class="code docutils literal notranslate"><span class="pre">dashboard</span></code> branch of the Ivy Repository.
+The status badges are clickable, and will take you directly to the Action log of the latest workflow that ran the corresponding test.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.</p>
 <p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982737993028755496">continuous integration channel</a>
