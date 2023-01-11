@@ -29,23 +29,27 @@ BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltAsVariableStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltInstanceStrategy = st.booleans()
-BuiltWithOutStrategy = st.booleans()
 BuiltGradientStrategy = st.booleans()
+BuiltWithOutStrategy = st.booleans()
 
 
 flags_mapping = {
-    "as_variable": "_BuiltAsVariable",
-    "native_array": "_BuiltNativeArray",
-    "container": "_BuiltContainer",
-    "with_out": "_BuiltWithOut",
-    "instance_method": "_BuiltInstance",
-    "test_gradients": "_BuiltGradient",
+    "native_array": "BuiltNativeArrayStrategy",
+    "as_variable": "BuiltAsVariableStrategy",
+    "container": "BuiltContainerStrategy",
+    "instance_method": "BuiltInstanceStrategy",
+    "test_gradients": "BuiltGradientStrategy",
+    "with_out": "BuiltWithOutStrategy",
 }
 
 
 def build_flag(key: str, value: bool):
     if value is not None:
         value = st.just(value)
+    # Prevent silently passing if variables names were changed
+    assert flags_mapping[key] in globals().keys(), (
+        f"{flags_mapping[key]} is not " f"a valid flag variable."
+    )
     globals()[flags_mapping[key]] = value
 
 

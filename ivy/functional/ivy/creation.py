@@ -1658,7 +1658,56 @@ def one_hot(
     ret
         Tensor of zeros with the same shape and type as a, unless dtype provided which
         overrides.
+    
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
 
+    >>> x = ivy.array([3, 1])
+    >>> y = 5
+    >>> z = x.one_hot(5)
+    >>> print(z)
+    ivy.array([[0., 0., 0., 1., 0.],
+    ...    [0., 1., 0., 0., 0.]])
+
+    >>> x = ivy.array([0])
+    >>> y = 5
+    >>> ivy.one_hot(x, y)
+    ivy.array([[1., 0., 0., 0., 0.]])
+
+    >>> x = ivy.array([0])
+    >>> y = 5
+    >>> ivy.one_hot(x, 5, out=z)
+    ivy.array([[1., 0., 0., 0., 0.]])
+    >>> print(z)
+    ivy.array([[1., 0., 0., 0., 0.]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2]), \
+        b=ivy.array([3, 1]), c=ivy.array([2, 3]))
+    >>> y = 5
+    >>> z = x.one_hot(y)
+    >>> print(z)
+    {
+        a: ivy.array([[0., 1., 0., 0., 0.], 
+                    [0., 0., 1., 0., 0.]]),
+        b: ivy.array([[0., 0., 0., 1., 0.], 
+                    [0., 1., 0., 0., 0.]]),
+        c: ivy.array([[0., 0., 1., 0., 0.], 
+                    [0., 0., 0., 1., 0.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([2]), \
+        b=ivy.array([]), c=ivy.native_array([4]))
+    >>> y = 7
+    >>> z = x.one_hot(y)
+    >>> print(z)
+    {
+        a: ivy.array([[0., 0., 1., 0., 0., 0., 0.]]),
+        b: ivy.array([], shape=(0, 7)),
+        c: ivy.array([[0., 0., 0., 0., 1., 0., 0.]])
+    }
     """
     return current_backend(indices).one_hot(
         indices,

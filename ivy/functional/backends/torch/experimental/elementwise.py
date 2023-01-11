@@ -171,7 +171,7 @@ def nansum(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
@@ -227,6 +227,20 @@ def angle(
 
 
 angle.support_native_out = True
+
+
+def imag(
+    input: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if input.dtype != torch.complex64:
+        input = input.to(torch.complex64)
+    return torch.imag(input)
+
+
+imag.support_native_out = False
 
 
 def nan_to_num(

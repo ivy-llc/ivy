@@ -4,7 +4,7 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-
+from ivy.functional.ivy.layers import _deconv_length
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
@@ -88,7 +88,7 @@ def _x_and_filters(
         if transpose:
             output_shape = [
                 x_shape[0],
-                ivy.deconv_length(x_w, stride, filter_shape[0], padding, dilations),
+                _deconv_length(x_w, stride, filter_shape[0], padding, dilations),
                 d_in,
             ]
     elif type == "2d" or type == "depthwise":
@@ -148,10 +148,10 @@ def _x_and_filters(
             x_h = x_shape[2]
             x_w = x_shape[3]
         if transpose:
-            output_shape_h = ivy.deconv_length(
+            output_shape_h = _deconv_length(
                 x_h, stride, filter_shape[0], padding, dilations
             )
-            output_shape_w = ivy.deconv_length(
+            output_shape_w = _deconv_length(
                 x_w, stride, filter_shape[1], padding, dilations
             )
             output_shape = [x_shape[0], output_shape_h, output_shape_w, d_in]
@@ -210,13 +210,13 @@ def _x_and_filters(
             x_h = x_shape[3]
             x_w = x_shape[4]
         if transpose:
-            output_shape_d = ivy.deconv_length(
+            output_shape_d = _deconv_length(
                 x_d, stride, filter_shape[0], padding, dilations
             )
-            output_shape_h = ivy.deconv_length(
+            output_shape_h = _deconv_length(
                 x_h, stride, filter_shape[1], padding, dilations
             )
-            output_shape_w = ivy.deconv_length(
+            output_shape_w = _deconv_length(
                 x_w, stride, filter_shape[2], padding, dilations
             )
             output_shape = [output_shape_d, output_shape_h, output_shape_w]
