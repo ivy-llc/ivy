@@ -5,9 +5,9 @@ tan
 
 .. autofunction:: ivy.array.array_methods.tan
 
-.. autofunction:: ivy.container.container_methods.tan
-
 .. autofunction:: ivy.container.container_methods.static_tan
+
+.. autofunction:: ivy.container.container_methods.tan
 |
 | **Supported Frameworks:**
 
