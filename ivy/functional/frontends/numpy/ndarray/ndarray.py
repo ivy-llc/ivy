@@ -255,6 +255,16 @@ class ndarray:
             where=where,
         )
 
+    def astype(self, dtype, order='K', casting='unsafe', subok=True, copy=True):
+        return np_frontend.astype(
+            self._ivy_array,
+            dtype=dtype,
+            order=order,
+            casting=casting,
+            subok=subok,
+            copy=copy,
+        )
+
     def __add__(self, value, /):
         return np_frontend.add(self._ivy_array, value)
 
