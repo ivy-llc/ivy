@@ -5,9 +5,9 @@ roll
 
 .. autofunction:: ivy.array.array_methods.roll
 
-.. autofunction:: ivy.container.container_methods.static_roll
-
 .. autofunction:: ivy.container.container_methods.roll
+
+.. autofunction:: ivy.container.container_methods.static_roll
 |
 | **Supported Frameworks:**
 

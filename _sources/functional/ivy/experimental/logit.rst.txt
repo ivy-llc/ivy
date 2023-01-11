@@ -5,9 +5,9 @@ logit
 
 .. autofunction:: ivy.array.array_methods.logit
 
-.. autofunction:: ivy.container.container_methods.logit
-
 .. autofunction:: ivy.container.container_methods.static_logit
+
+.. autofunction:: ivy.container.container_methods.logit
 |
 | **Supported Frameworks:**
 

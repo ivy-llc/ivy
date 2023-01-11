@@ -5,9 +5,9 @@ inplace_update
 
 .. autofunction:: ivy.array.array_methods.inplace_update
 
-.. autofunction:: ivy.container.container_methods.inplace_update
-
 .. autofunction:: ivy.container.container_methods.static_inplace_update
+
+.. autofunction:: ivy.container.container_methods.inplace_update
 |
 | **Supported Frameworks:**
 

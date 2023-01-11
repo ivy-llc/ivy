@@ -5,9 +5,9 @@ fmin
 
 .. autofunction:: ivy.array.array_methods.fmin
 
-.. autofunction:: ivy.container.container_methods.fmin
-
 .. autofunction:: ivy.container.container_methods.static_fmin
+
+.. autofunction:: ivy.container.container_methods.fmin
 |
 | **Supported Frameworks:**
 

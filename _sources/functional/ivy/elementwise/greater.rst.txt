@@ -5,9 +5,9 @@ greater
 
 .. autofunction:: ivy.array.array_methods.greater
 
-.. autofunction:: ivy.container.container_methods.static_greater
-
 .. autofunction:: ivy.container.container_methods.greater
+
+.. autofunction:: ivy.container.container_methods.static_greater
 |
 | **Supported Frameworks:**
 

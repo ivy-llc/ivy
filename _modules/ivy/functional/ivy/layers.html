@@ -82,15 +82,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
 <ul>
@@ -910,9 +910,9 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input image.</span>
+<span class="sd">        Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.</span>
 <span class="sd">    filters</span>
-<span class="sd">        Convolution filters.</span>
+<span class="sd">        Convolution filters *[fw,d_in,d_out]*.</span>
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
@@ -921,10 +921,7 @@
 <span class="sd">    data_format</span>
 <span class="sd">        The ordering of the dimensions in the input, one of &quot;NWC&quot; or &quot;NCW&quot;. &quot;NWC&quot;</span>
 <span class="sd">        corresponds to input with shape (batch_size, width, channels), while &quot;NCW&quot;</span>
-<span class="sd">        corresponds to input with shape (batch_size, channels, width). The dimensions</span>
-<span class="sd">        in the filters are expected to follow a similar ordering: (width, channels_in,</span>
-<span class="sd">        channels_out) for &quot;NWC&quot; input, and (channels_in, channels_out, width) for &quot;NCW&quot;</span>
-<span class="sd">        input.</span>
+<span class="sd">        corresponds to input with shape (batch_size, channels, width).</span>
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 <span class="sd">    out</span>
@@ -1002,9 +999,9 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input image.</span>
+<span class="sd">        Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.</span>
 <span class="sd">    filters</span>
-<span class="sd">        Convolution filters.</span>
+<span class="sd">        Convolution filters *[fw,d_in,d_out]*.</span>
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
@@ -1015,10 +1012,7 @@
 <span class="sd">    data_format</span>
 <span class="sd">        The ordering of the dimensions in the input, one of &quot;NWC&quot; or &quot;NCW&quot;. &quot;NWC&quot;</span>
 <span class="sd">        corresponds to input with shape (batch_size, width, channels), while &quot;NCW&quot;</span>
-<span class="sd">        corresponds to input with shape (batch_size, channels, width). The dimensions</span>
-<span class="sd">        in the filters are expected to follow a similar ordering: (width, channels_in,</span>
-<span class="sd">        channels_out) for &quot;NWC&quot; input, and (channels_in, channels_out, width) for &quot;NCW&quot;</span>
-<span class="sd">        input.</span>
+<span class="sd">        corresponds to input with shape (batch_size, channels, width).</span>
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 <span class="sd">    out</span>
@@ -1063,9 +1057,9 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input image.</span>
+<span class="sd">        Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.</span>
 <span class="sd">    filters</span>
-<span class="sd">        Convolution filters.</span>
+<span class="sd">        Convolution filters *[fh,fw,d_in,d_out]*.</span>
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
@@ -1075,9 +1069,6 @@
 <span class="sd">        The ordering of the dimensions in the input, one of &quot;NHWC&quot; or &quot;NCHW&quot;. &quot;NHWC&quot;</span>
 <span class="sd">        corresponds to inputs with shape (batch_size, height, width, channels), while</span>
 <span class="sd">        &quot;NCHW&quot; corresponds to input with shape (batch_size, channels, height, width).</span>
-<span class="sd">        The dimensions in the filters are expected to follow a similar ordering:</span>
-<span class="sd">        (height, width, channels_in, channels_out) for &quot;NHWC&quot; input, and (channels_in,</span>
-<span class="sd">        channels_out, height, width) for &quot;NCHW&quot; input.</span>
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 <span class="sd">    out</span>
@@ -1194,9 +1185,9 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input image.</span>
+<span class="sd">        Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.</span>
 <span class="sd">    filters</span>
-<span class="sd">        Convolution filters.</span>
+<span class="sd">        Convolution filters *[fh,fw,d_in,d_out]*.</span>
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
@@ -1208,9 +1199,6 @@
 <span class="sd">        The ordering of the dimensions in the input, one of &quot;NHWC&quot; or &quot;NCHW&quot;. &quot;NHWC&quot;</span>
 <span class="sd">        corresponds to inputs with shape (batch_size, height, width, channels), while</span>
 <span class="sd">        &quot;NCHW&quot; corresponds to input with shape (batch_size, channels, height, width).</span>
-<span class="sd">        The dimensions in the filters are expected to follow a similar ordering:</span>
-<span class="sd">        (height, width, channels_in, channels_out) for &quot;NHWC&quot; input, and (channels_in,</span>
-<span class="sd">        channels_out, height, width) for &quot;NCHW&quot; input.</span>
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 <span class="sd">    out</span>
@@ -1257,9 +1245,9 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input image.</span>
+<span class="sd">        Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.</span>
 <span class="sd">    filters</span>
-<span class="sd">        Convolution filters.</span>
+<span class="sd">        Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from x)</span>
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
@@ -1269,9 +1257,6 @@
 <span class="sd">        The ordering of the dimensions in the input, one of &quot;NHWC&quot; or &quot;NCHW&quot;. &quot;NHWC&quot;</span>
 <span class="sd">        corresponds to inputs with shape (batch_size, height, width, channels), while</span>
 <span class="sd">        &quot;NCHW&quot; corresponds to input with shape (batch_size, channels, height, width).</span>
-<span class="sd">        The dimensions in the filters are expected to follow a similar ordering:</span>
-<span class="sd">        (height, width, channels_in, channels_out) for &quot;NHWC&quot; input, and (channels_in,</span>
-<span class="sd">        channels_out, height, width) for &quot;NCHW&quot; input.</span>
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 <span class="sd">    out</span>
@@ -1395,9 +1380,9 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input volume.</span>
+<span class="sd">        Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.</span>
 <span class="sd">    filters</span>
-<span class="sd">        Convolution filters.</span>
+<span class="sd">        Convolution filters *[fd,fh,fw,d_in,d_out]*.</span>
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
@@ -1407,9 +1392,7 @@
 <span class="sd">        The ordering of the dimensions in the input, one of &quot;NDHWC&quot; or &quot;NCDHW&quot;. &quot;NDHWC&quot;</span>
 <span class="sd">        corresponds to inputs with shape (batch_size, depth, height, width, channels),</span>
 <span class="sd">        while &quot;NCDHW&quot; corresponds to input with shape (batch_size, channels, depth,</span>
-<span class="sd">        height, width). The dimensions in the filters are expected to follow a similar</span>
-<span class="sd">        ordering: (depth, height, width, channels_in, channels_out) for &quot;NDHWC&quot; input,</span>
-<span class="sd">        and (channels_in, channels_out, depth, height, width) for &quot;NCDHW&quot; input.</span>
+<span class="sd">        height, width).</span>
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 <span class="sd">    out</span>
@@ -1512,9 +1495,9 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input image.</span>
+<span class="sd">        Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.</span>
 <span class="sd">    filters</span>
-<span class="sd">        Convolution filters.</span>
+<span class="sd">        Convolution filters *[fd,fh,fw,d_in,d_out]*.</span>
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
@@ -1526,9 +1509,7 @@
 <span class="sd">        The ordering of the dimensions in the input, one of &quot;NDHWC&quot; or &quot;NCDHW&quot;. &quot;NDHWC&quot;</span>
 <span class="sd">        corresponds to inputs with shape (batch_size, depth, height, width, channels),</span>
 <span class="sd">        while &quot;NCDHW&quot; corresponds to input with shape (batch_size, channels, depth,</span>
-<span class="sd">        height, width). The dimensions in the filters are expected to follow a similar</span>
-<span class="sd">        ordering: (depth, height, width, channels_in, channels_out) for &quot;NDHWC&quot; input,</span>
-<span class="sd">        and (channels_in, channels_out, depth, height, width) for &quot;NCDHW&quot; input.</span>
+<span class="sd">        height, width).</span>
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 <span class="sd">    out</span>
@@ -1663,9 +1644,9 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input image.</span>
+<span class="sd">        Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.</span>
 <span class="sd">    filters</span>
-<span class="sd">        Convolution filters.</span>
+<span class="sd">        Convolution filters *[fd,fh,fw,d_in/feature_group_count,d_out]*.</span>
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
@@ -1685,7 +1666,7 @@
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of filter. (Default value = 1)</span>
 <span class="sd">    bias</span>
-<span class="sd">        Bias array.</span>
+<span class="sd">        Bias array of shape *[d_out]*.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -1736,9 +1717,9 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input image.</span>
+<span class="sd">        Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.</span>
 <span class="sd">    filters</span>
-<span class="sd">        Convolution filters.</span>
+<span class="sd">        Convolution filters *[fd,fh,fw,d_in,d_out]*.</span>
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
@@ -1753,7 +1734,7 @@
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 <span class="sd">    bias</span>
-<span class="sd">        Bias array.</span>
+<span class="sd">        Bias array of shape *[d_out]*.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -1804,9 +1785,9 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        Input image.</span>
+<span class="sd">        Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.</span>
 <span class="sd">    filters</span>
-<span class="sd">        Convolution filters.</span>
+<span class="sd">        Convolution filters *[fd,fh,fw,d_in/feature_group_count,d_out]*.</span>
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
@@ -1831,7 +1812,7 @@
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 <span class="sd">    bias</span>
-<span class="sd">        Bias array.</span>
+<span class="sd">        Bias array of shape *[d_out]*.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
