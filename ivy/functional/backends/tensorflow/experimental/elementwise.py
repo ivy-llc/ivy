@@ -9,6 +9,7 @@ from .. import backend_version
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import tensorflow_probability as tfp
+from tensorflow.python.ops.numpy_ops import np_config
 
 
 def sinc(
@@ -157,6 +158,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    np_config.enable_numpy_behavior()
     return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
@@ -327,6 +329,28 @@ def angle(
         return tf.math.angle(input, name=None) * (180 / tf.experimental.numpy.pi)
     else:
         return tf.math.angle(input, name=None)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+            "int32",
+        )
+    },
+    backend_version,
+)
+def imag(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.imag(input, name=None)
 
 
 @with_supported_dtypes(

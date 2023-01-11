@@ -356,6 +356,7 @@ def pow(
     return jnp.power(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def remainder(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
@@ -423,6 +424,7 @@ def tanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tanh(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def trunc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
@@ -434,6 +436,7 @@ def trunc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 # ------#
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def erf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.scipy.special.erf(x)
 

@@ -171,7 +171,9 @@ def linspace(
 
 
 def meshgrid(
-    *arrays: np.ndarray, sparse: bool = False, indexing: str = "xy"
+    *arrays: np.ndarray,
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[np.ndarray]:
     return np.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
