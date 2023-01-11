@@ -24,12 +24,12 @@ def _broadcastable_trio(draw):
 def _broadcastable_duo(draw):
     dtype = draw(helpers.get_dtypes("valid", full=False))
     shapes_st = draw(
-        hnp.mutually_broadcastable_shapes(num_shapes=2)
+        hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=1, min_side=1)
     )
     cond_shape, a_shape = shapes_st.input_shapes
     a = draw(helpers.array_values(dtype=dtype[0], shape=a_shape))
     cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
-    return a, cond, dtype
+    return cond, a, dtype
 
 
 # where
@@ -411,7 +411,7 @@ def test_numpy_extract(
     fn_tree,
     on_device,
 ):
-    a, cond, dtype = broadcastables
+    cond, a, dtype = broadcastables
     helpers.test_frontend_function(
         input_dtypes=[dtype, "bool"],
         as_variable_flags=as_variable,
