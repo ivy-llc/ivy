@@ -4,7 +4,7 @@ from ivy.functional.frontends.jax.devicearray import DeviceArray
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
-    handle_jax_dtype
+    handle_jax_dtype,
 )
 
 
@@ -62,21 +62,6 @@ def ones_like(a, dtype=None, shape=None):
 @to_ivy_arrays_and_back
 def asarray(a, dtype=None, order=None):
     return ivy.asarray(a, dtype=dtype)
-
-
-@to_ivy_arrays_and_back
-def int16(x):
-    return ivy.astype(x, ivy.int16, copy=False)
-
-
-@to_ivy_arrays_and_back
-def uint16(x):
-    return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)
-
-
-@to_ivy_arrays_and_back
-def uint64(x):
-    return ivy.astype(x, ivy.UintDtype("uint64"), copy=False)
 
 
 @handle_jax_dtype
