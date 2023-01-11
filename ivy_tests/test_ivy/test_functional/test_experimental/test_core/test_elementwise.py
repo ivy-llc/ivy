@@ -411,7 +411,6 @@ def _get_dtype_values_axis_for_count_nonzero(
     keepdims=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
-    
 )
 def test_count_nonzero(
     *,

@@ -526,12 +526,12 @@ def dropout1d(
 
 
 def ifft(
-        x: np.ndarray,
-        dim: int,
-        *,
-        norm: Optional[str] = "backward",
-        n: Optional[Union[int, Tuple[int]]] = None,
-        out: Optional[np.ndarray] = None,
+    x: np.ndarray,
+    dim: int,
+    *,
+    norm: Optional[str] = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if not isinstance(dim, int):
         raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")

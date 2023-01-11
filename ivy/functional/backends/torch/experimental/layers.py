@@ -442,12 +442,12 @@ def dropout1d(
 
 
 def ifft(
-        x: torch.Tensor,
-        dim: int,
-        *,
-        norm: Optional[str] = "backward",
-        n: Union[int, Tuple[int]] = None,
-        out: Optional[torch.Tensor] = None,
+    x: torch.Tensor,
+    dim: int,
+    *,
+    norm: Optional[str] = "backward",
+    n: Union[int, Tuple[int]] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if not isinstance(dim, int):
         raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
