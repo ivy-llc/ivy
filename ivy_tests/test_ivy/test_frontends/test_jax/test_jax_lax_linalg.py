@@ -26,15 +26,13 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     full_matrices=st.booleans(),
     compute_uv=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_jax_lax_svd(
     *,
     dtype_and_x,
     full_matrices,
     compute_uv,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -46,10 +44,6 @@ def test_jax_lax_svd(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -98,14 +92,12 @@ def test_jax_lax_svd(
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     symmetrize_input=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_jax_lax_cholesky(
     *,
     dtype_and_x,
     symmetrize_input,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -116,10 +108,6 @@ def test_jax_lax_cholesky(
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -145,15 +133,13 @@ def test_jax_lax_cholesky(
     ),
     lower=st.booleans(),
     symmetrize_input=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_jax_lax_eigh(
     *,
     dtype_and_x,
-    as_variable,
     lower,
     symmetrize_input,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -165,10 +151,6 @@ def test_jax_lax_eigh(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
