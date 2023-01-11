@@ -132,7 +132,7 @@ def test_numpy_lexsort(
 ):
     input_dtype, x, axis = dtype_x_axis
 
-    helpers.test_frontend_function(
+    helpers.test_frontend_function( 
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
