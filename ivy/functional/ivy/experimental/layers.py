@@ -619,3 +619,69 @@ def dropout1d(
     return ivy.current_backend(x).dropout1d(
         x, prob, training=training, data_format=data_format, out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_exceptions
+@handle_nestable
+@handle_array_like
+def ifft(
+        x: Union[ivy.Array, ivy.NativeArray],
+        dim: int,
+        *,
+        norm: Optional[str] = "backward",
+        n: Optional[Union[int, Tuple[int]]] = None,
+        out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""Computes the one dimensional discrete Fourier transform given input at least
+    1-D input x.
+
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*,
+        where d_in indicates the dimension that needs IFFT.
+    dim
+        The dimension along which to take the one dimensional IFFT.
+    norm
+        Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+        "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
+        "forward" indicates normalization by $\frac{1}{n}$.
+    n
+        Optional argument indicating the sequence length, if given, the input would be
+        padded with zero or truncated to length n before performing IFFT.
+        Should be a integer greater than 1.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the IFFT operation.
+
+    Examples
+    --------
+    >>> ivy.ifft(np.exp(2j * np.pi * np.arange(8) / 8), 0)
+    ivy.array([-4.30636606e-17+1.43029718e-18j,  0.00000000e+00+1.53080850e-17j,
+                1.43029718e-18+1.53080850e-17j,  0.00000000e+00+9.58689626e-18j,
+                1.24474906e-17+2.91858728e-17j,  0.00000000e+00+1.53080850e-17j,
+                2.91858728e-17+1.53080850e-17j,  1.00000000e+00-1.01435406e-16j])
+    >>> ivy.ifft(np.exp(2j * np.pi * np.arange(8) / 8), 0, n=16)
+    ivy.array([-2.15318303e-17+7.15148591e-19j,  6.25000000e-02+9.35378602e-02j,
+                0.00000000e+00+7.65404249e-18j,  6.25000000e-02+4.17611649e-02j,
+                7.15148591e-19+7.65404249e-18j,  6.25000000e-02+1.24320230e-02j,
+                0.00000000e+00+4.79344813e-18j,  6.25000000e-02-1.24320230e-02j,
+                6.22374531e-18+1.45929364e-17j,  6.25000000e-02-4.17611649e-02j,
+                0.00000000e+00+7.65404249e-18j,  6.25000000e-02-9.35378602e-02j,
+                1.45929364e-17+7.65404249e-18j,  6.25000000e-02-3.14208718e-01j,
+                5.00000000e-01-5.07177031e-17j,  6.25000000e-02+3.14208718e-01j])
+    >>> ivy.ifft(np.exp(2j * np.pi * np.arange(8) / 8), 0, norm="ortho")
+    ivy.array([-1.21802426e-16+4.04549134e-18j,  0.00000000e+00+4.32978028e-17j,
+                4.04549134e-18+4.32978028e-17j,  0.00000000e+00+2.71158374e-17j,
+                3.52068201e-17+8.25501143e-17j,  0.00000000e+00+4.32978028e-17j,
+                8.25501143e-17+4.32978028e-17j,  2.82842712e+00-2.86902654e-16j])
+    """
+    return ivy.current_backend(x).ifft(x, dim, norm=norm, n=n, out=out)

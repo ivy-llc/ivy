@@ -7,6 +7,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_dtype,
 )
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
+import ivy.functional.frontends.tensorflow as tf_frontend
 
 
 @to_ivy_arrays_and_back
@@ -68,11 +69,13 @@ def constant(value, dtype=None, shape=None, name=None):
 
 
 @handle_tf_dtype
-def convert_to_tensor(value, dtype, dtype_hint, name=None):
+def convert_to_tensor(value, dtype=None, dtype_hint=None, name=None):
     if dtype:
-        return EagerTensor(ivy.astype(value, dtype))
+        return tf_frontend.cast(value, dtype)
     elif dtype_hint:
-        return EagerTensor(ivy.astype(value, dtype_hint))
+        return tf_frontend.cast(value, dtype_hint)
+    if hasattr(value, "ivy_array"):
+        return EagerTensor(value.ivy_array)
     return EagerTensor(value)
 
 
@@ -253,3 +256,8 @@ def strided_slice(
                     end_i = int(end[i])
                 full_slice += (slice(begin_i, end_i, int(strides[i])),)
     return input_[full_slice]
+
+
+@to_ivy_arrays_and_back
+def linspace(start, stop, num, name=None, axis=0):
+    return ivy.linspace(start, stop, num, axis=axis)

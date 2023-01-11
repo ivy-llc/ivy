@@ -30,15 +30,17 @@ def x_and_linear(draw, dtypes):
     )
 
     x = draw(
-        helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=10)
     )
     weight = draw(
         helpers.array_values(
-            dtype=dtype[0], shape=weight_shape, min_value=0, max_value=1
+            dtype=dtype[0], shape=weight_shape, min_value=0, max_value=10
         )
     )
     bias = draw(
-        helpers.array_values(dtype=dtype[0], shape=bias_shape, min_value=0, max_value=1)
+        helpers.array_values(
+            dtype=dtype[0], shape=bias_shape, min_value=0, max_value=10
+        )
     )
     return dtype, x, weight, bias
 
@@ -47,7 +49,7 @@ def x_and_linear(draw, dtypes):
 @handle_test(
     fn_tree="functional.ivy.linear",
     dtype_x_weight_bias=x_and_linear(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("numeric", full=False),
     ),
     ground_truth_backend="jax",
 )
@@ -150,20 +152,20 @@ def x_and_scaled_attention(draw, dtypes):
     mask_shape = (1,) + (num_queries,) + (num_keys,)
 
     q = draw(
-        helpers.array_values(dtype=dtype[0], shape=q_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=q_shape, min_value=0, max_value=10)
     )
     k = draw(
-        helpers.array_values(dtype=dtype[0], shape=k_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=k_shape, min_value=0, max_value=10)
     )
     v = draw(
-        helpers.array_values(dtype=dtype[0], shape=v_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=v_shape, min_value=0, max_value=10)
     )
     mask = draw(
         helpers.array_values(
             dtype=dtype[0],
             shape=mask_shape,
             min_value=0,
-            max_value=1,
+            max_value=10,
             large_abs_safety_factor=2,
             safety_factor_scale="linear",
         )
@@ -175,7 +177,7 @@ def x_and_scaled_attention(draw, dtypes):
 @handle_test(
     fn_tree="functional.ivy.scaled_dot_product_attention",
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("numeric", full=False),
     ),
     ground_truth_backend="jax",
 )
