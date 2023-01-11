@@ -8,7 +8,7 @@ import ivy.functional.frontends.numpy as np_frontend
 class ndarray:
     def __init__(self, shape, dtype="float32", order=None):
         if isinstance(dtype, np_frontend.dtype):
-            dtype = dtype._ivy_dtype
+            dtype = dtype.ivy_dtype
         self._ivy_array = ivy.empty(shape, dtype=dtype)
         self._dtype = dtype
 
@@ -44,7 +44,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return self._dtype
+        return self._ivy_array.dtype
 
     # Setters #
     # --------#
@@ -352,6 +352,9 @@ class ndarray:
 
     def __imul__(self, value, /):
         return np_frontend.multiply(self._ivy_array, value)
+
+    def __itruediv__(self, value, /):
+        return np_frontend.true_divide(self._ivy_array, value)
 
     def __ipow__(self, value, /):
         return np_frontend.power(self._ivy_array, value)

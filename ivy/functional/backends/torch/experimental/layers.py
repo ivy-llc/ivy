@@ -7,6 +7,7 @@ import math
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ivy.functional.ivy.layers import _handle_padding
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
@@ -33,7 +34,7 @@ def max_pool1d(
     if data_format == "NWC":
         x = x.permute((0, 2, 1))
     x_shape = x.shape[2]
-    pad_w = ivy.handle_padding(x_shape, strides[0], kernel[0], padding)
+    pad_w = _handle_padding(x_shape, strides[0], kernel[0], padding)
     x = torch.nn.functional.pad(
         x, [pad_w // 2, pad_w - pad_w // 2], value=float("-inf")
     )
@@ -77,8 +78,8 @@ def max_pool2d(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
-    pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
     x = torch.nn.functional.pad(
         x,
         [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2],
@@ -125,9 +126,9 @@ def max_pool3d(
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
     x_shape = list(x.shape[2:])
-    pad_d = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_h = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    pad_w = ivy.handle_padding(x_shape[2], strides[2], kernel[2], padding)
+    pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
     x = torch.nn.functional.pad(
         x,
         [
@@ -175,7 +176,7 @@ def avg_pool1d(
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     x_shape = x.shape[2]
-    pad_w = ivy.handle_padding(x_shape, strides[0], kernel[0], padding)
+    pad_w = _handle_padding(x_shape, strides[0], kernel[0], padding)
     x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], mode="replicate")
 
     res = torch.nn.functional.avg_pool1d(x, kernel, strides, 0)
@@ -217,8 +218,8 @@ def avg_pool2d(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
-    pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
     x = torch.nn.functional.pad(
         x,
         [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2],
@@ -265,9 +266,9 @@ def avg_pool3d(
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
     x_shape = list(x.shape[2:])
-    pad_d = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_h = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    pad_w = ivy.handle_padding(x_shape[2], strides[2], kernel[2], padding)
+    pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
     x = torch.nn.functional.pad(
         x,
         [
@@ -439,3 +440,29 @@ def dropout1d(
         return res
     else:
         return x
+
+
+def ifft(
+    x: torch.Tensor,
+    dim: int,
+    *,
+    norm: Optional[str] = "backward",
+    n: Union[int, Tuple[int]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if not isinstance(dim, int):
+        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+    if n is None:
+        n = x.shape[dim]
+    if n < -len(x.shape):
+        raise ivy.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not isinstance(n, int):
+        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+    if n <= 1:
+        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return torch.fft.ifft(x, n, dim, norm, out=out).resolve_conj()

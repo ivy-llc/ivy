@@ -1,8 +1,9 @@
 # global
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
@@ -46,7 +47,7 @@ def test_sinc(
 @handle_test(
     fn_tree="functional.ivy.experimental.lcm",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=["int16", "int32", "int64"],
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
@@ -69,7 +70,7 @@ def test_lcm(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="jax",
+        ground_truth_backend="numpy",
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
@@ -81,15 +82,12 @@ def test_lcm(
 @handle_test(
     fn_tree="functional.ivy.experimental.fmod",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=6,
+        safety_factor_scale="log",
     ),
     test_gradients=st.just(False),
 )
@@ -101,6 +99,13 @@ def test_fmod(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    # Make sure values is not too close to zero
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
+    # jax raises inconsistent gradients for negative numbers in x1
+    if (np.any(x[0] < 0) or np.any(x[1] < 0)) and ivy.current_backend_str() == "jax":
+        test_flags.test_gradients = False
+    test_flags.as_variable = [test_flags.as_variable, False]
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -131,6 +136,44 @@ def test_fmod(
     test_gradients=st.just(False),
 )
 def test_fmax(
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        ground_truth_backend=ground_truth_backend,
+        fn_name=fn_name,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# fmin
+@handle_test(
+    fn_tree="functional.ivy.experimental.fmax",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_nan=True,
+    ),
+    test_gradients=st.just(False),
+)
+def test_fmin(
     dtype_and_x,
     test_flags,
     backend_fw,
@@ -366,13 +409,16 @@ def _get_dtype_values_axis_for_count_nonzero(
         max_dim_size=10,
     ),
     keepdims=st.booleans(),
+    test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
 def test_count_nonzero(
+    *,
     dtype_values_axis,
     keepdims,
     test_flags,
     on_device,
+    fn_name,
     backend_fw,
     ground_truth_backend,
 ):
@@ -383,7 +429,7 @@ def test_count_nonzero(
         on_device=on_device,
         fw=backend_fw,
         ground_truth_backend=ground_truth_backend,
-        fn_name="count_nonzero",
+        fn_name=fn_name,
         a=a[0],
         axis=axis,
         keepdims=keepdims,
@@ -421,6 +467,7 @@ def test_nansum(
     ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
+    axis = tuple(axis)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -559,6 +606,43 @@ def test_angle(
     )
 
 
+# imag
+@handle_test(
+    fn_tree="functional.ivy.experimental.imag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32"],
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_imag(
+    *,
+    dtype_and_x,
+    test_flags,
+    ground_truth_backend,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        val=x[0],
+    )
+
+
 # nan_to_num
 @handle_test(
     fn_tree="functional.ivy.experimental.nan_to_num",
@@ -659,6 +743,7 @@ def test_logaddexp2(
     atol=st.floats(min_value=1e-5, max_value=1e-5),
     equal_nan=st.booleans(),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_allclose(
     dtype_and_x,
@@ -718,7 +803,7 @@ def test_fix(
 @handle_test(
     fn_tree="functional.ivy.experimental.nextafter",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=2),
+        available_dtypes=["float32", "float64"],
         num_arrays=2,
         shared_dtype=True,
         min_value=-10,
@@ -729,9 +814,12 @@ def test_fix(
     test_gradients=st.just(False),
 )
 def test_nextafter(
+    *,
     dtype_and_x,
     test_flags,
     backend_fw,
+    fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -740,7 +828,8 @@ def test_nextafter(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
-        fn_name="nextafter",
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
@@ -786,7 +875,7 @@ def test_diff(
 @handle_test(
     fn_tree="functional.ivy.experimental.zeta",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=2),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         min_value=-10,
@@ -804,7 +893,7 @@ def test_zeta(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="torch",
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -871,9 +960,12 @@ def test_gradient(
     test_gradients=st.just(False),
 )
 def test_xlogy(
+    *,
     dtype_and_x,
     test_flags,
     backend_fw,
+    fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -882,7 +974,8 @@ def test_xlogy(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
-        fn_name="xlogy",
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )

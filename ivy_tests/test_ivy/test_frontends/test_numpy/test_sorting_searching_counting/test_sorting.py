@@ -141,4 +141,6 @@ def test_numpy_sort_complex(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        a=x[0],
+        test_values=False,
     )

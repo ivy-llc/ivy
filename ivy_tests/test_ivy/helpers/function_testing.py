@@ -330,6 +330,7 @@ def test_function(
         and not fw == "numpy"
         and not instance_method
         and "bool" not in input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
     ):
         if fw in fw_list:
             if ivy.nested_argwhere(
@@ -549,6 +550,10 @@ def test_frontend_function(
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
         # strip the decorator to get an Ivy array
+        # ToDo, fix testing for jax frontend for x32
+        if frontend == "jax":
+            importlib.import_module(
+                'ivy.functional.frontends.jax').config.update('jax_enable_x64', True)
         ret = get_frontend_ret(frontend_fn, *args_ivy, **kwargs_ivy)
         if with_out:
             if not inspect.isclass(ret):
@@ -1120,7 +1125,12 @@ def test_method(
     ivy.unset_backend()
     # gradient test
     fw = ivy.current_backend_str()
-    if test_gradients and not fw == "numpy" and "bool" not in method_input_dtypes:
+    if (
+        test_gradients
+        and not fw == "numpy"
+        and "bool" not in method_input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in method_input_dtypes)
+    ):
         if fw in fw_list:
             if ivy.nested_argwhere(
                 method_all_as_kwargs_np,

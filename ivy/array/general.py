@@ -325,6 +325,35 @@ class ArrayWithGeneral(abc.ABC):
         ret
             New array with einops.rearrange having been applied.
 
+        Examples
+        --------
+        With :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([[1, 2, 3],
+        ...               [-4, -5, -6]])
+        >>> y = x.einops_rearrange("height width -> width height")
+        >>> print(y)
+        ivy.array([[ 1, -4],
+            [ 2, -5],
+            [ 3, -6]])
+
+        >>> x = ivy.array([[[ 1,  2,  3],
+        ...                  [ 4,  5,  6]],
+        ...               [[ 7,  8,  9],
+        ...                  [10, 11, 12]]])
+        >>> y = x.einops_rearrange("c h w -> c (h w)")
+        >>> print(y)
+        ivy.array([[ 1,  2,  3,  4,  5,  6],
+            [ 7,  8,  9, 10, 11, 12]])
+
+        >>> x = ivy.array([[1, 2, 3, 4, 5, 6]
+        ...               [7, 8, 9, 10, 11, 12]])
+        >>> y = x.einops_rearrange("c (h w) -> (c h) w", h=2, w=3)
+        ivy.array([[ 1,  2,  3],
+            [ 4,  5,  6],
+            [ 7,  8,  9],
+            [10, 11, 12]])
+
         """
         return ivy.einops_rearrange(self._data, pattern, out=out, **axes_lengths)
 
@@ -760,6 +789,30 @@ class ArrayWithGeneral(abc.ABC):
             New array with the final dimension expanded, and the encodings stored in
             this channel.
 
+        Examples
+        --------
+        >>> x = ivy.array([1,2,3])
+        >>> y = 1.5
+        >>> z = x.fourier_encode(y)
+        >>> print(z)
+        ivy.array([[ 1.0000000e+00, 1.2246468e-16, 0.0000000e+00, 0.0000000e+00,
+                     0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
+                     1.0000000e+00],
+                   [ 2.0000000e+00, -2.4492936e-16, 0.0000000e+00, 0.0000000e+00,
+                     0.0000000e+00, 1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
+                     1.0000000e+00],
+                   [ 3.0000000e+00, 3.6739404e-16, 0.0000000e+00, 0.0000000e+00,
+                     0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
+                     1.0000000e+00]])
+
+        >>> x = ivy.array([3,10])
+        >>> y = 2.5
+        >>> z = x.fourier_encode(y,num_bands=3)
+        >>> print(z)
+        ivy.array([[ 3.0000000e+00,  3.6739404e-16,  3.6739404e-16,  3.6739404e-16,
+                    -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
+                   [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15, -1.2246468e-15,
+                     1.0000000e+00,  1.0000000e+00,  1.0000000e+00]])
         """
         return ivy.fourier_encode(
             self,

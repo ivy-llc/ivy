@@ -5,9 +5,11 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -30,6 +32,7 @@ def minimum(
     return ret
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def amin(
@@ -70,6 +73,7 @@ def amin(
     return res
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def amax(
@@ -110,6 +114,7 @@ def amax(
     return res
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def nanmin(
@@ -150,6 +155,7 @@ def nanmin(
     return res
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -172,6 +178,7 @@ def maximum(
     return ret
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def nanmax(

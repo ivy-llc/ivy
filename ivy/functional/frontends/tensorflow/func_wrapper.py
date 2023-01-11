@@ -14,7 +14,7 @@ def to_ivy_dtype(dtype):
         return dtype
     if dtype in (int, float, bool) or ivy.is_native_dtype(dtype):
         return ivy.as_ivy_dtype(dtype)
-    return frontend.as_dtype(dtype)._ivy_dtype
+    return frontend.as_dtype(dtype).ivy_dtype
 
 
 def handle_tf_dtype(fn: Callable) -> Callable:
@@ -51,7 +51,7 @@ def _tf_frontend_array_to_ivy(x):
     return x
 
 
-def ivy_array_to_tensorflow(x):
+def _ivy_array_to_tensorflow(x):
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
         return frontend.EagerTensor(x)
     return x
@@ -109,7 +109,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     return new_fn
 
 
-def outputs_to_tensorflow_array(fn: Callable) -> Callable:
+def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -133,19 +133,19 @@ def outputs_to_tensorflow_array(fn: Callable) -> Callable:
 
         # convert all arrays in the return to `frontend.Tensorflow.tensor` instances
         return ivy.nested_map(
-            ret, ivy_array_to_tensorflow, include_derived={tuple: True}
+            ret, _ivy_array_to_tensorflow, include_derived={tuple: True}
         )
 
-    new_fn.outputs_to_tensorflow_array = True
+    new_fn.outputs_to_frontend_arrays = True
     return new_fn
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    return outputs_to_tensorflow_array(inputs_to_ivy_arrays(fn))
+    return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
 
 
 # update kwargs dictionary keys helper
-def update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
+def _update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
     """A helper function for updating the key-word only arguments dictionary.
 
     Parameters
@@ -201,7 +201,7 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
         def _wraped_fn(**kwargs):
             # update kwargs dictionary keys
             if kw_update:
-                kwargs = update_kwarg_keys(kwargs, kw_update)
+                kwargs = _update_kwarg_keys(kwargs, kw_update)
             return fn(**kwargs)
 
         return _wraped_fn
