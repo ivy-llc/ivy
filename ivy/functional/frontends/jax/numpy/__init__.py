@@ -388,13 +388,13 @@ def promote_types_jax(
 def _handle_x64_promotion(d):
     dtype_replacement_dict = {
         ivy.int64: ivy.int32,
-        ivy.uint64: ivy.uint32,
         ivy.float64: ivy.float32,
         ivy.complex128: ivy.complex64,
     }
+    if ivy.current_backend_str() != "torch":
+        dtype_replacement_dict[ivy.uint64] = ivy.uint32
     if not jax_frontend.config.jax_enable_x64:
         d = dtype_replacement_dict[d] if d in dtype_replacement_dict else d
-
     return d
 
 
