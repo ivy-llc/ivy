@@ -75,9 +75,6 @@ class DefaultDevice:
         "cpu"
         """
         ivy.set_default_device(self._dev)
-        if exc_type is not None:
-            print(exc_type, exc_val, exc_tb)
-            raise exc_val
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> Union[ivy.Device, str]:
@@ -100,6 +97,9 @@ class DefaultDevice:
         "cpu"
         """
         ivy.unset_default_device()
+        if exc_type is not None:
+            print(exc_type, exc_val, exc_tb)
+            raise exc_val
         return self
 
 
