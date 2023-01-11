@@ -4,7 +4,7 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-
+from ivy.functional.ivy.layers import _deconv_length
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
@@ -33,6 +33,20 @@ def _x_and_filters(
         stride = dilations
     else:
         stride = draw(helpers.ints(min_value=stride_min, max_value=stride_max))
+
+    # Infer type from data_format if it is passed as None
+    if type is None:
+        type_data_format_mapping = {
+            "1d": ["NWC", "NCW"],
+            "2d": ["NHWC", "NCHW"],
+            "3d": ["NDHWC", "NCDHW"],
+        }
+        type = [
+            typ
+            for typ in type_data_format_mapping
+            if data_format in type_data_format_mapping[typ]
+        ][0]
+
     if type == "1d":
         if not transpose:
             filter_shape = draw(
@@ -74,7 +88,7 @@ def _x_and_filters(
         if transpose:
             output_shape = [
                 x_shape[0],
-                ivy.deconv_length(x_w, stride, filter_shape[0], padding, dilations),
+                _deconv_length(x_w, stride, filter_shape[0], padding, dilations),
                 d_in,
             ]
     elif type == "2d" or type == "depthwise":
@@ -134,10 +148,10 @@ def _x_and_filters(
             x_h = x_shape[2]
             x_w = x_shape[3]
         if transpose:
-            output_shape_h = ivy.deconv_length(
+            output_shape_h = _deconv_length(
                 x_h, stride, filter_shape[0], padding, dilations
             )
-            output_shape_w = ivy.deconv_length(
+            output_shape_w = _deconv_length(
                 x_w, stride, filter_shape[1], padding, dilations
             )
             output_shape = [x_shape[0], output_shape_h, output_shape_w, d_in]
@@ -188,7 +202,7 @@ def _x_and_filters(
                     helpers.ints(min_value=1, max_value=5),
                     helpers.ints(min_value=d_in, max_value=d_in),
                     helpers.ints(min_value=min_x_depth, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=min_x_height, max_value=100),
                     helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
@@ -196,13 +210,13 @@ def _x_and_filters(
             x_h = x_shape[3]
             x_w = x_shape[4]
         if transpose:
-            output_shape_d = ivy.deconv_length(
+            output_shape_d = _deconv_length(
                 x_d, stride, filter_shape[0], padding, dilations
             )
-            output_shape_h = ivy.deconv_length(
+            output_shape_h = _deconv_length(
                 x_h, stride, filter_shape[1], padding, dilations
             )
-            output_shape_w = ivy.deconv_length(
+            output_shape_w = _deconv_length(
                 x_w, stride, filter_shape[2], padding, dilations
             )
             output_shape = [output_shape_d, output_shape_h, output_shape_w]
@@ -1043,4 +1057,47 @@ def test_tensorflow_bias_add(
         value=value[0],
         bias=bias,
         data_format=data_format,
+    )
+
+
+# convolution
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.convolution",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NWC", "NHWC", "NDHWC"]),
+        padding=st.sampled_from(["SAME", "VALID"]),
+        # Tensorflow backprop doesn't support dilations more than 1 on CPU
+        dilation_min=1,
+        dilation_max=1,
+        type=None,
+        transpose=False,
+    ),
+)
+def test_tensorflow_convolution(
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filters=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
     )

@@ -66,6 +66,9 @@ class Tensor:
     def chunk(self, chunks, dim=0):
         return torch_frontend.chunk(self._ivy_array, chunks, dim=dim)
 
+    def any(self, dim=None, keepdim=False, *, out=None):
+        return torch_frontend.any(self._ivy_array, dim=dim, keepdim=keepdim, out=out)
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add_(self, other, *, alpha=1):
         self._ivy_array = self.add(other, alpha=alpha).ivy_array
@@ -492,15 +495,7 @@ class Tensor:
             return torch_frontend.tensor(ivy.array(self._ivy_array).full_like(max))
         return torch_frontend.clamp(self._ivy_array, min=min, max=max, out=out)
 
-    @with_unsupported_dtypes(
-        {
-            "1.11.0 and below": (
-                "float16",
-                "bfloat16",
-            )
-        },
-        "torch",
-    )
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):
         return torch_frontend.sqrt(self._ivy_array)
 

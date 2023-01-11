@@ -432,7 +432,6 @@ def copysign(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_exceptions
 def count_nonzero(
@@ -442,7 +441,6 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[Union[int, ivy.Array]] = None,
 ) -> ivy.Array:
     """Counts the number of non-zero values in the array a.
 
@@ -460,8 +458,6 @@ def count_nonzero(
         will broadcast correctly against the input array.
     dtype
         optional output dtype. Default is of type integer.
-    out
-        optional output array, for writing the result to.
 
     Returns
     -------
@@ -482,7 +478,7 @@ def count_nonzero(
     ivy.array([[[3, 4]]])
     """
     return ivy.current_backend().count_nonzero(
-        a, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        a, axis=axis, keepdims=keepdims, dtype=dtype
     )
 
 
@@ -763,6 +759,41 @@ def angle(
     ivy.array([135., 135., -45.])
     """
     return ivy.current_backend(z).angle(z, deg=deg, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def imag(
+    val: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Returns the Imaginary part of a complex numbers(x+yj).
+
+    Parameters
+    ----------
+    val
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns an array with the imaginary part of complex numbers.
+
+    Examples
+    --------
+    >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
+    >>> b
+    ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+    >>> ivy.imag(b)
+    ivy.array([2., 4., 6.])
+    """
+    return ivy.current_backend(val).imag(val, out=out)
 
 
 @to_native_arrays_and_back

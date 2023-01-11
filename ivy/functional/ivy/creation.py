@@ -158,9 +158,9 @@ class NestedSequence(Protocol[_T_co]):
 @handle_exceptions
 def arange(
     start: Number,
+    /,
     stop: Optional[Number] = None,
     step: Optional[Number] = 1,
-    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -1294,16 +1294,14 @@ def meshgrid(
             [4, 1],
             [4, 1]])
 
-        >>> x = ivy.array([1, 2, 3])
-        >>> y = ivy.array([4, 5, 6])
-        >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
-        >>> print(xv)
-        ivy.array([[1, 2, 3]])
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
+    >>> print(xv)
+    ivy.array([[1, 2, 3]])
 
-        >>> print(yv)
-        ivy.array([[4],
-                [5],
-                [6]])
+    >>> print(yv)
+    ivy.array([[4], [5], [6]])
 
     With :class:`ivy.NativeArray` input:
 
@@ -1660,7 +1658,56 @@ def one_hot(
     ret
         Tensor of zeros with the same shape and type as a, unless dtype provided which
         overrides.
+    
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
 
+    >>> x = ivy.array([3, 1])
+    >>> y = 5
+    >>> z = x.one_hot(5)
+    >>> print(z)
+    ivy.array([[0., 0., 0., 1., 0.],
+    ...    [0., 1., 0., 0., 0.]])
+
+    >>> x = ivy.array([0])
+    >>> y = 5
+    >>> ivy.one_hot(x, y)
+    ivy.array([[1., 0., 0., 0., 0.]])
+
+    >>> x = ivy.array([0])
+    >>> y = 5
+    >>> ivy.one_hot(x, 5, out=z)
+    ivy.array([[1., 0., 0., 0., 0.]])
+    >>> print(z)
+    ivy.array([[1., 0., 0., 0., 0.]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2]), \
+        b=ivy.array([3, 1]), c=ivy.array([2, 3]))
+    >>> y = 5
+    >>> z = x.one_hot(y)
+    >>> print(z)
+    {
+        a: ivy.array([[0., 1., 0., 0., 0.], 
+                    [0., 0., 1., 0., 0.]]),
+        b: ivy.array([[0., 0., 0., 1., 0.], 
+                    [0., 1., 0., 0., 0.]]),
+        c: ivy.array([[0., 0., 1., 0., 0.], 
+                    [0., 0., 0., 1., 0.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([2]), \
+        b=ivy.array([]), c=ivy.native_array([4]))
+    >>> y = 7
+    >>> z = x.one_hot(y)
+    >>> print(z)
+    {
+        a: ivy.array([[0., 0., 1., 0., 0., 0., 0.]]),
+        b: ivy.array([], shape=(0, 7)),
+        c: ivy.array([[0., 0., 0., 0., 1., 0., 0.]])
+    }
     """
     return current_backend(indices).one_hot(
         indices,
