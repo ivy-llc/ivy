@@ -5,9 +5,9 @@ positive
 
 .. autofunction:: ivy.array.array_methods.positive
 
-.. autofunction:: ivy.container.container_methods.positive
-
 .. autofunction:: ivy.container.container_methods.static_positive
+
+.. autofunction:: ivy.container.container_methods.positive
 |
 | **Supported Frameworks:**
 

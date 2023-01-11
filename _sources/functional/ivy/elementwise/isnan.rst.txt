@@ -5,9 +5,9 @@ isnan
 
 .. autofunction:: ivy.array.array_methods.isnan
 
-.. autofunction:: ivy.container.container_methods.isnan
-
 .. autofunction:: ivy.container.container_methods.static_isnan
+
+.. autofunction:: ivy.container.container_methods.isnan
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ atleast_3d
 
 .. autofunction:: ivy.array.array_methods.atleast_3d
 
-.. autofunction:: ivy.container.container_methods.static_atleast_3d
-
 .. autofunction:: ivy.container.container_methods.atleast_3d
+
+.. autofunction:: ivy.container.container_methods.static_atleast_3d
 |
 | **Supported Frameworks:**
 

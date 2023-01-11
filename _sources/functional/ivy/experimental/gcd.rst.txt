@@ -5,9 +5,9 @@ gcd
 
 .. autofunction:: ivy.array.array_methods.gcd
 
-.. autofunction:: ivy.container.container_methods.gcd
-
 .. autofunction:: ivy.container.container_methods.static_gcd
+
+.. autofunction:: ivy.container.container_methods.gcd
 |
 | **Supported Frameworks:**
 

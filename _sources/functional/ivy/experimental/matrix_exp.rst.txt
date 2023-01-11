@@ -5,9 +5,9 @@ matrix_exp
 
 .. autofunction:: ivy.array.array_methods.matrix_exp
 
-.. autofunction:: ivy.container.container_methods.matrix_exp
-
 .. autofunction:: ivy.container.container_methods.static_matrix_exp
+
+.. autofunction:: ivy.container.container_methods.matrix_exp
 |
 | **Supported Frameworks:**
 

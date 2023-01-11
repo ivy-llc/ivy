@@ -5,9 +5,9 @@ unravel_index
 
 .. autofunction:: ivy.array.array_methods.unravel_index
 
-.. autofunction:: ivy.container.container_methods.unravel_index
-
 .. autofunction:: ivy.container.container_methods.static_unravel_index
+
+.. autofunction:: ivy.container.container_methods.unravel_index
 |
 | **Supported Frameworks:**
 
