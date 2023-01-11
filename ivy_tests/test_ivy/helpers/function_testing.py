@@ -455,7 +455,6 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
-
     assert (
         not with_out or not with_inplace
     ), "only one of with_out or with_inplace can be set as True"
