@@ -5,9 +5,9 @@ atanh
 
 .. autofunction:: ivy.array.array_methods.atanh
 
-.. autofunction:: ivy.container.container_methods.static_atanh
-
 .. autofunction:: ivy.container.container_methods.atanh
+
+.. autofunction:: ivy.container.container_methods.static_atanh
 |
 | **Supported Frameworks:**
 

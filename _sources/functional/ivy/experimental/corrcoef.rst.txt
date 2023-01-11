@@ -5,9 +5,9 @@ corrcoef
 
 .. autofunction:: ivy.array.array_methods.corrcoef
 
-.. autofunction:: ivy.container.container_methods.static_corrcoef
-
 .. autofunction:: ivy.container.container_methods.corrcoef
+
+.. autofunction:: ivy.container.container_methods.static_corrcoef
 |
 | **Supported Frameworks:**
 
