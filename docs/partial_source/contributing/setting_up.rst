@@ -32,7 +32,7 @@ Depending on your preferred mode of cloning, any of the below should work:
 
 .. code-block:: none
 
-    gh repo clone --recurse-submodules unifyai/ivy your_folder
+    gh repo clone unifyai/ivy your_folder -- --recurse-submodules
 
 PyCharm
 -------

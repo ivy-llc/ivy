@@ -25,8 +25,8 @@ def layer_norm(
     normalized_idxs: List[int],
     /,
     *,
-    weight: Optional[Union[ivy.Array, float]] = None,
-    bias: Optional[Union[ivy.Array, float]] = None,
+    scale: Optional[Union[ivy.Array, float]] = None,
+    b: Optional[Union[ivy.Array, float]] = None,
     epsilon: float = ivy._MIN_BASE,
     new_std: float = 1.0,
     out: Optional[ivy.Array] = None,
@@ -39,10 +39,10 @@ def layer_norm(
         Input array
     normalized_idxs
         Indices to apply the normalization to.
-    weight
+    scale
         Learnable gamma variables for elementwise post-multiplication,
         default is ``None``.
-    bias
+    b
         Learnable beta variables for elementwise post-addition, default is ``None``.
     epsilon
         small constant to add to the denominator, use global ivy._MIN_BASE by default.
@@ -78,7 +78,7 @@ def layer_norm(
     ...                [0.1047,  0.5886,  1.2732],
     ...                [0.7696, -1.7024, -2.2518]])
     >>> y = ivy.layer_norm(x, [0, 1], epsilon=0.001,
-    ...                       new_std=1.5, weight=0.5, bias=[0.5, 0.02, 0.1])
+    ...                       new_std=1.5, scale=0.5, b=[0.5, 0.02, 0.1])
     >>> print(y)
     ivy.array([[ 0.826, -0.178, 0.981 ],
                [ 0.831,  0.421, 0.981 ],
@@ -88,7 +88,7 @@ def layer_norm(
 
     >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
     >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
-    >>> y = ivy.layer_norm(x, normalized_idxs, new_std=1.25, bias=0.2)
+    >>> y = ivy.layer_norm(x, normalized_idxs, new_std=1.25, b=0.2)
     >>> print(y)
     {
         a: ivy.array([[-1.25, -1.25, -1.25],
@@ -102,7 +102,7 @@ def layer_norm(
     >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
     ...                    'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
     >> normalized_idxs = [0]
-    >>> y = ivy.layer_norm(x, normalized_idxs, epsilon=1.25, weight=0.3)
+    >>> y = ivy.layer_norm(x, normalized_idxs, epsilon=1.25, scale=0.3)
     >>> print(y)
     {
         a: ivy.array([-0.342, 0.0427, 0.299]),
@@ -117,7 +117,7 @@ def layer_norm(
     >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
     >>> new_std = ivy.Container({'a': 1.25, 'b': 1.5})
     >>> bias = ivy.Container({'a': [0.2, 0.5, 0.7], 'b': 0.3})
-    >>> y = ivy.layer_norm(x, normalized_idxs, new_std=new_std, bias=bias)
+    >>> y = ivy.layer_norm(x, normalized_idxs, new_std=new_std, b=b)
     >>> print(y)
     {
         a: ivy.array([-1.62, 0.203, 1.42]),
@@ -136,11 +136,9 @@ def layer_norm(
         ivy.add(ivy.negative(mean), x), ivy.stable_pow(var, 0.5, min_base=epsilon)
     )
 
-    if weight is not None:
-        if bias is not None:
-            return ivy.multiply(
-                ivy.add(ivy.multiply(x, weight), bias), new_std, out=out
-            )
-        return ivy.multiply(ivy.multiply(x, weight), new_std, out=out)
+    if scale is not None:
+        if b is not None:
+            return ivy.multiply(ivy.add(ivy.multiply(x, scale), b), new_std, out=out)
+        return ivy.multiply(ivy.multiply(x, scale), new_std, out=out)
 
     return ivy.multiply(x, new_std, out=out)

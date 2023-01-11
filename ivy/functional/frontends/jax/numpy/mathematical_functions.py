@@ -128,6 +128,11 @@ def deg2rad(x):
 
 
 @to_ivy_arrays_and_back
+def radians(x):
+    return ivy.deg2rad(x)
+
+
+@to_ivy_arrays_and_back
 def exp2(x):
     return ivy.exp2(x)
 
@@ -262,6 +267,17 @@ def fmax(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def fmin(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    ret = ivy.where(
+        ivy.bitwise_or(ivy.less(x1, x2), ivy.isnan(x2)),
+        x1,
+        x2,
+    )
+    return ret
+
+
+@to_ivy_arrays_and_back
 def maximum(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.maximum(x1, x2)
@@ -330,14 +346,20 @@ def vdot(a, b):
 
 
 @with_unsupported_dtypes(
-    {
-        "0.3.14 and below": (
-            "bfloat16",
-        )
-    },
+    {"0.3.14 and below": ("bfloat16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
 def cbrt(x, /):
     all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0)
     return ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive)
+
+
+@to_ivy_arrays_and_back
+def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
+    return ivy.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
+@to_ivy_arrays_and_back
+def fix(x, out=None):
+    return ivy.fix(x, out=out)
