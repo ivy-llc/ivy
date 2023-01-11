@@ -1837,7 +1837,7 @@ def lstm_update(
 # Helpers #
 
 
-def handle_padding(x, strides, filters, padding):
+def _handle_padding(x, strides, filters, padding):
     if padding == "SAME":
         if x % strides == 0:
             pad = max(filters - strides, 0)
@@ -1848,7 +1848,7 @@ def handle_padding(x, strides, filters, padding):
     return pad
 
 
-def deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
+def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
     if padding == "VALID":
         dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
@@ -1857,7 +1857,7 @@ def deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     return dim_size
 
 
-def get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
+def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
     if dims == 1:
         if data_format == "channel_first":
             return "NCW"
