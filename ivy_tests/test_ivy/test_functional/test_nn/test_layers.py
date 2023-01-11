@@ -293,18 +293,6 @@ def test_multi_head_attention(
 # -------------#
 
 
-def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
-    # Get the dilated kernel size
-    kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
-
-    if padding == "VALID":
-        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == "SAME":
-        dim_size = dim_size * stride_size
-
-    return dim_size
-
-
 @st.composite
 def x_and_filters(
     draw,
