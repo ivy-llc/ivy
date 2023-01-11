@@ -1803,6 +1803,7 @@ def test_torch_floor(
         out=None,
     )
 
+
 # floor_divide
 @handle_frontend_test(
     fn_tree="torch.floor_divide",
@@ -1811,7 +1812,7 @@ def test_torch_floor(
         num_arrays=2,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
-        safety_factor_scale="log"
+        safety_factor_scale="log",
     ),
 )
 def test_torch_floor_divide(
@@ -1841,6 +1842,7 @@ def test_torch_floor_divide(
         other=x[1],
         out=None,
     )
+
 
 # log1p
 @handle_frontend_test(
