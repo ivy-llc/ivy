@@ -260,12 +260,12 @@ def dropout1d(
 
 
 def ifft(
-        x: Union[tf.Tensor, tf.Variable],
-        dim: int,
-        *,
-        norm: Optional[str] = "backward",
-        n: Union[int, Tuple[int]] = None,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    dim: int,
+    *,
+    norm: Optional[str] = "backward",
+    n: Union[int, Tuple[int]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not isinstance(dim, int):
         raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
