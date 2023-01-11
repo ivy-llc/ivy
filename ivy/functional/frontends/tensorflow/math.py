@@ -1,8 +1,5 @@
 # global
 import ivy
-from ivy.functional.frontends.tensorflow import (
-    promote_types_of_tensorflow_inputs,
-)
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_tf_dtype,
@@ -17,7 +14,6 @@ def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
 
 @to_ivy_arrays_and_back
 def add(x, y, name=None):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.add(x, y)
 
 
@@ -118,13 +114,11 @@ def cumsum(x, axis, exclusive=False, reverse=False, name=None):
 
 @to_ivy_arrays_and_back
 def divide(x, y, name=None):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.divide(x, y)
 
 
 @to_ivy_arrays_and_back
 def divide_no_nan(x, y, name="divide_no_nan"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.where(
         y == 0,
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
@@ -177,13 +171,11 @@ def logical_xor(x, y, name="LogicalXor"):
 
 @to_ivy_arrays_and_back
 def multiply(x, y, name=None):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.multiply(x, y)
 
 
 @to_ivy_arrays_and_back
 def multiply_no_nan(x, y, name="multiply_no_nan"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.where(
         y == 0,
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
@@ -215,7 +207,6 @@ def pow(x, y, name="pow"):
         x = x.data
     if not (isinstance(y, int) or isinstance(y, float) or (y is None)):
         y = y.data
-    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.pow(x, y)
 
 
@@ -304,13 +295,11 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 
 @to_ivy_arrays_and_back
 def scalar_mul(scalar, x, name="scalar_mul"):
-    scalar, x = promote_types_of_tensorflow_inputs(scalar, x)
     return ivy.multiply(x, scalar).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
 def subtract(x, y, name=None):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.subtract(x, y)
 
 
@@ -369,7 +358,6 @@ def argmin(input, axis=None, output_type="int64", name=None):
 
 @to_ivy_arrays_and_back
 def truediv(x, y, name="truediv"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
     x_dtype = ivy.dtype(x)
     if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
         return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
@@ -380,5 +368,4 @@ def truediv(x, y, name="truediv"):
 
 @to_ivy_arrays_and_back
 def equal(x, y, name=None):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.equal(x, y)
