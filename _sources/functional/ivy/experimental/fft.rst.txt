@@ -5,9 +5,9 @@ fft
 
 .. autofunction:: ivy.array.array_methods.fft
 
-.. autofunction:: ivy.container.container_methods.fft
-
 .. autofunction:: ivy.container.container_methods.static_fft
+
+.. autofunction:: ivy.container.container_methods.fft
 |
 | **Supported Frameworks:**
 

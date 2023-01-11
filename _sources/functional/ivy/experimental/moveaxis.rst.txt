@@ -5,9 +5,9 @@ moveaxis
 
 .. autofunction:: ivy.array.array_methods.moveaxis
 
-.. autofunction:: ivy.container.container_methods.moveaxis
-
 .. autofunction:: ivy.container.container_methods.static_moveaxis
+
+.. autofunction:: ivy.container.container_methods.moveaxis
 |
 | **Supported Frameworks:**
 
