@@ -1523,8 +1523,6 @@ class ContainerWithLayers(ContainerBase):
 
         Parameters
         ----------
-        x
-            input tensor of LSTM layer *[batch_shape, t, in]*.
         init_h
             initial state tensor for the cell output *[batch_shape, out]*.
         init_c
@@ -1543,6 +1541,23 @@ class ContainerWithLayers(ContainerBase):
         ret
             hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
             timestep *[batch_shape,out]*
+
+        Examples
+        --------
+        >>> x = ivy.Container(
+        ...     a=ivy.random_normal(shape=(5, 20, 3)), 
+        ...     b=ivy.random_normal(shape=(5, 20, 3))
+        ... )
+        >>> h_i = ivy.random_normal(shape=(5, 6))
+        >>> c_i = ivy.random_normal(shape=(5, 6))
+
+        >>> kernel = ivy.random_normal(shape=(3, 4 * 6))
+        >>> rc = ivy.random_normal(shape=(6, 4 * 6))
+        >>> x.lstm_update(h_i, c_i, kernel, rc)
+        {
+            a: (tuple(2), <class ivy.array.array.Array>, shape=[5, 20, 6]),
+            b: (tuple(2), <class ivy.array.array.Array>, shape=[5, 20, 6])
+        }
 
         """
         return self.static_lstm_update(

@@ -572,8 +572,6 @@ class ArrayWithLayers(abc.ABC):
 
         Parameters
         ----------
-        x
-            input tensor of LSTM layer *[batch_shape, t, in]*.
         init_h
             initial state tensor for the cell output *[batch_shape, out]*.
         init_c
@@ -593,6 +591,20 @@ class ArrayWithLayers(abc.ABC):
             hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
             timestep *[batch_shape,out]*
 
+        Examples
+        --------
+        >>> x = ivy.randint(0, 20, shape=(6, 20, 3))
+        >>> h_i = ivy.random_normal(shape=(6, 5))
+        >>> c_i = ivy.random_normal(shape=(6, 5))
+        >>> kernel = ivy.random_normal(shape=(3, 4 * 5))
+        >>> rc = ivy.random_normal(shape=(5, 4 * 5))
+        >>> result = x.lstm_update(h_i, c_i, kernel, rc)
+
+        >>> result[0].shape
+        (6, 20, 5)
+        >>> result[1].shape
+        (6, 5)
+        
         """
         return ivy.lstm_update(
             self._data,
