@@ -98,7 +98,7 @@ class DefaultDevice:
         """
         ivy.unset_default_device()
         if exc_type is not None:
-            print(exc_type, exc_val, exc_tb)
+            print(exc_tb)
             raise exc_val
         return self
 
