@@ -142,3 +142,33 @@ def test_jax_numpy_msort(
         fn_tree=fn_tree,
         a=x[0],
     )
+
+
+# nonzero
+@handle_frontend_test(
+    fn_tree="jax.numpy.nonzero",
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_jax_numpy_nonzero(
+    dtype_and_a,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
+    )

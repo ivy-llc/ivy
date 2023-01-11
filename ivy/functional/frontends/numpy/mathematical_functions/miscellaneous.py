@@ -1,5 +1,4 @@
 # global
-import math
 import ivy
 
 # local
@@ -8,6 +7,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
@@ -20,6 +20,7 @@ def convolve(a, v, mode="full"):
     return ivy.frontends.numpy.correlate(a, v[::-1], mode)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -57,6 +58,7 @@ def clip(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -78,6 +80,7 @@ def sqrt(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -100,6 +103,7 @@ def cbrt(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -121,6 +125,7 @@ def square(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -142,6 +147,7 @@ def absolute(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -163,6 +169,7 @@ def fabs(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -184,6 +191,7 @@ def sign(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -209,17 +217,19 @@ def heaviside(
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
-    ret = ivy.array(x, copy=copy)
-    bounds = ivy.finfo(x)
-    pinf = posinf if posinf is not None else bounds.max
-    ninf = neginf if neginf is not None else bounds.min
-    ivy.where(ivy.equal(ret, ret.full_like(math.nan)), ret.full_like(nan), ret, out=ret)
-    ivy.where(
-        ivy.equal(ret, ret.full_like(math.inf)), ret.full_like(pinf), ret, out=ret
-    )
-    ivy.where(
-        ivy.equal(ret, ret.full_like(-math.inf)), ret.full_like(ninf), ret, out=ret
-    )
+    bounds = ivy.finfo(x.dtype)
+    if posinf is None:
+        posinf = bounds.max
+    if neginf is None:
+        neginf = bounds.min
+    pos_where = ivy.isinf(x, detect_negative=False)
+    neg_where = ivy.isinf(x, detect_positive=False)
+    nan_where = ivy.isnan(x)
+    ret = ivy.where(nan_where, nan, x)
+    ret = ivy.where(pos_where, posinf, ret)
+    ret = ivy.where(neg_where, neginf, ret)
+    if not copy:
+        return ivy.inplace_update(x, ret)
     return ret
 
 
@@ -288,6 +298,7 @@ def interp(x, xp, fp, left=None, right=None, period=None):
         return ivy.astype(ivy.array(ret), "float64")
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
