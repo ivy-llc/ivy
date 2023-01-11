@@ -5,9 +5,9 @@ constant_pad
 
 .. autofunction:: ivy.array.array_methods.constant_pad
 
-.. autofunction:: ivy.container.container_methods.static_constant_pad
-
 .. autofunction:: ivy.container.container_methods.constant_pad
+
+.. autofunction:: ivy.container.container_methods.static_constant_pad
 |
 | **Supported Frameworks:**
 

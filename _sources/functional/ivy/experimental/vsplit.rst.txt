@@ -5,9 +5,9 @@ vsplit
 
 .. autofunction:: ivy.array.array_methods.vsplit
 
-.. autofunction:: ivy.container.container_methods.static_vsplit
-
 .. autofunction:: ivy.container.container_methods.vsplit
+
+.. autofunction:: ivy.container.container_methods.static_vsplit
 |
 | **Supported Frameworks:**
 
