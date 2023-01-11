@@ -131,6 +131,31 @@ def inv_ex(input, *, check_errors=False, out=None):
             return inputInv, info
 
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def tensorinv(input, ind=2, *, out=None):
+    not_invertible = "Reshaped tensor is not invertible"
+    prod_cond = "Tensor shape must satisfy prod(A.shape[:ind]) == prod(A.shape[ind:])"
+    positive_ind_cond = "Expected a strictly positive integer for 'ind'"
+    input_shape = ivy.shape(input)
+    assert ind > 0, f'{positive_ind_cond}'
+    shape_ind_end = input_shape[:ind]
+    shape_ind_start = input_shape[ind:]
+    prod_ind_end = 1
+    prod_ind_start = 1
+    for i in shape_ind_start:
+        prod_ind_start *= i
+    for j in shape_ind_end:
+        prod_ind_end *= j
+    assert prod_ind_end == prod_ind_start, f'{prod_cond}.'
+    inverse_shape = shape_ind_start + shape_ind_end
+    input = ivy.reshape(input, shape=(prod_ind_end, -1))
+    inverse_shape_tuple = tuple([*inverse_shape])
+    assert inv_ex(input, check_errors=True), f'{not_invertible}.'
+    inverse_tensor = ivy.inv(input)
+    return ivy.reshape(inverse_tensor, shape=inverse_shape_tuple, out=out)
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def eig(input, *, out=None):
     return ivy.eig(input, out=out)

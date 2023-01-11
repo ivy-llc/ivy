@@ -8,9 +8,11 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -34,6 +36,7 @@ def add(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -57,6 +60,7 @@ def subtract(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -83,6 +87,7 @@ def divide(
 true_divide = divide
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -106,6 +111,7 @@ def multiply(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -129,6 +135,7 @@ def power(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -164,6 +171,7 @@ def vdot(
     return ivy.multiply(a, b).sum()
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -185,6 +193,7 @@ def positive(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -206,6 +215,7 @@ def negative(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -231,6 +241,7 @@ def floor_divide(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -254,6 +265,7 @@ def reciprocal(
     return ret.astype(dtype)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -279,6 +291,7 @@ def mod(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
