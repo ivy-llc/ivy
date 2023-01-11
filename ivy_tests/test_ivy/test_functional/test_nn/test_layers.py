@@ -4,9 +4,9 @@
 from hypothesis import strategies as st, assume
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy.functional.ivy.layers import _deconv_length
 
 # Linear #
 # -------#
@@ -352,7 +352,7 @@ def x_and_filters(
         )
         for i in range(dim):
             output_shape.append(
-                ivy.deconv_length(
+                _deconv_length(
                     x_dim[i], strides, filter_shape[i], padding, dilations
                 )
             )
