@@ -366,7 +366,7 @@ def conv_general_transpose(
     filter_df = _get_filter_dataformat(dims)
     if data_format == "channel_first":
         x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
-    x_shape = list(x.shape[1 : dims + 1])
+    x_shape = list(x.shape[1: dims + 1])
     out_shape = [
         _deconv_length(
             x_shape[i], strides[i], filters.shape[i], padding, dilations[i]
@@ -379,16 +379,16 @@ def conv_general_transpose(
         output_shape = [x.shape[0], *output_shape, filters.shape[-2]]
 
     diff = [-(output_shape[i + 1] - out_shape[i]) for i in range(dims)]
-    pad = [0] * dims
+    pad = []
     for i in range(dims):
-        pad[i] = _conv_transpose_padding(
+        pad += [_conv_transpose_padding(
             filters.shape[i], strides[i], padding, dilations[i], diff[i]
-        )
+        )]
     res = jnp.concatenate(
         [
             jlax.conv_transpose(
-                x[..., j : j + filters.shape[-1] // feature_group_count],
-                filters[..., j : j + filters.shape[-1] // feature_group_count],
+                x[..., j: j + filters.shape[-1] // feature_group_count],
+                filters[..., j: j + filters.shape[-1] // feature_group_count],
                 strides,
                 pad,
                 dilations,
