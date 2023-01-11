@@ -728,7 +728,7 @@ def embedding(
     """
     ret = ivy.gather(weights, indices, axis=0)
     if max_norm is not None:
-        ret = ivy.l2_normalize(ret,
-                               axis=-1,
-                               out=out)
+        ret = max_norm * ivy.l2_normalize(ret,
+                                          axis=-1,
+                                          out=out)
     return ret
