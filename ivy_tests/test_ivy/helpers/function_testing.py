@@ -550,6 +550,7 @@ def test_frontend_function(
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
         # strip the decorator to get an Ivy array
+        # ToDo, fix testing for jax frontend for x32
         if frontend == "jax":
             importlib.import_module(
                 'ivy.functional.frontends.jax').config.update('jax_enable_x64', True)
