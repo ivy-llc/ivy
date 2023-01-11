@@ -171,7 +171,7 @@ def nansum(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,

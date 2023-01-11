@@ -153,7 +153,7 @@ def nansum(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[tf.DType] = None,
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,

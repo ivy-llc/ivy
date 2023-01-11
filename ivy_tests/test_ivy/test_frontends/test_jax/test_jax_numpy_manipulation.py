@@ -635,39 +635,24 @@ def test_jax_numpy_append(
 
 
 # swapaxes
-@st.composite
-def _get_input_and_two_swapabble_axes(draw):
-    x_dtype, x, x_shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            ret_shape=True,
-            min_num_dims=1,
-            max_num_dims=10,
-        )
-    )
-
-    axis1 = draw(
-        helpers.ints(
-            min_value=-1 * len(x_shape),
-            max_value=len(x_shape) - 1,
-        )
-    )
-    axis2 = draw(
-        helpers.ints(
-            min_value=-1 * len(x_shape),
-            max_value=len(x_shape) - 1,
-        )
-    )
-    return x_dtype, x, axis1, axis2
-
-
 @handle_frontend_test(
     fn_tree="jax.numpy.swapaxes",
-    input_x_axis1_axis2=_get_input_and_two_swapabble_axes(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
+    axis1=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"), force_int=True
+    ),
+    axis2=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"), force_int=True
+    ),
 )
 def test_jax_numpy_swapaxes(
     *,
-    input_x_axis1_axis2,
+    dtype_and_x,
+    axis1,
+    axis2,
     num_positional_args,
     as_variable,
     native_array,
@@ -675,7 +660,7 @@ def test_jax_numpy_swapaxes(
     fn_tree,
     frontend,
 ):
-    x_dtype, x, axis1, axis2 = input_x_axis1_axis2
+    x_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,

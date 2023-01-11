@@ -4,9 +4,9 @@
 from hypothesis import strategies as st, assume
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy.functional.ivy.layers import _deconv_length
 
 # Linear #
 # -------#
@@ -293,18 +293,6 @@ def test_multi_head_attention(
 # -------------#
 
 
-def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
-    # Get the dilated kernel size
-    kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
-
-    if padding == "VALID":
-        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == "SAME":
-        dim_size = dim_size * stride_size
-
-    return dim_size
-
-
 @st.composite
 def x_and_filters(
     draw,
@@ -316,9 +304,9 @@ def x_and_filters(
 ):
     if not isinstance(dim, int):
         dim = draw(dim)
-    strides = draw(st.integers(min_value=1, max_value=2))
+    strides = draw(st.integers(min_value=1, max_value=3))
     padding = draw(st.sampled_from(["SAME", "VALID"]))
-    batch_size = 1
+    batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
@@ -352,7 +340,7 @@ def x_and_filters(
         )
         for i in range(dim):
             output_shape.append(
-                ivy.deconv_length(
+                _deconv_length(
                     x_dim[i], strides, filter_shape[i], padding, dilations
                 )
             )
@@ -404,6 +392,9 @@ def x_and_filters(
         )
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
+    if dim > 1:
+        if draw(st.booleans()):   # strides can be either an int or a sequence of ints
+            strides = [strides] * dim
     ret = (
         dtype,
         vals,

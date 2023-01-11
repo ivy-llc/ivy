@@ -172,7 +172,7 @@ def nansum(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[Tuple[int], int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[np.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
