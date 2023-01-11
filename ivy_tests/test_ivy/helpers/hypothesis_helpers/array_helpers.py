@@ -549,17 +549,12 @@ def arrays_and_axes(
         available_dtypes = draw(available_dtypes)
 
     dtype = draw(
-        dtype_helpers.array_dtypes(
-            num_arrays=num,
-            available_dtypes=available_dtypes
-        )
+        dtype_helpers.array_dtypes(num_arrays=num, available_dtypes=available_dtypes)
     )
     arrays = list()
     for shape in shapes:
         arrays.append(
-            draw(
-                array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20)
-            )
+            draw(array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20))
         )
     if force_int_axis:
         if len(shape) <= 2:
@@ -572,7 +567,9 @@ def arrays_and_axes(
             if None in all_axes_ranges:
                 all_axes_ranges.append(st.integers(0, len(shape) - 1))
             else:
-                all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
+                all_axes_ranges.append(
+                    st.one_of(st.none(), st.integers(0, len(shape) - 1))
+                )
         axes = draw(st.tuples(*all_axes_ranges))
     if returndtype:
         return dtype, arrays, axes
