@@ -5,9 +5,9 @@ logical_or
 
 .. autofunction:: ivy.array.array_methods.logical_or
 
-.. autofunction:: ivy.container.container_methods.static_logical_or
-
 .. autofunction:: ivy.container.container_methods.logical_or
+
+.. autofunction:: ivy.container.container_methods.static_logical_or
 |
 | **Supported Frameworks:**
 

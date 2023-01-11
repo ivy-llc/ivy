@@ -5,9 +5,9 @@ from_dlpack
 
 .. autofunction:: ivy.array.array_methods.from_dlpack
 
-.. autofunction:: ivy.container.container_methods.static_from_dlpack
-
 .. autofunction:: ivy.container.container_methods.from_dlpack
+
+.. autofunction:: ivy.container.container_methods.static_from_dlpack
 |
 | **Supported Frameworks:**
 

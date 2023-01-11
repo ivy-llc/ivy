@@ -5,9 +5,9 @@ cross
 
 .. autofunction:: ivy.array.array_methods.cross
 
-.. autofunction:: ivy.container.container_methods.static_cross
-
 .. autofunction:: ivy.container.container_methods.cross
+
+.. autofunction:: ivy.container.container_methods.static_cross
 |
 | **Supported Frameworks:**
 

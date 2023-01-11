@@ -5,9 +5,9 @@ randint
 
 .. autofunction:: ivy.array.array_methods.randint
 
-.. autofunction:: ivy.container.container_methods.randint
-
 .. autofunction:: ivy.container.container_methods.static_randint
+
+.. autofunction:: ivy.container.container_methods.randint
 |
 | **Supported Frameworks:**
 

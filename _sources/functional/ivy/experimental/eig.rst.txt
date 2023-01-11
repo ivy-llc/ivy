@@ -5,9 +5,9 @@ eig
 
 .. autofunction:: ivy.array.array_methods.eig
 
-.. autofunction:: ivy.container.container_methods.static_eig
-
 .. autofunction:: ivy.container.container_methods.eig
+
+.. autofunction:: ivy.container.container_methods.static_eig
 |
 | **Supported Frameworks:**
 
