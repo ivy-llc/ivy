@@ -455,6 +455,7 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
+
     assert (
         not with_out or not with_inplace
     ), "only one of with_out or with_inplace can be set as True"
@@ -550,6 +551,9 @@ def test_frontend_function(
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
         # strip the decorator to get an Ivy array
+        if frontend == "jax":
+            importlib.import_module(
+                'ivy.functional.frontends.jax').config.update('jax_enable_x64', True)
         ret = get_frontend_ret(frontend_fn, *args_ivy, **kwargs_ivy)
         if with_out:
             if not inspect.isclass(ret):
