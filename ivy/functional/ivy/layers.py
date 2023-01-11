@@ -774,9 +774,9 @@ def conv1d(
     Parameters
     ----------
     x
-        Input image.
+        Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
     filters
-        Convolution filters.
+        Convolution filters *[fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -785,10 +785,7 @@ def conv1d(
     data_format
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
-        corresponds to input with shape (batch_size, channels, width). The dimensions
-        in the filters are expected to follow a similar ordering: (width, channels_in,
-        channels_out) for "NWC" input, and (channels_in, channels_out, width) for "NCW"
-        input.
+        corresponds to input with shape (batch_size, channels, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -866,9 +863,9 @@ def conv1d_transpose(
     Parameters
     ----------
     x
-        Input image.
+        Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
     filters
-        Convolution filters.
+        Convolution filters *[fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -879,10 +876,7 @@ def conv1d_transpose(
     data_format
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
-        corresponds to input with shape (batch_size, channels, width). The dimensions
-        in the filters are expected to follow a similar ordering: (width, channels_in,
-        channels_out) for "NWC" input, and (channels_in, channels_out, width) for "NCW"
-        input.
+        corresponds to input with shape (batch_size, channels, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -927,9 +921,9 @@ def conv2d(
     Parameters
     ----------
     x
-        Input image.
+        Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
     filters
-        Convolution filters.
+        Convolution filters *[fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -939,9 +933,6 @@ def conv2d(
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
-        The dimensions in the filters are expected to follow a similar ordering:
-        (height, width, channels_in, channels_out) for "NHWC" input, and (channels_in,
-        channels_out, height, width) for "NCHW" input.
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1058,9 +1049,9 @@ def conv2d_transpose(
     Parameters
     ----------
     x
-        Input image.
+        Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
     filters
-        Convolution filters.
+        Convolution filters *[fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1072,9 +1063,6 @@ def conv2d_transpose(
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
-        The dimensions in the filters are expected to follow a similar ordering:
-        (height, width, channels_in, channels_out) for "NHWC" input, and (channels_in,
-        channels_out, height, width) for "NCHW" input.
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1121,9 +1109,9 @@ def depthwise_conv2d(
     Parameters
     ----------
     x
-        Input image.
+        Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
     filters
-        Convolution filters.
+        Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from x)
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1133,9 +1121,6 @@ def depthwise_conv2d(
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
-        The dimensions in the filters are expected to follow a similar ordering:
-        (height, width, channels_in, channels_out) for "NHWC" input, and (channels_in,
-        channels_out, height, width) for "NCHW" input.
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1259,9 +1244,9 @@ def conv3d(
     Parameters
     ----------
     x
-        Input volume.
+        Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
-        Convolution filters.
+        Convolution filters *[fd,fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1271,9 +1256,7 @@ def conv3d(
         The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
         corresponds to inputs with shape (batch_size, depth, height, width, channels),
         while "NCDHW" corresponds to input with shape (batch_size, channels, depth,
-        height, width). The dimensions in the filters are expected to follow a similar
-        ordering: (depth, height, width, channels_in, channels_out) for "NDHWC" input,
-        and (channels_in, channels_out, depth, height, width) for "NCDHW" input.
+        height, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1376,9 +1359,9 @@ def conv3d_transpose(
     Parameters
     ----------
     x
-        Input image.
+        Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
-        Convolution filters.
+        Convolution filters *[fd,fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1390,9 +1373,7 @@ def conv3d_transpose(
         The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
         corresponds to inputs with shape (batch_size, depth, height, width, channels),
         while "NCDHW" corresponds to input with shape (batch_size, channels, depth,
-        height, width). The dimensions in the filters are expected to follow a similar
-        ordering: (depth, height, width, channels_in, channels_out) for "NDHWC" input,
-        and (channels_in, channels_out, depth, height, width) for "NCDHW" input.
+        height, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1527,9 +1508,9 @@ def conv_general_dilated(
     Parameters
     ----------
     x
-        Input image.
+        Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
-        Convolution filters.
+        Convolution filters *[fd,fh,fw,d_in/feature_group_count,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1549,7 +1530,7 @@ def conv_general_dilated(
     dilations
         The dilation factor for each dimension of filter. (Default value = 1)
     bias
-        Bias array.
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1600,9 +1581,9 @@ def conv_general_transpose(
     Parameters
     ----------
     x
-        Input image.
+        Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
-        Convolution filters.
+        Convolution filters *[fd,fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1617,7 +1598,7 @@ def conv_general_transpose(
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     bias
-        Bias array.
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1668,9 +1649,9 @@ def conv(
     Parameters
     ----------
     x
-        Input image.
+        Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
-        Convolution filters.
+        Convolution filters *[fd,fh,fw,d_in/feature_group_count,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1695,7 +1676,7 @@ def conv(
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     bias
-        Bias array.
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
