@@ -3,9 +3,9 @@ kaiser_window
 
 .. autofunction:: ivy.functional.ivy.experimental.kaiser_window
 
-.. autofunction:: ivy.container.container_methods.kaiser_window
-
 .. autofunction:: ivy.container.container_methods.static_kaiser_window
+
+.. autofunction:: ivy.container.container_methods.kaiser_window
 |
 | **Supported Frameworks:**
 

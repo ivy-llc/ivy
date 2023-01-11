@@ -82,15 +82,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
 <ul>
@@ -1973,7 +1973,7 @@
 <span class="c1"># Helpers #</span>
 
 
-<div class="viewcode-block" id="handle_padding"><a class="viewcode-back" href="../../../../functional/ivy/layers/handle_padding.html#ivy.functional.ivy.layers.handle_padding">[docs]</a><span class="k">def</span> <span class="nf">handle_padding</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">padding</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_handle_padding</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">padding</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;SAME&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">x</span> <span class="o">%</span> <span class="n">strides</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">pad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">filters</span> <span class="o">-</span> <span class="n">strides</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -1981,19 +1981,19 @@
             <span class="n">pad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">filters</span> <span class="o">-</span> <span class="p">(</span><span class="n">x</span> <span class="o">%</span> <span class="n">strides</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">pad</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">return</span> <span class="n">pad</span></div>
+    <span class="k">return</span> <span class="n">pad</span>
 
 
-<div class="viewcode-block" id="deconv_length"><a class="viewcode-back" href="../../../../functional/ivy/layers/deconv_length.html#ivy.functional.ivy.layers.deconv_length">[docs]</a><span class="k">def</span> <span class="nf">deconv_length</span><span class="p">(</span><span class="n">dim_size</span><span class="p">,</span> <span class="n">stride_size</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_deconv_length</span><span class="p">(</span><span class="n">dim_size</span><span class="p">,</span> <span class="n">stride_size</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="n">kernel_size</span> <span class="o">=</span> <span class="n">kernel_size</span> <span class="o">+</span> <span class="p">(</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dilation</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;VALID&quot;</span><span class="p">:</span>
         <span class="n">dim_size</span> <span class="o">=</span> <span class="n">dim_size</span> <span class="o">*</span> <span class="n">stride_size</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="n">stride_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;SAME&quot;</span><span class="p">:</span>
         <span class="n">dim_size</span> <span class="o">=</span> <span class="n">dim_size</span> <span class="o">*</span> <span class="n">stride_size</span>
-    <span class="k">return</span> <span class="n">dim_size</span></div>
+    <span class="k">return</span> <span class="n">dim_size</span>
 
 
-<div class="viewcode-block" id="get_x_data_format"><a class="viewcode-back" href="../../../../functional/ivy/layers/get_x_data_format.html#ivy.functional.ivy.layers.get_x_data_format">[docs]</a><span class="k">def</span> <span class="nf">get_x_data_format</span><span class="p">(</span><span class="n">dims</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;channel_first&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_x_data_format</span><span class="p">(</span><span class="n">dims</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;channel_first&quot;</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">dims</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">data_format</span> <span class="o">==</span> <span class="s2">&quot;channel_first&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;NCW&quot;</span>
@@ -2008,7 +2008,7 @@
         <span class="k">if</span> <span class="n">data_format</span> <span class="o">==</span> <span class="s2">&quot;channel_first&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;NCDHW&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;NDHWC&quot;</span></div>
+            <span class="k">return</span> <span class="s2">&quot;NDHWC&quot;</span>
 </pre></div>
 
            </div>

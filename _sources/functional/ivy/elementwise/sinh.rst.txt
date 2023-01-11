@@ -5,9 +5,9 @@ sinh
 
 .. autofunction:: ivy.array.array_methods.sinh
 
-.. autofunction:: ivy.container.container_methods.sinh
-
 .. autofunction:: ivy.container.container_methods.static_sinh
+
+.. autofunction:: ivy.container.container_methods.sinh
 |
 | **Supported Frameworks:**
 
