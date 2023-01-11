@@ -69,6 +69,9 @@ class Tensor:
     def any(self, dim=None, keepdim=False, *, out=None):
         return torch_frontend.any(self._ivy_array, dim=dim, keepdim=keepdim, out=out)
 
+    def all(self, dim=None, keepdim=False, *, out=None):
+        return torch_frontend.all(self._ivy_array, dim=dim, keepdim=keepdim, out=out)
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add_(self, other, *, alpha=1):
         self._ivy_array = self.add(other, alpha=alpha).ivy_array
