@@ -260,6 +260,9 @@ def kl_div(
 ):
     size = ivy.shape(input)
     
+    if len(size) < 1:
+        size = [1]
+    
     def loss_fn():
         if log_target:
             return ivy.exp(target) * (target - input)
