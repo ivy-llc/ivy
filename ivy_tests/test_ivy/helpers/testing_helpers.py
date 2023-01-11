@@ -362,16 +362,13 @@ def handle_frontend_test(
         A search strategy for determining the number of positional arguments to be
         passed to the function
 
-    test_instance_method
-        A search strategy that generates a boolean to test instance methods
+    test_inplace
+        A search strategy that generates a boolean to test the method with `inplace`
+        update
 
     test_with_out
         A search strategy that generates a boolean to test the function with an `out`
         parameter
-
-    test_gradients
-        A search strategy that generates a boolean to test the function with arrays as
-        gradients
 
     as_variable_flags
         A search strategy that generates a list of boolean flags for array inputs to be
@@ -380,10 +377,6 @@ def handle_frontend_test(
     native_array_flags
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a native array
-
-    container_flags
-        A search strategy that generates a list of boolean flags for array inputs to be
-        passed as a Container
     """
     fn_tree = "ivy.functional.frontends." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0

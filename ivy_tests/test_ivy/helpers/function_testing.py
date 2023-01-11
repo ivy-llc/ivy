@@ -396,12 +396,8 @@ def test_function(
 def test_frontend_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    as_variable_flags: List[bool],
-    with_out: bool,
-    with_inplace: bool = False,
+    test_flags: pf.frontend_function_flags,
     all_aliases: List[str] = None,
-    num_positional_args: int,
-    native_array_flags: List[bool],
     on_device="cpu",
     frontend: str,
     fn_tree: str,
@@ -417,24 +413,9 @@ def test_frontend_function(
     ----------
     input_dtypes
         data types of the input arguments in order.
-    as_variable_flags
-        dictates whether the corresponding input argument should be treated
-        as an ivy Variable.
-    with_out
-        if True, the function is also tested for inplace update to an array
-        passed to the optional out argument.
-    with_inplace
-        if True, the function is only tested with direct inplace update back to
-        the inputted array and ignore the value of with_out.
     all_aliases
         a list of strings containing all aliases for that function
         in the current frontend with their full namespaces.
-    num_positional_args
-        number of input arguments that must be passed as positional
-        arguments.
-    native_array_flags
-        dictates whether the corresponding input argument should be treated
-        as a native array.
     frontend
         current frontend (framework).
     fn_tree
@@ -456,17 +437,21 @@ def test_frontend_function(
         optional, return value from the Numpy function
     """
     assert (
-        not with_out or not with_inplace
+        not test_flags.with_out or not test_flags.inplace
     ), "only one of with_out or with_inplace can be set as True"
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
+        num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
     )
 
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
+    # TODO
+    as_variable_flags = test_flags.as_variable
+    native_array_flags = test_flags.native_arrays
 
     # make all lists equal in length
     num_arrays = c_arg_vals + c_kwarg_vals
@@ -479,7 +464,7 @@ def test_frontend_function(
 
     # update var flags to be compatible with float dtype and with_out args
     as_variable_flags = [
-        v if ivy.is_float_dtype(d) and not with_out else False
+        v if ivy.is_float_dtype(d) and not test_flags.with_out else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
 
@@ -551,7 +536,7 @@ def test_frontend_function(
         copy_args = copy.deepcopy(args)
         # strip the decorator to get an Ivy array
         ret = get_frontend_ret(frontend_fn, *args_ivy, **kwargs_ivy)
-        if with_out:
+        if test_flags.with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
             else:
@@ -579,7 +564,7 @@ def test_frontend_function(
                 if ivy.native_inplace_support:
                     assert ret.data is out.data
                 assert ret is out
-        elif with_inplace:
+        elif test_flags.inplace:
             assert not isinstance(ret, tuple)
             assert ivy.is_array(ret)
             if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
