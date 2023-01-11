@@ -627,12 +627,12 @@ def dropout1d(
 @handle_nestable
 @handle_array_like
 def ifft(
-        x: Union[ivy.Array, ivy.NativeArray],
-        dim: int,
-        *,
-        norm: Optional[str] = "backward",
-        n: Optional[Union[int, Tuple[int]]] = None,
-        out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    dim: int,
+    *,
+    norm: Optional[str] = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""Computes the one dimensional discrete Fourier transform given input at least
     1-D input x.
