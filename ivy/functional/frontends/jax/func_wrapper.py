@@ -120,10 +120,11 @@ def handle_jax_dtype(fn: Callable) -> Callable:
         if not jax_frontend.config.jax_enable_x64:
             dtype_replacement_dict = {
                 ivy.int64: ivy.int32,
-                ivy.uint64: ivy.uint32,
                 ivy.float64: ivy.float32,
                 ivy.complex128: ivy.complex64,
             }
+            if ivy.current_backend_str() != "torch":
+                dtype_replacement_dict[ivy.uint64] = ivy.uint32
             dtype = dtype_replacement_dict[dtype] \
                 if dtype in dtype_replacement_dict else dtype
 
