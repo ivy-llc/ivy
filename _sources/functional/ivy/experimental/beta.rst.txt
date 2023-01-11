@@ -5,9 +5,9 @@ beta
 
 .. autofunction:: ivy.array.array_methods.beta
 
-.. autofunction:: ivy.container.container_methods.beta
-
 .. autofunction:: ivy.container.container_methods.static_beta
+
+.. autofunction:: ivy.container.container_methods.beta
 |
 | **Supported Frameworks:**
 

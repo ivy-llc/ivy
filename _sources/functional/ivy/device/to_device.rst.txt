@@ -5,9 +5,9 @@ to_device
 
 .. autofunction:: ivy.array.array_methods.to_device
 
-.. autofunction:: ivy.container.container_methods.static_to_device
-
 .. autofunction:: ivy.container.container_methods.to_device
+
+.. autofunction:: ivy.container.container_methods.static_to_device
 |
 | **Supported Frameworks:**
 

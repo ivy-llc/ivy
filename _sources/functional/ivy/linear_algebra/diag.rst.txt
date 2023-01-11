@@ -5,9 +5,9 @@ diag
 
 .. autofunction:: ivy.array.array_methods.diag
 
-.. autofunction:: ivy.container.container_methods.static_diag
-
 .. autofunction:: ivy.container.container_methods.diag
+
+.. autofunction:: ivy.container.container_methods.static_diag
 |
 | **Supported Frameworks:**
 
