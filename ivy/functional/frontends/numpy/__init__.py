@@ -253,6 +253,7 @@ numpy_str_to_type_table = {
     "u8": "uint64",
     "c8": "complex64",
     "c16": "complex128",
+    "bool_": "bool",
 }
 
 numpy_type_to_str_and_num_table = {
@@ -294,6 +295,7 @@ numpy_scalar_to_dtype = {
     half: ivy.float16,
     single: ivy.float32,
     float_: ivy.float64,
+    bfloat16: ivy.bfloat16,
     complexfloating: ivy.complex128,
     csingle: ivy.complex64,
     complex_: ivy.complex128,
