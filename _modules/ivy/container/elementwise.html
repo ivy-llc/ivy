@@ -8283,6 +8283,16 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            a container with the element-wise recirpocal of ``x``</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.reciprocal()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([1, 0.5]),</span>
+<span class="sd">            b: ivy.array([0.25, 0.2])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_function</span><span class="p">(</span>
             <span class="s2">&quot;reciprocal&quot;</span><span class="p">,</span>
@@ -8331,6 +8341,16 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            a container with the element-wise recirpocal of ``x``</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.reciprocal()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([1, 0.5]),</span>
+<span class="sd">            b: ivy.array([0.25, 0.2])</span>
+<span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_reciprocal</span><span class="p">(</span>
