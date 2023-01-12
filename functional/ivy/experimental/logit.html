@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="ivy.logit" href="logit/logit_functional.html" />
-    <link rel="prev" title="ivy.Container.static_poisson" href="poisson/static_poisson_container.html" /> 
+    <link rel="prev" title="ivy.Container.static_broadcast_shapes" href="broadcast_shapes/static_broadcast_shapes_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -54,42 +54,7 @@
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../experimental.html">Experimental</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="max_pool1d.html">max_pool1d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="max_pool2d.html">max_pool2d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="max_pool3d.html">max_pool3d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="avg_pool1d.html">avg_pool1d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="avg_pool2d.html">avg_pool2d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="avg_pool3d.html">avg_pool3d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dct.html">dct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fft.html">fft</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dropout1d.html">dropout1d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ifft.html">ifft</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
-<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
-<li class="toctree-l2"><a class="reference internal" href="poisson.html">poisson</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">logit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="logit/logit_functional.html">ivy.logit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="logit/logit_array.html">ivy.Array.logit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="logit/logit_container.html">ivy.Container.logit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="logit/static_logit_container.html">ivy.Container.static_logit</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
-<li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="corrcoef.html">corrcoef</a></li>
-<li class="toctree-l2"><a class="reference internal" href="diagflat.html">diagflat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kron.html">kron</a></li>
-<li class="toctree-l2"><a class="reference internal" href="matrix_exp.html">matrix_exp</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eig.html">eig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eigvals.html">eigvals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adjoint.html">adjoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="l2_normalize.html">l2_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
@@ -120,10 +85,35 @@
 <li class="toctree-l2"><a class="reference internal" href="take_along_axis.html">take_along_axis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hsplit.html">hsplit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="broadcast_shapes.html">broadcast_shapes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">logit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logit/logit_functional.html">ivy.logit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logit/logit_array.html">ivy.Array.logit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logit/logit_container.html">ivy.Container.logit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logit/static_logit_container.html">ivy.Container.static_logit</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="l2_normalize.html">l2_normalize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="corrcoef.html">corrcoef</a></li>
+<li class="toctree-l2"><a class="reference internal" href="max_pool1d.html">max_pool1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="max_pool2d.html">max_pool2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="max_pool3d.html">max_pool3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="avg_pool1d.html">avg_pool1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="avg_pool2d.html">avg_pool2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="avg_pool3d.html">avg_pool3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dct.html">dct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fft.html">fft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dropout1d.html">dropout1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ifft.html">ifft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diagflat.html">diagflat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kron.html">kron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matrix_exp.html">matrix_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eig.html">eig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eigvals.html">eigvals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adjoint.html">adjoint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sinc.html">sinc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lcm.html">lcm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fmod.html">fmod</a></li>
@@ -151,6 +141,16 @@
 <li class="toctree-l2"><a class="reference internal" href="zeta.html">zeta</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html">gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xlogy.html">xlogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poisson.html">poisson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="SparseArray.html">SparseArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="NativeSparseArray.html">NativeSparseArray</a></li>
 </ul>
@@ -163,42 +163,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../experimental.html">Experimental</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="max_pool1d.html">max_pool1d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="max_pool2d.html">max_pool2d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="max_pool3d.html">max_pool3d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="avg_pool1d.html">avg_pool1d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="avg_pool2d.html">avg_pool2d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="avg_pool3d.html">avg_pool3d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dct.html">dct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fft.html">fft</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dropout1d.html">dropout1d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ifft.html">ifft</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
-<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
-<li class="toctree-l2"><a class="reference internal" href="poisson.html">poisson</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">logit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="logit/logit_functional.html">ivy.logit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="logit/logit_array.html">ivy.Array.logit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="logit/logit_container.html">ivy.Container.logit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="logit/static_logit_container.html">ivy.Container.static_logit</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
-<li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="corrcoef.html">corrcoef</a></li>
-<li class="toctree-l2"><a class="reference internal" href="diagflat.html">diagflat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kron.html">kron</a></li>
-<li class="toctree-l2"><a class="reference internal" href="matrix_exp.html">matrix_exp</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eig.html">eig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eigvals.html">eigvals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adjoint.html">adjoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="l2_normalize.html">l2_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
@@ -229,10 +194,35 @@
 <li class="toctree-l2"><a class="reference internal" href="take_along_axis.html">take_along_axis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hsplit.html">hsplit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="broadcast_shapes.html">broadcast_shapes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">logit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logit/logit_functional.html">ivy.logit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logit/logit_array.html">ivy.Array.logit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logit/logit_container.html">ivy.Container.logit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logit/static_logit_container.html">ivy.Container.static_logit</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="l2_normalize.html">l2_normalize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="corrcoef.html">corrcoef</a></li>
+<li class="toctree-l2"><a class="reference internal" href="max_pool1d.html">max_pool1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="max_pool2d.html">max_pool2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="max_pool3d.html">max_pool3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="avg_pool1d.html">avg_pool1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="avg_pool2d.html">avg_pool2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="avg_pool3d.html">avg_pool3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dct.html">dct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fft.html">fft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dropout1d.html">dropout1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ifft.html">ifft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diagflat.html">diagflat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kron.html">kron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matrix_exp.html">matrix_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eig.html">eig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eigvals.html">eigvals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adjoint.html">adjoint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sinc.html">sinc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lcm.html">lcm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fmod.html">fmod</a></li>
@@ -260,6 +250,16 @@
 <li class="toctree-l2"><a class="reference internal" href="zeta.html">zeta</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html">gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xlogy.html">xlogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poisson.html">poisson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="SparseArray.html">SparseArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="NativeSparseArray.html">NativeSparseArray</a></li>
 </ul>
@@ -287,15 +287,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/helpers.html">Helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
 <ul>
@@ -413,55 +413,6 @@ Otherwise if eps is defined, x is clamped to [eps, 1 - eps]</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.static_logit">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_logit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_logit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_logit" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container static method variant of ivy.logit.
-This method simply wraps the function, and so the
-docstring for ivy.logit  also applies to this method with
-minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – Input container.</p></li>
-<li><p><strong>eps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – When eps is None the function outpus NaN where x &lt; 0 or x &gt; 1. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-and inf or -inf where x = 1 or x = 0, respectively.
-Otherwise if eps is defined, x is clamped to [eps, 1 - eps]</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – Optional output Contaner. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Container with logits of the leaves.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_logit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-<span class="go">{</span>
-<span class="go">    a: ivy.array([inf, -inf, 2.19722438]),</span>
-<span class="go">    b: ivy.array([-2.19722462, nan, nan])</span>
-<span class="go">}</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_logit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-<span class="go">{</span>
-<span class="go">    a: ivy.array([-0.84729779, 1.38629448, 1.38629448]),</span>
-<span class="go">    b: ivy.array([-1.38629436, 1.38629448, -1.38629436])</span>
-<span class="go">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="ivy.container.container_methods.logit">
 <span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">logit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.logit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.logit" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Container instance method variant of ivy.logit.
@@ -510,6 +461,55 @@ Otherwise if eps is defined, x is clamped to [eps, 1 - eps]</p></li>
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_logit">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_logit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_logit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_logit" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container static method variant of ivy.logit.
+This method simply wraps the function, and so the
+docstring for ivy.logit  also applies to this method with
+minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – Input container.</p></li>
+<li><p><strong>eps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – When eps is None the function outpus NaN where x &lt; 0 or x &gt; 1. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+and inf or -inf where x = 1 or x = 0, respectively.
+Otherwise if eps is defined, x is clamped to [eps, 1 - eps]</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – Optional output Contaner. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Container with logits of the leaves.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_logit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([inf, -inf, 2.19722438]),</span>
+<span class="go">    b: ivy.array([-2.19722462, nan, nan])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_logit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([-0.84729779, 1.38629448, 1.38629448]),</span>
+<span class="go">    b: ivy.array([-1.38629436, 1.38629448, -1.38629436])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
@@ -523,7 +523,7 @@ Otherwise if eps is defined, x is clamped to [eps, 1 - eps]</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="poisson/static_poisson_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_poisson" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="broadcast_shapes/static_broadcast_shapes_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_broadcast_shapes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="logit/logit_functional.html" class="btn btn-neutral float-right" title="ivy.logit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

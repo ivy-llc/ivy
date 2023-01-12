@@ -5,9 +5,9 @@ get_num_dims
 
 .. autofunction:: ivy.array.array_methods.get_num_dims
 
-.. autofunction:: ivy.container.container_methods.get_num_dims
-
 .. autofunction:: ivy.container.container_methods.static_get_num_dims
+
+.. autofunction:: ivy.container.container_methods.get_num_dims
 |
 | **Supported Frameworks:**
 

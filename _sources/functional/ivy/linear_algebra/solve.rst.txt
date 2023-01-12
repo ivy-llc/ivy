@@ -5,9 +5,9 @@ solve
 
 .. autofunction:: ivy.array.array_methods.solve
 
-.. autofunction:: ivy.container.container_methods.solve
-
 .. autofunction:: ivy.container.container_methods.static_solve
+
+.. autofunction:: ivy.container.container_methods.solve
 |
 | **Supported Frameworks:**
 

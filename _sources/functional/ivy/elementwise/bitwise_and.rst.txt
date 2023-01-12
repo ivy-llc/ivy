@@ -5,9 +5,9 @@ bitwise_and
 
 .. autofunction:: ivy.array.array_methods.bitwise_and
 
-.. autofunction:: ivy.container.container_methods.static_bitwise_and
-
 .. autofunction:: ivy.container.container_methods.bitwise_and
+
+.. autofunction:: ivy.container.container_methods.static_bitwise_and
 |
 | **Supported Frameworks:**
 

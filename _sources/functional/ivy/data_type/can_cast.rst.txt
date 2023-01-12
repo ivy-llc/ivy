@@ -5,9 +5,9 @@ can_cast
 
 .. autofunction:: ivy.array.array_methods.can_cast
 
-.. autofunction:: ivy.container.container_methods.static_can_cast
-
 .. autofunction:: ivy.container.container_methods.can_cast
+
+.. autofunction:: ivy.container.container_methods.static_can_cast
 |
 | **Supported Frameworks:**
 
