@@ -1147,7 +1147,6 @@ def adam_update(
 
     Examples
     --------
-
     With :class:`ivy.Array` inputs:
 
     >>> w = ivy.array([1., 2, 3])
