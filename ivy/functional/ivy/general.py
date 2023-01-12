@@ -239,6 +239,16 @@ def is_ivy_container(x: Any, /) -> bool:
     ret
         Boolean, whether or not x is an ivy container.
 
+    Examples
+    --------
+    >>> x = ivy.Container()
+    >>> print(ivy.is_ivy_container(x))
+    True
+
+    >>> x = [2, 3]
+    >>> print(ivy.is_ivy_container(x))
+    False
+
     """
     return isinstance(x, ivy.Container)
 
