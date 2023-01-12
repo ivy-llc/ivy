@@ -724,6 +724,20 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not the input arrays are equal
 
+        Examples
+        --------
+        >>> x = ivy.array([-1,0])
+        >>> y = ivy.array([1,0])
+        >>> z = x.array_equal(y)
+        >>> print(z)
+        False
+
+        >>> a = ivy.array([1, 2])
+        >>> b = ivy.array([1, 2])
+        >>> c = a.array_equal(b)
+        >>> print(c)
+        True
+
         """
         return ivy.array_equal(self, x)
 
