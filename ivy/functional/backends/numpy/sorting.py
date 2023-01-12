@@ -73,3 +73,18 @@ def searchsorted(
     else:
         ret = np.searchsorted(x, v, side=side, sorter=sorter)
     return ret.astype(ret_dtype)
+
+
+def partition(
+    x: np.ndarray,
+    kth: np.ndarray,
+    /,
+    *,
+    axis=-1,
+    kind="introselect",
+    order=None,
+    ret_dtype=np.ndarray,
+    out: Optional[ivy.Array] = None,
+) -> np.ndarray:
+    ret = np.partition(x, kth, axis=axis, order=order, kind=kind)
+    return ret.astype(ret_dtype)
