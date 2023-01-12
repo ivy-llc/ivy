@@ -49,6 +49,11 @@ def cov(
 ) -> tf.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
 
+    if dtype and x1.dtype != dtype:
+        x1 = tf.cast(x1, dtype)
+        if x2 is not None and x2.dtype != dtype:
+            x2 = tf.cast(x2, dtype)
+
     if ddof is not None and ddof != int(ddof):
         raise ValueError("ddof must be integer")
 
@@ -131,7 +136,7 @@ def cov(
     else:
         X_T = tf.transpose(tf.math.multiply(X, w))
 
-    fact = tf.cast(fact, dtype)
+    fact = tf.cast(fact, tf.as_dtype(dtype))
     c = tf.matmul(X, tf.math.conj(X_T)) / fact
 
     return c

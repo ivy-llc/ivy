@@ -53,7 +53,7 @@ def cov(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    # x1, x2 = ivy.promote_types_of_inputs(x1, x2)
 
     if x1.dim() > 2:
         raise ValueError("x1 has more than 2 dimensions")
@@ -68,26 +68,65 @@ def cov(
         else:
             ddof = 0
 
-    if dtype is not None:
+    if dtype is None:
+        x1 = x1.type(torch.float64)
+        if x2 is not None and x2.dtype != dtype:
+            x2 = x2.type(torch.float64)
+    else:
         x1 = x1.type(dtype)
         if x2 is not None:
             x2 = x2.type(dtype)
 
-    if x2 is None:
-        if rowVar is True:
-            return torch.cov(x1, correction=ddof, fweights=fweights, aweights=aweights)
-        else:
-            return torch.cov(
-                torch.transpose(x1, 0, 1),
-                correction=ddof,
-                fweights=fweights,
-                aweights=aweights,
-            )
-    else:
-        combined = torch.cat((x1, x2), dim=0)
-        return torch.cov(
-            combined, correction=ddof, fweights=fweights, aweights=aweights
-        )
+    X = x1
+    if not rowVar and len(x1.shape) != 1:
+        X = torch.t(x1)
+
+    if x2 is not None:
+        if not rowVar and len(x2.shape) != 1:
+            x2 = torch.t(x2)
+        X = torch.vstack((X, x2))
+
+    return torch.cov(X, correction=ddof, fweights=fweights, aweights=aweights)
+
+    # if x2 is None:
+    #     if rowVar is True:
+    #         return torch.cov(x1, correction=ddof, fweights=fweights, aweights=aweights)
+    #     else:
+    #         return torch.cov(
+    #             torch.transpose(x1, 0, 1),
+    #             correction=ddof,
+    #             fweights=fweights,
+    #             aweights=aweights,
+    #         )
+    # else:
+
+    #     print("ROWVAR", rowVar)
+    #     print("BEFORE X1 {} X2 {}".format(x1, x2))
+
+    #     combined = torch.vstack((x1, x2))
+    #     print("VSTACK COMBINED", combined)
+
+    #     if rowVar is False:
+    #         # x1 = torch.transpose(torch.unsqueeze(x1, 0), 0, 1)
+    #         # x2 = torch.transpose(torch.unsqueeze(x2, 0), 0, 1)
+    #         combined = torch.hstack((x1, x2))
+    #         print("HSTACK COMBINED \n", combined)
+
+    #     print("AFTER X1 {} X2 {}".format(x1, x2))
+
+    #     if rowVar is True:
+    #         # print("ROWVAR TRUE")
+    #         return torch.cov(
+    #             combined, correction=ddof, fweights=fweights, aweights=aweights
+    #         )
+    #     else:
+    #         # print("ROWVAR FALSE")
+    #         return torch.cov(
+    #             combined,
+    #             correction=ddof,
+    #             fweights=fweights,
+    #             aweights=aweights,
+    #         )
 
 
 cov.support_native_out = True

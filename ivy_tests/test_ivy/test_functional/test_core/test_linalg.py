@@ -301,14 +301,14 @@ def _get_dtype_value1_value2_cov(
         )
 
     # modifiers: rowVar, bias, ddof
-    rowVar = st.booleans()
-    bias = st.booleans()
+    rowVar = draw(st.booleans())
+    bias = draw(st.booleans())
     ddof = draw(helpers.ints(min_value=0, max_value=1))
     # mods = [draw(helpers.ints(min_value=0, max_value=1)) for _ in range(3)]
-    dims = len([item for sublist in values for item in sublist])
+    # dims = len([item for sublist in values for item in sublist])
 
-    fweights = [draw(helpers.ints(min_value=1, max_value=10)) for _ in range(dims)]
-    aweights = [draw(helpers.floats(min_value=1, max_value=10)) for _ in range(dims)]
+    # fweights = [draw(helpers.ints(min_value=1, max_value=10)) for _ in range(dims)]
+    # aweights = [draw(helpers.floats(min_value=1, max_value=10)) for _ in range(dims)]
 
     fweights = None
     aweights = None
@@ -1364,7 +1364,7 @@ def test_cov(
         ddof=ddof,
         fweights=fweights,
         aweights=aweights,
-        dtype=dtype,
+        return_flat_np_arrays=True,
     )
 
 

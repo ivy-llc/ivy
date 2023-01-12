@@ -438,7 +438,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     def cov(
         self: ivy.Container,
-        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        x2: ivy.Container = None,
         /,
         *,
         rowVar: bool = True,

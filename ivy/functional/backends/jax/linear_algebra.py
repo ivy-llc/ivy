@@ -45,7 +45,13 @@ def cov(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    # x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+
+    # default dtype of np is float64, cast if not given
+    if not dtype:
+        x1 = jnp.asarray(x1, dtype=jnp.float64)
+        if x2 is not None and x2.dtype != dtype:
+            x2 = jnp.asarray(x2, dtype=jnp.float64)
 
     if jnp.ndim(x1) > 2:
         raise ValueError("x1 has more than 2 dimensions")
@@ -54,10 +60,10 @@ def cov(
         if jnp.ndim(x2) > 2:
             raise ValueError("x2 has more than 2 dimensions")
 
-    if x2 is not None:
-        x1, x2 = promote_types_of_inputs(x1, x2)
-    else:
-        x1, _x2 = promote_types_of_inputs(x1, None)
+    # if x2 is not None:
+    #     x1, x2 = promote_types_of_inputs(x1, x2)
+    # else:
+    #     x1, _x2 = promote_types_of_inputs(x1, None)
 
     return jnp.cov(
         m=x1,
