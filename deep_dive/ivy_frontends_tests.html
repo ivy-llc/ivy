@@ -71,7 +71,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#ivy-tan">ivy.tan()</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ivy-full">ivy.full()</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#testing-without-using-tests-values">Testing Without Using Tests Values</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Testing Without Using Tests Values</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#alias-functions">Alias functions</a></li>
 </ul>
 </li>
@@ -626,60 +625,6 @@ This is because when the dtype is an integer or unsigned integer the <code class
 </section>
 <section id="testing-without-using-tests-values">
 <h3>Testing Without Using Tests Values<a class="headerlink" href="#testing-without-using-tests-values" title="Permalink to this heading"></a></h3>
-<p>While even using hypothesis, there are some cases in which we set <code class="code docutils literal notranslate"><span class="pre">test_values=False</span></code> for example, we have a
-function add_noise() and we call it on x and we try to assert (we interally use assert np.all_close) that the result
-from torch backend matches tensorflow the test will always fail, because the function add_noise() depends on a random
-seed internally that we have no control over, what we change is only how we test for equality, in which in that case
-we can not and we have to reconstruct the output as shown in the example below.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_torch/test_linalg.py</span>
-<span class="nd">@handle_frontend_test</span><span class="p">(</span>
-<span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;torch.linalg.qr&quot;</span><span class="p">,</span>
-<span class="n">dtype_and_input</span><span class="o">=</span><span class="n">_get_dtype_and_matrix</span><span class="p">(),</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_torch_qr</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">dtype_and_input</span><span class="p">,</span>
-    <span class="n">num_positional_args</span><span class="p">,</span>
-    <span class="n">as_variable</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
-    <span class="n">frontend</span><span class="p">,</span>
-    <span class="n">fn_tree</span><span class="p">,</span>
-    <span class="n">on_device</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_input</span>
-    <span class="n">ret</span><span class="p">,</span> <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
-        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
-        <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
-        <span class="n">on_device</span><span class="o">=</span><span class="n">on_device</span><span class="p">,</span>
-        <span class="nb">input</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">test_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ret</span><span class="p">]</span>
-    <span class="n">frontend_ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frontend_ret</span><span class="p">]</span>
-
-    <span class="n">q</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">ret</span>
-    <span class="n">frontend_q</span><span class="p">,</span> <span class="n">frontend_r</span> <span class="o">=</span> <span class="n">frontend_ret</span>
-
-    <span class="n">assert_all_close</span><span class="p">(</span>
-        <span class="n">ret_np</span><span class="o">=</span><span class="n">q</span> <span class="o">@</span> <span class="n">r</span><span class="p">,</span>
-        <span class="n">ret_from_gt_np</span><span class="o">=</span><span class="n">frontend_q</span> <span class="o">@</span> <span class="n">frontend_r</span><span class="p">,</span>
-        <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
-        <span class="n">atol</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
-        <span class="n">ground_truth_backend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
-    <span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>The parameter <code class="code docutils literal notranslate"><span class="pre">test_values=False</span></code> is explicitly set to “False” as there can be multiple solutions for this and those multiple solutions can all be correct, so we have to test with reconstructing the output.</p></li>
-</ul>
-</section>
-<section id="id1">
-<h3>Testing Without Using Tests Values<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
 <p>While even using hypothesis, there are some cases in which we set <code class="code docutils literal notranslate"><span class="pre">test_values=False</span></code> for example, we have a
 function add_noise() and we call it on x and we try to assert (we interally use assert np.all_close) that the result
 from torch backend matches tensorflow the test will always fail, because the function add_noise() depends on a random
