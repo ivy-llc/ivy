@@ -984,6 +984,13 @@ class ArrayWithGeneral(abc.ABC):
         ret
             x if x exists (is not None), else default.
 
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 1.2])
+        >>> y = x.default(0)
+        >>> print(y)
+        ivy.array([1. , 2. , 3. , 1.2])
+
         """
         return ivy.default(
             self,
