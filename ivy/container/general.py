@@ -2771,12 +2771,11 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            A list representation of the input array ``x``.
+            A container with list representation of the leave arrays.
 
         Examples
         --------
         With one :class:`ivy.Container` inputs:
-
 
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
         >>> y = ivy.Container.static_to_list(x)
@@ -2826,7 +2825,7 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            A list representation of the input array ``x``.
+            A container with list representation of the leave arrays.
 
         Examples
         --------
