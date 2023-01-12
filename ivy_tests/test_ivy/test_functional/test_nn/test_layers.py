@@ -324,7 +324,7 @@ def x_and_filters(
     # tensorflow backprop doesn't support dilations more than 1 on CPU
     dilations = 1
     if dim == 2:
-        data_format = draw(st.sampled_from(["NCHW"]))
+        data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
     elif dim == 1:
         data_format = draw(st.sampled_from(["NWC", "NCW"]))
     else:
