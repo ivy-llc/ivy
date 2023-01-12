@@ -6,7 +6,11 @@ from typing import Union, Tuple, Optional, List
 
 
 # local
-import ivy
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _deconv_length,
+    _get_x_data_format,
+)
 
 
 def _add_dilations(x, dilations, axis):
@@ -136,8 +140,8 @@ def conv2d(
         x = np.transpose(x, (0, 2, 3, 1))
 
     x_shape = list(x.shape[1:3])
-    pad_h = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_w = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = _handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_w = _handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
     x = np.pad(
         x,
         [
@@ -201,10 +205,10 @@ def conv2d_transpose(
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
 
     if output_shape is None:
-        new_h = ivy.deconv_length(
+        new_h = _deconv_length(
             x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
         )
-        new_w = ivy.deconv_length(
+        new_w = _deconv_length(
             x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
         )
         output_shape = [x.shape[0], new_h, new_w, filters.shape[-1]]
@@ -220,8 +224,8 @@ def conv2d_transpose(
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    pad_h = ivy.handle_padding(output_shape[1], strides[0], filters.shape[0], padding)
-    pad_w = ivy.handle_padding(output_shape[2], strides[1], filters.shape[1], padding)
+    pad_h = _handle_padding(output_shape[1], strides[0], filters.shape[0], padding)
+    pad_w = _handle_padding(output_shape[2], strides[1], filters.shape[1], padding)
 
     extra_h = max(0, output_shape[1] - (x.shape[1] + filters.shape[0] - 1 - pad_h))
     extra_w = max(0, output_shape[2] - (x.shape[2] + filters.shape[1] - 1 - pad_w))
@@ -330,9 +334,9 @@ def conv3d(
         x = np.transpose(x, (0, 2, 3, 4, 1))
 
     x_shape = list(x.shape[1:4])
-    pad_d = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_h = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
-    pad_w = ivy.handle_padding(x_shape[2], strides[2], filter_shape[2], padding)
+    pad_d = _handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_h = _handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    pad_w = _handle_padding(x_shape[2], strides[2], filter_shape[2], padding)
 
     x = np.pad(
         x,
@@ -399,13 +403,13 @@ def conv3d_transpose(
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
     if output_shape is None:
-        new_d = ivy.deconv_length(
+        new_d = _deconv_length(
             x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
         )
-        new_h = ivy.deconv_length(
+        new_h = _deconv_length(
             x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
         )
-        new_w = ivy.deconv_length(
+        new_w = _deconv_length(
             x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
         )
         output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[-1]]
@@ -426,9 +430,9 @@ def conv3d_transpose(
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    pad_d = ivy.handle_padding(output_shape[1], strides[0], filters.shape[0], padding)
-    pad_h = ivy.handle_padding(output_shape[2], strides[1], filters.shape[1], padding)
-    pad_w = ivy.handle_padding(output_shape[3], strides[2], filters.shape[2], padding)
+    pad_d = _handle_padding(output_shape[1], strides[0], filters.shape[0], padding)
+    pad_h = _handle_padding(output_shape[2], strides[1], filters.shape[1], padding)
+    pad_w = _handle_padding(output_shape[3], strides[2], filters.shape[2], padding)
     extra_d = max(0, output_shape[1] - (x.shape[1] + filters.shape[0] - 1 - pad_d))
     extra_h = max(0, output_shape[2] - (x.shape[2] + filters.shape[1] - 1 - pad_h))
     extra_w = max(0, output_shape[3] - (x.shape[3] + filters.shape[2] - 1 - pad_w))
@@ -500,7 +504,7 @@ def conv_general_dilated(
 
     x_shape = list(x.shape[1 : dims + 1])
     pad_specific = [
-        ivy.handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
+        _handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
         for i in range(dims)
     ]
     pad_list = [
@@ -584,7 +588,7 @@ def conv_general_transpose(
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     if output_shape is None:
         new_shape = [
-            ivy.deconv_length(
+            _deconv_length(
                 x.shape[i + 1], strides[i], filters.shape[i], padding, dilations[i]
             )
             for i in range(dims)
@@ -600,7 +604,7 @@ def conv_general_transpose(
             x = _add_dilations(x, strides[j], axis=j + 1)
 
     pad_specific = [
-        ivy.handle_padding(output_shape[i + 1], strides[i], filters.shape[i], padding)
+        _handle_padding(output_shape[i + 1], strides[i], filters.shape[i], padding)
         for i in range(dims)
     ]
     extra_pad = [
@@ -636,7 +640,7 @@ def conv_general_transpose(
                     1,
                     "VALID",
                     dims=dims,
-                    data_format=ivy.get_x_data_format(dims, "channel_last"),
+                    data_format=_get_x_data_format(dims, "channel_last"),
                     dilations=1,
                 ),
                 (*range(1, dims + 1),),

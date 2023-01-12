@@ -268,11 +268,27 @@ def _is_variable(x, exclusive=False) -> bool:
     )
 
 
-def _variable_data(x):
+def _variable_data(
+    x: Union[ivy.Array, ivy.NativeArray]
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gets the contents of the input.
+
+    Parameters
+    ----------
+    x
+        Input array.
+
+    Returns
+    -------
+    ret
+        An array with contents of the input.
+    """
     x = ivy.to_native(x, nested=True)
-    return ivy.nested_map(
+    ret = ivy.nested_map(
         x, lambda x: current_backend(x).variable_data(x), include_derived=True
     )
+    return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
 # Extra #
@@ -1089,7 +1105,7 @@ def adam_update(
     epsilon: float = 1e-7,
     stop_gradients: bool = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, using ADAM update. `[reference]
 
@@ -1129,6 +1145,98 @@ def adam_update(
         The new function weights ws_new, and also new mw and vw, following the adam
         updates.
 
+    Examples
+    --------
+
+    With :class:`ivy.Array` inputs:
+
+    >>> w = ivy.array([1., 2, 3])
+    >>> dcdw = ivy.array([0.5,0.2,0.1])
+    >>> lr = ivy.array(0.1)
+    >>> vw_tm1 = ivy.zeros(1)
+    >>> mw_tm1 = ivy.zeros(3)
+    >>> step = 1
+    >>> updated_weights = ivy.adam_update(w, dcdw, lr, mw_tm1, vw_tm1, step)
+    >>> print(updated_weights)
+    (ivy.array([0.90000075, 1.90000164, 2.9000032 ]),
+    ivy.array([0.05, 0.02, 0.01]),
+    ivy.array([2.50000012e-04, 4.00000063e-05, 1.00000016e-05]))
+
+    >>> w = ivy.array([[1., 2, 3],[4, 2, 4],[6, 4, 2]])
+    >>> dcdw = ivy.array([[0.1, 0.2, 0.3],[0.4, 0.5, 0.1],[0.1, 0.5, 0.3]])
+    >>> lr = ivy.array(0.1)
+    >>> mw_tm1 = ivy.zeros((3,3))
+    >>> vw_tm1 = ivy.zeros(3)
+    >>> step = 2
+    >>> beta1 = 0.9
+    >>> beta2 = 0.999
+    >>> epsilon = 1e-7
+    >>> out = ivy.zeros_like(w)
+    >>> stop_gradients = True
+    >>> updated_weights = ivy.adam_update(w, dcdw, lr, mw_tm1, vw_tm1, step,
+    ...                               beta1=beta1, beta2=beta2,
+    ...                               epsilon=epsilon, out=out,
+    ...                               stop_gradients=stop_gradients)
+    >>> print(updated_weights)
+    (
+    ivy.array([[0.92558873, 1.92558754, 2.92558718],
+               [3.92558694, 1.92558682, 3.92558861],
+               [5.92558861, 3.92558694, 1.92558718]]),
+    ivy.array([[0.01, 0.02, 0.03],
+               [0.04, 0.05, 0.01],
+               [0.01, 0.05, 0.03]]),
+    ivy.array([[1.00000016e-05, 4.00000063e-05, 9.00000086e-05],
+               [1.60000025e-04, 2.50000012e-04, 1.00000016e-05],
+               [1.00000016e-05, 2.50000012e-04, 9.00000086e-05]])
+    )
+
+    With one :class:`ivy.Container` input:
+
+    >>> w = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))
+    >>> dcdw = ivy.array([0.5, 0.2, 0.4])
+    >>> mw_tm1 = ivy.array([0., 0., 0.])
+    >>> vw_tm1 = ivy.array([0.])
+    >>> lr = ivy.array(0.01)
+    >>> step = 2
+    >>> updated_weights = ivy.adam_update(w, dcdw, mw_tm1, vw_tm1, lr, step)
+    >>> print(updated_weights)
+    ({
+        a: ivy.array([1., 2., 3.]),
+        b: ivy.array([4., 5., 6.])
+    }, ivy.array([0.05, 0.02, 0.04]), ivy.array([0.01024, 0.01003, 0.01015]))
+
+    With multiple :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., 5.]))
+    >>> dcdw = ivy.Container(a=ivy.array([0.1,0.3,0.3]),
+    ...                      b=ivy.array([0.3,0.2,0.2]))
+    >>> mw_tm1 = ivy.Container(a=ivy.array([0.,0.,0.]),
+    ...                        b=ivy.array([0.,0.,0.]))
+    >>> vw_tm1 = ivy.Container(a=ivy.array([0.,]),
+    ...                        b=ivy.array([0.,]))
+    >>> step = 3
+    >>> beta1 = 0.9
+    >>> beta2 = 0.999
+    >>> epsilon = 1e-7
+    >>> stop_gradients = False
+    >>> lr = ivy.array(0.001)
+    >>> updated_weights = ivy.adam_update(w, dcdw, lr, mw_tm1, vw_tm1, step,
+    ...                               beta1=beta1,
+    ...                               beta2=beta2, epsilon=epsilon,
+    ...                               stop_gradients=stop_gradients)
+    >>> print(updated_weights)
+    ({
+        a: ivy.array([0.99936122, 1.99936116, 2.99936128]),
+        b: ivy.array([3.99936128, 4.99936104, 5.99936104])
+    }, {
+        a: ivy.array([0.01, 0.03, 0.03]),
+        b: ivy.array([0.03, 0.02, 0.02])
+    }, {
+        a: ivy.array([1.00000016e-05, 9.00000086e-05, 9.00000086e-05]),
+        b: ivy.array([9.00000086e-05, 4.00000063e-05, 4.00000063e-05])
+    })
+
     """
     effective_grads, mw, vw = ivy.adam_step(
         dcdw, mw_tm1, vw_tm1, step, beta1=beta1, beta2=beta2, epsilon=epsilon
@@ -1147,7 +1255,6 @@ adam_update.out_index = 0
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-@handle_array_like
 @handle_array_like
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],

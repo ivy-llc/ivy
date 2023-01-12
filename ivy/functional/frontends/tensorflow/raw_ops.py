@@ -511,3 +511,10 @@ def Xlogy(*, x, y, name="Xlogy"):
     if (x == 0).all():
         return 0.0
     return ivy.multiply(x, ivy.log(y))
+
+
+@to_ivy_arrays_and_back
+def EuclideanNorm(*, input, axis, keep_dims=False, name="EuclideanNorm"):
+    return ivy.astype(
+        ivy.vector_norm(input, axis=axis, keepdims=keep_dims), input.dtype
+    )

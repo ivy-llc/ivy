@@ -128,6 +128,11 @@ def deg2rad(x):
 
 
 @to_ivy_arrays_and_back
+def radians(x):
+    return ivy.deg2rad(x)
+
+
+@to_ivy_arrays_and_back
 def exp2(x):
     return ivy.exp2(x)
 

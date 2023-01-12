@@ -10,6 +10,7 @@ from tensorflow.python.types.core import Tensor
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ivy.functional.ivy.layers import _deconv_length, _get_x_data_format
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
@@ -53,7 +54,7 @@ def conv1d_transpose(
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
     if output_shape is None:
-        output_shape = ivy.deconv_length(
+        output_shape = _deconv_length(
             x.shape[1], strides, filters.shape[0], padding, dilations
         )
         output_shape = [x.shape[0], output_shape, filters.shape[1]]
@@ -85,6 +86,8 @@ def conv2d(
     dilations: int = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if not isinstance(strides, int):
+        strides = strides[0]
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)
@@ -108,8 +111,6 @@ def conv2d_transpose(
 ):
     if isinstance(strides, int):
         strides = [strides] * 2
-    elif len(strides) == 1:
-        strides = [strides[0]] * 2
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filters = tf.transpose(filters, (0, 1, 3, 2))
     if not ivy.gpu_is_available() and (dilations[0] > 1 or dilations[1] > 1):
@@ -120,10 +121,10 @@ def conv2d_transpose(
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     if output_shape is None:
-        new_h = ivy.deconv_length(
+        new_h = _deconv_length(
             x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
         )
-        new_w = ivy.deconv_length(
+        new_w = _deconv_length(
             x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
         )
         output_shape = [x.shape[0], new_h, new_w, filters.shape[-2]]
@@ -224,13 +225,13 @@ def conv3d_transpose(
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
     if output_shape is None:
-        new_d = ivy.deconv_length(
+        new_d = _deconv_length(
             x.shape[1], strides[1], filters.shape[0], padding, dilations[0]
         )
-        new_h = ivy.deconv_length(
+        new_h = _deconv_length(
             x.shape[2], strides[2], filters.shape[1], padding, dilations[1]
         )
-        new_w = ivy.deconv_length(
+        new_w = _deconv_length(
             x.shape[3], strides[3], filters.shape[2], padding, dilations[2]
         )
         output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[-2]]
@@ -270,8 +271,10 @@ def conv_general_dilated(
         x_dilations = (x_dilations,) * dims
     elif len(x_dilations) == 1:
         x_dilations = (x_dilations[0],) * dims
+    if not isinstance(strides, int):
+        strides = strides[0]
     if dims == 3:
-        strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
+        strides = [1] + [strides] * 3 + [1]
         dilations = (
             [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
         )
@@ -294,7 +297,7 @@ def conv_general_dilated(
             x = tf.matmul(tf.transpose(x, (0, 1, *permute_list)), h)
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
 
-    df = ivy.get_x_data_format(dims, "chanel_last")
+    df = _get_x_data_format(dims, "chanel_last")
     if dims == 1:
         res = tf.concat(
             [
@@ -379,6 +382,8 @@ def conv_general_transpose(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if not isinstance(strides, int):
+        strides = strides[0]
     if data_format == "channel_first":
         x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     if dims == 1:
