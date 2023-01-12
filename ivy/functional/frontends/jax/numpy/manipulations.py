@@ -2,7 +2,7 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
-    handle_jax_dtype
+    handle_jax_dtype,
 )
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 

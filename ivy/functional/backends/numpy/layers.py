@@ -6,7 +6,11 @@ from typing import Union, Tuple, Optional, List
 
 
 # local
-from ivy.functional.ivy.layers import _handle_padding, _deconv_length, _get_x_data_format
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _deconv_length,
+    _get_x_data_format,
+)
 
 
 def _add_dilations(x, dilations, axis):
