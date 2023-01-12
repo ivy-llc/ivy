@@ -33,9 +33,9 @@ def conv1d(
     dilations: int = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, tuple):
+    if isinstance(strides, (tuple, list)):
         strides = strides[0]
-    if isinstance(dilations, tuple):
+    if isinstance(dilations, (tuple, list)):
         dilations = dilations[0]
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
@@ -70,9 +70,9 @@ def conv1d_transpose(
     dilations: int = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, tuple):
+    if isinstance(strides, (tuple, list)):
         strides = strides[0]
-    if isinstance(dilations, tuple):
+    if isinstance(dilations, (tuple, list)):
         dilations = dilations[0]
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
