@@ -380,3 +380,4 @@ def partition(
     return ivy.current_backend(x, kth).searchsorted(
         x, kth, axis=axis, out=out, kind=kind, order=order
     )
+
