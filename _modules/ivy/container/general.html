@@ -1342,7 +1342,7 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array([1,2]),</span>
 <span class="sd">        ...                   b = ivy.array([3,4]))</span>
 <span class="sd">        &gt;&gt;&gt; y = 1.5</span>
-<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_fourier_encode(x,y)</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_fourier_encode(x, y)</span>
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: (&lt;classivy.array.array.Array&gt;shape=[2,9]),</span>
@@ -1352,7 +1352,7 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array([3,10]),</span>
 <span class="sd">        ...                   b = ivy.array([4,8]))</span>
 <span class="sd">        &gt;&gt;&gt; y = 2.5</span>
-<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_fourier_encode(x,y,num_bands=3)</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_fourier_encode(x, y, num_bands=3)</span>
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,</span>
@@ -1666,6 +1666,16 @@
 <span class="sd">            Whether the container has any nans, applied either leafwise or across the</span>
 <span class="sd">            entire container.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float(&#39;nan&#39;), 2]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_has_nans(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: false,</span>
+<span class="sd">            b: true</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_function</span><span class="p">(</span>
             <span class="s2">&quot;has_nans&quot;</span><span class="p">,</span>
@@ -1699,6 +1709,17 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            Whether the container has any nans, applied across the entire container.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float(&#39;nan&#39;), 2]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.has_nans(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: false,</span>
+<span class="sd">            b: true</span>
+<span class="sd">        }</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_has_nans</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
