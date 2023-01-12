@@ -5,9 +5,9 @@ fmax
 
 .. autofunction:: ivy.array.array_methods.fmax
 
-.. autofunction:: ivy.container.container_methods.static_fmax
-
 .. autofunction:: ivy.container.container_methods.fmax
+
+.. autofunction:: ivy.container.container_methods.static_fmax
 |
 | **Supported Frameworks:**
 

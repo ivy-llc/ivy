@@ -5,9 +5,9 @@ sign
 
 .. autofunction:: ivy.array.array_methods.sign
 
-.. autofunction:: ivy.container.container_methods.static_sign
-
 .. autofunction:: ivy.container.container_methods.sign
+
+.. autofunction:: ivy.container.container_methods.static_sign
 |
 | **Supported Frameworks:**
 

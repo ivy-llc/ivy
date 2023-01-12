@@ -5,9 +5,9 @@ dev
 
 .. autofunction:: ivy.array.array_methods.dev
 
-.. autofunction:: ivy.container.container_methods.dev
-
 .. autofunction:: ivy.container.container_methods.static_dev
+
+.. autofunction:: ivy.container.container_methods.dev
 |
 | **Supported Frameworks:**
 

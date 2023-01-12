@@ -5,9 +5,9 @@ fliplr
 
 .. autofunction:: ivy.array.array_methods.fliplr
 
-.. autofunction:: ivy.container.container_methods.static_fliplr
-
 .. autofunction:: ivy.container.container_methods.fliplr
+
+.. autofunction:: ivy.container.container_methods.static_fliplr
 |
 | **Supported Frameworks:**
 
