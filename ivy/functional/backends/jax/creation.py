@@ -304,7 +304,10 @@ def copy_array(
     to_ivy_array: Optional[bool] = True, 
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.array(x)
+    if to_ivy_array:
+        return ivy.to_ivy(jnp.array(x))
+    else:
+        return jnp.array(x)
 
 
 def one_hot(

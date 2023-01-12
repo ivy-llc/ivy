@@ -386,7 +386,10 @@ def copy_array(
     to_ivy_array: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.identity(x)
+    if to_ivy_array:
+        return ivy.to_ivy(tf.identity(x))
+    else:
+        return tf.identity(x)
 
 
 def one_hot(

@@ -238,7 +238,10 @@ def copy_array(
     to_ivy_array: Optional[bool] = True, 
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return x.copy()
+    if to_ivy_array:
+        return ivy.to_ivy(x.copy())
+    else:
+        return x.copy()
 
 
 def one_hot(
