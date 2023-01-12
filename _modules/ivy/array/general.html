@@ -282,6 +282,22 @@
 <span class="sd">            Boolean, whether or not the inputs are equal, or matrix array of booleans if</span>
 <span class="sd">            equality_matrix=True is set.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([1, 1, 0, 0, 1, -1])</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([1, 1, 0, 0, 1, -1])</span>
+<span class="sd">        &gt;&gt;&gt; y = x1.all_equal(x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([0, 0])</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([0, 0])</span>
+<span class="sd">        &gt;&gt;&gt; x3 = ivy.array([1, 0])</span>
+<span class="sd">        &gt;&gt;&gt; y = x1.all_equal(x2, x3, equality_matrix=True)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([[ True,  True, False],</span>
+<span class="sd">           [ True,  True, False],</span>
+<span class="sd">           [False, False,  True]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x2</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">all_equal</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">,</span> <span class="n">equality_matrix</span><span class="o">=</span><span class="n">equality_matrix</span><span class="p">)</span></div>
