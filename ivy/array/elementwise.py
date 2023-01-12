@@ -858,6 +858,20 @@ class ArrayWithElementwise(abc.ABC):
         function, and so the docstring for ivy.expm1 also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array. Should have a numeric data type.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the evaluated result for each element in ``x``. The returned
+            array must have a floating-point data type determined by :ref:`type-promotion`.
+
         Examples
         --------
         >>> x = ivy.array([5.5, -2.5, 1.5, -0])
