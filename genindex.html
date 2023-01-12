@@ -82,15 +82,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/helpers.html">Helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/optimizers.html">Optimizers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
 <ul>
@@ -4965,6 +4965,18 @@
         <li><a href="data_classes/container/elementwise.html#ivy.container.elementwise.ContainerWithElementwise.minimum">(ivy.container.elementwise.ContainerWithElementwise method)</a>, <a href="data_classes/container/elementwise/ContainerWithElementwise.html#ivy.container.elementwise.ContainerWithElementwise.minimum">[1]</a>
 </li>
       </ul></li>
+      <li><a href="functional/ivy/activations/mish.html#ivy.array.array_methods.mish">mish() (in module ivy.array.array_methods)</a>, <a href="functional/ivy/activations/mish/mish_array.html#ivy.array.array_methods.mish">[1]</a>
+
+      <ul>
+        <li><a href="functional/ivy/activations/mish.html#ivy.container.container_methods.mish">(in module ivy.container.container_methods)</a>, <a href="functional/ivy/activations/mish/mish_container.html#ivy.container.container_methods.mish">[1]</a>
+</li>
+        <li><a href="functional/ivy/activations.html#ivy.functional.ivy.activations.mish">(in module ivy.functional.ivy.activations)</a>, <a href="functional/ivy/activations/mish.html#ivy.functional.ivy.activations.mish">[1]</a>, <a href="functional/ivy/activations/mish/mish_functional.html#ivy.functional.ivy.activations.mish">[2]</a>
+</li>
+        <li><a href="data_classes/array/activations.html#ivy.array.activations.ArrayWithActivations.mish">(ivy.array.activations.ArrayWithActivations method)</a>, <a href="data_classes/array/activations/ArrayWithActivations.html#ivy.array.activations.ArrayWithActivations.mish">[1]</a>
+</li>
+        <li><a href="data_classes/container/activations.html#ivy.container.activations.ContainerWithActivations.mish">(ivy.container.activations.ContainerWithActivations method)</a>, <a href="data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.mish">[1]</a>
+</li>
+      </ul></li>
       <li><a href="glossary.html#term-Mixed-Functions"><strong>Mixed Functions</strong></a>
 </li>
       <li><a href="stateful/helpers.html#ivy.stateful.helpers.ModuleHelpers.mod_depth">mod_depth() (ivy.stateful.helpers.ModuleHelpers method)</a>, <a href="stateful/helpers/ModuleHelpers.html#ivy.stateful.helpers.ModuleHelpers.mod_depth">[1]</a>
@@ -7270,10 +7282,10 @@
 </li>
       <li><a href="data_classes/container.html#ivy.container.container.Container.static_get_item">static_get_item() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_get_item">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_get_item">[2]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data_classes/container.html#ivy.container.container.Container.static_get_min_base">static_get_min_base() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_get_min_base">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_get_min_base">[2]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data_classes/container.html#ivy.container.container.Container.static_get_min_denominator">static_get_min_denominator() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_get_min_denominator">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_get_min_denominator">[2]</a>
 </li>
       <li><a href="data_classes/container.html#ivy.container.container.Container.static_get_nestable_mode">static_get_nestable_mode() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_get_nestable_mode">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_get_nestable_mode">[2]</a>
@@ -7768,6 +7780,12 @@
 
       <ul>
         <li><a href="data_classes/container/elementwise.html#ivy.container.elementwise.ContainerWithElementwise.static_minimum">(ivy.container.elementwise.ContainerWithElementwise static method)</a>, <a href="data_classes/container/elementwise/ContainerWithElementwise.html#ivy.container.elementwise.ContainerWithElementwise.static_minimum">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="functional/ivy/activations/mish.html#ivy.container.container_methods.static_mish">static_mish() (in module ivy.container.container_methods)</a>, <a href="functional/ivy/activations/mish/static_mish_container.html#ivy.container.container_methods.static_mish">[1]</a>
+
+      <ul>
+        <li><a href="data_classes/container/activations.html#ivy.container.activations.ContainerWithActivations.static_mish">(ivy.container.activations.ContainerWithActivations static method)</a>, <a href="data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_mish">[1]</a>
 </li>
       </ul></li>
       <li><a href="functional/ivy/experimental/moveaxis.html#ivy.container.container_methods.static_moveaxis">static_moveaxis() (in module ivy.container.container_methods)</a>, <a href="functional/ivy/experimental/moveaxis/static_moveaxis_container.html#ivy.container.container_methods.static_moveaxis">[1]</a>

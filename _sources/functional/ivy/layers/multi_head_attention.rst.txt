@@ -5,9 +5,9 @@ multi_head_attention
 
 .. autofunction:: ivy.array.array_methods.multi_head_attention
 
-.. autofunction:: ivy.container.container_methods.multi_head_attention
-
 .. autofunction:: ivy.container.container_methods.static_multi_head_attention
+
+.. autofunction:: ivy.container.container_methods.multi_head_attention
 |
 | **Supported Frameworks:**
 
