@@ -2116,11 +2116,13 @@ def test_jax_lax_conv(
 
 @handle_frontend_test(
     fn_tree="jax.lax.conv_transpose",
-    x_f_d_df=helpers.x_and_filters(dim=2),
+    x_f_d_other=_conv_helper(general=True, transpose=True),
+    transpose_kernel=st.booleans(),
 )
 def test_jax_lax_conv_transpose(
     *,
-    x_f_d_df,
+    x_f_d_other,
+    transpose_kernel,
     as_variable,
     num_positional_args,
     native_array,
@@ -2128,7 +2130,10 @@ def test_jax_lax_conv_transpose(
     fn_tree,
     frontend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dtype, x, filters, dilation, dim_num, stride, pad, out_shape, fc, pref = x_f_d_other
+    assume(
+        dim_num[1] in ["OIW", "OIHW", "OIDHW"]
+    )
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -2138,10 +2143,62 @@ def test_jax_lax_conv_transpose(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        lhs=x[0],
-        rhs=filters[0],
-        strides=(stride, stride),
+        lhs=x,
+        rhs=filters,
+        strides=stride,
         padding=pad,
+        rhs_dilation=[dilation]*(len(x.shape)-2),
+        dimension_numbers=dim_num,
+        # transpose_kernel=transpose_kernel,
+        transpose_kernel=True,
+        precision=None,
+        preferred_element_type=pref,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.conv_general_dilated",
+    x_f_d_other=_conv_helper(general=True),
+    x_dilation=st.integers(1, 3),
+)
+def test_jax_lax_conv_general_dilated(
+    *,
+    x_f_d_other,
+    x_dilation,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
+    # TODO: make it work for the rest of the ordering cases
+    assume(
+        dim_num[1] in ["OIW", "OIHW", "OIDHW"]
+    )
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lhs=x,
+        rhs=filters,
+        window_strides=stride,
+        padding=pad,
+        # TODO: make it work for non-default lhs_dilation
+        # lhs_dilation=[x_dilation]*(len(x.shape)-2),
+        lhs_dilation=None,
+        rhs_dilation=[dilation]*(len(x.shape)-2),
+        dimension_numbers=dim_num,
+        feature_group_count=fc,
+        batch_group_count=1,
+        precision=None,
+        preferred_element_type=pref,
     )
 
 
