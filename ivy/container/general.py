@@ -1206,7 +1206,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> x = ivy.Container(a = ivy.array([1,2]),
         ...                   b = ivy.array([3,4]))
         >>> y = 1.5
-        >>> z = ivy.Container.static_fourier_encode(x,y)
+        >>> z = ivy.Container.static_fourier_encode(x, y)
         >>> print(z)
         {
             a: (<classivy.array.array.Array>shape=[2,9]),
@@ -1216,7 +1216,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> x = ivy.Container(a = ivy.array([3,10]),
         ...                   b = ivy.array([4,8]))
         >>> y = 2.5
-        >>> z = ivy.Container.static_fourier_encode(x,y,num_bands=3)
+        >>> z = ivy.Container.static_fourier_encode(x, y, num_bands=3)
         >>> print(z)
         {
             a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,
@@ -1530,6 +1530,16 @@ class ContainerWithGeneral(ContainerBase):
             Whether the container has any nans, applied either leafwise or across the
             entire container.
 
+        Examples
+        --------
+
+        >>> x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
+        >>> y = ivy.Container.static_has_nans(x)
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "has_nans",
@@ -1563,6 +1573,17 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
             Whether the container has any nans, applied across the entire container.
+
+        Examples
+        --------
+        >>> x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
+        >>> y = x.has_nans(x)
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
         """
         return self.static_has_nans(
             self,
