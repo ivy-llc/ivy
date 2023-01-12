@@ -1042,7 +1042,7 @@ def fourier_encode(
 
     >>> x = ivy.array([3,10])
     >>> y = 2.5
-    >>> z = ivy.fourier_encode(x,y, num_bands=3)
+    >>> z = ivy.fourier_encode(x, y, num_bands=3)
     >>> print(z)
     ivy.array([[ 3.0000000e+00,  3.6739404e-16,  3.6739404e-16, 3.6739404e-16,
                 -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
