@@ -82,9 +82,7 @@ def conv1d_transpose(
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     if output_shape is None:
-        new_w = _deconv_length(
-            x.shape[2], strides, filter_shape[0], padding, dilations
-        )
+        new_w = _deconv_length(x.shape[2], strides, filter_shape[0], padding, dilations)
         output_shape = [x.shape[0], new_w, filters.shape[-2]]
     elif len(output_shape) == 1:
         output_shape = [x.shape[0], output_shape[0], filters.shape[-2]]
