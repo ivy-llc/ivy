@@ -293,6 +293,8 @@ def test_numpy_maximum(
         force_int_axis=True,
         large_abs_safety_factor=2,
         safety_factor_scale="log",
+        allow_nan=True,
+        allow_inf=True,
     ),
     initial=st.one_of(st.floats(min_value=-1000, max_value=1000), st.none()),
     keepdims=st.booleans(),
@@ -312,7 +314,7 @@ def test_numpy_nanmax(
     keepdims,
 ):
     if initial is None and np.all(where) is not True:
-        assume(initial is inf)
+        assume(initial is -inf)
 
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -335,5 +337,5 @@ def test_numpy_nanmax(
         out=None,
         keepdims=keepdims,
         initial=initial,
-        where=None,
+        where=where,
     )
