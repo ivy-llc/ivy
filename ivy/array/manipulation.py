@@ -700,6 +700,7 @@ class ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.zero_pad. This method simply
         wraps the function, and so the docstring for ivy.zero_pad also applies
         to this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -716,6 +717,7 @@ class ArrayWithManipulation(abc.ABC):
         -------
         ret
             Padded array of rank equal to x with shape increased according to pad_width.
+
         Examples
         --------
         With :class:`ivy.Array` input:

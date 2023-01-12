@@ -347,9 +347,62 @@ def test_separable_conv2d(
     test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend, 
+    ground_truth_backend,
 ):
-    dtype, x, stride, depthwise_filter, pointwise_filter, pad = x_k_s_p
+    dtype, x, kernel, stride, pad = x_k_s_p
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x[0],
+        kernel=kernel,
+        strides=stride,
+        padding=pad,
+    )
+
+
+@st.composite
+def x_and_ifft(draw):
+    min_fft_points = 2
+    dtype = draw(helpers.get_dtypes("complex"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e-10,
+            max_value=1e10,
+        )
+    )
+    dim = draw(st.integers(1 - len(list(x_dim)), len(list(x_dim)) - 1))
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    n = draw(st.integers(min_fft_points, 256))
+    return dtype, x, dim, norm, n
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.ifft",
+    d_x_d_n_n=x_and_ifft(),
+    test_gradients=st.just(False),
+)
+def test_ifft(
+    *,
+    d_x_d_n_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x, dim, norm, n = d_x_d_n_n
+
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -359,8 +412,7 @@ def test_separable_conv2d(
         rtol_=1e-2,
         atol_=1e-2,
         x=x,
-        depthwise_filter=depthwise_filter,
-        pointwise_filter=pointwise_filter,
-        strides=stride,
-        padding=pad,
+        dim=dim,
+        norm=norm,
+        n=n,
     )
