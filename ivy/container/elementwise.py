@@ -882,8 +882,6 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([0., -0.785, 0.785]),
             b: ivy.array([0.785, 0., -1.41])
         }
-
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "atan",
@@ -1295,7 +1293,7 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-                              b=ivy.array([5, 6, 7]))
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_bitwise_and(x, y)
         >>> print(z)
         {
@@ -1306,9 +1304,9 @@ class ContainerWithElementwise(ContainerBase):
         With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-                              b=ivy.array([2, 3, 4]))
+        ...                   b=ivy.array([2, 3, 4]))
         >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
-                              b=ivy.array([5, 6, 7]))
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_bitwise_and(x, y)
         >>> print(z)
         {
@@ -3100,7 +3098,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Parameters
         ----------
-        x
+        self
             input container. Should have a numeric data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
@@ -3959,7 +3957,8 @@ class ContainerWithElementwise(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
         ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
-        >>> x.isnan()
+        >>> y = x.isnan()
+        >>> print(y)
         {
             a: ivy.array([False, True, False]),
             b: ivy.array([True, False, False])
