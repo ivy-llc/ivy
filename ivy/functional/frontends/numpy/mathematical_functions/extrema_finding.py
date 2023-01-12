@@ -150,6 +150,13 @@ def nanmin(
         else:
             a = ivy.concat([a, header], axis=0)
     res = ivy.min(a, axis=axis, keepdims=keepdims, out=out)
+    if nan_mask is not None:
+        nan_mask = ivy.all(nan_mask, axis=axis, keepdims=keepdims, out=out)
+        if ivy.any(nan_mask):
+            res = ivy.where(ivy.logical_not(nan_mask),
+                            res,
+                            initial if initial is not None else ivy.nan,
+                            out=out)
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
     return res
