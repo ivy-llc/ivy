@@ -185,9 +185,6 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        if "to_ivy_array" in kwargs:
-            if not kwargs["to_ivy_array"]:
-                return ret
         # convert all arrays in the return to `ivy.Array` instances
         return (
             ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
