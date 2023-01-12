@@ -146,6 +146,22 @@ class ArrayWithGeneral(abc.ABC):
             Boolean, whether or not the inputs are equal, or matrix array of booleans if
             equality_matrix=True is set.
 
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 1, 0, 0, 1, -1])
+        >>> x2 = ivy.array([1, 1, 0, 0, 1, -1])
+        >>> y = x1.all_equal(x2)
+        >>> print(y)
+        True
+
+        >>> x1 = ivy.array([0, 0])
+        >>> x2 = ivy.array([0, 0])
+        >>> x3 = ivy.array([1, 0])
+        >>> y = x1.all_equal(x2, x3, equality_matrix=True)
+        >>> print(y)
+        ivy.array([[ True,  True, False],
+           [ True,  True, False],
+           [False, False,  True]])
         """
         arrays = [self] + [x for x in x2]
         return ivy.all_equal(*arrays, equality_matrix=equality_matrix)
