@@ -1728,7 +1728,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            Returns an Container including arrays with the imaginary part of complex numbers.
+            Returns an Container including arrays with the imaginary part
+            of complex numbers.
 
         Examples
         --------
@@ -1776,7 +1777,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            Returns an Container including arrays with the imaginary part of complex numbers.
+            Returns an Container including arrays with the imaginary part
+            of complex numbers.
 
         Examples
         --------
