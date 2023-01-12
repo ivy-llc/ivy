@@ -8147,6 +8147,16 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container with the element-wise recirpocal of ``x``
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([4, 5]))
+        >>> y = x.reciprocal()
+        >>> print(y)
+        {
+            a: ivy.array([1, 0.5]),
+            b: ivy.array([0.25, 0.2])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "reciprocal",
@@ -8195,6 +8205,16 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container with the element-wise recirpocal of ``x``
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([4, 5]))
+        >>> y = x.reciprocal()
+        >>> print(y)
+        {
+            a: ivy.array([1, 0.5]),
+            b: ivy.array([0.25, 0.2])
+        }
 
         """
         return self.static_reciprocal(
