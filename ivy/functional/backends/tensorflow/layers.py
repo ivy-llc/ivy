@@ -297,7 +297,7 @@ def conv_general_dilated(
             x = tf.matmul(tf.transpose(x, (0, 1, *permute_list)), h)
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
 
-    df = _get_x_data_format(dims, "chanel_last")
+    df = _get_x_data_format(dims, "channel_last")
     if dims == 1:
         res = tf.concat(
             [
