@@ -3764,3 +3764,135 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_array_equal(
+        x0: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.array_equal. This method
+        simply wraps the function, and so the docstring for ivy.array_equal
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x0
+            The first input container to compare.
+        x1
+            The second input container to compare.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+
+        Returns
+        -------
+        ret
+            A boolean container indicating whether the two containers are
+            equal at each level.
+
+        Examples
+        --------
+        >>> a = ivy.array([[0., 1.], [1. ,0.]])
+        >>> b = ivy.array([[-2., 1.], [1. ,2.]])
+        >>> c = ivy.array([[0., 1.], [1. ,0.]])
+        >>> d = ivy.array([[2., 1.], [1. ,2.]])
+        >>> a0 = ivy.Container(a = a, b = b)
+        >>> a1 = ivy.Container(a = c, b = d)
+        >>> y = ivy.Container.static_array_equal(a0, a1)
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "array_equal",
+            x0,
+            x1,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def array_equal(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.array_equal. This method
+        simply wraps the function, and so the docstring for ivy.array_equal
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The first input container to compare.
+        x
+            The second input container to compare.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+
+        Returns
+        -------
+        ret
+            A boolean container indicating whether the two containers are
+            equal at each level.
+
+        Examples
+        --------
+        >>> a = ivy.array([[0., 1.], [1. ,0.]])
+        >>> b = ivy.array([[-2., 1.], [1. ,2.]])
+        >>> c = ivy.array([[0., 1.], [1. ,0.]])
+        >>> d = ivy.array([[2., 1.], [1. ,2.]])
+        >>> a0 = ivy.Container(a = a, b = b)
+        >>> a1 = ivy.Container(a = c, b = d)
+        >>> y = a0.array_equal(a1)
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
+
+        """
+        return ContainerWithGeneral.static_array_equal(
+            self,
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
