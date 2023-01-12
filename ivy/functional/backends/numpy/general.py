@@ -175,9 +175,12 @@ def inplace_update(
     x: Union[ivy.Array, np.ndarray],
     val: Union[ivy.Array, np.ndarray],
     ensure_in_backend: bool = False,
+    keep_input_dtype: bool = False,
 ) -> ivy.Array:
     ivy.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
+        if keep_input_dtype:
+            val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
 
         # make both arrays contiguous if not already

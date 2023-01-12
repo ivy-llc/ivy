@@ -203,12 +203,15 @@ def inplace_update(
     x: Union[ivy.Array, JaxArray],
     val: Union[ivy.Array, JaxArray],
     ensure_in_backend: bool = False,
+    keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
         if ensure_in_backend:
             raise ivy.exceptions.IvyException(
                 "JAX does not natively support inplace updates"
             )
+        if keep_input_dtype:
+            val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_ivy_array(x):
             x.data = val_native
