@@ -1256,7 +1256,6 @@ adam_update.out_index = 0
 @inputs_to_ivy_arrays
 @handle_exceptions
 @handle_array_like
-@handle_array_like
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
