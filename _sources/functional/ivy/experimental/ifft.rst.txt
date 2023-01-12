@@ -5,9 +5,9 @@ ifft
 
 .. autofunction:: ivy.array.array_methods.ifft
 
-.. autofunction:: ivy.container.container_methods.static_ifft
-
 .. autofunction:: ivy.container.container_methods.ifft
+
+.. autofunction:: ivy.container.container_methods.static_ifft
 |
 | **Supported Frameworks:**
 
