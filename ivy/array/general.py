@@ -130,6 +130,12 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             Boolean, whether or not x is an ivy container.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 1, 2])
+        >>> print(x.is_ivy_container())
+        False
         """
         return ivy.is_ivy_container(self)
 
