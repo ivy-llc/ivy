@@ -3089,6 +3089,93 @@ def test_tensorflow_Pack(
     )
 
 
+@st.composite
+def _pad_helper(draw):
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            min_num_dims=1,
+            ret_shape=True,
+        )
+    )
+    ndim = len(shape)
+    padding_dtype, paddings = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            shape=(ndim, 2),
+            min_value=0,
+            max_value=10,
+        )
+    )
+
+    return dtype, input[0], padding_dtype, paddings[0]
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Pad",
+    dtype_x_paddings=_pad_helper(),
+)
+def test_tensorflow_Pad(
+    dtype_x_paddings,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    dtype, x, padding_dtype, paddings = dtype_x_paddings
+    helpers.test_frontend_function(
+        input_dtypes=dtype + padding_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=x,
+        paddings=paddings,
+    )
+
+
+# EuclideanNorm
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.EuclideanNorm",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
+        valid_axis=True,
+        allow_neg_axes=True,
+    ),
+    keep_dims=st.booleans(),
+)
+def test_tensorflow_EuclideanNorm(
+    dtype_values_axis,
+    keep_dims,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, values, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=values[0],
+        axis=axis,
+        keep_dims=keep_dims,
+    )
+
+
 # ConcatV2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.ConcatV2",

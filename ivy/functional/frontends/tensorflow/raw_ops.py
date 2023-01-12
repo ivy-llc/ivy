@@ -322,6 +322,11 @@ def Pack(*, values, axis=0, name="Pack"):
     return ivy.stack(values, axis=axis)
 
 
+@to_ivy_arrays_and_back
+def Pad(*, input, paddings, name="Pad"):
+    return ivy.constant_pad(input, paddings.to_list())
+
+
 Relu = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.keras.activations.relu,
@@ -506,6 +511,13 @@ def Xlogy(*, x, y, name="Xlogy"):
     if (x == 0).all():
         return 0.0
     return ivy.multiply(x, ivy.log(y))
+
+
+@to_ivy_arrays_and_back
+def EuclideanNorm(*, input, axis, keep_dims=False, name="EuclideanNorm"):
+    return ivy.astype(
+        ivy.vector_norm(input, axis=axis, keepdims=keep_dims), input.dtype
+    )
 
 
 ConcatV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.concat))

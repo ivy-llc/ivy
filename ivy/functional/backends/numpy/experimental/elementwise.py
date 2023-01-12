@@ -172,7 +172,7 @@ def nansum(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[Tuple[int], int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[np.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
@@ -227,6 +227,19 @@ def angle(
 
 
 angle.support_native_out = False
+
+
+def imag(
+    val: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    return np.imag(val)
+
+
+imag.support_native_out = False
 
 
 def nan_to_num(
@@ -337,16 +350,15 @@ def zeta(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    inf_indices = np.where(x == 1)
-    nan_indices1 = np.intersect1d(np.array(np.where(x != 1)), np.array(np.where(q <= 0)))
-    nan_indices2 = np.where(x < 1)
+    inf_indices = np.equal(x, 1)
+    temp = np.logical_and(np.not_equal(x, 1), np.less_equal(q, 0))
+    nan_indices = np.logical_or(temp, np.less(x, 1))
     n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x
         n, res = n + 1, res + term
     ret = np.round(res, decimals=4)
-    ret[nan_indices1] = np.nan
-    ret[nan_indices2] = np.nan
+    ret[nan_indices] = np.nan
     ret[inf_indices] = np.inf
     return ret
 

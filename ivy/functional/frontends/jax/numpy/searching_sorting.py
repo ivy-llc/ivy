@@ -45,3 +45,8 @@ def argsort(a, axis=-1, kind="stable", order=None):
 @to_ivy_arrays_and_back
 def msort(a):
     return ivy.msort(a)
+
+
+@to_ivy_arrays_and_back
+def nonzero(a, *, size=None, fill_value=None):
+    return ivy.nonzero(a, size=size, fill_value=fill_value)

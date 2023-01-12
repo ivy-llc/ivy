@@ -1197,3 +1197,77 @@ def test_tensorflow_strided_slice(
         if hasattr(e, "message"):
             if "only stride 1 allowed on non-range indexing" in e.message:
                 assume(False)
+
+
+@st.composite
+def _linspace_helper(draw):
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=0,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
+    )
+
+    dtype = draw(st.sampled_from(["float32", "float64"]))
+
+    # Param: start
+    start = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=shape,
+            min_value=-5.0,
+            max_value=5.0,
+        ),
+    )
+
+    # Param:stop
+    stop = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=shape,
+            min_value=-4.0,
+            max_value=10.0,
+        ),
+    )
+
+    return [dtype] * 2, start, stop
+
+
+# linspace
+@handle_frontend_test(
+    fn_tree="tensorflow.linspace",
+    dtype_and_params=_linspace_helper(),
+    num=helpers.ints(min_value=2, max_value=10),
+    axis=helpers.ints(min_value=-1, max_value=0),
+)
+def test_tensorflow_linspace(
+    *,
+    dtype_and_params,
+    num,
+    axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, start, stop = dtype_and_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        start=start,
+        stop=stop,
+        num=num,
+        axis=axis,
+        on_device=on_device,
+    )

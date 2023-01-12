@@ -73,15 +73,19 @@ def test_vorbis_window(
 # hann_window
 @handle_test(
     fn_tree="functional.ivy.experimental.hann_window",
-    window_length=helpers.ints(min_value=1, max_value=10),
+    size=helpers.ints(min_value=1, max_value=10),
     input_dtype=helpers.get_dtypes("integer"),
     periodic=st.booleans(),
     dtype=helpers.get_dtypes("float", full=False),
+    container_flags=st.just([False]),
+    as_variable_flags=st.just([False]),
+    native_array_flags=st.just([False]),
+    test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_hann_window(
     *,
-    window_length,
+    size,
     input_dtype,
     periodic,
     dtype,
@@ -98,9 +102,9 @@ def test_hann_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        window_length=window_length,
+        size=size,
         periodic=periodic,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 

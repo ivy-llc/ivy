@@ -5,9 +5,11 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
@@ -32,6 +34,7 @@ def mean(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
@@ -69,6 +72,7 @@ def nanmean(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
@@ -129,6 +133,7 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
         return avg.astype(dtype)
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def nanstd(
@@ -200,6 +205,7 @@ def cov(x, y=None, bias=False, dtype=None, fweights=None, aweights=None, ddof=No
         return c
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
