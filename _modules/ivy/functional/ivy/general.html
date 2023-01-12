@@ -898,9 +898,8 @@
 <span class="sd">    ret</span>
 <span class="sd">        A list representation of the input array ``x``.</span>
 
-<span class="sd">    Functional Examples</span>
-<span class="sd">    ------------------</span>
-
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1, 0, 1])</span>
@@ -941,8 +940,8 @@
 <span class="sd">        a: [[-1, 0, 1], [-1, 0, 1], [1,0,-1]]</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x =</span>
-<span class="sd">    ... ivy.Container(a=ivy.array([[[-1, 0, 1],[1, 0, -1]],[[1, -1, 0],[1, 0, -1]]]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[-1, 0, 1],[1, 0, -1]],</span>
+<span class="sd">    ...                                [[1, -1, 0],[1, 0, -1]]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.to_list(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
