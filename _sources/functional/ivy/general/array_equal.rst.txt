@@ -4,6 +4,10 @@ array_equal
 .. autofunction:: ivy.functional.ivy.general.array_equal
 
 .. autofunction:: ivy.array.array_methods.array_equal
+
+.. autofunction:: ivy.container.container_methods.static_array_equal
+
+.. autofunction:: ivy.container.container_methods.array_equal
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ array_equal
 
    array_equal/array_equal_functional.rst
    array_equal/array_equal_array.rst
+   array_equal/array_equal_container.rst
+   array_equal/static_array_equal_container.rst
 
