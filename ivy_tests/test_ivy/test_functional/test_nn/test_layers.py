@@ -340,9 +340,7 @@ def x_and_filters(
         )
         for i in range(dim):
             output_shape.append(
-                _deconv_length(
-                    x_dim[i], strides, filter_shape[i], padding, dilations
-                )
+                _deconv_length(x_dim[i], strides, filter_shape[i], padding, dilations)
             )
     else:
         for i in range(dim):
@@ -393,7 +391,7 @@ def x_and_filters(
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
     if dim > 1:
-        if draw(st.booleans()):   # strides can be either an int or a sequence of ints
+        if draw(st.booleans()):  # strides can be either an int or a sequence of ints
             strides = [strides] * dim
     ret = (
         dtype,
