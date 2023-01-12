@@ -514,6 +514,13 @@ def Xlogy(*, x, y, name="Xlogy"):
 
 
 @to_ivy_arrays_and_back
+def EuclideanNorm(*, input, axis, keep_dims=False, name="EuclideanNorm"):
+    return ivy.astype(
+        ivy.vector_norm(input, axis=axis, keepdims=keep_dims), input.dtype
+    )
+
+
+@to_ivy_arrays_and_back
 def Conv3D(
     *,
     input,

@@ -350,7 +350,7 @@ def x_and_ifft(draw):
             dtype=dtype[0],
             shape=tuple(x_dim),
             min_value=-1e-10,
-            max_value=1e+10,
+            max_value=1e10,
         )
     )
     dim = draw(st.integers(1 - len(list(x_dim)), len(list(x_dim)) - 1))
@@ -365,12 +365,12 @@ def x_and_ifft(draw):
     test_gradients=st.just(False),
 )
 def test_ifft(
-        *,
-        d_x_d_n_n,
-        test_flags,
-        backend_fw,
-        fn_name,
-        ground_truth_backend,
+    *,
+    d_x_d_n_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
 ):
     dtype, x, dim, norm, n = d_x_d_n_n
 

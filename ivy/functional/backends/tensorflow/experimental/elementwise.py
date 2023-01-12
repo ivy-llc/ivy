@@ -153,7 +153,7 @@ def nansum(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[tf.DType] = None,
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -353,7 +353,15 @@ def imag(
     return tf.math.imag(input, name=None)
 
 
-@with_supported_dtypes({"2.11.0 and below": ("float32", "float64",)}, backend_version)
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def zeta(
     x: Union[tf.Tensor, tf.Variable],
     q: Union[tf.Tensor, tf.Variable],

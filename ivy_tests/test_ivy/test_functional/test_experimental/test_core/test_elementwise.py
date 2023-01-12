@@ -411,7 +411,6 @@ def _get_dtype_values_axis_for_count_nonzero(
     keepdims=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
-    
 )
 def test_count_nonzero(
     *,
@@ -419,6 +418,7 @@ def test_count_nonzero(
     keepdims,
     test_flags,
     on_device,
+    fn_name,
     backend_fw,
     ground_truth_backend,
 ):
@@ -467,6 +467,7 @@ def test_nansum(
     ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
+    axis = tuple(axis)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
