@@ -5187,14 +5187,16 @@ class ContainerWithElementwise(ContainerBase):
         Using 'ivy.Container' instance
 
         >>> x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
-        >>> x.logical_not()
+        >>> y = x.logical_not()
+        >>> print(y)
         {
             a: ivy.array([False, True, True, False]),
             b: ivy.array([False, False, False, True])
         }
 
         >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
-        >>> x.logical_not()
+        >>> y = x.logical_not()
+        >>> print(y)
         {
             a: ivy.array([False, True, False, True]),
             b: ivy.array([False, False, True, False])
@@ -6113,8 +6115,8 @@ class ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_pow(x, 2)
         >>> print(y)
         {
-            a:ivy.array([0,1]),
-            b:ivy.array([8,27])
+            a: ivy.array([0, 1]),
+            b: ivy.array([4, 9])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -6772,7 +6774,7 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.sinh.
+        ivy.Container static method variant of ivy.sinh.
         This method simply wraps the function, and so the docstring for
         ivy.sinh also applies to this method with minimal changes.
 
@@ -7844,8 +7846,8 @@ class ContainerWithElementwise(ContainerBase):
             minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
             ``True``.
         out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
 
         Returns
         -------
@@ -7917,8 +7919,8 @@ class ContainerWithElementwise(ContainerBase):
             minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
             ``True``.
         out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
 
         Returns
         -------
@@ -7991,13 +7993,13 @@ class ContainerWithElementwise(ContainerBase):
             maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
             ``True``.
         out
-            optional output array, for writing the result to.
+            optional output container, for writing the result to.
             It must have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-            An array with the elements of x1, but clipped to not be lower than the x2
+            A container with the elements of x1, but clipped to not be lower than the x2
             values.
 
         Examples
@@ -8075,8 +8077,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            An array with the elements of x1, but clipped to not be lower than the x2
-            values.
+            An container with the elements of x1, but clipped to not be
+            lower than the x2 values.
 
         Examples
         --------
@@ -8150,7 +8152,7 @@ class ContainerWithElementwise(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([4, 5]))
-        >>> y = x.reciprocal()
+        >>> y = ivy.Container.static_reciprocal(x)
         >>> print(y)
         {
             a: ivy.array([1, 0.5]),
@@ -8719,7 +8721,8 @@ class ContainerWithElementwise(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([-1j, -np.inf, 1.23+7j]),\
                           b=ivy.array([0.0, 3.3j, 1+0j]))
-        >>> x.isreal()
+        >>> y = x.isreal()
+        >>> print(y)
         {
             a: ivy.array([False, True, False]),
             b: ivy.array([True, False, True])
