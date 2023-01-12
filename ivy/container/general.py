@@ -1108,7 +1108,7 @@ class ContainerWithGeneral(ContainerBase):
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
-        >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
+        >>> y = x1.all_equal(x2, equality_matrix= False)
         >>> print(y)
         {
             a: true,
@@ -1132,7 +1132,7 @@ class ContainerWithGeneral(ContainerBase):
         ...                    b=ivy.array([1, 2, 3]))
         >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),
         ...                    b=ivy.array([1, 2, 3]))
-        >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
+        >>> y = x1.all_equal(x2, equality_matrix= False)
         >>> print(y)
         {
             a: false,
