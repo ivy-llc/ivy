@@ -1494,8 +1494,9 @@ def copy_array(
     x
         array, input array containing elements to copy.
     to_ivy_array
-        boolean, if True the returned array will be an ivy.Array instance otherwise 
-        ivy.NativeArray, defaults to True.
+        boolean, if True the returned array will be an ivy.Array object otherwise 
+        returns an ivy.NativeArray object (i.e. a torch.tensor, np.array, etc., 
+        depending on the backend), defaults to True.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
