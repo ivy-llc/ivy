@@ -408,6 +408,7 @@ def test_embedding(
 ):
     dtypes, indices, weights, _ = dtypes_indices_weights
     dtypes = [dtypes[1], dtypes[0]]
+
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
