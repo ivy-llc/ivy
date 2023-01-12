@@ -377,7 +377,6 @@ def partition(
     ivy.array([0, 1, 2, 1, 2, 3, 3, 2, 5, 6, 7, 7, 7, 7])
 
     """
-    return ivy.current_backend(x, kth).searchsorted(
+    return ivy.current_backend(x, kth).partition(
         x, kth, axis=axis, out=out, kind=kind, order=order
     )
-
