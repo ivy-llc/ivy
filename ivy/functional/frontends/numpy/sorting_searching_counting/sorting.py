@@ -28,3 +28,8 @@ def msort(a):
 @to_ivy_arrays_and_back
 def sort_complex(a):
     return ivy.sort(a)
+
+
+@to_ivy_arrays_and_back
+def partition(a, kth, axis=-1, kind=None, order=None):
+    return ivy.partition(a, kth, axis=axis)

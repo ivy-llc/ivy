@@ -314,3 +314,69 @@ def searchsorted(
         out=out,
         ret_dtype=ret_dtype,
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like
+def partition(
+    x: Union[ivy.Array, ivy.NativeArray],
+    kth: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis=-1,
+    kind="introselect",
+    order=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the partitioned copy of an array.
+
+    Parameters
+    ----------
+    x
+        Array to be sorted.
+    kth
+        Element index to partition by. The k-th value of the element
+        will be in its final sorted position and all smaller elements
+        will be moved before it and all equal or greater elements behind
+        it. The order of all elements in the partitions is undefined. If
+        provided with a sequence of k-th it will partition all elements
+        indexed by k-th  of them into their sorted position at once.
+    axis
+        Axis along which to sort. If None, the array is flattened before
+        sorting. The default is -1, which sorts along the last axis.
+    kind
+        Selection algorithm. Default is 'introselect'.
+    order
+        When `a` is an array with fields defined, this argument
+        specifies which fields to compare first, second, etc.  A single
+        field can be specified as a string.  Not all fields need be
+        specified, but unspecified fields will still be used, in the
+        order in which they come up in the dtype, to break ties.
+
+    Returns
+    -------
+     partitioned_array : Array of the same type and shape as `x`.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([7, 1, 7, 7, 1, 5, 7, 2, 3, 2, 6, 2, 3, 0])
+    >>> kth = 4
+    >>> y  = ivy.partition(x, v)
+    >>> print(y)
+    ivy.array([0, 1, 2, 1, 2, 5, 2, 3, 3, 6, 7, 7, 7, 7])
+
+    >>> x = ivy.array([7, 1, 7, 7, 1, 5, 7, 2, 3, 2, 6, 2, 3, 0])
+    >>> kth = ivy.array((4,8))
+    >>> y  = ivy.partition(x, v)
+    >>> print(y)
+    ivy.array([0, 1, 2, 1, 2, 3, 3, 2, 5, 6, 7, 7, 7, 7])
+
+    """
+    return ivy.current_backend(x, kth).searchsorted(
+        x, kth, axis=axis, out=out, kind=kind, order=order
+    )
