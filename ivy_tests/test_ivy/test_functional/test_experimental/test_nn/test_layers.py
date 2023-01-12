@@ -392,25 +392,13 @@ def test_ifft(
 # embedding
 @handle_test(
     fn_tree="functional.ivy.experimental.embedding",
-    dtype_and_x=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=helpers.get_dtypes("integer"),
-        disable_random_axis=False,
-        axis_zero=False,
-        allow_inf=False,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=1,
-        max_dim_size=5,
-        first_dimension_only=False,
-        indices_same_dims=False,
-    ),
-    max_norm=st.one_of(st.none(), st.floats(min_value=0, max_value=5)),
-
+    dtypes_indices_weights=helpers.embedding_helper(),
+    max_norm=st.one_of(st.none(), st.floats(min_value=1, max_value=5)),
+    number_positional_args=st.just(2)
 )
 def test_embedding(
     *,
-    dtype_and_x,
+    dtypes_indices_weights,
     max_norm,
     test_flags,
     backend_fw,
@@ -418,14 +406,15 @@ def test_embedding(
     fn_name,
     ground_truth_backend,
 ):
-    dtype, weights, indices = dtype_and_x
+    dtypes, indices, weights, _ = dtypes_indices_weights
+    dtypes = [dtypes[1], dtypes[0]]
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype[0],
+        input_dtypes=dtypes,
         test_flags=test_flags,
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        weights=x[0],
-        indices=x[1],
+        weights=weights,
+        indices=indices,
         max_norm=max_norm,)
