@@ -2406,6 +2406,7 @@ def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
     ensure_in_backend: bool = False,
+    keep_input_dtype: bool = False,
 ) -> ivy.Array:
     """Perform in-place update for the input array. This will always be performed on
     ivy.Array instances pass in the input, and will also be performed on the native
