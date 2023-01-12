@@ -2811,6 +2811,15 @@ class ContainerWithElementwise(ContainerBase):
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1., 2.,]), b=ivy.array([4., 5.]))
+        >>> y = ivy.Container.static_exp(x)
+        >>> print(y)
+        {
+            a: ivy.array([2.71828198, 7.38905573]),
+            b: ivy.array([54.59814835, 148.4131622])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "exp",
@@ -2862,6 +2871,15 @@ class ContainerWithElementwise(ContainerBase):
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))
+        >>> y = x.exp()
+        >>> print(y)
+        {
+            a: ivy.array([2.71828198, 7.38905573, 20.08553696]),
+            b: ivy.array([54.59814835, 148.4131622, 403.428772])
+        }
         """
         return self.static_exp(
             self,
