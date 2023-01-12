@@ -936,6 +936,18 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             True if x is not None, else False.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 1.2])
+        >>> y = x.exists()
+        >>> print(y)
+        True
+
+        >>> x = ivy.array(None)
+        >>> y = x.exists()
+        >>> print(y)
+        True
         """
         return ivy.exists(self)
 
