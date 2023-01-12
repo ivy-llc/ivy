@@ -5,9 +5,9 @@ leaky_relu
 
 .. autofunction:: ivy.array.array_methods.leaky_relu
 
-.. autofunction:: ivy.container.container_methods.static_leaky_relu
-
 .. autofunction:: ivy.container.container_methods.leaky_relu
+
+.. autofunction:: ivy.container.container_methods.static_leaky_relu
 |
 | **Supported Frameworks:**
 

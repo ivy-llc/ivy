@@ -5,9 +5,9 @@ scatter_flat
 
 .. autofunction:: ivy.array.array_methods.scatter_flat
 
-.. autofunction:: ivy.container.container_methods.scatter_flat
-
 .. autofunction:: ivy.container.container_methods.static_scatter_flat
+
+.. autofunction:: ivy.container.container_methods.scatter_flat
 |
 | **Supported Frameworks:**
 

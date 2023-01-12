@@ -3,9 +3,9 @@ broadcast_shapes
 
 .. autofunction:: ivy.functional.ivy.experimental.broadcast_shapes
 
-.. autofunction:: ivy.container.container_methods.static_broadcast_shapes
-
 .. autofunction:: ivy.container.container_methods.broadcast_shapes
+
+.. autofunction:: ivy.container.container_methods.static_broadcast_shapes
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ argmax
 
 .. autofunction:: ivy.array.array_methods.argmax
 
-.. autofunction:: ivy.container.container_methods.argmax
-
 .. autofunction:: ivy.container.container_methods.static_argmax
+
+.. autofunction:: ivy.container.container_methods.argmax
 |
 | **Supported Frameworks:**
 
