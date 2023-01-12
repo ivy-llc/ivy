@@ -34,6 +34,18 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             Boolean, whether or not x is a native array.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 1, 2])
+        >>> ret = x.is_native_array()
+        >>> print(ret)
+        False
+
+        >>> x = ivy.native_array([9.1, -8.3])
+        >>> ret = x.is_native_array(exclusive=True)
+        >>> print(ret)
+        True
         """
         return ivy.is_native_array(self, exclusive=exclusive)
 
@@ -55,6 +67,18 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             Boolean, whether or not x is an ivy array.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 1, 2])
+        >>> ret = x.is_ivy_array()
+        >>> print(ret)
+        True
+
+        >>> x = ivy.native_array([9.1, -8.3])
+        >>> ret = x.is_ivy_array(exclusive=True)
+        >>> print(ret)
+        False
 
         """
         return ivy.is_ivy_array(self, exclusive=exclusive)
