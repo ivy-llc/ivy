@@ -491,7 +491,7 @@ class ContainerWithGradients(ContainerBase):
         epsilon: float = 1e-7,
         stop_gradients: bool = True,
         out: Optional[ivy.Container] = None,
-    ):
+    ) -> ivy.Container:
         """Update weights ws of some function, given the derivatives of some cost c with
         respect to ws, using ADAM update. `[reference]
 
@@ -532,6 +532,55 @@ class ContainerWithGradients(ContainerBase):
         ret
             The new function weights ws_new, and also new mw and vw, following the adam
             updates.
+
+        Examples
+        --------
+
+        With one :class:`ivy.Container` inputs:
+
+        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))
+        >>> dcdw = ivy.array([1., 0.2, 0.4])
+        >>> mw_tm1 = ivy.array([0., 0., 0.])
+        >>> vw_tm1 = ivy.array([0.])
+        >>> lr = ivy.array(0.01)
+        >>> step = 2
+        >>> updated_weights = w.adam_update(dcdw, mw_tm1, vw_tm1, lr, step)
+        >>> print(updated_weights)
+        ({
+            a: ivy.array([1., 2., 3.]),
+            b: ivy.array([4., 5., 6.])
+        }, ivy.array([0.1 , 0.02, 0.04]), ivy.array([0.01099, 0.01003, 0.01015]))
+
+        With multiple :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., 5.]))
+        >>> dcdw = ivy.Container(a=ivy.array([0.1,0.3,0.3]),
+        ...                      b=ivy.array([0.3,0.2,0.2]))
+        >>> lr = ivy.array(0.001)
+        >>> mw_tm1 = ivy.Container(a=ivy.array([0.,0.,0.]),
+        ...                        b=ivy.array([0.,0.,0.]))
+        >>> vw_tm1 = ivy.Container(a=ivy.array([0.,]),
+        ...                        b=ivy.array([0.,]))
+        >>> step = 3
+        >>> beta1 = 0.9
+        >>> beta2 = 0.999
+        >>> epsilon = 1e-7
+        >>> stop_gradients = False
+        >>> updated_weights = w.adam_update(dcdw, lr, mw_tm1, vw_tm1, step, beta1=beta1,
+        ...                                beta2=beta2, epsilon=epsilon,
+        ...                                stop_gradients=stop_gradients)
+        >>> print(updated_weights)
+        ({
+            a: ivy.array([0.99936122, 1.99936116, 2.99936128]),
+            b: ivy.array([3.99936128, 4.99936104, 5.99936104])
+        }, {
+            a: ivy.array([0.01, 0.03, 0.03]),
+            b: ivy.array([0.03, 0.02, 0.02])
+        }, {
+            a: ivy.array([1.00000016e-05, 9.00000086e-05, 9.00000086e-05]),
+            b: ivy.array([9.00000086e-05, 4.00000063e-05, 4.00000063e-05])
+        })
 
         """
         return ivy.adam_update(

@@ -4,9 +4,9 @@
 from hypothesis import strategies as st, assume
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy.functional.ivy.layers import _deconv_length
 
 # Linear #
 # -------#
@@ -30,15 +30,17 @@ def x_and_linear(draw, dtypes):
     )
 
     x = draw(
-        helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=10)
     )
     weight = draw(
         helpers.array_values(
-            dtype=dtype[0], shape=weight_shape, min_value=0, max_value=1
+            dtype=dtype[0], shape=weight_shape, min_value=0, max_value=10
         )
     )
     bias = draw(
-        helpers.array_values(dtype=dtype[0], shape=bias_shape, min_value=0, max_value=1)
+        helpers.array_values(
+            dtype=dtype[0], shape=bias_shape, min_value=0, max_value=10
+        )
     )
     return dtype, x, weight, bias
 
@@ -47,7 +49,7 @@ def x_and_linear(draw, dtypes):
 @handle_test(
     fn_tree="functional.ivy.linear",
     dtype_x_weight_bias=x_and_linear(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("numeric", full=False),
     ),
     ground_truth_backend="jax",
 )
@@ -150,20 +152,20 @@ def x_and_scaled_attention(draw, dtypes):
     mask_shape = (1,) + (num_queries,) + (num_keys,)
 
     q = draw(
-        helpers.array_values(dtype=dtype[0], shape=q_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=q_shape, min_value=0, max_value=10)
     )
     k = draw(
-        helpers.array_values(dtype=dtype[0], shape=k_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=k_shape, min_value=0, max_value=10)
     )
     v = draw(
-        helpers.array_values(dtype=dtype[0], shape=v_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=v_shape, min_value=0, max_value=10)
     )
     mask = draw(
         helpers.array_values(
             dtype=dtype[0],
             shape=mask_shape,
             min_value=0,
-            max_value=1,
+            max_value=10,
             large_abs_safety_factor=2,
             safety_factor_scale="linear",
         )
@@ -175,7 +177,7 @@ def x_and_scaled_attention(draw, dtypes):
 @handle_test(
     fn_tree="functional.ivy.scaled_dot_product_attention",
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("numeric", full=False),
     ),
     ground_truth_backend="jax",
 )
@@ -291,18 +293,6 @@ def test_multi_head_attention(
 # -------------#
 
 
-def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
-    # Get the dilated kernel size
-    kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
-
-    if padding == "VALID":
-        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == "SAME":
-        dim_size = dim_size * stride_size
-
-    return dim_size
-
-
 @st.composite
 def x_and_filters(
     draw,
@@ -314,9 +304,9 @@ def x_and_filters(
 ):
     if not isinstance(dim, int):
         dim = draw(dim)
-    strides = draw(st.integers(min_value=1, max_value=2))
+    strides = draw(st.integers(min_value=1, max_value=3))
     padding = draw(st.sampled_from(["SAME", "VALID"]))
-    batch_size = 1
+    batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
@@ -350,7 +340,7 @@ def x_and_filters(
         )
         for i in range(dim):
             output_shape.append(
-                ivy.deconv_length(
+                _deconv_length(
                     x_dim[i], strides, filter_shape[i], padding, dilations
                 )
             )
@@ -402,6 +392,9 @@ def x_and_filters(
         )
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
+    if dim > 1:
+        if draw(st.booleans()):   # strides can be either an int or a sequence of ints
+            strides = [strides] * dim
     ret = (
         dtype,
         vals,
