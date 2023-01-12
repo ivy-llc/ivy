@@ -11,6 +11,13 @@ from ivy.func_wrapper import (
 )
 from ivy.exceptions import handle_exceptions
 
+# Helpers #
+# ------- #
+
+
+def _check_valid_dimension_size(std):
+    ivy.assertions.check_dimensions(std)
+
 
 @to_native_arrays_and_back
 @handle_out_argument
@@ -223,3 +230,80 @@ def eig(
     ])
     """
     return current_backend(x).eig(x)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def eigvals(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> ivy.Array:
+    """Computes eigenvalues of x. Returns a set of eigenvalues.
+
+    Parameters
+    ----------
+    x
+        An array of shape (..., N, N).
+
+    Returns
+    -------
+    w
+        Not necessarily ordered array(..., N) of eigenvalues in complex type.
+
+    Functional Examples
+    ------------------
+    With :class:`ivy.Array` inputs:
+    >>> x = ivy.array([[1,2], [3,4]])
+    >>> w = ivy.eigvals(x)
+    >>> w
+    ivy.array([-0.37228132+0.j,  5.37228132+0.j])
+
+    >>> x = ivy.array([[[1,2], [3,4]], [[5,6], [5,6]]])
+    >>> w = ivy.eigvals(x)
+    >>> w
+    ivy.array(
+        [
+            [-0.37228132+0.j,  5.37228132+0.j],
+            [ 0.        +0.j, 11.        +0.j]
+        ]
+    )
+    """
+    return current_backend(x).eigvals(x)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def adjoint(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the complex conjugate transpose of x.
+
+    Parameters
+    ----------
+    x
+        An array with more than one dimension.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        the complex conjugate transpose of the input.
+
+    Examples
+    --------
+        >>> x = np.array([[1.-1.j, 2.+2.j],
+                          [3.+3.j, 4.-4.j]])
+        >>> x = ivy.array(x)
+        >>> ivy.adjoint(x)
+        ivy.array([[1.+1.j, 3.-3.j],
+                   [2.-2.j, 4.+4.j]])
+    """
+    return current_backend(x).adjoint(x, out=out)

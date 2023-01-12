@@ -33,7 +33,8 @@ def argmax(
     else:
         ret = torch.argmax(x, dim=axis, keepdim=keepdims)
     if output_dtype:
-        ret = ret.to(dtype=output_dtype)
+        output_dtype = ivy.as_native_dtype(output_dtype)
+        return ret.to(dtype=output_dtype)
     return ret
 
 
@@ -44,25 +45,24 @@ def argmin(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[torch.dtype] = None,
+    select_last_index: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if output_dtype is not None:
-        output_dtype = ivy.as_native_dtype(output_dtype)
-        if output_dtype not in (torch.int32, torch.int64):
-            output_dtype = torch.int64
+    if select_last_index:
+        if axis is None:
+            x = torch.flip(x, dims=[axes for axes in range(x.ndim)])
+            ret = torch.argmin(x, dim=axis, keepdim=keepdims)
+            ret = x.numel() - ret - 1
         else:
-            output_dtype = output_dtype
-    else:
-        output_dtype = torch.int64
-    if ivy.exists(out):
-        out = torch.tensor(out, dtype=torch.int64)
-        ret = torch.argmin(x, dim=axis, keepdim=keepdims, out=out)
+            x = torch.flip(x, dims=(axis,))
+            ret = torch.argmin(x, dim=axis, keepdim=keepdims)
+            ret = x.shape[axis] - ret - 1
     else:
         ret = torch.argmin(x, dim=axis, keepdim=keepdims)
-    return ret.to(dtype=output_dtype)
-
-
-argmin.support_native_out = True
+    if output_dtype:
+        output_dtype = ivy.as_native_dtype(output_dtype)
+        return ret.to(dtype=output_dtype)
+    return ret
 
 
 def nonzero(

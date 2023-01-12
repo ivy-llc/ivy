@@ -1,5 +1,6 @@
 # global
 from hypothesis import assume, strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -438,12 +439,21 @@ def test_numpy_heaviside(
 # nan_to_num
 @handle_frontend_test(
     fn_tree="numpy.nan_to_num",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-np.inf,
+        max_value=+np.inf,
+        allow_nan=True,
+    ),
     posinf=st.one_of(st.none(), st.floats()),
     neginf=st.one_of(st.none(), st.floats()),
+    nan=st.floats(min_value=0, max_value=10),
+    copy=st.booleans(),
 )
 def test_numpy_nan_to_num(
     dtype_and_x,
+    copy,
+    nan,
     as_variable,
     num_positional_args,
     native_array,
@@ -464,7 +474,8 @@ def test_numpy_nan_to_num(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        nan=0.0,
+        copy=copy,
+        nan=nan,
         posinf=posinf,
         neginf=neginf,
     )

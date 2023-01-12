@@ -36,6 +36,16 @@ def fmax(
     return jnp.fmax(x1, x2)
 
 
+def fmin(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fmin(x1, x2)
+
+
 def trapz(
     y: JaxArray,
     /,
@@ -84,8 +94,9 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[jnp.dtype] = None,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if dtype is None:
         return jnp.count_nonzero(a, axis=axis, keepdims=keepdims)
     return jnp.array(jnp.count_nonzero(a, axis=axis, keepdims=keepdims), dtype=dtype)
@@ -95,7 +106,7 @@ def nansum(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[jnp.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
@@ -212,6 +223,15 @@ def angle(
     return jnp.angle(z, deg=deg)
 
 
+def imag(
+    val: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.imag(val)
+
+
 def zeta(
     x: JaxArray,
     q: JaxArray,
@@ -219,17 +239,16 @@ def zeta(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    inf_indices = jnp.union1d(
-        jnp.array(jnp.where(x == 1.0)), jnp.array(jnp.where(q <= 0))
-    )
-    nan_indices = jnp.where(x <= 0)
+    inf_indices = jnp.equal(x, 1)
+    temp = jnp.logical_and(jnp.not_equal(x, 1), jnp.less_equal(q, 0))
+    nan_indices = jnp.logical_or(temp, jnp.less(x, 1))
     n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x
         n, res = n + 1, res + term
     ret = jnp.round(res, decimals=4)
-    ret = ret.at[inf_indices].set(jnp.inf)
     ret = ret.at[nan_indices].set(jnp.nan)
+    ret = ret.at[inf_indices].set(jnp.inf)
     return ret
 
 

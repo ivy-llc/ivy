@@ -3,10 +3,11 @@
 # global
 import itertools
 
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy
+from ivy_tests.test_ivy.helpers.testing_helpers import handle_method
 
 
 # Helpers #
@@ -36,7 +37,8 @@ def _copy_weights(v1, v2):
     v2.b = ivy.copy_array(v1.b)
 
 
-@given(
+@handle_method(
+    method_tree="Sequential.__call__",
     input_array=st.lists(
         st.floats(min_value=-1, max_value=1, allow_nan=False, allow_infinity=False),
         min_size=1,
@@ -46,12 +48,13 @@ def _copy_weights(v1, v2):
     use_activation=st.booleans(),
 )
 def test_sequential_construction_and_value(
-    input_array, dims, use_activation, device, fw
+    input_array, dims, use_activation, on_device, backend_fw
 ):
     dims = [len(input_array)] + dims
     layer_count = len(dims)
     layers = [
-        ivy.Linear(dims[i], dims[i + 1], device=device) for i in range(layer_count - 1)
+        ivy.Linear(dims[i], dims[i + 1], device=on_device)
+        for i in range(layer_count - 1)
     ]
 
     if use_activation:
@@ -60,9 +63,9 @@ def test_sequential_construction_and_value(
 
     module = ivy.Sequential(*layers)
 
-    input_array = ivy.array(input_array, dtype="float32", device=device)
+    input_array = ivy.array(input_array, dtype="float32", device=on_device)
 
-    if fw != "numpy":
+    if "numpy" not in backend_fw.__name__:
         _train(module, input_array)
 
 
@@ -77,7 +80,8 @@ class TrainableModule(ivy.Module):
         return self._linear1(x)
 
 
-@given(
+@handle_method(
+    method_tree="Sequential.__call__",
     input_array=st.lists(
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         min_size=1,
@@ -85,7 +89,7 @@ class TrainableModule(ivy.Module):
     ),
     dims=st.lists(st.integers(1, 10), min_size=2, max_size=2),
 )
-def test_sequential_same_as_class(input_array, dims, fw):
+def test_sequential_same_as_class(input_array, dims, backend_fw):
     dims = [len(input_array)] + dims
     layer_count = len(dims)
     layers = [ivy.Linear(dims[i], dims[i + 1]) for i in range(layer_count - 1)]
@@ -99,7 +103,7 @@ def test_sequential_same_as_class(input_array, dims, fw):
 
     input_array = ivy.array(input_array, dtype="float32")
 
-    if fw != "numpy":
+    if "numpy" not in backend_fw.__name__:
         sequential_loss = _train(m_sequential, input_array)
         class_loss = _train(m_class, input_array)
         assert sequential_loss == class_loss

@@ -1317,16 +1317,20 @@ def test_inplace_variables_supported():
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_update(x_val_and_dtypes, tensor_fn, on_device):
+    dtype = x_val_and_dtypes[0][0]
+    if dtype in ivy.function_unsupported_dtypes(ivy.inplace_update):
+        return
     x, val = x_val_and_dtypes[1]
-    x = tensor_fn(x.tolist(), dtype="float32", device=on_device)
-    val = tensor_fn(val.tolist(), dtype="float32", device=on_device)
+    x = tensor_fn(x.tolist(), dtype=dtype, device=on_device)
+    val = tensor_fn(val.tolist(), dtype=dtype, device=on_device)
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
         tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
     ):
         x_inplace = ivy.inplace_update(x, val)
         assert id(x_inplace) == id(x)
-        assert np.allclose(ivy.to_numpy(x), ivy.to_numpy(val))
-        return
+        x = helpers.flatten_and_to_np(ret=x)
+        val = helpers.flatten_and_to_np(ret=val)
+        helpers.value_test(ret_np_flat=x, ret_np_from_gt_flat=val)
 
 
 # inplace_decrement
@@ -1340,21 +1344,25 @@ def test_inplace_update(x_val_and_dtypes, tensor_fn, on_device):
         min_dim_size=2,
         num_arrays=2,
         shared_dtype=True,
+        safety_factor_scale="log",
     ),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_decrement(x_val_and_dtypes, tensor_fn, on_device):
+    dtype = x_val_and_dtypes[0][0]
     x, val = x_val_and_dtypes[1]
     x, val = x.tolist(), val.tolist()
-    x = tensor_fn(x, dtype="float32", device=on_device)
-    val = tensor_fn(val, dtype="float32", device=on_device)
+    x = tensor_fn(x, dtype=dtype, device=on_device)
+    val = tensor_fn(val, dtype=dtype, device=on_device)
     new_val = x - val
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
         tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
     ):
         x_inplace = ivy.inplace_decrement(x, val)
         assert id(x_inplace) == id(x)
-        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x_inplace))
+        x = helpers.flatten_and_to_np(ret=x)
+        new_val = helpers.flatten_and_to_np(ret=new_val)
+        helpers.value_test(ret_np_flat=x, ret_np_from_gt_flat=new_val)
 
 
 # inplace_increment
@@ -1372,17 +1380,22 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, on_device):
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_increment(x_val_and_dtypes, tensor_fn, on_device):
+    dtype = x_val_and_dtypes[0][0]
+    if dtype in ivy.function_unsupported_dtypes(ivy.inplace_increment):
+        return
     x, val = x_val_and_dtypes[1]
     x, val = x.tolist(), val.tolist()
-    x = tensor_fn(x, dtype="float32", device=on_device)
-    val = tensor_fn(val, dtype="float32", device=on_device)
+    x = tensor_fn(x, dtype=dtype, device=on_device)
+    val = tensor_fn(val, dtype=dtype, device=on_device)
     new_val = x + val
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
         tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
     ):
         x_inplace = ivy.inplace_increment(x, val)
         assert id(x_inplace) == id(x)
-        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x_inplace))
+        x = helpers.flatten_and_to_np(ret=x)
+        new_val = helpers.flatten_and_to_np(ret=new_val)
+        helpers.value_test(ret_np_flat=x, ret_np_from_gt_flat=new_val)
 
 
 # is_ivy_array
@@ -1716,63 +1729,73 @@ def _composition_1():
     return ivy.relu().argmax()
 
 
+_composition_1.test_unsupported_devices_and_dtypes = {
+    "cpu": {
+        "numpy": ("bfloat16",),
+        "jax": (),
+        "tensorflow": ("complex64", "complex128"),
+        "torch": (
+            "uint16",
+            "uint32",
+            "uint64",
+            "float16",
+            "complex64",
+            "complex128",
+        ),
+    },
+    "gpu": {
+        "numpy": ivy.all_dtypes,
+        "jax": ivy.all_dtypes,
+        "tensorflow": ivy.all_dtypes,
+        "torch": ivy.all_dtypes,
+    },
+    "tpu": {
+        "numpy": ivy.all_dtypes,
+        "jax": ivy.all_dtypes,
+        "tensorflow": ivy.all_dtypes,
+        "torch": ivy.all_dtypes,
+    },
+}
+
+
 def _composition_2():
     return ivy.ceil() or ivy.linspace()
 
 
+_composition_2.test_unsupported_devices_and_dtypes = {
+    "cpu": {
+        "numpy": ("bfloat16", "complex64", "complex128"),
+        "jax": ("complex64", "complex128"),
+        "tensorflow": ("complex64", "complex128"),
+        "torch": ("uint16", "uint32", "uint64", "float16", "complex64", "complex128"),
+    },
+    "gpu": {
+        "numpy": ivy.all_dtypes,
+        "jax": ivy.all_dtypes,
+        "tensorflow": ivy.all_dtypes,
+        "torch": ivy.all_dtypes,
+    },
+    "tpu": {
+        "numpy": ivy.all_dtypes,
+        "jax": ivy.all_dtypes,
+        "tensorflow": ivy.all_dtypes,
+        "torch": ivy.all_dtypes,
+    },
+}
+
+
 # function_supported_devices_and_dtypes
 @pytest.mark.parametrize(
-    "func, expected",
-    [
-        (
-            _composition_1,
-            {
-                "cpu": (
-                    "bool",
-                    "uint8",
-                    "uint16",
-                    "uint32",
-                    "uint64",
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "bfloat16",
-                    "float16",
-                    "float32",
-                    "float64",
-                )
-            },
-        ),
-        (
-            _composition_2,
-            {
-                "cpu": (
-                    "bool",
-                    "uint8",
-                    "uint16",
-                    "uint32",
-                    "uint64",
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "bfloat16",
-                    "float16",
-                    "float32",
-                    "float64",
-                )
-            },
-        ),
-    ],
+    "func",
+    [_composition_1, _composition_2],
 )
-def test_function_supported_device_and_dtype(func, expected):
+def test_function_supported_device_and_dtype(func):
     res = ivy.function_supported_devices_and_dtypes(func)
-    exp = {}
-    for dev in expected:
-        exp[dev] = tuple((set(ivy.valid_dtypes).intersection(expected[dev])))
-        if ivy.current_backend_str() == "torch":
-            exp[dev] = tuple((set(exp[dev]).difference({"float16"})))
+    exp = {"cpu": func.test_unsupported_devices_and_dtypes.copy()["cpu"]}
+    for dev in exp:
+        exp[dev] = tuple(
+            set(ivy.valid_dtypes).difference(exp[dev][ivy.current_backend_str()])
+        )
 
     all_key = set(res.keys()).union(set(exp.keys()))
     for key in all_key:
@@ -1783,21 +1806,18 @@ def test_function_supported_device_and_dtype(func, expected):
 
 # function_unsupported_devices_and_dtypes
 @pytest.mark.parametrize(
-    "func, expected",
-    [
-        (_composition_1, {"gpu": ivy.all_dtypes, "tpu": ivy.all_dtypes}),
-        # (_composition_2, {'gpu': ivy.all_dtypes, 'tpu': ivy.all_dtypes})
-    ],
+    "func",
+    [_composition_1, _composition_2],
 )
-def test_function_unsupported_devices(func, expected):
+def test_function_unsupported_devices(func):
     res = ivy.function_unsupported_devices_and_dtypes(func)
-
-    exp = expected.copy()
-
-    if ivy.invalid_dtypes:
-        exp["cpu"] = ivy.invalid_dtypes
-    if ivy.current_backend_str() == "torch":
-        exp["cpu"] = tuple((set(exp["cpu"]).union({"float16"})))
+    exp = func.test_unsupported_devices_and_dtypes.copy()
+    for dev in exp:
+        exp[dev] = exp[dev][ivy.current_backend_str()]
+    devs = list(exp.keys())
+    for dev in devs:
+        if len(exp[dev]) == 0:
+            exp.pop(dev)
 
     all_key = set(res.keys()).union(set(exp.keys()))
     for key in all_key:

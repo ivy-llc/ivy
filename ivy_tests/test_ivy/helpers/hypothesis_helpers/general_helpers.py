@@ -6,6 +6,7 @@ import math
 import ivy
 import numpy as np
 from . import array_helpers, number_helpers, dtype_helpers
+from ivy.functional.ivy.layers import _deconv_length
 
 
 def matrix_is_stable(x, cond_limit=30):
@@ -75,9 +76,7 @@ def apply_safety_factor(
     assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
     assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
 
-    if "complex" in dtype:
-        dtype = "float32" if dtype == "complex64" else "float64"
-    if "float" in dtype:
+    if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
         dtype_info = ivy.finfo(dtype)
     elif "int" in dtype:
@@ -432,7 +431,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         )
         for i in range(dim):
             output_shape.append(
-                ivy.deconv_length(
+                _deconv_length(
                     x_dim[i], strides, filter_shape[i], padding, dilations
                 )
             )

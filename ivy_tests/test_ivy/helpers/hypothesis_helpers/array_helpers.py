@@ -523,12 +523,15 @@ def array_indices_axis(
 @st.composite
 def arrays_and_axes(
     draw,
+    available_dtypes=get_dtypes("float"),
     allow_none=False,
-    min_num_dims=0,
+    min_num_dims=1,
     max_num_dims=5,
     min_dim_size=1,
     max_dim_size=10,
     num=2,
+    returndtype=False,
+    force_int_axis=False,
 ):
     shapes = list()
     for _ in range(num):
@@ -542,20 +545,34 @@ def arrays_and_axes(
             )
         )
         shapes.append(shape)
+    if isinstance(available_dtypes, st._internal.SearchStrategy):
+        available_dtypes = draw(available_dtypes)
+
+    dtype = draw(
+        dtype_helpers.array_dtypes(num_arrays=num, available_dtypes=available_dtypes)
+    )
     arrays = list()
     for shape in shapes:
         arrays.append(
-            draw(
-                array_values(dtype="int32", shape=shape, min_value=-200, max_value=200)
-            )
+            draw(array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20))
         )
-    all_axes_ranges = list()
-    for shape in shapes:
-        if None in all_axes_ranges:
-            all_axes_ranges.append(st.integers(0, len(shape) - 1))
+    if force_int_axis:
+        if len(shape) <= 2:
+            axes = draw(st.one_of(st.integers(0, len(shape) - 1), st.none()))
         else:
-            all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
-    axes = draw(st.tuples(*all_axes_ranges))
+            axes = draw(st.integers(0, len(shape) - 1))
+    else:
+        all_axes_ranges = list()
+        for shape in shapes:
+            if None in all_axes_ranges:
+                all_axes_ranges.append(st.integers(0, len(shape) - 1))
+            else:
+                all_axes_ranges.append(
+                    st.one_of(st.none(), st.integers(0, len(shape) - 1))
+                )
+        axes = draw(st.tuples(*all_axes_ranges))
+    if returndtype:
+        return dtype, arrays, axes
     return arrays, axes
 
 
@@ -663,9 +680,7 @@ def array_values(
         dtype = draw(dtype)
         dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
 
-    if "complex" in dtype:
-        dtype = "float32" if dtype == "complex64" else "float64"
-    if "float" in dtype:
+    if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
         dtype_info = ivy.finfo(dtype)
     elif "int" in dtype:
@@ -711,6 +726,8 @@ def array_values(
                 "bfloat16": {"cast_type": "float32", "width": 32},
                 "float32": {"cast_type": "float32", "width": 32},
                 "float64": {"cast_type": "float64", "width": 64},
+                "complex64": {"cast_type": "complex64", "width": 32},
+                "complex128": {"cast_type": "complex128", "width": 64},
             }
             # The smallest possible value is determined by one of the arguments
             if min_value > -abs_smallest_val or max_value < abs_smallest_val:
@@ -759,12 +776,16 @@ def array_values(
                         exclude_max=exclude_max,
                     ),
                 )
+            if "complex" in dtype:
+                float_strategy = st.tuples(float_strategy, float_strategy)
             values = draw(
                 list_of_length(
                     x=float_strategy,
                     length=size,
                 )
             )
+            if "complex" in dtype:
+                values = [complex(*v) for v in values]
     else:
         values = draw(list_of_length(x=st.booleans(), length=size))
 
