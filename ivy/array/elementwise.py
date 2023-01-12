@@ -843,6 +843,12 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the evaluated exponential function result for
             each element in ``self``. The returned array must have a floating-point
             data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1., 2., 3.])
+        >>> print(x.exp())
+        ivy.array([ 2.71828198,  7.38905573, 20.08553696])
         """
         return ivy.exp(self._data, out=out)
 
