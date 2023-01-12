@@ -15,7 +15,6 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like,
-    outputs_to_ivy_arrays,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -269,8 +268,9 @@ def _is_variable(x, exclusive=False) -> bool:
     )
 
 
-@outputs_to_ivy_arrays
-def _variable_data(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
+def _variable_data(
+    x: Union[ivy.Array, ivy.NativeArray]
+) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Gets the contents of the input.
 
@@ -282,12 +282,13 @@ def _variable_data(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
     Returns
     -------
     ret
-        An ivy.Array containing the contents of the input array.
+        An array with contents of the input.
     """
     x = ivy.to_native(x, nested=True)
-    return ivy.nested_map(
+    ret = ivy.nested_map(
         x, lambda x: current_backend(x).variable_data(x), include_derived=True
     )
+    return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
 # Extra #
