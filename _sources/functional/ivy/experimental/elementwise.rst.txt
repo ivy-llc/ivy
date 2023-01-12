@@ -40,4 +40,5 @@ Elementwise
    elementwise/zeta.rst
    elementwise/gradient.rst
    elementwise/xlogy.rst
+   elementwise/real.rst
 
