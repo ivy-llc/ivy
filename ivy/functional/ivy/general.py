@@ -762,9 +762,8 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     ret
         A list representation of the input array ``x``.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1, 0, 1])
@@ -805,8 +804,8 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
         a: [[-1, 0, 1], [-1, 0, 1], [1,0,-1]]
     }
 
-    >>> x =
-    ... ivy.Container(a=ivy.array([[[-1, 0, 1],[1, 0, -1]],[[1, -1, 0],[1, 0, -1]]]))
+    >>> x = ivy.Container(a=ivy.array([[[-1, 0, 1],[1, 0, -1]],
+    ...                                [[1, -1, 0],[1, 0, -1]]]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
