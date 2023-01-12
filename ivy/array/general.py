@@ -845,7 +845,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([1,2,3])
+        >>> x = ivy.array([1, 2, 3])
         >>> y = 1.5
         >>> z = x.fourier_encode(y)
         >>> print(z)
@@ -859,9 +859,9 @@ class ArrayWithGeneral(abc.ABC):
                      0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
                      1.0000000e+00]])
 
-        >>> x = ivy.array([3,10])
+        >>> x = ivy.array([3, 10])
         >>> y = 2.5
-        >>> z = x.fourier_encode(y,num_bands=3)
+        >>> z = x.fourier_encode(y, num_bands=3)
         >>> print(z)
         ivy.array([[ 3.0000000e+00,  3.6739404e-16,  3.6739404e-16,  3.6739404e-16,
                     -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
