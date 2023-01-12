@@ -42,18 +42,17 @@ cholesky.support_native_out = True
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: torch.Tensor,
-    x2: Optional[torch.Tensor] = None,
+    x2: torch.Tensor = None,
     /,
     *,
-    rowVar: Optional[bool] = True,
-    bias: Optional[bool] = False,
-    ddof: Optional[int] = None,
-    fweights: Optional[torch.Tensor] = None,
-    aweights: Optional[torch.Tensor] = None,
-    dtype: Optional[type] = None,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: int = None,
+    fweights: torch.Tensor = None,
+    aweights: torch.Tensor = None,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
 
     if x1.dim() > 2:

@@ -251,7 +251,7 @@ def _get_dtype_and_vector(draw):
 
 
 @st.composite
-def _get_dtype_value1_value2_for_cov(
+def _get_dtype_value1_value2_cov(
     draw,
     available_dtypes,
     min_num_dims,
@@ -301,7 +301,10 @@ def _get_dtype_value1_value2_for_cov(
         )
 
     # modifiers: rowVar, bias, ddof
-    mods = [draw(helpers.ints(min_value=0, max_value=1)) for _ in range(3)]
+    rowVar = st.booleans()
+    bias = st.booleans()
+    ddof = draw(helpers.ints(min_value=0, max_value=1))
+    # mods = [draw(helpers.ints(min_value=0, max_value=1)) for _ in range(3)]
     dims = len([item for sublist in values for item in sublist])
 
     fweights = [draw(helpers.ints(min_value=1, max_value=10)) for _ in range(dims)]
@@ -311,7 +314,7 @@ def _get_dtype_value1_value2_for_cov(
     aweights = None
     value1, value2 = values[0], values[1]
 
-    return [dtype], value1, value2, mods[0], mods[1], mods[2], fweights, aweights
+    return [dtype], value1, value2, rowVar, bias, ddof, fweights, aweights
 
 
 @handle_test(
@@ -1324,7 +1327,7 @@ def test_cholesky(
 # cov
 @handle_test(
     fn_tree="functional.ivy.cov",
-    dtype_x1_x2=_get_dtype_value1_value2_for_cov(
+    dtype_x1_x2_cov=_get_dtype_value1_value2_cov(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         max_num_dims=2,
@@ -1334,37 +1337,26 @@ def test_cholesky(
         max_value=1e10,
         abs_smallest_val=0.01,
         large_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="cov"),
 )
 def test_cov(
     *,
-    dtype_x1_x2,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fn_name,
-    container_flags,
-    instance_method,
+    dtype_x1_x2_cov,
+    test_flags,
     backend_fw,
+    fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x1, x2, rowVar, bias, ddof, fweights, aweights = dtype_x1_x2
+    dtype, x1, x2, rowVar, bias, ddof, fweights, aweights = dtype_x1_x2_cov
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
         x1=x1,
         x2=x2,
         rowVar=rowVar,
@@ -1372,6 +1364,7 @@ def test_cov(
         ddof=ddof,
         fweights=fweights,
         aweights=aweights,
+        dtype=dtype,
     )
 
 

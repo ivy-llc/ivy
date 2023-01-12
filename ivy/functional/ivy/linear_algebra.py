@@ -163,18 +163,17 @@ def cholesky(
 @handle_nestable
 @handle_exceptions
 @handle_array_like
-@infer_dtype
 def cov(
     x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Optional[ivy.Array] = None,
+    x2: Union[ivy.Array, ivy.NativeArray] = None,
     /,
     *,
-    rowVar: Optional[bool] = True,
-    bias: Optional[bool] = False,
-    ddof: Optional[int] = None,
-    fweights: Optional[ivy.Array] = None,
-    aweights: Optional[ivy.Array] = None,
-    dtype: Optional[type] = None,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: int = None,
+    fweights: ivy.Array = None,
+    aweights: ivy.Array = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the covariance of matrix x1, or variables x1 and x2.
@@ -270,8 +269,8 @@ def cov(
     }
     """
     return current_backend(x1).cov(
-        x1=x1,
-        x2=x2,
+        x1,
+        x2,
         rowVar=rowVar,
         bias=bias,
         ddof=ddof,

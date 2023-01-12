@@ -317,15 +317,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
     def static_cov(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        x2: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
         /,
         *,
-        rowVar: Optional[bool] = True,
-        bias: Optional[bool] = False,
-        ddof: Optional[int] = None,
-        fweights: Optional[ivy.Array] = None,
-        aweights: Optional[ivy.Array] = None,
-        dtype: Optional[type] = None,
+        rowVar: bool = True,
+        bias: bool = False,
+        ddof: int = None,
+        fweights: ivy.Array = None,
+        aweights: ivy.Array = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -419,7 +419,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
                          [-1.,  1.,  1.,  1.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "cov",
             x1,
             x2,
@@ -438,15 +438,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     def cov(
         self: ivy.Container,
-        x2: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
         /,
         *,
-        rowVar: Optional[bool] = True,
-        bias: Optional[bool] = False,
-        ddof: Optional[int] = None,
-        fweights: Optional[ivy.Array] = None,
-        aweights: Optional[ivy.Array] = None,
-        dtype: Optional[type] = None,
+        rowVar: bool = True,
+        bias: bool = False,
+        ddof: int = None,
+        fweights: ivy.Array = None,
+        aweights: ivy.Array = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

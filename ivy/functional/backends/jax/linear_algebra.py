@@ -34,15 +34,15 @@ def cholesky(
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: JaxArray,
-    x2: Optional[JaxArray] = None,
+    x2: JaxArray = None,
     /,
     *,
-    rowVar: Optional[bool] = True,
-    bias: Optional[bool] = False,
-    ddof: Optional[int] = None,
-    fweights: Optional[JaxArray] = None,
-    aweights: Optional[JaxArray] = None,
-    dtype: Optional[type] = None,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: int = None,
+    fweights: JaxArray = None,
+    aweights: JaxArray = None,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)

@@ -34,15 +34,15 @@ def cholesky(
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def cov(
     x1: np.ndarray,
-    x2: Optional[np.ndarray] = None,
+    x2: np.ndarray = None,
     /,
     *,
-    rowVar: Optional[bool] = True,
-    bias: Optional[bool] = False,
-    ddof: Optional[int] = None,
-    fweights: Optional[np.ndarray] = None,
-    aweights: Optional[np.ndarray] = None,
-    dtype: Optional[type] = None,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: int = None,
+    fweights: np.ndarray = None,
+    aweights: np.ndarray = None,
+    dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.cov(
