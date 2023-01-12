@@ -5,9 +5,9 @@ l2_normalize
 
 .. autofunction:: ivy.array.array_methods.l2_normalize
 
-.. autofunction:: ivy.container.container_methods.static_l2_normalize
-
 .. autofunction:: ivy.container.container_methods.l2_normalize
+
+.. autofunction:: ivy.container.container_methods.static_l2_normalize
 |
 | **Supported Frameworks:**
 
