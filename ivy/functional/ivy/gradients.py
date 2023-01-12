@@ -268,11 +268,27 @@ def _is_variable(x, exclusive=False) -> bool:
     )
 
 
-def _variable_data(x):
+def _variable_data(
+    x: Union[ivy.Array, ivy.NativeArray]
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gets the contents of the input.
+
+    Parameters
+    ----------
+    x
+        Input array.
+
+    Returns
+    -------
+    ret
+        An array with contents of the input.
+    """
     x = ivy.to_native(x, nested=True)
-    return ivy.nested_map(
+    ret = ivy.nested_map(
         x, lambda x: current_backend(x).variable_data(x), include_derived=True
     )
+    return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
 # Extra #
