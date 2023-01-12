@@ -979,6 +979,12 @@
 <span class="sd">            an array containing the evaluated exponential function result for</span>
 <span class="sd">            each element in ``self``. The returned array must have a floating-point</span>
 <span class="sd">            data type determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
+<span class="sd">        &gt;&gt;&gt; print(x.exp())</span>
+<span class="sd">        ivy.array([ 2.71828198,  7.38905573, 20.08553696])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -987,6 +993,20 @@
 <span class="sd">        ivy.Array instance method variant of ivy.expm1. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.expm1 also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array. Should have a numeric data type.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">            inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the evaluated result for each element in ``x``. The returned</span>
+<span class="sd">            array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
