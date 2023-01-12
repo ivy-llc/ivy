@@ -860,6 +860,20 @@
 <span class="sd">        ret</span>
 <span class="sd">            Boolean, whether or not the input arrays are equal</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([-1,0])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([1,0])</span>
+<span class="sd">        &gt;&gt;&gt; z = x.array_equal(y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; b = ivy.array([1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; c = a.array_equal(b)</span>
+<span class="sd">        &gt;&gt;&gt; print(c)</span>
+<span class="sd">        True</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span></div>
 
