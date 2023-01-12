@@ -205,6 +205,20 @@ def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     -------
     ret
         Boolean, whether or not x is an array.
+
+    Examples
+    --------
+    >>> x = ivy.array([0, 1, 2])
+    >>> print(ivy.is_array(x))
+    True
+
+    >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
+    >>> print(ivy.is_array(x, exclusive=True))
+    True
+
+    >>> x = [2, 3]
+    >>> print(ivy.is_array(x))
+    False
     """
     return ivy.is_ivy_array(x, exclusive=exclusive) or ivy.is_native_array(
         x, exclusive=exclusive
