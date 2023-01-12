@@ -546,7 +546,7 @@ we can not and we have to reconstruct the output as shown in the example below.
 * The parameter :code:`test_values=False` is explicitly set to "False" as there can be multiple solutions for this and those multiple solutions can all be correct, so we have to test with reconstructing the output.
 
 What assert_all_close() actually does is, it checks for values and dtypes, if even one of them is not same it will cause
-an assertion, the examples given below would make it clearer.
+an assertion, the examples given below will make it clearer.
 
 .. code-block:: python
 
@@ -558,7 +558,7 @@ an assertion, the examples given below would make it clearer.
 
 .. code-block:: python
 
-    >>> a = np.array([[1., 5.]], dtype='float32')
+    >>> a = np.array([[1., 5.]], dtype='float64')
     >>> b = np.array([[2., 4.]], dtype='float32')
     >>> print(helpers.assert_all_close(a, b))
     AssertionError: the return with a TensorFlow backend produced data type of float32, while the return with a  backend returned a data type of float64.
