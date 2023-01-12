@@ -286,6 +286,16 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is an array.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = ivy.Container.static_is_array(x)
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "is_array",
@@ -335,6 +345,16 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is an array.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = x.is_array()
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
         """
         return self.static_is_array(
             self,

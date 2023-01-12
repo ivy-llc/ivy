@@ -101,6 +101,17 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             Boolean, whether or not x is an array.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 1, 2])
+        >>> print(x.is_array())
+        True
+
+        >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
+        >>> print(x.is_array(exclusive=True))
+        True
+
         """
         return ivy.is_array(self, exclusive=exclusive)
 
