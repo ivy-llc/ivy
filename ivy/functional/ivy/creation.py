@@ -15,6 +15,7 @@ from ivy.func_wrapper import (
     infer_dtype,
     handle_out_argument,
     outputs_to_ivy_arrays,
+    inputs_to_native_arrays,
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like,
@@ -1476,7 +1477,7 @@ def from_dlpack(
 array = asarray
 
 
-@to_native_arrays_and_back
+@inputs_to_native_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -1579,7 +1580,7 @@ def copy_array(
     }
 
     """
-    return current_backend(x).copy_array(x, out=out)
+    return current_backend(x).copy_array(x, to_ivy_array=to_ivy_array, out=out)
 
 
 @handle_exceptions
