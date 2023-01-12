@@ -50,6 +50,17 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is a native array.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = ivy.Container.static_is_native_array(x)
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
         """
         return ContainerBase.cont_multi_map_in_function(
             "is_native_array",
@@ -99,6 +110,16 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is a native array.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = x.is_native_array()
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
         """
         return self.static_is_native_array(
             self,
@@ -148,6 +169,14 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is an array.
+
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = ivy.Container.static_is_ivy_array(x)
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "is_ivy_array",
@@ -197,6 +226,14 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is an array.
+
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = x.is_ivy_array()
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
         """
         return self.static_is_ivy_array(
             self,
