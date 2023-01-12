@@ -431,9 +431,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         )
         for i in range(dim):
             output_shape.append(
-                _deconv_length(
-                    x_dim[i], strides, filter_shape[i], padding, dilations
-                )
+                _deconv_length(x_dim[i], strides, filter_shape[i], padding, dilations)
             )
     else:
         for i in range(dim):
