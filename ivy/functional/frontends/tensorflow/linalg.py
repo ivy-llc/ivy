@@ -39,6 +39,7 @@ def eigvalsh(tensor, name=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def solve(matrix, rhs):
+    ivy.assertions.check_same_dtype(matrix, rhs)
     return ivy.solve(matrix, rhs)
 
 
@@ -59,6 +60,7 @@ def slogdet(input, name=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def cholesky_solve(chol, rhs, name=None):
+    ivy.assertions.check_same_dtype(chol, rhs)
     y = ivy.solve(chol, rhs)
     return ivy.solve(ivy.matrix_transpose(chol), y)
 
@@ -73,6 +75,7 @@ def pinv(a, rcond=None, validate_args=False, name=None):
     {"2.9.0 and below": ("float32", "float64", "int32")}, "tensorflow"
 )
 def tensordot(a, b, axes, name=None):
+    ivy.assertions.check_same_dtype(a, b)
     return ivy.tensordot(a, b, axes=axes)
 
 

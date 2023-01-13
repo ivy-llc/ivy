@@ -14,6 +14,7 @@ def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
 
 @to_ivy_arrays_and_back
 def add(x, y, name=None):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.add(x, y)
 
 
@@ -114,11 +115,13 @@ def cumsum(x, axis, exclusive=False, reverse=False, name=None):
 
 @to_ivy_arrays_and_back
 def divide(x, y, name=None):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.divide(x, y)
 
 
 @to_ivy_arrays_and_back
 def divide_no_nan(x, y, name="divide_no_nan"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.where(
         y == 0,
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
@@ -171,11 +174,13 @@ def logical_xor(x, y, name="LogicalXor"):
 
 @to_ivy_arrays_and_back
 def multiply(x, y, name=None):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.multiply(x, y)
 
 
 @to_ivy_arrays_and_back
 def multiply_no_nan(x, y, name="multiply_no_nan"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.where(
         y == 0,
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
@@ -203,6 +208,7 @@ def polyval(coeffs, x, name=None):
 
 @to_ivy_arrays_and_back
 def pow(x, y, name="pow"):
+    ivy.assertions.check_same_dtype(x, y)
     if not (isinstance(x, int) or isinstance(x, float) or (x is None)):
         x = x.data
     if not (isinstance(y, int) or isinstance(y, float) or (y is None)):
@@ -295,11 +301,13 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 
 @to_ivy_arrays_and_back
 def scalar_mul(scalar, x, name="scalar_mul"):
+    ivy.assertions.check_same_dtype(scalar, x)
     return ivy.multiply(x, scalar).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
 def subtract(x, y, name=None):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.subtract(x, y)
 
 
@@ -358,6 +366,7 @@ def argmin(input, axis=None, output_type="int64", name=None):
 
 @to_ivy_arrays_and_back
 def truediv(x, y, name="truediv"):
+    ivy.assertions.check_same_dtype(x, y)
     x_dtype = ivy.dtype(x)
     if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
         return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
@@ -368,4 +377,5 @@ def truediv(x, y, name="truediv"):
 
 @to_ivy_arrays_and_back
 def equal(x, y, name=None):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.equal(x, y)

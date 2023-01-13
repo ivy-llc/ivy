@@ -62,16 +62,19 @@ def Atanh(*, x, name="Atanh"):
 
 @to_ivy_arrays_and_back
 def BitwiseAnd(*, x, y, name="BitwiseAnd"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.bitwise_and(x, y)
 
 
 @to_ivy_arrays_and_back
 def BitwiseOr(*, x, y, name="BitwiseOr"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.bitwise_or(x, y)
 
 
 @to_ivy_arrays_and_back
 def BitwiseXor(*, x, y, name="BitwiseXor"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.bitwise_xor(x, y)
 
 
@@ -118,6 +121,7 @@ Cumprod = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumprod))
 
 @to_ivy_arrays_and_back
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
+    ivy.assertions.check_same_dtype(x, y)
     if incompatible_shape_error:
         return ivy.equal(x, y)
 
@@ -149,6 +153,7 @@ def Floor(*, x, name="Floor"):
 
 @to_ivy_arrays_and_back
 def FloorDiv(*, x, y, name="FloorDiv"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.floor_divide(x, y)
 
 
@@ -159,11 +164,13 @@ def Gather(*, params, indices, validate_indices=None, name="Gather"):
 
 @to_ivy_arrays_and_back
 def Greater(*, x, y, name="Greater"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.greater(x, y)
 
 
 @to_ivy_arrays_and_back
 def GreaterEqual(*, x, y, name="GreaterEqual"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.greater_equal(x, y)
 
 
@@ -204,11 +211,13 @@ def LeftShift(*, x, y, name="LeftShift"):
 
 @to_ivy_arrays_and_back
 def Less(*, x, y, name="Less"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.less(x, y)
 
 
 @to_ivy_arrays_and_back
 def LessEqual(*, x, y, name="LessEqual"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.less_equal(x, y)
 
 
@@ -219,6 +228,7 @@ def Log(*, x, name="Log"):
 
 @to_ivy_arrays_and_back
 def LogicalOr(*, x, y, name="LogicalOr"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.logical_or(x, y)
 
 
@@ -229,6 +239,7 @@ def LogicalNot(*, x, name="LogicalNot"):
 
 @to_ivy_arrays_and_back
 def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
+    ivy.assertions.check_same_dtype(a, b)
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
@@ -283,6 +294,7 @@ Neg = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.negative))
 
 @to_ivy_arrays_and_back
 def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
+    ivy.assertions.check_same_dtype(x, y)
     if incompatible_shape_error:
         return ivy.not_equal(x, y)
 
@@ -322,6 +334,7 @@ Relu = to_ivy_arrays_and_back(
 
 @to_ivy_arrays_and_back
 def RealDiv(*, x, y, name="RealDiv"):
+    ivy.assertions.check_same_dtype(x, y)
     return ivy.divide(x, y)
 
 
