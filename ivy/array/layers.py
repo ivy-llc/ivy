@@ -561,20 +561,21 @@ class ArrayWithLayers(abc.ABC):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-            paddings.
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
         output_shape
             Shape of the output (Default value = None)
         data_format
-            The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
-            corresponds to inputs with shape (batch_size, depth, height, width, channels),
-            while "NCDHW" corresponds to input with shape (batch_size, channels, depth,
-            height, width).
+            The ordering of the dimensions in the input, one of "NDHWC" or
+            "NCDHW". "NDHWC" corresponds to inputs with shape (batch_size,
+             depth, height, width, channels), while "NCDHW" corresponds
+             to input with shape (batch_size, channels, depth, height,
+             width).
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
 
         Returns
         -------
