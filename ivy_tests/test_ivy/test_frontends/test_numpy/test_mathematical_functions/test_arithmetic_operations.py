@@ -262,6 +262,7 @@ def test_numpy_multiply(
                 available_dtypes=helpers.get_dtypes("integer"),
                 num_arrays=2,
                 min_value=0,
+                max_value=7,
                 shared_dtype=True,
             )
         ],
@@ -280,36 +281,31 @@ def test_numpy_power(
     fn_tree,
     on_device,
 ):
-    try:
-        input_dtypes, xs, casting, dtype = dtypes_values_casting
-        where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            as_variable=as_variable,
-            native_array=native_array,
-        )
-        np_frontend_helpers.test_frontend_function(
-            input_dtypes=input_dtypes,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            frontend=frontend,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            x1=xs[0],
-            x2=xs[1],
-            out=None,
-            where=where,
-            casting=casting,
-            order="K",
-            dtype=dtype,
-            subok=True,
-        )
-    except ZeroDivisionError:
-        assume(False)
-    except ValueError:
-        assume(False)
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=xs[0],
+        x2=xs[1],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
+    )
 
 
 # float_power
