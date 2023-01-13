@@ -407,7 +407,7 @@ def test_embedding(
     ground_truth_backend,
 ):
     dtypes, indices, weights, _ = dtypes_indices_weights
-    dtypes = [dtypes[1], dtypes[0]]
+    #dtypes = [dtypes[1], dtypes[0]]
 
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,

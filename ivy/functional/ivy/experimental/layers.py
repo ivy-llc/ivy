@@ -726,9 +726,23 @@ def embedding(
     ivy.array([[1., 2., 3.],
                 [7., 8., 9.]])
     """
-    ret = ivy.gather(weights, indices, axis=0)
-    if max_norm is not None:
-        ret = max_norm * ivy.l2_normalize(ret,
-                                          axis=-1,
-                                          out=out)
+    ivy.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d"
+    )
+
+    ret_dev = "cpu" if ivy.current_backend_str() == "numpy" \
+        else ivy.as_ivy_dev(weights.device())
+
+    ret = ivy.empty(indices.shape+(weights.shape[1],),
+                    dtype=ivy.as_ivy_dtype(weights.dtype),
+                    device=ret_dev)
+    if not ivy.is_ivy_array(indices):
+        indices = ivy.array(indices)
+    for i, x in ivy.ndenumerate(indices):
+
+        if ivy.exists(max_norm):
+            ret[i] = ivy.clip_vector_norm(weights[x, :], max_norm)
+        else:
+            ret[i] = weights[x, :]
     return ret
+
