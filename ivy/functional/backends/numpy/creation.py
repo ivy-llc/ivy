@@ -240,8 +240,7 @@ def copy_array(
 ) -> np.ndarray:
     if to_ivy_array:
         return ivy.to_ivy(x.copy())
-    else:
-        return x.copy()
+    return x.copy()
 
 
 def one_hot(

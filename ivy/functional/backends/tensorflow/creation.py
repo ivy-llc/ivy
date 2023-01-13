@@ -388,8 +388,7 @@ def copy_array(
 ) -> Union[tf.Tensor, tf.Variable]:
     if to_ivy_array:
         return ivy.to_ivy(tf.identity(x))
-    else:
-        return tf.identity(x)
+    return tf.identity(x)
 
 
 def one_hot(

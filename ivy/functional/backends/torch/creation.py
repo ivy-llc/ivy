@@ -570,8 +570,7 @@ def copy_array(
 ) -> torch.Tensor:
     if to_ivy_array:
         return ivy.to_ivy(x.clone())
-    else:
-        return x.clone()
+    return x.clone()
 
 
 def one_hot(
