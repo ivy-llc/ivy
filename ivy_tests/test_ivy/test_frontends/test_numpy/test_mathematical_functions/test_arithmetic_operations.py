@@ -262,6 +262,7 @@ def test_numpy_multiply(
                 available_dtypes=helpers.get_dtypes("integer"),
                 num_arrays=2,
                 min_value=0,
+                max_value=7,
                 shared_dtype=True,
             )
         ],
