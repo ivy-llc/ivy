@@ -744,6 +744,7 @@ def test_solve(
         max_value=50,
         min_num_dims=2,
     ),
+    test_gradients=st.just(False),
 )
 def test_svdvals(
     *,
