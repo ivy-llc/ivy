@@ -150,7 +150,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">output_dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">select_last_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
@@ -170,7 +170,7 @@
 <span class="sd">            If this is set to True, the axes which are reduced are left in the result as</span>
 <span class="sd">            dimensions with size one. With this option, the result will broadcast</span>
 <span class="sd">            correctly against the array.</span>
-<span class="sd">        output_dtype</span>
+<span class="sd">        dtype</span>
 <span class="sd">            Optional data type of the output array.</span>
 <span class="sd">        out</span>
 <span class="sd">            If provided, the result will be inserted into this array. It should be of</span>
@@ -204,7 +204,7 @@
 <span class="sd">        ivy.array([[0], [2]])</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([[4., 0., -1.], [2., -3., 6]])</span>
-<span class="sd">        &gt;&gt;&gt; y = x.argmax(axis=1, output_dtype=ivy.int64)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.argmax(axis=1, dtype=ivy.int64)</span>
 <span class="sd">        &gt;&gt;&gt; print(y, y.dtype)</span>
 <span class="sd">        ivy.array([0, 2]) int64</span>
 
@@ -213,7 +213,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
             <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
             <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span>
-            <span class="n">output_dtype</span><span class="o">=</span><span class="n">output_dtype</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
             <span class="n">select_last_index</span><span class="o">=</span><span class="n">select_last_index</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
