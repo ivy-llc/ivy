@@ -825,11 +825,11 @@ class DefaultFloatDtype:
 class DefaultIntDtype:
     """Ivy's DefaultIntDtype class."""
 
-    def __init__(self, float_dtype: ivy.Dtype):
-        self._float_dtype = float_dtype
+    def __init__(self, int_dtype: ivy.Dtype):
+        self._int_dtype = int_dtype
 
     def __enter__(self):
-        set_default_int_dtype(self._float_dtype)
+        set_default_int_dtype(self._int_dtype)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
