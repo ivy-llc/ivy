@@ -141,6 +141,7 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype is None:
         return tf.math.count_nonzero(a, axis=axis, keepdims=keepdims, name=None)
@@ -584,3 +585,13 @@ def xlogy(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.xlogy(x, y)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+def real(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.real(x)

@@ -173,16 +173,16 @@ def _solve_get_dtype_and_data(draw):
             )
         )
     shape = (batch, random_size, draw(st.integers(min_value=2, max_value=4)))
-    input_dtype2, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=draw(helpers.get_dtypes("float")),
+    x = draw(
+        helpers.array_values(
+            dtype=input_dtype,
             shape=shape,
             min_value=-10,
             max_value=10,
         )
     )
 
-    return [[input_dtype] * batch, input_dtype2[0]], [tmp, x[0]]
+    return [[input_dtype] * batch, input_dtype], [tmp, x[0]]
 
 
 # solve

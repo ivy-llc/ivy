@@ -804,6 +804,9 @@ class DefaultDtype:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_dtype()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
@@ -819,21 +822,27 @@ class DefaultFloatDtype:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_float_dtype()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
 class DefaultIntDtype:
     """Ivy's DefaultIntDtype class."""
 
-    def __init__(self, float_dtype: ivy.Dtype):
-        self._float_dtype = float_dtype
+    def __init__(self, int_dtype: ivy.Dtype):
+        self._int_dtype = int_dtype
 
     def __enter__(self):
-        set_default_int_dtype(self._float_dtype)
+        set_default_int_dtype(self._int_dtype)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_int_dtype()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
@@ -849,6 +858,9 @@ class DefaultUintDtype:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_uint_dtype()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
@@ -864,6 +876,9 @@ class DefaultComplexDtype:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_complex_dtype()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
