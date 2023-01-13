@@ -1129,7 +1129,8 @@ def zeta(
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
-    Compute the Hurwitz zeta function elementwisely with each pair of floats in two arrays.
+    Compute the Hurwitz zeta function elementwisely with each pair
+    of floats in two arrays.
 
     Parameters
     ----------
