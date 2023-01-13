@@ -1552,7 +1552,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
         >>> y = ivy.Container.static_has_nans(x)
         >>> print(y)

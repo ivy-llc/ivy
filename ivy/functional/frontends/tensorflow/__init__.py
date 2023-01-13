@@ -49,16 +49,23 @@ half = float16
 @handle_exceptions
 def check_tensorflow_casting(x1, x2):
     """
-    checks whether the two arguments provided in the function have the same dtype,
+    Checks whether the two arguments provided in the function have the same dtype,
     unless one of them is an array_like or scalar,
     where it gets casted to the other input's dtype
+
     Parameters
     ----------
-    x1 : First argument which can be tensor, array_like or scalar
-    x2 : Second argument which can be tensor, array_like or scalar
+    x1
+        First argument which can be tensor, array_like or scalar
+    x2
+        Second argument which can be tensor, array_like or scalar
 
     Returns
     -------
+    x1
+        First tensor promoted accordingly.
+    x2
+        Second tensor promoted accordingly.
 
     """
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
