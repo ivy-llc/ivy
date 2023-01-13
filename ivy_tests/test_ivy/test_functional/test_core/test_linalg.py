@@ -384,7 +384,6 @@ def test_det(
     fn_tree="functional.ivy.eigh",
     dtype_x=_get_dtype_and_matrix(symmetric=True),
     UPLO=st.sampled_from(("L", "U")),
-    test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
 def test_eigh(
@@ -398,6 +397,9 @@ def test_eigh(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_x
+    # ToDo: Enable container tests with out argument once support is added
+    if test_flags.with_out:
+        test_flags.container = [False]
     results = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
