@@ -961,11 +961,11 @@
 <div class="viewcode-block" id="DefaultIntDtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/DefaultIntDtype.html#ivy.functional.ivy.data_type.DefaultIntDtype">[docs]</a><span class="k">class</span> <span class="nc">DefaultIntDtype</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Ivy&#39;s DefaultIntDtype class.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="DefaultIntDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type/DefaultIntDtype.html#ivy.functional.ivy.data_type.DefaultIntDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_float_dtype</span> <span class="o">=</span> <span class="n">float_dtype</span></div>
+<div class="viewcode-block" id="DefaultIntDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type/DefaultIntDtype.html#ivy.functional.ivy.data_type.DefaultIntDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">int_dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_int_dtype</span> <span class="o">=</span> <span class="n">int_dtype</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">set_default_int_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_float_dtype</span><span class="p">)</span>
+        <span class="n">set_default_int_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_int_dtype</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
