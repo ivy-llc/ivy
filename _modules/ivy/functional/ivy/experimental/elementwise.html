@@ -1265,14 +1265,14 @@
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute the Hurwitz zeta function.</span>
+<span class="sd">    Compute the Hurwitz zeta function elementwisely with each pair of floats in two arrays.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
 <span class="sd">        First input array.</span>
 <span class="sd">    q</span>
-<span class="sd">        Second input array.</span>
+<span class="sd">        Second input array, must have the same shape as the first input array</span>
 <span class="sd">    out</span>
 <span class="sd">        Alternate output array in which to place the result.</span>
 <span class="sd">        The default is None.</span>
@@ -1286,7 +1286,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([5.0, 3.0])</span>
-<span class="sd">    &gt;&gt;&gt; q = ivy.array([2.0])</span>
+<span class="sd">    &gt;&gt;&gt; q = ivy.array([2.0, 2.0])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.zeta(x, q)</span>
 <span class="sd">    ivy.array([0.0369, 0.2021])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
