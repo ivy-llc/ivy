@@ -3003,14 +3003,14 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
     @staticmethod
     def static_real(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.real.
@@ -3040,7 +3040,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         -------
         ret
             a container containing the test result. An element ``out_i`` is ``out_i``
-            if ``x_i`` is real number part only else ``real number part``, 
+            if ``x_i`` is real number part only else ``real number part``,
             if it contains real and complex part both.
             The returned array should have a data type of ``float``.
 
@@ -3066,13 +3066,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         )
 
     def real(
-            self: ivy.Container,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.real.
