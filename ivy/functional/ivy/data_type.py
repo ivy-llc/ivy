@@ -804,6 +804,9 @@ class DefaultDtype:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_dtype()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
@@ -819,6 +822,9 @@ class DefaultFloatDtype:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_float_dtype()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
@@ -834,6 +840,9 @@ class DefaultIntDtype:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_int_dtype()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
@@ -849,6 +858,9 @@ class DefaultUintDtype:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_uint_dtype()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
@@ -864,6 +876,9 @@ class DefaultComplexDtype:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_complex_dtype()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
