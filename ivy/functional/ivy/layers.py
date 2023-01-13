@@ -529,15 +529,15 @@ def multi_head_attention(
     num_heads: int,
     /,
     *,
-    context: Union[ivy.Array, ivy.NativeArray] = None,
-    mask: Union[ivy.Array, ivy.NativeArray] = None,
-    to_q_fn: Callable = None,
-    to_kv_fn: Callable = None,
-    to_out_fn: Callable = None,
-    to_q_v=None,
-    to_kv_v=None,
-    to_out_v=None,
-    out: Optional[ivy.Array] = None,
+    context: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    to_q_fn: Optional[Callable] = None,
+    to_kv_fn: Optional[Callable] = None,
+    to_out_fn: Optional[Callable] = None,
+    to_q_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    to_kv_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    to_out_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies multi-head attention to inputs x.
 
@@ -729,9 +729,12 @@ def multi_head_attention(
 
     # BS x H x Q x F,  BS x H x K x F,  BS x H x K x F
     q, k, v = map(
-        lambda t: ivy.einops_rearrange(t, "... n (h f) -> ... h n f", h=num_heads),
-        (q, k, v),
+        # lambda t: ivy.einops_rearrange(t, "... n (h f) -> ... h n f", h=num_heads),
+        # (q, k, v),
+        func, (q, k, v)
     )
+    def func(t):
+        return ivy.einops_rearrange(t,"... n (h f) -> ... h n f", h=num_heads)
 
     # BS x H x Q x K
     if ivy.exists(mask):
