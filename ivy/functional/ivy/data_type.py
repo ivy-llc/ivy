@@ -593,30 +593,32 @@ def finfo(
     --------
     With :class:`ivy.Dtype` input:
 
-    >>> ivy.finfo(ivy.float32)
+    >>> y = ivy.finfo(ivy.float32)
+    >>> print(y)
     finfo(resolution=1e-06, min=-3.4028235e+38, max=3.4028235e+38, dtype=float32)
 
     With :code:`str` input:
 
-    >>> ivy.finfo('float32')
+    >>> y = ivy.finfo('float32')
+    >>> print(y)
     finfo(resolution=1e-06, min=-3.4028235e+38, max=3.4028235e+38, dtype=float32)
 
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1.3,2.1,3.4], dtype=ivy.float64)
-    >>> ivy.finfo(x)
+    >>> print(ivy.finfo(x))
     finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
     max=1.7976931348623157e+308, dtype=float64)
 
     >>> x = ivy.array([0.7,8.4,3.14], dtype=ivy.float16)
-    >>> ivy.finfo(x)
+    >>> print(ivy.finfo(x))
     finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16)
 
     With :class:`ivy.Container` input:
 
     >>> c = ivy.Container(x=ivy.array([-9.5,1.8,-8.9], dtype=ivy.float16),
     ...                   y=ivy.array([7.6,8.1,1.6], dtype=ivy.float64))
-    >>> ivy.finfo(c)
+    >>> print(ivy.finfo(c))
     {
         x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),
         y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /

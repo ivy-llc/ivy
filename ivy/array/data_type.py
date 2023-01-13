@@ -207,7 +207,7 @@ class ArrayWithDataTypes(abc.ABC):
         Example
         -------
         >>> x = ivy.array([0.7,8.4,3.14], dtype=ivy.float32)
-        >>> x.finfo()
+        >>> print(x.finfo())
         finfo(resolution=1e-06, min=-3.4028235e+38, max=3.4028235e+38, dtype=float32)
 
         """
