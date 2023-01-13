@@ -482,6 +482,17 @@ Sigmoid = to_ivy_arrays_and_back(
 )
 
 
+Softmax = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.keras.activations.softmax,
+        kwargs_to_update={
+            "logits": "x",
+            "": "axis",
+        },
+    )
+)
+
+
 @to_ivy_arrays_and_back
 def Softplus(features, name="Softplus"):
     return ivy.softplus(features)

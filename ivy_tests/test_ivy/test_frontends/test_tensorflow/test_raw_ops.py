@@ -3174,3 +3174,33 @@ def test_tensorflow_EuclideanNorm(
         axis=axis,
         keep_dims=keep_dims,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Softmax",
+    dtype_values_axis=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+)
+def test_tensorflow_Softmax(
+    dtype_values_axis,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, values = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=values[0],
+    )
