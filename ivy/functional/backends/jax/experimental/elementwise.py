@@ -94,6 +94,7 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if isinstance(axis, list):
         axis = tuple(axis)
@@ -480,6 +481,5 @@ def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> Jax
     return js.special.xlogy(x, y)
 
 
-def real(x: Union[JaxArray], /, *,
-         out: Optional[JaxArray] = None) -> JaxArray:
+def real(x: Union[JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.real(x)

@@ -153,19 +153,23 @@ copysign.support_native_out = True
 
 @_scalar_output_to_0d_array
 def count_nonzero(
-    x: np.ndarray,
+    a: np.ndarray,
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
-    ret = np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    ret = np.count_nonzero(a, axis=axis, keepdims=keepdims)
     if np.isscalar(ret):
         return np.array(ret, dtype=dtype)
     return ret.astype(dtype)
+
+
+count_nonzero.support_native_out = False
 
 
 def nansum(
@@ -392,8 +396,5 @@ def xlogy(
         return x * np.log(y)
 
 
-def real(x: Union[np.ndarray],
-         /,
-         *,
-         out: Optional[np.ndarray] = None) -> np.ndarray:
+def real(x: Union[np.ndarray], /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.real(x)
