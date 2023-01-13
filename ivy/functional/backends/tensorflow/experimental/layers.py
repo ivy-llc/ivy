@@ -1,4 +1,4 @@
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
@@ -253,13 +253,14 @@ def interpolate(
     if mode == "bilinear":
         x = tf.transpose(x, (0, 2, 3, 1))
         return tf.transpose(
-            tf.image.resize(x, size=size, mode=mode, antialias=antialias), (0, 3, 1, 2)
+            tf.image.resize(x, size=size, method=mode, antialias=antialias),
+            (0, 3, 1, 2),
         )
     elif mode == "linear":
         x = tf.transpose(x, (0, 2, 1))
         return tf.transpose(
             tf.image.resize(
-                x, size=[x.shape[0], size], mode="bilinear", antialias=antialias
+                x, size=[x.shape[0], size], method="bilinear", antialias=antialias
             ),
             (0, 2, 1),
         )
