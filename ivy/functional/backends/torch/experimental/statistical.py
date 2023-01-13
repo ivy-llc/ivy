@@ -125,8 +125,5 @@ def nanquantile(
             if i not in axis:
                 desired_shape += [current_shape[i]]
         a = a.reshape((-1,) + tuple(desired_shape))
-        a = torch.nanquantile(
-            a, q, dim=0, keepdim=keepdims, interpolation=interpolation)
-        return a
     return torch.nanquantile(
         a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
