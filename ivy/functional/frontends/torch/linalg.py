@@ -179,6 +179,5 @@ def matrix_exp(input, *, n_terms=1, out=None):
     current_power = input 
     for i in range(1, n_terms):
         result += current_power / math.factorial(i)
-        current_power = current_power @ A
+        current_power = current_power @ input
     return result
-
