@@ -441,6 +441,7 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Counts the number of non-zero values in the array a.
 
@@ -458,7 +459,8 @@ def count_nonzero(
         will broadcast correctly against the input array.
     dtype
         optional output dtype. Default is of type integer.
-
+    out
+        optional output array, for writing the result to.
     Returns
     -------
     ret
@@ -478,7 +480,7 @@ def count_nonzero(
     ivy.array([[[3, 4]]])
     """
     return ivy.current_backend().count_nonzero(
-        a, axis=axis, keepdims=keepdims, dtype=dtype
+        a, axis=axis, keepdims=keepdims, dtype=dtype, out=out
     )
 
 
