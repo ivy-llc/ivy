@@ -1754,7 +1754,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=[False, True, False], b=[True, True, False])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array([False, True, False]),</span>
+<span class="sd">        ...                   b = ivy.array([True, True, False]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.bitwise_invert()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
