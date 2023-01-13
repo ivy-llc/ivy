@@ -889,7 +889,7 @@ def test_torch_tensorinv(
     dtype_and_x=_get_dtype_and_square_matrix(),
     n_terms=st.sampled_from([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 )
-def test_torch_matrix_norm(
+def test_torch_matrix_exp(
     *,
     dtype_and_x,
     n_terms,
@@ -903,7 +903,7 @@ def test_torch_matrix_norm(
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -914,6 +914,4 @@ def test_torch_matrix_norm(
         input=x,
         n_terms=n_terms,
     )
-    
-    
     
