@@ -151,6 +151,46 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.fmax(self._data, x2, out=out)
 
+    def fmin(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.fmin. This method simply
+        wraps the function, and so the docstring for ivy.fmin also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+        x1
+            First input array.
+        x2
+            Second input array
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with element-wise minimums.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([2, 3, 4])
+        >>> x2 = ivy.array([1, 5, 2])
+        >>> ivy.fmin(x1, x2)
+        ivy.array([1, 3, 2])
+
+        >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+        >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+        >>> x1.fmin(x2)
+        ivy.array([ 0.,  0., nan])
+        """
+        return ivy.fmin(self._data, x2, out=out)
+
     def trapz(
         self: ivy.Array,
         /,
@@ -625,6 +665,41 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.angle(self._data, deg=deg, out=out)
 
+    def imag(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.imag. This method simply
+        wraps the function, and so the docstring for ivy.imag also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        val
+            Array-like input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns an array with the imaginary part of complex numbers.
+
+        Examples
+        --------
+        >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
+        >>> b
+        ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+        >>> ivy.imag(b)
+        ivy.array([2., 4., 6.])
+        >>> b.imag()
+        ivy.array([2., 4., 6.])
+        """
+        return ivy.imag(self._data, out=out)
+
     def nan_to_num(
         self: ivy.Array,
         /,
@@ -1016,3 +1091,73 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         return ivy.gradient(
             self._data, spacing=spacing, axis=axis, edge_order=edge_order
         )
+
+    def xlogy(
+        self: ivy.Array,
+        y: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> bool:
+        """
+        ivy.Array instance method variant of ivy.xlogy. This method simply
+        wraps the function, and so the docstring for ivy.xlogy also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        y
+            Second input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The next representable values of x1 in the direction of x2.
+
+        Examples
+        --------
+        >>> x = ivy.zeros(3)
+        >>> y = ivy.array([-1.0, 0.0, 1.0])
+        >>> x.xlogy(y)
+        ivy.array([0.0, 0.0, 0.0])
+
+        >>> x = ivy.array([1.0, 2.0, 3.0])
+        >>> y = ivy.array([3.0, 2.0, 1.0])
+        >>> x.xlogy(y)
+        ivy.array([1.0986, 1.3863, 0.0000])
+        """
+        return ivy.xlogy(self._data, y, out=out)
+
+    def real(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.real. This method simply wraps
+        the function, and so the docstring for ivy.real also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a real-valued floating-point data type.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing test results. If input in an
+            array is real then, it is returned unchanged. on the
+            other hand, if it is complex then, it returns real part from it
+
+        Examples
+        --------
+        >>> x = ivy.array([4+3j, 6+2j, 1-6j])
+        >>> x.real()
+        ivy.array([4., 6., 1.])
+        """
+        return ivy.real(self._data, out=out)

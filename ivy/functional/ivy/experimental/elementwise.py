@@ -212,6 +212,49 @@ def fmax(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def fmin(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Computes the element-wise minimums of two arrays. Differs from ivy.minimum
+    in the case where one of the elements is NaN. ivy.minimum returns the NaN element
+    while ivy.fmin returns the non-NaN element.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise minimums.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmin(x1, x2)
+    ivy.array([1, 3, 2])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmin(x1, x2)
+    ivy.array([ 0.,  0., nan])
+    """
+    return ivy.current_backend().fmin(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def trapz(
     y: ivy.Array,
     /,
@@ -389,7 +432,6 @@ def copysign(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_exceptions
 def count_nonzero(
@@ -399,7 +441,7 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[Union[int, ivy.Array]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Counts the number of non-zero values in the array a.
 
@@ -419,7 +461,7 @@ def count_nonzero(
         optional output dtype. Default is of type integer.
     out
         optional output array, for writing the result to.
-
+    
     Returns
     -------
     ret
@@ -451,7 +493,7 @@ def nansum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
@@ -725,6 +767,41 @@ def angle(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def imag(
+    val: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Returns the Imaginary part of a complex numbers(x+yj).
+
+    Parameters
+    ----------
+    val
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns an array with the imaginary part of complex numbers.
+
+    Examples
+    --------
+    >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
+    >>> b
+    ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+    >>> ivy.imag(b)
+    ivy.array([2., 4., 6.])
+    """
+    return ivy.current_backend(val).imag(val, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def nan_to_num(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -850,6 +927,7 @@ def signbit(
 
 
 @to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
@@ -859,6 +937,7 @@ def diff(
     axis: Optional[int] = -1,
     prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
     append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the n-th discrete difference along the given axis.
 
@@ -876,6 +955,8 @@ def diff(
         difference. Scalar values are expanded to arrays with length 1 in the direction
         of axis and the shape of the input array in along all other axes. Otherwise the
         dimension and shape must match a except along axis.
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -1151,3 +1232,111 @@ def gradient(
     return ivy.current_backend(x).gradient(
         x, spacing=spacing, edge_order=edge_order, axis=axis
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def xlogy(
+    x: Union[ivy.Array, ivy.NativeArray],
+    y: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> bool:
+    """
+    Compute x*log(y) element-wise so that the result is 0 if x = 0.
+
+    Parameters
+    ----------
+    x
+        First input array.
+    y
+        Second input array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        The next representable values of x1 in the direction of x2.
+
+    Examples
+    --------
+    >>> x = ivy.zeros(3)
+    >>> y = ivy.array([-1.0, 0.0, 1.0])
+    >>> ivy.xlogy(x, y)
+    ivy.array([0.0, 0.0, 0.0])
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([3.0, 2.0, 1.0])
+    >>> ivy.xlogy(x, y)
+    ivy.array([1.0986, 1.3863, 0.0000])
+    """
+    return ivy.current_backend(x, y).xlogy(x, y, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def real(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Tests each element ``x_i`` of the input array ``x`` to
+    take only real part from it.
+    Returns a float array, where it only contains .
+    If element has complex type with zero complex part, the return value
+    will be that element, else it only returns real part.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing test results. An element ``out_i`` is
+        ``real number`` if ``x_i`` contain real number part only
+        and if it is ``real number with complex part also`` then it
+        returns the real number part.
+        The returned array should have a data type of ``float``.
+
+    The descriptions above assume an array input for simplicity, but
+    the method also accepts :class:`ivy.Container` instances
+    in place of: class:`ivy.Array` or :class:`ivy.NativeArray`
+    instances, as shown in the type hints and also the examples below.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+    >>> x = ivy.array([[[1.1], [2], [-6.3]]])
+    >>> z = ivy.real(x)
+    >>> print(z)
+    ivy.array([[[1.1], [2.], [-6.3]]])
+
+    >>> x = ivy.array([4.2-0j, 3j, 7+5j])
+    >>> z = ivy.real(x)
+    >>> print(z)
+    ivy.array([4.2, 0., 7.])
+
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
+                          b=ivy.array([5j, 5.32-6.55j, 3.001]))
+    >>> z = ivy.real(x)
+    >>> print(z)
+    {
+        a: ivy.array([-6.7, 0.314, 1.23]),
+        b: ivy.array([0., 5.32, 3.001])
+    }
+    """
+    return ivy.current_backend(x).real(x, out=out)

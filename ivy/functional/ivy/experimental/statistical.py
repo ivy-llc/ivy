@@ -244,3 +244,14 @@ def nanquantile(
         interpolation=interpolation,
         out=out
     )
+
+
+def corrcoef(
+    x: ivy.Array,
+    /,
+    *,
+    y: Optional[ivy.Array] = None,
+    rowvar: Optional[bool] = True,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)

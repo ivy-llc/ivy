@@ -241,6 +241,8 @@ def ndenumerate(
     def _ndenumerate(input, t=None):
         if t is None:
             t = ()
+        if ivy.is_ivy_array(input) and input.shape == ():
+            input = ivy.to_scalar(input)
         if not hasattr(input, "__iter__"):
             yield t, input
         else:
@@ -1528,6 +1530,30 @@ def hsplit(
                     [10., 11.],
                     [14., 15.]]))
     """
-    return ivy.current_backend(ary).hsplit(
-        ary, indices_or_sections=indices_or_sections, out=out
-    )
+    return ivy.current_backend(ary).hsplit(ary, indices_or_sections, out=out)
+
+
+@handle_exceptions
+def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+    """Broadcasts shapes.
+
+    Parameters
+    ----------
+    shapes
+        The shapes to broadcast.
+
+    Returns
+    -------
+    ret
+        The broadcasted shape.
+
+    Examples
+    --------
+    >>> x = [(3, 3), (3, 1)]
+    >>> print(ivy.broadcast_shapes(x))
+    (3, 3)
+
+    >>> print(ivy.broadcast_shapes([(3, 3),(3, 1),(1, 3)]))
+    (3, 3)
+    """
+    return ivy.current_backend().broadcast_shapes(shapes)

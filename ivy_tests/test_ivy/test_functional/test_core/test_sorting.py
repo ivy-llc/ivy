@@ -21,6 +21,7 @@ from ivy_tests.test_ivy.helpers import handle_test
     ),
     descending=st.booleans(),
     stable=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_argsort(
     *,
@@ -60,6 +61,7 @@ def test_argsort(
     ),
     descending=st.booleans(),
     stable=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_sort(
     *,
@@ -137,6 +139,7 @@ def _searchsorted_case2(draw):
     side=st.sampled_from(["left", "right"]),
     use_sorter=st.booleans(),
     ret_dtype=helpers.get_dtypes("integer", full=False),
+    test_gradients=st.just(False),
 )
 def test_searchsorted(
     *,

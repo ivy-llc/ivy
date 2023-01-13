@@ -16,7 +16,8 @@ class ContainerWithSearching(ContainerBase):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
-        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        select_last_index: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -35,7 +36,7 @@ class ContainerWithSearching(ContainerBase):
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
             correctly against the array.
-        output_dtype
+        dtype
              Optional data type of the output array.
         out
             If provided, the result will be inserted into this array. It should be of
@@ -65,7 +66,8 @@ class ContainerWithSearching(ContainerBase):
             x,
             axis=axis,
             keepdims=keepdims,
-            output_dtype=output_dtype,
+            dtype=dtype,
+            select_last_index=select_last_index,
             out=out,
         )
 
@@ -75,7 +77,8 @@ class ContainerWithSearching(ContainerBase):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
-        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        select_last_index: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -94,7 +97,7 @@ class ContainerWithSearching(ContainerBase):
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
             correctly against the array.
-        output_dtype
+        dtype
             Optional output dtype of the container.
         out
             If provided, the result will be inserted into this array. It should be of
@@ -121,7 +124,12 @@ class ContainerWithSearching(ContainerBase):
         }
         """
         return self.static_argmax(
-            self, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+            self,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            select_last_index=select_last_index,
+            out=out,
         )
 
     @staticmethod
@@ -132,6 +140,7 @@ class ContainerWithSearching(ContainerBase):
         axis: Optional[int] = None,
         keepdims: bool = False,
         output_dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
+        select_last_index: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -182,6 +191,7 @@ class ContainerWithSearching(ContainerBase):
             axis=axis,
             keepdims=keepdims,
             output_dtype=output_dtype,
+            select_last_index=select_last_index,
             out=out,
         )
 
@@ -192,6 +202,7 @@ class ContainerWithSearching(ContainerBase):
         axis: Optional[int] = None,
         keepdims: bool = False,
         output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        select_last_index: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -247,7 +258,12 @@ class ContainerWithSearching(ContainerBase):
         }
         """
         return self.static_argmin(
-            self, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+            self,
+            axis=axis,
+            keepdims=keepdims,
+            output_dtype=output_dtype,
+            select_last_index=select_last_index,
+            out=out,
         )
 
     @staticmethod

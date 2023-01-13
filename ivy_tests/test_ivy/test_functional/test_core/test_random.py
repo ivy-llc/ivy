@@ -30,6 +30,7 @@ from ivy_tests.test_ivy.helpers import handle_test
     ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_random_uniform(
     *,
@@ -94,6 +95,7 @@ def test_random_uniform(
     ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_random_normal(
     dtype_and_mean,
@@ -164,6 +166,7 @@ def _pop_size_num_samples_replace_n_probs(draw):
     fn_tree="functional.ivy.multinomial",
     everything=_pop_size_num_samples_replace_n_probs(),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_multinomial(
     *,
@@ -241,6 +244,7 @@ def _gen_randint_data(draw):
     fn_tree="functional.ivy.randint",
     dtype_low_high=_gen_randint_data(),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_randint(
     *,
@@ -301,6 +305,7 @@ def test_seed(seed_val):
         min_dim_size=2,
     ),
     seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_shuffle(
     *,

@@ -76,3 +76,14 @@ def nanquantile(
         a, q, axis=axis,
         keepdims=keepdims, interpolation=interpolation, out=out
     )
+
+
+def corrcoef(
+    x: JaxArray,
+    /,
+    *,
+    y: Optional[JaxArray] = None,
+    rowvar: Optional[bool] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.corrcoef(x, y=y, rowvar=rowvar)

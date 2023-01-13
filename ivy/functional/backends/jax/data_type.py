@@ -139,6 +139,8 @@ def as_ivy_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float]) -> ivy.Dtype
         return ivy.default_int_dtype()
     if dtype_in is float:
         return ivy.default_float_dtype()
+    if dtype_in is complex:
+        return ivy.default_complex_dtype()
     if dtype_in is bool:
         return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
@@ -157,6 +159,8 @@ def as_native_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float]) -> jnp.dt
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
         return ivy.default_float_dtype(as_native=True)
+    if dtype_in is complex:
+        return ivy.default_complex_dtype(as_native=True)
     if dtype_in is bool:
         return jnp.dtype("bool")
     if not isinstance(dtype_in, str):

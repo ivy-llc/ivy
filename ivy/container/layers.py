@@ -192,18 +192,74 @@ class ContainerWithLayers(ContainerBase):
         *,
         scale: bool = True,
         dtype: ivy.Dtype = None,
+        training_mode: bool = True,
+        seed: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.dropout. This method simply
+        wraps the function, and so the docstring for ivy.dropout also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input container x to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        scale
+            Whether to scale the output by `1/(1-prob)`, default is ``True``.
+        dtype
+            output array data type. If dtype is None, the output array data type
+            must be inferred from x. Default: ``None``.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the output after dropout is performed.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], [4., 5., 6.]]),
+        ...                   b=ivy.array([7., 8., 9.]))
+        >>> y = ivy.Container.static_dropout(x, 0.3)
+        >>> print(y)
+        {
+            a: ivy.array([[0., 0., 4.28571415],
+                          [5.71428585, 7.14285755, 0.]]),
+            b: ivy.array([0., 11.4285717, 12.8571434])
+        }
+
+        """
         return ContainerBase.cont_multi_map_in_function(
             "dropout",
             x,
             prob,
             scale=scale,
             dtype=dtype,
+            training_mode=training_mode,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -218,17 +274,72 @@ class ContainerWithLayers(ContainerBase):
         *,
         scale: bool = True,
         dtype: ivy.Dtype = None,
+        training_mode: bool = True,
+        seed: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.dropout. This method simply
+        wraps the function, and so the docstring for ivy.dropout also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input container x to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        scale
+            Whether to scale the output by `1/(1-prob)`, default is ``True``.
+        dtype
+            output array data type. If dtype is None, the output array data type
+            must be inferred from x. Default: ``None``.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the output after dropout is performed.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], [4., 5., 6.]]),
+        ...                   b=ivy.array([7., 8., 9.]))
+        >>> y = x.dropout(0.3)
+        >>> print(y)
+        {
+            a: ivy.array([[0., 0., 4.28571415],
+                          [5.71428585, 7.14285755, 0.]]),
+            b: ivy.array([0., 11.4285717, 12.8571434])
+        }
+        """
         return self.static_dropout(
             self,
             prob,
             scale=scale,
             dtype=dtype,
+            training_mode=training_mode,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

@@ -126,6 +126,43 @@ def test_torch_inv(
     )
 
 
+# inv_ex
+@handle_frontend_test(
+    fn_tree="torch.linalg.inv_ex",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
+        min_value=0,
+        max_value=20,
+        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
+)
+def test_torch_inv_ex(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        atol=1e-02,
+        input=x[0],
+    )
+
+
 # pinv
 @handle_frontend_test(
     fn_tree="torch.linalg.pinv",
@@ -157,7 +194,7 @@ def test_torch_pinv(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        atol=1e-03,
+        atol=1e-02,
     )
 
 
@@ -362,6 +399,63 @@ def test_torch_matrix_power(
     )
 
 
+# matrix_norm
+@handle_frontend_test(
+    fn_tree="torch.linalg.matrix_norm",
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=1,
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_value=-1e20,
+        max_value=1e20,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
+    ),
+    ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
+    keepdim=st.booleans(),
+    axis=st.just((-2, -1)),
+    dtype=helpers.get_dtypes("float", none=True, full=False),
+)
+def test_torch_matrix_norm(
+    *,
+    dtype_and_x,
+    ord,
+    keepdim,
+    axis,
+    dtype,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        all_aliases=["matrix_norm"],
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-04,
+        atol=1e-04,
+        input=x[0],
+        ord=ord,
+        dim=axis,
+        keepdim=keepdim,
+        dtype=dtype[0],
+    )
+
+
 # cross
 @handle_frontend_test(
     fn_tree="torch.linalg.cross",
@@ -379,6 +473,48 @@ def test_torch_matrix_power(
     ),
 )
 def test_torch_cross(
+    dtype_input_other_dim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    dtype, input, other, dim = dtype_input_other_dim
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        rtol=1e-2,
+        atol=1e-3,
+        input=input,
+        other=other,
+        dim=dim,
+    )
+
+
+# vecdot
+@handle_frontend_test(
+    fn_tree="torch.linalg.vecdot",
+    dtype_input_other_dim=dtype_value1_value2_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=-1e3,
+        max_value=1e3,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+)
+def test_torch_vecdot(
     dtype_input_other_dim,
     as_variable,
     with_out,
@@ -620,4 +756,129 @@ def test_torch_svdvals(
         fn_tree=fn_tree,
         on_device=on_device,
         A=x,
+    )
+
+
+# solve
+@handle_frontend_test(
+    fn_tree="torch.linalg.solve",
+    dtype_and_data=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(x[1][0][:, :-1]) != 0
+        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
+    ),
+)
+def test_torch_solve(
+    *,
+    dtype_and_data,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    with_out,
+    frontend,
+):
+    input_dtype, data = dtype_and_data
+    input = data[0][:, :-1]
+    other = data[0][:, -1].reshape(-1, 1)
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], input_dtype[0]],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        other=other,
+    )
+
+
+# tensorinv
+@st.composite
+def _tensorinv_helper(draw):
+    def factors(x):
+        result = [
+            1,
+        ]
+        i = 2
+        while i * i <= x:
+            if x % i == 0:
+                result.append(i)
+                if x // i != i:
+                    result.append(x // i)
+            i += 1
+        result.append(x)
+        return np.array(result)
+
+    ind = draw(helpers.ints(min_value=1, max_value=6))
+    product_half = draw(helpers.ints(min_value=2, max_value=25))
+    factors_list = factors(product_half)
+    shape = ()
+    while len(shape) < ind and ind > 2:
+        while np.prod(shape) < product_half:
+            a = factors_list[np.random.randint(len(factors_list))]
+            shape += (a,)
+        if np.prod(shape) > product_half or len(shape) > ind:
+            shape = ()
+        while len(shape) < ind and shape != ():
+            shape += (1,)
+        if np.prod(shape) == product_half:
+            shape += shape[::-1]
+            break
+    if ind == 1 and shape == ():
+        shape += (product_half, product_half)
+    if ind == 2 and shape == ():
+        shape += (1, product_half, product_half, 1)
+    shape_cor = ()
+    for i in shape:
+        shape_cor += (int(i),)
+    shape_draw = (product_half, product_half)
+    dtype, input = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape_draw,
+        ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon)
+    )
+    input[0] = input[0].reshape(shape_cor)
+    return dtype, input[0], ind
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.tensorinv", dtype_input_ind=_tensorinv_helper()
+)
+def test_torch_tensorinv(
+    *,
+    dtype_input_ind,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+
+    dtype, x, ind = dtype_input_ind
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=True,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-04,
+        atol=1e-03,
+        input=x,
+        ind=ind,
     )

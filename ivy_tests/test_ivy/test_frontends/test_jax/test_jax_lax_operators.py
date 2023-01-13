@@ -1,12 +1,14 @@
 # global
 import numpy as np
 from hypothesis import assume, strategies as st
+import random
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy.functional.frontends.jax.numpy import can_cast
+from ivy.functional.ivy.layers import _deconv_length
 
 
 # add
@@ -1883,13 +1885,63 @@ def test_jax_lax_dot(
     )
 
 
+@st.composite
+def _general_dot_helper(draw):
+    input_dtype = draw(helpers.get_dtypes("numeric", full=False))
+    lshape = draw(
+        st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=52)
+    )
+    ndims = len(lshape)
+    perm_id = random.sample(list(range(ndims)), ndims)
+    rshape = [lshape[i] for i in perm_id]
+    ldtype, lhs = draw(
+        helpers.dtype_and_values(
+            dtype=input_dtype,
+            min_value=-1e04,
+            max_value=1e04,
+            shape=lshape,
+        )
+    )
+    rdtype, rhs = draw(
+        helpers.dtype_and_values(
+            dtype=input_dtype,
+            min_value=-1e04,
+            max_value=1e04,
+            shape=rshape,
+        )
+    )
+    ind_list = list(range(ndims))
+    batch_n = draw(st.integers(min_value=1, max_value=len(lshape) - 1))
+    lhs_batch = random.sample(ind_list, batch_n)
+    rhs_batch = [perm_id.index(i) for i in lhs_batch]
+    lhs_contracting = [i for i in ind_list if i not in lhs_batch]
+    rhs_contracting = [perm_id.index(i) for i in lhs_contracting]
+    is_pref = draw(st.booleans())
+    if is_pref:
+        dtype, pref = draw(
+            helpers.get_castable_dtype(
+                draw(helpers.get_dtypes("numeric")), input_dtype[0]
+            )
+        )
+        assume(can_cast(dtype, pref))
+        pref_dtype = pref
+    else:
+        pref_dtype = None
+    return (
+        ldtype + rdtype,
+        (lhs[0], rhs[0]),
+        ((lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch)),
+        pref_dtype,
+    )
+
+
 @handle_frontend_test(
-    fn_tree="jax.lax.conv",
-    x_f_d_df=helpers.x_and_filters(dim=2),
+    fn_tree="jax.lax.dot_general",
+    dtypes_lr_dims=_general_dot_helper(),
 )
-def test_jax_lax_conv(
+def test_jax_lax_dot_general(
     *,
-    x_f_d_df,
+    dtypes_lr_dims,
     as_variable,
     num_positional_args,
     native_array,
@@ -1897,7 +1949,154 @@ def test_jax_lax_conv(
     fn_tree,
     frontend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dtypes, lr, dims, dtype = dtypes_lr_dims
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lhs=lr[0],
+        rhs=lr[1],
+        dimension_numbers=dims,
+        precision=None,
+        preferred_element_type=dtype,
+    )
+
+
+@st.composite
+def x_and_filters(draw, dim=2, transpose=False, general=False):
+    strides = draw(
+        st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+    )
+    batch_size = draw(st.integers(1, 5))
+    filter_shape = draw(
+        helpers.get_shape(
+            min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
+        )
+    )
+    dtype = draw(helpers.get_dtypes("float", full=False))
+    padding = draw(st.sampled_from(["SAME", "VALID"]))
+    input_channels = draw(st.integers(1, 3))
+    output_channels = draw(st.integers(1, 3))
+    if general:
+        group_list = [i for i in range(1, 6)]
+        if not transpose:
+            group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
+        else:
+            group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
+        fc = draw(st.sampled_from(group_list))
+    else:
+        fc = 1
+    # tensorflow backprop doesn't support dilations more than 1 on CPU
+    dilations = 1
+    if dim == 2:
+        data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
+    elif dim == 1:
+        data_format = draw(st.sampled_from(["NWC", "NCW"]))
+    else:
+        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
+    x_dim = []
+    if transpose:
+        output_shape = []
+        x_dim = draw(
+            helpers.get_shape(
+                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
+            )
+        )
+        for i in range(dim):
+            output_shape.append(
+                _deconv_length(
+                    x_dim[i], strides[0], filter_shape[i], padding, dilations
+                )
+            )
+    else:
+        for i in range(dim):
+            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
+            x_dim.append(draw(st.integers(min_x, min_x + 1)))
+        x_dim = tuple(x_dim)
+    if dim == 1:
+        filter_df = draw(st.sampled_from(["OIW", "WIO"]))
+    elif dim == 2:
+        filter_df = draw(st.sampled_from(["OIHW", "HWIO"]))
+    else:
+        filter_df = draw(st.sampled_from(["OIDHW", "DHWIO"]))
+    if not transpose:
+        output_channels = output_channels * fc
+        channel_shape = (output_channels, input_channels // fc)
+    else:
+        input_channels = input_channels * fc
+        channel_shape = (output_channels // fc, input_channels)
+    if filter_df[0] == "O":
+        filter_shape = channel_shape + filter_shape
+    else:
+        filter_shape = filter_shape + channel_shape
+    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+        x_shape = (batch_size,) + x_dim + (input_channels,)
+    else:
+        x_shape = (batch_size, input_channels) + x_dim
+    vals = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=x_shape,
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+    filters = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=filter_shape,
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+    ret = (
+        dtype,
+        vals,
+        filters,
+        dilations,
+        (data_format, filter_df, data_format),
+        strides,
+        padding,
+    )
+    return ret + (output_shape, fc) if transpose else ret + (fc,)
+
+
+@st.composite
+def _conv_helper(draw, general=False, transpose=False):
+    dims = draw(st.sampled_from([1, 2, 3]))
+    x_f_d_df = draw(x_and_filters(dim=dims, general=general, transpose=transpose))
+    if draw(st.booleans()):
+        dtype, pref = draw(
+            helpers.get_castable_dtype(
+                draw(helpers.get_dtypes("numeric")), x_f_d_df[0][0]
+            )
+        )
+        assume(can_cast(dtype, pref))
+        return x_f_d_df + (pref,)
+    else:
+        return x_f_d_df + (None,)
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.conv",
+    x_f_d_other=_conv_helper(),
+)
+def test_jax_lax_conv(
+    *,
+    x_f_d_other,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1907,10 +2106,12 @@ def test_jax_lax_conv(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        lhs=x[0],
-        rhs=filters[0],
-        window_strides=(stride, stride),
+        lhs=x,
+        rhs=filters,
+        window_strides=stride,
         padding=pad,
+        precision=None,
+        preferred_element_type=pref,
     )
 
 
