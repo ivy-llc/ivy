@@ -40,6 +40,7 @@ def test_jax_numpy_svd(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -49,6 +50,7 @@ def test_jax_numpy_svd(
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
@@ -93,11 +95,13 @@ def test_jax_numpy_det(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-04,
@@ -128,6 +132,7 @@ def test_jax_numpy_eig(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -140,6 +145,7 @@ def test_jax_numpy_eig(
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
@@ -185,6 +191,7 @@ def test_jax_numpy_eigh(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -194,6 +201,7 @@ def test_jax_numpy_eigh(
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
@@ -236,6 +244,7 @@ def test_jax_numpy_inv(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -243,6 +252,7 @@ def test_jax_numpy_inv(
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -273,6 +283,7 @@ def test_jax_numpy_eigvalsh(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -281,6 +292,7 @@ def test_jax_numpy_eigvalsh(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-02,
@@ -312,6 +324,7 @@ def test_jax_numpy_qr(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -319,6 +332,7 @@ def test_jax_numpy_qr(
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=np.asarray(x[0], dtype[0]),
@@ -348,6 +362,7 @@ def test_jax_numpy_eigvals(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -357,6 +372,7 @@ def test_jax_numpy_eigvals(
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
@@ -386,6 +402,7 @@ def test_jax_numpy_cholesky(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -395,6 +412,7 @@ def test_jax_numpy_cholesky(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-02,
@@ -423,11 +441,13 @@ def test_jax_slogdet(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -446,11 +466,13 @@ def test_jax_numpy_matrix_rank(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         M=x[0],
@@ -480,6 +502,7 @@ def test_jax_numpy_solve(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, data = dtype_and_data
     a = data[0][:, :-1]
@@ -487,6 +510,7 @@ def test_jax_numpy_solve(
     helpers.test_frontend_function(
         input_dtypes=[input_dtype[0], input_dtype[0]],
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=np.asarray(a, dtype=input_dtype[0]),
@@ -547,6 +571,7 @@ def test_jax_numpy_norm(
     keepdims,
     ord,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -558,6 +583,7 @@ def test_jax_numpy_norm(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -593,6 +619,7 @@ def test_jax_numpy_matrix_power(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -600,6 +627,7 @@ def test_jax_numpy_matrix_power(
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=np.asarray(x[0], dtype=dtype[0]),
@@ -656,11 +684,13 @@ def test_jax_numpy_tensorsolve(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x, y = a_and_b
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x,
@@ -686,12 +716,14 @@ def test_jax_numpy_tensorsolve(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_pinv(
-    dtype_and_x, frontend, fn_tree
+    dtype_and_x, frontend, fn_tree, test_flags,
+
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
         atol=1e-4,
@@ -753,6 +785,7 @@ def test_jax_numpy_tensorinv(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x, ind = params
     helpers.test_frontend_function(
@@ -760,6 +793,7 @@ def test_jax_numpy_tensorinv(
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x,
