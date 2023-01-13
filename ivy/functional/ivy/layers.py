@@ -1395,26 +1395,20 @@ def conv3d_transpose(
     >>> print(y.shape)
     (1, 6, 56, 56, 6)
 
-    >>> x = ivy.array(
-    ...    ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64])
-    ... )
-    >>> filters = ivy.array(
-    ...    ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32])
-    ... )
+    >>> x = ivy.array(ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64]))
+    >>> filters = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32]))
     >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID')
     >>> print(y.shape)
     (1, 9, 258, 258, 32)
 
     With :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.random_normal(
-    ...                       mean=0, std=1, shape=[1, 3, 28, 28, 3]
-    ...                       ),
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
     >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
-    >>> filters = ivy.Container(c = ivy.random_normal(
-    ...                             mean=0, std=1, shape=[3, 3, 3, 3, 6]
-    ...                             ),
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
     >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
+    >>> x = ivy.Container(a=a, b=b)
+    >>> filters = ivy.Container(c=c, d=d)
     >>> y = ivy.conv3d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     [1, 6, 56, 56, 6]
