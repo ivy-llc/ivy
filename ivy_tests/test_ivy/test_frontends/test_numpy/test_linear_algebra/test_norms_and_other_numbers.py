@@ -8,6 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
     matrix_is_stable,
+    _matrix_rank_helper,
 )
 
 
@@ -59,12 +60,7 @@ def test_numpy_norm(
 # matrix_rank
 @handle_frontend_test(
     fn_tree="numpy.linalg.matrix_rank",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        min_value=-1e05,
-        max_value=1e05,
-    ),
+    dtype_and_x=_matrix_rank_helper(),
     rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_numpy_matrix_rank(

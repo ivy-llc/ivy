@@ -7,25 +7,7 @@ from typing import Union, Tuple, Iterable
 # local
 import ivy
 from ivy.exceptions import handle_exceptions
-from ivy.functional.frontends.numpy import dtype
 import ivy.functional.frontends.jax as jax_frontend
-
-
-int8 = dtype("int8")
-int16 = dtype("int16")
-int32 = dtype("int32")
-int64 = dtype("int64")
-uint8 = dtype("uint8")
-uint16 = dtype("uint16")
-uint32 = dtype("uint32")
-uint64 = dtype("uint64")
-bfloat16 = dtype("bfloat16")
-float16 = dtype("float16")
-float32 = dtype("float32")
-float64 = dtype("float64")
-complex64 = dtype("complex64")
-complex128 = dtype("complex128")
-bool = dtype("bool")
 
 
 # jax-numpy casting table
@@ -377,6 +359,14 @@ jax_promotion_table = {
 }
 
 
+dtype_replacement_dict = {
+    ivy.int64: ivy.int32,
+    ivy.uint64: ivy.uint32,
+    ivy.float64: ivy.float32,
+    ivy.complex128: ivy.complex64,
+}
+
+
 @handle_exceptions
 def promote_types_jax(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
@@ -404,15 +394,8 @@ def promote_types_jax(
 
 
 def _handle_x64_promotion(d):
-    dtype_replacement_dict = {
-        ivy.int64: ivy.int32,
-        ivy.uint64: ivy.uint32,
-        ivy.float64: ivy.float32,
-        ivy.complex128: ivy.complex64,
-    }
     if not jax_frontend.config.jax_enable_x64:
         d = dtype_replacement_dict[d] if d in dtype_replacement_dict else d
-
     return d
 
 
@@ -430,7 +413,6 @@ def promote_types_of_jax_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
-
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
@@ -454,8 +436,8 @@ from . import fft
 from . import linalg
 from . import creation
 from .creation import *
-from . import dtype
 from .dtype import can_cast, promote_types
+from .scalars import *
 from . import indexing
 from .indexing import *
 from . import logic

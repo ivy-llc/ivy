@@ -118,14 +118,11 @@ def handle_jax_dtype(fn: Callable) -> Callable:
 
         dtype = np_frontend.to_ivy_dtype(dtype)
         if not jax_frontend.config.jax_enable_x64:
-            dtype_replacement_dict = {
-                ivy.int64: ivy.int32,
-                ivy.uint64: ivy.uint32,
-                ivy.float64: ivy.float32,
-                ivy.complex128: ivy.complex64,
-            }
-            dtype = dtype_replacement_dict[dtype] \
-                if dtype in dtype_replacement_dict else dtype
+            dtype = (
+                jax_frontend.numpy.dtype_replacement_dict[dtype]
+                if dtype in jax_frontend.numpy.dtype_replacement_dict
+                else dtype
+            )
 
         return fn(*args, dtype=dtype, **kwargs)
 
