@@ -1395,8 +1395,8 @@ def conv3d_transpose(
     >>> print(y.shape)
     (1, 6, 56, 56, 6)
 
-    >>> x = ivy.array(ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64]))
-    >>> filters = ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32]))
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32])
     >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID')
     >>> print(y.shape)
     (1, 9, 258, 258, 32)
