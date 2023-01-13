@@ -737,7 +737,8 @@ def embedding(
                     dtype=ivy.as_ivy_dtype(weights.dtype),
                     device=ret_dev)
     if not ivy.is_ivy_array(indices):
-        indices = ivy.array(indices)
+        indices = ivy.array(indices, dtype=ivy.int32)
+
     for i, x in ivy.ndenumerate(indices):
 
         if ivy.exists(max_norm):
