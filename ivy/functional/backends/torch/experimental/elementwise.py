@@ -394,8 +394,7 @@ def xlogy(
     return torch.xlogy(x, y, out=out)
 
 
-def real(x: Union[torch.Tensor],
-         /,
-         *,
-         out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def real(
+    x: Union[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.real(x)
