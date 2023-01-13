@@ -170,3 +170,15 @@ def eig(input, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def solve(input, other, *, out=None):
     return ivy.solve(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def matrix_exp(input, *, n_terms=1, out=None):
+    result = ivy.eye(input.shape[0])
+    current_power = input 
+    for i in range(1, n_terms):
+        result += current_power / math.factorial(i)
+        current_power = current_power @ A
+    return result
+
