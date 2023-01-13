@@ -3911,6 +3911,9 @@
                     <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_print_indent</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
+            <span class="n">json_dumped_str</span> <span class="o">=</span> <span class="n">json_dumped_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                <span class="s2">&quot;false&quot;</span><span class="p">,</span> <span class="s2">&quot;False&quot;</span>
+            <span class="p">)</span>
 
             <span class="k">def</span> <span class="nf">_add_newline</span><span class="p">(</span><span class="n">str_in</span><span class="p">):</span>
                 <span class="n">str_in_split</span> <span class="o">=</span> <span class="n">str_in</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
