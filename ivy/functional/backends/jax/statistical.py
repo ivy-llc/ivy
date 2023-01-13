@@ -107,7 +107,6 @@ def sum(
     else:
         dtype = ivy.as_native_dtype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
-    print(jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims), dtype, x.dtype)
     return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
