@@ -728,13 +728,12 @@ def multi_head_attention(
         k, v = ivy.split(kv, num_or_size_splits=2, axis=-1)
 
     # BS x H x Q x F,  BS x H x K x F,  BS x H x K x F
-    q, k, v = map(
-        # lambda t: ivy.einops_rearrange(t, "... n (h f) -> ... h n f", h=num_heads),
-        # (q, k, v),
-        func, (q, k, v)
-    )
     def func(t):
         return ivy.einops_rearrange(t,"... n (h f) -> ... h n f", h=num_heads)
+    
+    q, k, v = map(
+        func, (q, k, v)
+    )
 
     # BS x H x Q x K
     if ivy.exists(mask):
