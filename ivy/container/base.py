@@ -3775,6 +3775,9 @@ class ContainerBase(dict, abc.ABC):
                     indent=self._print_indent,
                 )
             )
+            json_dumped_str = json_dumped_str.replace("true", "True").replace(
+                "false", "False"
+            )
 
             def _add_newline(str_in):
                 str_in_split = str_in.split("\n")
