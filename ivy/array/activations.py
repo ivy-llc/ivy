@@ -175,13 +175,8 @@ class ArrayWithActivations(abc.ABC):
         ivy.array([-1.62, -0.221, -7.82 ])
         """
         return ivy.log_softmax(self._data, axis=axis, out=out)
-    
-    def mish(
-        self: ivy.Array,
-        /,
-        *,
-        out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+
+    def mish(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.mish. This method simply wraps the
         function, and so the docstring for ivy.mish also applies to this method

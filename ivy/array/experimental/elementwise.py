@@ -1133,12 +1133,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.xlogy(self._data, y, out=out)
 
-    def real(
-        self: ivy.Array,
-        /,
-        *,
-        out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def real(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.real. This method simply wraps
         the function, and so the docstring for ivy.real also applies to this
