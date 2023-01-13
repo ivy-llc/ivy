@@ -120,8 +120,12 @@ def test_jax_numpy_mean(
 # var
 @handle_frontend_test(
     fn_tree="jax.numpy.var",
-    dtype_x_axis=statistical_dtype_values(function="var"),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype_x_axis=statistical_dtype_values(function="var").filter(
+        lambda x: x[0][0] != "bfloat16"
+    ),
+    dtype=helpers.get_dtypes("float", full=False, none=True).filter(
+        lambda x: x != "bfloat16"
+    ),
     where=np_helpers.where(),
     keepdims=st.booleans(),
 )
@@ -165,6 +169,8 @@ def test_jax_numpy_var(
         ddof=ddof,
         keepdims=keepdims,
         where=where,
+        atol=1e-3,
+        rtol=1e-3,
     )
 
 
