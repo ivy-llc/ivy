@@ -46,6 +46,32 @@ double = float64
 half = float16
 
 
+@handle_exceptions
+def check_tensorflow_casting(x1, x2):
+    """
+    checks whether the two arguments provided in the function have the same dtype,
+    unless one of them is an array_like or scalar,
+    where it gets casted to the other input's dtype
+    Parameters
+    ----------
+    x1 : First argument which can be tensor, array_like or scalar
+    x2 : Second argument which can be tensor, array_like or scalar
+
+    Returns
+    -------
+
+    """
+    if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
+        x1 = ivy.asarray(x1)
+        x2 = ivy.asarray(x2, dtype=x1.dtype)
+    else:
+        x1 = ivy.asarray(x1)
+        if not hasattr(x2, "dtype"):
+            x2 = ivy.asarray(x2, dtype=x1.dtype)
+        ivy.assertions.check_same_dtype(x1, x2)
+    return x1, x2
+
+
 from . import dtypes
 from .dtypes import DType, as_dtype, cast
 from . import ragged
