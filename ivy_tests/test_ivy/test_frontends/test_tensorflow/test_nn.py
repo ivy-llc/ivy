@@ -986,7 +986,7 @@ def test_tensorflow_max_pool1d(
         data_format=st.sampled_from(["NHWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=3,
-        stride_max=4,
+        stride_max=7,
         dilation_max=1,
         transpose=True,
     ),
