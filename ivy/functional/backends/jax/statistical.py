@@ -192,18 +192,18 @@ def cumsum(
             dtype = _infer_dtype(x.dtype)
     if exclusive or reverse:
         if exclusive and reverse:
-            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+            x = jnp.cumsum(jnp.flip(x, axis=axis), axis=axis, dtype=dtype)
             x = jnp.swapaxes(x, axis, -1)
             x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
             x = jnp.swapaxes(x, axis, -1)
-            res = jnp.flip(x, axis=(axis,))
+            res = jnp.flip(x, axis=axis)
         elif exclusive:
             x = jnp.swapaxes(x, axis, -1)
             x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
             x = jnp.cumsum(x, -1, dtype=dtype)
             res = jnp.swapaxes(x, axis, -1)
         elif reverse:
-            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+            x = jnp.cumsum(jnp.flip(x, axis=axis), axis=axis, dtype=dtype)
             res = jnp.flip(x, axis=axis)
         return res
     return jnp.cumsum(x, axis, dtype=dtype)

@@ -535,7 +535,6 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-
         With one :class:`ivy.Container` inputs:
 
         >>> w = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))

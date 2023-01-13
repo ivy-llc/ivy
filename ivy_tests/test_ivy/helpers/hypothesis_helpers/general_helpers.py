@@ -144,10 +144,11 @@ def reshape_shapes(draw, *, shape):
             lambda s: math.prod(s) == size
         )
     )
-    # assume(all(side <= MAX_SIDE for side in rshape))
-    if len(rshape) != 0 and size > 0 and draw(st.booleans()):
+    # replace one dimension with -1
+    if len(rshape) > 1 and size > 0 and draw(st.booleans()):
         index = draw(number_helpers.ints(min_value=0, max_value=len(rshape) - 1))
-        rshape[index] = 1
+        rshape[index] = -1
+
     return tuple(rshape)
 
 
@@ -431,9 +432,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         )
         for i in range(dim):
             output_shape.append(
-                _deconv_length(
-                    x_dim[i], strides, filter_shape[i], padding, dilations
-                )
+                _deconv_length(x_dim[i], strides, filter_shape[i], padding, dilations)
             )
     else:
         for i in range(dim):
