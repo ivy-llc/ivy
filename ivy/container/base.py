@@ -169,8 +169,9 @@ class ContainerBase(dict, abc.ABC):
         out=None,
         **kwargs,
     ) -> Union[Tuple[ivy.Container, ivy.Container], ivy.Container]:
+        inspect_fn = fn
         if isinstance(fn, str):
-            fn_temp = ivy.__dict__[fn]
+            inspect_fn = ivy.__dict__[fn]
         arg_cont_idxs = ivy.nested_argwhere(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
@@ -183,7 +184,7 @@ class ContainerBase(dict, abc.ABC):
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
         # Combine the retrieved containers from args and kwargs into a single list
         with_out = (
-            inspect.signature(fn_temp).parameters.get("out") is not None
+            inspect.signature(inspect_fn).parameters.get("out") is not None
             and out is not None
         )
         if with_out:
@@ -3773,6 +3774,9 @@ class ContainerBase(dict, abc.ABC):
                     .cont_to_dict(),
                     indent=self._print_indent,
                 )
+            )
+            json_dumped_str = json_dumped_str.replace("true", "True").replace(
+                "false", "False"
             )
 
             def _add_newline(str_in):

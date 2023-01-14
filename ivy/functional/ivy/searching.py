@@ -29,7 +29,8 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
@@ -47,8 +48,11 @@ def argmax(
         If this is set to True, the axes which are reduced are left in the result as
         dimensions with size one. With this option, the result will broadcast correctly
         against the array.
-    output_dtype
+    dtype
         Optional data type of the output array.
+    select_last_index
+        If this is set to True, the index corresponding to the
+        last occurrence of the maximum value will be returned
     out
         If provided, the result will be inserted into this array. It should be of the
         appropriate shape and dtype.
@@ -96,7 +100,7 @@ def argmax(
     ivy.array([[0], [2]])
 
     >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
-    >>> y = ivy.argmax(x, axis=1, output_dtype=ivy.int64)
+    >>> y = ivy.argmax(x, axis=1, dtype=ivy.int64)
     >>> print(y, y.dtype)
     ivy.array([0, 2]) int64
 
@@ -108,7 +112,12 @@ def argmax(
 
     """
     return current_backend(x).argmax(
-        x, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        x,
+        axis=axis,
+        keepdims=keepdims,
+        dtype=dtype,
+        select_last_index=select_last_index,
+        out=out,
     )
 
 
@@ -124,6 +133,7 @@ def argmin(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
@@ -206,7 +216,12 @@ def argmin(
 
     """
     return current_backend(x).argmin(
-        x, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        x,
+        axis=axis,
+        keepdims=keepdims,
+        output_dtype=output_dtype,
+        select_last_index=select_last_index,
+        out=out,
     )
 
 

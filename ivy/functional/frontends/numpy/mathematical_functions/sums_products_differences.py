@@ -2,16 +2,18 @@
 import ivy
 
 # local
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def sum(
     x,
     /,
@@ -37,9 +39,10 @@ def sum(
     return ivy.sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_float
+@from_zero_dim_arrays_to_scalar
 def prod(
     x, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=True
 ):
@@ -57,8 +60,10 @@ def prod(
     return ivy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def nansum(
     a, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None
 ):  # ToDo handle initial
@@ -69,8 +74,10 @@ def nansum(
     return ivy.sum(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def nanprod(
     a, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None
 ):  # ToDo handle initial
@@ -81,18 +88,21 @@ def nanprod(
     return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 def cumsum(a, /, axis=None, dtype=None, out=None):
     return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 def cumprod(a, /, axis=None, dtype=None, out=None):
     return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 def nancumprod(a, /, axis=None, dtype=None, out=None):
@@ -100,6 +110,7 @@ def nancumprod(a, /, axis=None, dtype=None, out=None):
     return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 def nancumsum(a, /, axis=None, dtype=None, out=None):

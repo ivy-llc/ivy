@@ -29,23 +29,27 @@ BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltAsVariableStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltInstanceStrategy = st.booleans()
-BuiltWithOutStrategy = st.booleans()
 BuiltGradientStrategy = st.booleans()
+BuiltWithOutStrategy = st.booleans()
 
 
 flags_mapping = {
-    "as_variable": "_BuiltAsVariable",
-    "native_array": "_BuiltNativeArray",
-    "container": "_BuiltContainer",
-    "with_out": "_BuiltWithOut",
-    "instance_method": "_BuiltInstance",
-    "test_gradients": "_BuiltGradient",
+    "native_array": "BuiltNativeArrayStrategy",
+    "as_variable": "BuiltAsVariableStrategy",
+    "container": "BuiltContainerStrategy",
+    "instance_method": "BuiltInstanceStrategy",
+    "test_gradients": "BuiltGradientStrategy",
+    "with_out": "BuiltWithOutStrategy",
 }
 
 
 def build_flag(key: str, value: bool):
     if value is not None:
         value = st.just(value)
+    # Prevent silently passing if variables names were changed
+    assert flags_mapping[key] in globals().keys(), (
+        f"{flags_mapping[key]} is not " f"a valid flag variable."
+    )
     globals()[flags_mapping[key]] = value
 
 
@@ -61,7 +65,7 @@ class FunctionTestFlags:
         as_variable,
         native_arrays,
         container,
-        gradient,
+        test_gradients,
     ):
         self.num_positional_args = num_positional_args
         self.with_out = with_out
@@ -69,7 +73,7 @@ class FunctionTestFlags:
         self.native_arrays = native_arrays
         self.container = container
         self.as_variable = as_variable
-        self.gradient = gradient
+        self.test_gradients = test_gradients
 
     def __str__(self):
         return (
@@ -79,7 +83,7 @@ class FunctionTestFlags:
             f"native_arrays={self.native_arrays}. "
             f"container={self.container}. "
             f"as_variable={self.as_variable}. "
-            f"gradient={self.gradient}."
+            f"test_gradients={self.test_gradients}."
         )
 
 
@@ -90,7 +94,7 @@ def function_flags(
     num_positional_args,
     instance_method,
     with_out,
-    gradient,
+    test_gradients,
     as_variable,
     native_arrays,
     container_flags,
@@ -101,7 +105,7 @@ def function_flags(
             num_positional_args=num_positional_args,
             with_out=with_out,
             instance_method=instance_method,
-            gradient=gradient,
+            test_gradients=test_gradients,
             as_variable=as_variable,
             native_arrays=native_arrays,
             container=container_flags,

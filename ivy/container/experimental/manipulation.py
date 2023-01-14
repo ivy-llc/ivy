@@ -2123,7 +2123,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "hsplit",
             ary,
-            indices_or_sections=indices_or_sections,
+            indices_or_sections,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2197,6 +2197,95 @@ class ContainerWithManipulationExperimental(ContainerBase):
                         [14., 15.]])
         }
         """
-        return self.static_hsplit(
-            self, indices_or_sections=indices_or_sections, out=out
+        return self.static_hsplit(self, indices_or_sections, out=out)
+
+    @staticmethod
+    def static_broadcast_shapes(
+        shapes: Union[ivy.Container, List[Tuple[int]]],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.broadcast_shapes.
+        This method simply wraps the function, and so the docstring for
+        ivy.hsplit also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        shapes
+            the container with shapes to broadcast.
+
+        Returns
+        -------
+        ret
+            Container with broadcasted shapes.
+
+        Examples
+        --------
+        >>> shapes = ivy.Container(a = [(2, 3), (2, 1)],
+        ...                        b = [(2, 3), (1, 3)],
+        ...                        c = [(2, 3), (2, 3)],
+        ...                        d = [(2, 3), (2, 1), (1, 3), (2, 3)])
+        >>> z = ivy.Container.static_broadcast_shapes(shapes)
+        >>> print(z)
+        {
+            a: (2, 3),
+            b: (2, 3),
+            c: (2, 3),
+            d: (2, 3)
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "broadcast_shapes",
+            shapes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
+
+    def broadcast_shapes(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.broadcast_shapes.
+         This method simply wraps the function, and so the docstring for
+         ivy.broadcast_shapes also applies to this method with minimal
+         changes.
+
+        Parameters
+        ----------
+        self
+            the container with shapes to broadcast.
+
+        Returns
+        -------
+        ret
+            Container with broadcasted shapes.
+
+        Examples
+        --------
+        >>> shapes = ivy.Container(a = [(2, 3), (2, 1)],
+        ...                        b = [(2, 3), (1, 3)],
+        ...                        c = [(2, 3), (2, 3)],
+        ...                        d = [(2, 3), (2, 1), (1, 3), (2, 3)])
+        >>> z = shapes.broadcast_shapes()
+        >>> print(z)
+        {
+            a: (2, 3),
+            b: (2, 3),
+            c: (2, 3),
+            d: (2, 3)
+        }
+
+        """
+        return self.static_broadcast_shapes(self, out=out)

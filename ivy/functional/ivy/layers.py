@@ -177,21 +177,27 @@ def dropout(
     *,
     scale: bool = True,
     dtype: ivy.Dtype = None,
+    training_mode: bool = True,
+    seed: int = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Randomly zeroes some elements of the input tensor with probability p using
-    samples from a Bernoulli distribution.
+    """
+    Randomly setting a fraction of input tensor to zeroes with probability
+    `prob` at each update during training time to prevent possible overfitting.
+    The inputs not set to 0 are scaled up `1 / (1 - prob)` by default, so that
+    overall sum is unchanged at training time and inference time.
 
     Parameters
     ----------
     x
         The input array x to perform dropout on.
     prob
-        The probability of zeroing out each array element.
+        The probability of zeroing out each array element, float between 0 and 1.
     scale
-        Whether to scale the output by 1/(1-prob), default is ``True``.
+        Whether to scale the output by `1/(1-prob)`, default is ``True``.
     dtype
-
+        output array data type. If dtype is None, the output array data type
+        must be inferred from x. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -199,19 +205,113 @@ def dropout(
     Returns
     -------
     ret
-        Result array of the linear transformation. *[N,∗,out_features]*
+        Result array of the output after dropout is performed.
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1., 2., 3.],
+    ...                [4., 5., 6.],
+    ...                [7., 8., 9.],
+    ...                [10., 11., 12.]])
+    >>> y = ivy.dropout(x,0.3)
+    >>> print(y)
+    ivy.array([[ 1.42857146,  2.85714293,  4.28571415],
+           [ 0.        ,  7.14285755,  8.5714283 ],
+           [10.        , 11.4285717 ,  0.        ],
+           [14.2857151 ,  0.        , 17.1428566 ]])
+
+
+    >>> x = ivy.array([[1.5, 2.6],
+    ...                [4.9, 6.6],
+    ...                [7.2, 8.7]])
+    >>> y = ivy.dropout(x,0.5)
+    >>> print(y)
+    ivy.array([[ 0.        ,  5.19999981],
+               [ 0.        ,  0.        ],
+               [ 0.        , 17.39999962]])
+
+    >>> x = ivy.array([[1., 2., 3.],
+    ...                [4., 5., 6.],
+    ...                [7., 8., 9.],
+    ...                [10., 11., 12.]])
+    >>> y = ivy.dropout(x,0.3,scale=Flase)
+    >>> print(y)
+    ivy.array([[ 1.,  2., 3.],
+               [ 4.,  5., 0.],
+               [ 7.,  0., 9.],
+               [10., 11., 0.]])
+
+    >>> x = ivy.array([[1.5, 2.6],
+    ...                [4.9, 6.6],
+    ...                [7.2, 8.7]])
+    >>> y = ivy.dropout(x,0.5,scale=False)
+    >>> print(y)
+    ivy.array([[0., 2.6],
+               [0., 0. ],
+               [0., 8.7]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], [4., 5., 6.]]),
+    ...                   b=ivy.array([7., 8., 9.]))
+    >>> y = ivy.dropout(x,0.3)
+    >>> print(y)
+    {
+    a: ivy.array([[0., 0., 4.28571415],
+                  [5.71428585, 7.14285755, 0.]]),
+    b: ivy.array([0., 11.4285717, 12.8571434])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], [11., 22., 33.]]),
+    ...                   b=ivy.array([[1.245, 0.278, 4.105], [7., 13., 17.]]))
+    >>> y = ivy.dropout(x,0.5)
+    >>> print(y)
+    {
+        a: ivy.array([[0., 4.4000001, 6.5999999],
+                      [22., 44., 0.]]),
+        b: ivy.array([[2.49000001, 0.55599999, 8.21000004],
+                      [14., 0., 0.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], [4., 5., 6.]]),
+    ...                   b=ivy.array([7., 8., 9.]))
+    >>> y = ivy.dropout(x,0.3)
+    >>> print(y)
+    {
+        a: ivy.array([[0., 0., 3.],
+                      [4., 5., 0.]]),
+        b: ivy.array([0., 8., 9.])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], [11., 22., 33.]]),
+    ...                   b=ivy.array([[1.245, 0.278, 4.105], [7., 13., 17.]]))
+    >>> y = ivy.dropout(x,0.5)
+    >>> print(y)
+    {
+        a: ivy.array([[0., 2.2, 3.3],
+                      [11., 22., 0.]]),
+        b: ivy.array([[1.245, 0.278, 4.105],
+                      [7., 0., 0.]])
+    }
     """
+    if prob == 0 or not training_mode:
+        if dtype is not None:
+            x = ivy.astype(x, dtype)
+        return x if not ivy.exists(out) else ivy.inplace_update(out, x)
+    mask = (
+        ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype, seed=seed)
+        < prob
+    )
     x = ivy.where(
-        ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
+        mask,
         ivy.zeros_like(x, dtype=dtype),
         x,
     )
     if scale:
         x = ivy.multiply(x, 1 / (1 - prob), out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, x)
-    return x
+    return x if not ivy.exists(out) else ivy.inplace_update(out, x)
 
 
 # Attention #
@@ -674,16 +774,18 @@ def conv1d(
     Parameters
     ----------
     x
-        Input image *[batch_size,w,d_in]*.
+        Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
     filters
         Convolution filters *[fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
         paddings.
     data_format
-        NWC" or "NCW". Defaults to "NWC".
+        The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
+        corresponds to input with shape (batch_size, width, channels), while "NCW"
+        corresponds to input with shape (batch_size, channels, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -761,18 +863,20 @@ def conv1d_transpose(
     Parameters
     ----------
     x
-        Input image *[batch_size,w,d_in]*.
+        Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
     filters
         Convolution filters *[fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
         paddings.
     output_shape
         Shape of the output (Default value = None)
     data_format
-        NWC" or "NCW". Defaults to "NWC".
+        The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
+        corresponds to input with shape (batch_size, width, channels), while "NCW"
+        corresponds to input with shape (batch_size, channels, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -817,16 +921,18 @@ def conv2d(
     Parameters
     ----------
     x
-        Input image *[batch_size,h,w,d_in]*.
+        Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
     filters
         Convolution filters *[fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
         paddings.
     data_format
-        NHWC" or "NCHW". Defaults to "NHWC".
+        The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
+        corresponds to inputs with shape (batch_size, height, width, channels), while
+        "NCHW" corresponds to input with shape (batch_size, channels, height, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -943,18 +1049,20 @@ def conv2d_transpose(
     Parameters
     ----------
     x
-        Input image *[batch_size,h,w,d_in]*.
+        Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
     filters
         Convolution filters *[fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
         paddings.
     output_shape
         Shape of the output (Default value = None)
     data_format
-        NHWC" or "NCHW". Defaults to "NHWC".
+        The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
+        corresponds to inputs with shape (batch_size, height, width, channels), while
+        "NCHW" corresponds to input with shape (batch_size, channels, height, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1001,7 +1109,7 @@ def depthwise_conv2d(
     Parameters
     ----------
     x
-        Input image *[batch_size,h,w,d]*.
+        Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
     filters
         Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from x)
     strides
@@ -1010,7 +1118,9 @@ def depthwise_conv2d(
         "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
         paddings.
     data_format
-        "NHWC" or "NCHW". Defaults to "NHWC".
+        The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
+        corresponds to inputs with shape (batch_size, height, width, channels), while
+        "NCHW" corresponds to input with shape (batch_size, channels, height, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1134,16 +1244,19 @@ def conv3d(
     Parameters
     ----------
     x
-        Input volume *[batch_size,d,h,w,d_in]*.
+        Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
         Convolution filters *[fd,fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
         paddings.
     data_format
-        NDHWC" or "NCDHW". Defaults to "NDHWC".
+        The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
+        corresponds to inputs with shape (batch_size, depth, height, width, channels),
+        while "NCDHW" corresponds to input with shape (batch_size, channels, depth,
+        height, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1246,7 +1359,7 @@ def conv3d_transpose(
     Parameters
     ----------
     x
-        Input image *[batch_size,d,h,w,d_in]*.
+        Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
         Convolution filters *[fd,fh,fw,d_in,d_out]*.
     strides
@@ -1257,7 +1370,10 @@ def conv3d_transpose(
     output_shape
         Shape of the output (Default value = None)
     data_format
-        "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
+        corresponds to inputs with shape (batch_size, depth, height, width, channels),
+        while "NCDHW" corresponds to input with shape (batch_size, channels, depth,
+        height, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1269,7 +1385,7 @@ def conv3d_transpose(
     ret
         The result of the transpose convolution operation.
 
-    Functional Examples
+    Examples
     --------
     With :class:`ivy.Array` input:
 
@@ -1279,28 +1395,20 @@ def conv3d_transpose(
     >>> print(y.shape)
     (1, 6, 56, 56, 6)
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array(
-    ...    ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64])
-    ... )
-    >>> filters = ivy.native_array(
-    ...    ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32])
-    ... )
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32])
     >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID')
     >>> print(y.shape)
     (1, 9, 258, 258, 32)
 
     With :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.random_normal(
-    ...                       mean=0, std=1, shape=[1, 3, 28, 28, 3]
-    ...                       ),
-    b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
-    >>> filters = ivy.Container(c = ivy.random_normal(
-    ...                             mean=0, std=1, shape=[3, 3, 3, 3, 6]
-    ...                             ),
-    d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
+    >>> x = ivy.Container(a=a, b=b)
+    >>> filters = ivy.Container(c=c, d=d)
     >>> y = ivy.conv3d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     [1, 6, 56, 56, 6]
@@ -1316,43 +1424,13 @@ def conv3d_transpose(
     [1, 8, 8, 8, 1]
 
 
-    With a mix of :class:`ivy.Array`, :class:`ivy.NativeArray`
-    and :class:`ivy.Container` inputs:
-
     >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
-    >>> a =  ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> b =  ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> a =  ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> b =  ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
     >>> filters = ivy.Container(a = a, b = b)
     >>> y = ivy.conv3d_transpose(x, filters, 1, 'VALID', dilations=1)
     >>> print(y.shape)
     [1, 8, 8, 8, 1]
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-    >>> y = x.conv3d_transpose(filters, 2, 'SAME')
-    >>> print(y.shape)
-    (1, 6, 56, 56, 6)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a = ivy.random_normal(
-    ...                            mean=0, std=1, shape=[1, 3, 28, 28, 3]
-    ...                          ),
-    b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
-
-    >>> filters = ivy.Container(c = ivy.random_normal(
-    ...                                 mean=0, std=1, shape=[3, 3, 3, 3, 3]
-    ...                             ),
-    d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 3]))
-
-    >>> y = x.conv3d_transpose(filters, 2, "SAME")
-    >>> print(y.shape)
-    (1, 6, 56, 56, 3)
     """
     return current_backend(x).conv3d_transpose(
         x,
@@ -1392,7 +1470,7 @@ def conv_general_dilated(
     Parameters
     ----------
     x
-        Input image *[batch_size,d,h,w,d_in]*.
+        Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
         Convolution filters *[fd,fh,fw,d_in/feature_group_count,d_out]*.
     strides
@@ -1401,9 +1479,11 @@ def conv_general_dilated(
         "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
         paddings.
     dims
-        Shape of input.
+        Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     data_format
-        "channel_first" or "channel_last" Defaults to "channel_last"
+        Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
+        "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
+        while "channel_last" corresponds to "NWC", "NHWC", "NDHWC" respectively.
     feature_group_count
          split input into groups, d_in should be divisible by the number of groups.
          (Default value = 1)
@@ -1412,7 +1492,7 @@ def conv_general_dilated(
     dilations
         The dilation factor for each dimension of filter. (Default value = 1)
     bias
-        bias array of shape *[d_out]*.
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1463,7 +1543,7 @@ def conv_general_transpose(
     Parameters
     ----------
     x
-        Input image *[batch_size,d,h,w,d_in]*.
+        Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
         Convolution filters *[fd,fh,fw,d_in,d_out]*.
     strides
@@ -1472,13 +1552,15 @@ def conv_general_transpose(
         "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
         paddings.
     dims
-        Shape of input.
+        Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     data_format
-        "channel_first" or "channel_last" Defaults to "channel_last"
+        Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
+        "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
+        while "channel_last" corresponds to "NWC", "NHWC", "NDHWC" respectively.
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     bias
-        bias array of shape *[d_out]*.
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1523,6 +1605,49 @@ def conv(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
+    """Computes a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D, 4-D and
+    5-D input x respectively and filters arrays.
+
+    Parameters
+    ----------
+    x
+        Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
+    filters
+        Convolution filters *[fd,fh,fw,d_in/feature_group_count,d_out]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
+    transpose
+        True for computing transpose convolution, and False for dilated convolution.
+        When True, `x_dilations` must be 1 (the default).
+    dims
+        Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
+    output_shape
+        Shape of the output (Default value = None)
+    data_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
+        "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
+        while "channel_last" corresponds to "NWC", "NHWC", "NDHWC" respectively.
+    feature_group_count
+         split input into groups, d_in should be divisible by the number of groups.
+         (Default value = 1)
+    x_dilations
+        The dilation factor for each dimension of input. (Default value = 1)
+    dilations
+        The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the transpose or dilated convolution operation.
+    """
     if transpose:
         assert x_dilations == 1, "x_dilations must be 1 for transpose convolutions."
         return conv_general_transpose(
@@ -1655,7 +1780,7 @@ def lstm_update(
 # Helpers #
 
 
-def handle_padding(x, strides, filters, padding):
+def _handle_padding(x, strides, filters, padding):
     if padding == "SAME":
         if x % strides == 0:
             pad = max(filters - strides, 0)
@@ -1666,7 +1791,7 @@ def handle_padding(x, strides, filters, padding):
     return pad
 
 
-def deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
+def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
     if padding == "VALID":
         dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
@@ -1675,7 +1800,7 @@ def deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     return dim_size
 
 
-def get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
+def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
     if dims == 1:
         if data_format == "channel_first":
             return "NCW"

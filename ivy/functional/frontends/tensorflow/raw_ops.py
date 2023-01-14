@@ -1,14 +1,11 @@
 # global
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
-
+from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
     map_raw_ops_alias,
     to_ivy_dtype,
-)
-from ivy.functional.frontends.tensorflow import (
-    promote_types_of_tensorflow_inputs,
 )
 
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -65,19 +62,19 @@ def Atanh(*, x, name="Atanh"):
 
 @to_ivy_arrays_and_back
 def BitwiseAnd(*, x, y, name="BitwiseAnd"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.bitwise_and(x, y)
 
 
 @to_ivy_arrays_and_back
 def BitwiseOr(*, x, y, name="BitwiseOr"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.bitwise_or(x, y)
 
 
 @to_ivy_arrays_and_back
 def BitwiseXor(*, x, y, name="BitwiseXor"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.bitwise_xor(x, y)
 
 
@@ -124,7 +121,7 @@ Cumprod = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumprod))
 
 @to_ivy_arrays_and_back
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     if incompatible_shape_error:
         return ivy.equal(x, y)
 
@@ -156,7 +153,7 @@ def Floor(*, x, name="Floor"):
 
 @to_ivy_arrays_and_back
 def FloorDiv(*, x, y, name="FloorDiv"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.floor_divide(x, y)
 
 
@@ -167,13 +164,13 @@ def Gather(*, params, indices, validate_indices=None, name="Gather"):
 
 @to_ivy_arrays_and_back
 def Greater(*, x, y, name="Greater"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.greater(x, y)
 
 
 @to_ivy_arrays_and_back
 def GreaterEqual(*, x, y, name="GreaterEqual"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.greater_equal(x, y)
 
 
@@ -214,13 +211,13 @@ def LeftShift(*, x, y, name="LeftShift"):
 
 @to_ivy_arrays_and_back
 def Less(*, x, y, name="Less"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.less(x, y)
 
 
 @to_ivy_arrays_and_back
 def LessEqual(*, x, y, name="LessEqual"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.less_equal(x, y)
 
 
@@ -231,7 +228,7 @@ def Log(*, x, name="Log"):
 
 @to_ivy_arrays_and_back
 def LogicalOr(*, x, y, name="LogicalOr"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.logical_or(x, y)
 
 
@@ -242,7 +239,7 @@ def LogicalNot(*, x, name="LogicalNot"):
 
 @to_ivy_arrays_and_back
 def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
-    a, b = promote_types_of_tensorflow_inputs(a, b)
+    a, b = check_tensorflow_casting(a, b)
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
@@ -297,7 +294,7 @@ Neg = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.negative))
 
 @to_ivy_arrays_and_back
 def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     if incompatible_shape_error:
         return ivy.not_equal(x, y)
 
@@ -322,6 +319,11 @@ def Pack(*, values, axis=0, name="Pack"):
     return ivy.stack(values, axis=axis)
 
 
+@to_ivy_arrays_and_back
+def Pad(*, input, paddings, name="Pad"):
+    return ivy.constant_pad(input, paddings.to_list())
+
+
 Relu = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.keras.activations.relu,
@@ -332,7 +334,7 @@ Relu = to_ivy_arrays_and_back(
 
 @to_ivy_arrays_and_back
 def RealDiv(*, x, y, name="RealDiv"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
 
 
@@ -506,3 +508,10 @@ def Xlogy(*, x, y, name="Xlogy"):
     if (x == 0).all():
         return 0.0
     return ivy.multiply(x, ivy.log(y))
+
+
+@to_ivy_arrays_and_back
+def EuclideanNorm(*, input, axis, keep_dims=False, name="EuclideanNorm"):
+    return ivy.astype(
+        ivy.vector_norm(input, axis=axis, keepdims=keep_dims), input.dtype
+    )

@@ -161,7 +161,7 @@ def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
 ) -> bool:
     """
-    Determines whether the input x is an Ivy Array.
+    Determines whether the input x is a valid Ivy Array.
 
     Parameters
     ----------
@@ -174,7 +174,7 @@ def is_ivy_array(
     Returns
     -------
     ret
-        Boolean, whether or not x is an array.
+        Boolean, whether or not x is a valid Ivy Array.
 
     Examples
     --------
@@ -205,6 +205,20 @@ def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     -------
     ret
         Boolean, whether or not x is an array.
+
+    Examples
+    --------
+    >>> x = ivy.array([0, 1, 2])
+    >>> print(ivy.is_array(x))
+    True
+
+    >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
+    >>> print(ivy.is_array(x, exclusive=True))
+    True
+
+    >>> x = [2, 3]
+    >>> print(ivy.is_array(x))
+    False
     """
     return ivy.is_ivy_array(x, exclusive=exclusive) or ivy.is_native_array(
         x, exclusive=exclusive
@@ -224,6 +238,16 @@ def is_ivy_container(x: Any, /) -> bool:
     -------
     ret
         Boolean, whether or not x is an ivy container.
+
+    Examples
+    --------
+    >>> x = ivy.Container()
+    >>> print(ivy.is_ivy_container(x))
+    True
+
+    >>> x = [2, 3]
+    >>> print(ivy.is_ivy_container(x))
+    False
 
     """
     return isinstance(x, ivy.Container)
@@ -762,9 +786,8 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     ret
         A list representation of the input array ``x``.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1, 0, 1])
@@ -805,8 +828,8 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
         a: [[-1, 0, 1], [-1, 0, 1], [1,0,-1]]
     }
 
-    >>> x =
-    ... ivy.Container(a=ivy.array([[[-1, 0, 1],[1, 0, -1]],[[1, -1, 0],[1, 0, -1]]]))
+    >>> x = ivy.Container(a=ivy.array([[[-1, 0, 1],[1, 0, -1]],
+    ...                                [[1, -1, 0],[1, 0, -1]]]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
@@ -1024,6 +1047,31 @@ def fourier_encode(
         New array with the final dimension expanded, and the encodings stored in this
         channel.
 
+    Examples
+    --------
+    >>> x = ivy.array([1,2,3])
+    >>> y = 1.5
+    >>> z = ivy.fourier_encode(x,y)
+    >>> print(z)
+    ivy.array([[ 1.0000000e+00, 1.2246468e-16, 0.0000000e+00, 0.0000000e+00,
+                 0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
+                 1.0000000e+00],
+               [ 2.0000000e+00, -2.4492936e-16, 0.0000000e+00, 0.0000000e+00,
+                 0.0000000e+00, 1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
+                 1.0000000e+00],
+               [ 3.0000000e+00, 3.6739404e-16, 0.0000000e+00, 0.0000000e+00,
+                 0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
+                 1.0000000e+00]])
+
+
+    >>> x = ivy.array([3,10])
+    >>> y = 2.5
+    >>> z = ivy.fourier_encode(x, y, num_bands=3)
+    >>> print(z)
+    ivy.array([[ 3.0000000e+00,  3.6739404e-16,  3.6739404e-16, 3.6739404e-16,
+                -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
+               [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15, -1.2246468e-15,
+                 1.0000000e+00,  1.0000000e+00,  1.0000000e+00]])
     """
     x_in = x
     dim = x.shape[-1]
@@ -1432,7 +1480,7 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
 
     Examples
     --------
-    with: if the function is executed without any exception:
+    with a function that is executed without any exception:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
@@ -1440,7 +1488,7 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
     >>> print(z.__name__)
     add
 
-    with: if the function is executed with an exception:
+    with a function that is executed with an exception:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = 'hemant'
@@ -1658,6 +1706,35 @@ def einops_rearrange(
     ret
         New array with einops.rearrange having been applied.
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1, 2, 3],
+    ...               [-4, -5, -6]])
+    >>> y = ivy.einops_rearrange(x, "height width -> width height")
+    >>> print(y)
+    ivy.array([[ 1, -4],
+       [ 2, -5],
+       [ 3, -6]])
+
+    >>> x = ivy.array([[[ 1,  2,  3],
+    ...                  [ 4,  5,  6]],
+    ...               [[ 7,  8,  9],
+    ...                  [10, 11, 12]]])
+    >>> y = ivy.einops_rearrange(x, "c h w -> c (h w)")
+    >>> print(y)
+    ivy.array([[ 1,  2,  3,  4,  5,  6],
+       [ 7,  8,  9, 10, 11, 12]])
+
+    >>> x = ivy.array([[1, 2, 3, 4, 5, 6]
+    ...               [7, 8, 9, 10, 11, 12]])
+    >>> y = ivy.einops_rearrange(x, "c (h w) -> (c h) w", h=2, w=3)
+    ivy.array([[ 1,  2,  3],
+       [ 4,  5,  6],
+       [ 7,  8,  9],
+       [10, 11, 12]])
+
     """
     ret = einops.rearrange(x, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
@@ -1722,6 +1799,7 @@ def einops_reduce(
         a: ivy.array([-2.29, 10.5]),
         b: ivy.array([-1.4, 6.21])
     }
+
     """
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)

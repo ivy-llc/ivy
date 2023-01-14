@@ -237,26 +237,27 @@ Another case where we need to use :func:`ivy.inplace_update`_ with a function th
 .. code-block:: python
 
     def remainder(
-    x1: Union[float, torch.Tensor],
-    x2: Union[float, torch.Tensor],
-    /,
-    *,
-    modulus: bool = True,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    if not modulus:
-        res = x1 / x2
-        res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
-        diff = res - res_floored
-        diff, x2 = ivy.promote_types_of_inputs(diff, x2)
-        if ivy.exists(out):
-            if out.dtype != x2.dtype:
-                return ivy.inplace_update(
-                    out, torch.round(torch.mul(diff, x2)).to(x1.dtype)
-                )
-        return torch.round(torch.mul(diff, x2), out=out).to(x1.dtype)
-    return torch.remainder(x1, x2, out=out).to(x1.dtype)
+        x1: Union[float, torch.Tensor],
+        x2: Union[float, torch.Tensor],
+        /,
+        *,
+        modulus: bool = True,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        if not modulus:
+            res = x1 / x2
+            res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
+            diff = res - res_floored
+            diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+            if ivy.exists(out):
+                if out.dtype != x2.dtype:
+                    return ivy.inplace_update(
+                        out, torch.round(torch.mul(diff, x2)).to(out.dtype)
+                    )
+            return torch.round(torch.mul(diff, x2), out=out).to(x1.dtype)
+        return torch.remainder(x1, x2, out=out).to(x1.dtype)
+
 
 Here, even though the :func:`torch.round` function natively supports the :code:`out` argument, in case the :code:`dtype` of the :code:`out` argument is different
 from the :code:`dtype` of the result of the function, we need to use :func:`ivy.inplace_update`, while still trying to utilize the native :code:`out` argument whenever

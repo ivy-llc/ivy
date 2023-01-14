@@ -1,9 +1,15 @@
 # global
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
+)
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def all(
     a,
     axis=None,
@@ -19,7 +25,9 @@ def all(
     return ret
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def any(
     a,
     axis=None,
