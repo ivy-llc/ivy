@@ -286,17 +286,17 @@ def test_function(
             if hasattr(ivy.__dict__[fn_name], "out_index")
             else ret
         )
-        assert ivy.nested_any(
+        assert not ivy.nested_any(
             ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
-            lambda x: x,
+            lambda x: not x,
         )
         if not max(container_flags) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
-            assert ivy.nested_any(
+            assert not ivy.nested_any(
                 ivy.nested_multi_map(
                     lambda x, _: x[0].data is x[1].data, [test_ret, out]
                 ),
-                lambda x: x,
+                lambda x: not x,
             )
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
