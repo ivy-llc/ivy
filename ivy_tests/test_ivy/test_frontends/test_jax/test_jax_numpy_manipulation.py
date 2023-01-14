@@ -760,4 +760,3 @@ def test_jax_numpy_atleast_2d(
         on_device=on_device,
         **arys,
     )
-   
