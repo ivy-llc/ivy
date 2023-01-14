@@ -461,7 +461,7 @@ def count_nonzero(
         optional output dtype. Default is of type integer.
     out
         optional output array, for writing the result to.
-    
+
     Returns
     -------
     ret

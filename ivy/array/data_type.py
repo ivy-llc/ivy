@@ -111,7 +111,7 @@ class ArrayWithDataTypes(abc.ABC):
         return ivy.broadcast_arrays(self._data, *arrays)
 
     def broadcast_to(
-        self: ivy.Array, shape: Tuple[int, ...], out: Optional[ivy.Array] = None
+        self: ivy.Array, /, shape: Tuple[int, ...], *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         `ivy.Array` instance method variant of `ivy.broadcast_to`.
@@ -144,7 +144,7 @@ class ArrayWithDataTypes(abc.ABC):
                    [1, 2, 3],
                    [1, 2, 3]])
         """
-        return ivy.broadcast_to(x=self._data, shape=shape, out=out)
+        return ivy.broadcast_to(self._data, shape=shape, out=out)
 
     def can_cast(self: ivy.Array, to: ivy.Dtype) -> bool:
         """
