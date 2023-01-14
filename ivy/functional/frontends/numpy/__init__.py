@@ -476,7 +476,7 @@ from .linalg.matrix_and_vector_products import (
     tensordot,
     # einsum,
     # einsum_path,
-    # kron,
+    kron,
 )
 
 from .linalg.decompositions import cholesky, qr, svd
