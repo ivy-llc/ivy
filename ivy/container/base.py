@@ -188,11 +188,15 @@ class ContainerBase(dict, abc.ABC):
             and out is not None
         )
         if with_out:
-            out_cont_idxs = ivy.nested_argwhere(
-                out, ivy.is_ivy_container, to_ignore=ivy.Container
-            )
-            out_conts = ivy.multi_index_nest(out, out_cont_idxs)
-            num_out_conts = len(out_conts)
+            out_conts = [out]
+            num_out_conts = 1
+            out_cont_idxs = []
+            if not ivy.is_array(out) and not ivy.is_ivy_container(out):
+                out_cont_idxs = ivy.nested_argwhere(
+                    out, ivy.is_ivy_container, to_ignore=ivy.Container
+                )
+                out_conts = ivy.multi_index_nest(out, out_cont_idxs)
+                num_out_conts = len(out_conts)
             conts = arg_conts + kwarg_conts + out_conts
         else:
             conts = arg_conts + kwarg_conts
