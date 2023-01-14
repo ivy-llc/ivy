@@ -163,6 +163,8 @@ class ArrayWithLayers(abc.ABC):
             The probability of zeroing out each array element, float between 0 and 1.
         training
             Turn on dropout if training, turn off otherwise. Default is ``True``.
+        data_format
+            "NWC" or "NCW". Default is ``"NCW"``.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
