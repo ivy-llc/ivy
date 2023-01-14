@@ -902,6 +902,7 @@ def test_vecdot(
         valid_axis=True,
         min_value=-1e04,
         max_value=1e04,
+        abs_smallest_val=1e-04,
     ),
     kd=st.booleans(),
     ord=st.one_of(
