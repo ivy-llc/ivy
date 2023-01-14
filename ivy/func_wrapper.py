@@ -59,7 +59,12 @@ def handle_array_like(fn: Callable) -> Callable:
             type_hints = typing.get_type_hints(fn)
         except (TypeError, ValueError):
             return fn(*args, **kwargs)
-
+        has_out = False
+        out = None
+        if "out" in kwargs:
+            out = kwargs["out"]
+            del kwargs["out"]
+            has_out = True
         params = signature.parameters
         for name, param in params.items():
             if param.kind in (param.POSITIONAL_OR_KEYWORD, param.KEYWORD_ONLY):
@@ -77,7 +82,8 @@ def handle_array_like(fn: Callable) -> Callable:
                             if param.name in kwargs:
                                 if isinstance(kwargs[param.name], (list, tuple)):
                                     kwargs[param.name] = ivy.array(kwargs[param.name])
-
+        if has_out:
+            kwargs["out"] = out
         return fn(*args, **kwargs)
 
     new_fn.handle_array_like = True
