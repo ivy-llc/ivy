@@ -193,7 +193,6 @@ def test_numpy_tensordot(
 @handle_frontend_test(
     fn_tree="numpy.kron",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=True,
         allow_nan=True,

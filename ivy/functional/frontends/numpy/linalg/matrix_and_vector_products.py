@@ -56,3 +56,9 @@ def tensorsolve(a, b, axes=2):
 def kron(a, b):
     a, b = promote_types_of_numpy_inputs(a, b)
     return ivy.kron(a, b)
+
+
+kron.unsupported_dtypes = {
+    'tensorflow': ('bool',),
+    "jax": ('bool',)
+}
