@@ -379,7 +379,7 @@
                         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
                             <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">cont_unstack_conts</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">with_out</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">out_cont_idx</span><span class="p">,</span> <span class="n">out_cont</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">out_cont_idxs</span><span class="p">,</span> <span class="n">out_conts</span><span class="p">):</span>
                 <span class="n">out_cont</span><span class="o">.</span><span class="n">cont_inplace_update</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">index_nest</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">out_cont_idx</span><span class="p">))</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_conts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
