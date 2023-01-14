@@ -94,7 +94,11 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     {"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def broadcast_to(
-    x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
+    x: torch.Tensor,
+    /,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if x.ndim > len(shape):
         return torch.broadcast_to(x.reshape(-1), shape)
