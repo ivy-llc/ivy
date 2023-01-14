@@ -1122,8 +1122,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x1.all_equal(x2, equality_matrix= False)
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
@@ -1131,8 +1131,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x1.all_equal(x2, equality_matrix= False)
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
 
         With multiple :class:`ivy.Container` instances:
@@ -1144,8 +1144,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x1.all_equal(x2, equality_matrix= False)
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
 
         >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),
@@ -1155,8 +1155,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x1.all_equal(x2, equality_matrix= False)
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
 
         """
@@ -1552,7 +1552,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
         >>> y = ivy.Container.static_has_nans(x)
         >>> print(y)
@@ -2406,8 +2405,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_value_is_nan(x)
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
 
         With :class:`ivy.Container` input:
@@ -2416,8 +2415,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_value_is_nan(x)
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
 
         With :class:`ivy.Container` input:
@@ -2426,8 +2425,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_value_is_nan(x, include_infs=False)
         >>> print(y)
         {
-            a: false,
-            b: false
+            a: False,
+            b: False
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2485,24 +2484,24 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x.value_is_nan()
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
 
         >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([0]))
         >>> y = x.value_is_nan()
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
 
         >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
         >>> y = x.value_is_nan(include_infs=False)
         >>> print(y)
         {
-            a: false,
-            b: false
+            a: False,
+            b: False
         }
         """
         return self.static_value_is_nan(

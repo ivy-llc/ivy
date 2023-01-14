@@ -310,6 +310,9 @@ class GradientTracking:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_with_grads()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 

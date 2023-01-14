@@ -1,5 +1,5 @@
 # global
-from typing import Union, Sequence, List
+from typing import Optional, Union, Sequence, List
 
 import numpy as np
 import tensorflow as tf
@@ -101,6 +101,7 @@ def astype(
     /,
     *,
     copy: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
