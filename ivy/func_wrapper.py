@@ -59,7 +59,12 @@ def handle_array_like(fn: Callable) -> Callable:
             type_hints = typing.get_type_hints(fn)
         except (TypeError, ValueError):
             return fn(*args, **kwargs)
-
+        has_out = False
+        out = None
+        if "out" in kwargs:
+            out = kwargs["out"]
+            del kwargs["out"]
+            has_out = True
         params = signature.parameters
         for name, param in params.items():
             if param.kind in (param.POSITIONAL_OR_KEYWORD, param.KEYWORD_ONLY):
@@ -77,7 +82,8 @@ def handle_array_like(fn: Callable) -> Callable:
                             if param.name in kwargs:
                                 if isinstance(kwargs[param.name], (list, tuple)):
                                     kwargs[param.name] = ivy.array(kwargs[param.name])
-
+        if has_out:
+            kwargs["out"] = out
         return fn(*args, **kwargs)
 
     new_fn.handle_array_like = True
@@ -394,6 +400,13 @@ def handle_out_argument(fn: Callable) -> Callable:
         # compute return, and then handle the inplace update explicitly
 
         ret = fn(*args, **kwargs)
+        if not ivy.is_array(ret) and not ivy.is_ivy_container(ret):
+            return ivy.nested_multi_map(
+                lambda x, _: ivy.inplace_update(
+                    x[0], ivy.astype(x[1], ivy.dtype(x[0]))
+                ),
+                [out, ret],
+            )
         return ivy.inplace_update(out, ivy.astype(ret, ivy.dtype(out)))
         # return output matches the dtype of the out array to match numpy and torch
 
