@@ -49,13 +49,13 @@ class ContainerWithLayers(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional output array, for writing the result to. It must have a shape 
+            optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
         -------
         ret
-            Result array of the linear transformation.
+            A container with arrays after their respective linear transformations.
             *[outer_batch_shape,inner_batch_shape,out_features]*
 
         Examples
@@ -144,13 +144,13 @@ class ContainerWithLayers(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional output array, for writing the result to. It must have a shape 
+            optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
         -------
         ret
-            Result array of the linear transformation.
+            A container with arrays after their respective linear transformations.
             *[outer_batch_shape,inner_batch_shape,out_features]*
 
         Examples
@@ -214,11 +214,12 @@ class ContainerWithLayers(ContainerBase):
         scale
             Whether to scale the output by `1/(1-prob)`, default is ``True``.
         dtype
-            output array data type. If dtype is None, the output array data type
+            Output array data type. If dtype is None, the output array data type
             must be inferred from x. Default: ``None``.
-        out
-            optional output array, for writing the result to. It must have a
-            shape that the inputs broadcast to.
+        training_mode
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        seed
+
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -231,7 +232,7 @@ class ContainerWithLayers(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional output array, for writing the result to. It must have a shape
+            optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
@@ -1105,6 +1106,42 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+        """
+        ivy.Container instance method variant of `ivy.conv2d_transpose`. This method
+        simply wraps the function, and so the docstring for `ivy.conv2d_transpose`
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The queries input container. The shape of queries input array leaves should
+            be in *[batch_shape,num_queries,feat_dim]*. The queries input array leaves
+            should have the same size as keys and values.
+        filters
+            Convolution filters *[fh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating the
+            per-dimension paddings.
+        output_shape
+            Shape of the output (Default value = None)
+        data_format
+            The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
+            corresponds to inputs with shape (batch_size, height, width, channels),
+            while "NCHW" corresponds to input with shape (batch_size, channels, height,
+            width). Default is ``"NHWC"``.
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the transpose convolution operation.
+        """
         return self.static_conv2d_transpose(
             self,
             filters,

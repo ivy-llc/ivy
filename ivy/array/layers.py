@@ -282,7 +282,7 @@ class ArrayWithLayers(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             Input image *[batch_size,w,d_in]*.
         filters
             Convolution filters *[fw,d_in,d_out]*.
@@ -424,7 +424,7 @@ class ArrayWithLayers(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             Input image *[batch_size,h,w,d_in]*.
         filters
             Convolution filters *[fh,fw,d_in,d_out]*.
@@ -474,6 +474,63 @@ class ArrayWithLayers(abc.ABC):
             out=out,
         )
 
+    def conv2d_transpose(
+        self: ivy.Array,
+        filters: Union[ivy.Array, ivy.NativeArray],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        data_format: str = "NHWC",
+        dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of `ivy.conv2d_transpose`. This method simply
+        wraps the function, and so the docstring for `ivy.conv2d_transpose` also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
+        filters
+            Convolution filters *[fh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating the
+            per-dimension paddings.
+        output_shape
+            Shape of the output (Default value = None)
+        data_format
+            The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
+            corresponds to inputs with shape (batch_size, height, width, channels),
+            while "NCHW" corresponds to input with shape (batch_size, channels, height,
+            width). Default is ``"NHWC"``.
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the transpose convolution operation.
+        """
+        return ivy.conv2d_transpose(
+            self._data,
+            filters,
+            strides,
+            padding,
+            output_shape=output_shape,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
+        )
+
     def conv3d(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
@@ -492,8 +549,8 @@ class ArrayWithLayers(abc.ABC):
 
         Parameters
         ----------
-        x
-            Input volume *[batch_size,d,h,w,d_in]*.
+        self
+            Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
         filters
             Convolution filters *[fd,fh,fw,d_in,d_out]*.
         strides
@@ -547,6 +604,38 @@ class ArrayWithLayers(abc.ABC):
         dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of `ivy.conv3d_transpose`. This method simply
+        wraps the function, and so the docstring for `ivy.conv3d_transpose` also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
+        filters
+            Convolution filters *[fd,fh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating the
+            per-dimension paddings.
+        data_format
+            The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW".
+            "NDHWC" corresponds to inputs with shape (batch_size, depth, height, width,
+            channels), while "NCDHW" corresponds to input with shape (batch_size,
+            channels, depth, height, width).
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the transpose convolution operation.
+        """
         return ivy.conv3d_transpose(
             self._data,
             filters,
