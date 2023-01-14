@@ -468,7 +468,7 @@ def broadcast_to(
                       [4, 5, 6]])
     }
     """
-    return current_backend(x).broadcast_to(x, shape)
+    return current_backend(x).broadcast_to(x, shape, out=out)
 
 
 @inputs_to_ivy_arrays
