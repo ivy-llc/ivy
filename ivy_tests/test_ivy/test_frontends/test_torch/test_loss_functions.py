@@ -38,21 +38,21 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     label_smoothing=helpers.floats(min_value=0, max_value=0.49),
 )
 def test_torch_cross_entropy(
-    *,
-    dtype_and_input,
-    dtype_and_target,
-    dtype_and_weights,
-    size_average,
-    reduce,
-    reduction,
-    label_smoothing,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    on_device,
-    fn_tree,
-    frontend,
+        *,
+        dtype_and_input,
+        dtype_and_target,
+        dtype_and_weights,
+        size_average,
+        reduce,
+        reduction,
+        label_smoothing,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        on_device,
+        fn_tree,
+        frontend,
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
@@ -121,20 +121,20 @@ def test_torch_cross_entropy(
     reduction=st.sampled_from(["mean", "none", "sum", None]),
 )
 def test_torch_binary_cross_entropy(
-    *,
-    dtype_and_true,
-    dtype_and_pred,
-    dtype_and_weight,
-    size_average,
-    reduce,
-    reduction,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    on_device,
-    fn_tree,
-    frontend,
+        *,
+        dtype_and_true,
+        dtype_and_pred,
+        dtype_and_weight,
+        size_average,
+        reduce,
+        reduction,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        on_device,
+        fn_tree,
+        frontend,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -296,18 +296,18 @@ def test_torch_binary_cross_entropy_with_logits(
     reduction=st.sampled_from(["mean"]),
 )
 def test_torch_mse_loss(
-    *,
-    dtype_and_true,
-    dtype_and_pred,
-    size_average,
-    reduce,
-    reduction,
-    as_variable,
-    num_positional_args,
-    native_array,
-    on_device,
-    fn_tree,
-    frontend,
+        *,
+        dtype_and_true,
+        dtype_and_pred,
+        size_average,
+        reduce,
+        reduction,
+        as_variable,
+        num_positional_args,
+        native_array,
+        on_device,
+        fn_tree,
+        frontend,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -343,18 +343,18 @@ def test_torch_mse_loss(
     beta=st.sampled_from([1.0, 0.5, 0.1, 0.0]),
 )
 def test_torch_smooth_l1_loss(
-    *,
-    dtype_and_x,
-    size_average,
-    reduce,
-    reduction,
-    beta,
-    as_variable,
-    num_positional_args,
-    native_array,
-    frontend,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        size_average,
+        reduce,
+        reduction,
+        beta,
+        as_variable,
+        num_positional_args,
+        native_array,
+        frontend,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     pred_dtype, pred = input_dtype[0], x[0]
@@ -390,16 +390,16 @@ def test_torch_smooth_l1_loss(
     reduction=st.sampled_from(["none", "mean", "sum"]),
 )
 def test_torch_huber_loss(
-    *,
-    dtype_and_x,
-    delta,
-    reduction,
-    as_variable,
-    num_positional_args,
-    native_array,
-    frontend,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        delta,
+        reduction,
+        as_variable,
+        num_positional_args,
+        native_array,
+        frontend,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     pred_dtype, pred = input_dtype[0], x[0]
@@ -434,17 +434,17 @@ def test_torch_huber_loss(
     reduction=st.sampled_from(["none", "mean", "sum"]),
 )
 def test_torch_l1_loss(
-    *,
-    dtype_and_x,
-    size_average,
-    reduce,
-    reduction,
-    as_variable,
-    num_positional_args,
-    native_array,
-    frontend,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        size_average,
+        reduce,
+        reduction,
+        as_variable,
+        num_positional_args,
+        native_array,
+        frontend,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     pred_dtype, pred = input_dtype[0], x[0]
@@ -502,20 +502,20 @@ def test_torch_l1_loss(
     reduction=st.sampled_from(["mean", "none", "sum"]),
 )
 def test_torch_nll_loss(
-    *,
-    dtype_and_input,
-    dtype_and_target,
-    dtype_and_weights,
-    size_average,
-    reduce,
-    reduction,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    on_device,
-    fn_tree,
-    frontend,
+        *,
+        dtype_and_input,
+        dtype_and_target,
+        dtype_and_weights,
+        size_average,
+        reduce,
+        reduction,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        on_device,
+        fn_tree,
+        frontend,
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
@@ -552,17 +552,17 @@ def test_torch_nll_loss(
     reduction=st.sampled_from(["none", "mean", "sum"]),
 )
 def test_torch_soft_margin_loss(
-    *,
-    dtype_and_x,
-    size_average,
-    reduce,
-    reduction,
-    as_variable,
-    num_positional_args,
-    native_array,
-    frontend,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        size_average,
+        reduce,
+        reduction,
+        as_variable,
+        num_positional_args,
+        native_array,
+        frontend,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     pred_dtype, pred = input_dtype[0], x[0]
@@ -581,4 +581,57 @@ def test_torch_soft_margin_loss(
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
+    )
+
+
+# kl_div
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.kl_div",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+        shared_dtype=True,
+        min_value=0,
+        max_value=10,
+        min_num_dims=0,
+        max_num_dims=10,
+        min_dim_size=0,
+        max_dim_size=10,
+        num_arrays=2
+    ),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
+    reduction=st.sampled_from(["none", "mean", "sum", "batchmean"]),
+    log_target=st.booleans()
+)
+def test_torch_kl_div(
+        *,
+        dtype_and_inputs,
+        size_average,
+        reduce,
+        reduction,
+        log_target,
+        as_variable,
+        num_positional_args,
+        native_array,
+        frontend,
+        fn_tree,
+        on_device,
+):
+    inputs_dtype, inputs = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=inputs_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=inputs[0],
+        target=inputs[1],
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction,
+        log_target=log_target,
     )
