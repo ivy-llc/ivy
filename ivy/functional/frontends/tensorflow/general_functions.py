@@ -173,3 +173,22 @@ def gather(params, indices, axis=None, batch_dims=0, name=None):
 @to_ivy_arrays_and_back
 def gather_nd(params, indices, batch_dims=0, name=None):
     return ivy.gather_nd(params, indices, batch_dims=batch_dims)
+
+
+@to_ivy_arrays_and_back
+def boolean_mask(tensor, mask, axis=None, name=None):
+    if axis == None or axis == 0:
+        return ivy.get_item(tensor, mask)
+    else:
+        n = ivy.get_num_dims(tensor)
+        k = ivy.get_num_dims(mask)
+        if axis < 0:
+            axis = n + axis
+        ivy.assertions.check_less(k+axis,n, allow_equal=True,
+                                  message="Value of axis must be such that axis + dim(mask) <= dim(tensor)")
+        tensor_shape = ivy.shape(tensor)
+        for i in range(axis-1, -1, -1):
+            mask = ivy.expand_dims(mask, axis=0)
+            mask = ivy.repeat(mask, tensor_shape[i], axis=0)
+        return ivy.get_item(tensor, mask)
+    
