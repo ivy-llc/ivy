@@ -419,14 +419,14 @@ class Tensor:
         if args and dims:
             raise TypeError("permute() got multiple values for argument 'dims'")
         if dims is not None:
-            return torch_frontend.permute(self, dims)
+            return torch_frontend.permute(self._ivy_array, dims)
         if args:
             if isinstance(args[0], tuple):
                 dims = args[0]
-                return torch_frontend.permute(self, dims)
+                return torch_frontend.permute(self._ivy_array, dims)
             else:
-                return torch_frontend.permute(self, args)
-        return torch_frontend.permute(self)
+                return torch_frontend.permute(self._ivy_array, args)
+        return torch_frontend.permute(self._ivy_array)
 
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self._ivy_array, dim=dim, keepdim=keepdim)
