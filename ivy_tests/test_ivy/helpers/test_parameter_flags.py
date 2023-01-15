@@ -84,6 +84,9 @@ class FunctionTestFlags:
             f"test_gradients={self.test_gradients}."
         )
 
+    def __repr__(self):
+        return self.__str__()
+
 
 @st.composite
 def function_flags(
@@ -134,6 +137,9 @@ class FrontendFunctionTestFlags:
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
         )
+
+    def __repr__(self):
+        return self.__str__()
 
 
 @st.composite
