@@ -484,5 +484,6 @@ def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> Jax
 def real(x: Union[JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.real(x)
 
+
 def isposinf(x: Union[JaxArray], /, *, out: Optional[JaxArray] = None,) -> JaxArray:
     return jnp.isposinf(x)
