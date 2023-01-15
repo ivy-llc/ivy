@@ -425,7 +425,7 @@ class Tensor:
                 dims = args[0]
                 return torch_frontend.permute(self._ivy_array, dims)
             else:
-                return torch_frontend.permute(self._ivy_array, tuple(args))
+                return torch_frontend.permute(self._ivy_array, args)
         return torch_frontend.permute(self._ivy_array)
 
     def mean(self, dim=None, keepdim=False):
