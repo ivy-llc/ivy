@@ -415,7 +415,7 @@ def test_eigh(
     reconstructed_np = None
     for i in range(len(ret_np_flat) // 2):
         eigenvalue = ret_np_flat[i]
-        eigenvector = ret_np_flat[len(ret_np_flat) // 2]
+        eigenvector = ret_np_flat[len(ret_np_flat) // 2 + i]
         if reconstructed_np is not None:
             reconstructed_np += eigenvalue * np.matmul(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
@@ -635,7 +635,7 @@ def test_slogdet(
     input_dtype, x = dtype_x
     assume(matrix_is_stable(x[0]))
     ret_grad_idxs = (
-        [["a", 0], ["b", "c", 0], ["b", "d", 0]] if test_flags.container[0] else [[0]]
+        [[1, "a"], [1, "b", "c"], [1, "b", "d"]] if test_flags.container[0] else [[1]]
     )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -1080,17 +1080,17 @@ def test_svd(
 
     if uv:
         for i in range(len(ret_flat_np) // 3):
-            U = ret_flat_np[i * 3]
-            S = ret_flat_np[i * 3 + 1]
-            Vh = ret_flat_np[i * 3 + 2]
+            U = ret_flat_np[i]
+            S = ret_flat_np[len(ret_flat_np) // 3 + i]
+            Vh = ret_flat_np[2 * len(ret_flat_np) // 3 + i]
         m = U.shape[-1]
         n = Vh.shape[-1]
         S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
 
         for i in range(len(ret_from_gt_flat_np) // 3):
-            U_gt = ret_from_gt_flat_np[i * 3]
-            S_gt = ret_from_gt_flat_np[i * 3 + 1]
-            Vh_gt = ret_from_gt_flat_np[i * 3 + 2]
+            U_gt = ret_from_gt_flat_np[i]
+            S_gt = ret_from_gt_flat_np[len(ret_from_gt_flat_np) // 3 + i]
+            Vh_gt = ret_from_gt_flat_np[2 * len(ret_from_gt_flat_np) // 3 + i]
         S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
         with ivy.functional.backends.numpy.use:
