@@ -140,6 +140,7 @@ def test_torch_poisson(
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
+
 @handle_frontend_test(
     fn_tree="torch.rand",
     dtype = helpers.get_dtypes("float", full=False),
@@ -148,7 +149,7 @@ def test_torch_poisson(
         max_num_dims=5,
         min_dim_size=0,
         max_dim_size=10,
-        ),
+    ),
     # seed=helpers.ints(min_value=0, max_value=100),
 )
 def test_torch_rand(
