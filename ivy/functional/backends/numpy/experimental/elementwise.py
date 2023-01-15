@@ -399,5 +399,11 @@ def xlogy(
 def real(x: Union[np.ndarray], /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.real(x)
 
-def isposinf(x: Union[np.ndarray], /, *, out: Optional[np.ndarray] = None,) -> np.ndarray:
+
+def isposinf(
+        x: Union[np.ndarray],
+        /,
+        *,
+        out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     return np.isposinf(x)
