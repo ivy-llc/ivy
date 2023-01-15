@@ -730,10 +730,8 @@ def multi_head_attention(
     # BS x H x Q x F,  BS x H x K x F,  BS x H x K x F
     def call_einops(t):
         return ivy.einops_rearrange(t, "... n (h f) -> ... h n f", h=num_heads)
-    
-    q, k, v = map(
-        call_einops, (q, k, v)
-    )
+
+    q, k, v = map(call_einops, (q, k, v))
 
     # BS x H x Q x K
     if ivy.exists(mask):
