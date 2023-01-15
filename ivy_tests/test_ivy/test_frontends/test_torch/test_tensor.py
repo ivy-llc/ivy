@@ -3641,7 +3641,7 @@ def test_torch_instance_permute(
         method_as_variable_flags=as_variable,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
-            "dims": idxes,
+            "dims": tuple(idxes),
         },
         frontend_method_data=frontend_method_data,
         frontend=frontend,
