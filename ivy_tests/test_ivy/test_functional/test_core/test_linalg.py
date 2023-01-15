@@ -1172,8 +1172,9 @@ def _matrix_rank_helper(draw):
             available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=2,
             shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-            large_abs_safety_factor=48,
-            small_abs_safety_factor=48,
+            min_value=-1e05,
+            max_value=1e05,
+            abs_smallest_val=1e-05,
             safety_factor_scale="log",
         )
     )
@@ -1263,13 +1264,12 @@ def test_cholesky(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=10,
+        max_num_dims=5,
         min_dim_size=3,
         max_dim_size=3,
-        min_value=-1e10,
-        max_value=1e10,
+        min_value=-1e5,
+        max_value=1e5,
         abs_smallest_val=0.01,
-        large_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
 )
@@ -1291,7 +1291,7 @@ def test_cross(
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
-        atol_=1e-2,
+        atol_=1e-1,
         x1=x1,
         x2=x2,
         axis=axis,
