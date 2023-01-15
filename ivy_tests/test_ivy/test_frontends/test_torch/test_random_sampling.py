@@ -143,8 +143,8 @@ def test_torch_poisson(
 
 @handle_frontend_test(
     fn_tree="torch.rand",
-    dtype = helpers.get_dtypes("float", full=False),
-    size = helpers.get_shape(
+    dtype=helpers.get_dtypes("float", full=False),
+    size=helpers.get_shape(
         min_num_dims=0,
         max_num_dims=5,
         min_dim_size=0,
