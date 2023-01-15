@@ -402,3 +402,7 @@ def real(
     x: Union[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.real(x)
+
+
+def isposinf(x: Union[torch.Tensor], /, *, out: Optional[torch.Tensor] = None,) -> torch.Tensor:
+    return torch.isposinf(x)
