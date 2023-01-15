@@ -2,6 +2,7 @@
 import importlib
 import inspect
 import typing
+from typing import List
 
 from hypothesis import given, strategies as st
 
@@ -342,6 +343,7 @@ def handle_test(
 def handle_frontend_test(
     *,
     fn_tree: str,
+    aliases: List[str] = None,
     number_positional_args=None,
     test_with_out=BuiltWithOutStrategy,
     test_inplace=BuiltInplaceStrategy,
@@ -379,6 +381,9 @@ def handle_frontend_test(
         passed as a native array
     """
     fn_tree = "ivy.functional.frontends." + fn_tree
+    if aliases is not None:
+        for i in range(len(aliases)):
+            aliases[i] = "ivy.functional.frontends." + aliases[i]
     is_hypothesis_test = len(_given_kwargs) != 0
 
     if is_hypothesis_test:
@@ -404,7 +409,9 @@ def handle_frontend_test(
             # Check if these arguments are being asked for
             possible_arguments = {
                 "test_flags": test_flags,
-                "fn_tree": st.just(fn_tree),
+                "fn_tree": st.sampled_from([fn_tree] + aliases)
+                if aliases is not None
+                else st.just(fn_tree),
             }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:
