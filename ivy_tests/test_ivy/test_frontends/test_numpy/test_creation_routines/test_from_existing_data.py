@@ -1,3 +1,6 @@
+# global
+from hypothesis import strategies as st
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -13,24 +16,20 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_dim_size=1,
         max_dim_size=5,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_array(
     dtype_and_a,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         object=a,
@@ -49,24 +48,20 @@ def test_numpy_array(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_asarray(
     dtype_and_a,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=a,
@@ -85,24 +80,20 @@ def test_numpy_asarray(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_copy(
     dtype_and_a,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=a[0],

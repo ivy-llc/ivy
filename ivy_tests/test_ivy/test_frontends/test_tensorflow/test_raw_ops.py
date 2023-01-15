@@ -2780,7 +2780,6 @@ def test_tensorflow_Pad(  # NOQA
     dtype, x, padding_dtype, paddings = dtype_x_paddings
     helpers.test_frontend_function(
         input_dtypes=dtype + padding_dtype,
-        num_positional_args=0,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
