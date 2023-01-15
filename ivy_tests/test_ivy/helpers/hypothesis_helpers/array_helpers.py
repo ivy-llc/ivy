@@ -265,6 +265,7 @@ def dtype_values_axis(
     min_axes_size=1,
     max_axes_size=None,
     force_int_axis=False,
+    force_tuple_axis=False,
     ret_shape=False,
 ):
     """Draws a list of arrays with elements from the given data type,
@@ -334,8 +335,10 @@ def dtype_values_axis(
         minimum size of the axis tuple.
     max_axes_size
         maximum size of the axis tuple.
+    force_tuple_axis
+        if true, all axis will be returned as a tuple.
     force_int_axis
-        if True, and only one axis is drawn, the returned axis will be an integer.
+        if true and only one axis is drawn, the returned axis will be an int.
     shape
         shape of the array. if None, a random shape is drawn.
     shared_dtype
@@ -386,6 +389,7 @@ def dtype_values_axis(
                     max_size=max_axes_size,
                     allow_neg=allow_neg_axes,
                     force_int=force_int_axis,
+                    force_tuple=force_tuple_axis,
                 )
             )
     else:
