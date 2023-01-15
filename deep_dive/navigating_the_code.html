@@ -389,6 +389,10 @@ In this example, the helper function is named as <code class="xref py py-func do
         <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We shouldn’t be enabling numpy behaviour in tensorflow’s experimental API as it leads to issues with the bfloat16 datatype in tensorflow implementations</p>
+</div>
 <p><strong>Torch</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/backends/torch/creation.py</span>
 <span class="kn">from</span> <span class="nn">ivy.functional.ivy.creation</span> <span class="kn">import</span> <span class="n">_assert_fill_value_and_dtype_are_compatible</span>
