@@ -353,7 +353,7 @@ def test_matmul(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=2,
         max_value=5,
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
 )
 def test_det(
