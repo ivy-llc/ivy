@@ -956,6 +956,7 @@ def test_torch_sign(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -1128,9 +1129,6 @@ def test_torch_ceil(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     decimals=st.integers(min_value=0, max_value=5),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.round"
-    ),
 )
 def test_torch_round(
     dtype_and_x,

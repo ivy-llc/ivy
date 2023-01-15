@@ -1143,11 +1143,13 @@ def test_torch_layer_norm(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x, axis, weight, bias, new_std = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-1,
@@ -1178,11 +1180,13 @@ def test_torch_softplus(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -1208,14 +1212,15 @@ def test_torch_softplus(
 def test_torch_group_norm(
     dtype_x_and_axis,
     epsilon,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
 ):
     dtype, x, weight, bias, group_size = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         input=x[0],
         num_groups=group_size,
@@ -1262,12 +1267,14 @@ def test_torch_batch_norm(
     eps,
     training,
     frontend,
+    test_flags,
     fn_tree,
 ):
     input_dtype, input, weight, bias, running_mean, running_var = data
     helpers.test_frontend_function(
         input_dtypes=input_dtype * 5,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         input=input[0],
         weight=weight,
@@ -1300,12 +1307,14 @@ def test_torch_adaptive_avg_pool1d(
     output_size,
     on_device,
     frontend,
+    test_flags,
     fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -1337,12 +1346,14 @@ def test_torch_adaptive_avg_pool2d(
     output_size,
     on_device,
     frontend,
+    test_flags,
     fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
