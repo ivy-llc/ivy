@@ -946,17 +946,56 @@ def test_tensorflow_gather_nd(
     )
 
 
+@st.composite
+def _boolean_mask_helper(draw):
+    tensor_shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=3,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
+    )
+
+    dtype = draw(st.sampled_from(["float32", "float64"]))
+
+    # Param: tensor
+    tensor = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=tensor_shape,
+            min_value=-5.0,
+            max_value=5.0,        ),
+    )
+    mask_dim = draw(
+        helpers.number(
+            min_value=1,
+            max_value=len(tensor_shape)
+        )
+    )
+    mask_shape = tensor_shape[:mask_dim]
+
+    # Param:stop
+    mask = draw(
+        helpers.array_values(
+            allow_none=False,
+            dtype="bool",
+            shape=mask_shape,
+        ),
+    )
+
+    return [dtype, "bool"], tensor, mask
+
+
 # boolean_mask
 @handle_frontend_test(
     fn_tree="tensorflow.boolean_mask",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype_and_values=_boolean_mask_helper,
 )
 def test_tensorflow_boolean_mask(
-    dtype_and_x,
-    dtype,
+    *,
+    dtype_and_values,
     as_variable,
     native_array,
     num_positional_args,
@@ -964,7 +1003,7 @@ def test_tensorflow_boolean_mask(
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, tensor, mask = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -974,7 +1013,6 @@ def test_tensorflow_boolean_mask(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        tensor=x[0],
-        mask=x[1],
+        tensor=tensor,
+        mask=mask,
     )
-
