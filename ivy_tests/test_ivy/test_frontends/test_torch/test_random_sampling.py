@@ -139,3 +139,41 @@ def test_torch_poisson(
     for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+@handle_frontend_test(
+    fn_tree="torch.rand",
+    dtype = helpers.get_dtypes("float", full=False),
+    size = helpers.get_shape(
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=0,
+        max_dim_size=10,
+        ),
+    # seed=helpers.ints(min_value=0, max_value=100),
+)
+def test_torch_rand(
+    *,
+    dtype,
+    size,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+
+):
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=dtype,
+            as_variable_flags=as_variable,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            with_out=with_out,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            size=size
+        )
+
+    ret = call()
