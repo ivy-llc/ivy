@@ -483,7 +483,7 @@ Sigmoid = to_ivy_arrays_and_back(
 
 
 @to_ivy_arrays_and_back
-def Softplus(features, name="Softplus"):
+def Softplus(*, features, name="Softplus"):
     return ivy.softplus(features)
 
 
