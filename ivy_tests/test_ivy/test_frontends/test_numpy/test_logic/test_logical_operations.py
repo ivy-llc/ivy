@@ -173,6 +173,7 @@ def test_numpy_logical_xor(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x1=x[0],

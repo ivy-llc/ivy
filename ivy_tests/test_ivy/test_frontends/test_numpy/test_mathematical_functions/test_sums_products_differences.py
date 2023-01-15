@@ -24,35 +24,29 @@ def test_numpy_sum(
     keep_dims,
     where,
     initial,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
-    with_out,
 ):
     input_dtype, x, axis = dtype_x_axis
     if initial is not None:
         (
             where,
             as_variable,
-            native_array,
+            test_flags.native_arrays,
         ) = np_frontend_helpers.handle_where_and_array_bools(
             where=where,
             input_dtype=input_dtype,
-            as_variable=as_variable,
-            native_array=native_array,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
         )
     else:
         where = None
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -81,35 +75,29 @@ def test_numpy_prod(
     keep_dims,
     initial,
     where,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
-    with_out,
 ):
     input_dtype, x, axis = dtype_x_axis
     if initial is not None:
         (
             where,
             as_variable,
-            native_array,
+            test_flags.native_arrays,
         ) = np_frontend_helpers.handle_where_and_array_bools(
             where=where,
             input_dtype=input_dtype,
-            as_variable=as_variable,
-            native_array=native_array,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
         )
     else:
         where = None
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -135,22 +123,16 @@ def test_numpy_prod(
 def test_numpy_cumsum(
     dtype_and_x,
     dtype,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -173,22 +155,16 @@ def test_numpy_cumsum(
 def test_numpy_cumprod(
     dtype_and_x,
     dtype,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -211,22 +187,16 @@ def test_numpy_cumprod(
 def test_numpy_nancumprod(
     dtype_and_x,
     dtype,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -249,22 +219,16 @@ def test_numpy_nancumprod(
 def test_numpy_nancumsum(
     dtype_and_x,
     dtype,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -291,11 +255,8 @@ def test_numpy_nancumsum(
 def test_numpy_nanprod(
     dtype_and_x,
     dtype,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
     where,
@@ -305,16 +266,13 @@ def test_numpy_nanprod(
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -343,11 +301,8 @@ def test_numpy_nanprod(
 def test_numpy_nansum(
     dtype_and_x,
     dtype,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
     where,
@@ -357,16 +312,13 @@ def test_numpy_nansum(
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],

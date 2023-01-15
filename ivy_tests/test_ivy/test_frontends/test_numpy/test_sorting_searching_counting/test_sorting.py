@@ -1,3 +1,6 @@
+# global
+from hypothesis import strategies as st
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -12,25 +15,21 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_num_dims=1,
         force_int_axis=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_argsort(
     *,
     dtype_x_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -47,14 +46,13 @@ def test_numpy_argsort(
         min_num_dims=1,
         force_int_axis=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_sort(
     *,
     dtype_x_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -62,11 +60,8 @@ def test_numpy_sort(
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -87,11 +82,8 @@ def test_numpy_sort(
 def test_numpy_msort(
     *,
     dtype_x_axis,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -99,11 +91,8 @@ def test_numpy_msort(
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -119,14 +108,13 @@ def test_numpy_msort(
         min_axis=-1,
         max_axis=0,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_sort_complex(
     *,
     dtype_x_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -134,11 +122,8 @@ def test_numpy_sort_complex(
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
