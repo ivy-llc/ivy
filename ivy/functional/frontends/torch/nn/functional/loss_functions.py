@@ -276,9 +276,6 @@ def kl_div(
         if size_average:
             return ivy.mean(x) / size[0]
         
-        if len(size) <= 1:
-            return ivy.mean(x)
-        
         return ivy.sum(x) / size[0]
     
     loss = ivy.nan_to_num(loss_fn())
