@@ -1,6 +1,5 @@
 # global
 import sys
-from jax.config import config
 import jaxlib
 import jax
 import jax.numpy as jnp
@@ -17,8 +16,6 @@ from jax.tree_util import tree_flatten, tree_unflatten
 import ivy
 
 backend_version = {"version": jax.__version__}
-
-config.update("jax_enable_x64", True)
 
 register_pytree_node(
     ivy.Container,
