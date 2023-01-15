@@ -272,12 +272,12 @@ def kl_div(
     def batchmean(x):
         if not reduce:
             return x / size[0]
+
+        if size_average:
+            return ivy.mean(x) / size[0]
         
         if len(size) <= 1:
             return ivy.mean(x)
-        
-        if size_average:
-            return ivy.mean(x) / size[0]
         
         return ivy.sum(x) / size[0]
     
