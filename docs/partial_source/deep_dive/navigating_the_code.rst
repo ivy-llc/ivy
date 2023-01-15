@@ -259,7 +259,7 @@ Then, we import this submodule-specific helper function to the respective backen
 
 
 .. note::
-   We shouldn't be enabling numpy behaviour in tensorflow's experimental API as it leads to issues with the bfloat16 datatype in tensorflow implementations
+   We shouldn't be enabling numpy behaviour in tensorflow as it leads to issues with the bfloat16 datatype in tensorflow implementations
 
 
 **Torch**
