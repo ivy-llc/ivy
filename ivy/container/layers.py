@@ -676,9 +676,9 @@ class ContainerWithLayers(ContainerBase):
         to_kv_v=None,
         to_out_v=None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: Optional[bool] = True,
-        prune_unapplied: Optional[bool] = False,
-        map_sequences: Optional[bool] = False,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self.static_multi_head_attention(
