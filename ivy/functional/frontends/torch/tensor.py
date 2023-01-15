@@ -417,7 +417,7 @@ class Tensor:
 
     def permute(self, *args, dims=None):
         if args and dims:
-            raise TypeError("reshape() got multiple values for argument 'shape'")
+            raise TypeError("permute() got multiple values for argument 'dims'")
         if dims is not None:
             return torch_frontend.permute(self._ivy_array, dims)
         if args:
