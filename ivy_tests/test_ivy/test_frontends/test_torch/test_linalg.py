@@ -84,6 +84,7 @@ def test_torch_vector_norm(
 # inv
 @handle_frontend_test(
     fn_tree="torch.linalg.inv",
+    aliases=["torch.inverse"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-1e4,
@@ -103,7 +104,6 @@ def test_torch_inv(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        all_aliases=["inverse"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -179,6 +179,7 @@ def test_torch_pinv(
 # det
 @handle_frontend_test(
     fn_tree="torch.linalg.det",
+    aliases=["torch.det"],
     dtype_and_x=_get_dtype_and_square_matrix(),
 )
 def test_torch_det(
@@ -192,7 +193,6 @@ def test_torch_det(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        all_aliases=["det"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -243,6 +243,7 @@ def test_torch_qr(
 # slogdet
 @handle_frontend_test(
     fn_tree="torch.linalg.slogdet",
+    aliases=["torch.slogdet"],
     dtype_and_x=_get_dtype_and_square_matrix(),
 )
 def test_torch_slogdet(
@@ -256,7 +257,6 @@ def test_torch_slogdet(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        all_aliases=["slogdet"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -326,6 +326,7 @@ def test_torch_eigvalsh(
 # matrix_power
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_power",
+    aliases=["torch.matrix_power"],
     dtype_and_x=_get_dtype_and_square_matrix(),
     n=helpers.ints(min_value=2, max_value=5),
 )
@@ -341,7 +342,6 @@ def test_torch_matrix_power(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        all_aliases=["matrix_power"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -388,7 +388,6 @@ def test_torch_matrix_norm(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["matrix_norm"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -455,6 +454,7 @@ def _matrix_rank_helper(draw):
 # matrix_rank
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_rank",
+    aliases=["torch.matrix_rank"],
     dtype_and_x=_matrix_rank_helper(),
     atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
     rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
@@ -471,7 +471,6 @@ def test_matrix_rank(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        all_aliases=["matrix_rank"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -484,6 +483,7 @@ def test_matrix_rank(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky",
+    aliases=["torch.cholesky"],
     dtype_and_x=_get_dtype_and_square_matrix(),
     upper=st.booleans(),
 )
@@ -501,7 +501,6 @@ def test_torch_cholesky(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        all_aliases=["cholesky"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

@@ -71,6 +71,7 @@ def test_torch_tan(
 # atan
 @handle_frontend_test(
     fn_tree="torch.atan",
+    aliases=["torch.arctan"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -86,7 +87,6 @@ def test_torch_atan(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["arctan"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -124,6 +124,7 @@ def test_torch_tanh(
 # abs
 @handle_frontend_test(
     fn_tree="torch.abs",
+    aliases=["torch.absolute"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -139,7 +140,6 @@ def test_torch_abs(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["absolute"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -203,6 +203,7 @@ def test_torch_sin(
 # acos
 @handle_frontend_test(
     fn_tree="torch.acos",
+    aliases=["torch.arccos"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -218,7 +219,6 @@ def test_torch_acos(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["arccos"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -308,6 +308,7 @@ def test_torch_arccos(
 # subtract
 @handle_frontend_test(
     fn_tree="torch.subtract",
+    aliases=["torch.sub"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -329,7 +330,6 @@ def test_torch_subtract(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["sub"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -369,6 +369,7 @@ def test_torch_exp(
 # asin
 @handle_frontend_test(
     fn_tree="torch.asin",
+    aliases=["torch.arcsin"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -384,7 +385,6 @@ def test_torch_asin(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["arcsin"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -448,6 +448,7 @@ def test_torch_arcsin(
 # asinh
 @handle_frontend_test(
     fn_tree="torch.asinh",
+    aliases=["torch.arcsinh"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -463,7 +464,6 @@ def test_torch_asinh(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["arcsinh"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -501,6 +501,7 @@ def test_torch_cosh(
 # atanh
 @handle_frontend_test(
     fn_tree="torch.atanh",
+    aliases=["torch.arctanh"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -516,7 +517,6 @@ def test_torch_atanh(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["arctanh"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -606,6 +606,7 @@ def test_torch_square(
 # atan2
 @handle_frontend_test(
     fn_tree="torch.atan2",
+    aliases=["torch.arctan2"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -622,7 +623,6 @@ def test_torch_atan2(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["arctan2"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1244,6 +1244,7 @@ def test_torch_clip(
 # mul
 @handle_frontend_test(
     fn_tree="torch.mul",
+    aliases=["torch.multiply"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1262,7 +1263,6 @@ def test_torch_mul(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["multiply"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1276,6 +1276,7 @@ def test_torch_mul(
 # div
 @handle_frontend_test(
     fn_tree="torch.div",
+    aliases=["torch.divide"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1301,7 +1302,6 @@ def test_torch_div(
     # due to flooring can cause absolute error of 1 due to precision
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["divide"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1598,7 +1598,6 @@ def test_torch_addcmul(
 )
 def test_torch_pow(
     dtype_and_x,
-    alpha,
     on_device,
     fn_tree,
     frontend,
@@ -1607,7 +1606,6 @@ def test_torch_pow(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["pow"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

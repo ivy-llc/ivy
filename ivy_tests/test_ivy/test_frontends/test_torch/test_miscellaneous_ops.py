@@ -271,7 +271,6 @@ def test_torch_diagonal(
         assume(dim1 != dim2 + num_dims)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["diagonal"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

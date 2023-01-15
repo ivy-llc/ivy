@@ -369,6 +369,7 @@ def test_jax_numpy_not_equal(
 # all
 @handle_frontend_test(
     fn_tree="jax.numpy.all",
+    aliases=["jax.numpy.alltrue"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
@@ -385,7 +386,6 @@ def test_jax_numpy_all(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["numpy.alltrue"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -509,6 +509,7 @@ def test_jax_numpy_bitwise_xor(
 # any
 @handle_frontend_test(
     fn_tree="jax.numpy.any",
+    aliases=["jax.numpy.sometrue"],
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid", full=True),
         valid_axis=True,
@@ -536,11 +537,10 @@ def test_jax_numpy_any(
         where=where,
         input_dtype=input_dtype,
         as_variable=test_flags.as_variable,
-        native_array=test_flags.native_array,
+        native_array=test_flags.native_arrays,
     )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["numpy.sometrue"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

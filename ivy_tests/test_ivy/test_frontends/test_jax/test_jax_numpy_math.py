@@ -16,6 +16,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 # absolute
 @handle_frontend_test(
     fn_tree="jax.numpy.absolute",
+    aliases=["jax.numpy.abs"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"),
     ),
@@ -32,7 +33,6 @@ def test_jax_numpy_absolute(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["numpy.abs"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -203,7 +203,7 @@ def test_jax_numpy_tanh(
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
-    test_with_out=st.just(False)
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_sinh(
     *,
@@ -227,7 +227,7 @@ def test_jax_numpy_sinh(
 @handle_frontend_test(
     fn_tree="jax.numpy.sin",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False)
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_sin(
     *,
@@ -302,6 +302,7 @@ def test_jax_numpy_tensordot(
 # divide
 @handle_frontend_test(
     fn_tree="jax.numpy.divide",
+    aliases=["jax.numpy.true_divide"],
     dtype_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -323,7 +324,6 @@ def test_jax_numpy_divide(
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["numpy.true_divide"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

@@ -140,6 +140,7 @@ def test_torch_argsort(
 # greater_equal
 @handle_frontend_test(
     fn_tree="torch.ge",
+    aliases=["torch.greater_equal"],
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -158,7 +159,6 @@ def test_torch_greater_equal(
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["ge"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -171,6 +171,7 @@ def test_torch_greater_equal(
 # greater
 @handle_frontend_test(
     fn_tree="torch.gt",
+    aliases=["torch.greater"],
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -189,7 +190,6 @@ def test_torch_greater(
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["gt"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -413,6 +413,7 @@ def test_torch_isnan(
 # less_equal
 @handle_frontend_test(
     fn_tree="torch.less_equal",
+    aliases=["torch.le"],
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -430,7 +431,6 @@ def test_torch_less_equal(
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["le"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -443,6 +443,7 @@ def test_torch_less_equal(
 # less
 @handle_frontend_test(
     fn_tree="torch.less",
+    aliases=["torch.lt"],
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -460,7 +461,6 @@ def test_torch_less(
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["lt"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -473,6 +473,7 @@ def test_torch_less(
 # not_equal
 @handle_frontend_test(
     fn_tree="torch.not_equal",
+    aliases=["torch.ne"],
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -490,7 +491,6 @@ def test_torch_not_equal(
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["ne"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

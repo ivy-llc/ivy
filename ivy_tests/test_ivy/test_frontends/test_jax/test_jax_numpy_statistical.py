@@ -86,7 +86,7 @@ def test_jax_numpy_mean(
         where=where,
         input_dtype=x_dtype,
         as_variable=test_flags.as_variable,
-        native_array=test_flags.native_array,
+        native_array=test_flags.native_arrays,
     )
 
     np_helpers.test_frontend_function(
@@ -132,7 +132,7 @@ def test_jax_numpy_var(
         where=where,
         input_dtype=x_dtype,
         as_variable=test_flags.as_variable,
-        native_array=test_flags.native_array,
+        native_array=test_flags.native_arrays,
     )
 
     np_helpers.test_frontend_function(
@@ -227,6 +227,7 @@ def test_jax_numpy_bincount(
 # cumprod
 @handle_frontend_test(
     fn_tree="jax.numpy.cumprod",
+    aliases=["jax.numpy.cumproduct"],
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -253,7 +254,6 @@ def test_jax_numpy_cumprod(
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["numpy.cumproduct"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -331,7 +331,7 @@ def test_jax_numpy_sum(
         where=where,
         input_dtype=x_dtype,
         as_variable=test_flags.as_variable,
-        native_array=test_flags.native_array,
+        native_array=test_flags.native_arrays,
     )
 
     np_helpers.test_frontend_function(
@@ -355,6 +355,7 @@ def test_jax_numpy_sum(
 # min
 @handle_frontend_test(
     fn_tree="jax.numpy.min",
+    aliases=["jax.numpy.amin"],
     dtype_x_axis=statistical_dtype_values(function="min"),
     where=np_helpers.where(),
     keepdims=st.booleans(),
@@ -376,12 +377,11 @@ def test_jax_numpy_min(
         where=where,
         input_dtype=x_dtype,
         as_variable=test_flags.as_variable,
-        native_array=test_flags.native_array,
+        native_array=test_flags.native_arrays,
     )
 
     np_helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        all_aliases=["numpy.amin"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -397,6 +397,7 @@ def test_jax_numpy_min(
 # max
 @handle_frontend_test(
     fn_tree="jax.numpy.max",
+    aliases=["jax.numpy.amax"],
     dtype_x_axis=statistical_dtype_values(function="max"),
     where=np_helpers.where(),
     keepdims=st.booleans(),
@@ -418,12 +419,11 @@ def test_jax_numpy_max(
         where=where,
         input_dtype=x_dtype,
         as_variable=test_flags.as_variable,
-        native_array=test_flags.native_array,
+        native_array=test_flags.native_arrays,
     )
 
     np_helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        all_aliases=["numpy.amax"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -486,6 +486,7 @@ def test_jax_numpy_average(
 # nanmax
 @handle_frontend_test(
     fn_tree="jax.numpy.nanmax",
+    aliases=["jax.numpy.nanmax"],
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -518,11 +519,10 @@ def test_numpy_nanmax(
         where=where,
         input_dtype=input_dtype,
         as_variable=test_flags.as_variable,
-        native_array=test_flags.native_array,
+        native_array=test_flags.native_arrays,
     )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        all_aliases=["numpy.nanmax"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
