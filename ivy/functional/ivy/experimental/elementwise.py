@@ -461,7 +461,7 @@ def count_nonzero(
         optional output dtype. Default is of type integer.
     out
         optional output array, for writing the result to.
-    
+
     Returns
     -------
     ret
@@ -1129,14 +1129,15 @@ def zeta(
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
-    Compute the Hurwitz zeta function.
+    Compute the Hurwitz zeta function elementwisely with each pair
+    of floats in two arrays.
 
     Parameters
     ----------
     x
         First input array.
     q
-        Second input array.
+        Second input array, must have the same shape as the first input array
     out
         Alternate output array in which to place the result.
         The default is None.
@@ -1150,7 +1151,7 @@ def zeta(
     Examples
     --------
     >>> x = ivy.array([5.0, 3.0])
-    >>> q = ivy.array([2.0])
+    >>> q = ivy.array([2.0, 2.0])
     >>> ivy.zeta(x, q)
     ivy.array([0.0369, 0.2021])
     """

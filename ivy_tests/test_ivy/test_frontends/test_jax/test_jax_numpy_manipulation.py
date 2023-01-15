@@ -701,13 +701,13 @@ def test_jax_numpy_swapaxes(
     ),
 )
 def test_jax_numpy_atleast_3d(
-        *,
-        dtype_and_x,
-        as_variable,
-        native_array,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, arrays = dtype_and_x
     arys = {}
