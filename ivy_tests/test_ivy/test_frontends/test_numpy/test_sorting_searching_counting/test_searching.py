@@ -413,7 +413,7 @@ def test_numpy_extract(
 ):
     cond, a, dtype = broadcastables
     helpers.test_frontend_function(
-        input_dtypes=[dtype, "bool"],
+        input_dtypes=(dtype, "bool"),
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
