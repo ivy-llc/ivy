@@ -1171,4 +1171,3 @@ def test_tensorflow_softmax(
         logits=x[0],
         axis=axis,
     )
-
