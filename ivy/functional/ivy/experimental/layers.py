@@ -617,6 +617,10 @@ def dropout1d(
         an array with some channels zero-ed and the rest of channels are
          scaled by (1/1-prob).
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :class:`ivy.Array` input:
