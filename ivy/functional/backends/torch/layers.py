@@ -9,6 +9,7 @@ import torch
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ivy.functional.ivy.layers import _handle_padding, _deconv_length
 
 
 def _out_shape(x, strides, pad, dilations, filters):
@@ -16,12 +17,7 @@ def _out_shape(x, strides, pad, dilations, filters):
 
 
 @with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -36,16 +32,16 @@ def conv1d(
     dilations: int = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(strides, tuple):
+    if isinstance(strides, (tuple, list)):
         strides = strides[0]
-    if isinstance(dilations, tuple):
+    if isinstance(dilations, (tuple, list)):
         dilations = dilations[0]
     f_w_after_dilation = filters.shape[0] + ((dilations - 1) * (filters.shape[0] - 1))
     filters = filters.permute(2, 1, 0)
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     x_shape = x.shape[2]
-    pad_w = ivy.handle_padding(x_shape, strides, f_w_after_dilation, padding)
+    pad_w = _handle_padding(x_shape, strides, f_w_after_dilation, padding)
     x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], value=0)
     if padding != "VALID" and padding != "SAME":
         raise ivy.exceptions.IvyException(
@@ -63,6 +59,7 @@ def conv1d(
         "1.11.0 and below": (
             "float16",
             "bfloat16",
+            "complex",
         )
     },
     backend_version,
@@ -85,15 +82,13 @@ def conv1d_transpose(
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     if output_shape is None:
-        new_w = ivy.deconv_length(
-            x.shape[2], strides, filter_shape[0], padding, dilations
-        )
+        new_w = _deconv_length(x.shape[2], strides, filter_shape[0], padding, dilations)
         output_shape = [x.shape[0], new_w, filters.shape[-2]]
     elif len(output_shape) == 1:
         output_shape = [x.shape[0], output_shape[0], filters.shape[-2]]
     not_valid_h = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-    pad_w = ivy.handle_padding(output_shape[1], strides, filter_shape[0], padding)
+    pad_w = _handle_padding(output_shape[1], strides, filter_shape[0], padding)
     if padding == "VALID":
         padding_list: List[int] = [0]
     elif padding == "SAME":
@@ -126,12 +121,7 @@ def conv1d_transpose(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -167,8 +157,8 @@ def conv2d(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
-    pad_h = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_w = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = _handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_w = _handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
     x = torch.nn.functional.pad(
         x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
     )
@@ -188,6 +178,7 @@ def conv2d(
         "1.11.0 and below": (
             "float16",
             "bfloat16",
+            "complex",
         )
     },
     backend_version,
@@ -212,10 +203,10 @@ def conv2d_transpose(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     if output_shape is None:
-        new_h = ivy.deconv_length(
+        new_h = _deconv_length(
             x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
         )
-        new_w = ivy.deconv_length(
+        new_w = _deconv_length(
             x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
         )
         output_shape = [x.shape[0], new_h, new_w, filters.shape[1]]
@@ -225,8 +216,8 @@ def conv2d_transpose(
     not_valid_w = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
-    pad_h = ivy.handle_padding(output_shape[2], strides[0], filter_shape[0], padding)
-    pad_w = ivy.handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = _handle_padding(output_shape[2], strides[0], filter_shape[0], padding)
+    pad_w = _handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
@@ -270,7 +261,16 @@ def conv2d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+            "complex",
+        )
+    },
+    backend_version,
+)
 # noinspection PyUnresolvedReferences
 def depthwise_conv2d(
     x: torch.Tensor,
@@ -303,8 +303,8 @@ def depthwise_conv2d(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
-    pad_h = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_w = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = _handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_w = _handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
     x = torch.nn.functional.pad(
         x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
     )
@@ -323,7 +323,9 @@ def depthwise_conv2d(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")}, backend_version
+)
 # noinspection PyUnresolvedReferences
 def conv3d(
     x: torch.Tensor,
@@ -352,9 +354,9 @@ def conv3d(
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
     x_shape = list(x.shape[2:])
-    pad_d = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_h = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
-    pad_w = ivy.handle_padding(x_shape[2], strides[2], filter_shape[2], padding)
+    pad_d = _handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_h = _handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    pad_w = _handle_padding(x_shape[2], strides[2], filter_shape[2], padding)
     x = torch.nn.functional.pad(
         x,
         [
@@ -379,12 +381,7 @@ def conv3d(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -407,13 +404,13 @@ def conv3d_transpose(
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
     if output_shape is None:
-        new_d = ivy.deconv_length(
+        new_d = _deconv_length(
             x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
         )
-        new_h = ivy.deconv_length(
+        new_h = _deconv_length(
             x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
         )
-        new_w = ivy.deconv_length(
+        new_w = _deconv_length(
             x.shape[4], strides[2], filter_shape[2], padding, dilations[2]
         )
         output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[1]]
@@ -431,9 +428,9 @@ def conv3d_transpose(
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
     filter_shape[2] = filter_shape[2] + (filter_shape[2] - 1) * (dilations[2] - 1)
-    pad_d = ivy.handle_padding(output_shape[1], strides[0], filter_shape[0], padding)
-    pad_h = ivy.handle_padding(output_shape[2], strides[1], filter_shape[1], padding)
-    pad_w = ivy.handle_padding(output_shape[3], strides[2], filter_shape[2], padding)
+    pad_d = _handle_padding(output_shape[1], strides[0], filter_shape[0], padding)
+    pad_h = _handle_padding(output_shape[2], strides[1], filter_shape[1], padding)
+    pad_w = _handle_padding(output_shape[3], strides[2], filter_shape[2], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0, 0]
     elif padding == "SAME":
@@ -485,12 +482,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_dilated(
@@ -534,7 +526,7 @@ def conv_general_dilated(
 
     x_shape = list(x.shape[2:])
     pad_specific = [
-        ivy.handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
+        _handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
         for i in range(dims - 1, -1, -1)
     ]
     pad_list_top = [pad_specific[i] // 2 for i in range(dims)]
@@ -565,12 +557,7 @@ def conv_general_dilated(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_transpose(
@@ -596,7 +583,7 @@ def conv_general_transpose(
         x = x.permute(0, dims + 1, *range(1, dims + 1))
     if output_shape is None:
         out_shape = [
-            ivy.deconv_length(
+            _deconv_length(
                 x.shape[i + 2], strides[i], filter_shape[i], padding, dilations[i]
             )
             for i in range(dims)
@@ -610,7 +597,7 @@ def conv_general_transpose(
         for i in range(dims)
     ]
     pad_specific = [
-        ivy.handle_padding(output_shape[i + 1], strides[i], filter_shape[i], padding)
+        _handle_padding(output_shape[i + 1], strides[i], filter_shape[i], padding)
         for i in range(dims)
     ]
     if padding == "VALID":

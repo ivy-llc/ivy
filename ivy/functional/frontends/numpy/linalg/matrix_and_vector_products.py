@@ -8,9 +8,11 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 def outer(a, b, out=None):
     a, b = promote_types_of_numpy_inputs(a, b)
@@ -24,6 +26,7 @@ def inner(a, b, /):
     return ivy.inner(a, b)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -31,7 +34,6 @@ def inner(a, b, /):
 def matmul(
     x1, x2, /, out=None, *, casting="same_kind", order="K", dtype=None, subok=True
 ):
-    # TODO: add support for the rest of the arguments.
     return ivy.matmul(x1, x2, out=out)
 
 

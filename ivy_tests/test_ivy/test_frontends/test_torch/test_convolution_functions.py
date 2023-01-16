@@ -12,8 +12,8 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
         dim = draw(dim)
     strides = draw(
         st.one_of(
-            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
-            st.integers(min_value=1, max_value=2),
+            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=3),
         )
     )
     padding = draw(
@@ -23,7 +23,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
             st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
         )
     )
-    batch_size = 1
+    batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5

@@ -399,6 +399,7 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     order: Optional[str] = "C",
+    allowzero: Optional[bool] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gives a new shape to an array without changing its data.
@@ -499,7 +500,9 @@ def reshape(
 
     """
     ivy.assertions.check_elem_in_list(order, ["C", "F"])
-    return current_backend(x).reshape(x, shape=shape, copy=copy, out=out, order=order)
+    return current_backend(x).reshape(
+        x, shape=shape, copy=copy, allowzero=allowzero, out=out, order=order
+    )
 
 
 @to_native_arrays_and_back
@@ -1240,7 +1243,7 @@ def swapaxes(
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    reps: Iterable[int],
+    repeats: Iterable[int],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1250,7 +1253,7 @@ def tile(
     ----------
     x
         Input array.
-    reps
+    repeats
         The number of repetitions of x along each axis.
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -1308,7 +1311,7 @@ def tile(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).tile(x, reps, out=out)
+    return current_backend(x).tile(x, repeats, out=out)
 
 
 @to_native_arrays_and_back
@@ -1423,10 +1426,42 @@ def zero_pad(
     ret
         Padded array of rank equal to x with shape increased according to pad_width.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
+    in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1., 2., 3.,4, 5, 6])
+    >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
+    >>> print(y)
+    ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 0., 0., 0.])
+
+    >>> x = ivy.array([[1., 2., 3.],[4, 5, 6]])
+    >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
+    >>> print(y)
+    ivy.array([[0., 0., 0., 0., 0., 0., 0., 0.],
+       [0., 0., 0., 0., 0., 0., 0., 0.],
+       [0., 0., 1., 2., 3., 0., 0., 0.],
+       [0., 0., 4., 5., 6., 0., 0., 0.],
+       [0., 0., 0., 0., 0., 0., 0., 0.],
+       [0., 0., 0., 0., 0., 0., 0., 0.],
+       [0., 0., 0., 0., 0., 0., 0., 0.]])
+
+    >>> x = ivy.Container(a = ivy.array([1., 2., 3.]), b = ivy.array([3., 4., 5.]))
+    >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
+    >>> print(y)
+    {
+        a: ivy.array([0., 0., 1., 2., 3., 0., 0., 0.]),
+        b: ivy.array([0., 0., 3., 4., 5., 0., 0., 0.])
+    }
 
     """
     return current_backend(x).zero_pad(x, pad_width, out=out)

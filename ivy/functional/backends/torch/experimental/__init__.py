@@ -1,6 +1,5 @@
 # flake8: noqa
 from .activations import *
-from .compilation import *
 from .converters import *
 from .creation import *
 from .data_type import *
@@ -11,6 +10,7 @@ from .gradients import *
 from .layers import *
 from .linear_algebra import *
 from .manipulation import *
+from .norms import *
 from .random import *
 from .searching import *
 from .set import *
@@ -21,7 +21,6 @@ from .utility import *
 
 del (
     activations,
-    compilation,
     converters,
     creation,
     data_type,
@@ -32,6 +31,7 @@ del (
     layers,
     linear_algebra,
     manipulation,
+    norms,
     random,
     searching,
     set,

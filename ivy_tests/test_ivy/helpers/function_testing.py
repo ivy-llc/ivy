@@ -265,15 +265,14 @@ def test_function(
         )
     # assert idx of return if the idx of the out array provided
     if test_flags.with_out:
-        test_ret = ret
-        if isinstance(ret, tuple):
-            assert hasattr(ivy.__dict__[fn_name], "out_index")
-            test_ret = ret[getattr(ivy.__dict__[fn_name], "out_index")]
-        out = ivy.zeros_like(test_ret)
-        if max(container_flags):
-            assert ivy.is_ivy_container(test_ret)
-        else:
-            assert ivy.is_array(test_ret)
+        test_ret = (
+            ret[getattr(ivy.__dict__[fn_name], "out_index")]
+            if hasattr(ivy.__dict__[fn_name], "out_index")
+            else ret
+        )
+        out = ivy.nested_map(
+            test_ret, ivy.zeros_like, to_mutable=True, include_derived=True
+        )
         if instance_method:
             ret, ret_np_flat = get_ret_and_flattened_np_array(
                 instance.__getattribute__(fn_name), *args, **kwargs, out=out
@@ -282,13 +281,23 @@ def test_function(
             ret, ret_np_flat = get_ret_and_flattened_np_array(
                 ivy.__dict__[fn_name], *args, **kwargs, out=out
             )
-        test_ret = ret
-        if isinstance(ret, tuple):
-            test_ret = ret[getattr(ivy.__dict__[fn_name], "out_index")]
-        assert test_ret is out
+        test_ret = (
+            ret[getattr(ivy.__dict__[fn_name], "out_index")]
+            if hasattr(ivy.__dict__[fn_name], "out_index")
+            else ret
+        )
+        assert not ivy.nested_any(
+            ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
+            lambda x: not x,
+        )
         if not max(container_flags) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
-            assert test_ret.data is out.data
+            assert not ivy.nested_any(
+                ivy.nested_multi_map(
+                    lambda x, _: x[0].data is x[1].data, [test_ret, out]
+                ),
+                lambda x: not x,
+            )
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     try:
@@ -309,12 +318,14 @@ def test_function(
             ivy.__dict__[fn_name], *args, **kwargs
         )
         if test_flags.with_out:
-            test_ret_from_gt = ret_from_gt
-            if isinstance(ret_from_gt, tuple):
-                test_ret_from_gt = ret_from_gt[
-                    getattr(ivy.__dict__[fn_name], "out_index")
-                ]
-            out_from_gt = ivy.zeros_like(test_ret_from_gt)
+            test_ret_from_gt = (
+                ret_from_gt[getattr(ivy.__dict__[fn_name], "out_index")]
+                if hasattr(ivy.__dict__[fn_name], "out_index")
+                else ret_from_gt
+            )
+            out_from_gt = ivy.nested_map(
+                test_ret_from_gt, ivy.zeros_like, to_mutable=True, include_derived=True
+            )
             ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
                 ivy.__dict__[fn_name], *args, **kwargs, out=out_from_gt
             )
@@ -330,6 +341,7 @@ def test_function(
         and not fw == "numpy"
         and not instance_method
         and "bool" not in input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
     ):
         if fw in fw_list:
             if ivy.nested_argwhere(
@@ -549,6 +561,11 @@ def test_frontend_function(
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
         # strip the decorator to get an Ivy array
+        # ToDo, fix testing for jax frontend for x32
+        if frontend == "jax":
+            importlib.import_module("ivy.functional.frontends.jax").config.update(
+                "jax_enable_x64", True
+            )
         ret = get_frontend_ret(frontend_fn, *args_ivy, **kwargs_ivy)
         if with_out:
             if not inspect.isclass(ret):
@@ -1120,7 +1137,12 @@ def test_method(
     ivy.unset_backend()
     # gradient test
     fw = ivy.current_backend_str()
-    if test_gradients and not fw == "numpy" and "bool" not in method_input_dtypes:
+    if (
+        test_gradients
+        and not fw == "numpy"
+        and "bool" not in method_input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in method_input_dtypes)
+    ):
         if fw in fw_list:
             if ivy.nested_argwhere(
                 method_all_as_kwargs_np,

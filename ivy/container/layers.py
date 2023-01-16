@@ -192,6 +192,8 @@ class ContainerWithLayers(ContainerBase):
         *,
         scale: bool = True,
         dtype: ivy.Dtype = None,
+        training_mode: bool = True,
+        seed: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -256,6 +258,8 @@ class ContainerWithLayers(ContainerBase):
             prob,
             scale=scale,
             dtype=dtype,
+            training_mode=training_mode,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -270,6 +274,8 @@ class ContainerWithLayers(ContainerBase):
         *,
         scale: bool = True,
         dtype: ivy.Dtype = None,
+        training_mode: bool = True,
+        seed: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -332,6 +338,8 @@ class ContainerWithLayers(ContainerBase):
             prob,
             scale=scale,
             dtype=dtype,
+            training_mode=training_mode,
+            seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1419,6 +1427,62 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.conv3d_transpose.
+        This method simply wraps the function, and so the docstring for
+        ivy.conv3d_transpose also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            Input container with leaves of volume *[batch_size,d,h,w,d_in]*
+            or *[batch_size,d_in,d,h,w]*.
+        filters
+            Convolution filters *[fd,fh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        output_shape
+            Shape of the output (Default value = None)
+        data_format
+            The ordering of the dimensions in the input, one of "NDHWC" or
+            "NCDHW". "NDHWC" corresponds to inputs with shape (batch_size,
+             depth, height, width, channels), while "NCDHW" corresponds
+             to input with shape (batch_size, channels, depth, height,
+             width).
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output container, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the transpose convolution operation in a container.
+
+        >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
+        >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
+        >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> filters = ivy.Container(c=c, d=d)
+        >>> y = ivy.Container.static_conv3d_transpose(x, filters, 2, 'SAME')
+        >>> print(y.shape)
+        {
+            a: {
+                c: [1, 6, 28, 28, 6],
+                d: [1, 6, 28, 28, 6]
+            },
+            b: {
+                c: [1, 6, 56, 56, 6],
+                d: [1, 6, 56, 56, 6]
+            }
+        }
+        """
         return ContainerBase.cont_multi_map_in_function(
             "conv3d_transpose",
             x,
@@ -1451,6 +1515,62 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.conv3d_transpose.
+        This method simply wraps the function, and so the docstring for
+        ivy.conv3d_transpose also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            Input container with leaves of volume *[batch_size,d,h,w,d_in]*
+            or *[batch_size,d_in,d,h,w]*.
+        filters
+            Convolution filters *[fd,fh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        output_shape
+            Shape of the output (Default value = None)
+        data_format
+            The ordering of the dimensions in the input, one of "NDHWC" or
+            "NCDHW". "NDHWC" corresponds to inputs with shape (batch_size,
+             depth, height, width, channels), while "NCDHW" corresponds
+             to input with shape (batch_size, channels, depth, height,
+             width).
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output container, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the transpose convolution operation in a container.
+
+        >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
+        >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
+        >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> filters = ivy.Container(c=c, d=d)
+        >>> y = x.conv3d_transpose(filters, 2, 'SAME')
+        >>> print(y.shape)
+        {
+            a: {
+                c: [1, 6, 28, 28, 6],
+                d: [1, 6, 28, 28, 6]
+            },
+            b: {
+                c: [1, 6, 56, 56, 6],
+                d: [1, 6, 56, 56, 6]
+            }
+        }
+        """
         return self.static_conv3d_transpose(
             self,
             filters,

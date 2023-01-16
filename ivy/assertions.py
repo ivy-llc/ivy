@@ -129,18 +129,36 @@ def check_shape(x1, x2, message=""):
         raise ivy.exceptions.IvyException(message)
 
 
+def check_same_dtype(x1, x2, message=""):
+    message = (
+        message
+        if message != ""
+        else "{} and {} must have the same dtype ({} vs {})".format(
+            x1, x2, ivy.dtype(x1), ivy.dtype(x2)
+        )
+    )
+    if ivy.dtype(x1) != ivy.dtype(x2):
+        raise ivy.exceptions.IvyException(message)
+
+
 # Creation #
 # -------- #
 
 
 def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
-    if not (
-        (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-        and isinstance(fill_value, int)
-    ) and not (
-        ivy.is_float_dtype(dtype)
-        and isinstance(fill_value, float)
-        or isinstance(fill_value, bool)
+    if (
+        not (
+            (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
+            and isinstance(fill_value, int)
+        )
+        and not (
+            ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))
+        )
+        and not (
+            ivy.is_float_dtype(dtype)
+            and isinstance(fill_value, float)
+            or isinstance(fill_value, bool)
+        )
     ):
         raise ivy.exceptions.IvyException(
             "the fill_value: {} and data type: {} are not compatible".format(
@@ -213,6 +231,13 @@ def check_inplace_sizes_valid(var, data):
             "Could not output values of shape {} into array with shape {}.".format(
                 data.shape, var.shape
             )
+        )
+
+
+def check_shapes_broadcastable(var, data):
+    if not check_one_way_broadcastable(var, data):
+        raise ivy.exceptions.IvyException(
+            "Could not broadcast shape {} to shape {}.".format(data, var)
         )
 
 

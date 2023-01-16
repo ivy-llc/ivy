@@ -498,10 +498,10 @@ def test_array__rpow__(
 ):
     dtype, x = dtype_and_x
     # check if power isn't a float when x1 is integer
-    assume(not (ivy.is_int_dtype(dtype[0]) and ivy.is_float_dtype(dtype[1])))
+    assume(not (ivy.is_int_dtype(dtype[1]) and ivy.is_float_dtype(dtype[0])))
     # make power a non-negative data when both are integers
-    if ivy.is_int_dtype(dtype[1]):
-        x[1] = np.abs(x[1])
+    if ivy.is_int_dtype(dtype[0]):
+        x[0] = np.abs(x[0])
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
     helpers.test_method(

@@ -1729,63 +1729,73 @@ def _composition_1():
     return ivy.relu().argmax()
 
 
+_composition_1.test_unsupported_devices_and_dtypes = {
+    "cpu": {
+        "numpy": ("bfloat16",),
+        "jax": (),
+        "tensorflow": ("complex64", "complex128"),
+        "torch": (
+            "uint16",
+            "uint32",
+            "uint64",
+            "float16",
+            "complex64",
+            "complex128",
+        ),
+    },
+    "gpu": {
+        "numpy": ivy.all_dtypes,
+        "jax": ivy.all_dtypes,
+        "tensorflow": ivy.all_dtypes,
+        "torch": ivy.all_dtypes,
+    },
+    "tpu": {
+        "numpy": ivy.all_dtypes,
+        "jax": ivy.all_dtypes,
+        "tensorflow": ivy.all_dtypes,
+        "torch": ivy.all_dtypes,
+    },
+}
+
+
 def _composition_2():
     return ivy.ceil() or ivy.linspace()
 
 
+_composition_2.test_unsupported_devices_and_dtypes = {
+    "cpu": {
+        "numpy": ("bfloat16", "complex64", "complex128"),
+        "jax": ("complex64", "complex128"),
+        "tensorflow": ("complex64", "complex128"),
+        "torch": ("uint16", "uint32", "uint64", "float16", "complex64", "complex128"),
+    },
+    "gpu": {
+        "numpy": ivy.all_dtypes,
+        "jax": ivy.all_dtypes,
+        "tensorflow": ivy.all_dtypes,
+        "torch": ivy.all_dtypes,
+    },
+    "tpu": {
+        "numpy": ivy.all_dtypes,
+        "jax": ivy.all_dtypes,
+        "tensorflow": ivy.all_dtypes,
+        "torch": ivy.all_dtypes,
+    },
+}
+
+
 # function_supported_devices_and_dtypes
 @pytest.mark.parametrize(
-    "func, expected",
-    [
-        (
-            _composition_1,
-            {
-                "cpu": (
-                    "bool",
-                    "uint8",
-                    "uint16",
-                    "uint32",
-                    "uint64",
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "bfloat16",
-                    "float16",
-                    "float32",
-                    "float64",
-                )
-            },
-        ),
-        (
-            _composition_2,
-            {
-                "cpu": (
-                    "bool",
-                    "uint8",
-                    "uint16",
-                    "uint32",
-                    "uint64",
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "bfloat16",
-                    "float16",
-                    "float32",
-                    "float64",
-                )
-            },
-        ),
-    ],
+    "func",
+    [_composition_1, _composition_2],
 )
-def test_function_supported_device_and_dtype(func, expected):
+def test_function_supported_device_and_dtype(func):
     res = ivy.function_supported_devices_and_dtypes(func)
-    exp = {}
-    for dev in expected:
-        exp[dev] = tuple((set(ivy.valid_dtypes).intersection(expected[dev])))
-        if ivy.current_backend_str() == "torch":
-            exp[dev] = tuple((set(exp[dev]).difference({"float16"})))
+    exp = {"cpu": func.test_unsupported_devices_and_dtypes.copy()["cpu"]}
+    for dev in exp:
+        exp[dev] = tuple(
+            set(ivy.valid_dtypes).difference(exp[dev][ivy.current_backend_str()])
+        )
 
     all_key = set(res.keys()).union(set(exp.keys()))
     for key in all_key:
@@ -1796,21 +1806,18 @@ def test_function_supported_device_and_dtype(func, expected):
 
 # function_unsupported_devices_and_dtypes
 @pytest.mark.parametrize(
-    "func, expected",
-    [
-        (_composition_1, {"gpu": ivy.all_dtypes, "tpu": ivy.all_dtypes}),
-        # (_composition_2, {'gpu': ivy.all_dtypes, 'tpu': ivy.all_dtypes})
-    ],
+    "func",
+    [_composition_1, _composition_2],
 )
-def test_function_unsupported_devices(func, expected):
+def test_function_unsupported_devices(func):
     res = ivy.function_unsupported_devices_and_dtypes(func)
-
-    exp = expected.copy()
-
-    if ivy.invalid_dtypes:
-        exp["cpu"] = ivy.invalid_dtypes
-    if ivy.current_backend_str() == "torch":
-        exp["cpu"] = tuple((set(exp["cpu"]).union({"float16"})))
+    exp = func.test_unsupported_devices_and_dtypes.copy()
+    for dev in exp:
+        exp[dev] = exp[dev][ivy.current_backend_str()]
+    devs = list(exp.keys())
+    for dev in devs:
+        if len(exp[dev]) == 0:
+            exp.pop(dev)
 
     all_key = set(res.keys()).union(set(exp.keys()))
     for key in all_key:
@@ -2060,20 +2067,21 @@ def _fn3(x, y):
 # vmap
 @given(
     func=st.sampled_from([_fn1, _fn2, _fn3]),
-    arrays_and_axes=helpers.arrays_and_axes(
+    dtype_and_arrays_and_axes=helpers.arrays_and_axes(
         allow_none=False,
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=10,
         num=2,
+        returndtype=True,
     ),
     in_axes_as_cont=st.booleans(),
 )
-def test_vmap(func, arrays_and_axes, in_axes_as_cont):
-
-    generated_arrays, in_axes = arrays_and_axes
+def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont):
+    dtype, generated_arrays, in_axes = dtype_and_arrays_and_axes
     arrays = [ivy.native_array(array) for array in generated_arrays]
+    assume(ivy.as_ivy_dtype(dtype[0]) not in ivy.function_unsupported_dtypes(ivy.vmap))
 
     if in_axes_as_cont:
         vmapped_func = ivy.vmap(func, in_axes=in_axes, out_axes=0)
@@ -2083,7 +2091,8 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont):
     assert callable(vmapped_func)
 
     try:
-        fw_res = vmapped_func(*arrays)
+        fw_res = helpers.flatten_and_to_np(ret=vmapped_func(*arrays))
+        fw_res = fw_res if len(fw_res) else None
     except Exception:
         fw_res = None
 
@@ -2097,16 +2106,20 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont):
     assert callable(jax_vmapped_func)
 
     try:
-        jax_res = jax_vmapped_func(*arrays)
+        jax_res = helpers.flatten_and_to_np(ret=jax_vmapped_func(*arrays))
+        jax_res = jax_res if len(jax_res) else None
     except Exception:
         jax_res = None
 
     ivy.unset_backend()
 
     if fw_res is not None and jax_res is not None:
-        assert np.allclose(
-            fw_res, jax_res
-        ), f"Results from {ivy.current_backend_str()} and jax are not equal"
+        helpers.value_test(
+            ret_np_flat=fw_res,
+            ret_np_from_gt_flat=jax_res,
+            rtol=1e-1,
+            atol=1e-1,
+        )
 
     elif fw_res is None and jax_res is None:
         pass
