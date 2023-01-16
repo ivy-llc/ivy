@@ -1133,5 +1133,5 @@ def test_tensorflow_relu(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0]
+        features=x[0]
     )

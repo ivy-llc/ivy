@@ -391,4 +391,4 @@ def convolution(
 
 @to_ivy_arrays_and_back
 def relu(features, name=None):
-    return ivy.relu(x)
+    return ivy.relu(features)
