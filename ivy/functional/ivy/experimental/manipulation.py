@@ -241,6 +241,8 @@ def ndenumerate(
     def _ndenumerate(input, t=None):
         if t is None:
             t = ()
+        if ivy.is_ivy_array(input) and input.shape == ():
+            input = ivy.to_scalar(input)
         if not hasattr(input, "__iter__"):
             yield t, input
         else:

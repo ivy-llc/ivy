@@ -720,36 +720,31 @@ def test_is_complex_dtype(
 # TODO: fix instance method
 @handle_test(
     fn_tree="functional.ivy.promote_types",
-    dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        shared_dtype=False,
-    ),
+    type1=helpers.get_dtypes("valid", full=False),
+    type2=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_promote_types(
     *,
-    dtype_and_values,
+    type1,
+    type2,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    types, arrays = dtype_and_values
-    type1, type2 = types
-    input_dtype = [type1, type2]
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=input_dtype,
+        input_dtypes=[],
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        type1=type1,
-        type2=type2,
+        type1=type1[0],
+        type2=type2[0],
         test_values=False,
     )
 

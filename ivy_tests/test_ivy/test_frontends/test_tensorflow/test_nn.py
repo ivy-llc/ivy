@@ -4,7 +4,7 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-
+from ivy.functional.ivy.layers import _deconv_length
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
@@ -88,7 +88,7 @@ def _x_and_filters(
         if transpose:
             output_shape = [
                 x_shape[0],
-                ivy.deconv_length(x_w, stride, filter_shape[0], padding, dilations),
+                _deconv_length(x_w, stride, filter_shape[0], padding, dilations),
                 d_in,
             ]
     elif type == "2d" or type == "depthwise":
@@ -148,10 +148,10 @@ def _x_and_filters(
             x_h = x_shape[2]
             x_w = x_shape[3]
         if transpose:
-            output_shape_h = ivy.deconv_length(
+            output_shape_h = _deconv_length(
                 x_h, stride, filter_shape[0], padding, dilations
             )
-            output_shape_w = ivy.deconv_length(
+            output_shape_w = _deconv_length(
                 x_w, stride, filter_shape[1], padding, dilations
             )
             output_shape = [x_shape[0], output_shape_h, output_shape_w, d_in]
@@ -210,13 +210,13 @@ def _x_and_filters(
             x_h = x_shape[3]
             x_w = x_shape[4]
         if transpose:
-            output_shape_d = ivy.deconv_length(
+            output_shape_d = _deconv_length(
                 x_d, stride, filter_shape[0], padding, dilations
             )
-            output_shape_h = ivy.deconv_length(
+            output_shape_h = _deconv_length(
                 x_h, stride, filter_shape[1], padding, dilations
             )
-            output_shape_w = ivy.deconv_length(
+            output_shape_w = _deconv_length(
                 x_w, stride, filter_shape[2], padding, dilations
             )
             output_shape = [output_shape_d, output_shape_h, output_shape_w]
@@ -1100,4 +1100,74 @@ def test_tensorflow_convolution(
         padding=padding,
         data_format=data_format,
         dilations=dilation,
+    )
+
+
+# relu
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.relu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_value=-20,
+        max_value=20
+    ),
+)
+def test_tensorflow_relu(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0]
+    )
+
+
+# softmax
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.softmax",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=4,
+        max_axes_size=3,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+)
+def test_tensorflow_softmax(
+    *,
+    dtype_x_and_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=x[0],
+        axis=axis,
     )

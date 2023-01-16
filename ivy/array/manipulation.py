@@ -700,5 +700,32 @@ class ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.zero_pad. This method simply
         wraps the function, and so the docstring for ivy.zero_pad also applies
         to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to pad.
+        pad_width
+            Number of values padded to the edges of each axis. Specified as
+            ((before_1, after_1), … (before_N, after_N)),
+            where N is number of axes of x.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Padded array of rank equal to x with shape increased according to pad_width.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([1., 2., 3.,4, 5, 6])
+        >>> y = x.zero_pad(pad_width = [[2, 3]])
+        >>> print(y)
+        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 0., 0., 0.])
+
         """
         return ivy.zero_pad(self._data, pad_width=pad_width, out=out)
