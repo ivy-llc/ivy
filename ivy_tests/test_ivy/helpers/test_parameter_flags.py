@@ -31,6 +31,7 @@ BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltInstanceStrategy = st.booleans()
 BuiltGradientStrategy = st.booleans()
 BuiltWithOutStrategy = st.booleans()
+BuiltCompileStrategy = st.booleans()
 
 
 flags_mapping = {
@@ -40,6 +41,7 @@ flags_mapping = {
     "instance_method": "BuiltInstanceStrategy",
     "test_gradients": "BuiltGradientStrategy",
     "with_out": "BuiltWithOutStrategy",
+    "test_compile": "BuiltCompileStrategy",
 }
 
 
@@ -66,6 +68,7 @@ class FunctionTestFlags:
         native_arrays,
         container,
         test_gradients,
+        test_compile,
     ):
         self.num_positional_args = num_positional_args
         self.with_out = with_out
@@ -74,6 +77,7 @@ class FunctionTestFlags:
         self.container = container
         self.as_variable = as_variable
         self.test_gradients = test_gradients
+        self.test_compile = test_compile
 
     def __str__(self):
         return (
@@ -83,7 +87,8 @@ class FunctionTestFlags:
             f"native_arrays={self.native_arrays}. "
             f"container={self.container}. "
             f"as_variable={self.as_variable}. "
-            f"test_gradients={self.test_gradients}."
+            f"test_gradients={self.test_gradients}. "
+            f"test_compile={self.test_compile}. "
         )
 
 
@@ -95,6 +100,7 @@ def function_flags(
     instance_method,
     with_out,
     test_gradients,
+    test_compile,
     as_variable,
     native_arrays,
     container_flags,
@@ -106,6 +112,7 @@ def function_flags(
             with_out=with_out,
             instance_method=instance_method,
             test_gradients=test_gradients,
+            test_compile=test_compile,
             as_variable=as_variable,
             native_arrays=native_arrays,
             container=container_flags,

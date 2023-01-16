@@ -29,6 +29,11 @@ from .assertions import (
     value_test,
     check_unsupported_dtype,
 )
+from ivy.compiler import compiler as ic
+
+
+def compiled_if_required(fn, *args, test_compile=False, **kwargs):
+    return ic.compile(fn, *args, *kwargs) if test_compile else fn
 
 
 def empty_func(*args, **kwargs):
@@ -359,6 +364,7 @@ def test_function(
                     as_variable_flags=as_variable_flags,
                     native_array_flags=native_array_flags,
                     container_flags=container_flags,
+                    test_compile=test_flags.test_compile,
                     rtol_=rtol_,
                     atol_=atol_,
                     xs_grad_idxs=xs_grad_idxs,
@@ -376,6 +382,7 @@ def test_function(
                 as_variable_flags=as_variable_flags,
                 native_array_flags=native_array_flags,
                 container_flags=container_flags,
+                test_compile=test_flags.test_compile,
                 rtol_=rtol_,
                 atol_=atol_,
                 xs_grad_idxs=xs_grad_idxs,
@@ -765,6 +772,7 @@ def gradient_test(
     as_variable_flags,
     native_array_flags,
     container_flags,
+    test_compile: bool = False,
     rtol_: float = None,
     atol_: float = 1e-06,
     xs_grad_idxs=None,
@@ -773,10 +781,9 @@ def gradient_test(
 ):
     def grad_fn(all_args):
         args, kwargs, i = all_args
-        ret = (
-            ivy.__dict__[fn](*args, **kwargs)
-            if isinstance(fn, str)
-            else fn[i](*args, **kwargs)
+        call_fn = ivy.__dict__[fn] if isinstance(fn, str) else fn[i]
+        ret = compiled_if_required(call_fn, *args, test_compile=test_compile, **kwargs)(
+            *args, **kwargs
         )
         return ivy.nested_map(ret, ivy.mean, include_derived=True)
 
@@ -1696,11 +1703,12 @@ def flatten_and_to_np(*, ret):
     return [ivy.to_numpy(x) for x in ret_flat]
 
 
-def get_ret_and_flattened_np_array(fn, *args, **kwargs):
+def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwargs):
     """
     Runs func with args and kwargs, and returns the result along with its flattened
     version.
     """
+    fn = compiled_if_required(fn, *args, test_compile=test_compile, **kwargs)
     ret = fn(*args, **kwargs)
 
     def map_fn(x):
@@ -1708,6 +1716,8 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
             return x.ivy_array
         if isinstance(x, ivy.functional.frontends.numpy.ndarray):
             return x.ivy_array
+        elif ivy.is_native_array(x):
+            return ivy.to_ivy(x)
         return x
 
     ret = ivy.nested_map(ret, map_fn, include_derived={tuple: True})
