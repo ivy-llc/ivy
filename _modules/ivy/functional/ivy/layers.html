@@ -1171,13 +1171,13 @@
 <span class="k">def</span> <span class="nf">conv2d_transpose</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
     <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">output_shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
-    <span class="n">dilations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">dilations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes a 2-D transpose convolution given 4-D input x and filters arrays.</span>
@@ -1199,6 +1199,7 @@
 <span class="sd">        The ordering of the dimensions in the input, one of &quot;NHWC&quot; or &quot;NCHW&quot;. &quot;NHWC&quot;</span>
 <span class="sd">        corresponds to inputs with shape (batch_size, height, width, channels), while</span>
 <span class="sd">        &quot;NCHW&quot; corresponds to input with shape (batch_size, channels, height, width).</span>
+<span class="sd">        Default is ``&quot;NHWC&quot;``</span>
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 <span class="sd">    out</span>
@@ -1210,6 +1211,66 @@
 <span class="sd">    ret</span>
 <span class="sd">        The result of the transpose convolution operation.</span>
 
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.conv2d_transpose(x, filters, 2, &#39;SAME&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
+<span class="sd">    (1, 56, 56, 6)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 128, 64])</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[1, 1, 64, 64])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.conv2d_transpose(x, filters, 1, &#39;VALID&#39;, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x.shape)</span>
+<span class="sd">    (1, 128, 128, 64)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros_like(x)</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.conv2d_transpose(x, filters, [1, 1, 1], &#39;VALID&#39;, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
+<span class="sd">    (1, 258, 258, 32)</span>
+
+<span class="sd">    With one :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.full((1, 6, 6, 1), 2.7)</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.Container(a=a, b=b)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.conv2d_transpose(x, filters, 1, &#39;VALID&#39;, dilations=2)</span>
+<span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: [1,10,10,1],</span>
+<span class="sd">        b: [1,10,10,1]</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])</span>
+<span class="sd">    &gt;&gt;&gt; b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])</span>
+<span class="sd">    &gt;&gt;&gt; c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=a, b=b)</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.Container(c=c, d=d)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.conv2d_transpose(x, filters, 2, &#39;SAME&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: {</span>
+<span class="sd">            c: [1,28,28,6],</span>
+<span class="sd">            d: [1,28,28,6]</span>
+<span class="sd">        },</span>
+<span class="sd">        b: {</span>
+<span class="sd">            c: [1,56,56,6],</span>
+<span class="sd">            d: [1,56,56,6]</span>
+<span class="sd">        }</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">conv2d_transpose</span><span class="p">(</span>
         <span class="n">x</span><span class="p">,</span>
