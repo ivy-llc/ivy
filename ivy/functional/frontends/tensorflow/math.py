@@ -395,3 +395,8 @@ def ceil(x, name=None):
 @to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
+
+
+@to_ivy_arrays_and_back
+def sigmoid(x, name=None):
+    return ivy.sigmoid(x)
