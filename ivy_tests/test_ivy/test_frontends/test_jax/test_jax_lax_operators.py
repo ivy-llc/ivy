@@ -2033,7 +2033,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
     if filter_df[0] == "O":
         filter_shape = channel_shape + filter_shape
     else:
-        filter_shape = filter_shape + channel_shape
+        filter_shape = filter_shape + channel_shape[::-1]
     if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
         x_shape = (batch_size,) + x_dim + (input_channels,)
     else:
@@ -2175,10 +2175,6 @@ def test_jax_lax_conv_general_dilated(
     frontend,
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
-    # TODO: make it work for the rest of the ordering cases
-    assume(
-        dim_num[1] in ["OIW", "OIHW", "OIDHW"]
-    )
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,

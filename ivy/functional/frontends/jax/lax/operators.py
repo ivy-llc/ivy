@@ -91,12 +91,19 @@ def concatenate(operands, dimension):
 
 
 def _format_rhs(rhs, dims):
+    if not isinstance(dims, int):
+        dim_nums = dims
+        dims = len(dim_nums[0]) - 2
+        if dim_nums[1][-1] == "O":
+            dims = -1
     if dims == 1:
         return ivy.permute_dims(rhs, axes=(2, 1, 0))
     elif dims == 2:
         return ivy.permute_dims(rhs, axes=(2, 3, 1, 0))
     elif dims == 3:
         return ivy.permute_dims(rhs, axes=(2, 3, 4, 1, 0))
+    else:
+        return rhs
 
 
 @to_ivy_arrays_and_back
@@ -179,7 +186,7 @@ def conv_general_dilated(
         rhs = ivy.astype(rhs, preferred_element_type)
     return ivy.conv_general_dilated(
         lhs,
-        rhs,
+        _format_rhs(rhs, dimension_numbers),
         window_strides,
         padding,
         dims=len(lhs.shape)-2,
