@@ -29,6 +29,7 @@ def test_view_tensor_no_error(length, dim):
     _ = test_input.view(size=size)
     _ = test_input.view(*size)
     _ = test_input.view(size)
+    _ = test_input.view(list(size))
 
 
 @pytest.mark.parametrize(["test_input"], [[1], [2], [-3]])
