@@ -866,18 +866,13 @@ def test_jax_numpy_tensorinv(
         ind=ind,
     )
 
-    
+
 @handle_frontend_test(
-    fn_tree="jax.numpy.linalg.cond",  
+    fn_tree="jax.numpy.linalg.cond",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
-        allow_nan=True
-    ).filter(
-        lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-    ),
-    p=st.sampled_from([None, "fro", np.inf, -np.inf, 1, -1, 2, -2])
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=1, allow_nan=True
+    ).filter(lambda x: "float16" not in x[0] and "bfloat16" not in x[0]),
+    p=st.sampled_from([None, "fro", np.inf, -np.inf, 1, -1, 2, -2]),
 )
 def test_jax_numpy_cond(
     *,
