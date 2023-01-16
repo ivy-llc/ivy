@@ -101,7 +101,7 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    dilations: int = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -125,7 +125,7 @@ def depthwise_conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    dilations: int = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -155,7 +155,7 @@ def conv2d_transpose(
     *,
     output_shape=None,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -202,7 +202,7 @@ def conv3d(
     /,
     *,
     data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
@@ -226,7 +226,7 @@ def conv3d_transpose(
     /,
     *,
     output_shape=None,
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     data_format: str = "NDHWC",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
