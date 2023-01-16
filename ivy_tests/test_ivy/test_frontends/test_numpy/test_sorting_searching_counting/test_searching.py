@@ -26,9 +26,9 @@ def _broadcastable_due(draw):
     shapes_st = draw(
         hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=1, min_side=1)
     )
-    cond_shape, x1_shape = shapes_st.input_shapes
+    cond_shape, x_shape = shapes_st.input_shapes
     cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
-    x = draw(helpers.array_values(dtype=dtype[0], shape=x1_shape))
+    x = draw(helpers.array_values(dtype=dtype[0], shape=x_shape))
     return cond, x, dtype
 
 
