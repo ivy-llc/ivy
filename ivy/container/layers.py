@@ -5,6 +5,7 @@ from typing import Optional, Tuple, Union, List, Callable, Dict
 from ivy.container.base import ContainerBase
 import ivy
 
+
 # ToDo: implement all methods here as public instance methods
 
 
@@ -12,11 +13,11 @@ import ivy
 class ContainerWithLayers(ContainerBase):
     @staticmethod
     def static_linear(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        weight: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: ivy.Container,
+        weight: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -49,13 +50,13 @@ class ContainerWithLayers(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional output container, for writing the result to. It must have a shape
+            optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
         -------
         ret
-            A container with arrays after their respective linear transformations.
+            Result array of the linear transformation.
             *[outer_batch_shape,inner_batch_shape,out_features]*
 
         Examples
@@ -87,9 +88,9 @@ class ContainerWithLayers(ContainerBase):
         >>> y = ivy.Container.static_linear(x, w, bias=b)
         >>> print(y)
         {
-            a: ivy.array([[16.4], 
+            a: ivy.array([[16.4],
                           [1.8]]),
-            b: ivy.array([[0.412], 
+            b: ivy.array([[0.412],
                           [-0.5]])
         }
 
@@ -108,10 +109,10 @@ class ContainerWithLayers(ContainerBase):
 
     def linear(
         self: ivy.Container,
-        weight: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        weight: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -144,13 +145,13 @@ class ContainerWithLayers(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional output container, for writing the result to. It must have a shape
+            optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
         -------
         ret
-            A container with arrays after their respective linear transformations.
+            Result array of the linear transformation.
             *[outer_batch_shape,inner_batch_shape,out_features]*
 
         Examples
@@ -171,7 +172,7 @@ class ContainerWithLayers(ContainerBase):
             b: ivy.array([[15.1, 31., 46.9], \
                           [85., 195., 305.]])
         }
-        
+
         """
         return self.static_linear(
             self,
@@ -186,13 +187,13 @@ class ContainerWithLayers(ContainerBase):
 
     @staticmethod
     def static_dropout(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: ivy.Container,
         prob: float,
         /,
         *,
         scale: bool = True,
         dtype: ivy.Dtype = None,
-        training: bool = True,
+        training_mode: bool = True,
         seed: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -214,13 +215,11 @@ class ContainerWithLayers(ContainerBase):
         scale
             Whether to scale the output by `1/(1-prob)`, default is ``True``.
         dtype
-            Output array data type. If dtype is None, the output array data type
+            output array data type. If dtype is None, the output array data type
             must be inferred from x. Default: ``None``.
-        training
-            Turn on dropout if training, turn off otherwise. Default is ``True``.
-        seed
-            Set a default seed for random number generating (for reproducibility).
-            Default is ``None``.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -233,7 +232,7 @@ class ContainerWithLayers(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional output container, for writing the result to. It must have a shape
+            optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
@@ -260,7 +259,7 @@ class ContainerWithLayers(ContainerBase):
             prob,
             scale=scale,
             dtype=dtype,
-            training=training,
+            training_mode=training_mode,
             seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -276,7 +275,7 @@ class ContainerWithLayers(ContainerBase):
         *,
         scale: bool = True,
         dtype: ivy.Dtype = None,
-        training: bool = True,
+        training_mode: bool = True,
         seed: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -292,7 +291,7 @@ class ContainerWithLayers(ContainerBase):
         Parameters
         ----------
         self
-            The input container to perform dropout on.
+            The input container x to perform dropout on.
         prob
             The probability of zeroing out each array element, float between 0 and 1.
         scale
@@ -300,11 +299,9 @@ class ContainerWithLayers(ContainerBase):
         dtype
             output array data type. If dtype is None, the output array data type
             must be inferred from x. Default: ``None``.
-        training
-            Turn on dropout if training, turn off otherwise. Default is ``True``.
-        seed
-            Set a default seed for random number generating (for reproducibility).
-            Default is ``None``.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -342,7 +339,7 @@ class ContainerWithLayers(ContainerBase):
             prob,
             scale=scale,
             dtype=dtype,
-            training=training,
+            training_mode=training_mode,
             seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -353,7 +350,7 @@ class ContainerWithLayers(ContainerBase):
 
     @staticmethod
     def static_dropout1d(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: ivy.Container,
         prob: float,
         /,
         *,
@@ -365,53 +362,6 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.dropout1d. This method simply
-        wraps the function, and so the docstring for ivy.dropout1d also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            The input container to perform dropout on.
-        prob
-            The probability of zeroing out each array element, float between 0 and 1.
-        training
-            Turn on dropout if training, turn off otherwise. Default is ``True``.
-        data_format
-            "NWC" or "NCW". Default is ``"NCW"``.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            Result array of the output after dropout is performed.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], [4., 5., 6.]]),
-        ...                   b=ivy.array([7., 8., 9.]))
-        >>> y = ivy.Container.static_dropout(x, 0.3)
-        >>> print(y)
-        {
-            a: ivy.array([[1.42857146, 2.85714293, 4.28571415],
-                          [5.71428585, 7.14285755, 0.]]),
-            b: ivy.array([10., 0., 12.8571434])
-        }
-        """
         return ContainerBase.cont_multi_map_in_function(
             "dropout1d",
             x,
@@ -438,53 +388,6 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.dropout1d. This method simply
-        wraps the function, and so the docstring for ivy.dropout1d also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            The input container to perform dropout on.
-        prob
-            The probability of zeroing out each array element, float between 0 and 1.
-        training
-            Turn on dropout if training, turn off otherwise. Default is ``True``.
-        data_format
-            "NWC" or "NCW". Default is ``"NCW"``.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            Result array of the output after dropout is performed.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], [4., 5., 6.]]),
-        ...                   b=ivy.array([7., 8., 9.]))
-        >>> y = x.static_dropout(x, 0.3)
-        >>> print(y)
-        {
-            a: ivy.array([[1.42857146, 2.85714293, 4.28571415],
-                          [5.71428585, 0., 8.5714283]]),
-            b: ivy.array([10., 0., 12.8571434])
-        }
-        """
         return self.static_dropout1d(
             self,
             prob,
@@ -511,7 +414,7 @@ class ContainerWithLayers(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         """
         ivy.Container static method variant of ivy.scaled_dot_product_attention.
         This method simply wraps the function, and so the docstring for
@@ -520,7 +423,7 @@ class ContainerWithLayers(ContainerBase):
 
         Parameters
         ----------
-        q
+        self
             The queries input container. The shape of queries input array leaves should
             be in *[batch_shape,num_queries,feat_dim]*. The queries input array leaves
             should have the same size as keys and values.
@@ -593,6 +496,7 @@ class ContainerWithLayers(ContainerBase):
                         [4.4, 5.6],
                         [4.4, 5.6]]])
         }
+
         """
         return ContainerBase.cont_multi_map_in_function(
             "scaled_dot_product_attention",
@@ -621,9 +525,9 @@ class ContainerWithLayers(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         """
-        ivy.Container instance method variant of ivy.scaled_dot_product_attention.
+        ivy.Container method variant of ivy.scaled_dot_product_attention.
         This method simply wraps the function, and so the docstring for
         ivy.scaled_dot_product_attention also applies to this method with minimal
         changes.
@@ -702,6 +606,7 @@ class ContainerWithLayers(ContainerBase):
                         [4.4, 5.6],
                         [4.4, 5.6]]])
         }
+
         """
         return self.static_scaled_dot_product_attention(
             self,
@@ -800,12 +705,12 @@ class ContainerWithLayers(ContainerBase):
     def static_conv1d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int]],
+        strides: int,
         padding: str,
         /,
         *,
         data_format: str = "NWC",
-        dilations: Union[int, Tuple[int]] = 1,
+        dilations: int = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -832,17 +737,6 @@ class ContainerWithLayers(ContainerBase):
             "NWC" or "NCW". Defaults to "NWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -883,13 +777,13 @@ class ContainerWithLayers(ContainerBase):
 
     def conv1d(
         self: ivy.Container,
-        filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int]],
+        filters: Union[ivy.Array, ivy.NativeArray],
+        strides: int,
         padding: str,
         /,
         *,
         data_format: str = "NWC",
-        dilations: Union[int, Tuple[int]] = 1,
+        dilations: int = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -903,7 +797,7 @@ class ContainerWithLayers(ContainerBase):
 
         Parameters
         ----------
-        self
+        x
             Input image *[batch_size,w, d_in]*.
         filters
             Convolution filters *[fw,d_in, d_out]*. (d_in must be the same as d from x)
@@ -916,17 +810,6 @@ class ContainerWithLayers(ContainerBase):
             "NWC" or "NCW". Defaults to "NWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -968,12 +851,12 @@ class ContainerWithLayers(ContainerBase):
     def static_conv2d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NHWC",
-        dilations: Union[int, Tuple[int, int]] = 1,
+        dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1000,17 +883,6 @@ class ContainerWithLayers(ContainerBase):
             "NHWC" or "NCHW". Defaults to "NHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1052,12 +924,12 @@ class ContainerWithLayers(ContainerBase):
     def conv2d(
         self: ivy.Container,
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NHWC",
-        dilations: Union[int, Tuple[int, int]] = 1,
+        dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1071,7 +943,7 @@ class ContainerWithLayers(ContainerBase):
 
         Parameters
         ----------
-        self
+        x
             Input image *[batch_size,h,w,d_in]*.
         filters
             Convolution filters *[fh,fw,d_in,d_out]*.
@@ -1084,17 +956,6 @@ class ContainerWithLayers(ContainerBase):
             "NHWC" or "NCHW". Defaults to "NHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1136,71 +997,19 @@ class ContainerWithLayers(ContainerBase):
     def static_conv1d_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int]],
+        strides: int,
         padding: str,
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NWC",
-        dilations: Union[int, Tuple[int]] = 1,
+        dilations: int = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.conv1d_transpose. This method simply
-        wraps the function, and so the docstring for ivy.conv1d_transpose also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            Input image *[batch_size,w, d_in]*.
-        filters
-            Convolution filters *[fw,d_in, d_out]*. (d_in must be the same as d from x)
-        strides
-            The stride of the sliding window for each dimension of input.
-        padding
-            "SAME" or "VALID" indicating the algorithm, or list indicating the
-            per-dimension paddings.
-        output_shape
-            Shape of the output (Default value = None)
-        data_format
-            "NWC" or "NCW". Defaults to "NWC".
-        dilations
-            The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            The result of the transpose convolution operation.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.random_normal(mean=0, std=1, shape=[1, 28, 3]))
-        >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
-        >>> y = ivy.Container.static_conv1d_transpose(x, filters, 2, 'SAME')
-        >>> print(y.shape)
-        {
-            a: [1,56,6]
-        }
-        """
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return ContainerBase.cont_multi_map_in_function(
             "conv1d_transpose",
             x,
@@ -1231,60 +1040,8 @@ class ContainerWithLayers(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.conv1d_transpose. This method
-        simply wraps the function, and so the docstring for ivy.conv1d_transpose also
-        applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input image *[batch_size,w, d_in]*.
-        filters
-            Convolution filters *[fw,d_in, d_out]*. (d_in must be the same as d from x)
-        strides
-            The stride of the sliding window for each dimension of input.
-        padding
-            "SAME" or "VALID" indicating the algorithm, or list indicating the
-            per-dimension paddings.
-        output_shape
-            Shape of the output (Default value = None)
-        data_format
-            "NWC" or "NCW". Defaults to "NWC".
-        dilations
-            The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            The result of the transpose convolution operation.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.random_normal(mean=0, std=1, shape=[1, 28, 3]))
-        >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
-        >>> y = x.conv1d_transpose(x, filters, 2, 'SAME')
-        >>> print(y.shape)
-        {
-            a: [1,56,6]
-        }
-        """
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self.static_conv1d_transpose(
             self,
             filters,
@@ -1492,14 +1249,14 @@ class ContainerWithLayers(ContainerBase):
 
     @staticmethod
     def static_depthwise_conv2d(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: ivy.Container,
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: Union[str, List[int]],
         /,
         *,
         data_format: str = "NHWC",
-        dilations: Union[int, Tuple[int, int]] = 1,
+        dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1526,17 +1283,6 @@ class ContainerWithLayers(ContainerBase):
             "NHWC" or "NCHW". Defaults to "NHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1578,12 +1324,12 @@ class ContainerWithLayers(ContainerBase):
     def depthwise_conv2d(
         self: ivy.Container,
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: Union[str, List[int]],
         /,
         *,
         data_format: str = "NHWC",
-        dilations: Union[int, Tuple[int, int]] = 1,
+        dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1610,17 +1356,6 @@ class ContainerWithLayers(ContainerBase):
             "NHWC" or "NCHW". Defaults to "NHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1690,17 +1425,6 @@ class ContainerWithLayers(ContainerBase):
             "NDHWC" or "NCDHW". Defaults to "NDHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1762,7 +1486,7 @@ class ContainerWithLayers(ContainerBase):
 
         Parameters
         ----------
-        self
+        x
             Input volume *[batch_size,d,h,w,d_in]*.
         filters
             Convolution filters *[fdfh,fw,d_in,d_out]*.
@@ -1775,17 +1499,6 @@ class ContainerWithLayers(ContainerBase):
             "NDHWC" or "NCDHW". Defaults to "NDHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1828,13 +1541,13 @@ class ContainerWithLayers(ContainerBase):
     def static_conv3d_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int, int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
         padding: Union[str, List[int]],
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NDHWC",
-        dilations: Union[int, Tuple[int, int, int]] = 1,
+        dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1869,17 +1582,6 @@ class ContainerWithLayers(ContainerBase):
              width).
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output container, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -1889,8 +1591,6 @@ class ContainerWithLayers(ContainerBase):
         ret
             The result of the transpose convolution operation in a container.
 
-        Examples
-        --------
         >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
         >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
         >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
@@ -1929,13 +1629,13 @@ class ContainerWithLayers(ContainerBase):
     def conv3d_transpose(
         self: ivy.Container,
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int, int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
         padding: Union[str, List[int]],
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NDHWC",
-        dilations: Union[int, Tuple[int, int, int]] = 1,
+        dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1970,17 +1670,6 @@ class ContainerWithLayers(ContainerBase):
              width).
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         out
             optional output container, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -1990,8 +1679,6 @@ class ContainerWithLayers(ContainerBase):
         ret
             The result of the transpose convolution operation in a container.
 
-        Examples
-        --------
         >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
         >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
         >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])

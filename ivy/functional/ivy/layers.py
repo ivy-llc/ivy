@@ -168,7 +168,6 @@ def linear(
 # Dropout #
 
 
-@handle_nestable
 @handle_exceptions
 @handle_array_like
 def dropout(
@@ -177,9 +176,9 @@ def dropout(
     /,
     *,
     scale: bool = True,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    training: bool = True,
-    seed: Optional[int] = None,
+    dtype: ivy.Dtype = None,
+    training_mode: bool = True,
+    seed: int = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -195,15 +194,10 @@ def dropout(
     prob
         The probability of zeroing out each array element, float between 0 and 1.
     scale
-        Whether to scale the output by `1/(1-prob)`. Default is ``True``.
+        Whether to scale the output by `1/(1-prob)`, default is ``True``.
     dtype
         output array data type. If dtype is None, the output array data type
-        must be inferred from x. Default is ``None``.
-    training
-        Turn on dropout if training, turn off otherwise. Default is ``True``.
-    seed
-        Set a default seed for random number generating (for reproducibility). Default
-        is ``None``.
+        must be inferred from x. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -211,11 +205,7 @@ def dropout(
     Returns
     -------
     ret
-        Result array after dropout is performed.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+        Result array of the output after dropout is performed.
 
     Examples
     --------
@@ -246,7 +236,7 @@ def dropout(
     ...                [4., 5., 6.],
     ...                [7., 8., 9.],
     ...                [10., 11., 12.]])
-    >>> y = ivy.dropout(x,0.3,scale=False)
+    >>> y = ivy.dropout(x,0.3,scale=Flase)
     >>> print(y)
     ivy.array([[ 1.,  2., 3.],
                [ 4.,  5., 0.],
@@ -306,7 +296,7 @@ def dropout(
                       [7., 0., 0.]])
     }
     """
-    if prob == 0 or not training:
+    if prob == 0 or not training_mode:
         if dtype is not None:
             x = ivy.astype(x, dtype)
         return x if not ivy.exists(out) else ivy.inplace_update(out, x)
@@ -360,8 +350,7 @@ def scaled_dot_product_attention(
         The scale float value is used to scale the query-key pairs before softmax.
     mask
         The mask input array. The mask to apply to the query-key values. Default is
-        ``None``. The shape of mask input should be in
-        *[batch_shape,num_queries,num_keys]*.
+        None. The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -371,7 +360,7 @@ def scaled_dot_product_attention(
     ret
         The output following application of scaled dot-product attention.
         The output array is the weighted sum produced by the attention score and value.
-        The shape of output array is *[batch_shape,num_queries,feat_dim]*.
+        The shape of output array is *[batch_shape,num_queries,feat_dim]* .
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -772,12 +761,12 @@ def multi_head_attention(
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int]],
+    strides: int,
     padding: str,
     /,
     *,
     data_format: str = "NWC",
-    dilations: Union[int, Tuple[int]] = 1,
+    dilations: int = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D convolution given 3-D input x and filters arrays.
@@ -796,8 +785,7 @@ def conv1d(
     data_format
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
-        corresponds to input with shape (batch_size, channels, width). Default is
-        ``"NWC"``.
+        corresponds to input with shape (batch_size, channels, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -808,10 +796,6 @@ def conv1d(
     -------
     ret
         The result of the convolution operation.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     Examples
     --------
@@ -865,13 +849,13 @@ def conv1d(
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int]],
+    strides: int,
     padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NWC",
-    dilations: Union[int, Tuple[int]] = 1,
+    dilations: int = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
@@ -892,8 +876,7 @@ def conv1d_transpose(
     data_format
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
-        corresponds to input with shape (batch_size, channels, width). Default is
-        ``"NWC"``.
+        corresponds to input with shape (batch_size, channels, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -905,66 +888,6 @@ def conv1d_transpose(
     ret
         The result of the transpose convolution operation.
 
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
-    >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
-    >>> print(y.shape)
-    (1, 56, 6)
-
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 64])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[1, 64, 64])
-    >>> ivy.conv1d_transpose(x, filters, 1, 'VALID', out=x)
-    >>> print(x.shape)
-    (1, 128, 64)
-
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 64])
-    >>> y = ivy.zeros_like(x)
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 64, 32])
-    >>> ivy.conv1d_transpose(x, filters, [1, 1, 1], 'VALID', out=y)
-    >>> print(y.shape)
-    (1, 258, 32)
-
-    With one :class:`ivy.Container` input:
-
-    >>> x = ivy.full((1, 6, 1), 2.7)
-    >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 1, 1])
-    >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 1, 1])
-    >>> filters = ivy.Container(a=a, b=b)
-    >>> y = ivy.conv1d_transpose(x, filters, 1, 'VALID', dilations=2)
-    >>> print(y.shape)
-    {
-        a: [1,10,1],
-        b: [1,10,1]
-    }
-
-    With multiple :class:`ivy.Container` inputs:
-
-    >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 3])
-    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 3])
-    >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
-    >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
-    >>> x = ivy.Container(a=a, b=b)
-    >>> filters = ivy.Container(c=c, d=d)
-    >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
-    >>> print(y.shape)
-    {
-        a: {
-            c: [1,28,6],
-            d: [1,28,6]
-        },
-        b: {
-            c: [1,56,6],
-            d: [1,56,6]
-        }
-    }
     """
     return current_backend(x).conv1d_transpose(
         x,
@@ -985,12 +908,12 @@ def conv1d_transpose(
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: str,
     /,
     *,
     data_format: str = "NHWC",
-    dilations: Union[int, Tuple[int, int]] = 1,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D convolution given 4-D input x and filters arrays.
@@ -1010,7 +933,6 @@ def conv2d(
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
-        Default is ``"NHWC"``
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1025,6 +947,7 @@ def conv2d(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
 
     Examples
     --------
@@ -1233,12 +1156,12 @@ def conv2d_transpose(
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: Union[str, List[int]],
     /,
     *,
     data_format: str = "NHWC",
-    dilations: Union[int, Tuple[int, int]] = 1,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1259,7 +1182,6 @@ def depthwise_conv2d(
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
-        Default is ``"NHWC"``
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1368,14 +1290,14 @@ def depthwise_conv2d(
 @handle_exceptions
 @handle_array_like
 def conv3d(
-    x: Union[ivy.Array, ivy.NativeArray],
-    filters: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     strides: Union[int, Tuple[int, int, int]],
     padding: str,
     /,
     *,
     data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
@@ -1484,13 +1406,13 @@ def conv3d(
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: Union[str, List[int]],
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
@@ -1518,10 +1440,6 @@ def conv3d_transpose(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     Returns
     -------
@@ -1644,14 +1562,6 @@ def conv_general_dilated(
     -------
     ret
         The result of the transpose convolution operation.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-
     """
     return current_backend(x).conv_general_dilated(
         x,
@@ -1704,17 +1614,12 @@ def conv_general_transpose(
         paddings.
     dims
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
-    output_shape
-        Shape of the output (Default value = None)
     data_format
         Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
         "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
         while "channel_last" corresponds to "NWC", "NHWC", "NDHWC" respectively.
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
-    feature_group_count
-         split input into groups, d_in should be divisible by the number of groups.
-         (Default value = 1)
     bias
         Bias array of shape *[d_out]*.
     out
@@ -1725,14 +1630,6 @@ def conv_general_transpose(
     -------
     ret
         The result of the transpose convolution operation.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-
     """
     return current_backend(x).conv_general_transpose(
         x,
@@ -1811,14 +1708,6 @@ def conv(
     -------
     ret
         The result of the transpose or dilated convolution operation.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-
     """
     if transpose:
         assert x_dilations == 1, "x_dilations must be 1 for transpose convolutions."
