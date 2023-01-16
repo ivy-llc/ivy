@@ -70,6 +70,11 @@ def max_pool2d(
     elif len(strides) == 1:
         strides = (strides[0], strides[0])
 
+    if isinstance(kernel, int):
+        kernel = (kernel, kernel)
+    elif len(kernel) == 1:
+        kernel = (kernel[0], kernel[0])
+
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
@@ -88,7 +93,7 @@ def max_pool2d(
     res = torch.nn.functional.max_pool2d(x, kernel, strides, 0)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
-    return res
+    return
 
 
 @with_unsupported_dtypes(
@@ -464,18 +469,17 @@ def ifft(
 
 
 def embedding(
-        weights: torch.Tensor,
-        indices: torch.Tensor,
-        /,
-        *,
-        max_norm: Optional[int] = None,
-        out=None,
+    weights: torch.Tensor,
+    indices: torch.Tensor,
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out=None,
 ) -> torch.Tensor:
     return torch.nn.functional.embedding(indices, weights, max_norm=max_norm)
 
 
 embedding.support_native_out = False
-
 
 
 def interpolate(
@@ -494,4 +498,3 @@ def interpolate(
         align_corners=align_corners,
         anti_aliasing=anti_aliasing,
     )
-    
