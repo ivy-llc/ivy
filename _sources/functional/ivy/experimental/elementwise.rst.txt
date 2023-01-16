@@ -26,8 +26,6 @@ Elementwise
    elementwise/nansum.rst
    elementwise/gcd.rst
    elementwise/isclose.rst
-   elementwise/isposinf.rst
-   elementwise/isneginf.rst
    elementwise/angle.rst
    elementwise/imag.rst
    elementwise/nan_to_num.rst

@@ -81,8 +81,6 @@ Experimental
    experimental/nansum.rst
    experimental/gcd.rst
    experimental/isclose.rst
-   experimental/isposinf.rst
-   experimental/isneginf.rst
    experimental/angle.rst
    experimental/imag.rst
    experimental/nan_to_num.rst
