@@ -116,8 +116,8 @@ class ViewTensor:
 
     # Class Invariance #
     # ---------------- #
-    def view(self, size):
-        view = ViewTensor(weakref.ref(self), size=size)
+    def view(self, shape):
+        view = ViewTensor(weakref.ref(self), shape=shape)
         return view
 
     def size(self):
