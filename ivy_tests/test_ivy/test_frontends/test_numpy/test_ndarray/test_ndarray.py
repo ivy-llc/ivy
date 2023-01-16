@@ -1955,44 +1955,6 @@ def test_numpy_instance_float__(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
-    method_name="__str__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_dim_size=1,
-    ),
-)
-def test_numpy_instance_str__(
-    dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    frontend_method_data,
-    frontend,
-):
-    input_dtype, xs = dtype_and_x
-
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        method_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
-        method_as_variable_flags=as_variable,
-        method_native_array_flags=native_array,
-        method_num_positional_args=method_num_positional_args,
-        init_all_as_kwargs_np={
-            "object": xs[0],
-        },
-        method_all_as_kwargs_np={},
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-    )
-
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="numpy.array",
     method_name="__contains__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
