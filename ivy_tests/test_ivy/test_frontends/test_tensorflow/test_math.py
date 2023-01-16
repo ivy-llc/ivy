@@ -726,12 +726,19 @@ def test_tensorflow_reduce_variance(
 @handle_frontend_test(
     fn_tree="tensorflow.math.scalar_mul",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=st.shared(
+            helpers.get_dtypes("float", full=False),
+            key="shared_dtype",
+        ),
         min_num_dims=1,
         min_dim_size=2,
     ),
     scalar_val=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), shape=(1,)
+        available_dtypes=st.shared(
+            helpers.get_dtypes("float", full=False),
+            key="shared_dtype",
+        ),
+        shape=(1,),
     ),
     test_with_out=st.just(False),
 )

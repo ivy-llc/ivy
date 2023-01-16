@@ -94,6 +94,7 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if isinstance(axis, list):
         axis = tuple(axis)
@@ -106,7 +107,7 @@ def nansum(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[jnp.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
@@ -223,6 +224,15 @@ def angle(
     return jnp.angle(z, deg=deg)
 
 
+def imag(
+    val: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.imag(val)
+
+
 def zeta(
     x: JaxArray,
     q: JaxArray,
@@ -230,9 +240,13 @@ def zeta(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    inf_indices = jnp.equal(x, 1)
-    temp = jnp.logical_and(jnp.not_equal(x, 1), jnp.less_equal(q, 0))
-    nan_indices = jnp.logical_or(temp, jnp.less(x,1))
+    temp = jnp.logical_and(jnp.greater(x, 0), jnp.equal(jnp.remainder(x, 2), 0))
+    temp = jnp.logical_and(temp, jnp.less_equal(q, 0))
+    temp = jnp.logical_and(temp, jnp.equal(jnp.remainder(q, 1), 0))
+    inf_indices = jnp.logical_or(temp, jnp.equal(x, 1))
+    temp = jnp.logical_and(jnp.not_equal(jnp.remainder(x, 2), 0), jnp.greater(x, 1))
+    temp = jnp.logical_and(temp, jnp.less_equal(q, 0))
+    nan_indices = jnp.logical_or(temp, jnp.less(x, 1))
     n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x
@@ -465,3 +479,7 @@ def gradient(
 
 def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return js.special.xlogy(x, y)
+
+
+def real(x: Union[JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.real(x)

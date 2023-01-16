@@ -107,3 +107,11 @@ def log_softmax(
 
 
 log_softmax.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def mish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return x * np.tanh(np.log1p(np.exp(x)))
+
+
+mish.support_native_out = True

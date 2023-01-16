@@ -307,11 +307,11 @@ def handle_test(
 
     def test_wrapper(test_fn):
         callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
-        param_names = inspect.signature(test_fn).parameters.keys()
         supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
 
         # If a test is not a Hypothesis test, we only set the test global data
         if is_hypothesis_test:
+            param_names = inspect.signature(test_fn).parameters.keys()
             # Check if these arguments are being asked for
             possible_arguments = {
                 "test_flags": test_flags,
