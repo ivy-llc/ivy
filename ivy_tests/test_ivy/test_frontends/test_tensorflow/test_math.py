@@ -1497,3 +1497,38 @@ def test_tensorflow_minimum(
         x=x[0],
         y=x[1],
     )
+
+
+# sigmoid
+@handle_frontend_test(
+    fn_tree="tensorflow.math.sigmoid",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        num_arrays=1,
+        min_value=-20,
+        max_value=20,)
+)
+def test_tensorflow_sigmoid(
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        x=x[0],
+    )
