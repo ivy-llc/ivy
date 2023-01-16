@@ -169,7 +169,9 @@ class Tensor:
         if size and not args:
             size_tup = size
         elif args and not size:
-            if (isinstance(args[0], tuple) or isinstance(args[0], list)) and len(args) == 1:
+            if (isinstance(args[0], tuple) or isinstance(args[0], list)) and len(
+                args
+            ) == 1:
                 size_tup = args[0]
             else:
                 size_tup = args
