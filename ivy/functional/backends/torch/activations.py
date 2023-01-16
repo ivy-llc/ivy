@@ -29,8 +29,7 @@ def leaky_relu(
 ) -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)
 
-
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
 def gelu(
     x: torch.Tensor,
     /,
