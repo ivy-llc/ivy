@@ -387,3 +387,8 @@ def convolution(
     )
 
     return output
+
+
+@to_ivy_arrays_and_back
+def relu(features, name=None):
+    return ivy.relu(features)
