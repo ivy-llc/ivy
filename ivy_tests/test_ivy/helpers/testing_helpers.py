@@ -17,6 +17,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltGradientStrategy,
     BuiltContainerStrategy,
     BuiltWithOutStrategy,
+    BuiltCompileStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import (
@@ -28,6 +29,7 @@ cmd_line_args = (
     "with_out",
     "instance_method",
     "test_gradients",
+    "test_compile",
 )
 cmd_line_args_lists = (
     "as_variable",
@@ -241,6 +243,7 @@ def handle_test(
     test_instance_method=BuiltInstanceStrategy,
     test_with_out=BuiltWithOutStrategy,
     test_gradients=BuiltGradientStrategy,
+    test_compile=BuiltCompileStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
     container_flags=BuiltContainerStrategy,
@@ -273,6 +276,10 @@ def handle_test(
         A search strategy that generates a boolean to test the function with arrays as
         gradients
 
+    test_compile
+        A search strategy that generates a boolean to graph compile and test the
+        function
+
     as_variable_flags
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a Variable array
@@ -298,6 +305,7 @@ def handle_test(
             instance_method=test_instance_method,
             with_out=test_with_out,
             test_gradients=test_gradients,
+            test_compile=test_compile,
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
             container_flags=container_flags,
