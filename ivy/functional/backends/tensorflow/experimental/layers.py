@@ -309,16 +309,14 @@ def ifft(
 
 
 def embedding(
-        weights: Union[tf.Tensor, tf.Variable],
-        indices: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        max_norm: Optional[float] = None,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    weights: Union[tf.Tensor, tf.Variable],
+    indices: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    max_norm: Optional[float] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.nn.embedding_lookup(weights,
-                                  indices,
-                                  max_norm=max_norm)
+    return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
 
 
 def interpolate(

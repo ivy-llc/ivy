@@ -61,7 +61,7 @@ def max_pool1d(
     res = sub_matrices.max(axis=(2))
 
     if data_format == "NCW":
-        return res.permute(0, 2, 1)
+        return res.swapaxes(1, 2)
     return res
 
 
@@ -217,7 +217,7 @@ def avg_pool1d(
         strides = [strides[0]]
 
     if data_format == "NCW":
-        x = x.permute(0, 2, 1)
+        x = np.swapaxes(x, 1, 2)
 
     pad_w = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
     x = np.pad(
@@ -247,7 +247,7 @@ def avg_pool1d(
     res = np.mean(sub_matrices, axis=2)
 
     if data_format == "NCW":
-        return res.permute(0, 2, 1)
+        return res.swapaxes(1, 2)
     return res
 
 

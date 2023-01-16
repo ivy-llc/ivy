@@ -93,7 +93,7 @@ def max_pool2d(
     res = torch.nn.functional.max_pool2d(x, kernel, strides, 0)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
-    return
+    return res
 
 
 @with_unsupported_dtypes(
