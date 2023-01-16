@@ -513,42 +513,6 @@ def dct(
 
 
 @to_native_arrays_and_back
-@integer_arrays_to_float
-@handle_nestable
-def interpolate(
-    x: Union[ivy.Array, ivy.NativeArray],
-    size: Union[Sequence[int], int],
-    /,
-    *,
-    mode: Optional[Literal["linear", "bilinear"]] = "bilinear",
-    align_corners: Optional[bool] = True,
-    antialias: Optional[bool] = False,
-):
-    """Down/up samples the input to the given size.
-
-    Parameters
-    ----------
-    x
-        The input to down/up sample.
-        shape should be [batch_size, channel, (height), width]
-    size
-        output spatial size
-    mode
-        algorithm to use for upsampling:
-        can be 'linear', 'bilinear'
-
-    Returns
-    -------
-    ret
-        Array containing the transformed input.
-        shape of ret will be [batch_size, channel, (height), width]
-    """
-    ivy.current_backend(x).interpolate(
-        x, size=size, mode=mode, align_corners=align_corners, antialias=antialias
-    )
-
-
-@to_native_arrays_and_back
 @handle_out_argument
 @handle_exceptions
 @handle_array_like
@@ -655,3 +619,159 @@ def dropout1d(
     return ivy.current_backend(x).dropout1d(
         x, prob, training=training, data_format=data_format, out=out
     )
+
+
+def interp(x, xp, fp, left=None, right=None, period=None):
+    x_arr = ivy.array(x)
+    fix_later = False
+    if x_arr.shape == ():
+        x_arr = ivy.array([x])
+        fix_later = True
+    x = ivy.astype(x_arr, "float64")
+    xp = ivy.astype(ivy.array(xp), "float64")
+    fp = ivy.astype(ivy.array(fp), "float64")
+    ivy.assertions.check_equal(xp.ndim, 1)
+    ivy.assertions.check_equal(fp.ndim, 1)
+    ivy.assertions.check_equal(xp.shape[0], fp.shape[0])
+    if period is not None:
+        ivy.assertions.check_equal(period, 0, inverse=True)
+        period = ivy.abs(period)
+        x = ivy.remainder(x, period)
+        xp = ivy.remainder(xp, period)
+        asort_xp = ivy.argsort(xp)
+        xp = xp[asort_xp]
+        fp = fp[asort_xp]
+        xp = ivy.concat((xp[-1:] - period, xp, xp[0:1] + period))
+        fp = ivy.concat((fp[-1:], fp, fp[0:1]))
+
+    def interp_inner(value):
+        if value < xp[0]:
+            return left if left is not None else fp[0]
+        elif value > xp[-1]:
+            return right if right is not None else fp[-1]
+        else:
+            last = None
+            if xp.shape[0] < 3:
+                for i in range(xp.shape[0] - 1, -1, -1):
+                    if xp[i] == value:
+                        return fp[i]
+                    elif xp[i] < value:
+                        last = i
+            else:
+                first = 0
+                last = xp.shape[0]
+                while first < last:
+                    midpoint = (first + last) // 2
+                    if xp[midpoint] == value:
+                        already_exists = ivy.argwhere(xp == value)
+                        if already_exists.shape[0] > 0:
+                            return fp[already_exists[-1][0]]
+                        return fp[midpoint]
+                    else:
+                        if value < xp[midpoint]:
+                            last = midpoint - 1
+                        else:
+                            first = midpoint + 1
+            dist = (value - xp[last]) / (xp[last + 1] - xp[last])
+            return (fp[last + 1] - fp[last]) * dist + fp[last]
+
+    ret = ivy.map(interp_inner, unique={"value": x})
+    if fix_later:
+        return ivy.astype(ivy.array(ret[0]), "float64")
+    else:
+        return ivy.astype(ivy.array(ret), "float64")
+
+
+def interpolate(
+    x: Union[ivy.Array, ivy.NativeArray],
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Union[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    align_corners: Optional[bool] = True,
+    antialias: Optional[bool] = False,
+):
+    if mode == "linear":
+        if not align_corners:
+            x_up = ivy.arange(0, ivy.shape(x)[-1])
+            missing = (ivy.arange(0, size) + 0.5) * (ivy.shape(x)[-1] / size) - 0.5
+        else:
+            x_up = ivy.linspace(0, 1, ivy.shape(x)[-1])
+            missing = ivy.linspace(0, 1, size)
+        ret = ivy.zeros(ivy.shape(x)[:-1] + (size,))
+        for i, ba in enumerate(x):
+            for j, ch in enumerate(ba):
+                ret[i][j] = ivy.interp(missing, x_up, ch)
+    elif mode == "bilinear":
+        if not align_corners:
+            x_up_h = ivy.arange(0, ivy.shape(x)[-2])
+            x_up_w = ivy.arange(0, ivy.shape(x)[-1])
+            missing_h = (ivy.arange(0, size[0]) + 0.5) * (
+                ivy.shape(x)[-2] / size[0]
+            ) - 0.5
+            missing_w = (ivy.arange(0, size[1]) + 0.5) * (
+                ivy.shape(x)[-1] / size[1]
+            ) - 0.5
+        else:
+            x_up_h = ivy.linspace(0, 1, ivy.shape(x)[-2])
+            x_up_w = ivy.linspace(0, 1, ivy.shape(x)[-1])
+            missing_h = ivy.linspace(0, 1, size[0])
+            missing_w = ivy.linspace(0, 1, size[1])
+        ret = ivy.zeros(ivy.shape(x)[:-2] + (size[0], size[1]))
+        for i, ba in enumerate(x):
+            for j, ch in enumerate(ba):
+                row_ret = ivy.zeros((ivy.shape(x)[-2], size[1]))
+                for k, row in enumerate(ch):
+                    row_ret[k] = ivy.interp(missing_w, x_up_w, row)
+                row_ret = row_ret.T
+                for k, col in enumerate(row_ret):
+                    ret[i][j][k] = ivy.interp(missing_h, x_up_h, col)
+                ret[i][j] = ret[i][j].T
+    elif mode == "trilinear":
+        if not align_corners:
+            x_up_d = ivy.arange(0, ivy.shape(x)[-3])
+            x_up_h = ivy.arange(0, ivy.shape(x)[-2])
+            x_up_w = ivy.arange(0, ivy.shape(x)[-1])
+            missing_d = (ivy.arange(0, size[0]) + 0.5) * (
+                ivy.shape(x)[-3] / size[0]
+            ) - 0.5
+            missing_h = (ivy.arange(0, size[1]) + 0.5) * (
+                ivy.shape(x)[-2] / size[1]
+            ) - 0.5
+            missing_w = (ivy.arange(0, size[2]) + 0.5) * (
+                ivy.shape(x)[-1] / size[2]
+            ) - 0.5
+        else:
+            x_up_d = ivy.linspace(0, 1, ivy.shape(x)[-3])
+            x_up_h = ivy.linspace(0, 1, ivy.shape(x)[-2])
+            x_up_w = ivy.linspace(0, 1, ivy.shape(x)[-1])
+            missing_d = ivy.linspace(0, 1, size[0])
+            missing_h = ivy.linspace(0, 1, size[1])
+            missing_w = ivy.linspace(0, 1, size[2])
+        ret = ivy.zeros(ivy.shape(x)[:-3] + (size[1], size[2], size[0]))
+        for i, ba in enumerate(x):
+            for j, ch in enumerate(ba):
+                depth_ret = ivy.zeros((x.shape[-3], size[2], size[1]))
+                row_ret = ivy.zeros((ivy.shape(x)[-3], ivy.shape(x)[-2], size[2]))
+                for k, depth in enumerate(ch):
+                    for (
+                        l,
+                        row,
+                    ) in enumerate(ch[k]):
+                        row_ret[k][l] = ivy.interp(missing_w, x_up_w, row)
+                row_ret = row_ret.transpose((0, 2, 1))
+                for k, row in enumerate(ch):
+                    for (
+                        l,
+                        col,
+                    ) in enumerate(row_ret[k]):
+                        depth_ret[k][l] = ivy.interp(missing_h, x_up_h, col)
+                depth_ret = depth_ret.transpose((2, 1, 0))
+                for k, col in enumerate(depth_ret):
+                    for (
+                        l,
+                        depth,
+                    ) in enumerate(depth_ret[k]):
+                        ret[i][j][k][l] = ivy.interp(missing_d, x_up_d, depth)
+                ret = ret.transpose((0, 1, 4, 2, 3))
+    return ret
