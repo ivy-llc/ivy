@@ -28,8 +28,8 @@ def _broadcastable_due(draw):
     )
     cond_shape, x1_shape = shapes_st.input_shapes
     cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
-    x1 = draw(helpers.array_values(dtype=dtype[0], shape=x1_shape))
-    return cond, x1, (dtype * 2)
+    x = draw(helpers.array_values(dtype=dtype[0], shape=x1_shape))
+    return cond, x, dtype
 
 
 # where
@@ -421,6 +421,6 @@ def test_numpy_extract(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x,
+        a=x[0],
         condition=cond,
     )
