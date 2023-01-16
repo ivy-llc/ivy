@@ -119,9 +119,11 @@ def conv(
 
 
 def _get_general_df(data_format):
-    if data_format in ["NCW", "NCHW", "NCDHW"]:
+    if data_format is None:
         return "channel_first"
-    elif data_format in ["NWC", "NHWC", "NDHWC"]:
+    if data_format[1] == "C":
+        return "channel_first"
+    if data_format[-1] == "C":
         return "channel_last"
 
 
@@ -141,10 +143,6 @@ def conv_transpose(
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape)-2
-    if dimension_numbers[0] is None:
-        data_format = "channel_first"
-    else:
-        data_format = _get_general_df(dimension_numbers[0])
     rhs = ivy.swapaxes(rhs, -1, -2)
     # if not transpose_kernel:
     #     rhs = ivy.swapaxes(rhs, -1, -2)
@@ -156,7 +154,7 @@ def conv_transpose(
         strides,
         padding,
         dims=dims,
-        data_format=data_format,
+        data_format=_get_general_df(dimension_numbers[0]),
         dilations=1 if rhs_dilation is None else rhs_dilation[0],
     )
 
@@ -179,19 +177,13 @@ def conv_general_dilated(
     if preferred_element_type:
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
-    dims = len(lhs.shape)-2
-    if dimension_numbers[0] is None:
-        data_format = "channel_first"
-    else:
-        data_format = _get_general_df(dimension_numbers[0])
-    rhs = _format_rhs(rhs, dims)
     return ivy.conv_general_dilated(
         lhs,
         rhs,
         window_strides,
         padding,
-        dims=dims,
-        data_format=data_format,
+        dims=len(lhs.shape)-2,
+        data_format=_get_general_df(dimension_numbers[0]),
         x_dilations=1 if lhs_dilation is None else lhs_dilation[0],
         dilations=1 if rhs_dilation is None else rhs_dilation[0],
         feature_group_count=feature_group_count,
