@@ -424,6 +424,8 @@ def test_conv1d(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and dilations > 1))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -458,8 +460,8 @@ def test_conv1d_transpose(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and dilations > 1))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -496,6 +498,8 @@ def test_conv2d(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -534,8 +538,8 @@ def test_conv2d_transpose(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -575,13 +579,16 @@ def test_depthwise_conv2d(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and dilations > 1 and stride > 1))
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(
+            not (on_device == "cpu" and any(i > 1 for i in dilations)) and
+            len(set(stride)) == 1
+        )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -611,6 +618,8 @@ def test_conv3d(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -635,15 +644,12 @@ def test_conv3d(
     x_f_d_df=x_and_filters(
         dim=st.shared(st.integers(1, 3), key="dims"), general=True, bias=True
     ),
-    x_dilations=st.integers(1, 3),
-    # tensorflow does not work with dilations > 1 on cpu
     ground_truth_backend="jax",
 )
 def test_conv_general_dilated(
     *,
     dims,
     x_f_d_df,
-    x_dilations,
     test_flags,
     backend_fw,
     fn_name,
@@ -651,8 +657,8 @@ def test_conv_general_dilated(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc, bias = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and any(i > 1 for i in dilations[0])))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -669,8 +675,8 @@ def test_conv_general_dilated(
         dims=dims,
         data_format=data_format,
         feature_group_count=fc,
-        x_dilations=x_dilations,
-        dilations=dilations,
+        x_dilations=dilations[1],
+        dilations=dilations[0],
         bias=bias,
     )
 
@@ -684,7 +690,6 @@ def test_conv_general_dilated(
         transpose=True,
         bias=True,
     ),
-    # tensorflow does not work with dilations > 1 on cpu
     ground_truth_backend="jax",
 )
 def test_conv_general_transpose(
@@ -709,13 +714,13 @@ def test_conv_general_transpose(
         fc,
         bias,
     ) = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -752,8 +757,8 @@ def test_conv3d_transpose(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
