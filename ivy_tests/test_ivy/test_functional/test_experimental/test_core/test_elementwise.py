@@ -451,6 +451,7 @@ def test_count_nonzero(
         valid_axis=True,
         allow_neg_axes=False,
         min_axes_size=1,
+        force_tuple_axis=True,
         allow_nan=True,
     ),
     keep_dims=st.booleans(),
@@ -467,7 +468,6 @@ def test_nansum(
     ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
-    axis = tuple(axis)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,

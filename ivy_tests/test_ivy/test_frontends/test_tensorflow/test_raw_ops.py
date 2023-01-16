@@ -2123,7 +2123,7 @@ def test_tensorflow_IdentityN(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.Less",
+    fn_tree="tensorflow.raw_ops.Inv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True)
     ),

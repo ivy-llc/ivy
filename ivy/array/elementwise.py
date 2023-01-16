@@ -863,14 +863,15 @@ class ArrayWithElementwise(abc.ABC):
         self
             input array. Should have a numeric data type.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array containing the evaluated result for each element in ``x``. The returned
-            array must have a floating-point data type determined by :ref:`type-promotion`.
+            an array containing the evaluated result for each element in ``x``.
+            The returned array must have a floating-point data type
+            determined by :ref:`type-promotion`.
 
         Examples
         --------
@@ -1776,6 +1777,10 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ):
         """
+        ivy.Array instance method variant of ivy.minimum.
+        This method simply wraps the function, and so the docstring
+        for ivy.minimum also applies to this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -2500,6 +2505,14 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the element-wise reciprocal of ``self``.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.reciprocal()
+        >>> print(y)
+        ivy.array([1., 0.5, 0.333])
+
         """
         return ivy.reciprocal(self._data, out=out)
 

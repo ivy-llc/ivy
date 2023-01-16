@@ -106,7 +106,7 @@ def conv(
     if preferred_element_type:
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
-    dims = len(lhs.shape)-2
+    dims = len(lhs.shape) - 2
     rhs = _format_rhs(rhs, dims)
     return ivy.conv_general_dilated(
         lhs,

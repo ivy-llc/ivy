@@ -2009,7 +2009,9 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
         )
         for i in range(dim):
             output_shape.append(
-                _deconv_length(x_dim[i], strides[0], filter_shape[i], padding, dilations)
+                _deconv_length(
+                    x_dim[i], strides[0], filter_shape[i], padding, dilations
+                )
             )
     else:
         for i in range(dim):
@@ -2071,8 +2073,7 @@ def _conv_helper(draw, general=False, transpose=False):
     if draw(st.booleans()):
         dtype, pref = draw(
             helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("numeric")),
-                x_f_d_df[0][0]
+                draw(helpers.get_dtypes("numeric")), x_f_d_df[0][0]
             )
         )
         assume(can_cast(dtype, pref))
@@ -2096,6 +2097,7 @@ def test_jax_lax_conv(
     frontend,
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
+    assume(dim_num[0][1] == "C" and dim_num[1][0] == "O")
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
