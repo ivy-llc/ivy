@@ -61,6 +61,7 @@ Experimental
    experimental/fft.rst
    experimental/dropout1d.rst
    experimental/ifft.rst
+   experimental/embedding.rst
    experimental/diagflat.rst
    experimental/kron.rst
    experimental/matrix_exp.rst
