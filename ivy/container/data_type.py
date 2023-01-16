@@ -307,6 +307,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_broadcast_to(
         x: ivy.Container,
+        /,
         shape: Tuple[int, ...],
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -365,6 +366,7 @@ class ContainerWithDataTypes(ContainerBase):
 
     def broadcast_to(
         self: ivy.Container,
+        /,
         shape: Tuple[int, ...],
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
