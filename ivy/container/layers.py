@@ -187,13 +187,13 @@ class ContainerWithLayers(ContainerBase):
 
     @staticmethod
     def static_dropout(
-        x: ivy.Container,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         prob: float,
         /,
         *,
         scale: bool = True,
         dtype: ivy.Dtype = None,
-        training_mode: bool = True,
+        training: bool = True,
         seed: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -215,11 +215,13 @@ class ContainerWithLayers(ContainerBase):
         scale
             Whether to scale the output by `1/(1-prob)`, default is ``True``.
         dtype
-            output array data type. If dtype is None, the output array data type
+            Output array data type. If dtype is None, the output array data type
             must be inferred from x. Default: ``None``.
-        out
-            optional output array, for writing the result to. It must have a
-            shape that the inputs broadcast to.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        seed
+            Set a default seed for random number generating (for reproducibility).
+            Default is ``None``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -232,7 +234,7 @@ class ContainerWithLayers(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional output array, for writing the result to. It must have a shape
+            optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
@@ -259,7 +261,7 @@ class ContainerWithLayers(ContainerBase):
             prob,
             scale=scale,
             dtype=dtype,
-            training_mode=training_mode,
+            training=training,
             seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -275,7 +277,7 @@ class ContainerWithLayers(ContainerBase):
         *,
         scale: bool = True,
         dtype: ivy.Dtype = None,
-        training_mode: bool = True,
+        training: bool = True,
         seed: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -291,7 +293,7 @@ class ContainerWithLayers(ContainerBase):
         Parameters
         ----------
         self
-            The input container x to perform dropout on.
+            The input container to perform dropout on.
         prob
             The probability of zeroing out each array element, float between 0 and 1.
         scale
@@ -299,9 +301,11 @@ class ContainerWithLayers(ContainerBase):
         dtype
             output array data type. If dtype is None, the output array data type
             must be inferred from x. Default: ``None``.
-        out
-            optional output array, for writing the result to. It must have a
-            shape that the inputs broadcast to.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        seed
+            Set a default seed for random number generating (for reproducibility).
+            Default is ``None``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -339,7 +343,7 @@ class ContainerWithLayers(ContainerBase):
             prob,
             scale=scale,
             dtype=dtype,
-            training_mode=training_mode,
+            training=training,
             seed=seed,
             key_chains=key_chains,
             to_apply=to_apply,

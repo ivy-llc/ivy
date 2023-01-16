@@ -168,6 +168,7 @@ def linear(
 # Dropout #
 
 
+@handle_nestable
 @handle_exceptions
 @handle_array_like
 def dropout(
@@ -176,9 +177,9 @@ def dropout(
     /,
     *,
     scale: bool = True,
-    dtype: ivy.Dtype = None,
-    training_mode: bool = True,
-    seed: int = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    training: bool = True,
+    seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -194,10 +195,15 @@ def dropout(
     prob
         The probability of zeroing out each array element, float between 0 and 1.
     scale
-        Whether to scale the output by `1/(1-prob)`, default is ``True``.
+        Whether to scale the output by `1/(1-prob)`. Default is ``True``.
     dtype
         output array data type. If dtype is None, the output array data type
-        must be inferred from x. Default: ``None``.
+        must be inferred from x. Default is ``None``.
+    training
+        Turn on dropout if training, turn off otherwise. Default is ``True``.
+    seed
+        Set a default seed for random number generating (for reproducibility). Default
+        is ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -205,7 +211,11 @@ def dropout(
     Returns
     -------
     ret
-        Result array of the output after dropout is performed.
+        Result array after dropout is performed.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -236,7 +246,7 @@ def dropout(
     ...                [4., 5., 6.],
     ...                [7., 8., 9.],
     ...                [10., 11., 12.]])
-    >>> y = ivy.dropout(x,0.3,scale=Flase)
+    >>> y = ivy.dropout(x,0.3,scale=False)
     >>> print(y)
     ivy.array([[ 1.,  2., 3.],
                [ 4.,  5., 0.],
@@ -296,7 +306,7 @@ def dropout(
                       [7., 0., 0.]])
     }
     """
-    if prob == 0 or not training_mode:
+    if prob == 0 or not training:
         if dtype is not None:
             x = ivy.astype(x, dtype)
         return x if not ivy.exists(out) else ivy.inplace_update(out, x)
