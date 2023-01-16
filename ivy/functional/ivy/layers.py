@@ -1035,13 +1035,13 @@ def conv2d(
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int, int]],
     padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NHWC",
-    dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
@@ -1063,6 +1063,7 @@ def conv2d_transpose(
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
+        Default is ``"NHWC"``
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1074,6 +1075,66 @@ def conv2d_transpose(
     ret
         The result of the transpose convolution operation.
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+    >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
+    >>> print(y.shape)
+    (1, 56, 56, 6)
+
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 128, 64])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[1, 1, 64, 64])
+    >>> ivy.conv2d_transpose(x, filters, 1, 'VALID', out=x)
+    >>> print(x.shape)
+    (1, 128, 128, 64)
+
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])
+    >>> y = ivy.zeros_like(x)
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])
+    >>> ivy.conv2d_transpose(x, filters, [1, 1, 1], 'VALID', out=y)
+    >>> print(y.shape)
+    (1, 258, 258, 32)
+
+    With one :class:`ivy.Container` inputs:
+
+    >>> x = ivy.full((1, 6, 6, 1), 2.7)
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv2d_transpose(x, filters, 1, 'VALID', dilations=2)
+    >>> print(y.shape)
+    {
+        a: [1,10,10,1],
+        b: [1,10,10,1]
+    }
+
+    With multiple :class:`ivy.Container` inputs:
+
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+    >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+    >>> x = ivy.Container(a=a, b=b)
+    >>> filters = ivy.Container(c=c, d=d)
+    >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
+    >>> print(y.shape)
+    {
+        a: {
+            c: [1,28,28,6],
+            d: [1,28,28,6]
+        },
+        b: {
+            c: [1,56,56,6],
+            d: [1,56,56,6]
+        }
+    }
     """
     return current_backend(x).conv2d_transpose(
         x,
