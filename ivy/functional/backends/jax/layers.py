@@ -153,9 +153,9 @@ def conv2d_transpose(
     padding: str,
     /,
     *,
-    output_shape=None,
+    output_shape: Tuple[int] = None,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
