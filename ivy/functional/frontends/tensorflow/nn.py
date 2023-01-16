@@ -392,3 +392,8 @@ def convolution(
 @to_ivy_arrays_and_back
 def relu(features, name=None):
     return ivy.relu(features)
+
+
+@to_ivy_arrays_and_back
+def softmax(logits, axis=None, name=None):
+    return ivy.softmax(logits, axis=axis)
