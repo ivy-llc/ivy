@@ -31,6 +31,7 @@ def _broadcastable_due(draw):
     x1 = draw(helpers.array_values(dtype=dtype[0], shape=x1_shape))
     return cond, x1, (dtype * 2)
 
+
 # where
 @handle_frontend_test(
     fn_tree="numpy.where",
@@ -420,7 +421,6 @@ def test_numpy_extract(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        keepdims=keep_dims,
         a=x,
         condition=cond,
     )
