@@ -1,8 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal
 from typing import Optional, Union, Tuple, Literal, Sequence
-import ivy
-from ivy.functional.backends.jax import JaxArray
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
@@ -361,4 +358,8 @@ def interpolate(
     align_corners: Optional[bool] = True.real,
     antialias: Optional[bool] = False,
 ):
+    if align_corners:
+        return ivy.interpolate(
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias
+        )
     return jax.image.resize(x, size, method=mode, antialias=antialias)

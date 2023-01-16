@@ -417,5 +417,13 @@ def interpolate(
     /,
     *,
     mode: Optional[Literal["linear", "bilinear"]] = "linear",
+    align_corners: Optional[bool] = None,
+    anti_aliasing: Optional[bool] = False,
 ):
-    return torch.nn.functional.interpolate(x, size=size, mode=mode)
+    return torch.nn.functional.interpolate(
+        x,
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+        anti_aliasing=anti_aliasing,
+    )
