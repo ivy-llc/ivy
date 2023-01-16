@@ -1,6 +1,8 @@
 # local
 import weakref
 
+import torch
+
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -157,6 +159,7 @@ class Tensor:
             - size
             - tuple of ints
             - list of ints
+            - torch.Size object
             - ints
         Parameters
         ----------
@@ -169,9 +172,11 @@ class Tensor:
         if size and not args:
             size_tup = size
         elif args and not size:
-            if (isinstance(args[0], tuple) or isinstance(args[0], list)) and len(
-                args
-            ) == 1:
+            if (
+                isinstance(args[0], tuple)
+                or isinstance(args[0], list)
+                or isinstance(args[0], torch.Size)
+            ) and len(args) == 1:
                 size_tup = args[0]
             else:
                 size_tup = args
