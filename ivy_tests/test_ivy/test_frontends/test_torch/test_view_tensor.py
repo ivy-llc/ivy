@@ -26,7 +26,7 @@ cache = Database()
 def test_view_tensor_no_error(length, dim):
     size = tuple([int(length ** (1 / dim))] * dim)
     test_input = torch_frontend.arange(length)
-    _ = test_input.view(size=size)  # fails
+    _ = test_input.view(size=size)
     _ = test_input.view(*size)
     _ = test_input.view(size)
 
