@@ -5,6 +5,19 @@ import re
 # local
 import ivy.functional.frontends.numpy as np_frontend
 
+# Helpers #
+# --------#
+identities = {
+    "add": 0,
+    "subtract": 0,
+    "multiply": 1,
+    "divide": 1,
+    "true_divide": 1,
+    "floor_divide": 1,
+    "power": 1,
+    "remainder": 0,
+}
+
 
 # Class #
 # ----- #
@@ -25,13 +38,20 @@ class ufunc:
             [
                 param
                 for param in sig.parameters.values()
-                if param.kind == param.POSITIONAL_ONLY
+                if param.kind in [param.POSITIONAL_ONLY, param.POSITIONAL_OR_KEYWORD]
             ]
         )
 
     @property
     def nin(self):
-        return self.args
+        sig = inspect.signature(self.func)
+        return len(
+            [
+                param
+                for param in sig.parameters.values()
+                if param.kind == param.POSITIONAL_ONLY
+            ]
+        )
 
     @property
     def nout(self):
@@ -51,6 +71,10 @@ class ufunc:
     @property
     def types(self):
         pass
+
+    @property
+    def identity(self):
+        return identities[self.__name__]
 
     # Methods #
     # ---------#
