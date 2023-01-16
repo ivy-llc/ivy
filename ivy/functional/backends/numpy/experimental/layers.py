@@ -2,7 +2,7 @@
 
 import math
 import numpy as np
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import Optional, Union, Tuple, Literal
 
 # local
 import ivy
@@ -523,88 +523,3 @@ def dropout1d(
         return res
     else:
         return x
-
-
-def interpolate(
-    x: np.ndarray,
-    size: Union[Sequence[int], int],
-    /,
-    *,
-    mode: Union[Literal["linear", "bilinear"]] = "linear",
-    align_corners: Optional[bool] = True,
-    antialias: Optional[bool] = False,
-):
-    if mode == "linear":
-        if not align_corners:
-            x_up = np.arange(0, x.shape[-1])
-            missing = (np.arange(0, size) + 0.5) * (x.shape[-1] / size) - 0.5
-        else:
-            x_up = np.linspace(0, 1, x.shape[-1])
-            missing = np.linspace(0, 1, size)
-        ret = np.zeros(x.shape[:-1] + (size,))
-        for i, ba in enumerate(x):
-            for j, ch in enumerate(ba):
-                ret[i][j] = np.interp(missing, x_up, ch)
-    elif mode == "bilinear":
-        if not align_corners:
-            x_up_h = np.arange(0, x.shape[-2])
-            x_up_w = np.arange(0, x.shape[-1])
-            missing_h = (np.arange(0, size[0]) + 0.5) * (x.shape[-2] / size[0]) - 0.5
-            missing_w = (np.arange(0, size[1]) + 0.5) * (x.shape[-1] / size[1]) - 0.5
-        else:
-            x_up_h = np.linspace(0, 1, x.shape[-2])
-            x_up_w = np.linspace(0, 1, x.shape[-1])
-            missing_h = np.linspace(0, 1, size[0])
-            missing_w = np.linspace(0, 1, size[1])
-        ret = np.zeros(x.shape[:-2] + (size[0], size[1]))
-        for i, ba in enumerate(x):
-            for j, ch in enumerate(ba):
-                row_ret = np.zeros((x.shape[-2], size[1]))
-                for k, row in enumerate(ch):
-                    row_ret[k] = np.interp(missing_w, x_up_w, row)
-                row_ret = row_ret.T
-                for k, col in enumerate(row_ret):
-                    ret[i][j][k] = np.interp(missing_h, x_up_h, col)
-                ret[i][j] = ret[i][j].T
-    elif mode == "trilinear":
-        if not align_corners:
-            x_up_d = np.arange(0, x.shape[-3])
-            x_up_h = np.arange(0, x.shape[-2])
-            x_up_w = np.arange(0, x.shape[-1])
-            missing_d = (np.arange(0, size[0]) + 0.5) * (x.shape[-3] / size[0]) - 0.5
-            missing_h = (np.arange(0, size[1]) + 0.5) * (x.shape[-2] / size[1]) - 0.5
-            missing_w = (np.arange(0, size[2]) + 0.5) * (x.shape[-1] / size[2]) - 0.5
-        else:
-            x_up_d = np.linspace(0, 1, x.shape[-3])
-            x_up_h = np.linspace(0, 1, x.shape[-2])
-            x_up_w = np.linspace(0, 1, x.shape[-1])
-            missing_d = np.linspace(0, 1, size[0])
-            missing_h = np.linspace(0, 1, size[1])
-            missing_w = np.linspace(0, 1, size[2])
-        ret = np.zeros(x.shape[:-3] + (size[1], size[2], size[0]))
-        for i, ba in enumerate(x):
-            for j, ch in enumerate(ba):
-                depth_ret = np.zeros((x.shape[-3], size[2], size[1]))
-                row_ret = np.zeros((x.shape[-3], x.shape[-2], size[2]))
-                for k, depth in enumerate(ch):
-                    for (
-                        l,
-                        row,
-                    ) in enumerate(ch[k]):
-                        row_ret[k][l] = np.interp(missing_w, x_up_w, row)
-                row_ret = row_ret.transpose((0, 2, 1))
-                for k, row in enumerate(ch):
-                    for (
-                        l,
-                        col,
-                    ) in enumerate(row_ret[k]):
-                        depth_ret[k][l] = np.interp(missing_h, x_up_h, col)
-                depth_ret = depth_ret.transpose((2, 1, 0))
-                for k, col in enumerate(depth_ret):
-                    for (
-                        l,
-                        depth,
-                    ) in enumerate(depth_ret[k]):
-                        ret[i][j][k][l] = np.interp(missing_d, x_up_d, depth)
-                ret = ret.transpose((0, 1, 4, 2, 3))
-    return ret

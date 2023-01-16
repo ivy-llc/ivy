@@ -422,7 +422,7 @@ def interpolate(
 ):
     return torch.nn.functional.interpolate(
         x,
-        size=size,
+        size,
         mode=mode,
         align_corners=align_corners,
         anti_aliasing=anti_aliasing,

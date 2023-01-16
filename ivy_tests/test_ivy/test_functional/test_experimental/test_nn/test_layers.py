@@ -239,7 +239,7 @@ def _interp_args(draw):
     # w = helpers.ints(min_value=1, max_value=3)
     if mode == "linear":
         # shape = (b, c, w)
-        size = helpers.ints(min_value=4, max_value=6)
+        size = draw(helpers.ints(min_value=4, max_value=6))
         num_dims = 3
     else:
         # h = helpers.ints(min_value=1, max_value=3)
@@ -261,38 +261,39 @@ def _interp_args(draw):
 
 
 @handle_test(
-    fn_tree="interpolate",
+    fn_tree="functional.ivy.experimental.interpolate",
     dtype_x_mode=_interp_args(),
+    align_corners=st.booleans(),
+    container_flags=st.just([False]),
+    as_variable_flags=st.just([False]),
+    native_array_flags=st.just([False]),
+    test_instance_method=st.just(False),
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_interpolate(
     dtype_x_mode,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    align_corners,
+    test_flags,
     backend_fw,
     fn_name,
     ground_truth_backend,
+    on_device,
 ):
     input_dtype, x, mode, size = dtype_x_mode
     helpers.test_function(
-        ground_truth_backend="tensorflow",
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=[False],
-        instance_method=False,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
         x=x[0],
         size=size,
         mode=mode,
-        rtol_=1e-3,
-        atol_=1e-3,
+        align_corners=align_corners,
     )
 
 

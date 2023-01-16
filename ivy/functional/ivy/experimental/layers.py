@@ -692,6 +692,7 @@ def interpolate(
     antialias: Optional[bool] = False,
 ):
     if mode == "linear":
+        size = size[0] if isinstance(size, (list, tuple)) else size
         if not align_corners:
             x_up = ivy.arange(0, ivy.shape(x)[-1])
             missing = (ivy.arange(0, size) + 0.5) * (ivy.shape(x)[-1] / size) - 0.5
