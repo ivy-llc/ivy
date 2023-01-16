@@ -1,6 +1,5 @@
 # global
 import inspect
-import re
 from math import inf
 
 # local
@@ -233,10 +232,7 @@ class ufunc:
 
     @property
     def nout(self):
-        ret = inspect.getsourcelines(self.func)
-        ret_pattern = r"return\s*(.*)\n*$"
-        returns = re.findall(ret_pattern, ret[0][-1])
-        return len(returns[0].split(","))
+        return self.nargs - self.nin
 
     @property
     def ntypes(self):
