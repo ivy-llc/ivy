@@ -506,4 +506,3 @@ def embedding_helper(draw):
     )
     padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings - 1))
     return dtype_indices + dtype_weight, indices[0], weight[0], padding_idx
-
