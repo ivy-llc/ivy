@@ -730,7 +730,7 @@ def embedding(
         len(weights.shape), 2, message="weights must be 2-d"
     )
 
-    ret = ivy.empty(indices.shape+(weights.shape[1],),
+    ret = ivy.empty(indices.shape + (weights.shape[1],),
                     dtype=ivy.as_ivy_dtype(weights.dtype))
     if not ivy.is_ivy_array(indices):
         indices = ivy.array(indices, dtype=ivy.int32)
@@ -742,4 +742,3 @@ def embedding(
         else:
             ret[i] = weights[x, :]
     return ret
-
