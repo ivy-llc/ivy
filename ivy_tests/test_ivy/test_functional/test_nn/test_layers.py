@@ -321,8 +321,12 @@ def x_and_filters(
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
     fc = draw(st.sampled_from(group_list)) if general else 1
-    # tensorflow backprop doesn't support dilations more than 1 on CPU
-    dilations = 1
+    if dim == 1 and not general:
+        strides = [draw(st.integers(1, 3))]
+        dilations = [draw(st.integers(1, 3))]
+    else:
+        strides = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+        dilations = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
     elif dim == 1:
@@ -340,11 +344,11 @@ def x_and_filters(
         )
         for i in range(dim):
             output_shape.append(
-                _deconv_length(x_dim[i], strides, filter_shape[i], padding, dilations)
+                _deconv_length(x_dim[i], strides[i], filter_shape[i], padding, dilations[i])
             )
     else:
         for i in range(dim):
-            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
+            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
             x_dim.append(draw(st.integers(min_x, min_x + 1)))
         x_dim = tuple(x_dim)
     if not depthwise:
@@ -390,9 +394,12 @@ def x_and_filters(
         )
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
-    if dim > 1:
-        if draw(st.booleans()):  # strides can be either an int or a sequence of ints
-            strides = [strides] * dim
+        if not transpose:
+            x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+            dilations = (dilations, x_dilation)
+    elif dim == 1:
+        strides = strides[0]
+        dilations = dilations[0]
     ret = (
         dtype,
         vals,
