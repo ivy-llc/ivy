@@ -109,7 +109,6 @@ class matrix:
     # ---------------- #
 
     @handle_numpy_out
-    @from_zero_dim_arrays_to_scalar
     def argmax(self, axis=None, out=None):
         if ivy.exists(axis):
             return ivy.argmax(self.A, axis=axis, keepdims=True, out=out)
