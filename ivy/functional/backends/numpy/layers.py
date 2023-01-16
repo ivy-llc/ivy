@@ -116,7 +116,7 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, int):
@@ -195,7 +195,7 @@ def conv2d_transpose(
     *,
     output_shape=None,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ):
     if data_format == "NCHW":
@@ -262,7 +262,7 @@ def depthwise_conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ):
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -395,7 +395,7 @@ def conv3d_transpose(
     *,
     output_shape: np.ndarray = None,
     data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     out: Optional[np.ndarray] = None,
 ):
     if data_format == "NCDHW":
@@ -481,7 +481,7 @@ def conv_general_dilated(
     data_format: str = "channel_last",
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
@@ -576,7 +576,7 @@ def conv_general_transpose(
     dims: int = 2,
     output_shape=None,
     data_format: str = "channel_last",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
     bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,

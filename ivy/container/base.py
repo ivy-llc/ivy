@@ -3231,7 +3231,7 @@ class ContainerBase(dict, abc.ABC):
         def to_list(x, _=""):
             try:
                 return self._cont_ivy.to_list(x)
-            except (IvyBackendException):
+            except (IvyException, IvyBackendException):
                 return x
 
         return self.cont_map(to_list)

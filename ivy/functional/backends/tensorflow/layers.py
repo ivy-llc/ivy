@@ -46,10 +46,6 @@ def conv1d_transpose(
     dilations: int = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    if not ivy.gpu_is_available() and dilations > 1:
-        raise ivy.exceptions.IvyException(
-            "Tensorflow does not support dilations greater than 1 when device is cpu"
-        )
     filters = tf.transpose(filters, (0, 2, 1))
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
@@ -83,7 +79,7 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    dilations: int = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not isinstance(strides, int):
@@ -106,18 +102,13 @@ def conv2d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NHWC",
-    dilations=1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if isinstance(strides, int):
         strides = [strides] * 2
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filters = tf.transpose(filters, (0, 1, 3, 2))
-    if not ivy.gpu_is_available() and (dilations[0] > 1 or dilations[1] > 1):
-        raise ivy.exceptions.IvyException(
-            "conv2d_transpose does not support dilations greater than 1 when device"
-            "is cpu for tensorflow"
-        )
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     if output_shape is None:
@@ -152,15 +143,6 @@ def depthwise_conv2d(
 ) -> Union[tf.Tensor, tf.Variable]:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    if (
-        not ivy.gpu_is_available()
-        and (dilations[0] > 1 or dilations[1] > 1)
-        and (strides[0] > 1 or strides[1] > 1)
-    ):
-        raise ivy.exceptions.IvyException(
-            "depthwise_conv2d does not support dilations greater than 1 and"
-            "strides greater than 1 when device is cpu for tensorflow"
-        )
     if tf.rank(filters) == 3:
         filters = tf.expand_dims(filters, -1)
     if len(strides) == 2:
@@ -207,20 +189,13 @@ def conv3d_transpose(
     *,
     output_shape=None,
     data_format: str = "NDHWC",
-    dilations: int = 1,
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tensor:
     strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
     dilations = (
         [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
     )
-    if not ivy.gpu_is_available() and (
-        dilations[1] > 1 or dilations[2] > 1 or dilations[3] > 1
-    ):
-        raise ivy.exceptions.IvyException(
-            "conv3d_transpose does not support dilations greater than 1 when"
-            "device is cpu for tensorflow"
-        )
     filters = tf.transpose(filters, (0, 1, 2, 4, 3))
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
