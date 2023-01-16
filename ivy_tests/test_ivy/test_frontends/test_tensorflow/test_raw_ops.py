@@ -3174,3 +3174,29 @@ def test_tensorflow_EuclideanNorm(
         axis=axis,
         keep_dims=keep_dims,
     )
+
+
+# ConcatV2
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.ConcatV2",
+    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+)
+def test_tensorflow_ConcatV2(
+    xs_n_input_dtypes_n_unique_idx,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        values=xs,
+        axis=unique_idx,
+    )
