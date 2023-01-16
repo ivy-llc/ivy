@@ -148,8 +148,8 @@ class Tensor:
     def atan2(self, other):
         return torch_frontend.atan2(self._ivy_array, other)
 
-    def view(self, shape):
-        return torch_frontend.ViewTensor(weakref.ref(self), shape=shape)
+    def view(self, size):
+        return torch_frontend.ViewTensor(weakref.ref(self), size=size)
 
     def float(self, memory_format=None):
         cast_tensor = self.clone()

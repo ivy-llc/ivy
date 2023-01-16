@@ -47,14 +47,14 @@ def _merge_to_original(method: Callable) -> Callable:
 
 
 class ViewTensor:
-    def __init__(self, ref, *, shape):
+    def __init__(self, ref, *, size):
         if isinstance(ref(), Tensor):
             self.delegate = torch_frontend.tensor(
-                ivy.reshape(ref().ivy_array, shape, copy=True)
+                ivy.reshape(ref().ivy_array, size, copy=True)
             )
         elif isinstance(ref(), ViewTensor):
             self.delegate = torch_frontend.tensor(
-                ivy.reshape(ref().delegate.ivy_array, shape, copy=True)
+                ivy.reshape(ref().delegate.ivy_array, size, copy=True)
             )
         else:
             raise TypeError(
@@ -115,8 +115,8 @@ class ViewTensor:
 
     # Class Invariance #
     # ---------------- #
-    def view(self, shape):
-        view = ViewTensor(weakref.ref(self), shape=shape)
+    def view(self, size):
+        view = ViewTensor(weakref.ref(self), size=size)
         return view
 
     def size(self):
