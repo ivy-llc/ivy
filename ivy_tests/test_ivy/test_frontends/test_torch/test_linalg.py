@@ -498,6 +498,48 @@ def test_torch_cross(
     )
 
 
+# vecdot
+@handle_frontend_test(
+    fn_tree="torch.linalg.vecdot",
+    dtype_input_other_dim=dtype_value1_value2_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=-1e3,
+        max_value=1e3,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+)
+def test_torch_vecdot(
+    dtype_input_other_dim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    dtype, input, other, dim = dtype_input_other_dim
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        rtol=1e-2,
+        atol=1e-3,
+        input=input,
+        other=other,
+        dim=dim,
+    )
+
+
 @st.composite
 def _matrix_rank_helper(draw):
     dtype_x = draw(
@@ -758,4 +800,85 @@ def test_torch_solve(
         on_device=on_device,
         input=input,
         other=other,
+    )
+
+
+# tensorinv
+@st.composite
+def _tensorinv_helper(draw):
+    def factors(x):
+        result = [
+            1,
+        ]
+        i = 2
+        while i * i <= x:
+            if x % i == 0:
+                result.append(i)
+                if x // i != i:
+                    result.append(x // i)
+            i += 1
+        result.append(x)
+        return np.array(result)
+
+    ind = draw(helpers.ints(min_value=1, max_value=6))
+    product_half = draw(helpers.ints(min_value=2, max_value=25))
+    factors_list = factors(product_half)
+    shape = ()
+    while len(shape) < ind and ind > 2:
+        while np.prod(shape) < product_half:
+            a = factors_list[np.random.randint(len(factors_list))]
+            shape += (a,)
+        if np.prod(shape) > product_half or len(shape) > ind:
+            shape = ()
+        while len(shape) < ind and shape != ():
+            shape += (1,)
+        if np.prod(shape) == product_half:
+            shape += shape[::-1]
+            break
+    if ind == 1 and shape == ():
+        shape += (product_half, product_half)
+    if ind == 2 and shape == ():
+        shape += (1, product_half, product_half, 1)
+    shape_cor = ()
+    for i in shape:
+        shape_cor += (int(i),)
+    shape_draw = (product_half, product_half)
+    dtype, input = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape_draw,
+        ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon)
+    )
+    input[0] = input[0].reshape(shape_cor)
+    return dtype, input[0], ind
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.tensorinv", dtype_input_ind=_tensorinv_helper()
+)
+def test_torch_tensorinv(
+    *,
+    dtype_input_ind,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+
+    dtype, x, ind = dtype_input_ind
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=True,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-04,
+        atol=1e-03,
+        input=x,
+        ind=ind,
     )

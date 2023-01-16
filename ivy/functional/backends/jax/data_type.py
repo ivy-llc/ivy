@@ -2,7 +2,7 @@
 import numpy as np
 
 import jax.numpy as jnp
-from typing import Union, Sequence, List
+from typing import Optional, Union, Sequence, List
 
 # local
 import ivy
@@ -93,7 +93,14 @@ class Finfo:
 # -------------------#
 
 
-def astype(x: JaxArray, dtype: jnp.dtype, /, *, copy: bool = True) -> JaxArray:
+def astype(
+    x: JaxArray,
+    dtype: jnp.dtype,
+    /,
+    *,
+    copy: bool = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
         return jnp.copy(x) if copy else x
@@ -104,7 +111,13 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
     return jnp.broadcast_arrays(*arrays)
 
 
-def broadcast_to(x: JaxArray, shape: Union[ivy.NativeShape, Sequence[int]]) -> JaxArray:
+def broadcast_to(
+    x: JaxArray,
+    /,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if x.ndim > len(shape):
         return jnp.broadcast_to(x.reshape(-1), shape)
     return jnp.broadcast_to(x, shape)
