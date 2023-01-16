@@ -400,7 +400,7 @@ def test_numpy_nanargmin(
 # extract
 @handle_frontend_test(
     fn_tree="numpy.extract",
-    broadcastables=_broadcastable_trio(),
+    broadcastables=_broadcastable_due(),
 )
 def test_numpy_extract(
     broadcastables,
