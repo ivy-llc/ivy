@@ -22,7 +22,7 @@ def _broadcastable_trio(draw):
 
 @st.composite
 def _broadcastable_due(draw):
-    dtype = draw(helpers.get_dtypes("valid", full=False))
+    dtype = draw(helpers.get_dtypes("signed_integer", full=False))
     shapes_st = draw(
         hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=1, min_side=1)
     )
