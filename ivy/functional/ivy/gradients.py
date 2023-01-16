@@ -268,11 +268,27 @@ def _is_variable(x, exclusive=False) -> bool:
     )
 
 
-def _variable_data(x):
+def _variable_data(
+    x: Union[ivy.Array, ivy.NativeArray]
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gets the contents of the input.
+
+    Parameters
+    ----------
+    x
+        Input array.
+
+    Returns
+    -------
+    ret
+        An array with contents of the input.
+    """
     x = ivy.to_native(x, nested=True)
-    return ivy.nested_map(
+    ret = ivy.nested_map(
         x, lambda x: current_backend(x).variable_data(x), include_derived=True
     )
+    return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
 # Extra #
@@ -294,6 +310,9 @@ class GradientTracking:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_with_grads()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
@@ -1131,7 +1150,6 @@ def adam_update(
 
     Examples
     --------
-
     With :class:`ivy.Array` inputs:
 
     >>> w = ivy.array([1., 2, 3])
@@ -1239,7 +1257,6 @@ adam_update.out_index = 0
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-@handle_array_like
 @handle_array_like
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],

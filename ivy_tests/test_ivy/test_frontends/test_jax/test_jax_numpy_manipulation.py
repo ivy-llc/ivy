@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -688,4 +689,39 @@ def test_jax_numpy_swapaxes(
         a=x[0],
         axis1=axis1,
         axis2=axis2,
+    )
+
+
+# atleast_3d
+@handle_frontend_test(
+    fn_tree="jax.numpy.atleast_3d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+    ),
+)
+def test_jax_numpy_atleast_3d(
+    *,
+    dtype_and_x,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, arrays = dtype_and_x
+    arys = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
+        arys["arrs{}".format(i)] = np.asarray(array, dtype=idtype)
+    num_positional_args = len(arys)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **arys,
     )

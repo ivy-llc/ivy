@@ -498,6 +498,48 @@ def test_torch_cross(
     )
 
 
+# vecdot
+@handle_frontend_test(
+    fn_tree="torch.linalg.vecdot",
+    dtype_input_other_dim=dtype_value1_value2_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=-1e3,
+        max_value=1e3,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+)
+def test_torch_vecdot(
+    dtype_input_other_dim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    dtype, input, other, dim = dtype_input_other_dim
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        rtol=1e-2,
+        atol=1e-3,
+        input=input,
+        other=other,
+        dim=dim,
+    )
+
+
 @st.composite
 def _matrix_rank_helper(draw):
     dtype_x = draw(
@@ -765,7 +807,9 @@ def test_torch_solve(
 @st.composite
 def _tensorinv_helper(draw):
     def factors(x):
-        result = [1, ]
+        result = [
+            1,
+        ]
         i = 2
         while i * i <= x:
             if x % i == 0:
@@ -775,6 +819,7 @@ def _tensorinv_helper(draw):
             i += 1
         result.append(x)
         return np.array(result)
+
     ind = draw(helpers.ints(min_value=1, max_value=6))
     product_half = draw(helpers.ints(min_value=2, max_value=25))
     factors_list = factors(product_half)
@@ -809,18 +854,17 @@ def _tensorinv_helper(draw):
 
 
 @handle_frontend_test(
-    fn_tree="torch.linalg.tensorinv",
-    dtype_input_ind=_tensorinv_helper()
+    fn_tree="torch.linalg.tensorinv", dtype_input_ind=_tensorinv_helper()
 )
 def test_torch_tensorinv(
-        *,
-        dtype_input_ind,
-        as_variable,
-        num_positional_args,
-        native_array,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_input_ind,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
 
     dtype, x, ind = dtype_input_ind

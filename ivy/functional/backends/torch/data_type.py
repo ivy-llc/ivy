@@ -1,5 +1,5 @@
 # global
-from typing import Union, Sequence, List
+from typing import Optional, Union, Sequence, List
 
 import torch
 
@@ -73,7 +73,12 @@ class Finfo:
 
 
 def astype(
-    x: torch.Tensor, dtype: torch.dtype, /, *, copy: bool = True
+    x: torch.Tensor,
+    dtype: torch.dtype,
+    /,
+    *,
+    copy: bool = True,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
