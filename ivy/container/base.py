@@ -243,7 +243,7 @@ class ContainerBase(dict, abc.ABC):
                         if ivy.is_ivy_array(v):
                             return ret.cont_unstack_conts(0)
 
-        if ivy.exists(out):
+        if with_out:
             for out_cont_idx, out_cont in zip(out_cont_idxs, out_conts):
                 out_cont.cont_inplace_update(ivy.index_nest(ret, out_cont_idx))
             if len(out_conts) == 1:
@@ -3231,7 +3231,7 @@ class ContainerBase(dict, abc.ABC):
         def to_list(x, _=""):
             try:
                 return self._cont_ivy.to_list(x)
-            except (IvyBackendException):
+            except (IvyException, IvyBackendException):
                 return x
 
         return self.cont_map(to_list)

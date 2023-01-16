@@ -380,3 +380,13 @@ def truediv(x, y, name="truediv"):
 def equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.equal(x, y)
+
+
+@to_ivy_arrays_and_back
+def floor(x, name=None):
+    return ivy.floor(x)
+
+
+@to_ivy_arrays_and_back
+def ceil(x, name=None):
+    return ivy.ceil(x)

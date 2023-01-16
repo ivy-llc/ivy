@@ -130,7 +130,10 @@ def broadcast_arrays(
 
 def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if tf.rank(x) > len(shape):
         return tf.broadcast_to(tf.reshape(x, -1), shape)
