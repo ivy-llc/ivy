@@ -1,8 +1,9 @@
 # local
+import weakref
+
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
-import weakref
 
 
 class Tensor:
@@ -167,13 +168,15 @@ class Tensor:
         if size and not args:
             size_tup = size
         elif args and not size:
-            if isinstance(args[0], tuple) and len(args)==1:
+            if isinstance(args[0], tuple) and len(args) == 1:
                 size_tup = args[0]
             else:
-                size_tup=args
+                size_tup = args
         else:
-            raise ValueError("View only accepts as argument ints, tuple of ints or "
-                             "the keyword argument size.")
+            raise ValueError(
+                "View only accepts as argument ints, tuple of ints or "
+                "the keyword argument size."
+            )
         return torch_frontend.ViewTensor(weakref.ref(self), size=size_tup)
 
     def float(self, memory_format=None):
