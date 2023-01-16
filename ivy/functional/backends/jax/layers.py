@@ -7,7 +7,11 @@ import jax.numpy as jnp
 # local
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple, Optional, Sequence
-from ivy.functional.ivy.layers import _handle_padding, _deconv_length, _get_x_data_format
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _deconv_length,
+    _get_x_data_format,
+)
 
 # Extra #
 # ------#
@@ -366,11 +370,9 @@ def conv_general_transpose(
     filter_df = _get_filter_dataformat(dims)
     if data_format == "channel_first":
         x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
-    x_shape = list(x.shape[1: dims + 1])
+    x_shape = list(x.shape[1 : dims + 1])
     out_shape = [
-        _deconv_length(
-            x_shape[i], strides[i], filters.shape[i], padding, dilations[i]
-        )
+        _deconv_length(x_shape[i], strides[i], filters.shape[i], padding, dilations[i])
         for i in range(dims)
     ]
     if output_shape is None:
@@ -381,14 +383,16 @@ def conv_general_transpose(
     diff = [-(output_shape[i + 1] - out_shape[i]) for i in range(dims)]
     pad = []
     for i in range(dims):
-        pad += [_conv_transpose_padding(
-            filters.shape[i], strides[i], padding, dilations[i], diff[i]
-        )]
+        pad += [
+            _conv_transpose_padding(
+                filters.shape[i], strides[i], padding, dilations[i], diff[i]
+            )
+        ]
     res = jnp.concatenate(
         [
             jlax.conv_transpose(
-                x[..., j: j + filters.shape[-1] // feature_group_count],
-                filters[..., j: j + filters.shape[-1] // feature_group_count],
+                x[..., j : j + filters.shape[-1] // feature_group_count],
+                filters[..., j : j + filters.shape[-1] // feature_group_count],
                 strides,
                 pad,
                 dilations,

@@ -6,7 +6,11 @@ from typing import Union, Tuple, Optional, List
 
 
 # local
-from ivy.functional.ivy.layers import _handle_padding, _deconv_length, _get_x_data_format
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _deconv_length,
+    _get_x_data_format,
+)
 
 
 def _add_dilations(x, dilations, axis):
@@ -29,9 +33,9 @@ def conv1d(
     dilations: int = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, tuple):
+    if isinstance(strides, (tuple, list)):
         strides = strides[0]
-    if isinstance(dilations, tuple):
+    if isinstance(dilations, (tuple, list)):
         dilations = dilations[0]
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
@@ -66,9 +70,9 @@ def conv1d_transpose(
     dilations: int = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, tuple):
+    if isinstance(strides, (tuple, list)):
         strides = strides[0]
-    if isinstance(dilations, tuple):
+    if isinstance(dilations, (tuple, list)):
         dilations = dilations[0]
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))

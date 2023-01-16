@@ -807,7 +807,9 @@ def test_torch_solve(
 @st.composite
 def _tensorinv_helper(draw):
     def factors(x):
-        result = [1, ]
+        result = [
+            1,
+        ]
         i = 2
         while i * i <= x:
             if x % i == 0:
@@ -817,6 +819,7 @@ def _tensorinv_helper(draw):
             i += 1
         result.append(x)
         return np.array(result)
+
     ind = draw(helpers.ints(min_value=1, max_value=6))
     product_half = draw(helpers.ints(min_value=2, max_value=25))
     factors_list = factors(product_half)
@@ -851,18 +854,17 @@ def _tensorinv_helper(draw):
 
 
 @handle_frontend_test(
-    fn_tree="torch.linalg.tensorinv",
-    dtype_input_ind=_tensorinv_helper()
+    fn_tree="torch.linalg.tensorinv", dtype_input_ind=_tensorinv_helper()
 )
 def test_torch_tensorinv(
-        *,
-        dtype_input_ind,
-        as_variable,
-        num_positional_args,
-        native_array,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_input_ind,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
 
     dtype, x, ind = dtype_input_ind

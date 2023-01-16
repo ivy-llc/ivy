@@ -529,15 +529,15 @@ def multi_head_attention(
     num_heads: int,
     /,
     *,
-    context: Union[ivy.Array, ivy.NativeArray] = None,
-    mask: Union[ivy.Array, ivy.NativeArray] = None,
-    to_q_fn: Callable = None,
-    to_kv_fn: Callable = None,
-    to_out_fn: Callable = None,
-    to_q_v=None,
-    to_kv_v=None,
-    to_out_v=None,
-    out: Optional[ivy.Array] = None,
+    context: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    to_q_fn: Optional[Callable] = None,
+    to_kv_fn: Optional[Callable] = None,
+    to_out_fn: Optional[Callable] = None,
+    to_q_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    to_kv_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    to_out_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies multi-head attention to inputs x.
 
@@ -728,10 +728,10 @@ def multi_head_attention(
         k, v = ivy.split(kv, num_or_size_splits=2, axis=-1)
 
     # BS x H x Q x F,  BS x H x K x F,  BS x H x K x F
-    q, k, v = map(
-        lambda t: ivy.einops_rearrange(t, "... n (h f) -> ... h n f", h=num_heads),
-        (q, k, v),
-    )
+    def call_einops(t):
+        return ivy.einops_rearrange(t, "... n (h f) -> ... h n f", h=num_heads)
+
+    q, k, v = map(call_einops, (q, k, v))
 
     # BS x H x Q x K
     if ivy.exists(mask):
@@ -1385,7 +1385,7 @@ def conv3d_transpose(
     ret
         The result of the transpose convolution operation.
 
-    Functional Examples
+    Examples
     --------
     With :class:`ivy.Array` input:
 
@@ -1395,28 +1395,20 @@ def conv3d_transpose(
     >>> print(y.shape)
     (1, 6, 56, 56, 6)
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array(
-    ...    ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64])
-    ... )
-    >>> filters = ivy.native_array(
-    ...    ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32])
-    ... )
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32])
     >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID')
     >>> print(y.shape)
     (1, 9, 258, 258, 32)
 
     With :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.random_normal(
-    ...                       mean=0, std=1, shape=[1, 3, 28, 28, 3]
-    ...                       ),
-    b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
-    >>> filters = ivy.Container(c = ivy.random_normal(
-    ...                             mean=0, std=1, shape=[3, 3, 3, 3, 6]
-    ...                             ),
-    d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
+    >>> x = ivy.Container(a=a, b=b)
+    >>> filters = ivy.Container(c=c, d=d)
     >>> y = ivy.conv3d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     [1, 6, 56, 56, 6]
@@ -1432,43 +1424,13 @@ def conv3d_transpose(
     [1, 8, 8, 8, 1]
 
 
-    With a mix of :class:`ivy.Array`, :class:`ivy.NativeArray`
-    and :class:`ivy.Container` inputs:
-
     >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
-    >>> a =  ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> b =  ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> a =  ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
+    >>> b =  ivy.array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
     >>> filters = ivy.Container(a = a, b = b)
     >>> y = ivy.conv3d_transpose(x, filters, 1, 'VALID', dilations=1)
     >>> print(y.shape)
     [1, 8, 8, 8, 1]
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-    >>> y = x.conv3d_transpose(filters, 2, 'SAME')
-    >>> print(y.shape)
-    (1, 6, 56, 56, 6)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a = ivy.random_normal(
-    ...                            mean=0, std=1, shape=[1, 3, 28, 28, 3]
-    ...                          ),
-    b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
-
-    >>> filters = ivy.Container(c = ivy.random_normal(
-    ...                                 mean=0, std=1, shape=[3, 3, 3, 3, 3]
-    ...                             ),
-    d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 3]))
-
-    >>> y = x.conv3d_transpose(filters, 2, "SAME")
-    >>> print(y.shape)
-    (1, 6, 56, 56, 3)
     """
     return current_backend(x).conv3d_transpose(
         x,
