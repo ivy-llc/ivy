@@ -256,7 +256,9 @@ class ufunc:
     def __call__(self, *args, **kwargs):
         return self.func(*args, **kwargs)
 
-    def reduce(self, *args, **kwargs):
+    def reduce(
+        array, axis=0, dtype=None, out=None, keepdims=False, initial=None, where=True
+    ):
         pass
 
     def accumulate(array, axis=0, dtype=None, out=None):
