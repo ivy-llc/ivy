@@ -385,3 +385,8 @@ def equal(x, y, name=None):
 @to_ivy_arrays_and_back
 def floor(x, name=None):
     return ivy.floor(x)
+
+
+@to_ivy_arrays_and_back
+def ceil(x, name=None):
+    return ivy.ceil(x)
