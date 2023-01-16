@@ -185,7 +185,7 @@ class Tensor:
                 "View only accepts as argument ints, tuple or list of ints or "
                 "the keyword argument size."
             )
-        return torch_frontend.ViewTensor(weakref.ref(self), size=size_tup)
+        return torch_frontend.ViewTensor(weakref.ref(self), shape=size_tup)
 
     def float(self, memory_format=None):
         cast_tensor = self.clone()
