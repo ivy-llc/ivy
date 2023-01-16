@@ -409,13 +409,16 @@ def _get_dtype_values_axis_for_count_nonzero(
         max_dim_size=10,
     ),
     keepdims=st.booleans(),
+    test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
 def test_count_nonzero(
+    *,
     dtype_values_axis,
     keepdims,
     test_flags,
     on_device,
+    fn_name,
     backend_fw,
     ground_truth_backend,
 ):
@@ -426,7 +429,7 @@ def test_count_nonzero(
         on_device=on_device,
         fw=backend_fw,
         ground_truth_backend=ground_truth_backend,
-        fn_name="count_nonzero",
+        fn_name=fn_name,
         a=a[0],
         axis=axis,
         keepdims=keepdims,
@@ -448,6 +451,7 @@ def test_count_nonzero(
         valid_axis=True,
         allow_neg_axes=False,
         min_axes_size=1,
+        force_tuple_axis=True,
         allow_nan=True,
     ),
     keep_dims=st.booleans(),
@@ -974,4 +978,32 @@ def test_xlogy(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# real
+@handle_test(
+    fn_tree="functional.ivy.experimental.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex")
+    ),
+)
+def test_real(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
     )

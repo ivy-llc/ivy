@@ -1,10 +1,12 @@
 # global
 import functools
 from typing import Callable
+import inspect
 
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
+import ivy.functional.frontends.numpy as np_frontend
 
 
 def _is_jax_frontend_array(x):
@@ -88,3 +90,41 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
+
+
+def handle_jax_dtype(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, dtype=None, **kwargs):
+        if len(args) > (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            kwargs = {
+                **dict(
+                    zip(
+                        list(inspect.signature(fn).parameters.keys())[
+                            dtype_pos + 1 : len(args)
+                        ],
+                        args[dtype_pos + 1 :],
+                    )
+                ),
+                **kwargs,
+            }
+            args = args[:dtype_pos]
+        elif len(args) == (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            args = args[:-1]
+
+        if not dtype:
+            return fn(*args, dtype=dtype, **kwargs)
+
+        dtype = np_frontend.to_ivy_dtype(dtype)
+        if not jax_frontend.config.jax_enable_x64:
+            dtype = (
+                jax_frontend.numpy.dtype_replacement_dict[dtype]
+                if dtype in jax_frontend.numpy.dtype_replacement_dict
+                else dtype
+            )
+
+        return fn(*args, dtype=dtype, **kwargs)
+
+    dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
+    return new_fn

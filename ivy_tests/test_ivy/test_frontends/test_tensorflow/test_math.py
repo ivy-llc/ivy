@@ -827,12 +827,19 @@ def test_tensorflow_reduce_variance(
 @handle_frontend_test(
     fn_tree="tensorflow.math.scalar_mul",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=st.shared(
+            helpers.get_dtypes("float", full=False),
+            key="shared_dtype",
+        ),
         min_num_dims=1,
         min_dim_size=2,
     ),
     scalar_val=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), shape=(1,)
+        available_dtypes=st.shared(
+            helpers.get_dtypes("float", full=False),
+            key="shared_dtype",
+        ),
+        shape=(1,),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.scalar_mul"
@@ -1385,4 +1392,72 @@ def test_tensorflow_equal(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# floor
+@handle_frontend_test(
+    fn_tree="tensorflow.math.floor",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_value=-20,
+        max_value=20
+    ),
+)
+def test_tensorflow_floor(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0]
+    )
+
+
+# ceil
+@handle_frontend_test(
+    fn_tree="tensorflow.math.ceil",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_value=-20,
+        max_value=20
+    ),
+)
+def test_tensorflow_ceil(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0]
     )

@@ -9,7 +9,6 @@ from .. import backend_version
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import tensorflow_probability as tfp
-from tensorflow.python.ops.numpy_ops import np_config
 
 
 def sinc(
@@ -76,7 +75,6 @@ def fmin(
     tf.dtypes.cast(x2, tf.float64)
     x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
     x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
-    tf.experimental.numpy.experimental_enable_numpy_behavior()
     ret = tf.experimental.numpy.minimum(x1, x2)
     return ret
 
@@ -141,6 +139,7 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype is None:
         return tf.math.count_nonzero(a, axis=axis, keepdims=keepdims, name=None)
@@ -153,12 +152,11 @@ def nansum(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[tf.DType] = None,
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    np_config.enable_numpy_behavior()
     return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
@@ -353,7 +351,15 @@ def imag(
     return tf.math.imag(input, name=None)
 
 
-@with_supported_dtypes({"2.11.0 and below": ("float32, float64,")}, backend_version)
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def zeta(
     x: Union[tf.Tensor, tf.Variable],
     q: Union[tf.Tensor, tf.Variable],
@@ -576,3 +582,22 @@ def xlogy(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.xlogy(x, y)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+def real(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.real(x)
+
+
+def isposinf(
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.isposinf(x)

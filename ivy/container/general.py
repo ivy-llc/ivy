@@ -50,6 +50,17 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is a native array.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = ivy.Container.static_is_native_array(x)
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
         """
         return ContainerBase.cont_multi_map_in_function(
             "is_native_array",
@@ -99,6 +110,16 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is a native array.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = x.is_native_array()
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
         """
         return self.static_is_native_array(
             self,
@@ -148,6 +169,14 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is an array.
+
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = ivy.Container.static_is_ivy_array(x)
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "is_ivy_array",
@@ -197,6 +226,14 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is an array.
+
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = x.is_ivy_array()
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
         """
         return self.static_is_ivy_array(
             self,
@@ -249,6 +286,16 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is an array.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = ivy.Container.static_is_array(x)
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "is_array",
@@ -298,6 +345,16 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, whether or not x is an array.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
+        >>> y = x.is_array()
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
         """
         return self.static_is_array(
             self,
@@ -1065,17 +1122,17 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x1.all_equal(x2, equality_matrix= False)
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
 
         >>> x1 = ivy.Container(a=ivy.array([1, 0, 1, 1]), b=ivy.array([1, -1, 0, 0]))
         >>> x2 = ivy.array([1, 0, 1, 1])
-        >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
+        >>> y = x1.all_equal(x2, equality_matrix= False)
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
 
         With multiple :class:`ivy.Container` instances:
@@ -1087,19 +1144,19 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x1.all_equal(x2, equality_matrix= False)
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
 
         >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),
         ...                    b=ivy.array([1, 2, 3]))
         >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),
         ...                    b=ivy.array([1, 2, 3]))
-        >>> y = ivy.Container.static_all_equal(x1, x2, equality_matrix= False)
+        >>> y = x1.all_equal(x2, equality_matrix= False)
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
 
         """
@@ -1169,7 +1226,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> x = ivy.Container(a = ivy.array([1,2]),
         ...                   b = ivy.array([3,4]))
         >>> y = 1.5
-        >>> z = ivy.Container.static_fourier_encode(x,y)
+        >>> z = ivy.Container.static_fourier_encode(x, y)
         >>> print(z)
         {
             a: (<classivy.array.array.Array>shape=[2,9]),
@@ -1179,7 +1236,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> x = ivy.Container(a = ivy.array([3,10]),
         ...                   b = ivy.array([4,8]))
         >>> y = 2.5
-        >>> z = ivy.Container.static_fourier_encode(x,y,num_bands=3)
+        >>> z = ivy.Container.static_fourier_encode(x, y, num_bands=3)
         >>> print(z)
         {
             a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,
@@ -1493,6 +1550,15 @@ class ContainerWithGeneral(ContainerBase):
             Whether the container has any nans, applied either leafwise or across the
             entire container.
 
+        Examples
+        --------
+        >>> x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
+        >>> y = ivy.Container.static_has_nans(x)
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "has_nans",
@@ -1526,6 +1592,17 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
             Whether the container has any nans, applied across the entire container.
+
+        Examples
+        --------
+        >>> x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
+        >>> y = x.has_nans(x)
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
         """
         return self.static_has_nans(
             self,
@@ -2328,8 +2405,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_value_is_nan(x)
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
 
         With :class:`ivy.Container` input:
@@ -2338,8 +2415,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_value_is_nan(x)
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
 
         With :class:`ivy.Container` input:
@@ -2348,8 +2425,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_value_is_nan(x, include_infs=False)
         >>> print(y)
         {
-            a: false,
-            b: false
+            a: False,
+            b: False
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -2407,24 +2484,24 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x.value_is_nan()
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
 
         >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([0]))
         >>> y = x.value_is_nan()
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
 
         >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
         >>> y = x.value_is_nan(include_infs=False)
         >>> print(y)
         {
-            a: false,
-            b: false
+            a: False,
+            b: False
         }
         """
         return self.static_value_is_nan(
@@ -2734,12 +2811,11 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            A list representation of the input array ``x``.
+            A container with list representation of the leave arrays.
 
         Examples
         --------
         With one :class:`ivy.Container` inputs:
-
 
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
         >>> y = ivy.Container.static_to_list(x)
@@ -2789,7 +2865,7 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            A list representation of the input array ``x``.
+            A container with list representation of the leave arrays.
 
         Examples
         --------
@@ -3722,6 +3798,138 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerWithGeneral.static_get_num_dims(
             self,
             as_array=as_array,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_array_equal(
+        x0: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.array_equal. This method
+        simply wraps the function, and so the docstring for ivy.array_equal
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x0
+            The first input container to compare.
+        x1
+            The second input container to compare.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+
+        Returns
+        -------
+        ret
+            A boolean container indicating whether the two containers are
+            equal at each level.
+
+        Examples
+        --------
+        >>> a = ivy.array([[0., 1.], [1. ,0.]])
+        >>> b = ivy.array([[-2., 1.], [1. ,2.]])
+        >>> c = ivy.array([[0., 1.], [1. ,0.]])
+        >>> d = ivy.array([[2., 1.], [1. ,2.]])
+        >>> a0 = ivy.Container(a = a, b = b)
+        >>> a1 = ivy.Container(a = c, b = d)
+        >>> y = ivy.Container.static_array_equal(a0, a1)
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "array_equal",
+            x0,
+            x1,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def array_equal(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.array_equal. This method
+        simply wraps the function, and so the docstring for ivy.array_equal
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The first input container to compare.
+        x
+            The second input container to compare.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+
+        Returns
+        -------
+        ret
+            A boolean container indicating whether the two containers are
+            equal at each level.
+
+        Examples
+        --------
+        >>> a = ivy.array([[0., 1.], [1. ,0.]])
+        >>> b = ivy.array([[-2., 1.], [1. ,2.]])
+        >>> c = ivy.array([[0., 1.], [1. ,0.]])
+        >>> d = ivy.array([[2., 1.], [1. ,2.]])
+        >>> a0 = ivy.Container(a = a, b = b)
+        >>> a1 = ivy.Container(a = c, b = d)
+        >>> y = a0.array_equal(a1)
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
+
+        """
+        return ContainerWithGeneral.static_array_equal(
+            self,
+            x,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

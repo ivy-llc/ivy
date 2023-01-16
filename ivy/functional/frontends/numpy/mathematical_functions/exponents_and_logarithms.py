@@ -7,9 +7,11 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -31,6 +33,7 @@ def exp(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -52,6 +55,7 @@ def expm1(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -73,6 +77,7 @@ def exp2(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -94,6 +99,7 @@ def log(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -115,6 +121,7 @@ def log10(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -136,6 +143,7 @@ def log2(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -157,6 +165,7 @@ def log1p(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -179,6 +188,7 @@ def logaddexp(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting

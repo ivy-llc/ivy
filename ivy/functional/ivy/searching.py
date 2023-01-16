@@ -29,7 +29,7 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -48,7 +48,7 @@ def argmax(
         If this is set to True, the axes which are reduced are left in the result as
         dimensions with size one. With this option, the result will broadcast correctly
         against the array.
-    output_dtype
+    dtype
         Optional data type of the output array.
     select_last_index
         If this is set to True, the index corresponding to the
@@ -100,7 +100,7 @@ def argmax(
     ivy.array([[0], [2]])
 
     >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
-    >>> y = ivy.argmax(x, axis=1, output_dtype=ivy.int64)
+    >>> y = ivy.argmax(x, axis=1, dtype=ivy.int64)
     >>> print(y, y.dtype)
     ivy.array([0, 2]) int64
 
@@ -115,7 +115,7 @@ def argmax(
         x,
         axis=axis,
         keepdims=keepdims,
-        output_dtype=output_dtype,
+        dtype=dtype,
         select_last_index=select_last_index,
         out=out,
     )

@@ -144,6 +144,7 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, list):
         axis = tuple(axis)
@@ -167,11 +168,14 @@ def count_nonzero(
     return x
 
 
+count_nonzero.support_native_out = False
+
+
 def nansum(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
@@ -392,3 +396,18 @@ def xlogy(
     x: torch.tensor, y: torch.tensor, /, *, out: Optional[torch.tensor] = None
 ) -> torch.tensor:
     return torch.xlogy(x, y, out=out)
+
+
+def real(
+    x: Union[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.real(x)
+
+
+def isposinf(
+        x: Union[torch.Tensor],
+        /,
+        *,
+        out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.isposinf(x)

@@ -4,8 +4,7 @@ import logging
 from types import FunctionType
 from typing import Callable
 import inspect
-
-# import typing
+import typing
 
 
 # for wrapping (sequence matters)
@@ -55,31 +54,36 @@ def _get_first_array(*args, **kwargs):
 def handle_array_like(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
-        args = list(args)
-        num_args = len(args)
         try:
-            type_hints = dict(inspect.signature(fn).parameters)
-        except TypeError:
+            signature = inspect.signature(fn)
+            type_hints = typing.get_type_hints(fn)
+        except (TypeError, ValueError):
             return fn(*args, **kwargs)
-        parameters = [param.name for param in type_hints.values()]
-        annotations = [param.annotation for param in type_hints.values()]
-
-        for i, (annotation, parameter, arg) in enumerate(
-            zip(annotations, parameters, args)
-        ):
-            annotation_str = str(annotation)
-            if "Array" in annotation_str and all(
-                sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
-            ):
-
-                if i < num_args:
-                    if isinstance(arg, (list, tuple)):
-                        args[i] = ivy.array(arg)
-                elif parameters in kwargs:
-                    kwarg = kwargs[parameter]
-                    if isinstance(kwarg, (list, tuple)):
-                        kwargs[parameter] = ivy.array(kwarg)
-
+        has_out = False
+        out = None
+        if "out" in kwargs:
+            out = kwargs["out"]
+            del kwargs["out"]
+            has_out = True
+        params = signature.parameters
+        for name, param in params.items():
+            if param.kind in (param.POSITIONAL_OR_KEYWORD, param.KEYWORD_ONLY):
+                annotation = type_hints.get(name)
+                if annotation is not None:
+                    annotation_str = str(annotation)
+                    if "Array" in annotation_str and all(
+                        sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
+                    ):
+                        if param.kind == param.POSITIONAL_OR_KEYWORD:
+                            if param.name in kwargs:
+                                if isinstance(kwargs[param.name], (list, tuple)):
+                                    kwargs[param.name] = ivy.array(kwargs[param.name])
+                        elif param.kind == param.KEYWORD_ONLY:
+                            if param.name in kwargs:
+                                if isinstance(kwargs[param.name], (list, tuple)):
+                                    kwargs[param.name] = ivy.array(kwargs[param.name])
+        if has_out:
+            kwargs["out"] = out
         return fn(*args, **kwargs)
 
     new_fn.handle_array_like = True
@@ -396,6 +400,13 @@ def handle_out_argument(fn: Callable) -> Callable:
         # compute return, and then handle the inplace update explicitly
 
         ret = fn(*args, **kwargs)
+        if not ivy.is_array(ret) and not ivy.is_ivy_container(ret):
+            return ivy.nested_multi_map(
+                lambda x, _: ivy.inplace_update(
+                    x[0], ivy.astype(x[1], ivy.dtype(x[0]))
+                ),
+                [out, ret],
+            )
         return ivy.inplace_update(out, ivy.astype(ret, ivy.dtype(out)))
         # return output matches the dtype of the out array to match numpy and torch
 
