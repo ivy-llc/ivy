@@ -106,6 +106,35 @@ def test_tensorflow_clip_by_value(
         clip_value_max=max,
     )
 
+# make_ndarray
+@handle_frontend_test(
+    fn_tree="tensorflow.make_ndarray",
+    input_and_ranges=_get_clip_inputs(),
+)
+def test_tensorflow_make_ndarray(
+    *,
+    input_and_ranges,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+    num_positional_args,
+):
+    x_dtype, x, min, max = input_and_ranges
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        t=x[0],
+        clip_value_min=min,
+        clip_value_max=max,
+    )
 
 # eye
 @handle_frontend_test(

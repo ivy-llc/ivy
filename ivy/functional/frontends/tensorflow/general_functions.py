@@ -266,3 +266,8 @@ def linspace(start, stop, num, name=None, axis=0):
 @to_ivy_arrays_and_back
 def realdiv(x, y, name=None):
     return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def make_ndarray(x, name=None) -> ivy.Array:
+    return ivy.array(x)
