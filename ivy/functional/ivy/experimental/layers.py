@@ -730,12 +730,8 @@ def embedding(
         len(weights.shape), 2, message="weights must be 2-d"
     )
 
-    ret_dev = "cpu" if ivy.current_backend_str() == "numpy" \
-        else ivy.as_ivy_dev(weights.device())
-
     ret = ivy.empty(indices.shape+(weights.shape[1],),
-                    dtype=ivy.as_ivy_dtype(weights.dtype),
-                    device=ret_dev)
+                    dtype=ivy.as_ivy_dtype(weights.dtype))
     if not ivy.is_ivy_array(indices):
         indices = ivy.array(indices, dtype=ivy.int32)
 

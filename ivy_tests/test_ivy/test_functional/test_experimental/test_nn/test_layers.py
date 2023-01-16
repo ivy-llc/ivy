@@ -395,7 +395,7 @@ def test_ifft(
     dtypes_indices_weights=helpers.embedding_helper(),
     max_norm=st.one_of(st.none(), st.floats(min_value=1, max_value=5)),
     number_positional_args=st.just(2),
-    test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_embedding(
     *,
@@ -407,6 +407,7 @@ def test_embedding(
     fn_name,
     ground_truth_backend,
 ):
+    # TODO: test gradients taking casre of integer indices
     dtypes, indices, weights, _ = dtypes_indices_weights
     dtypes = [dtypes[1], dtypes[0]]
 
