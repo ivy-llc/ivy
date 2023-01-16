@@ -5,7 +5,7 @@ import ivy
 # local
 from ivy.functional.frontends.torch import Tensor
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
-
+import ivy.functional.frontends.torch as torch_frontend
 
 class Database:
     def __init__(self):
@@ -20,6 +20,16 @@ class Database:
 ivy.set_numpy_backend()
 cache = Database()
 
+
+
+
+@pytest.mark.parametrize(["length","dim"], [[4,2],[27,3],[3,1]])
+def test_view_tensor_no_error(length, dim):
+    size = tuple([int(length**(1/dim))]*dim)
+    test_input = torch_frontend.arange(length)
+    _ = test_input.view(size=size)  # fails
+    _ = test_input.view(*size)
+    _ = test_input.view(size)
 
 @pytest.mark.parametrize(["test_input"], [[1], [2], [-3]])
 def test_view_tensor_add(test_input):

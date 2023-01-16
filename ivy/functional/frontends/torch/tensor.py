@@ -148,8 +148,33 @@ class Tensor:
     def atan2(self, other):
         return torch_frontend.atan2(self._ivy_array, other)
 
-    def view(self, size):
-        return torch_frontend.ViewTensor(weakref.ref(self), size=size)
+    def view(self, *args, size=None):
+        """
+        Reshape Tensor.
+
+        possible arguments are either:
+            - size
+            - tuple of ints
+            - ints
+        Parameters
+        ----------
+        args:int arguments
+        size: optional size
+
+        Returns reshaped tensor
+        -------
+        """
+        if size and not args:
+            size_tup = size
+        elif args and not size:
+            if isinstance(args[0], tuple) and len(args)==1:
+                size_tup = args[0]
+            else:
+                size_tup=args
+        else:
+            raise ValueError("View only accepts as argument ints, tuple of ints or "
+                             "the keyword argument size.")
+        return torch_frontend.ViewTensor(weakref.ref(self), size=size_tup)
 
     def float(self, memory_format=None):
         cast_tensor = self.clone()
