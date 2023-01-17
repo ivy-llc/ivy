@@ -2803,24 +2803,22 @@ def test_tensorflow_Pad(  # NOQA
         allow_neg_axes=True,
     ),
     keep_dims=st.booleans(),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
 )
 def test_tensorflow_EuclideanNorm(
     dtype_values_axis,
     keep_dims,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, values, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=0,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=values[0],
