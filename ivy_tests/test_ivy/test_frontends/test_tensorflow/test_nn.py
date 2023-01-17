@@ -1110,7 +1110,7 @@ def test_tensorflow_convolution(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_value=-20,
-        max_value=20
+        max_value=20,
     ),
 )
 def test_tensorflow_relu(
@@ -1133,7 +1133,7 @@ def test_tensorflow_relu(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        features=x[0]
+        features=x[0],
     )
 
 

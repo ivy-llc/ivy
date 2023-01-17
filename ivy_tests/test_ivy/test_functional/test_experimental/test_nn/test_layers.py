@@ -485,4 +485,5 @@ def test_embedding(
         fn_name=fn_name,
         weights=weights,
         indices=indices,
-        max_norm=max_norm,)
+        max_norm=max_norm,
+    )

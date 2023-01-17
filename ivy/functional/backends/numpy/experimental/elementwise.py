@@ -401,9 +401,9 @@ def real(x: Union[np.ndarray], /, *, out: Optional[np.ndarray] = None) -> np.nda
 
 
 def isposinf(
-        x: Union[np.ndarray],
-        /,
-        *,
-        out: Optional[np.ndarray] = None,
+    x: Union[np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.isposinf(x)
