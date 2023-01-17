@@ -252,7 +252,7 @@ def _dtype_indices_classes_axis(draw):
     classes = draw(helpers.ints(min_value=2, max_value=100))
     dtype, indices, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("integer"),
             min_value=0,
             max_value=classes - 1,
             small_abs_safety_factor=4,
@@ -267,14 +267,12 @@ def _dtype_indices_classes_axis(draw):
 @handle_frontend_test(
     fn_tree="jax.nn.one_hot",
     dtype_indices_classes_axis=_dtype_indices_classes_axis(),
-    num_classes=st.integers(min_value=4, max_value=6),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_nn_one_hot(
     *,
     dtype_indices_classes_axis,
     dtype,
-    num_classes,
     as_variable,
     num_positional_args,
     native_array,
