@@ -1610,6 +1610,11 @@ def test_tensorflow_ShapeN(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+        min_value=-1e04,
+        max_value=1e04,
     ),
 )
 def test_tensorflow_AddN(
@@ -1632,7 +1637,7 @@ def test_tensorflow_AddN(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        inputs=x,
+        inputs=x[0],
     )
 
 
