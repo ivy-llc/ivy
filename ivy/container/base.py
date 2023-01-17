@@ -1510,7 +1510,7 @@ class ContainerBase(dict, abc.ABC):
         for k, v in key_chains.items():
             if isinstance(v, dict):
                 ret_cont = self._cont_prune_key_chains_input_as_dict(v, return_cont[k])
-                if ret_cont.shape[0] == 0:
+                if ret_cont.cont_shape[0] == 0:
                     del return_cont[k]
             else:
                 del return_cont[k]
@@ -3231,7 +3231,7 @@ class ContainerBase(dict, abc.ABC):
         def to_list(x, _=""):
             try:
                 return self._cont_ivy.to_list(x)
-            except (IvyBackendException):
+            except (IvyException, IvyBackendException):
                 return x
 
         return self.cont_map(to_list)
