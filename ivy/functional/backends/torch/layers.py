@@ -133,7 +133,7 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -488,7 +488,7 @@ def conv3d_transpose(
 def conv_general_dilated(
     x: torch.Tensor,
     filters: torch.Tensor,
-    strides: Union[int, Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
@@ -496,7 +496,7 @@ def conv_general_dilated(
     data_format: str = "channel_last",
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
@@ -563,14 +563,14 @@ def conv_general_dilated(
 def conv_general_transpose(
     x: torch.Tensor,
     filters: torch.Tensor,
-    strides: Union[int, Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
     dims: int = 2,
     output_shape=None,
     data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,

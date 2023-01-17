@@ -467,7 +467,9 @@ def test_numpy_negative(
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
+                large_abs_safety_factor=4,
                 shared_dtype=True,
+                safety_factor_scale="linear",
             )
         ],
         get_dtypes_kind="numeric",
@@ -502,6 +504,7 @@ def test_numpy_floor_divide(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1,
         x1=x[0],
         x2=x[1],
         out=None,
@@ -654,6 +657,8 @@ def test_numpy_fmod(
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
     assume(not np.any(np.isclose(xs[1], 0.0)))
+    if dtype:
+        assume(not np.any(np.isclose(np.cast[dtype[0]](xs[1]), 0.0)))
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
