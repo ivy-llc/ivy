@@ -231,7 +231,9 @@ def linspace(
 
 
 def meshgrid(
-    *arrays: JaxArray, sparse: bool = False, indexing: str = "xy"
+    *arrays: JaxArray,
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[JaxArray]:
     return jnp.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 

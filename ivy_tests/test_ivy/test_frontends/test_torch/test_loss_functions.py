@@ -200,6 +200,7 @@ def test_torch_binary_cross_entropy(
     size_average=st.booleans(),
     reduce=st.booleans(),
     reduction=st.sampled_from(["mean", "none", "sum", None]),
+<<<<<<< HEAD
     dtype_and_pos_weight=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -210,6 +211,21 @@ def test_torch_binary_cross_entropy(
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
+=======
+    dtype_and_pos_weight=st.one_of(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=0,
+            max_value=10,
+            allow_inf=False,
+            exclude_min=True,
+            exclude_max=True,
+            min_num_dims=1,
+            max_num_dims=1,
+            min_dim_size=2,
+        ),
+        st.just([[None], [None]]),
+>>>>>>> 7af3a8eabb581dfba6d2f8c7cf7a95ba48fd882b
     ),
 )
 def test_torch_binary_cross_entropy_with_logits(
@@ -578,4 +594,57 @@ def test_torch_soft_margin_loss(
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
+    )
+
+
+# kl_div
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.kl_div",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+        shared_dtype=True,
+        min_value=0,
+        max_value=10,
+        min_num_dims=0,
+        max_num_dims=10,
+        min_dim_size=0,
+        max_dim_size=10,
+        num_arrays=2,
+    ),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
+    reduction=st.sampled_from(["none", "mean", "sum", "batchmean"]),
+    log_target=st.booleans(),
+)
+def test_torch_kl_div(
+    *,
+    dtype_and_inputs,
+    size_average,
+    reduce,
+    reduction,
+    log_target,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    inputs_dtype, inputs = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=inputs_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=inputs[0],
+        target=inputs[1],
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction,
+        log_target=log_target,
     )

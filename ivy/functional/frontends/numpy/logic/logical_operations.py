@@ -5,9 +5,11 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -30,6 +32,7 @@ def logical_and(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -52,6 +55,7 @@ def logical_or(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -73,6 +77,7 @@ def logical_not(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting

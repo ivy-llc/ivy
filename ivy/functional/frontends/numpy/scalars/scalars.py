@@ -185,6 +185,13 @@ class double(floating, float):
 float64 = float_ = double
 
 
+class bfloat16(generic):
+    def __init__(self, value=0):
+        ndarray.__init__(self, 0)
+        self.ivy_array = ivy.array(value, dtype="bfloat16")
+        self.dtype = "bfloat16"
+
+
 class complexfloating(inexact):
     _name = "complexfloating"
 
@@ -210,13 +217,3 @@ class cdouble(complexfloating, complex):
 
 
 complex128 = cfloat = complex_ = cdouble
-
-
-class clongdouble(complexfloating):
-    def __init__(self, value=0):
-        ndarray.__init__(self, 0)
-        self.ivy_array = ivy.array(value, dtype="complex256")
-        self.dtype = "complex256"
-
-
-complex256 = clongfloat = longcomplex = clongdouble

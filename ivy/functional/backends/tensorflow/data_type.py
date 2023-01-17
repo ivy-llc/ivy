@@ -1,5 +1,5 @@
 # global
-from typing import Union, Sequence, List
+from typing import Optional, Union, Sequence, List
 
 import numpy as np
 import tensorflow as tf
@@ -101,6 +101,7 @@ def astype(
     /,
     *,
     copy: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
@@ -129,7 +130,10 @@ def broadcast_arrays(
 
 def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if tf.rank(x) > len(shape):
         return tf.broadcast_to(tf.reshape(x, -1), shape)
@@ -176,6 +180,8 @@ def as_ivy_dtype(dtype_in: Union[tf.DType, str, bool, int, float]) -> ivy.Dtype:
         return ivy.default_int_dtype()
     if dtype_in is float:
         return ivy.default_float_dtype()
+    if dtype_in is complex:
+        return ivy.default_complex_dtype()
     if dtype_in is bool:
         return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
@@ -194,6 +200,8 @@ def as_native_dtype(dtype_in: Union[tf.DType, str, bool, int, float]) -> tf.DTyp
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
         return ivy.default_float_dtype(as_native=True)
+    if dtype_in is complex:
+        return ivy.default_complex_dtype(as_native=True)
     if dtype_in is bool:
         return tf.bool
     if not isinstance(dtype_in, str):
