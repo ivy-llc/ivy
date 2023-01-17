@@ -191,7 +191,7 @@ def conv2d_transpose(
     padding: str,
     /,
     *,
-    output_shape=None,
+    output_shape: Tuple[int] = None,
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[torch.Tensor] = None,

@@ -79,11 +79,9 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(strides, int):
-        strides = strides[0]
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)
@@ -357,8 +355,6 @@ def conv_general_transpose(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(strides, int):
-        strides = strides[0]
     if data_format == "channel_first":
         x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     if dims == 1:

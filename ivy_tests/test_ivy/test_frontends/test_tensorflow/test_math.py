@@ -1402,7 +1402,7 @@ def test_tensorflow_equal(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
         min_value=-20,
-        max_value=20
+        max_value=20,
     ),
 )
 def test_tensorflow_floor(
@@ -1425,7 +1425,7 @@ def test_tensorflow_floor(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0]
+        x=x[0],
     )
 
 
@@ -1436,7 +1436,7 @@ def test_tensorflow_floor(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
         min_value=-20,
-        max_value=20
+        max_value=20,
     ),
 )
 def test_tensorflow_ceil(
@@ -1459,7 +1459,7 @@ def test_tensorflow_ceil(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0]
+        x=x[0],
     )
 
 
@@ -1506,7 +1506,8 @@ def test_tensorflow_minimum(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         num_arrays=1,
         min_value=-20,
-        max_value=20,)
+        max_value=20,
+    ),
 )
 def test_tensorflow_sigmoid(
     *,

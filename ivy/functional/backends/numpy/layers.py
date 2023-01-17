@@ -193,7 +193,7 @@ def conv2d_transpose(
     padding: str,
     /,
     *,
-    output_shape=None,
+    output_shape: Tuple[int] = None,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
