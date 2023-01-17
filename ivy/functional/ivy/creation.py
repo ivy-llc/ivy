@@ -17,7 +17,7 @@ from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 
 # Helpers #
@@ -428,7 +428,7 @@ def ones(
 @infer_dtype
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -533,7 +533,7 @@ def full_like(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -650,7 +650,7 @@ def ones_like(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -765,7 +765,7 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -813,7 +813,7 @@ def tril(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -910,7 +910,7 @@ def empty(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1105,7 +1105,7 @@ def eye(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -1614,7 +1614,7 @@ def native_array(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
@@ -1727,7 +1727,7 @@ def one_hot(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
