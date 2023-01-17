@@ -1080,18 +1080,19 @@ def conv2d_transpose(
 
     Examples
     --------
-
     With :class:`ivy.Array` input:
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
     >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     (1, 56, 56, 6)
+
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 128, 64])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[1, 1, 64, 64])
     >>> ivy.conv2d_transpose(x, filters, 1, 'VALID', out=x)
     >>> print(x.shape)
     (1, 128, 128, 64)
+
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])
     >>> y = ivy.zeros_like(x)
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])
