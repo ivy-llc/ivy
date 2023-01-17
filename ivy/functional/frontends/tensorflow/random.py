@@ -8,7 +8,12 @@ from ivy.func_wrapper import with_unsupported_dtypes
                                               "unsigned")},
                          "tensorflow")
 @to_ivy_arrays_and_back
-def uniform(shape, minval=0., maxval=1., dtype=ivy.float32, seed=None):
+def uniform(shape,
+            minval=0,
+            maxval=None,
+            dtype=ivy.float32,
+            seed=None,
+            name=None):
     return ivy.random_uniform(shape=shape,
                               low=minval,
                               high=maxval,
