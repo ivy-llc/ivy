@@ -468,6 +468,8 @@ def test_numpy_negative(
                 available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
                 shared_dtype=True,
+                min_value= 2.0,
+                max_value= 8.0,
             )
         ],
         get_dtypes_kind="numeric",
@@ -487,9 +489,8 @@ def test_numpy_floor_divide(
 ):
 
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    assume(not np.any(np.isclose(x[1], 0)))
     if dtype:
-        assume(not np.any(np.isinf([np.cast[dtype](x[1]), np.cast[dtype](x[0])])))
+        assume(np.dtype(dtype) >= np.dtype(input_dtypes[0]))
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
