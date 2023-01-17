@@ -261,6 +261,10 @@
     <span class="c1"># --------#</span>
 
     <span class="k">def</span> <span class="nf">_fn_with_var_arg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">v_fn</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Use v_fn to extract the variables and use the extracted variables</span>
+<span class="sd">        as inputs to the call function fn of the module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
             <span class="n">with_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="o">=</span><span class="n">with_grads</span><span class="p">)</span>
             <span class="k">if</span> <span class="s2">&quot;v&quot;</span> <span class="ow">in</span> <span class="n">kw</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -322,18 +326,25 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_extract_v</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">keychain_mappings</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">orig_key_chain</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">        Extract the variables from the variables container v using the key </span>
+<span class="sd">        orig_key_chain and reinstantiate the duplicate variables that were removed by</span>
+<span class="sd">        _remove_duplicate_variables in their correct locations using </span>
+<span class="sd">        keychain_mappings. </span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        v</span>
+<span class="sd">            The variables container</span>
 <span class="sd">        keychain_mappings</span>
+<span class="sd">            The keychain mappings of duplicate vatriables</span>
 <span class="sd">        orig_key_chain</span>
+<span class="sd">            keychain of the variables to be extracted</span>
 
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret_cont</span>
+<span class="sd">            container with the extracted variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">cont_has_key_chain</span><span class="p">(</span><span class="n">orig_key_chain</span><span class="p">):</span>
             <span class="n">ret_cont</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">cont_at_key_chain</span><span class="p">(</span><span class="n">orig_key_chain</span><span class="p">)</span>
@@ -348,14 +359,16 @@
 
     <span class="k">def</span> <span class="nf">_wrap_call_methods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keychain_mappings</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Wraps the call methods of the Module object</span>
+<span class="sd">        Wraps the call methods of the Module object by looping over all the items </span>
+<span class="sd">        within the module, wrapping the __call__ methods of all submodules using</span>
+<span class="sd">        _fn_with_var_arg.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        keychain_mappings</span>
 <span class="sd">            The keychain mappings of the object</span>
 <span class="sd">        key</span>
-
+<span class="sd">            The keychain of the object obj, used for recursion.</span>
 <span class="sd">        obj</span>
 <span class="sd">            the object whose __call__ method is to be wrapped</span>
 
