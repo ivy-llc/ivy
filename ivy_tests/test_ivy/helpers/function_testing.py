@@ -676,13 +676,24 @@ def test_frontend_function(
                     *args_frontend, **kwargs_frontend
                 )
             except KeyError:
-                # catch cases where the alias belongs to a higher-level module
-                # e.g. torch.inverse tested as an alias to torch.linalg.inv
-                module_name = module_name[: module_name.rfind(".")]
-                frontend_fw = importlib.import_module(module_name)
-                frontend_ret = frontend_fw.__dict__[fn_name](
-                    *args_frontend, **kwargs_frontend
-                )
+                try:
+                    # catch cases where the alias belongs to a higher-level module
+                    # e.g. torch.inverse tested as an alias to torch.linalg.inv
+                    higher_module_name = module_name[: module_name.rfind(".")]
+                    frontend_fw = importlib.import_module(higher_module_name)
+                    frontend_ret = frontend_fw.__dict__[fn_name](
+                        *args_frontend, **kwargs_frontend
+                    )
+                except KeyError:
+                    if frontend == 'tensorflow':
+                        compat_module_name = 'tensorflow.compat.v1' + module_name[
+                                                               module_name.rfind("."):]
+                        frontend_fw = importlib.import_module(compat_module_name)
+                        frontend_ret = frontend_fw.__dict__[fn_name](
+                            *args_frontend, **kwargs_frontend
+                        )
+                    else:
+                        raise
 
             if ivy.isscalar(frontend_ret):
                 frontend_ret_np_flat = [np.asarray(frontend_ret)]
