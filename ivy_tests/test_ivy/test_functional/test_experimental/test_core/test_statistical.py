@@ -18,6 +18,9 @@ def statistical_dtype_values(draw, *, function):
     if function in ["mean", "median", "std", "var"]:
         large_abs_safety_factor = 24
         small_abs_safety_factor = 24
+    n = 1
+    if function == "histogram":
+        n = 2
     dtype, values, axis = draw(
         helpers.dtype_values_axis(
             available_dtypes=helpers.get_dtypes("float"),
@@ -30,6 +33,7 @@ def statistical_dtype_values(draw, *, function):
             valid_axis=True,
             allow_neg_axes=False,
             min_axes_size=1,
+            num_arrays=n,
         )
     )
     shape = values[0].shape
@@ -71,84 +75,63 @@ def statistical_dtype_values(draw, *, function):
         )
         return dtype, values, axis, interpolation, q
 
-    return dtype, values, axis
-
-
-# TODO: numpy does not support bfloat16
-# TODO: put this function inside statistical_dtype_values if needed
-@st.composite
-def _statistical_dtype_xs_bins_range_axis_castable(draw, n: int = 2):
-    available_dtypes = draw(helpers.get_dtypes(kind="float"))
-    if "bfloat16" in available_dtypes:
-        available_dtypes.remove("bfloat16")
-    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=2))
-    dtype, values = draw(
-        helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            num_arrays=n,
-            large_abs_safety_factor=2,
-            small_abs_safety_factor=2,
-            safety_factor_scale="log",
-            shape=shape,
-            shared_dtype=True,
+    if function == "histogram":
+        dtype, values, dtype_out = draw(
+            helpers.get_castable_dtype(draw(helpers.get_dtypes("float")), dtype[0], values)
         )
-    )
-    axis = draw(helpers.get_axis(shape=shape, force_int=True))
-    dtype1, dtype2 = draw(helpers.get_castable_dtype(available_dtypes, dtype[0]))
-    bins = draw(
-        helpers.array_values(
-            dtype=dtype1, min_value=0, shape=draw(helpers.get_shape(max_num_dims=1))
-        )
-    )
-    range = (0, 0)
-    if bins.size == 1:
-        while range[0] == range[1]:
-            range = (
-                draw(
-                    st.floats(
-                        allow_nan=False, allow_infinity=False, allow_subnormal=False
-                    )
-                ),
-                draw(
-                    st.floats(
-                        allow_nan=False, allow_infinity=False, allow_subnormal=False
-                    )
-                ),
+        bins = draw(
+            helpers.array_values(
+                dtype=dtype,
+                large_abs_safety_factor=large_abs_safety_factor,
+                small_abs_safety_factor=small_abs_safety_factor,
+                safety_factor_scale="log",
+                shape=draw(helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2)),
             )
-        range = sorted(range)
-        return dtype1, values, int(bins), range, axis, dtype2
-    else:
-        bins = sorted(bins)
-        range = None
-        return dtype1, values, bins, range, axis, dtype2
-
+        )
+        bins = sorted(set(bins))
+        if len(bins) == 1:
+            bins = int(abs(bins[0]))
+            range = (0, 10)
+        else:
+            range = None
+        return dtype, values, axis, dtype_out, bins, range
+    return dtype, values, axis
 
 @handle_test(
     fn_tree="functional.ivy.experimental.histogram",
-    private_data_generated=_statistical_dtype_xs_bins_range_axis_castable(),
+    statistical_dtype_values=statistical_dtype_values(function="histogram"),
     extend_lower_interval=st.booleans(),
     extend_upper_interval=st.booleans(),
     density=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_histogram(
     *,
-    private_data_generated,
+    statistical_dtype_values,
     extend_lower_interval,
     extend_upper_interval,
     density,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
 ):
-    input_dtype, values, bins, range, axis, castable = private_data_generated
+    input_dtype, values, axis, dtype_out, bins, range = statistical_dtype_values
     helpers.test_function(
         a=values[0],
         bins=bins,
         axis=axis,
         extend_lower_interval=extend_lower_interval,
         extend_upper_interval=extend_upper_interval,
-        dtype=castable,
+        dtype=dtype_out,
         range=range,
         weights=values[1],
         density=density,
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        ground_truth_backend=ground_truth_backend,
     )
 
 

@@ -21,7 +21,6 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@infer_dtype
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
