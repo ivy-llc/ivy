@@ -88,11 +88,11 @@ class ContainerWithCreation(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "zeros",
             shape,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
             dtype=dtype,
             device=device,
         )

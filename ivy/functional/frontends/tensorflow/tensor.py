@@ -84,7 +84,7 @@ class EagerTensor:
 
     def __array__(self, dtype=None, name="array"):
         dtype = to_ivy_dtype(dtype)
-        return array(ivy.asarray(self._ivy_array, dtype=dtype))
+        return self.ivy_array.__array__(dtype)
 
     def __bool__(self, name="bool"):
         if isinstance(self._ivy_array, int):
@@ -214,6 +214,6 @@ class EagerTensor:
         )
 
 
-# Dummy Tensor class to help with compilation
+# Dummy Tensor class to help with compilation, don't add methods here
 class Tensor(EagerTensor):
     pass
