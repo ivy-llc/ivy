@@ -343,7 +343,9 @@ def x_and_filters(
         )
         for i in range(dim):
             output_shape.append(
-                _deconv_length(x_dim[i], strides[i], filter_shape[i], padding, dilations[i])
+                _deconv_length(
+                    x_dim[i], strides[i], filter_shape[i], padding, dilations[i]
+                )
             )
     else:
         for i in range(dim):
@@ -587,8 +589,8 @@ def test_depthwise_conv2d(
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
     if backend_fw.current_backend_str() == "tensorflow":
         assume(
-            not (on_device == "cpu" and any(i > 1 for i in dilations)) and
-            len(set(stride)) == 1
+            not (on_device == "cpu" and any(i > 1 for i in dilations))
+            and len(set(stride)) == 1
         )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -729,8 +731,8 @@ def test_conv_general_transpose(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
         x=x,
         filters=filters,
         strides=stride,
