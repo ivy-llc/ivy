@@ -3443,6 +3443,7 @@ def test_torch_instance_argmin(
     method_name="argsort",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=3,
