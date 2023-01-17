@@ -843,7 +843,6 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
 @handle_nestable
 @outputs_to_ivy_arrays
 @handle_exceptions
-@handle_array_like_without_promotion
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -930,7 +929,6 @@ def clip_vector_norm(
 
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -2067,7 +2065,6 @@ def stable_divide(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def stable_pow(
     base: Union[Number, ivy.Array, ivy.NativeArray],
     exponent: Union[Number, ivy.Array, ivy.NativeArray],

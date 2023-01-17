@@ -1105,7 +1105,6 @@ def eye(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
