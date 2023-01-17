@@ -41,7 +41,7 @@ def histogram(
         )
         if dtype:
             histogram_values = histogram_values.astype(dtype)
-            bins = bins.astype(dtype)
+            bins = np.ndarray(bins).astype(dtype)
         return histogram_values, bins
     else:
         ret = np.histogram(
