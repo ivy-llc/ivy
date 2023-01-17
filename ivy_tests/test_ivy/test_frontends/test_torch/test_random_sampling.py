@@ -139,31 +139,34 @@ def test_torch_poisson(
         min_dim_size=0,
         max_dim_size=10,
     ),
-    # seed=helpers.ints(min_value=0, max_value=100),
 )
 def test_torch_rand(
     *,
     dtype,
     size,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
     fn_tree,
-
+    test_flags
 ):
+
     def call():
         return helpers.test_frontend_function(
             input_dtypes=dtype,
-            as_variable_flags=as_variable,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            with_out=with_out,
             frontend=frontend,
             test_values=False,
             fn_tree=fn_tree,
+            test_flags=test_flags,
             size=size
         )
 
     ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
