@@ -300,19 +300,41 @@ def _get_dtype_value1_value2_cov(
             )
         )
 
+    value1, value2 = values[0], values[1]
+
     # modifiers: rowVar, bias, ddof
     rowVar = draw(st.booleans())
     bias = draw(st.booleans())
     ddof = draw(helpers.ints(min_value=0, max_value=1))
-    # mods = [draw(helpers.ints(min_value=0, max_value=1)) for _ in range(3)]
-    # dims = len([item for sublist in values for item in sublist])
 
-    # fweights = [draw(helpers.ints(min_value=1, max_value=10)) for _ in range(dims)]
-    # aweights = [draw(helpers.floats(min_value=1, max_value=10)) for _ in range(dims)]
+    numVals = None
+    if rowVar is False:
+        numVals = -1 if numVals == 0 else 0
+    else:
+        numVals = 0 if len(shape) == 1 else -1
 
-    fweights = None
-    aweights = None
-    value1, value2 = values[0], values[1]
+    fweights = draw(
+        helpers.array_values(
+            dtype="int64",
+            shape=shape[numVals],
+            abs_smallest_val=1,
+            min_value=1,
+            max_value=10,
+            allow_inf=False,
+        )
+    )
+
+    aweights = draw(
+        helpers.array_values(
+            dtype="float64",
+            shape=shape[numVals],
+            abs_smallest_val=1,
+            min_value=1,
+            max_value=10,
+            allow_inf=False,
+            small_abs_safety_factor=1,
+        )
+    )
 
     return [dtype], value1, value2, rowVar, bias, ddof, fweights, aweights
 
@@ -1328,7 +1350,7 @@ def test_cholesky(
 @handle_test(
     fn_tree="functional.ivy.cov",
     dtype_x1_x2_cov=_get_dtype_value1_value2_cov(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=2,
         min_dim_size=2,

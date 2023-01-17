@@ -45,7 +45,12 @@ def cov(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.cov(
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+
+    fweights = fweights.astype(np.int64) if fweights is not None else None
+    aweights = aweights.astype(np.float64) if aweights is not None else None
+
+    out = np.cov(
         m=x1,
         y=x2,
         rowvar=rowVar,
@@ -55,6 +60,7 @@ def cov(
         aweights=aweights,
         dtype=dtype,
     )
+    return out
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)

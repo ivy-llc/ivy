@@ -89,8 +89,10 @@ def cov(
 
     w = None
     if fweights is not None:
-        fweights = tf.cast(fweights, dtype=dtype)
+        fweights = tf.cast(fweights, dtype=tf.float64)
 
+        if not tf.reduce_all(fweights == tf.round(fweights)):
+            raise TypeError("fweights must be integer")
         if len(tf.shape(fweights)) > 1:
             raise RuntimeError("fweights must be 1 dimensional")
         if fweights.shape[0] != X.shape[1]:
@@ -101,7 +103,7 @@ def cov(
         w = fweights
 
     if aweights is not None:
-        aweights = tf.cast(aweights, dtype=dtype)
+        aweights = tf.cast(aweights, dtype=tf.float64)
 
         if len(tf.shape(aweights)) > 1:
             raise RuntimeError("aweights must be 1 dimensional")
@@ -113,7 +115,7 @@ def cov(
         if w is None:
             w = aweights
         else:
-            w *= aweights
+            w = w * aweights
 
     avg, w_sum = tf.experimental.numpy.average(X, axis=1, weights=w, returned=True)
     w_sum = w_sum[0]
@@ -134,12 +136,11 @@ def cov(
     if w is None:
         X_T = tf.transpose(X)
     else:
-        X_T = tf.transpose(tf.math.multiply(X, w))
+        X_T = tf.transpose(X * w)
 
-    fact = tf.cast(fact, tf.as_dtype(dtype))
-    c = tf.matmul(X, tf.math.conj(X_T)) / fact
-
-    return c
+    c = tf.matmul(X, tf.math.conj(X_T))
+    out = tf.math.truediv(c, fact)
+    return out
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
