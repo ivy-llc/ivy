@@ -63,6 +63,8 @@ def cov(
     # cast to correct dtypes, backends change inputs to float instead of int
     if fweights is not None:
         fweights = jnp.asarray(fweights, dtype=jnp.int64)
+    if aweights is not None:
+        aweights = jnp.asarray(aweights, dtype=jnp.float64)
 
     out = jnp.cov(
         m=x1,

@@ -47,8 +47,10 @@ def cov(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
 
-    fweights = fweights.astype(np.int64) if fweights is not None else None
-    aweights = aweights.astype(np.float64) if aweights is not None else None
+    if fweights is not None:
+        fweights = fweights.astype(np.int64)
+    if aweights is not None:
+        aweights = aweights.astype(np.float64)
 
     out = np.cov(
         m=x1,

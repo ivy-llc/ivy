@@ -138,6 +138,7 @@ def cov(
     else:
         X_T = tf.transpose(X * w)
 
+    fact = tf.cast(fact, tf.as_dtype(dtype))
     c = tf.matmul(X, tf.math.conj(X_T))
     out = tf.math.truediv(c, fact)
     return out
