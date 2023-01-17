@@ -688,11 +688,12 @@ class ContainerBase(dict, abc.ABC):
         return_dict = dict()
 
         for key in keys:
-            values = [
-                cont[key]
-                for cont in containers
-                if isinstance(cont, ivy.Container) and key in cont
-            ]
+            values = []
+            for cont in containers:
+                if isinstance(cont, (ivy.Container, list, tuple)) and key in cont:
+                    values.append(cont[key])
+                elif not isinstance(cont, (ivy.Container, list, tuple)):
+                    values.append(cont)
             value0 = values[0]
             if len(values) > 1:
                 this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
