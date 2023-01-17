@@ -250,6 +250,7 @@ def local_response_normalization(
     return ivy.permute_dims(div, [0, 2, 3, 1])
 
 
+@to_ivy_arrays_and_back
 def conv_transpose(
     input,
     filters,
