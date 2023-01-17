@@ -99,4 +99,3 @@ def test_numpy_vander(
         N=N,
         increasing=increasing,
     )
-
