@@ -488,8 +488,10 @@ def test_numpy_floor_divide(
 
     input_dtypes, x, casting, dtype = dtypes_values_casting
     assume(not np.any(np.isclose(x[1], 0)))
+    assume(not np.any(np.isinf([x[1], x[0]])))
     if dtype:
         assume(not np.any(np.isclose(np.cast[dtype](x[1]), 0)))
+        assume(not np.any(np.isinf([np.cast[dtype](x[1]), np.cast[dtype](x[0])])))
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
