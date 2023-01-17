@@ -487,8 +487,12 @@ def test_numpy_floor_divide(
     fn_tree,
     on_device,
 ):
+
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    assume(not np.any(np.isclose(x[1], 0)))
+    assume(not np.any(np.isclose(x[1], 0, rtol=1e-1, atol=1e-1)))
+    assume(not np.any(np.isclose(x[0], 0, rtol=1e-1, atol=1e-1)))
+    if dtype:
+        assume(np.dtype(dtype) >= np.dtype(input_dtypes[0]))
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -504,7 +508,6 @@ def test_numpy_floor_divide(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1,
         x1=x[0],
         x2=x[1],
         out=None,
@@ -513,8 +516,9 @@ def test_numpy_floor_divide(
         order="K",
         dtype=dtype,
         subok=True,
-    )
-
+        atol=1e-2,
+        rtol=1e-2,
+     )
 
 # mod
 @handle_frontend_test(
