@@ -86,7 +86,7 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_array_like = True
+    new_fn.handle_array_like_without_promotion = True
     return new_fn
 
 
