@@ -3,7 +3,7 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-
+import numpy as np
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _diag_helper
 
@@ -64,3 +64,39 @@ def test_numpy_diag(
         v=x[0],
         k=k,
     )
+
+
+# vander
+@handle_frontend_test(
+    fn_tree="numpy.vander",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.tuples(
+            st.integers(min_value=1, max_value=5),
+        ),
+    ),
+    N=st.integers(min_value=0, max_value=5),
+    increasing=st.booleans(),
+)
+def test_numpy_vander(
+    *,
+    dtype_and_x,
+    N,
+    increasing,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        N=N,
+        increasing=increasing,
+    )
+
