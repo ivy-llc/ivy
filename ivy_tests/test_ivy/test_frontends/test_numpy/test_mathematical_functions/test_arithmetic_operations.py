@@ -460,7 +460,8 @@ def test_numpy_floor_divide(
         subok=True,
         atol=1e-2,
         rtol=1e-2,
-     )
+    )
+
 
 # mod
 @handle_frontend_test(
