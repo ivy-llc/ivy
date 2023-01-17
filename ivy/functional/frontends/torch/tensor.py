@@ -526,6 +526,9 @@ class Tensor:
         self._ivy_array = self.acosh().ivy_array
         return self
 
+    def numpy(self):
+        return ivy.to_numpy(self._ivy_array)
+
     # Special Methods #
     # -------------------#
 
