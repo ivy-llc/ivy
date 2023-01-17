@@ -483,7 +483,7 @@ Sigmoid = to_ivy_arrays_and_back(
 
 
 @to_ivy_arrays_and_back
-def Softplus(features, name="Softplus"):
+def Softplus(*, features, name="Softplus"):
     return ivy.softplus(features)
 
 
@@ -515,3 +515,6 @@ def EuclideanNorm(*, input, axis, keep_dims=False, name="EuclideanNorm"):
     return ivy.astype(
         ivy.vector_norm(input, axis=axis, keepdims=keep_dims), input.dtype
     )
+
+
+ConcatV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.concat))
