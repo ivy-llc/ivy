@@ -242,7 +242,7 @@ Duplicates are also handled correctly, if for example a layer is stored both as 
             x = ivy.relu(self.linear[0](x))
             x = ivy.relu(self.linear[1](x))
             x = ivy.relu(self.linear[2](x))
-            return ivy.sigmoid(self.linear[3](x))
+            return ivy.sigmoid(self.linear3(x))
 
     fc = FC()
     print(fc.v)

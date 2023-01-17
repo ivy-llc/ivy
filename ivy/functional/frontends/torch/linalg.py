@@ -94,6 +94,11 @@ def cross(input, other, *, dim=None, out=None):
 
 
 @to_ivy_arrays_and_back
+def vecdot(x1, x2, *, dim=-1, out=None):
+    return ivy.vecdot(x1, x2, axis=dim, out=out)
+
+
+@to_ivy_arrays_and_back
 def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
     # TODO: add handling for hermitian once complex numbers are supported
     return ivy.astype(ivy.matrix_rank(input, atol=atol, rtol=rtol, out=out), ivy.int64)
@@ -131,6 +136,37 @@ def inv_ex(input, *, check_errors=False, out=None):
             return inputInv, info
 
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def tensorinv(input, ind=2, *, out=None):
+    not_invertible = "Reshaped tensor is not invertible"
+    prod_cond = "Tensor shape must satisfy prod(A.shape[:ind]) == prod(A.shape[ind:])"
+    positive_ind_cond = "Expected a strictly positive integer for 'ind'"
+    input_shape = ivy.shape(input)
+    assert ind > 0, f"{positive_ind_cond}"
+    shape_ind_end = input_shape[:ind]
+    shape_ind_start = input_shape[ind:]
+    prod_ind_end = 1
+    prod_ind_start = 1
+    for i in shape_ind_start:
+        prod_ind_start *= i
+    for j in shape_ind_end:
+        prod_ind_end *= j
+    assert prod_ind_end == prod_ind_start, f"{prod_cond}."
+    inverse_shape = shape_ind_start + shape_ind_end
+    input = ivy.reshape(input, shape=(prod_ind_end, -1))
+    inverse_shape_tuple = tuple([*inverse_shape])
+    assert inv_ex(input, check_errors=True), f"{not_invertible}."
+    inverse_tensor = ivy.inv(input)
+    return ivy.reshape(inverse_tensor, shape=inverse_shape_tuple, out=out)
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def eig(input, *, out=None):
     return ivy.eig(input, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def solve(input, other, *, out=None):
+    return ivy.solve(input, other, out=out)

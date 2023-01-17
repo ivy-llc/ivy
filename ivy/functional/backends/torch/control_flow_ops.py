@@ -1,5 +1,3 @@
-import torch
-
 # def if_exp(cond, if_true, if_false):
 #   return if_true() if cond else if_false()
 

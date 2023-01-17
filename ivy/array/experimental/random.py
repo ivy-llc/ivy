@@ -170,10 +170,8 @@ class ArrayWithRandomExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ):
         """
-
         Parameters
         ----------
-
         self
             Input Array of rate paramter(s). It must have a shape that is broadcastable
             to the requested shape

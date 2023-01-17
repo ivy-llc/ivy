@@ -128,6 +128,11 @@ def deg2rad(x):
 
 
 @to_ivy_arrays_and_back
+def radians(x):
+    return ivy.deg2rad(x)
+
+
+@to_ivy_arrays_and_back
 def exp2(x):
     return ivy.exp2(x)
 
@@ -255,6 +260,17 @@ def fmax(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     ret = ivy.where(
         ivy.bitwise_or(ivy.greater(x1, x2), ivy.isnan(x2)),
+        x1,
+        x2,
+    )
+    return ret
+
+
+@to_ivy_arrays_and_back
+def fmin(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    ret = ivy.where(
+        ivy.bitwise_or(ivy.less(x1, x2), ivy.isnan(x2)),
         x1,
         x2,
     )

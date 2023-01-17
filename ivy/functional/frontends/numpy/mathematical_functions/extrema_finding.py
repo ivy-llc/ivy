@@ -5,9 +5,11 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -30,6 +32,7 @@ def minimum(
     return ret
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def amin(
@@ -70,6 +73,7 @@ def amin(
     return res
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def amax(
@@ -110,6 +114,7 @@ def amax(
     return res
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def nanmin(
@@ -145,11 +150,21 @@ def nanmin(
         else:
             a = ivy.concat([a, header], axis=0)
     res = ivy.min(a, axis=axis, keepdims=keepdims, out=out)
+    if nan_mask is not None:
+        nan_mask = ivy.all(nan_mask, axis=axis, keepdims=keepdims, out=out)
+        if ivy.any(nan_mask):
+            res = ivy.where(
+                ivy.logical_not(nan_mask),
+                res,
+                initial if initial is not None else ivy.nan,
+                out=out,
+            )
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
     return res
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -172,6 +187,7 @@ def maximum(
     return ret
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def nanmax(
@@ -183,7 +199,7 @@ def nanmax(
     where=True,
 ):
     nan_mask = ivy.isnan(a)
-    a = ivy.where(ivy.logical_not(nan_mask), a, a.full_like(+ivy.inf))
+    a = ivy.where(ivy.logical_not(nan_mask), a, a.full_like(-ivy.inf))
     where_mask = None
     if initial is not None:
         if ivy.is_array(where):
@@ -207,6 +223,15 @@ def nanmax(
         else:
             a = ivy.concat([a, header], axis=0)
     res = ivy.max(a, axis=axis, keepdims=keepdims, out=out)
+    if nan_mask is not None:
+        nan_mask = ivy.all(nan_mask, axis=axis, keepdims=keepdims, out=out)
+        if ivy.any(nan_mask):
+            res = ivy.where(
+                ivy.logical_not(nan_mask),
+                res,
+                initial if initial is not None else ivy.nan,
+                out=out,
+            )
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
     return res

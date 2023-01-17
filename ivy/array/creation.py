@@ -288,7 +288,7 @@ class ArrayWithCreation(abc.ABC):
         self: ivy.Array,
         /,
         *arrays: Union[ivy.Array, ivy.NativeArray],
-        sparse=False,
+        sparse: bool = False,
         indexing: str = "xy",
     ) -> List[ivy.Array]:
         """
@@ -317,7 +317,7 @@ class ArrayWithCreation(abc.ABC):
             one-dimensional arrays having lengths ``Ni = len(xi)``.
 
         """
-        return ivy.meshgrid(*tuple([self] + arrays), sparse, indexing=indexing)
+        return ivy.meshgrid(*tuple([self] + arrays), sparse=sparse, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,
@@ -445,6 +445,28 @@ class ArrayWithCreation(abc.ABC):
             Tensor of zeros with the same shape and type as a, unless dtype provided
             which overrides.
 
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([3, 1])
+        >>> y = 5
+        >>> z = x.one_hot(5)
+        >>> print(z)
+        ivy.array([[0., 0., 0., 1., 0.],
+        ...    [0., 1., 0., 0., 0.]])
+
+        >>> x = ivy.array([0])
+        >>> y = 5
+        >>> ivy.one_hot(x, y)
+        ivy.array([[1., 0., 0., 0., 0.]])
+
+        >>> x = ivy.array([0])
+        >>> y = 5
+        >>> ivy.one_hot(x, 5, out=z)
+        ivy.array([[1., 0., 0., 0., 0.]])
+        >>> print(z)
+        ivy.array([[1., 0., 0., 0., 0.]])
         """
         return ivy.one_hot(
             self,

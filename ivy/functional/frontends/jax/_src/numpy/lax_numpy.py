@@ -51,7 +51,7 @@ class _IndexUpdateRef:
 
     def set(self, values, indices_are_sorted=False, unique_indices=False, mode=None):
         ret = ivy.copy_array(self.array)  # break inplace op
-        if hasattr(values, 'ivy_array'):
+        if hasattr(values, "ivy_array"):
             ret[self.index] = values.ivy_array
         else:
             ret[self.index] = values
