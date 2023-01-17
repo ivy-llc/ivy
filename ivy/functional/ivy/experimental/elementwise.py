@@ -461,7 +461,7 @@ def count_nonzero(
         optional output dtype. Default is of type integer.
     out
         optional output array, for writing the result to.
-    
+
     Returns
     -------
     ret
@@ -640,84 +640,6 @@ def isclose(
     return ivy.current_backend().isclose(
         a, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
     )
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def isposinf(
-    x: Union[ivy.Array, float, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Test element-wise for positive infinity, return result as bool array.
-
-    Parameters
-    ----------
-    x
-        Array-like input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Returns a boolean array with values True where
-        the corresponding element of the input is positive
-        infinity and values False where the element of the
-        input is not positive infinity.
-
-    Examples
-    --------
-    >>> x = ivy.array([1, 2, ivy.inf])
-    >>> ivy.isposinf(x)
-    ivy.array([False, False,  True])
-    >>> x = [5, -ivy.inf, ivy.inf]
-    >>> ivy.isposinf(x)
-    ivy.array([False, False,  True])
-    """
-    return ivy.current_backend().isposinf(x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def isneginf(
-    x: Union[ivy.Array, float, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Test element-wise for negative infinity, return result as bool array.
-
-    Parameters
-    ----------
-    x
-        Array-like input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Returns a boolean array with values True where
-        the corresponding element of the input is negative
-        infinity and values False where the element of the
-        input is not negative infinity.
-
-    Examples
-    --------
-    >>> x = ivy.array([1, 2, -ivy.inf])
-    >>> ivy.isneginf(x)
-    ivy.array([False, False,  True])
-    >>> x = [5, -ivy.inf, ivy.inf]
-    >>> ivy.isneginf(x)
-    ivy.array([False, True,  False])
-    """
-    return ivy.current_backend().isneginf(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -1129,14 +1051,15 @@ def zeta(
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
-    Compute the Hurwitz zeta function.
+    Compute the Hurwitz zeta function elementwisely with each pair
+    of floats in two arrays.
 
     Parameters
     ----------
     x
         First input array.
     q
-        Second input array.
+        Second input array, must have the same shape as the first input array
     out
         Alternate output array in which to place the result.
         The default is None.
@@ -1150,7 +1073,7 @@ def zeta(
     Examples
     --------
     >>> x = ivy.array([5.0, 3.0])
-    >>> q = ivy.array([2.0])
+    >>> q = ivy.array([2.0, 2.0])
     >>> ivy.zeta(x, q)
     ivy.array([0.0369, 0.2021])
     """
