@@ -1646,7 +1646,7 @@
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">key_chains</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">ret_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_prune_key_chains_input_as_dict</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
-                <span class="k">if</span> <span class="n">ret_cont</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ret_cont</span><span class="o">.</span><span class="n">cont_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">del</span> <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">del</span> <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
