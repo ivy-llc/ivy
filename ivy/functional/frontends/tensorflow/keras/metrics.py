@@ -148,7 +148,7 @@ def binary_crossentropy(
         bce = y_true * ivy.log(y_pred + epsilon_)
         bce += (1 - y_true) * ivy.log(1 - y_pred + epsilon_)
         bce = -bce
-    return ivy.mean(bce,axis=-1).astype(y_pred.dtype)
+    return ivy.mean(bce, axis=-1).astype(y_pred.dtype)
 
 
 @to_ivy_arrays_and_back
