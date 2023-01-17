@@ -72,7 +72,7 @@ class Array(
     ArrayWithStatisticalExperimental,
     ArrayWithUtilityExperimental,
 ):
-    def __init__(self, data):
+    def __init__(self, data, dynamic_backend=None):
         ArrayWithActivations.__init__(self)
         ArrayWithCreation.__init__(self)
         ArrayWithDataTypes.__init__(self)
@@ -112,9 +112,9 @@ class Array(
         ArrayWithSortingExperimental.__init__(self),
         ArrayWithStatisticalExperimental.__init__(self),
         ArrayWithUtilityExperimental.__init__(self),
-        self._init(data)
+        self._init(data, dynamic_backend)
 
-    def _init(self, data):
+    def _init(self, data, dynamic_backend=None):
         if ivy.is_ivy_array(data):
             self._data = data.data
         else:
@@ -135,9 +135,21 @@ class Array(
         else:
             self._post_repr = ")"
         self.backend = ivy.current_backend_str()
+        if dynamic_backend is not None:
+            self._dynamic_backend = dynamic_backend
+        else:
+            self._dynamic_backend = ivy.get_dynamic_backend()
 
     # Properties #
     # ---------- #
+
+    @property
+    def dynamic_backend(self):
+        return self._dynamic_backend
+
+    @dynamic_backend.setter
+    def dynamic_backend(self, value):
+        self._dynamic_backend = value
 
     @property
     def data(self) -> ivy.NativeArray:

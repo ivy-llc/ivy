@@ -1,9 +1,15 @@
 # global
+import torch.nn
+
 import ivy
 import importlib
 import numpy as np
 from ivy import verbosity
 from typing import Optional
+import gc
+import tensorflow as tf
+import jax
+import torch
 
 # local
 from ivy.func_wrapper import _wrap_function
@@ -268,12 +274,56 @@ def set_backend(backend: str):
         ivy.__dict__[k] = _wrap_function(
             key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
         )
-
+    # update data of all dynamic backend ivy.Array and ivy.Container instances in the project scope
+    for obj in gc.get_objects():
+        if isinstance(obj, ivy.Array):
+            if obj.dynamic_backend or (obj.dynamic_backend is None and ivy.get_dynamic_backend()):
+                obj._data = backend_conversion(obj._data, backend)
+        if isinstance(obj, ivy.Container):
+            if obj.dynamic_backend or (obj.dynamic_backend is None and ivy.get_dynamic_backend()):
+                new_vars = ivy.Container(obj.cont_multi_map_in_function(stateful_backend_conversion,obj, backend ))
+                obj.cont_inplace_update(new_vars)
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
 
+def stateful_backend_conversion(stateful_tensor, backend):
+    data_np = stateful_to_numpy(stateful_tensor)
+    if backend.current_backend_str() == "numpy":
+        return data_np
+    elif backend.current_backend_str() == "torch":
+        return backend.torch.nn.Parameter(backend.torch.tensor(data_np))
+    elif backend.current_backend_str() == "jax":
+        return backend.jax.numpy.array(data_np)
+    elif backend.current_backend_str() == "tensorflow":
+        return backend.tf.Variable(data_np)
+    else:
+        raise ValueError(f"Unsupported backend {backend}")
+def stateful_to_numpy(stateful_tensor):
+    if isinstance(stateful_tensor, np.ndarray):
+        return stateful_tensor
+    elif isinstance(stateful_tensor, torch.nn.Parameter):
+        return stateful_tensor.detach().cpu().numpy()
+    elif isinstance(stateful_tensor, tf.Variable):
+        return stateful_tensor.numpy()
+    elif isinstance(stateful_tensor, jax.interpreters.xla.DeviceArray):
+        return np.array(stateful_tensor)
+    else:
+        raise ValueError("Invalid stateful tensor")
+def backend_conversion(data, backend):
+    """Convert data to a specific backend format using numpy as intermediary"""
 
+    data_np = np.array(data)
+    if ivy.current_backend_str() == "numpy":
+        return data_np
+    elif ivy.current_backend_str() == "torch":
+        return backend.torch.from_numpy(data_np)
+    elif ivy.current_backend_str() == "jax":
+        return backend.jax.numpy.array(data_np)
+    elif ivy.current_backend_str() == "tensorflow":
+        return backend.tf.convert_to_tensor(data_np)
+    else:
+        raise ValueError(f"Unsupported backend {backend}")
 def set_numpy_backend():
     """Sets NumPy to be the global backend. equivalent to `ivy.set_backend("numpy")`."""
     set_backend("numpy")

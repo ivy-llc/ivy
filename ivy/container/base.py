@@ -46,7 +46,6 @@ def _repr(x):
     except TypeError:
         return str(x)
 
-
 # noinspection PyMissingConstructor
 class ContainerBase(dict, abc.ABC):
     def __init__(
@@ -66,6 +65,7 @@ class ContainerBase(dict, abc.ABC):
         rebuild_child_containers=False,
         types_to_iteratively_nest=None,
         alphabetical_keys=True,
+        dynamic_backend=None,
         **kwargs,
     ):
         """Initialize container object from input dict representation.
@@ -130,6 +130,10 @@ class ContainerBase(dict, abc.ABC):
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
             self._queue_timeout = ivy.default(queue_timeout, ivy.get_queue_timeout())
+        if dynamic_backend is not None:
+            self._dynamic_backend = dynamic_backend
+        else:
+            self._dynamic_backend = ivy.get_dynamic_backend()
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -157,7 +161,6 @@ class ContainerBase(dict, abc.ABC):
 
     # Class Methods #
     # --------------#
-
     @staticmethod
     def cont_multi_map_in_function(
         fn,
@@ -1574,7 +1577,7 @@ class ContainerBase(dict, abc.ABC):
         self._config = new_config
 
     def cont_inplace_update(
-        self, dict_in: Union[ivy.Container, dict], **config
+        self, dict_in: Union[ivy.Container, dict],**config
     ) -> ivy.Container:
         """Update the contents of this container inplace, using either a new dict or
         container.
@@ -1586,7 +1589,7 @@ class ContainerBase(dict, abc.ABC):
         **config
 
         """
-        # update config
+        # # update config
         self.cont_update_config(**config)
 
         # update container values inplace
@@ -4132,3 +4135,12 @@ class ContainerBase(dict, abc.ABC):
         if not kcs:
             return 0
         return max([len(kc.split("/")) for kc in kcs])
+
+    @property
+    def dynamic_backend(self):
+        return self._dynamic_backend
+
+    @dynamic_backend.setter
+    def dynamic_backend(self, value):
+        self._dynamic_backend = value
+

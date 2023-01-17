@@ -34,6 +34,7 @@ class Module(ModuleConverters, ModuleHelpers):
         with_partial_v=False,
         devices=None,
         dtype=None,
+        dynamic_backend=None,
         **kwargs,
     ):
         """
@@ -119,7 +120,7 @@ class Module(ModuleConverters, ModuleHelpers):
         self._kwargs = kwargs
         if build_mode != "on_init":
             return
-        self.build(*args, **kwargs)
+        self.build(*args, dynamic_backend= dynamic_backend, **kwargs)
 
     # Private #
     # --------#
@@ -511,7 +512,7 @@ class Module(ModuleConverters, ModuleHelpers):
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.cont_to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
+    def build(self, *args, from_call=False, device=None, dtype=None, dynamic_backend=None, **kwargs):
         """
         Build the internal layers and variables for this module.
 
@@ -547,7 +548,7 @@ class Module(ModuleConverters, ModuleHelpers):
 
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
-        created = Container(self._create_variables(device=self._dev, dtype=dtype))
+        created = Container(self._create_variables(device=self._dev, dtype=dtype), dynamic_backend=dynamic_backend)
         created_n_found = Container(dict(**self._find_variables(obj=self), **created))
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
