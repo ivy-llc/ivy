@@ -363,3 +363,8 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
 @to_ivy_arrays_and_back
 def fix(x, out=None):
     return ivy.fix(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def real(val, /):
+    return ivy.real(val)
