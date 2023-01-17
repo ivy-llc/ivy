@@ -337,9 +337,9 @@ def test_dropout1d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.separable_conv2d",
+    fn_tree="functional.ivy.experimental.separable_conv2d",
     ground_truth_backend="jax",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=2, max_dims=2, min_side=1, max_side=4),
 )
 def test_separable_conv2d(
     *,
@@ -349,7 +349,7 @@ def test_separable_conv2d(
     fn_name,
     ground_truth_backend,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, stride, pad = x_k_s_p
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -359,7 +359,6 @@ def test_separable_conv2d(
         rtol_=1e-2,
         atol_=1e-2,
         x=x[0],
-        kernel=kernel,
         strides=stride,
         padding=pad,
     )
