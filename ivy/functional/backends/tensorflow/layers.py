@@ -82,8 +82,6 @@ def conv2d(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(strides, int):
-        strides = strides[0]
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)
