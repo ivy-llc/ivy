@@ -1,7 +1,14 @@
+# global
 import math
 from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
-from ivy.func_wrapper import with_unsupported_dtypes
+
+# local
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    to_native_arrays_and_back,
+    handle_nestable,
+)
 from .. import backend_version
 import ivy
 
@@ -319,17 +326,32 @@ def embedding(
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
 
 
+@to_native_arrays_and_back
+@handle_nestable
 def interpolate(
     x: Union[tf.Tensor, tf.Variable],
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[Literal["linear", "bilinear"]] = "linear",
+    mode: Union[Literal["linear", "bilinear", "trilinear"]] = "linear",
     align_corners: Optional[bool] = True,
     antialias: Optional[bool] = False,
 ):
     if align_corners:
-        return ivy.interpolate(
+        return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
-    return tf.image.resize(x, size, method=mode, antialias=antialias)
+    elif mode == "linear":
+        x = tf.transpose(x, (0, 2, 1))
+        return tf.transpose(
+            tf.image.resize(
+                x, size=[x.shape[0], size], method="bilinear", antialias=antialias
+            ),
+            (0, 2, 1),
+        )
+    elif mode == "bilinear":
+        x = tf.transpose(x, (0, 2, 3, 1))
+        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 3, 1, 2))
+    elif mode == "trilinear":
+        x = tf.transpose(x, (0, 2, 3, 4, 1))
+        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 4, 1, 2, 3))

@@ -382,8 +382,26 @@ def interpolate(
     align_corners: Optional[bool] = True.real,
     antialias: Optional[bool] = False,
 ):
+    # keeping the batch and channel dimension same
+    size = [*x.shape[0:1], *size]
     if align_corners:
         return ivy.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
-    return jax.image.resize(x, size, method=mode, antialias=antialias)
+    elif mode == "linear":
+        x = jnp.transpose(x, (0, 2, 1))
+        return jnp.transpose(
+            jax.image.resize(x, shape=size, method=mode, antialias=antialias), (0, 2, 1)
+        )
+    elif mode == "bilinear":
+        x = jnp.transpose(x, (0, 2, 3, 1))
+        return jnp.transpose(
+            jax.image.resize(x, shape=size, method=mode, antialias=antialias),
+            (0, 3, 1, 2),
+        )
+    elif mode == "trilinear":
+        x = jnp.transpose(x, (0, 2, 3, 4, 1))
+        return jnp.transpose(
+            jax.image.resize(x, shape=size, method=mode, antialias=antialias),
+            (0, 4, 1, 2, 3),
+        )

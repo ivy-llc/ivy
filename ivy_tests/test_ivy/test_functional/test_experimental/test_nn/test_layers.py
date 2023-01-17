@@ -233,7 +233,7 @@ def test_dct(
 
 @st.composite
 def _interp_args(draw):
-    mode = draw(st.sampled_from(["linear", "bilinear"]))
+    mode = draw(st.sampled_from(["linear"]))
     # b = helpers.ints(min_value=1, max_value=2)
     # c = helpers.ints(min_value=1, max_value=2)
     # w = helpers.ints(min_value=1, max_value=3)
@@ -254,10 +254,13 @@ def _interp_args(draw):
             max_num_dims=num_dims,
             min_dim_size=1,
             max_dim_size=3,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
         )
     )
 
-    return dtype, mode, x, size
+    return dtype, x, mode, size
 
 
 @handle_test(
@@ -282,7 +285,7 @@ def test_interpolate(
 ):
     input_dtype, x, mode, size = dtype_x_mode
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="torch",
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,

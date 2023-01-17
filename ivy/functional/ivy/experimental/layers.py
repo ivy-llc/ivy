@@ -741,8 +741,8 @@ def embedding(
         else:
             ret[i] = weights[x, :]
     return ret
-    
-    
+
+
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False
@@ -813,6 +813,22 @@ def interpolate(
     align_corners: Optional[bool] = True,
     antialias: Optional[bool] = False,
 ):
+    """
+
+    Parameters
+    ----------
+    x
+        Input array, Must have the shape
+        [batch x channels x [optional depth] x [optional height] x width].
+    size
+    mode
+    align_corners
+    antialias
+
+    Returns
+    -------
+
+    """
     if mode == "linear":
         size = size[0] if isinstance(size, (list, tuple)) else size
         if not align_corners:
@@ -897,4 +913,4 @@ def interpolate(
                     ) in enumerate(depth_ret[k]):
                         ret[i][j][k][l] = ivy.interp(missing_d, x_up_d, depth)
                 ret = ret.transpose((0, 1, 4, 2, 3))
-    return ret
+    return ivy.astype(ret, ivy.dtype(x))

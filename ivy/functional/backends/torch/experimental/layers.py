@@ -8,6 +8,11 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding
+from ivy.func_wrapper import (
+    handle_out_argument,
+    to_native_arrays_and_back,
+    handle_nestable,
+)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
@@ -482,19 +487,22 @@ def embedding(
 embedding.support_native_out = False
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def interpolate(
     x: torch.Tensor,
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Optional[Literal["linear", "bilinear"]] = "linear",
+    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
     align_corners: Optional[bool] = None,
-    anti_aliasing: Optional[bool] = False,
+    antialias: Optional[bool] = False,
 ):
     return torch.nn.functional.interpolate(
         x,
         size,
         mode=mode,
         align_corners=align_corners,
-        anti_aliasing=anti_aliasing,
+        antialias=antialias,
     )

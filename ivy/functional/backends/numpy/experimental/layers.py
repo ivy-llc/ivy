@@ -2,7 +2,7 @@
 
 import math
 import numpy as np
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 
 # local
 import ivy
@@ -550,3 +550,17 @@ def ifft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)
+
+
+def interpolate(
+    x: Union[ivy.Array, ivy.NativeArray],
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Union[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    align_corners: Optional[bool] = True,
+    antialias: Optional[bool] = False,
+):
+    return ivy.functional.experimental.interpolate(
+        x, size, mode=mode, align_corners=align_corners, antialias=antialias
+    )
