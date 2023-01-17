@@ -5,6 +5,7 @@ from typing import Optional, Tuple, Union, List, Callable, Dict
 from ivy.container.base import ContainerBase
 import ivy
 
+
 # ToDo: implement all methods here as public instance methods
 
 
@@ -49,7 +50,7 @@ class ContainerWithLayers(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional output array, for writing the result to. It must have a shape 
+            optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
@@ -87,9 +88,9 @@ class ContainerWithLayers(ContainerBase):
         >>> y = ivy.Container.static_linear(x, w, bias=b)
         >>> print(y)
         {
-            a: ivy.array([[16.4], 
+            a: ivy.array([[16.4],
                           [1.8]]),
-            b: ivy.array([[0.412], 
+            b: ivy.array([[0.412],
                           [-0.5]])
         }
 
@@ -144,7 +145,7 @@ class ContainerWithLayers(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            optional output array, for writing the result to. It must have a shape 
+            optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
@@ -171,7 +172,7 @@ class ContainerWithLayers(ContainerBase):
             b: ivy.array([[15.1, 31., 46.9], \
                           [85., 195., 305.]])
         }
-        
+
         """
         return self.static_linear(
             self,
@@ -1060,19 +1061,82 @@ class ContainerWithLayers(ContainerBase):
     def static_conv2d_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int, int]],
         padding: str,
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NHWC",
-        dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
+        dilations: Union[int, Tuple[int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[Union[ivy.Array, ivy.Container]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.conv2d_transpose. This method simply
+        wraps the function, and so the docstring for ivy.conv2d also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        filters
+            Convolution filters *[fh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        output_shape
+            Shape of the output (Default value = None)
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the convolution operation.
+
+        Examples
+        --------
+        >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
+        >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
+        >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+        >>> x = ivy.Container(a=a, b=b)
+        >>> filters = ivy.Container(c=c, d=d)
+        >>> y = ivy.Container.static_conv2d_transpose(x, filters, 2, 'SAME')
+        >>> print(y.shape)
+        {
+            a: {
+                c: [1,28,28,6],
+                d: [1,28,28,6]
+            },
+            b: {
+                c: [1,56,56,6],
+                d: [1,56,56,6]
+            }
+        }
+        """
         return ContainerBase.cont_multi_map_in_function(
             "conv2d_transpose",
             x,
@@ -1092,19 +1156,82 @@ class ContainerWithLayers(ContainerBase):
     def conv2d_transpose(
         self: ivy.Container,
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int, int]],
         padding: str,
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NHWC",
-        dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
+        dilations: Union[int, Tuple[int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[Union[ivy.Array, ivy.Container]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.conv2d_transpose. This method
+        simply wraps the function, and so the docstring for ivy.conv2d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input image *[batch_size,h,w,d_in]*.
+        filters
+            Convolution filters *[fh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        output_shape
+            Shape of the output (Default value = None)
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the convolution operation.
+
+        Examples
+        --------
+        >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
+        >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
+        >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+        >>> x = ivy.Container(a=a, b=b)
+        >>> filters = ivy.Container(c=c, d=d)
+        >>> y = x.conv2d_transpose(x, filters, 2, 'SAME')
+        >>> print(y.shape)
+        {
+            a: {
+                c: [1,28,28,6],
+                d: [1,28,28,6]
+            },
+            b: {
+                c: [1,56,56,6],
+                d: [1,56,56,6]
+            }
+        }
+        """
         return self.static_conv2d_transpose(
             self,
             filters,

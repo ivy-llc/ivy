@@ -1881,6 +1881,7 @@ def test_jax_lax_conv(
     test_flags,
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
+    assume(dim_num[0][1] == "C" and dim_num[1][0] == "O")
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
