@@ -31,6 +31,7 @@ _array_types["jax.interpreters.xla"] = "ivy.functional.backends.jax"
 _array_types["jaxlib.xla_extension"] = "ivy.functional.backends.jax"
 _array_types["tensorflow.python.framework.ops"] = "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
+_array_types["torch.nn.parameter"] = "ivy.functional.backends.torch"
 
 _backend_dict = dict()
 _backend_dict["numpy"] = "ivy.functional.backends.numpy"

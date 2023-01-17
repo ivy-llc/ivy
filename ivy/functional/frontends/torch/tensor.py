@@ -1,8 +1,11 @@
 # local
+import weakref
+
+import torch
+
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
-import weakref
 
 
 class Tensor:
@@ -65,6 +68,12 @@ class Tensor:
 
     def chunk(self, chunks, dim=0):
         return torch_frontend.chunk(self._ivy_array, chunks, dim=dim)
+
+    def any(self, dim=None, keepdim=False, *, out=None):
+        return torch_frontend.any(self._ivy_array, dim=dim, keepdim=keepdim, out=out)
+
+    def all(self, dim=None, keepdim=False, *, out=None):
+        return torch_frontend.all(self._ivy_array, dim=dim, keepdim=keepdim, out=out)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add_(self, other, *, alpha=1):
@@ -142,8 +151,41 @@ class Tensor:
     def atan2(self, other):
         return torch_frontend.atan2(self._ivy_array, other)
 
-    def view(self, shape):
-        return torch_frontend.ViewTensor(weakref.ref(self), shape=shape)
+    def view(self, *args, size=None):
+        """
+        Reshape Tensor.
+
+        possible arguments are either:
+            - size
+            - tuple of ints
+            - list of ints
+            - torch.Size object
+            - ints
+        Parameters
+        ----------
+        args:int arguments
+        size: optional size
+
+        Returns reshaped tensor
+        -------
+        """
+        if size and not args:
+            size_tup = size
+        elif args and not size:
+            if (
+                isinstance(args[0], tuple)
+                or isinstance(args[0], list)
+                or isinstance(args[0], torch.Size)
+            ) and len(args) == 1:
+                size_tup = args[0]
+            else:
+                size_tup = args
+        else:
+            raise ValueError(
+                "View only accepts as argument ints, tuple or list of ints or "
+                "the keyword argument size."
+            )
+        return torch_frontend.ViewTensor(weakref.ref(self), shape=size_tup)
 
     def float(self, memory_format=None):
         cast_tensor = self.clone()
@@ -405,6 +447,9 @@ class Tensor:
     def argmin(self, dim=None, keepdim=False):
         return torch_frontend.argmin(self._ivy_array, dim=dim, keepdim=keepdim)
 
+    def argsort(self, dim=-1, descending=False):
+        return torch_frontend.argsort(self._ivy_array, dim=dim, descending=descending)
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def ceil(self):
         return torch_frontend.ceil(self._ivy_array)
@@ -492,7 +537,7 @@ class Tensor:
             return torch_frontend.tensor(ivy.array(self._ivy_array).full_like(max))
         return torch_frontend.clamp(self._ivy_array, min=min, max=max, out=out)
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):
         return torch_frontend.sqrt(self._ivy_array)
 

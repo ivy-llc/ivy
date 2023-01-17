@@ -248,11 +248,11 @@ def repeat(
 
 
 def tile(
-    x: torch.Tensor, /, reps: Sequence[int], *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, repeats: Sequence[int], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if isinstance(reps, torch.Tensor):
-        reps = reps.detach().cpu().numpy().tolist()
-    return x.repeat(reps)
+    if isinstance(repeats, torch.Tensor):
+        repeats = repeats.detach().cpu().numpy().tolist()
+    return x.repeat(repeats)
 
 
 def constant_pad(
@@ -290,7 +290,7 @@ def swapaxes(
     return torch.transpose(x, axis0, axis1)
 
 
-@with_unsupported_dtypes({"1.11.0": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0": ("float16", "complex")}, backend_version)
 def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],

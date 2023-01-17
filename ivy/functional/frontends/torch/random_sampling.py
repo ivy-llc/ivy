@@ -40,3 +40,17 @@ def multinomial(input, num_samples, replacement=False, *, generator=None, out=No
         replace=replacement,
         out=out,
     )
+
+
+@with_supported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def poisson(input, generator=None):
+    return ivy.poisson(input, shape=None)

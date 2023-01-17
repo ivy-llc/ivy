@@ -177,9 +177,9 @@ def repeat(
 
 
 def tile(
-    x: JaxArray, /, reps: Iterable[int], *, out: Optional[JaxArray] = None
+    x: JaxArray, /, repeats: Iterable[int], *, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.tile(x, reps)
+    return jnp.tile(x, repeats)
 
 
 def clip(

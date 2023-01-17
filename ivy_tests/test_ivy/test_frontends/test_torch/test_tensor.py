@@ -89,6 +89,18 @@ def test_torch_tensor_property_dtype(
     ivy.assertions.check_equal(x.dtype, dtype[0])
 
 
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+    ),
+)
+def test_torch_tensor_property_shape(dtype_x):
+    dtype, data, shape = dtype_x
+    x = Tensor(data[0])
+    ivy.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
+
+
 # chunk
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -133,6 +145,100 @@ def test_torch_instance_chunk(
         method_all_as_kwargs_np={
             "chunks": chunks,
             "dim": dim,
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# any
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="any",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_value=-1e04,
+        max_value=1e04,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdim=st.booleans(),
+)
+def test_torch_instance_any(
+    dtype_input_axis,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    keepdim,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "keepdim": keepdim,
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# all
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="all",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_value=-1e04,
+        max_value=1e04,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdim=st.booleans(),
+)
+def test_torch_instance_all(
+    dtype_input_axis,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    keepdim,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "keepdim": keepdim,
         },
         frontend_method_data=frontend_method_data,
         frontend=frontend,
@@ -2410,7 +2516,7 @@ def _unfold_args(draw):
     size = draw(
         st.integers(
             min_value=1,
-            max_value=max(shape[axis]-1, 1),
+            max_value=max(shape[axis] - 1, 1),
         )
     )
     step = draw(
@@ -3324,6 +3430,54 @@ def test_torch_instance_argmin(
         method_all_as_kwargs_np={
             "dim": axis,
             "keepdim": keepdim,
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# argsort
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="argsort",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=3,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    descending=st.booleans(),
+)
+def test_torch_instance_argsort(
+    dtype_input_axis,
+    descending,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "descending": descending,
         },
         frontend_method_data=frontend_method_data,
         frontend=frontend,

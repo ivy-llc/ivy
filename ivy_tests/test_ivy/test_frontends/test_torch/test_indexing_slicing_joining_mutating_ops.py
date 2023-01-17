@@ -289,9 +289,11 @@ def dtypes_x_reshape(draw):
             shape=shape,
         )
     )
-    shape = draw(helpers.get_shape(min_num_dims=1).filter(
-        lambda s: math.prod(s) == math.prod(shape)
-    ))
+    shape = draw(
+        helpers.get_shape(min_num_dims=1).filter(
+            lambda s: math.prod(s) == math.prod(shape)
+        )
+    )
     return dtypes, x, shape
 
 
@@ -938,7 +940,7 @@ def test_torch_take_along_dim(
         dim=axis,
     )
 
-    
+
 # vstack
 @handle_frontend_test(
     fn_tree="torch.vstack",
@@ -969,4 +971,3 @@ def test_torch_vstack(
         on_device=on_device,
         tensors=value,
     )
-    

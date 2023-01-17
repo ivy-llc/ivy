@@ -1,5 +1,5 @@
 """Converters from Native Modules to Ivy Modules"""
-#global
+# global
 from types import SimpleNamespace
 from typing import Optional, Dict, List
 import re
@@ -91,7 +91,8 @@ def to_ivy_module(
         inplace_update,
     )
 
-class ModuleConverters():
+
+class ModuleConverters:
     # Module Converters #
     def to_haiku_module(self):
         """

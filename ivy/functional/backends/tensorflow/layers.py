@@ -10,9 +10,10 @@ from tensorflow.python.types.core import Tensor
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ivy.functional.ivy.layers import _deconv_length, _get_x_data_format
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def conv1d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -32,7 +33,7 @@ def conv1d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def conv1d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -45,15 +46,11 @@ def conv1d_transpose(
     dilations: int = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    if not ivy.gpu_is_available() and dilations > 1:
-        raise ivy.exceptions.IvyException(
-            "Tensorflow does not support dilations greater than 1 when device is cpu"
-        )
     filters = tf.transpose(filters, (0, 2, 1))
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
     if output_shape is None:
-        output_shape = ivy.deconv_length(
+        output_shape = _deconv_length(
             x.shape[1], strides, filters.shape[0], padding, dilations
         )
         output_shape = [x.shape[0], output_shape, filters.shape[1]]
@@ -73,7 +70,7 @@ def conv1d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -82,7 +79,7 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    dilations: int = 1,
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
@@ -93,7 +90,7 @@ def conv2d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def conv2d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -103,27 +100,20 @@ def conv2d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NHWC",
-    dilations=1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if isinstance(strides, int):
         strides = [strides] * 2
-    elif len(strides) == 1:
-        strides = [strides[0]] * 2
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filters = tf.transpose(filters, (0, 1, 3, 2))
-    if not ivy.gpu_is_available() and (dilations[0] > 1 or dilations[1] > 1):
-        raise ivy.exceptions.IvyException(
-            "conv2d_transpose does not support dilations greater than 1 when device"
-            "is cpu for tensorflow"
-        )
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     if output_shape is None:
-        new_h = ivy.deconv_length(
+        new_h = _deconv_length(
             x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
         )
-        new_w = ivy.deconv_length(
+        new_w = _deconv_length(
             x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
         )
         output_shape = [x.shape[0], new_h, new_w, filters.shape[-2]]
@@ -137,7 +127,7 @@ def conv2d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def depthwise_conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -151,15 +141,6 @@ def depthwise_conv2d(
 ) -> Union[tf.Tensor, tf.Variable]:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    if (
-        not ivy.gpu_is_available()
-        and (dilations[0] > 1 or dilations[1] > 1)
-        and (strides[0] > 1 or strides[1] > 1)
-    ):
-        raise ivy.exceptions.IvyException(
-            "depthwise_conv2d does not support dilations greater than 1 and"
-            "strides greater than 1 when device is cpu for tensorflow"
-        )
     if tf.rank(filters) == 3:
         filters = tf.expand_dims(filters, -1)
     if len(strides) == 2:
@@ -172,7 +153,7 @@ def depthwise_conv2d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def conv3d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -196,7 +177,7 @@ def conv3d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def conv3d_transpose(
     x: Tensor,
     filters: Tensor,
@@ -206,31 +187,24 @@ def conv3d_transpose(
     *,
     output_shape=None,
     data_format: str = "NDHWC",
-    dilations: int = 1,
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tensor:
     strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
     dilations = (
         [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
     )
-    if not ivy.gpu_is_available() and (
-        dilations[1] > 1 or dilations[2] > 1 or dilations[3] > 1
-    ):
-        raise ivy.exceptions.IvyException(
-            "conv3d_transpose does not support dilations greater than 1 when"
-            "device is cpu for tensorflow"
-        )
     filters = tf.transpose(filters, (0, 1, 2, 4, 3))
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
     if output_shape is None:
-        new_d = ivy.deconv_length(
+        new_d = _deconv_length(
             x.shape[1], strides[1], filters.shape[0], padding, dilations[0]
         )
-        new_h = ivy.deconv_length(
+        new_h = _deconv_length(
             x.shape[2], strides[2], filters.shape[1], padding, dilations[1]
         )
-        new_w = ivy.deconv_length(
+        new_w = _deconv_length(
             x.shape[3], strides[3], filters.shape[2], padding, dilations[2]
         )
         output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[-2]]
@@ -250,7 +224,7 @@ def conv3d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def conv_general_dilated(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -270,8 +244,10 @@ def conv_general_dilated(
         x_dilations = (x_dilations,) * dims
     elif len(x_dilations) == 1:
         x_dilations = (x_dilations[0],) * dims
+    if not isinstance(strides, int):
+        strides = strides[0]
     if dims == 3:
-        strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
+        strides = [1] + [strides] * 3 + [1]
         dilations = (
             [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
         )
@@ -294,7 +270,7 @@ def conv_general_dilated(
             x = tf.matmul(tf.transpose(x, (0, 1, *permute_list)), h)
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
 
-    df = ivy.get_x_data_format(dims, "chanel_last")
+    df = _get_x_data_format(dims, "channel_last")
     if dims == 1:
         res = tf.concat(
             [
@@ -363,7 +339,7 @@ def conv_general_dilated(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def conv_general_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],

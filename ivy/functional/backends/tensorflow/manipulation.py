@@ -258,27 +258,27 @@ def repeat(
 def tile(
     x: Union[tf.Tensor, tf.Variable],
     /,
-    reps: Sequence[int],
+    repeats: Sequence[int],
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if x.shape == ():
         x = tf.reshape(x, (-1,))
-    if isinstance(reps, Number):
-        reps = [reps]
-    if isinstance(reps, tf.Tensor) and reps.shape == ():
-        reps = tf.reshape(reps, (-1,))
+    if isinstance(repeats, Number):
+        repeats = [repeats]
+    if isinstance(repeats, tf.Tensor) and repeats.shape == ():
+        repeats = tf.reshape(repeats, (-1,))
     # code to unify behaviour with numpy and torch
-    if len(x.shape) < len(reps):
-        while len(x.shape) != len(reps):
+    if len(x.shape) < len(repeats):
+        while len(x.shape) != len(repeats):
             x = tf.expand_dims(x, 0)
-    elif len(x.shape) > len(reps):
-        reps = list(reps)
-        while len(x.shape) != len(reps):
-            reps = [1] + reps
+    elif len(x.shape) > len(repeats):
+        repeats = list(repeats)
+        while len(x.shape) != len(repeats):
+            repeats = [1] + repeats
     # TODO remove the unifying behaviour code if tensorflow handles this
     # https://github.com/tensorflow/tensorflow/issues/58002
-    return tf.tile(x, reps)
+    return tf.tile(x, repeats)
 
 
 def constant_pad(
@@ -310,6 +310,7 @@ def swapaxes(
     return tf.transpose(x, config)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
     x_min: Union[Number, tf.Tensor, tf.Variable],
