@@ -3,6 +3,7 @@ import pytest
 
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
+
 # local
 from ivy.functional.frontends.torch import Tensor
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
