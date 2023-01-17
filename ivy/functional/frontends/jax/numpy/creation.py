@@ -86,3 +86,11 @@ def triu(m, k=0):
 @to_ivy_arrays_and_back
 def empty(shape, dtype=None):
     return ivy.empty(shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def vander(x, N=None, increasing=False):
+    if N == 0:
+        return ivy.array([], dtype=x.dtype)
+    else:
+        return ivy.vander(x, N=N, increasing=increasing, out=None)
