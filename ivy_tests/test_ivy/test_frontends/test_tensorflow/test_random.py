@@ -20,7 +20,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     minval=helpers.ints(min_value=0, max_value=3),
     maxval=helpers.ints(min_value=4, max_value=10),
-    dtype=helpers.get_dtypes("float"),
+    dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=10),
     test_with_out=st.just(False),
 )
@@ -44,9 +44,9 @@ def test_tensorflow_uniform(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        shape=shape,
+        shape=shape[0],
         minval=minval,
         maxval=maxval,
-        dtype=dtype,
+        dtype=dtype[0],
         seed=seed,
     )
