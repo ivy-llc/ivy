@@ -145,6 +145,158 @@
              
   <section id="moduleconverters">
 <h1>ModuleConverters<a class="headerlink" href="#moduleconverters" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.converters.ModuleConverters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.converters.</span></span><span class="sig-name descname"><span class="pre">ModuleConverters</span></span><a class="reference internal" href="../../_modules/ivy/stateful/converters.html#ModuleConverters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.ModuleConverters.from_haiku_module">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_haiku_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">native_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/converters.html#ModuleConverters.from_haiku_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters.from_haiku_module" title="Permalink to this definition"></a></dt>
+<dd><p>Converts a Haiku module instance to an Ivy module instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>native_module</strong> – The module in the native framework to convert(class or instance).</p></li>
+<li><p><strong>constructor_args</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>]) – Positional arguments to pass to the constructor of the native module. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>constructor_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Key-word arguments to pass to the constructor of the native module.</p>
+<blockquote>
+<div><p>Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>instance_args</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>]) – Positional arguments to pass to the forward pass of the native module. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>instance_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Key-word arguments to pass to the forward pass of the native module.</p>
+<blockquote>
+<div><p>Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>device</strong> – The device on which to create module variables. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>devices</strong> – The devices on which to create module variables. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The new trainable torch module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.ModuleConverters.from_keras_module">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_keras_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">native_module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/converters.html#ModuleConverters.from_keras_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters.from_keras_module" title="Permalink to this definition"></a></dt>
+<dd><p>Converts a Keras module instance to an Ivy module instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>native_module</strong> – The module in the native framework to convert(class or instance).</p></li>
+<li><p><strong>constructor_args</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>]) – Positional arguments to pass to the constructor of the native module. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>constructor_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Key-word arguments to pass to the constructor of the native module.</p>
+<blockquote>
+<div><p>Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>instance_args</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>]) – Positional arguments to pass to the forward pass of the native module. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>instance_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Key-word arguments to pass to the forward pass of the native module.</p>
+<blockquote>
+<div><p>Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>device</strong> – The device on which to create module variables. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>devices</strong> – The devices on which to create module variables. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The new trainable ivy.Module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.ModuleConverters.from_torch_module">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_torch_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">native_module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace_update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/converters.html#ModuleConverters.from_torch_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters.from_torch_module" title="Permalink to this definition"></a></dt>
+<dd><p>Converts a Torch module instance to an Ivy module instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>native_module</strong> – The module in the native framework to convert(class or instance)</p></li>
+<li><p><strong>constructor_args</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>]) – Positional arguments to pass to the constructor of the native module. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>constructor_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Key-word arguments to pass to the constructor of the native module.</p>
+<blockquote>
+<div><p>Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>instance_args</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>]) – Positional arguments to pass to the forward pass of the native module. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>instance_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Key-word arguments to pass to the forward pass of the native module.</p>
+<blockquote>
+<div><p>Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>device</strong> – The device on which to create module variables. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>devices</strong> – The devices on which to create module variables. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>inplace_update</strong> – For backends with dedicated variable classes, whether to update these
+inplace. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The new trainable ivy.Module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.ModuleConverters.to_haiku_module">
+<span class="sig-name descname"><span class="pre">to_haiku_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/converters.html#ModuleConverters.to_haiku_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters.to_haiku_module" title="Permalink to this definition"></a></dt>
+<dd><p>Converts an ivy Module instance to a Haiku Module instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ivy_module</strong> – The ivy module instance to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The new trainable hk.Module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.ModuleConverters.to_keras_module">
+<span class="sig-name descname"><span class="pre">to_keras_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/converters.html#ModuleConverters.to_keras_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters.to_keras_module" title="Permalink to this definition"></a></dt>
+<dd><p>Converts an ivy Module instance to a Keras Module instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The ivy module instance to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The new trainable tf.keras.Module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.ModuleConverters.to_torch_module">
+<span class="sig-name descname"><span class="pre">to_torch_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/converters.html#ModuleConverters.to_torch_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters.to_torch_module" title="Permalink to this definition"></a></dt>
+<dd><p>Converts an ivy Module instance to a Torch Module instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The ivy module instance to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The new trainable torch.nn.Module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
