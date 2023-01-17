@@ -79,7 +79,7 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
