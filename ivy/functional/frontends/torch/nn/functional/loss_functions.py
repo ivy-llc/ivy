@@ -216,7 +216,6 @@ def nll_loss(
     reduce=None,
     reduction="mean",
 ):
-
     out = ivy.zeros_like(target)
 
     if len(input.shape) == 1:
@@ -248,3 +247,37 @@ def soft_margin_loss(
     reduction = _get_reduction(reduction, size_average, reduce)
     ret = reduction(loss)
     return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def kl_div(
+    input, target, size_average=None, reduce=None, reduction="mean", log_target=False
+):
+    size = ivy.shape(input)
+
+    if len(size) < 1:
+        size = [1]
+
+    def loss_fn():
+        if log_target:
+            return ivy.exp(target) * (target - input)
+        return target * (ivy.log(target) - input)
+
+    def batchmean(x):
+        if not reduce:
+            return x / size[0]
+
+        if size_average:
+            return ivy.mean(x) / size[0]
+
+        return ivy.sum(x) / size[0]
+
+    loss = ivy.nan_to_num(loss_fn())
+
+    if reduction == "batchmean":
+        reduction = batchmean
+    else:
+        reduction = _get_reduction(reduction, size_average, reduce)
+
+    return reduction(loss)
