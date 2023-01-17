@@ -77,7 +77,9 @@ def statistical_dtype_values(draw, *, function):
 
     if function == "histogram":
         dtype, values, dtype_out = draw(
-            helpers.get_castable_dtype(draw(helpers.get_dtypes("float")), dtype[0], values)
+            helpers.get_castable_dtype(
+                draw(helpers.get_dtypes("float")), dtype[0], values
+            )
         )
         bins = draw(
             helpers.array_values(
@@ -85,17 +87,20 @@ def statistical_dtype_values(draw, *, function):
                 large_abs_safety_factor=large_abs_safety_factor,
                 small_abs_safety_factor=small_abs_safety_factor,
                 safety_factor_scale="log",
-                shape=draw(helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2)),
+                shape=draw(
+                    helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2)
+                ),
             )
         )
         bins = sorted(set(bins))
         if len(bins) == 1:
             bins = int(abs(bins[0]))
-            range = (0, 10)
+            range = (0.0, 10.0)
         else:
             range = None
         return dtype, values, axis, dtype_out, bins, range
     return dtype, values, axis
+
 
 @handle_test(
     fn_tree="functional.ivy.experimental.histogram",

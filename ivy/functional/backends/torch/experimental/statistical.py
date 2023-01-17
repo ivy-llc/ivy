@@ -9,6 +9,7 @@ from . import backend_version
 
 
 # TODO: solve problem with bins error: only int and not also 1D torch.tensor.
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def histogram(
     a: torch.tensor,
     /,

@@ -10,6 +10,16 @@ from . import backend_version
 
 # TODO: Avoid error when inputs are out of range and extend_lower_interval or
 #       extend_upper_interval are false.
+#       Tensorflow native dtype argument is not working (casting was required)
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    backend_version,
+)
 def histogram(
     a: tf.Tensor,
     /,
@@ -36,9 +46,8 @@ def histogram(
         dtype=dtype,
         name="histogram",
     )
-    if density:
-        diff_bins = tf.experimental.numpy.diff(bins)
-        ret = tf.divide(tf.divide(ret, diff_bins), tf.math.reduce_sum(ret))
+    ret = tf.cast(ret, dtype=dtype)
+    bins = tf.cast(bins, dtype=dtype)
     return ret, bins
 
 
