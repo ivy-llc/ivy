@@ -1216,18 +1216,19 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-
 <span class="sd">    With :class:`ivy.Array` input:</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.conv2d_transpose(x, filters, 2, &#39;SAME&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 56, 56, 6)</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 128, 64])</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[1, 1, 64, 64])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.conv2d_transpose(x, filters, 1, &#39;VALID&#39;, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x.shape)</span>
 <span class="sd">    (1, 128, 128, 64)</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.zeros_like(x)</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])</span>

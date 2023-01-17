@@ -203,18 +203,22 @@ inputs broadcast to.</p></li>
 &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
 &gt;&gt;&gt; y = ivy.conv2d_transpose(x, filters, 2, ‘SAME’)
 &gt;&gt;&gt; print(y.shape)
-(1, 56, 56, 6)
-&gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 128, 64])
-&gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[1, 1, 64, 64])
-&gt;&gt;&gt; ivy.conv2d_transpose(x, filters, 1, ‘VALID’, out=x)
-&gt;&gt;&gt; print(x.shape)
-(1, 128, 128, 64)
-&gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])
-&gt;&gt;&gt; y = ivy.zeros_like(x)
-&gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])
-&gt;&gt;&gt; ivy.conv2d_transpose(x, filters, [1, 1, 1], ‘VALID’, out=y)
-&gt;&gt;&gt; print(y.shape)
-(1, 258, 258, 32)</p>
+(1, 56, 56, 6)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filters</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">conv2d_transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;VALID&#39;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(1, 128, 128, 64)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filters</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">32</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">conv2d_transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;VALID&#39;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(1, 258, 258, 32)</span>
+</pre></div>
+</div>
 <p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs:
 &gt;&gt;&gt; x = ivy.full((1, 6, 6, 1), 2.7)
 &gt;&gt;&gt; a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])
