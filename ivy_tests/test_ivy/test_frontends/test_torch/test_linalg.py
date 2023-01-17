@@ -456,21 +456,15 @@ def test_torch_cross(
 )
 def test_torch_vecdot(
     dtype_input_other_dim,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
 ):
     dtype, input, other, dim = dtype_input_other_dim
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         rtol=1e-2,
         atol=1e-3,
@@ -765,21 +759,16 @@ def _tensorinv_helper(draw):
 def test_torch_tensorinv(
     *,
     dtype_input_ind,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
 
     dtype, x, ind = dtype_input_ind
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=True,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,

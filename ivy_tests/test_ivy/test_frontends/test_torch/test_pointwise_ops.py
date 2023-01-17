@@ -1594,7 +1594,6 @@ def test_torch_addcmul(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    alpha=st.integers(min_value=1, max_value=5),
 )
 def test_torch_pow(
     dtype_and_x,

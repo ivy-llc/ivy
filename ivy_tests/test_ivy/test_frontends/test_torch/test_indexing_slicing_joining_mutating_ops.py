@@ -832,11 +832,13 @@ def test_torch_vstack(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, value = dtype_value_shape
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         tensors=value,

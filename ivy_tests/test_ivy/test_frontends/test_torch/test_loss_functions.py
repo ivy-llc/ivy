@@ -559,6 +559,7 @@ def test_torch_soft_margin_loss(
     reduce=st.booleans(),
     reduction=st.sampled_from(["none", "mean", "sum", "batchmean"]),
     log_target=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_torch_kl_div(
     *,
@@ -567,21 +568,16 @@ def test_torch_kl_div(
     reduce,
     reduction,
     log_target,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     inputs_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=inputs_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
