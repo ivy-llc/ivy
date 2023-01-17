@@ -503,14 +503,17 @@ def conv_general_dilated(
     filter_shape = list(filters.shape[0:dims])
 
     x_shape = list(x.shape[1 : dims + 1])
-    pad_specific = [
-        _handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
-        for i in range(dims)
-    ]
-    pad_list = [
-        (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
-        for i in range(dims)
-    ]
+    if isinstance(padding, str):
+        pad_specific = [
+            _handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
+            for i in range(dims)
+        ]
+        pad_list = [
+            (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+            for i in range(dims)
+        ]
+    else:
+        pad_list = list(padding)
     x = np.pad(
         x,
         [
@@ -602,11 +605,13 @@ def conv_general_transpose(
             filters = _add_dilations(filters, dilations[j], axis=j)
         if strides[j] > 1:
             x = _add_dilations(x, strides[j], axis=j + 1)
-
-    pad_specific = [
-        _handle_padding(output_shape[i + 1], strides[i], filters.shape[i], padding)
-        for i in range(dims)
-    ]
+    if isinstance(padding, str):
+        pad_specific = [
+            _handle_padding(output_shape[i + 1], strides[i], filters.shape[i], padding)
+            for i in range(dims)
+        ]
+    else:
+        pad_specific = padding
     extra_pad = [
         max(
             0,

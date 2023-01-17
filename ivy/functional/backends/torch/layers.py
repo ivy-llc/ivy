@@ -525,15 +525,22 @@ def conv_general_dilated(
             x = torch.einsum("...kl, lm -> ...km", x.permute(0, 1, *permute_list), h)
 
     x_shape = list(x.shape[2:])
-    pad_specific = [
-        _handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
-        for i in range(dims - 1, -1, -1)
-    ]
-    pad_list_top = [pad_specific[i] // 2 for i in range(dims)]
-    pad_list_bot = [pad_specific[i] - pad_specific[i] // 2 for i in range(dims)]
-    pad_list = [None] * len(pad_list_top) * 2
-    pad_list[::2] = pad_list_top
-    pad_list[1::2] = pad_list_bot
+    if isinstance(padding, str):
+        pad_specific = [
+            _handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
+            for i in range(dims - 1, -1, -1)
+        ]
+        pad_list_top = [pad_specific[i] // 2 for i in range(dims)]
+        pad_list_bot = [pad_specific[i] - pad_specific[i] // 2 for i in range(dims)]
+        pad_list = [None] * len(pad_list_top) * 2
+        pad_list[::2] = pad_list_top
+        pad_list[1::2] = pad_list_bot
+    else:
+        pad_list = [item for sublist in padding for item in sublist]
+        # pad_list = [
+        #     (padding[i * 2], padding[i * 2 + 1])
+        #     for i in range(int(len(padding) / 2) - 1, -1, -1)
+        # ]
     x = torch.nn.functional.pad(
         x,
         pad_list,
@@ -596,18 +603,21 @@ def conv_general_transpose(
         filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
         for i in range(dims)
     ]
-    pad_specific = [
-        _handle_padding(output_shape[i + 1], strides[i], filter_shape[i], padding)
-        for i in range(dims)
-    ]
-    if padding == "VALID":
-        padding_list = [0] * dims
-    elif padding == "SAME":
-        for i in range(dims):
-            if pad_specific[i] % 2 != 0:
-                pad_specific[i] -= 1
-                not_valid_pad[i] = True
-        padding_list = [pad_specific[i] // 2 for i in range(dims)]
+    if isinstance(padding, str):
+        pad_specific = [
+            _handle_padding(output_shape[i + 1], strides[i], filter_shape[i], padding)
+            for i in range(dims)
+        ]
+        if padding == "VALID":
+            padding_list = [0] * dims
+        else:
+            for i in range(dims):
+                if pad_specific[i] % 2 != 0:
+                    pad_specific[i] -= 1
+                    not_valid_pad[i] = True
+            padding_list = [pad_specific[i] // 2 for i in range(dims)]
+    else:
+        padding_list = [item for sublist in padding for item in sublist]
     out_shape = [
         _out_shape(
             x.shape[i + 2],

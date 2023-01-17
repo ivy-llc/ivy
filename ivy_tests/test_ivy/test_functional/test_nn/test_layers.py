@@ -304,7 +304,21 @@ def x_and_filters(
 ):
     if not isinstance(dim, int):
         dim = draw(dim)
-    padding = draw(st.sampled_from(["SAME", "VALID"]))
+    pad_strat_1 = st.lists(
+        st.tuples(
+            st.integers(min_value=0, max_value=3),
+            st.integers(min_value=0, max_value=3),
+        ),
+        min_size=dim,
+        max_size=dim,
+    )
+    pad_strat_2 = st.sampled_from(["SAME", "VALID"])
+    if general and transpose:
+        padding = draw(st.one_of(pad_strat_1, pad_strat_2))
+    elif general:
+        padding = draw(pad_strat_1)
+    else:
+        padding = draw(pad_strat_2)
     batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(

@@ -19,16 +19,16 @@ from ivy.functional.ivy.layers import (
 
 def _conv_transpose_padding(k, s, padding, dilation, diff=0):
     k = (k - 1) * dilation + 1
-    if padding == "SAME":
+    if padding == "VALID":
+        pad_len = k + s - 2 + max(k - s, 0)
+        pad_a = k - 1
+    else:
         pad_len = k + s - 2
         pad_len -= diff
         if s > k - 1:
             pad_a = k - 1
         else:
             pad_a = int(jnp.ceil(pad_len / 2))
-    else:
-        pad_len = k + s - 2 + max(k - s, 0)
-        pad_a = k - 1
     pad_b = pad_len - pad_a
     return pad_a, pad_b
 
@@ -222,7 +222,7 @@ def conv3d_transpose(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape=None,
@@ -325,11 +325,12 @@ def conv_general_dilated(
             filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
             for i in range(dims)
         ]
-        for i in range(dims):
-            new_pad[i] = _handle_padding(
-                x_shape[i], strides[i], filter_shape[i], padding
-            )
-        padding = [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)]
+        if isinstance(padding, str):
+            for i in range(dims):
+                new_pad[i] = _handle_padding(
+                    x_shape[i], strides[i], filter_shape[i], padding
+                )
+            padding = [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)]
     df = _get_x_data_format(dims, data_format)
     res = jlax.conv_general_dilated(
         x,

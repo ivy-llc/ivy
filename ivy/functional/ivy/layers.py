@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List, Callable
+from typing import Optional, Tuple, Union, List, Callable, Sequence
 
 # local
 import ivy
@@ -1509,7 +1509,7 @@ def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, List[int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: int = 2,
@@ -1582,7 +1582,7 @@ def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, List[int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: int = 2,
@@ -1648,7 +1648,7 @@ def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, List[int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     transpose: bool = False,
@@ -1851,7 +1851,7 @@ def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
     if padding == "VALID":
         dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == "SAME":
+    else:
         dim_size = dim_size * stride_size
     return dim_size
 

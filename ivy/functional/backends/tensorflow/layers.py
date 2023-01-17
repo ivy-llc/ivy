@@ -10,7 +10,8 @@ from tensorflow.python.types.core import Tensor
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-from ivy.functional.ivy.layers import _deconv_length, _get_x_data_format
+from ivy.functional.ivy.layers import _deconv_length, _get_x_data_format, \
+    _handle_padding
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
@@ -224,6 +225,28 @@ def conv3d_transpose(
     return res
 
 
+def _pad_before_conv(x, filters, strides, padding, dims, dilations):
+    if isinstance(padding, str):
+        x_shape = list(x.shape[1: dims + 2])
+        filter_shape = list(filters.shape[:dims])
+        filter_shape = [
+            filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
+            for i in range(dims)
+        ]
+        new_pad = [
+            _handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
+            for i in range(dims)
+        ]
+        pad_list = [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)]
+    else:
+        pad_list = padding
+    return tf.pad(
+        x,
+        pad_list,
+        "CONSTANT",
+    )
+
+
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def conv_general_dilated(
     x: Union[tf.Tensor, tf.Variable],
@@ -270,6 +293,8 @@ def conv_general_dilated(
             x = tf.matmul(tf.transpose(x, (0, 1, *permute_list)), h)
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
 
+    x = _pad_before_conv(x, filters, strides, padding, dims, dilations)
+
     df = _get_x_data_format(dims, "channel_last")
     if dims == 1:
         res = tf.concat(
@@ -278,7 +303,7 @@ def conv_general_dilated(
                     x[:, :, i : i + filters.shape[-2]],
                     filters[:, :, j : j + filters.shape[-1] // feature_group_count],
                     strides,
-                    padding,
+                    "VALID",
                     df,
                     dilations,
                 )
@@ -298,7 +323,7 @@ def conv_general_dilated(
                     x[:, :, :, i : i + filters.shape[-2]],
                     filters[:, :, :, j : j + filters.shape[-1] // feature_group_count],
                     strides,
-                    padding,
+                    "VALID",
                     df,
                     dilations,
                 )
@@ -320,7 +345,7 @@ def conv_general_dilated(
                         :, :, :, :, j : j + filters.shape[-1] // feature_group_count
                     ],
                     strides,
-                    padding,
+                    "VALID",
                     df,
                     dilations,
                 )
@@ -357,6 +382,9 @@ def conv_general_transpose(
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "channel_first":
         x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+
+    x = _pad_before_conv(x, filters, strides, padding, dims, dilations)
+
     if dims == 1:
         res = tf.concat(
             [
@@ -364,7 +392,7 @@ def conv_general_transpose(
                     x[..., j : j + filters.shape[-2] // feature_group_count],
                     filters[..., j : j + filters.shape[-2] // feature_group_count, :],
                     strides,
-                    padding,
+                    "VALID",
                     output_shape=output_shape,
                     data_format="NWC",
                     dilations=dilations,
@@ -382,7 +410,7 @@ def conv_general_transpose(
                     x[..., j : j + filters.shape[-2] // feature_group_count],
                     filters[..., j : j + filters.shape[-2] // feature_group_count, :],
                     strides,
-                    padding,
+                    "VALID",
                     output_shape=output_shape,
                     data_format="NHWC",
                     dilations=dilations,
@@ -400,7 +428,7 @@ def conv_general_transpose(
                     x[..., j : j + filters.shape[-2] // feature_group_count],
                     filters[..., j : j + filters.shape[-2] // feature_group_count, :],
                     strides,
-                    padding,
+                    "VALID",
                     output_shape=output_shape,
                     data_format="NDHWC",
                     dilations=dilations,
