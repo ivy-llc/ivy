@@ -1,5 +1,6 @@
 # global
 import numpy as np
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -105,4 +106,79 @@ def test_numpy_pinv(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+    )
+
+
+# tensorinv
+@st.composite
+def _get_inv_square_matrices(draw):
+
+    dim_size = draw(helpers.ints(min_value=1, max_value=10))
+
+    batch_shape = draw(st.sampled_from([2, 4, 6, 8, 10]))
+
+    generated_shape = (dim_size,) * batch_shape
+    generated_ind = int(np.floor(len(generated_shape) / 2))
+
+    handpicked_shape, handpicked_ind = draw(
+        st.sampled_from([[(24, 6, 4), 1], [(8, 3, 6, 4), 2], [(6, 7, 8, 16, 21), 3]])
+    )
+
+    shape, ind = draw(
+        st.sampled_from(
+            [(generated_shape, generated_ind), (handpicked_shape, handpicked_ind)]
+        )
+    )
+
+    input_dtype = draw(
+        helpers.get_dtypes("float", index=1, full=False).filter(
+            lambda x: x not in ["float16", "bfloat16"]
+        )
+    )
+    invertible = False
+    while not invertible:
+        a = draw(
+            helpers.array_values(
+                dtype=input_dtype[0],
+                shape=shape,
+                min_value=-100,
+                max_value=100,
+            )
+        )
+        try:
+            np.linalg.inv(a)
+            invertible = True
+        except np.linalg.LinAlgError:
+            pass
+
+    return input_dtype, a, ind
+
+
+@handle_frontend_test(
+    fn_tree="numpy.linalg.tensorinv", params=_get_inv_square_matrices()
+)
+def test_numpy_tensorinv(
+    *,
+    params,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x, ind = params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        rtol=1e-01,
+        atol=1e-01,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x,
+        ind=ind,
     )
