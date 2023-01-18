@@ -75,3 +75,34 @@ def test_numpy_diag(
         v=x[0],
         k=k,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.diag_indices",
+    n=helpers.ints(min_value=1, max_value=10),
+    ndim=helpers.ints(min_value=2, max_value=10),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_numpy_diag_indices(
+    n,
+    ndim,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n=n,
+        ndim=ndim,
+    )
