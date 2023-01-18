@@ -412,6 +412,42 @@ def x_and_filters(
     return ret
 
 
+# convolution
+@handle_test(
+    fn_tree="functional.ivy.convolution",
+    x_f_d_df=x_and_filters(dim=1),
+    ground_truth_backend="tensorflow",
+)
+def test_tf_convolution(
+    *,
+    x_f_d_df,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and dilations > 1))
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
+        x=x,
+        filters=filters,
+        strides=stride,
+        padding=pad,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
 # conv1d
 @handle_test(
     fn_tree="functional.ivy.conv1d",
