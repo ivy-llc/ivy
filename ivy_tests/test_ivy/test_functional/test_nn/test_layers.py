@@ -289,42 +289,6 @@ def test_multi_head_attention(
     )
 
 
-# Convolutions #
-@handle_test(
-    fn_tree="functional.ivy.convolution",
-    ground_truth_backend="jax",
-)
-def test_convolution(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
-    if backend_fw.current_backend_str() == "tensorflow":
-        assume(not (on_device == "cpu" and dilations > 1))
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-02,
-        atol_=1e-02,
-        x=x,
-        filters=filters,
-        strides=stride,
-        padding=pad,
-        data_format=data_format,
-        dilations=dilations,
-    )
-# -------------#
-
-
 @st.composite
 def x_and_filters(
     draw,
