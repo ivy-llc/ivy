@@ -1314,11 +1314,10 @@ def test_tensorflow_realdiv(
 @handle_frontend_test(
     fn_tree="tensorflow.one_hot",
     dtype_and_x=helpers.dtype_and_values(
-    available_dtypes=helpers.get_dtypes("unsigned"),
+    available_dtypes=helpers.get_dtypes("integer",full=True),
     num_arrays=1,
-    min_value=-5,
-    max_value=5,
-    shared_dtype=True,
+    min_value=0,
+    max_value=10,
         ),
 )
 def test_tensorflow_one_hot(
@@ -1331,10 +1330,11 @@ def test_tensorflow_one_hot(
     fn_tree,
     on_device,
 ):
+
     input_dtype, x = dtype_and_x
-    depth = 5
+    depth = 10
     helpers.test_frontend_function(
-    input_dtypes=input_dtype,
+    input_dtypes=['int32','int64'],
     as_variable_flags=as_variable,
     with_out=False,
     num_positional_args=num_positional_args,
@@ -1345,6 +1345,3 @@ def test_tensorflow_one_hot(
     indices=x[0],
     depth=depth,
 )
-
-
-
