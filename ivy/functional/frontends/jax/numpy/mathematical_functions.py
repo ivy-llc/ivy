@@ -258,6 +258,13 @@ def exp(
     return ivy.exp(x)
 
 
+def expm1(
+    x,
+    /,
+):
+    return ivy.expm1(x)
+
+
 @to_ivy_arrays_and_back
 def fmax(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
@@ -277,6 +284,7 @@ def fmin(x1, x2):
         x1,
         x2,
     )
+    print("jax-frontend", ret)
     return ret
 
 
