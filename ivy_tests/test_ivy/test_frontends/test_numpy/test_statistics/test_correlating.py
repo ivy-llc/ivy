@@ -18,25 +18,21 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         shared_dtype=True,
     ),
     mode=st.sampled_from(["valid", "same", "full"]),
+    test_with_out=st.just(False),
 )
 def test_numpy_correlate(
     dtype_and_x,
     mode,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=xs[0],
