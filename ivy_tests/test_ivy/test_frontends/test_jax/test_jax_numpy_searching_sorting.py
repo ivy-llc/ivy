@@ -8,6 +8,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
 )
 
+
 # argmax
 @handle_frontend_test(
     fn_tree="jax.numpy.argmax",
