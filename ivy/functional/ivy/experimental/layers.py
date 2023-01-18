@@ -1,7 +1,7 @@
 from typing import Optional, Union, Tuple, Literal
 import ivy
 from ivy.func_wrapper import (
-    handle_array_like,
+    handle_array_like_without_promotion,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
@@ -515,7 +515,7 @@ def dct(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -580,7 +580,7 @@ def fft(
 
 @handle_exceptions
 @to_native_arrays_and_back
-@handle_array_like
+@handle_array_like_without_promotion
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -625,7 +625,7 @@ def dropout1d(
 @handle_out_argument
 @handle_exceptions
 @handle_nestable
-@handle_array_like
+@handle_array_like_without_promotion
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
