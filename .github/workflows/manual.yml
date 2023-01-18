@@ -1,9 +1,6 @@
 name: duplicate-tests
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'master'
 permissions:
   actions: read
 jobs:
@@ -33,22 +30,4 @@ jobs:
            pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
-           python determine_tests.py extra
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master1
-         continue-on-error: true
-
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
-
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+           python duplicate_checking.py
