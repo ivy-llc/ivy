@@ -77,16 +77,17 @@ def test_numpy_diag(
     ),
     N=st.integers(min_value=0, max_value=5),
     increasing=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_numpy_vander(
     *,
     dtype_and_x,
     N,
     increasing,
-    test_flags,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
