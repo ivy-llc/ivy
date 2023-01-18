@@ -144,3 +144,4 @@ def test_numpy_lexsort(
         keys=x[0],
         axis=axis,
     )
+    
