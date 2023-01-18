@@ -1,5 +1,3 @@
-import numbers
-
 import ivy
 import functools
 import logging
@@ -72,16 +70,17 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
                 ("rray" in annotation_str or "Tensor" in annotation_str)
                 and parameter != "out"
                 and all(
-                    sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
+                    sq not in annotation_str
+                    for sq in ["Sequence", "List", "Tuple", "float", "int", "bool"]
                 )
             ):
 
                 if i < num_args:
-                    if isinstance(arg, (list, tuple, numbers.Number)):
+                    if not ivy.is_array(arg):
                         args[i] = ivy.native_array(arg)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
-                    if isinstance(kwarg, (list, tuple, numbers.Number)):
+                    if not ivy.is_array(arg):
                         kwargs[parameter] = ivy.native_array(kwarg)
 
         return fn(*args, **kwargs)
