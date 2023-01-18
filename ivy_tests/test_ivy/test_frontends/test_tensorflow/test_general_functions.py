@@ -1158,3 +1158,62 @@ def test_tensorflow_realdiv(
         x=x[0],
         y=x[1],
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.roll",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    shift=helpers.dtype_and_values(
+        available_dtypes=st.sampled_from(['int32', 'int64']),
+        max_num_dims=1,
+        min_dim_size=st.shared(
+            helpers.ints(min_value=1, max_value=10),
+            key="shift_len",
+        ),
+        max_dim_size=st.shared(
+            helpers.ints(min_value=1, max_value=10),
+            key="shift_len",
+        ),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        force_tuple=True,
+        unique=False,
+        min_size=st.shared(
+            helpers.ints(min_value=1, max_value=10),
+            key="shift_len",
+        ),
+        max_size=st.shared(
+            helpers.ints(min_value=1, max_value=10),
+            key="shift_len",
+        ),
+    ),
+)
+def test_tensorflow_roll(
+    *,
+    dtype_value,
+    shift,
+    axis,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    dtype_x, x = dtype_value
+    dtype_shift, shift = shift
+    helpers.test_frontend_function(
+        input_dtypes=dtype_x + dtype_shift,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        input=x[0],
+        shift=shift,
+        axis=axis
+    )
