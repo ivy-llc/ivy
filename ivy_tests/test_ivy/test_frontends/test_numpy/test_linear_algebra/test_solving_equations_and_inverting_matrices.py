@@ -16,14 +16,13 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     fn_tree="numpy.linalg.solve",
     x=_get_first_matrix(),
     y=_get_second_matrix(),
+    test_with_out=st.just(False),
 )
 def test_numpy_solve(
     x,
     y,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -31,11 +30,8 @@ def test_numpy_solve(
     dtype2, x2 = y
     helpers.test_frontend_function(
         input_dtypes=[dtype1, dtype2],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x1,
@@ -53,24 +49,20 @@ def test_numpy_solve(
         min_num_dims=2,
         max_num_dims=2,
     ).filter(lambda x: np.linalg.det(x[1][0]) != 0),
+    test_with_out=st.just(False),
 )
 def test_numpy_inv(
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -85,24 +77,20 @@ def test_numpy_inv(
         min_num_dims=2,
         max_num_dims=2,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_pinv(
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
