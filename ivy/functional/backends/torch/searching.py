@@ -6,11 +6,14 @@ import torch.nn.functional as tnf
 
 import ivy
 
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 # Array API Standard #
 # ------------------ #
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def argmax(
     x: torch.Tensor,
     /,
@@ -38,6 +41,7 @@ def argmax(
     return ret
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def argmin(
     x: torch.Tensor,
     /,
