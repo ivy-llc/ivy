@@ -4,6 +4,7 @@
 from hypothesis import strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 from ivy.functional.ivy.layers import _deconv_length
@@ -320,7 +321,7 @@ def x_and_filters(
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
     fc = draw(st.sampled_from(group_list)) if general else 1
-    if dim == 1 and not general:
+    if dim == 1:
         strides = [draw(st.integers(1, 3))]
         dilations = [draw(st.integers(1, 3))]
     else:
@@ -398,7 +399,7 @@ def x_and_filters(
         if not transpose:
             x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
             dilations = (dilations, x_dilation)
-    elif dim == 1:
+    if dim == 1:
         strides = strides[0]
         dilations = dilations[0]
     ret = (
@@ -731,7 +732,11 @@ def test_conv_general_transpose(
         bias,
     ) = x_f_d_df
     if backend_fw.current_backend_str() == "tensorflow":
-        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
+        if not ivy.gpu_is_available():
+            assume(
+                (dilations <= 1) if isinstance(dilations, int)
+                else all(d <= 1 for d in dilations)
+            )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
