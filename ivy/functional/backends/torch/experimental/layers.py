@@ -466,3 +466,17 @@ def ifft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return torch.fft.ifft(x, n, dim, norm, out=out).resolve_conj()
+
+
+def embedding(
+    weights: torch.Tensor,
+    indices: torch.Tensor,
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out=None,
+) -> torch.Tensor:
+    return torch.nn.functional.embedding(indices, weights, max_norm=max_norm)
+
+
+embedding.support_native_out = False

@@ -14,22 +14,22 @@ from ivy.container import Container
 from ivy.exceptions import IvyException
 
 
-def test_container_list_join(device):
+def test_container_list_join(on_device):
     container_0 = Container(
         {
-            "a": [ivy.array([1], device=device)],
+            "a": [ivy.array([1], device=on_device)],
             "b": {
-                "c": [ivy.array([2], device=device)],
-                "d": [ivy.array([3], device=device)],
+                "c": [ivy.array([2], device=on_device)],
+                "d": [ivy.array([3], device=on_device)],
             },
         }
     )
     container_1 = Container(
         {
-            "a": [ivy.array([4], device=device)],
+            "a": [ivy.array([4], device=on_device)],
             "b": {
-                "c": [ivy.array([5], device=device)],
-                "d": [ivy.array([6], device=device)],
+                "c": [ivy.array([5], device=on_device)],
+                "d": [ivy.array([6], device=on_device)],
             },
         }
     )
@@ -48,22 +48,22 @@ def test_container_list_join(device):
     assert np.allclose(ivy.to_numpy(container_list_joined.b.d[1]), np.array([6]))
 
 
-def test_container_list_stack(device):
+def test_container_list_stack(on_device):
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "a": ivy.array([4], device=device),
+            "a": ivy.array([4], device=on_device),
             "b": {
-                "c": ivy.array([5], device=device),
-                "d": ivy.array([6], device=device),
+                "c": ivy.array([5], device=on_device),
+                "d": ivy.array([6], device=on_device),
             },
         }
     )
@@ -84,12 +84,12 @@ def test_container_list_stack(device):
     assert np.allclose(ivy.to_numpy(container_list_stacked.b.d[1]), np.array([6]))
 
 
-def test_container_unify(device):
+def test_container_unify(on_device):
 
-    # devices and containers
-    devices = list()
-    dev0 = device
-    devices.append(dev0)
+    # on_devices and containers
+    on_devices = list()
+    dev0 = on_device
+    on_devices.append(dev0)
     conts = dict()
     conts[dev0] = Container(
         {
@@ -97,10 +97,10 @@ def test_container_unify(device):
             "b": {"c": ivy.array([2], device=dev0), "d": ivy.array([3], device=dev0)},
         }
     )
-    if "gpu" in device and ivy.num_gpus() > 1:
+    if "gpu" in on_device and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
-        dev1 = device[:-1] + str(idx)
-        devices.append(dev1)
+        dev1 = on_device[:-1] + str(idx)
+        on_devices.append(dev1)
         conts[dev1] = Container(
             {
                 "a": ivy.array([4], device=dev1),
@@ -116,28 +116,28 @@ def test_container_unify(device):
     assert np.allclose(ivy.to_numpy(container_unified.a[0]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container_unified.b.c[0]), np.array([2]))
     assert np.allclose(ivy.to_numpy(container_unified.b.d[0]), np.array([3]))
-    if len(devices) > 1:
+    if len(on_devices) > 1:
         assert np.allclose(ivy.to_numpy(container_unified.a[1]), np.array([4]))
         assert np.allclose(ivy.to_numpy(container_unified.b.c[1]), np.array([5]))
         assert np.allclose(ivy.to_numpy(container_unified.b.d[1]), np.array([6]))
 
 
-def test_container_combine(device):
+def test_container_combine(on_device):
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "a": ivy.array([4], device=device),
+            "a": ivy.array([4], device=on_device),
             "b": {
-                "c": ivy.array([5], device=device),
-                "e": ivy.array([6], device=device),
+                "c": ivy.array([5], device=on_device),
+                "e": ivy.array([6], device=on_device),
             },
         }
     )
@@ -148,23 +148,23 @@ def test_container_combine(device):
     assert np.equal(ivy.to_numpy(container_comb.b.e), np.array([6]))
 
 
-def test_container_diff(device):
+def test_container_diff(on_device):
     # all different arrays
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "a": ivy.array([4], device=device),
+            "a": ivy.array([4], device=on_device),
             "b": {
-                "c": ivy.array([5], device=device),
-                "d": ivy.array([6], device=device),
+                "c": ivy.array([5], device=on_device),
+                "d": ivy.array([6], device=on_device),
             },
         }
     )
@@ -187,19 +187,19 @@ def test_container_diff(device):
     # some different arrays
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([5], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([5], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
@@ -226,19 +226,19 @@ def test_container_diff(device):
     # all different keys
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "e": ivy.array([1], device=device),
+            "e": ivy.array([1], device=on_device),
             "f": {
-                "g": ivy.array([2], device=device),
-                "h": ivy.array([3], device=device),
+                "g": ivy.array([2], device=on_device),
+                "h": ivy.array([3], device=on_device),
             },
         }
     )
@@ -261,19 +261,19 @@ def test_container_diff(device):
     # some different keys
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "e": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "e": ivy.array([3], device=on_device),
             },
         }
     )
@@ -302,19 +302,19 @@ def test_container_diff(device):
     # same containers
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
@@ -351,23 +351,23 @@ def test_container_diff(device):
     assert container_diff_same_only.cont_to_dict() == {}
 
 
-def test_container_structural_diff(device):
+def test_container_structural_diff(on_device):
     # all different keys or shapes
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "a": ivy.array([[4]], device=device),
+            "a": ivy.array([[4]], device=on_device),
             "b": {
-                "c": ivy.array([[[5]]], device=device),
-                "e": ivy.array([3], device=device),
+                "c": ivy.array([[[5]]], device=on_device),
+                "e": ivy.array([3], device=on_device),
             },
         }
     )
@@ -390,19 +390,19 @@ def test_container_structural_diff(device):
     # some different shapes
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "a": ivy.array([4], device=device),
+            "a": ivy.array([4], device=on_device),
             "b": {
-                "c": ivy.array([[5]], device=device),
-                "d": ivy.array([6], device=device),
+                "c": ivy.array([[5]], device=on_device),
+                "d": ivy.array([6], device=on_device),
             },
         }
     )
@@ -429,19 +429,19 @@ def test_container_structural_diff(device):
     # all different keys
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "e": ivy.array([4], device=device),
+            "e": ivy.array([4], device=on_device),
             "f": {
-                "g": ivy.array([5], device=device),
-                "h": ivy.array([6], device=device),
+                "g": ivy.array([5], device=on_device),
+                "h": ivy.array([6], device=on_device),
             },
         }
     )
@@ -464,19 +464,19 @@ def test_container_structural_diff(device):
     # some different keys
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "a": ivy.array([4], device=device),
+            "a": ivy.array([4], device=on_device),
             "b": {
-                "c": ivy.array([5], device=device),
-                "e": ivy.array([6], device=device),
+                "c": ivy.array([5], device=on_device),
+                "e": ivy.array([6], device=on_device),
             },
         }
     )
@@ -505,19 +505,19 @@ def test_container_structural_diff(device):
     # all same
     container_0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_1 = Container(
         {
-            "a": ivy.array([4], device=device),
+            "a": ivy.array([4], device=on_device),
             "b": {
-                "c": ivy.array([5], device=device),
-                "d": ivy.array([6], device=device),
+                "c": ivy.array([5], device=on_device),
+                "d": ivy.array([6], device=on_device),
             },
         }
     )
@@ -535,10 +535,13 @@ def test_container_structural_diff(device):
     assert container_diff_same_only.cont_to_dict() == container_diff.cont_to_dict()
 
 
-def test_container_from_dict(device):
+def test_container_from_dict(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container = Container(dict_in)
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
@@ -549,46 +552,46 @@ def test_container_from_dict(device):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
-def test_container_depth(device):
+def test_container_depth(on_device):
     cont_depth1 = Container(
-        {"a": ivy.array([1], device=device), "b": ivy.array([2], device=device)}
+        {"a": ivy.array([1], device=on_device), "b": ivy.array([2], device=on_device)}
     )
     assert cont_depth1.cont_max_depth == 1
     cont_depth2 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     assert cont_depth2.cont_max_depth == 2
     cont_depth3 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": {"d": ivy.array([2], device=device)},
-                "e": ivy.array([3], device=device),
+                "c": {"d": ivy.array([2], device=on_device)},
+                "e": ivy.array([3], device=on_device),
             },
         }
     )
     assert cont_depth3.cont_max_depth == 3
     cont_depth4 = Container(
         {
-            "a": ivy.array([1], device=device),
-            "b": {"c": {"d": {"e": ivy.array([2], device=device)}}},
+            "a": ivy.array([1], device=on_device),
+            "b": {"c": {"d": {"e": ivy.array([2], device=on_device)}}},
         }
     )
     assert cont_depth4.cont_max_depth == 4
 
 
 @pytest.mark.parametrize("inplace", [True, False])
-def test_container_cutoff_at_depth(inplace, device):
+def test_container_cutoff_at_depth(inplace, on_device):
 
     # values
-    a_val = ivy.array([1], device=device)
-    bcde_val = ivy.array([2], device=device)
+    a_val = ivy.array([1], device=on_device)
+    bcde_val = ivy.array([2], device=on_device)
 
     # depth 1
     cont = Container({"a": a_val, "b": {"c": {"d": {"e": bcde_val}}}})
@@ -624,11 +627,11 @@ def test_container_cutoff_at_depth(inplace, device):
 
 
 @pytest.mark.parametrize("inplace", [True, False])
-def test_container_cutoff_at_height(inplace, device):
+def test_container_cutoff_at_height(inplace, on_device):
 
     # values
-    d_val = ivy.array([2], device=device)
-    e_val = ivy.array([3], device=device)
+    d_val = ivy.array([2], device=on_device)
+    e_val = ivy.array([3], device=on_device)
 
     # height 0
     cont = Container({"a": {"c": {"d": d_val}}, "b": {"c": {"d": {"e": e_val}}}})
@@ -671,14 +674,14 @@ def test_container_cutoff_at_height(inplace, device):
 
 
 @pytest.mark.parametrize("str_slice", [True, False])
-def test_container_slice_keys(str_slice, device):
+def test_container_slice_keys(str_slice, on_device):
 
     # values
-    a_val = ivy.array([1], device=device)
-    b_val = ivy.array([2], device=device)
-    c_val = ivy.array([3], device=device)
-    d_val = ivy.array([4], device=device)
-    e_val = ivy.array([5], device=device)
+    a_val = ivy.array([1], device=on_device)
+    b_val = ivy.array([2], device=on_device)
+    c_val = ivy.array([3], device=on_device)
+    d_val = ivy.array([4], device=on_device)
+    e_val = ivy.array([5], device=on_device)
 
     # slice
     if str_slice:
@@ -747,20 +750,23 @@ def test_container_slice_keys(str_slice, device):
     assert "e" not in cont_sliced
 
 
-def test_container_show(device):
+def test_container_show(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     cont = Container(dict_in)
     print(cont)
     cont.cont_show()
 
 
-def test_container_find_sub_container(device):
-    arr1 = ivy.array([1], device=device)
-    arr2 = ivy.array([2], device=device)
-    arr3 = ivy.array([3], device=device)
+def test_container_find_sub_container(on_device):
+    arr1 = ivy.array([1], device=on_device)
+    arr2 = ivy.array([2], device=on_device)
+    arr3 = ivy.array([3], device=on_device)
     dict_in = {"a": arr1, "b": {"c": arr2, "d": arr3}}
     top_cont = Container(dict_in)
 
@@ -783,36 +789,42 @@ def test_container_find_sub_container(device):
     assert partial_sub_cont.cont_find_sub_container(top_cont, partial=True) is False
 
 
-def test_container_find_sub_structure(device):
+def test_container_find_sub_structure(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     top_cont = Container(dict_in)
 
     # full
     sub_cont = Container(
-        {"c": ivy.array([4], device=device), "d": ivy.array([5], device=device)}
+        {"c": ivy.array([4], device=on_device), "d": ivy.array([5], device=on_device)}
     )
-    assert not top_cont.find_sub_container(sub_cont)
+    assert not top_cont.cont_find_sub_container(sub_cont)
     found_kc = top_cont.cont_find_sub_structure(sub_cont)
     assert found_kc == "b"
     found_kc = top_cont.cont_find_sub_structure(top_cont)
     assert found_kc == ""
 
     # partial
-    partial_sub_cont = Container({"d": ivy.array([5], device=device)})
+    partial_sub_cont = Container({"d": ivy.array([5], device=on_device)})
     found_kc = top_cont.cont_find_sub_structure(partial_sub_cont, partial=True)
     assert found_kc == "b"
-    partial_sub_cont = Container({"b": {"d": ivy.array([5], device=device)}})
+    partial_sub_cont = Container({"b": {"d": ivy.array([5], device=on_device)}})
     found_kc = top_cont.cont_find_sub_structure(partial_sub_cont, partial=True)
     assert found_kc == ""
 
 
-def test_container_show_sub_container(device):
+def test_container_show_sub_container(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     top_cont = Container(dict_in)
     sub_cont = Container(dict_in["b"])
@@ -820,16 +832,19 @@ def test_container_show_sub_container(device):
     top_cont.cont_show_sub_container(sub_cont)
 
 
-def test_container_from_dict_w_cont_types(device):
+def test_container_from_dict_w_cont_types(on_device):
     # ToDo: add tests for backends other than jax
     if ivy.current_backend_str() == "jax":
         pytest.skip()
     from haiku._src.data_structures import FlatMapping
 
     dict_in = {
-        "a": ivy.array([1], device=device),
+        "a": ivy.array([1], device=on_device),
         "b": FlatMapping(
-            {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)}
+            {
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
+            }
         ),
     }
     container = Container(dict_in)
@@ -841,10 +856,13 @@ def test_container_from_dict_w_cont_types(device):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
-def test_container_from_kwargs(device):
+def test_container_from_kwargs(on_device):
     container = Container(
-        a=ivy.array([1], device=device),
-        b={"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        a=ivy.array([1], device=on_device),
+        b={
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     )
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
@@ -854,10 +872,10 @@ def test_container_from_kwargs(device):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
-def test_container_from_list(device):
+def test_container_from_list(on_device):
     list_in = [
-        ivy.array([1], device=device),
-        [ivy.array([2], device=device), ivy.array([3], device=device)],
+        ivy.array([1], device=on_device),
+        [ivy.array([2], device=on_device), ivy.array([3], device=on_device)],
     ]
     container = Container(list_in, types_to_iteratively_nest=[list])
     assert np.allclose(ivy.to_numpy(container["it_0"]), np.array([1]))
@@ -868,10 +886,10 @@ def test_container_from_list(device):
     assert np.allclose(ivy.to_numpy(container.it_1.it_1), np.array([3]))
 
 
-def test_container_from_tuple(device):
+def test_container_from_tuple(on_device):
     tuple_in = (
-        ivy.array([1], device=device),
-        (ivy.array([2], device=device), ivy.array([3], device=device)),
+        ivy.array([1], device=on_device),
+        (ivy.array([2], device=on_device), ivy.array([3], device=on_device)),
     )
     container = Container(tuple_in, types_to_iteratively_nest=[tuple])
     assert np.allclose(ivy.to_numpy(container["it_0"]), np.array([1]))
@@ -882,10 +900,10 @@ def test_container_from_tuple(device):
     assert np.allclose(ivy.to_numpy(container.it_1.it_1), np.array([3]))
 
 
-def test_container_to_raw(device):
+def test_container_to_raw(on_device):
     tuple_in = (
-        ivy.array([1], device=device),
-        (ivy.array([2], device=device), ivy.array([3], device=device)),
+        ivy.array([1], device=on_device),
+        (ivy.array([2], device=on_device), ivy.array([3], device=on_device)),
     )
     container = Container(tuple_in, types_to_iteratively_nest=[tuple])
     raw = container.cont_to_raw()
@@ -894,8 +912,8 @@ def test_container_to_raw(device):
     assert np.allclose(ivy.to_numpy(raw[1][1]), np.array([3]))
 
 
-def test_container_as_bools(device):
-    dict_in = {"a": ivy.array([1], device=device), "b": {"c": [], "d": True}}
+def test_container_as_bools(on_device):
+    dict_in = {"a": ivy.array([1], device=on_device), "b": {"c": [], "d": True}}
     container = Container(dict_in)
 
     container_bools = container.cont_as_bools()
@@ -907,17 +925,17 @@ def test_container_as_bools(device):
     assert container_bools.b.d is True
 
 
-def test_container_all_true(device):
+def test_container_all_true(on_device):
     assert not Container(
-        {"a": ivy.array([1], device=device), "b": {"c": [], "d": True}}
+        {"a": ivy.array([1], device=on_device), "b": {"c": [], "d": True}}
     ).cont_all_true()
     assert Container(
-        {"a": ivy.array([1], device=device), "b": {"c": [1], "d": True}}
+        {"a": ivy.array([1], device=on_device), "b": {"c": [1], "d": True}}
     ).cont_all_true()
     # noinspection PyBroadException
     try:
         assert Container(
-            {"a": ivy.array([1], device=device), "b": {"c": [1], "d": True}}
+            {"a": ivy.array([1], device=on_device), "b": {"c": [1], "d": True}}
         ).cont_all_true(assert_is_bool=True)
         error_raised = False
     except IvyException:
@@ -925,13 +943,13 @@ def test_container_all_true(device):
     assert error_raised
 
 
-def test_container_all_false(device):
+def test_container_all_false(on_device):
     assert Container({"a": False, "b": {"c": [], "d": 0}}).cont_all_false()
     assert not Container({"a": False, "b": {"c": [1], "d": 0}}).cont_all_false()
     # noinspection PyBroadException
     try:
         assert Container(
-            {"a": ivy.array([1], device=device), "b": {"c": [1], "d": True}}
+            {"a": ivy.array([1], device=on_device), "b": {"c": [1], "d": True}}
         ).cont_all_false(assert_is_bool=True)
         error_raised = False
     except IvyException:
@@ -939,12 +957,12 @@ def test_container_all_false(device):
     assert error_raised
 
 
-def test_container_unstack_conts(device):
+def test_container_unstack_conts(on_device):
     dict_in = {
-        "a": ivy.array([[1], [2], [3]], device=device),
+        "a": ivy.array([[1], [2], [3]], device=on_device),
         "b": {
-            "c": ivy.array([[2], [3], [4]], device=device),
-            "d": ivy.array([[3], [4], [5]], device=device),
+            "c": ivy.array([[2], [3], [4]], device=on_device),
+            "d": ivy.array([[3], [4], [5]], device=on_device),
         },
     }
     container = Container(dict_in)
@@ -960,12 +978,12 @@ def test_container_unstack_conts(device):
         assert np.array_equal(ivy.to_numpy(cont.b.d), np.array([bd]))
 
 
-def test_container_split_conts(device):
+def test_container_split_conts(on_device):
     dict_in = {
-        "a": ivy.array([[1], [2], [3]], device=device),
+        "a": ivy.array([[1], [2], [3]], device=on_device),
         "b": {
-            "c": ivy.array([[2], [3], [4]], device=device),
-            "d": ivy.array([[3], [4], [5]], device=device),
+            "c": ivy.array([[2], [3], [4]], device=on_device),
+            "d": ivy.array([[3], [4], [5]], device=on_device),
         },
     }
     container = Container(dict_in)
@@ -981,21 +999,21 @@ def test_container_split_conts(device):
         assert np.array_equal(ivy.to_numpy(cont.b.d)[0], np.array([bd]))
 
 
-def test_container_num_arrays(device):
+def test_container_num_arrays(on_device):
     dict_in = {
-        "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
+        "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=on_device),
         "b": {
-            "c": ivy.array([[5.0, 10.0, 15.0, 20.0]], device=device),
-            "d": ivy.array([[10.0, 9.0, 8.0, 7.0]], device=device),
+            "c": ivy.array([[5.0, 10.0, 15.0, 20.0]], device=on_device),
+            "d": ivy.array([[10.0, 9.0, 8.0, 7.0]], device=on_device),
         },
     }
     container = Container(dict_in)
     assert container.cont_num_arrays() == 3
     dict_in = {
-        "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
+        "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=on_device),
         "b": {
-            "c": _variable(ivy.array([[5.0, 10.0, 15.0, 20.0]], device=device)),
-            "d": ivy.array([[10.0, 9.0, 8.0, 7.0]], device=device),
+            "c": _variable(ivy.array([[5.0, 10.0, 15.0, 20.0]], device=on_device)),
+            "d": ivy.array([[10.0, 9.0, 8.0, 7.0]], device=on_device),
         },
     }
     container = Container(dict_in)
@@ -1006,12 +1024,12 @@ def test_container_num_arrays(device):
     )
 
 
-def test_container_size_ordered_arrays(device):
+def test_container_size_ordered_arrays(on_device):
     dict_in = {
-        "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
+        "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=on_device),
         "b": {
-            "c": ivy.array([[5.0, 10.0]], device=device),
-            "d": ivy.array([[10.0, 9.0, 8.0]], device=device),
+            "c": ivy.array([[5.0, 10.0]], device=on_device),
+            "d": ivy.array([[10.0, 9.0, 8.0]], device=on_device),
         },
     }
     container = Container(dict_in)
@@ -1030,10 +1048,13 @@ def test_container_size_ordered_arrays(device):
         assert np.allclose(ivy.to_numpy(v), arr)
 
 
-def test_container_has_key(device):
+def test_container_has_key(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container = Container(dict_in)
     assert container.cont_has_key("a")  # noqa
@@ -1044,10 +1065,13 @@ def test_container_has_key(device):
     assert not container.cont_has_key("f")  # noqa
 
 
-def test_container_has_key_chain(device):
+def test_container_has_key_chain(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container = Container(dict_in)
     assert container.cont_has_key_chain("a")
@@ -1058,10 +1082,13 @@ def test_container_has_key_chain(device):
     assert not container.cont_has_key_chain("c")
 
 
-def test_container_at_keys(device):
+def test_container_at_keys(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container = Container(dict_in)
     new_container = container.cont_at_keys(["a", "c"])
@@ -1078,10 +1105,13 @@ def test_container_at_keys(device):
     assert np.allclose(ivy.to_numpy(new_container["b"]["d"]), np.array([3]))
 
 
-def test_container_at_key_chain(device):
+def test_container_at_key_chain(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container = Container(dict_in)
 
@@ -1098,10 +1128,13 @@ def test_container_at_key_chain(device):
     assert np.allclose(ivy.to_numpy(sub_container), np.array([2]))
 
 
-def test_container_at_key_chains(device):
+def test_container_at_key_chains(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container = Container(dict_in)
     target_cont = Container({"a": True, "b": {"c": True}})
@@ -1120,10 +1153,10 @@ def test_container_at_key_chains(device):
 
 
 @pytest.mark.parametrize("include_empty", [True, False])
-def test_container_all_key_chains(include_empty, device):
-    a_val = Container() if include_empty else ivy.array([1], device=device)
-    bc_val = Container() if include_empty else ivy.array([2], device=device)
-    bd_val = Container() if include_empty else ivy.array([3], device=device)
+def test_container_all_key_chains(include_empty, on_device):
+    a_val = Container() if include_empty else ivy.array([1], device=on_device)
+    bc_val = Container() if include_empty else ivy.array([2], device=on_device)
+    bd_val = Container() if include_empty else ivy.array([3], device=on_device)
     dict_in = {"a": a_val, "b": {"c": bc_val, "d": bd_val}}
     container = Container(dict_in)
     kcs = container.cont_all_key_chains(include_empty)
@@ -1133,10 +1166,10 @@ def test_container_all_key_chains(include_empty, device):
 
 
 @pytest.mark.parametrize("include_empty", [True, False])
-def test_container_key_chains_containing(include_empty, device):
-    a_val = Container() if include_empty else ivy.array([1], device=device)
-    bc_val = Container() if include_empty else ivy.array([2], device=device)
-    bd_val = Container() if include_empty else ivy.array([3], device=device)
+def test_container_key_chains_containing(include_empty, on_device):
+    a_val = Container() if include_empty else ivy.array([1], device=on_device)
+    bc_val = Container() if include_empty else ivy.array([2], device=on_device)
+    bd_val = Container() if include_empty else ivy.array([3], device=on_device)
     dict_in = {"a_sub": a_val, "b": {"c": bc_val, "d_sub": bd_val}}
     container = Container(dict_in)
     kcs = container.cont_key_chains_containing("sub", include_empty)
@@ -1145,22 +1178,25 @@ def test_container_key_chains_containing(include_empty, device):
 
 
 # noinspection PyUnresolvedReferences
-def test_container_set_at_keys(device):
+def test_container_set_at_keys(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container_orig = Container(dict_in)
 
     # explicit function call
     orig_container = container_orig.cont_copy()
-    container = orig_container.cont_set_at_keys({"b": ivy.array([4], device=device)})
+    container = orig_container.cont_set_at_keys({"b": ivy.array([4], device=on_device)})
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]), np.array([4]))
     assert not container.cont_has_key("c")  # noqa
     assert not container.cont_has_key("d")  # noqa
     container = orig_container.cont_set_at_keys(
-        {"a": ivy.array([5], device=device), "c": ivy.array([6], device=device)}
+        {"a": ivy.array([5], device=on_device), "c": ivy.array([6], device=on_device)}
     )
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([5]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([6]))
@@ -1168,21 +1204,24 @@ def test_container_set_at_keys(device):
 
 
 # noinspection PyUnresolvedReferences
-def test_container_set_at_key_chain(device):
+def test_container_set_at_key_chain(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container_orig = Container(dict_in)
 
     # explicit function call
     container = container_orig.cont_copy()
-    container = container.cont_set_at_key_chain("b/e", ivy.array([4], device=device))
+    container = container.cont_set_at_key_chain("b/e", ivy.array([4], device=on_device))
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(container["b"]["d"]), np.array([3]))
     assert np.allclose(ivy.to_numpy(container["b"]["e"]), np.array([4]))
-    container = container.cont_set_at_key_chain("f", ivy.array([5], device=device))
+    container = container.cont_set_at_key_chain("f", ivy.array([5], device=on_device))
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(container["b"]["d"]), np.array([3]))
@@ -1192,13 +1231,13 @@ def test_container_set_at_key_chain(device):
     # overridden built-in function call
     container = container_orig.cont_copy()
     assert "b/e" not in container
-    container["b/e"] = ivy.array([4], device=device)
+    container["b/e"] = ivy.array([4], device=on_device)
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(container["b"]["d"]), np.array([3]))
     assert np.allclose(ivy.to_numpy(container["b"]["e"]), np.array([4]))
     assert "f" not in container
-    container["f"] = ivy.array([5], device=device)
+    container["f"] = ivy.array([5], device=on_device)
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(container["b"]["d"]), np.array([3]))
@@ -1207,10 +1246,13 @@ def test_container_set_at_key_chain(device):
 
 
 # noinspection PyUnresolvedReferences
-def test_container_overwrite_at_key_chain(device):
+def test_container_overwrite_at_key_chain(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container_orig = Container(dict_in)
 
@@ -1218,55 +1260,61 @@ def test_container_overwrite_at_key_chain(device):
     container = container_orig.cont_copy()
     # noinspection PyBroadException
     try:
-        container.cont_overwrite_at_key_chain("b/e", ivy.array([4], device=device))
+        container.cont_overwrite_at_key_chain("b/e", ivy.array([4], device=on_device))
         exception_raised = False
     except Exception:
         exception_raised = True
     assert exception_raised
     container = container.cont_overwrite_at_key_chain(
-        "b/d", ivy.array([4], device=device)
+        "b/d", ivy.array([4], device=on_device)
     )
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(container["b"]["d"]), np.array([4]))
 
 
-def test_container_set_at_key_chains(device):
+def test_container_set_at_key_chains(on_device):
     container = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     target_container = Container(
-        {"a": ivy.array([4], device=device), "b": {"d": ivy.array([5], device=device)}}
+        {
+            "a": ivy.array([4], device=on_device),
+            "b": {"d": ivy.array([5], device=on_device)},
+        }
     )
     new_container = container.cont_set_at_key_chains(target_container, inplace=False)
     assert np.allclose(ivy.to_numpy(new_container["a"]), np.array([4]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["d"]), np.array([5]))
-    target_container = Container({"b": {"c": ivy.array([7], device=device)}})
+    target_container = Container({"b": {"c": ivy.array([7], device=on_device)}})
     new_container = container.cont_set_at_key_chains(target_container, inplace=False)
     assert np.allclose(ivy.to_numpy(new_container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([7]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["d"]), np.array([3]))
 
 
-def test_container_overwrite_at_key_chains(device):
+def test_container_overwrite_at_key_chains(on_device):
     container = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     target_container = Container(
-        {"a": ivy.array([4], device=device), "b": {"d": ivy.array([5], device=device)}}
+        {
+            "a": ivy.array([4], device=on_device),
+            "b": {"d": ivy.array([5], device=on_device)},
+        }
     )
     new_container = container.cont_overwrite_at_key_chains(
         target_container, inplace=False
@@ -1274,7 +1322,7 @@ def test_container_overwrite_at_key_chains(device):
     assert np.allclose(ivy.to_numpy(new_container["a"]), np.array([4]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["d"]), np.array([5]))
-    target_container = Container({"b": {"c": ivy.array([7], device=device)}})
+    target_container = Container({"b": {"c": ivy.array([7], device=on_device)}})
     new_container = container.cont_overwrite_at_key_chains(
         target_container, inplace=False
     )
@@ -1284,7 +1332,7 @@ def test_container_overwrite_at_key_chains(device):
     # noinspection PyBroadException
     try:
         container.cont_overwrite_at_key_chains(
-            Container({"b": {"e": ivy.array([5], device=device)}})
+            Container({"b": {"e": ivy.array([5], device=on_device)}})
         )
         exception_raised = False
     except Exception:
@@ -1292,10 +1340,13 @@ def test_container_overwrite_at_key_chains(device):
     assert exception_raised
 
 
-def test_container_prune_keys(device):
+def test_container_prune_keys(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container = Container(dict_in)
     container_pruned = container.cont_prune_keys(["a", "c"])
@@ -1337,10 +1388,10 @@ def test_container_prune_keys(device):
     assert _test_bd_exception(container_pruned)
 
 
-def test_container_prune_key_chain(device):
+def test_container_prune_key_chain(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": None},
+        "a": ivy.array([1], device=on_device),
+        "b": {"c": ivy.array([2], device=on_device), "d": None},
     }
     container = Container(dict_in)
     container_pruned = container.cont_prune_key_chain("b/c")
@@ -1374,10 +1425,13 @@ def test_container_prune_key_chain(device):
     assert _test_exception(container_pruned)
 
 
-def test_container_prune_key_chains(device):
+def test_container_prune_key_chains(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container = Container(dict_in)
     container_pruned = container.cont_prune_key_chains(["a", "b/c"])
@@ -1414,10 +1468,13 @@ def test_container_prune_key_chains(device):
     assert _test_bc_exception(container_pruned)
 
 
-def test_container_format_key_chains(device):
+def test_container_format_key_chains(on_device):
     dict_in = {
-        "_a": ivy.array([1], device=device),
-        "b ": {"c": ivy.array([2], device=device), "d-": ivy.array([3], device=device)},
+        "_a": ivy.array([1], device=on_device),
+        "b ": {
+            "c": ivy.array([2], device=on_device),
+            "d-": ivy.array([3], device=on_device),
+        },
     }
     cont = Container(dict_in)
     cont_formatted = cont.cont_format_key_chains(
@@ -1431,10 +1488,13 @@ def test_container_format_key_chains(device):
     assert np.allclose(ivy.to_numpy(cont_formatted.b.d), np.array([3]))
 
 
-def test_container_sort_by_key(device):
+def test_container_sort_by_key(on_device):
     dict_in = {
-        "b": ivy.array([1], device=device),
-        "a": {"d": ivy.array([2], device=device), "c": ivy.array([3], device=device)},
+        "b": ivy.array([1], device=on_device),
+        "a": {
+            "d": ivy.array([2], device=on_device),
+            "c": ivy.array([3], device=on_device),
+        },
     }
     container = Container(dict_in)
     container_sorted = container.cont_sort_by_key()
@@ -1444,10 +1504,10 @@ def test_container_sort_by_key(device):
         assert k == k_true
 
 
-def test_container_prune_empty(device):
+def test_container_prune_empty(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": {}, "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {"c": {}, "d": ivy.array([3], device=on_device)},
     }
     container = Container(dict_in)
     container_pruned = container.cont_prune_empty()
@@ -1467,17 +1527,17 @@ def test_container_prune_empty(device):
     assert _test_exception(container_pruned)
 
 
-def test_container_prune_key_from_key_chains(device):
+def test_container_prune_key_from_key_chains(on_device):
     container = Container(
         {
-            "Ayy": ivy.array([1], device=device),
+            "Ayy": ivy.array([1], device=on_device),
             "Bee": {
-                "Cee": ivy.array([2], device=device),
-                "Dee": ivy.array([3], device=device),
+                "Cee": ivy.array([2], device=on_device),
+                "Dee": ivy.array([3], device=on_device),
             },
             "Beh": {
-                "Ceh": ivy.array([4], device=device),
-                "Deh": ivy.array([5], device=device),
+                "Ceh": ivy.array([4], device=on_device),
+                "Deh": ivy.array([5], device=on_device),
             },
         }
     )
@@ -1508,15 +1568,15 @@ def test_container_prune_key_from_key_chains(device):
     assert "Beh" not in container_pruned
 
 
-def test_container_prune_keys_from_key_chains(device):
+def test_container_prune_keys_from_key_chains(on_device):
     container = Container(
         {
-            "Ayy": ivy.array([1], device=device),
+            "Ayy": ivy.array([1], device=on_device),
             "Bee": {
-                "Cee": ivy.array([2], device=device),
-                "Dee": ivy.array([3], device=device),
+                "Cee": ivy.array([2], device=on_device),
+                "Dee": ivy.array([3], device=on_device),
             },
-            "Eee": {"Fff": ivy.array([4], device=device)},
+            "Eee": {"Fff": ivy.array([4], device=on_device)},
         }
     )
 
@@ -1547,15 +1607,15 @@ def test_container_prune_keys_from_key_chains(device):
     assert "Eee" not in container_pruned
 
 
-def test_container_restructure_key_chains(device):
+def test_container_restructure_key_chains(on_device):
 
     # single
     container = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
@@ -1570,10 +1630,10 @@ def test_container_restructure_key_chains(device):
     # full
     container = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
@@ -1588,13 +1648,13 @@ def test_container_restructure_key_chains(device):
     assert np.allclose(ivy.to_numpy(container_restructured.B.D), np.array([[3]]))
 
 
-def test_container_restructure(device):
+def test_container_restructure(on_device):
     container = Container(
         {
-            "a": ivy.array([[1, 2], [3, 4]], device=device),
+            "a": ivy.array([[1, 2], [3, 4]], device=on_device),
             "b": {
-                "c": ivy.array([[2, 4], [6, 8]], device=device),
-                "d": ivy.array([3, 6, 9, 12], device=device),
+                "c": ivy.array([[2, 4], [6, 8]], device=on_device),
+                "d": ivy.array([3, 6, 9, 12], device=on_device),
             },
         }
     )
@@ -1628,13 +1688,13 @@ def test_container_restructure(device):
     )
 
 
-def test_container_flatten_key_chains(device):
+def test_container_flatten_key_chains(on_device):
     container = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": {"d": ivy.array([2], device=device)},
-                "e": {"f": {"g": ivy.array([3], device=device)}},
+                "c": {"d": ivy.array([2], device=on_device)},
+                "e": {"f": {"g": ivy.array([3], device=on_device)}},
             },
         }
     )
@@ -1676,12 +1736,12 @@ def test_container_flatten_key_chains(device):
     assert np.allclose(ivy.to_numpy(container_flat.b.e__f.g), np.array([[3]]))
 
 
-def test_container_deep_copy(device):
+def test_container_deep_copy(on_device):
     dict_in = {
-        "a": ivy.array([0.0], device=device),
+        "a": ivy.array([0.0], device=on_device),
         "b": {
-            "c": ivy.array([1.0], device=device),
-            "d": ivy.array([2.0], device=device),
+            "c": ivy.array([1.0], device=on_device),
+            "d": ivy.array([2.0], device=on_device),
         },
     }
     cont = Container(dict_in)
@@ -1694,10 +1754,10 @@ def test_container_deep_copy(device):
     assert id(cont.b.d) != id(cont_deepcopy.b.d)
 
 
-def test_container_contains(device):
-    arr0 = ivy.array([0.0], device=device)
-    arr1 = ivy.array([1.0], device=device)
-    arr2 = ivy.array([2.0], device=device)
+def test_container_contains(on_device):
+    arr0 = ivy.array([0.0], device=on_device)
+    arr1 = ivy.array([1.0], device=on_device)
+    arr2 = ivy.array([2.0], device=on_device)
     sub_cont = Container({"c": arr1, "d": arr2})
     container = Container({"a": arr0, "b": sub_cont})
 
@@ -1722,7 +1782,10 @@ def test_container_contains(device):
 
     # sub-structure
     sub_struc = Container(
-        {"c": ivy.array([3.0], device=device), "d": ivy.array([4.0], device=device)}
+        {
+            "c": ivy.array([3.0], device=on_device),
+            "d": ivy.array([4.0], device=on_device),
+        }
     )
     assert not container.cont_contains_sub_container(sub_struc)
     assert sub_struc not in container
@@ -1730,17 +1793,17 @@ def test_container_contains(device):
     assert container.cont_contains_sub_structure(container)
 
     # partial sub-structure
-    partial_sub_struc = Container({"b": {"d": ivy.array([4.0], device=device)}})
+    partial_sub_struc = Container({"b": {"d": ivy.array([4.0], device=on_device)}})
     assert container.cont_contains_sub_structure(container, partial=True)
     assert container.cont_contains_sub_structure(partial_sub_struc, partial=True)
     assert not partial_sub_struc.cont_contains_sub_structure(container, partial=True)
 
 
 @pytest.mark.parametrize("include_empty", [True, False])
-def test_container_to_iterator(include_empty, device):
-    a_val = Container() if include_empty else ivy.array([1], device=device)
-    bc_val = Container() if include_empty else ivy.array([2], device=device)
-    bd_val = Container() if include_empty else ivy.array([3], device=device)
+def test_container_to_iterator(include_empty, on_device):
+    a_val = Container() if include_empty else ivy.array([1], device=on_device)
+    bc_val = Container() if include_empty else ivy.array([2], device=on_device)
+    bd_val = Container() if include_empty else ivy.array([3], device=on_device)
     dict_in = {"a": a_val, "b": {"c": bc_val, "d": bd_val}}
     container = Container(dict_in)
 
@@ -1768,10 +1831,10 @@ def test_container_to_iterator(include_empty, device):
 
 
 @pytest.mark.parametrize("include_empty", [True, False])
-def test_container_to_iterator_values(include_empty, device):
-    a_val = Container() if include_empty else ivy.array([1], device=device)
-    bc_val = Container() if include_empty else ivy.array([2], device=device)
-    bd_val = Container() if include_empty else ivy.array([3], device=device)
+def test_container_to_iterator_values(include_empty, on_device):
+    a_val = Container() if include_empty else ivy.array([1], device=on_device)
+    bc_val = Container() if include_empty else ivy.array([2], device=on_device)
+    bd_val = Container() if include_empty else ivy.array([3], device=on_device)
     dict_in = {"a": a_val, "b": {"c": bc_val, "d": bd_val}}
     container = Container(dict_in)
 
@@ -1782,10 +1845,10 @@ def test_container_to_iterator_values(include_empty, device):
 
 
 @pytest.mark.parametrize("include_empty", [True, False])
-def test_container_to_iterator_keys(include_empty, device):
-    a_val = Container() if include_empty else ivy.array([1], device=device)
-    bc_val = Container() if include_empty else ivy.array([2], device=device)
-    bd_val = Container() if include_empty else ivy.array([3], device=device)
+def test_container_to_iterator_keys(include_empty, on_device):
+    a_val = Container() if include_empty else ivy.array([1], device=on_device)
+    bc_val = Container() if include_empty else ivy.array([2], device=on_device)
+    bd_val = Container() if include_empty else ivy.array([3], device=on_device)
     dict_in = {"a": a_val, "b": {"c": bc_val, "d": bd_val}}
     container = Container(dict_in)
 
@@ -1802,28 +1865,34 @@ def test_container_to_iterator_keys(include_empty, device):
         assert key == expected_key
 
 
-def test_container_to_flat_list(device):
+def test_container_to_flat_list(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container = Container(dict_in)
     container_flat_list = container.cont_to_flat_list()
     for value, expected_value in zip(
         container_flat_list,
         [
-            ivy.array([1], device=device),
-            ivy.array([2], device=device),
-            ivy.array([3], device=device),
+            ivy.array([1], device=on_device),
+            ivy.array([2], device=on_device),
+            ivy.array([3], device=on_device),
         ],
     ):
         assert value == expected_value
 
 
-def test_container_from_flat_list(device):
+def test_container_from_flat_list(on_device):
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container = Container(dict_in)
     flat_list = [4, 5, 6]
@@ -1837,11 +1906,14 @@ def test_container_from_flat_list(device):
 
 
 @pytest.mark.parametrize("inplace", [True, False])
-def test_container_map(inplace, device):
+def test_container_map(inplace, on_device):
     # without key_chains specification
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
     container_orig = Container(dict_in)
     container = container_orig.cont_deep_copy()
@@ -1853,9 +1925,9 @@ def test_container_map(inplace, device):
     for (key, value), expected_value in zip(
         container_iterator,
         [
-            ivy.array([2], device=device),
-            ivy.array([3], device=device),
-            ivy.array([4], device=device),
+            ivy.array([2], device=on_device),
+            ivy.array([3], device=on_device),
+            ivy.array([4], device=on_device),
         ],
     ):
         assert ivy.to_numpy(value) == ivy.to_numpy(expected_value)
@@ -1926,8 +1998,8 @@ def test_container_map(inplace, device):
     # with sequences
     container_orig = Container(
         {
-            "a": ivy.array([1], device=device),
-            "b": [ivy.array([2], device=device), ivy.array([3], device=device)],
+            "a": ivy.array([1], device=on_device),
+            "b": [ivy.array([2], device=on_device), ivy.array([3], device=on_device)],
         }
     )
     container = container_orig.cont_deep_copy()
@@ -1942,20 +2014,20 @@ def test_container_map(inplace, device):
 
 
 @pytest.mark.parametrize("inplace", [True, False])
-def test_container_map_sub_conts(inplace, device):
+def test_container_map_sub_conts(inplace, on_device):
     # without key_chains specification
     container_orig = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
 
     def _add_e_attr(cont_in):
-        cont_in.e = ivy.array([4], device=device)
+        cont_in.e = ivy.array([4], device=on_device)
         return cont_in
 
     # with self
@@ -1982,23 +2054,23 @@ def test_container_map_sub_conts(inplace, device):
     assert np.array_equal(ivy.to_numpy(container_mapped.b.e), np.array([4]))
 
 
-def test_container_multi_map(device):
+def test_container_multi_map(on_device):
     # without key_chains specification
     container0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container1 = Container(
         {
-            "a": ivy.array([3], device=device),
+            "a": ivy.array([3], device=on_device),
             "b": {
-                "c": ivy.array([4], device=device),
-                "d": ivy.array([5], device=device),
+                "c": ivy.array([4], device=on_device),
+                "d": ivy.array([5], device=on_device),
             },
         }
     )
@@ -2017,19 +2089,19 @@ def test_container_multi_map(device):
     # with sequences
     container0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": [
-                ivy.array([2], device=device),
-                ivy.array([3], device=device),
+                ivy.array([2], device=on_device),
+                ivy.array([3], device=on_device),
             ],
         }
     )
     container1 = Container(
         {
-            "a": ivy.array([3], device=device),
+            "a": ivy.array([3], device=on_device),
             "b": [
-                ivy.array([4], device=device),
-                ivy.array([5], device=device),
+                ivy.array([4], device=on_device),
+                ivy.array([5], device=on_device),
             ],
         }
     )
@@ -2056,10 +2128,10 @@ def test_container_multi_map(device):
     assert np.allclose(ivy.to_numpy(container_mapped["d"].f, copy=False), 3)
 
 
-def test_container_common_key_chains(device):
-    arr1 = ivy.array([1], device=device)
-    arr2 = ivy.array([2], device=device)
-    arr3 = ivy.array([3], device=device)
+def test_container_common_key_chains(on_device):
+    arr1 = ivy.array([1], device=on_device)
+    arr2 = ivy.array([2], device=on_device)
+    arr3 = ivy.array([3], device=on_device)
     cont0 = Container({"a": arr1, "b": {"c": arr2, "d": arr3}})
     cont1 = Container({"b": {"c": arr2, "d": arr3, "e": arr1}})
     cont2 = Container({"a": arr1, "b": {"d": arr3, "e": arr1}})
@@ -2095,19 +2167,19 @@ def test_container_common_key_chains(device):
     assert "b/d" in common_kcs
 
 
-def test_container_identical(device):
+def test_container_identical(on_device):
     # without key_chains specification
-    arr1 = ivy.array([1], device=device)
-    arr2 = ivy.array([2], device=device)
-    arr3 = ivy.array([3], device=device)
+    arr1 = ivy.array([1], device=on_device)
+    arr2 = ivy.array([2], device=on_device)
+    arr3 = ivy.array([3], device=on_device)
     container0 = Container({"a": arr1, "b": {"c": arr2, "d": arr3}})
     container1 = Container({"a": arr1, "b": {"c": arr2, "d": arr3}})
     container2 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
@@ -2131,48 +2203,48 @@ def test_container_identical(device):
     assert not ivy.Container.cont_identical([container4, container0], partial=True)
 
 
-def test_container_identical_structure(device):
+def test_container_identical_structure(on_device):
     # without key_chains specification
     container0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container1 = Container(
         {
-            "a": ivy.array([3], device=device),
+            "a": ivy.array([3], device=on_device),
             "b": {
-                "c": ivy.array([4], device=device),
-                "d": ivy.array([5], device=device),
+                "c": ivy.array([4], device=on_device),
+                "d": ivy.array([5], device=on_device),
             },
         }
     )
     container2 = Container(
         {
-            "a": ivy.array([3], device=device),
+            "a": ivy.array([3], device=on_device),
             "b": {
-                "c": ivy.array([4], device=device),
-                "d": ivy.array([5], device=device),
-                "e": ivy.array([6], device=device),
+                "c": ivy.array([4], device=on_device),
+                "d": ivy.array([5], device=on_device),
+                "e": ivy.array([6], device=on_device),
             },
         }
     )
     container3 = Container(
         {
-            "a": ivy.array([3], device=device),
+            "a": ivy.array([3], device=on_device),
             "b": {
-                "c": ivy.array([4], device=device),
-                "d": ivy.array([5], device=device),
+                "c": ivy.array([4], device=on_device),
+                "d": ivy.array([5], device=on_device),
             },
-            "e": ivy.array([6], device=device),
+            "e": ivy.array([6], device=on_device),
         }
     )
-    container4 = Container({"b": {"d": ivy.array([4], device=device)}})
-    container5 = Container({"d": ivy.array([4], device=device)})
+    container4 = Container({"b": {"d": ivy.array([4], device=on_device)}})
+    container5 = Container({"d": ivy.array([4], device=on_device)})
 
     # with identical
     assert ivy.Container.cont_identical_structure([container0, container1])
@@ -2220,10 +2292,10 @@ def test_container_identical_structure(device):
     )
 
 
-def test_container_identical_configs(device):
-    container0 = Container({"a": ivy.array([1], device=device)}, print_limit=5)
-    container1 = Container({"a": ivy.array([1], device=device)}, print_limit=5)
-    container2 = Container({"a": ivy.array([1], device=device)}, print_limit=10)
+def test_container_identical_configs(on_device):
+    container0 = Container({"a": ivy.array([1], device=on_device)}, print_limit=5)
+    container1 = Container({"a": ivy.array([1], device=on_device)}, print_limit=5)
+    container2 = Container({"a": ivy.array([1], device=on_device)}, print_limit=10)
 
     # with identical
     assert ivy.Container.cont_identical_configs([container0, container1])
@@ -2237,32 +2309,32 @@ def test_container_identical_configs(device):
     )
 
 
-def test_container_identical_array_shapes(device):
+def test_container_identical_array_shapes(on_device):
     # without key_chains specification
     container0 = Container(
         {
-            "a": ivy.array([1, 2], device=device),
+            "a": ivy.array([1, 2], device=on_device),
             "b": {
-                "c": ivy.array([2, 3, 4], device=device),
-                "d": ivy.array([3, 4, 5, 6], device=device),
+                "c": ivy.array([2, 3, 4], device=on_device),
+                "d": ivy.array([3, 4, 5, 6], device=on_device),
             },
         }
     )
     container1 = Container(
         {
-            "a": ivy.array([1, 2, 3, 4], device=device),
+            "a": ivy.array([1, 2, 3, 4], device=on_device),
             "b": {
-                "c": ivy.array([3, 4], device=device),
-                "d": ivy.array([3, 4, 5], device=device),
+                "c": ivy.array([3, 4], device=on_device),
+                "d": ivy.array([3, 4, 5], device=on_device),
             },
         }
     )
     container2 = Container(
         {
-            "a": ivy.array([1, 2, 3, 4], device=device),
+            "a": ivy.array([1, 2, 3, 4], device=on_device),
             "b": {
-                "c": ivy.array([3, 4], device=device),
-                "d": ivy.array([3, 4, 5, 6], device=device),
+                "c": ivy.array([3, 4], device=on_device),
+                "d": ivy.array([3, 4, 5, 6], device=on_device),
             },
         }
     )
@@ -2278,13 +2350,13 @@ def test_container_identical_array_shapes(device):
     assert not ivy.Container.cont_identical([container0, container1, container2])
 
 
-def test_container_with_entries_as_lists(device):
+def test_container_with_entries_as_lists(on_device):
     if ivy.current_backend_str() == "tensorflow":
         # to_list() requires eager execution
         pytest.skip()
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2.0], device=device), "d": "some string"},
+        "a": ivy.array([1], device=on_device),
+        "b": {"c": ivy.array([2.0], device=on_device), "d": "some string"},
     }
     container = Container(dict_in)
     container_w_list_entries = container.cont_with_entries_as_lists()
@@ -2294,13 +2366,13 @@ def test_container_with_entries_as_lists(device):
         assert value == expected_value
 
 
-def test_container_reshape_like(device):
+def test_container_reshape_like(on_device):
     container = Container(
         {
-            "a": ivy.array([[1.0]], device=device),
+            "a": ivy.array([[1.0]], device=on_device),
             "b": {
-                "c": ivy.array([[3.0], [4.0]], device=device),
-                "d": ivy.array([[5.0], [6.0], [7.0]], device=device),
+                "c": ivy.array([[3.0], [4.0]], device=on_device),
+                "d": ivy.array([[5.0], [6.0], [7.0]], device=on_device),
             },
         }
     )
@@ -2318,10 +2390,10 @@ def test_container_reshape_like(device):
     # with leading shape
     container = Container(
         {
-            "a": ivy.array([[[1.0]], [[1.0]], [[1.0]]], device=device),
+            "a": ivy.array([[[1.0]], [[1.0]], [[1.0]]], device=on_device),
             "b": {
                 "c": ivy.array(
-                    [[[3.0], [4.0]], [[3.0], [4.0]], [[3.0], [4.0]]], device=device
+                    [[[3.0], [4.0]], [[3.0], [4.0]], [[3.0], [4.0]]], device=on_device
                 ),
                 "d": ivy.array(
                     [
@@ -2329,7 +2401,7 @@ def test_container_reshape_like(device):
                         [[5.0], [6.0], [7.0]],
                         [[5.0], [6.0], [7.0]],
                     ],
-                    device=device,
+                    device=on_device,
                 ),
             },
         }
@@ -2343,12 +2415,12 @@ def test_container_reshape_like(device):
     assert list(container_reshaped.b.d.shape) == [3, 3, 1, 1]
 
 
-def test_container_slice(device):
+def test_container_slice(on_device):
     dict_in = {
-        "a": ivy.array([[0.0], [1.0]], device=device),
+        "a": ivy.array([[0.0], [1.0]], device=on_device),
         "b": {
-            "c": ivy.array([[1.0], [2.0]], device=device),
-            "d": ivy.array([[2.0], [3.0]], device=device),
+            "c": ivy.array([[1.0], [2.0]], device=on_device),
+            "d": ivy.array([[2.0], [3.0]], device=on_device),
         },
     }
     container = Container(dict_in)
@@ -2368,20 +2440,20 @@ def test_container_slice(device):
     assert np.array_equal(ivy.to_numpy(container1.b.d), np.array([3.0]))
 
 
-def test_container_slice_via_key(device):
+def test_container_slice_via_key(on_device):
     dict_in = {
         "a": {
-            "x": ivy.array([0.0], device=device),
-            "y": ivy.array([1.0], device=device),
+            "x": ivy.array([0.0], device=on_device),
+            "y": ivy.array([1.0], device=on_device),
         },
         "b": {
             "c": {
-                "x": ivy.array([1.0], device=device),
-                "y": ivy.array([2.0], device=device),
+                "x": ivy.array([1.0], device=on_device),
+                "y": ivy.array([2.0], device=on_device),
             },
             "d": {
-                "x": ivy.array([2.0], device=device),
-                "y": ivy.array([3.0], device=device),
+                "x": ivy.array([2.0], device=on_device),
+                "y": ivy.array([3.0], device=on_device),
             },
         },
     }
@@ -2402,24 +2474,24 @@ def test_container_slice_via_key(device):
     assert np.array_equal(ivy.to_numpy(containery.b.d), np.array([3.0]))
 
 
-def test_container_to_and_from_disk_as_hdf5(device):
+def test_container_to_and_from_disk_as_hdf5(on_device):
     if ivy.current_backend_str() == "tensorflow":
         # container disk saving requires eager execution
         pytest.skip()
     save_filepath = "container_on_disk.hdf5"
     dict_in_1 = {
-        "a": ivy.array([np.float32(1.0)], device=device),
+        "a": ivy.array([np.float32(1.0)], device=on_device),
         "b": {
-            "c": ivy.array([np.float32(2.0)], device=device),
-            "d": ivy.array([np.float32(3.0)], device=device),
+            "c": ivy.array([np.float32(2.0)], device=on_device),
+            "d": ivy.array([np.float32(3.0)], device=on_device),
         },
     }
     container1 = Container(dict_in_1)
     dict_in_2 = {
-        "a": ivy.array([np.float32(1.0), np.float32(1.0)], device=device),
+        "a": ivy.array([np.float32(1.0), np.float32(1.0)], device=on_device),
         "b": {
-            "c": ivy.array([np.float32(2.0), np.float32(2.0)], device=device),
-            "d": ivy.array([np.float32(3.0), np.float32(3.0)], device=device),
+            "c": ivy.array([np.float32(2.0), np.float32(2.0)], device=on_device),
+            "d": ivy.array([np.float32(3.0), np.float32(3.0)], device=on_device),
         },
     }
     container2 = Container(dict_in_2)
@@ -2474,16 +2546,16 @@ def test_container_to_and_from_disk_as_hdf5(device):
     os.remove(save_filepath)
 
 
-def test_container_to_disk_shuffle_and_from_disk_as_hdf5(device):
+def test_container_to_disk_shuffle_and_from_disk_as_hdf5(on_device):
     if ivy.current_backend_str() == "tensorflow":
         # container disk saving requires eager execution
         pytest.skip()
     save_filepath = "container_on_disk.hdf5"
     dict_in = {
-        "a": ivy.array([1, 2, 3], device=device),
+        "a": ivy.array([1, 2, 3], device=on_device),
         "b": {
-            "c": ivy.array([1, 2, 3], device=device),
-            "d": ivy.array([1, 2, 3], device=device),
+            "c": ivy.array([1, 2, 3], device=on_device),
+            "d": ivy.array([1, 2, 3], device=on_device),
         },
     }
     container = Container(dict_in)
@@ -2513,12 +2585,12 @@ def test_container_to_disk_shuffle_and_from_disk_as_hdf5(device):
     os.remove(save_filepath)
 
 
-def test_container_pickle(device):
+def test_container_pickle(on_device):
     dict_in = {
-        "a": ivy.array([np.float32(1.0)], device=device),
+        "a": ivy.array([np.float32(1.0)], device=on_device),
         "b": {
-            "c": ivy.array([np.float32(2.0)], device=device),
-            "d": ivy.array([np.float32(3.0)], device=device),
+            "c": ivy.array([np.float32(2.0)], device=on_device),
+            "d": ivy.array([np.float32(3.0)], device=on_device),
         },
     }
 
@@ -2542,13 +2614,13 @@ def test_container_pickle(device):
     ivy.Container.cont_identical_configs([cont, cont_again])
 
 
-def test_container_to_and_from_disk_as_pickled(device):
+def test_container_to_and_from_disk_as_pickled(on_device):
     save_filepath = "container_on_disk.pickled"
     dict_in = {
-        "a": ivy.array([np.float32(1.0)], device=device),
+        "a": ivy.array([np.float32(1.0)], device=on_device),
         "b": {
-            "c": ivy.array([np.float32(2.0)], device=device),
-            "d": ivy.array([np.float32(3.0)], device=device),
+            "c": ivy.array([np.float32(2.0)], device=on_device),
+            "d": ivy.array([np.float32(3.0)], device=on_device),
         },
     }
     container = Container(dict_in)
@@ -2570,11 +2642,11 @@ def test_container_to_and_from_disk_as_pickled(device):
     os.remove(save_filepath)
 
 
-def test_container_to_and_from_disk_as_json(device):
+def test_container_to_and_from_disk_as_json(on_device):
     save_filepath = "container_on_disk.json"
     dict_in = {
         "a": 1.274e-7,
-        "b": {"c": True, "d": ivy.array([np.float32(3.0)], device=device)},
+        "b": {"c": True, "d": ivy.array([np.float32(3.0)], device=on_device)},
     }
     container = Container(dict_in)
 
@@ -2591,12 +2663,12 @@ def test_container_to_and_from_disk_as_json(device):
     os.remove(save_filepath)
 
 
-def test_container_shapes(device):
+def test_container_shapes(on_device):
     dict_in = {
-        "a": ivy.array([[[1.0], [2.0], [3.0]]], device=device),
+        "a": ivy.array([[[1.0], [2.0], [3.0]]], device=on_device),
         "b": {
-            "c": ivy.array([[[2.0], [4.0]]], device=device),
-            "d": ivy.array([[9.0]], device=device),
+            "c": ivy.array([[[2.0], [4.0]]], device=on_device),
+            "d": ivy.array([[9.0]], device=on_device),
         },
     }
     container_shapes = Container(dict_in).cont_shapes
@@ -2608,24 +2680,24 @@ def test_container_shapes(device):
     assert list(container_shapes.b.d) == [1, 1]
 
 
-def test_container_dev_str(device):
+def test_container_dev_str(on_device):
     dict_in = {
-        "a": ivy.array([[[1.0], [2.0], [3.0]]], device=device),
+        "a": ivy.array([[[1.0], [2.0], [3.0]]], device=on_device),
         "b": {
-            "c": ivy.array([[[2.0], [4.0], [6.0]]], device=device),
-            "d": ivy.array([[[3.0], [6.0], [9.0]]], device=device),
+            "c": ivy.array([[[2.0], [4.0], [6.0]]], device=on_device),
+            "d": ivy.array([[[3.0], [6.0], [9.0]]], device=on_device),
         },
     }
     container = Container(dict_in)
-    assert container.cont_dev_str == device
+    assert container.cont_dev_str == on_device
 
 
-def test_container_create_if_absent(device):
+def test_container_create_if_absent(on_device):
     dict_in = {
-        "a": ivy.array([[[1.0], [2.0], [3.0]]], device=device),
+        "a": ivy.array([[[1.0], [2.0], [3.0]]], device=on_device),
         "b": {
-            "c": ivy.array([[[2.0], [4.0], [6.0]]], device=device),
-            "d": ivy.array([[[3.0], [6.0], [9.0]]], device=device),
+            "c": ivy.array([[[2.0], [4.0], [6.0]]], device=on_device),
+            "d": ivy.array([[[3.0], [6.0], [9.0]]], device=on_device),
         },
     }
 
@@ -2641,12 +2713,12 @@ def test_container_create_if_absent(device):
     assert np.allclose(ivy.to_numpy(container.f.g), np.array([[[5.0], [10.0], [15.0]]]))
 
 
-def test_container_if_exists(device):
+def test_container_if_exists(on_device):
     dict_in = {
-        "a": ivy.array([[[1.0], [2.0], [3.0]]], device=device),
+        "a": ivy.array([[[1.0], [2.0], [3.0]]], device=on_device),
         "b": {
-            "c": ivy.array([[[2.0], [4.0], [6.0]]], device=device),
-            "d": ivy.array([[[3.0], [6.0], [9.0]]], device=device),
+            "c": ivy.array([[[2.0], [4.0], [6.0]]], device=on_device),
+            "d": ivy.array([[[3.0], [6.0], [9.0]]], device=on_device),
         },
     }
     container = Container(dict_in)
@@ -2655,18 +2727,18 @@ def test_container_if_exists(device):
     )
     assert "c" not in container
     assert container.cont_if_exists("c") is None
-    container["c"] = ivy.array([[[1.0], [2.0], [3.0]]], device=device)
+    container["c"] = ivy.array([[[1.0], [2.0], [3.0]]], device=on_device)
     assert np.allclose(
         ivy.to_numpy(container.cont_if_exists("c")), np.array([[[1.0], [2.0], [3.0]]])
     )
     assert container.cont_if_exists("d") is None
-    container.d = ivy.array([[[1.0], [2.0], [3.0]]], device=device)
+    container.d = ivy.array([[[1.0], [2.0], [3.0]]], device=on_device)
     assert np.allclose(
         ivy.to_numpy(container.cont_if_exists("d")), np.array([[[1.0], [2.0], [3.0]]])
     )
 
 
-def test_jax_pytree_compatibility(device):
+def test_jax_pytree_compatibility(on_device):
 
     if ivy.current_backend_str() != "jax":
         pytest.skip()
@@ -2676,8 +2748,11 @@ def test_jax_pytree_compatibility(device):
 
     # dict in
     dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
+        "a": ivy.array([1], device=on_device),
+        "b": {
+            "c": ivy.array([2], device=on_device),
+            "d": ivy.array([3], device=on_device),
+        },
     }
 
     # container
@@ -2694,15 +2769,15 @@ def test_jax_pytree_compatibility(device):
         assert np.array_equal(ivy.to_numpy(cont_values[i]), ivy.to_numpy(true_val))
 
 
-def test_container_from_queues(device):
+def test_container_from_queues(on_device):
 
-    if "gpu" in device:
+    if "gpu" in on_device:
         # Cannot re-initialize CUDA in forked subprocess. 'spawn'
         # start method must be used.
         pytest.skip()
 
     if ivy.gpu_is_available() and ivy.current_backend_str() == "jax":
-        # Not found a way to set default device for JAX, and this causes
+        # Not found a way to set default on_device for JAX, and this causes
         # issues with multiprocessing and CUDA, even when device=cpu
         # ToDo: find a fix for this problem ^^
         pytest.skip()
@@ -2717,7 +2792,7 @@ def test_container_from_queues(device):
             out_queue.put(
                 {
                     "a": [
-                        ivy.to_native(ivy.array([1.0, 2.0, 3.0], device=device))
+                        ivy.to_native(ivy.array([1.0, 2.0, 3.0], device=on_device))
                         * worker_id
                     ]
                     * load_size
@@ -2799,22 +2874,22 @@ def test_container_from_queues(device):
     del container
 
 
-def test_container_reduce(device):
+def test_container_reduce(on_device):
     container_a = ivy.Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container_b = ivy.Container(
         {
-            "a": ivy.array([2], device=device),
+            "a": ivy.array([2], device=on_device),
             "b": {
-                "c": ivy.array([4], device=device),
-                "d": ivy.array([6], device=device),
+                "c": ivy.array([4], device=on_device),
+                "d": ivy.array([6], device=on_device),
             },
         }
     )
@@ -2824,19 +2899,19 @@ def test_container_reduce(device):
     assert np.allclose(ivy.to_numpy(res.b.d), np.array([9]))
 
 
-def test_container_assert_identical(device):
+def test_container_assert_identical(on_device):
     # without key_chains specification
-    arr1 = ivy.array([1], device=device)
-    arr2 = ivy.array([2], device=device)
-    arr3 = ivy.array([3], device=device)
+    arr1 = ivy.array([1], device=on_device)
+    arr2 = ivy.array([2], device=on_device)
+    arr3 = ivy.array([3], device=on_device)
     container0 = Container({"a": arr1, "b": {"c": arr2, "d": arr3}})
     container1 = Container({"a": arr1, "b": {"c": arr2, "d": arr3}})
     container2 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
@@ -2872,48 +2947,48 @@ def test_container_assert_identical(device):
     assert error_caught
 
 
-def test_container_assert_identical_structure(device):
+def test_container_assert_identical_structure(on_device):
     # without key_chains specification
     container0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([2], device=device),
-                "d": ivy.array([3], device=device),
+                "c": ivy.array([2], device=on_device),
+                "d": ivy.array([3], device=on_device),
             },
         }
     )
     container1 = Container(
         {
-            "a": ivy.array([3], device=device),
+            "a": ivy.array([3], device=on_device),
             "b": {
-                "c": ivy.array([4], device=device),
-                "d": ivy.array([5], device=device),
+                "c": ivy.array([4], device=on_device),
+                "d": ivy.array([5], device=on_device),
             },
         }
     )
     container2 = Container(
         {
-            "a": ivy.array([3], device=device),
+            "a": ivy.array([3], device=on_device),
             "b": {
-                "c": ivy.array([4], device=device),
-                "d": ivy.array([5], device=device),
-                "e": ivy.array([6], device=device),
+                "c": ivy.array([4], device=on_device),
+                "d": ivy.array([5], device=on_device),
+                "e": ivy.array([6], device=on_device),
             },
         }
     )
     container3 = Container(
         {
-            "a": ivy.array([3], device=device),
+            "a": ivy.array([3], device=on_device),
             "b": {
-                "c": ivy.array([4], device=device),
-                "d": ivy.array([5], device=device),
+                "c": ivy.array([4], device=on_device),
+                "d": ivy.array([5], device=on_device),
             },
-            "e": ivy.array([6], device=device),
+            "e": ivy.array([6], device=on_device),
         }
     )
-    container4 = Container({"b": {"d": ivy.array([4], device=device)}})
-    container5 = Container({"d": ivy.array([4], device=device)})
+    container4 = Container({"b": {"d": ivy.array([4], device=on_device)}})
+    container5 = Container({"d": ivy.array([4], device=on_device)})
 
     # with identical
     ivy.Container.cont_assert_identical_structure([container0, container1])
@@ -2948,16 +3023,16 @@ def test_container_assert_identical_structure(device):
     assert error_caught
 
 
-def test_container_duplicate_array_keychains(device):
-    arr1 = ivy.array([1], device=device)
-    arr2 = ivy.array([2], device=device)
+def test_container_duplicate_array_keychains(on_device):
+    arr1 = ivy.array([1], device=on_device)
+    arr2 = ivy.array([2], device=on_device)
     container0 = Container({"a": arr1, "b": {"c": arr1, "d": arr2}})
     container1 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([1], device=device),
-                "d": ivy.array([2], device=device),
+                "c": ivy.array([1], device=on_device),
+                "d": ivy.array([2], device=on_device),
             },
         }
     )
@@ -2967,23 +3042,23 @@ def test_container_duplicate_array_keychains(device):
     assert res == ()
 
 
-def test_container_cont_inplace_update(device):
+def test_container_cont_inplace_update(on_device):
     container0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([1], device=device),
-                "d": ivy.array([2], device=device),
+                "c": ivy.array([1], device=on_device),
+                "d": ivy.array([2], device=on_device),
             },
         }
     )
     id0 = id(container0)
     container1 = Container(
         {
-            "a": ivy.array([0], device=device),
+            "a": ivy.array([0], device=on_device),
             "b": {
-                "c": ivy.array([0], device=device),
-                "d": ivy.array([0], device=device),
+                "c": ivy.array([0], device=on_device),
+                "d": ivy.array([0], device=on_device),
             },
         }
     )
@@ -2995,15 +3070,15 @@ def test_container_cont_inplace_update(device):
     assert ivy.Container.cont_all_true(container0.all_equal(container1))
 
 
-def test_container_to_nested_list(device):
+def test_container_to_nested_list(on_device):
     container0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([True], device=device),
+                "c": ivy.array([True], device=on_device),
                 "d": {
-                    "g": ivy.array([2.0], device=device),
-                    "h": ivy.array([3], device=device),
+                    "g": ivy.array([2.0], device=on_device),
+                    "h": ivy.array([3], device=on_device),
                 },
             },
         }
@@ -3012,27 +3087,27 @@ def test_container_to_nested_list(device):
     assert res == [1, [True, [2.0, 3]]]
 
 
-def test_container_to_dict(device):
+def test_container_to_dict(on_device):
     container0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([True], device=device),
+                "c": ivy.array([True], device=on_device),
                 "d": {
-                    "g": ivy.array([2.0], device=device),
-                    "h": ivy.array([3], device=device),
+                    "g": ivy.array([2.0], device=on_device),
+                    "h": ivy.array([3], device=on_device),
                 },
             },
         }
     )
-    res = ivy.Container.to_dict(container0)
+    res = ivy.Container.cont_to_dict(container0)
     assert res == {"a": 1, "b": {"c": True, "d": {"g": 2.0, "h": 3}}}
 
 
-def test_container_assert_contains(device):
-    arr0 = ivy.array([0.0], device=device)
-    arr1 = ivy.array([1.0], device=device)
-    arr2 = ivy.array([2.0], device=device)
+def test_container_assert_contains(on_device):
+    arr0 = ivy.array([0.0], device=on_device)
+    arr1 = ivy.array([1.0], device=on_device)
+    arr2 = ivy.array([2.0], device=on_device)
     sub_cont = Container({"c": arr1, "d": arr2})
     container = Container({"a": arr0, "b": sub_cont})
 
@@ -3061,7 +3136,10 @@ def test_container_assert_contains(device):
     assert error_caught
     # sub-structure
     sub_struc = Container(
-        {"c": ivy.array([3.0], device=device), "d": ivy.array([4.0], device=device)}
+        {
+            "c": ivy.array([3.0], device=on_device),
+            "d": ivy.array([4.0], device=on_device),
+        }
     )
     try:
         not container.cont_assert_contains_sub_container(sub_struc)
@@ -3074,7 +3152,7 @@ def test_container_assert_contains(device):
     container.cont_assert_contains_sub_structure(container)
 
     # partial sub-structure
-    partial_sub_struc = Container({"b": {"d": ivy.array([4.0], device=device)}})
+    partial_sub_struc = Container({"b": {"d": ivy.array([4.0], device=on_device)}})
     container.cont_assert_contains_sub_structure(container, partial=True)
     container.cont_assert_contains_sub_structure(partial_sub_struc, partial=True)
     try:
@@ -3085,12 +3163,12 @@ def test_container_assert_contains(device):
     assert error_caught
 
 
-def test_container_copy(device):
+def test_container_copy(on_device):
     dict_in = {
-        "a": ivy.array([0.0], device=device),
+        "a": ivy.array([0.0], device=on_device),
         "b": {
-            "c": ivy.array([1.0], device=device),
-            "d": ivy.array([2.0], device=device),
+            "c": ivy.array([1.0], device=on_device),
+            "d": ivy.array([2.0], device=on_device),
         },
     }
     cont = Container(dict_in)
@@ -3104,13 +3182,13 @@ def test_container_copy(device):
     assert id(cont.b.d) == id(cont_deepcopy.b.d)
 
 
-def test_container_try_kc(device):
+def test_container_try_kc(on_device):
     cont = Container(
         {
-            "a": ivy.array([0.0], device=device),
+            "a": ivy.array([0.0], device=on_device),
             "b": {
-                "c": ivy.array([1.0], device=device),
-                "d": ivy.array([2.0], device=device),
+                "c": ivy.array([1.0], device=on_device),
+                "d": ivy.array([2.0], device=on_device),
             },
         }
     )
@@ -3120,13 +3198,13 @@ def test_container_try_kc(device):
     assert cont.cont_try_kc("b/e") is cont
 
 
-def test_container_with_print_limit(device):
+def test_container_with_print_limit(on_device):
     cont = Container(
         {
-            "a": ivy.array([0.0], device=device),
+            "a": ivy.array([0.0], device=on_device),
             "b": {
-                "c": ivy.array([1.0], device=device),
-                "d": ivy.array([2.0], device=device),
+                "c": ivy.array([1.0], device=on_device),
+                "d": ivy.array([2.0], device=on_device),
             },
         }
     )
@@ -3143,13 +3221,13 @@ def test_container_with_print_limit(device):
     assert id(cont) == id_cont
 
 
-def test_container_remove_print_limit(device):
+def test_container_remove_print_limit(on_device):
     cont = Container(
         {
-            "a": ivy.array([0.0], device=device),
+            "a": ivy.array([0.0], device=on_device),
             "b": {
-                "c": ivy.array([1.0], device=device),
-                "d": ivy.array([2.0], device=device),
+                "c": ivy.array([1.0], device=on_device),
+                "d": ivy.array([2.0], device=on_device),
             },
         }
     )
@@ -3167,13 +3245,13 @@ def test_container_remove_print_limit(device):
     assert id(cont) == id_cont
 
 
-def test_container_with_key_length_limit(device):
+def test_container_with_key_length_limit(on_device):
     cont = Container(
         {
-            "a": ivy.array([0.0], device=device),
+            "a": ivy.array([0.0], device=on_device),
             "b": {
-                "c": ivy.array([1.0], device=device),
-                "d": ivy.array([2.0], device=device),
+                "c": ivy.array([1.0], device=on_device),
+                "d": ivy.array([2.0], device=on_device),
             },
         }
     )
@@ -3191,13 +3269,13 @@ def test_container_with_key_length_limit(device):
     assert id(cont) == id_cont
 
 
-def test_container_remove_key_length_limit(device):
+def test_container_remove_key_length_limit(on_device):
     cont = Container(
         {
-            "a": ivy.array([0.0], device=device),
+            "a": ivy.array([0.0], device=on_device),
             "b": {
-                "c": ivy.array([1.0], device=device),
-                "d": ivy.array([2.0], device=device),
+                "c": ivy.array([1.0], device=on_device),
+                "d": ivy.array([2.0], device=on_device),
             },
         }
     )
@@ -3216,13 +3294,13 @@ def test_container_remove_key_length_limit(device):
     assert id(cont) == id_cont
 
 
-def test_container_with_print_indent(device):
+def test_container_with_print_indent(on_device):
     cont = Container(
         {
-            "a": ivy.array([0.0], device=device),
+            "a": ivy.array([0.0], device=on_device),
             "b": {
-                "c": ivy.array([1.0], device=device),
-                "d": ivy.array([2.0], device=device),
+                "c": ivy.array([1.0], device=on_device),
+                "d": ivy.array([2.0], device=on_device),
             },
         }
     )
@@ -3240,13 +3318,13 @@ def test_container_with_print_indent(device):
     assert id(cont) == id_cont
 
 
-def test_container_with_print_line_spacing(device):
+def test_container_with_print_line_spacing(on_device):
     cont = Container(
         {
-            "a": ivy.array([0.0], device=device),
+            "a": ivy.array([0.0], device=on_device),
             "b": {
-                "c": ivy.array([1.0], device=device),
-                "d": ivy.array([2.0], device=device),
+                "c": ivy.array([1.0], device=on_device),
+                "d": ivy.array([2.0], device=on_device),
             },
         }
     )
@@ -3264,13 +3342,13 @@ def test_container_with_print_line_spacing(device):
     assert id(cont) == id_cont
 
 
-def test_container_with_default_key_color(device):
+def test_container_with_default_key_color(on_device):
     cont = Container(
         {
-            "a": ivy.array([0.0], device=device),
+            "a": ivy.array([0.0], device=on_device),
             "b": {
-                "c": ivy.array([1.0], device=device),
-                "d": ivy.array([2.0], device=device),
+                "c": ivy.array([1.0], device=on_device),
+                "d": ivy.array([2.0], device=on_device),
             },
         }
     )
@@ -3288,13 +3366,13 @@ def test_container_with_default_key_color(device):
     assert id(cont) == id_cont
 
 
-def test_container_with_ivy_backend(device):
+def test_container_with_ivy_backend(on_device):
     container0 = Container(
         {
-            "a": ivy.array([1], device=device),
+            "a": ivy.array([1], device=on_device),
             "b": {
-                "c": ivy.array([1], device=device),
-                "d": ivy.array([2], device=device),
+                "c": ivy.array([1], device=on_device),
+                "d": ivy.array([2], device=on_device),
             },
         }
     )
@@ -3308,7 +3386,7 @@ def test_container_with_ivy_backend(device):
     assert id(container0) == id_container0
 
 
-def test_container_trim_key(device):
+def test_container_trim_key(on_device):
     key = "abcdefg"
     max_length = 3
     trimmed_key = ivy.Container.cont_trim_key(key, max_length)

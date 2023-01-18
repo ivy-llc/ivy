@@ -5,7 +5,7 @@ Data Types
 .. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
 .. _`infer_dtype`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249
 .. _`import time`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225
-.. _`ivy.Dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096
+.. _`ivy.Dtype`: https://github.com/unifyai/ivy/blob/48c70bce7ff703d817e130a17f63f02209be08ec/ivy/__init__.py#L65
 .. _`empty class`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L38
 .. _`also specified`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L241
 .. _`tuples`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L256
@@ -84,7 +84,7 @@ A few examples include :func:`ivy.astype` which copies an array to a specified d
 Many functions in the :mod:`data_type.py` module are *convenience* functions, which means that they do not directly modify arrays, as explained in the :ref:`Function Types` section.
 
 For example, the following are all convenience functions:
-`ivy.can_cast`_, which determines if one data type can be cast to another data type according to type-promotion rules, `ivy.dtype`_, which gets the data type for the input array, `ivy.set_default_dtype`_, which sets the global default data dtype, and `ivy.default_dtype`_, which returns the correct data type to use.
+`ivy.can_cast`_, which determines if one data type can be cast to another data type according to type-promotion rules, `ivy.dtype <https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096>`__, which gets the data type for the input array, `ivy.set_default_dtype`_, which sets the global default data dtype, and `ivy.default_dtype`_, which returns the correct data type to use.
 
 `ivy.default_dtype`_ is arguably the most important function.
 Any function in the functional API that receives a ``dtype`` argument will make use of this function, as explained below.

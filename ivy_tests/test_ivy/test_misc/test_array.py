@@ -1,6 +1,5 @@
 # global
 from hypothesis import assume, strategies as st
-import math
 import numpy as np
 
 # local
@@ -8,125 +7,15 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_method, handle_test
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
+    not_too_close_to_zero,
+    pow_helper,
+)
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_first_matrix_and_dtype,
+    _get_second_matrix_and_dtype,
+)
 from ivy.array import Array
-
-_zero = np.asarray(0, dtype="uint8")
-_one = np.asarray(1, dtype="uint8")
-
-
-def _not_too_close_to_zero(x):
-    f = np.vectorize(lambda item: item + (_one if np.isclose(item, 0) else _zero))
-    return f(x)
-
-
-@st.composite
-def _pow_helper(draw, available_dtypes=None):
-    if available_dtypes is None:
-        available_dtypes = helpers.get_dtypes("numeric")
-    dtype1, x1 = draw(
-        helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            small_abs_safety_factor=4,
-            large_abs_safety_factor=4,
-        )
-    )
-    dtype1 = dtype1[0]
-
-    def cast_filter(dtype1_x1_dtype2):
-        dtype1, _, dtype2 = dtype1_x1_dtype2
-        if (ivy.as_ivy_dtype(dtype1), ivy.as_ivy_dtype(dtype2)) in ivy.promotion_table:
-            return True
-        return False
-
-    dtype1, x1, dtype2 = draw(
-        helpers.get_castable_dtype(draw(available_dtypes), dtype1, x1).filter(
-            cast_filter
-        )
-    )
-    if ivy.is_int_dtype(dtype2):
-        max_val = ivy.iinfo(dtype2).max
-    else:
-        max_val = ivy.finfo(dtype2).max
-    max_x1 = np.max(np.abs(x1[0]))
-    if max_x1 in [0, 1]:
-        max_value = None
-    else:
-        max_value = int(math.log(max_val) / math.log(max_x1))
-        if abs(max_value) > abs(max_val) / 40 or max_value < 0:
-            max_value = None
-    dtype2, x2 = draw(
-        helpers.dtype_and_values(
-            small_abs_safety_factor=12,
-            large_abs_safety_factor=12,
-            safety_factor_scale="log",
-            max_value=max_value,
-            dtype=[dtype2],
-        )
-    )
-    dtype2 = dtype2[0]
-    if "int" in dtype2:
-        x2 = ivy.nested_map(
-            x2[0], lambda x: abs(x), include_derived={list: True}, shallow=False
-        )
-    return [dtype1, dtype2], [x1, x2]
-
-
-# __matmul__ helper
-@st.composite
-def _get_first_matrix_and_dtype(draw, available_dtypes=None):
-    if available_dtypes is None:
-        available_dtypes = helpers.get_dtypes("numeric")
-    # batch_shape, random_size, shared
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(available_dtypes)),
-            key="shared_dtype",
-        )
-    )
-    shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
-    )
-    random_size = draw(helpers.ints(min_value=2, max_value=4))
-    batch_shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
-    )
-    return [input_dtype], draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=tuple(list(batch_shape) + [random_size, shared_size]),
-            min_value=2,
-            max_value=5,
-        )
-    )
-
-
-# __matmul__ helper
-@st.composite
-def _get_second_matrix_and_dtype(draw, available_dtypes=None):
-    if available_dtypes is None:
-        available_dtypes = helpers.get_dtypes("numeric")
-    # batch_shape, shared, random_size
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(available_dtypes)),
-            key="shared_dtype",
-        )
-    )
-    shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
-    )
-    random_size = draw(helpers.ints(min_value=2, max_value=4))
-    batch_shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
-    )
-    return [input_dtype], draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=tuple(list(batch_shape) + [shared_size, random_size]),
-            min_value=2,
-            max_value=5,
-        )
-    )
 
 
 # getitem and setitem helper
@@ -342,6 +231,13 @@ def test_array__setitem__(
 ):
     query, x_dtype = query_dtype_and_x
     dtype, x = x_dtype
+    assume(not init_as_variable[0])
+    if ivy.is_uint_dtype(dtype[0]):
+        val = abs(int(val))
+    elif ivy.is_int_dtype(dtype[0]):
+        val = int(val)
+    elif ivy.is_bool_dtype(dtype[0]):
+        val = bool(val)
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
@@ -349,7 +245,7 @@ def test_array__setitem__(
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype,
+        method_input_dtypes=[],
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
@@ -438,7 +334,7 @@ def test_array__neg__(
 
 @handle_method(
     method_tree="Array.__pow__",
-    dtype_and_x=_pow_helper(),
+    dtype_and_x=pow_helper(),
 )
 def test_array__pow__(
     dtype_and_x,
@@ -453,22 +349,30 @@ def test_array__pow__(
     class_name,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
-    # check if power isn't a float when x1 is integer
-    assume(not (ivy.is_int_dtype(dtype[0]) and ivy.is_float_dtype(dtype[1])))
-    # make power a non-negative data when both are integers
-    if ivy.is_int_dtype(dtype[1]):
+    input_dtype, x = dtype_and_x
+
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in input_dtype))
+
+    # Make sure x2 isn't a float when x1 is integer
+    assume(
+        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
+    )
+
+    # Make sure x2 is non-negative when both is integer
+    if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
         x[1] = np.abs(x[1])
-    x[0] = _not_too_close_to_zero(x[0])
-    x[1] = _not_too_close_to_zero(x[1])
+
+    x[0] = not_too_close_to_zero(x[0])
+    x[1] = not_too_close_to_zero(x[1])
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
+        init_input_dtypes=[input_dtype[0]],
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype,
+        method_input_dtypes=[input_dtype[1]],
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
@@ -481,7 +385,7 @@ def test_array__pow__(
 
 @handle_method(
     method_tree="Array.__rpow__",
-    dtype_and_x=_pow_helper(),
+    dtype_and_x=pow_helper(),
 )
 def test_array__rpow__(
     dtype_and_x,
@@ -496,27 +400,35 @@ def test_array__rpow__(
     class_name,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
-    # check if power isn't a float when x1 is integer
-    assume(not (ivy.is_int_dtype(dtype[1]) and ivy.is_float_dtype(dtype[0])))
-    # make power a non-negative data when both are integers
-    if ivy.is_int_dtype(dtype[0]):
-        x[0] = np.abs(x[0])
-    x[0] = _not_too_close_to_zero(x[0])
-    x[1] = _not_too_close_to_zero(x[1])
+    input_dtype, x = dtype_and_x
+
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in input_dtype))
+
+    # Make sure x2 isn't a float when x1 is integer
+    assume(
+        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
+    )
+
+    # Make sure x2 is non-negative when both is integer
+    if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
+        x[1] = np.abs(x[1])
+
+    x[0] = not_too_close_to_zero(x[0])
+    x[1] = not_too_close_to_zero(x[1])
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
-        init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
+        init_all_as_kwargs_np={"data": x[1]},
+        init_input_dtypes=[input_dtype[1]],
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype,
+        method_input_dtypes=[input_dtype[0]],
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
         method_container_flags=method_container,
-        method_all_as_kwargs_np={"power": x[1]},
+        method_all_as_kwargs_np={"power": x[0]},
         class_name=class_name,
         method_name=method_name,
     )
@@ -524,7 +436,7 @@ def test_array__rpow__(
 
 @handle_method(
     method_tree="Array.__ipow__",
-    dtype_and_x=_pow_helper(),
+    dtype_and_x=pow_helper(),
 )
 def test_array__ipow__(
     dtype_and_x,
@@ -539,22 +451,30 @@ def test_array__ipow__(
     class_name,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
-    # check if power isn't a float when x1 is integer
-    assume(not (ivy.is_int_dtype(dtype[0]) and ivy.is_float_dtype(dtype[1])))
-    # make power a non-negative data when both are integers
-    if ivy.is_int_dtype(dtype[1]):
+    input_dtype, x = dtype_and_x
+
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in input_dtype))
+
+    # Make sure x2 isn't a float when x1 is integer
+    assume(
+        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
+    )
+
+    # Make sure x2 is non-negative when both is integer
+    if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
         x[1] = np.abs(x[1])
-    x[0] = _not_too_close_to_zero(x[0])
-    x[1] = _not_too_close_to_zero(x[1])
+
+    x[0] = not_too_close_to_zero(x[0])
+    x[1] = not_too_close_to_zero(x[1])
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
+        init_input_dtypes=[input_dtype[0]],
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype,
+        method_input_dtypes=[input_dtype[1]],
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
@@ -1370,7 +1290,7 @@ def test_array__rfloordiv__(
     ground_truth_backend,
 ):
     dtype, x = dtype_and_x
-    assume(not np.any(np.isclose(x[1], 0)))
+    assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
@@ -1435,12 +1355,12 @@ def test_array__ifloordiv__(
 
 @handle_method(
     method_tree="Array.__matmul__",
-    x1=_get_first_matrix_and_dtype(),
-    x2=_get_second_matrix_and_dtype(),
+    x=_get_first_matrix_and_dtype(),
+    y=_get_second_matrix_and_dtype(),
 )
 def test_array__matmul__(
-    x1,
-    x2,
+    x,
+    y,
     init_num_positional_args: pf.NumPositionalArg,
     method_num_positional_args: pf.NumPositionalArg,
     init_as_variable: pf.AsVariableFlags,
@@ -1452,21 +1372,21 @@ def test_array__matmul__(
     class_name,
     ground_truth_backend,
 ):
-    dtype1, x1 = x1
-    dtype2, x2 = x2
+    input_dtype1, x = x
+    input_dtype2, y = y
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
-        init_all_as_kwargs_np={"data": x1},
-        init_input_dtypes=dtype1,
+        init_all_as_kwargs_np={"data": x},
+        init_input_dtypes=input_dtype1,
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype2,
+        method_input_dtypes=input_dtype2,
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
         method_container_flags=method_container,
-        method_all_as_kwargs_np={"other": x2},
+        method_all_as_kwargs_np={"other": y},
         class_name=class_name,
         method_name=method_name,
     )
@@ -1572,7 +1492,7 @@ def test_array__abs__(
     dtype, x = dtype_and_x
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
-        init_all_as_kwargs_np={"data": x},
+        init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
@@ -2373,11 +2293,11 @@ def test_array__lshift__(
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
+        init_input_dtypes=[dtype[0]],
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype,
+        method_input_dtypes=[dtype[1]],
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
@@ -2414,11 +2334,11 @@ def test_array__rlshift__(
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
+        init_input_dtypes=[dtype[0]],
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype,
+        method_input_dtypes=[dtype[1]],
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
@@ -2455,11 +2375,11 @@ def test_array__ilshift__(
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
+        init_input_dtypes=[dtype[0]],
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype,
+        method_input_dtypes=[dtype[1]],
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
@@ -2497,11 +2417,11 @@ def test_array__rshift__(
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
+        init_input_dtypes=[dtype[0]],
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype,
+        method_input_dtypes=[dtype[1]],
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
@@ -2538,11 +2458,11 @@ def test_array__rrshift__(
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
+        init_input_dtypes=[dtype[0]],
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype,
+        method_input_dtypes=[dtype[1]],
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
@@ -2579,11 +2499,11 @@ def test_array__irshift__(
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
+        init_input_dtypes=[dtype[0]],
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype,
+        method_input_dtypes=[dtype[1]],
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
@@ -2621,12 +2541,12 @@ def test_array__deepcopy__(
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=init_native_array,
-        method_input_dtypes=dtype,
+        method_input_dtypes=[],
         method_as_variable_flags=method_as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=method_native_array,
         method_container_flags=method_container,
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={"memodict": {}},
         class_name=class_name,
         method_name=method_name,
     )

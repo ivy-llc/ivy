@@ -88,6 +88,7 @@ from .tensor import EagerTensor, Tensor
 from . import keras
 from . import linalg
 from . import math
+from .math import *
 from . import nest
 from . import nn
 from . import quantization
