@@ -82,6 +82,9 @@ def test_numpy_inner(
         arr_func=[_get_first_matrix_and_dtype, _get_second_matrix_and_dtype],
         get_dtypes_kind="numeric",
     ),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="matmul"
+    ),
 )
 def test_numpy_matmul(
     dtypes_values_casting,

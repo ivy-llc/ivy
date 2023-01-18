@@ -20,6 +20,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         special=True,
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="isifinite"
+    ),
 )
 def test_numpy_isfinite(
     dtypes_values_casting,
@@ -65,6 +68,9 @@ def test_numpy_isfinite(
         special=True,
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="isinf"
+    ),
 )
 def test_numpy_isinf(
     dtypes_values_casting,
@@ -111,6 +117,9 @@ def test_numpy_isinf(
         special=True,
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="isnan"
+    ),
 )
 def test_numpy_isnan(
     dtypes_values_casting,
