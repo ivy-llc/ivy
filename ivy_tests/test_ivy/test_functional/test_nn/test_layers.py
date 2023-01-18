@@ -394,14 +394,14 @@ def x_and_filters(
                 max_value=1.0,
             )
         )
+    if dim == 1:
+        strides = strides[0]
+        dilations = dilations[0]
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
         if not transpose:
             x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
             dilations = (dilations, x_dilation)
-    if dim == 1:
-        strides = strides[0]
-        dilations = dilations[0]
     ret = (
         dtype,
         vals,
@@ -675,7 +675,11 @@ def test_conv_general_dilated(
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc, bias = x_f_d_df
     if backend_fw.current_backend_str() == "tensorflow":
-        assume(not (on_device == "cpu" and any(i > 1 for i in dilations[0])))
+        if not ivy.gpu_is_available():
+            assume(
+                (dilations[0] <= 1) if isinstance(dilations[0], int)
+                else all(d <= 1 for d in dilations[0])
+            )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
