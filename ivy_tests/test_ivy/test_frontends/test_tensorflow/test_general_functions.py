@@ -1173,22 +1173,17 @@ def test_tensorflow_realdiv(
 def test_tensorflow_one_hot(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
     fn_tree,
+    test_flags,
     on_device,
 ):
 
     input_dtype, x = dtype_and_x
     depth = 10
     helpers.test_frontend_function(
-    input_dtypes=['int32','int64'],
-    as_variable_flags=as_variable,
-    with_out=False,
-    num_positional_args=num_positional_args,
-    native_array_flags=native_array,
+    input_dtypes=['uint8','int32','int64'],
+    test_flags=test_flags,
     frontend=frontend,
     fn_tree=fn_tree,
     on_device=on_device,
