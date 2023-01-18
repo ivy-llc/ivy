@@ -4,7 +4,9 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-
+from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
+    _broadcastable_trio,
+)
 
 # argmax
 @handle_frontend_test(
@@ -149,4 +151,29 @@ def test_jax_numpy_nonzero(
         fn_tree=fn_tree,
         on_device=on_device,
         a=a[0],
+    )
+
+
+# extract
+@handle_frontend_test(
+    fn_tree="jax.numpy.extract",
+    broadcastables=_broadcastable_trio(),
+
+)
+def test_jax_numpy_extract(
+    broadcastables,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    cond, xs, dtype = broadcastables
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=cond,
+        arr=xs[0],
     )

@@ -50,3 +50,10 @@ def msort(a):
 @to_ivy_arrays_and_back
 def nonzero(a, *, size=None, fill_value=None):
     return ivy.nonzero(a, size=size, fill_value=fill_value)
+
+
+@to_ivy_arrays_and_back
+def extract(condition, arr):
+    if condition.dtype is not bool:
+        condition = condition != 0
+    return arr[condition]
