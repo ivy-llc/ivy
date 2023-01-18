@@ -819,6 +819,43 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.signbit(self._data, out=out)
 
+    def hypot(
+        self: ivy.Array,
+        y: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.hypot. This method simply wraps the
+        function, and so the docstring for ivy.hypot also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array
+        y
+            Second input array
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array containing the hypotenuse computed from each element of the
+            input arrays.
+
+        Examples
+        --------
+        >>> x = ivy.array([3.0, 4.0, 5.0])
+        >>> y = ivy.array([4.0, 5.0, 6.0])
+        >>> x.hypot(y)
+        ivy.array([5.0, 6.4031, 7.8102])
+        """
+        return ivy.hypot(self._data, y, out=out)
+
     def allclose(
         self: ivy.Array,
         x2: ivy.Array,
