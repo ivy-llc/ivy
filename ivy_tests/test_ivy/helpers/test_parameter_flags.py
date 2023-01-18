@@ -29,6 +29,7 @@ BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltAsVariableStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltInstanceStrategy = st.booleans()
+BuiltInplaceStrategy = st.just(False)
 BuiltGradientStrategy = st.booleans()
 BuiltWithOutStrategy = st.booleans()
 
@@ -40,6 +41,7 @@ flags_mapping = {
     "instance_method": "BuiltInstanceStrategy",
     "test_gradients": "BuiltGradientStrategy",
     "with_out": "BuiltWithOutStrategy",
+    "inplace": "BuiltInplace",
 }
 
 
@@ -86,6 +88,9 @@ class FunctionTestFlags:
             f"test_gradients={self.test_gradients}."
         )
 
+    def __repr__(self):
+        return self.__str__()
+
 
 @st.composite
 def function_flags(
@@ -109,5 +114,55 @@ def function_flags(
             as_variable=as_variable,
             native_arrays=native_arrays,
             container=container_flags,
+        )
+    )
+
+
+class FrontendFunctionTestFlags:
+    def __init__(
+        self,
+        num_positional_args,
+        with_out,
+        inplace,
+        as_variable,
+        native_arrays,
+    ):
+        self.num_positional_args = num_positional_args
+        self.with_out = with_out
+        self.inplace = inplace
+        self.native_arrays = native_arrays
+        self.as_variable = as_variable
+
+    def __str__(self):
+        return (
+            f"num_positional_args={self.num_positional_args}. "
+            f"with_out={self.with_out}. "
+            f"inplace={self.inplace}. "
+            f"native_arrays={self.native_arrays}. "
+            f"as_variable={self.as_variable}. "
+        )
+
+    def __repr__(self):
+        return self.__str__()
+
+
+@st.composite
+def frontend_function_flags(
+    draw,
+    *,
+    num_positional_args,
+    with_out,
+    inplace,
+    as_variable,
+    native_arrays,
+):
+    return draw(
+        st.builds(
+            FrontendFunctionTestFlags,
+            num_positional_args=num_positional_args,
+            with_out=with_out,
+            inplace=inplace,
+            as_variable=as_variable,
+            native_arrays=native_arrays,
         )
     )
