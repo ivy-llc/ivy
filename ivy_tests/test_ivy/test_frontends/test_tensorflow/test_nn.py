@@ -1108,7 +1108,6 @@ def test_tensorflow_embedding_lookup(
 ):
     dtypes, indices, weight, _ = dtypes_indices_weights
     dtypes.reverse()
-    dtypes = dtypes
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
