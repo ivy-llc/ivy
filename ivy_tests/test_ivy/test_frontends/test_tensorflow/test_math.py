@@ -1143,6 +1143,8 @@ def test_tensorflow_truediv(
             "int64",
         ],
         num_arrays=2,
+        min_value=1,
+        max_value=7,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
