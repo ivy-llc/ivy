@@ -67,3 +67,19 @@ def nanargmax(a, /, *, axis=None, out=None, keepdims=False):
     a = ivy.where(nan_mask, -ivy.inf, a)
     res = ivy.argmax(a, axis=axis, keepdims=keepdims)
     return ivy.where(ivy.all(nan_mask, axis=axis, keepdims=keepdims), -1, res)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def nanargmin(a, /, *, axis=None, out=None, keepdims=None):
+    if out is not None:
+        raise NotImplementedError(
+            "The 'out' argument to jnp.nanargmax is not supported."
+        )
+    nan_mask = ivy.isnan(a)
+    if not ivy.any(nan_mask):
+        return ivy.argmin(a, axis=axis, keepdims=keepdims)
+
+    a = ivy.where(nan_mask, ivy.inf, a)
+    res = ivy.argmin(a, axis=axis, keepdims=keepdims)
+    return ivy.where(ivy.all(nan_mask, axis=axis, keepdims=keepdims), -1, res)

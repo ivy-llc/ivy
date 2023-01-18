@@ -188,7 +188,7 @@ def test_jax_numpy_nanargmax(
 
 # nanargmin
 @handle_frontend_test(
-    fn_tree="numpy.nanargmin",
+    fn_tree="jax.numpy.nanargmin",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -199,7 +199,7 @@ def test_jax_numpy_nanargmax(
     keep_dims=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_numpy_nanargmin(
+def test_jax_numpy_nanargmin(
     dtype_x_axis,
     frontend,
     test_flags,
