@@ -390,7 +390,6 @@ def convolution(
 
 
 @to_ivy_arrays_and_back
-
 def embedding_lookup(params, ids, max_norm=None, name=None):
     return ivy.embedding(params, ids, max_norm=max_norm)
 
@@ -402,4 +401,3 @@ def relu(features, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
-
