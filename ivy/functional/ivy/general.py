@@ -2118,7 +2118,18 @@ def get_all_arrays_in_memory():
 
 @handle_exceptions
 def num_arrays_in_memory():
-    """Returns the number of arrays which are currently alive."""
+    """
+    Gets the number of arrays which are currently alive.
+
+    Returns
+    -------
+    ret
+        The number of arrays which are alive.
+    Examples
+    --------
+    >>> x = num_arrays_in_memory()
+    >>> print(x)
+    """
     return len(get_all_arrays_in_memory())
 
 
