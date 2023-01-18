@@ -201,7 +201,7 @@ the inputs broadcast to.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.creation.ArrayWithCreation.copy_array">
-<span class="sig-name descname"><span class="pre">copy_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/creation.html#ArrayWithCreation.copy_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.creation.ArrayWithCreation.copy_array" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">copy_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ivy_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/creation.html#ArrayWithCreation.copy_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.creation.ArrayWithCreation.copy_array" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.copy_array. This method simply wraps
 the function, and so the docstring for ivy.copy_array also applies to this
 method with minimal changes.</p>
@@ -209,6 +209,9 @@ method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array</p></li>
+<li><p><strong>to_ivy_array</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – boolean, if True the returned array will be an ivy.Array object otherwise (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+returns an ivy.NativeArray object (i.e. a torch.tensor, np.array, etc.,
+depending on the backend), defaults to True.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 the inputs broadcast to.</p></li>
 </ul>
