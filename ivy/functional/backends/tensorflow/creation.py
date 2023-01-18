@@ -27,6 +27,7 @@ from . import backend_version
         "2.9.1 and below": (
             "float16",
             "bfloat16",
+            "complex",
         )
     },
     backend_version,
