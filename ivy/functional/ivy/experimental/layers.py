@@ -865,7 +865,7 @@ def interpolate(
                 row_ret = row_ret.T
                 for k, col in enumerate(row_ret):
                     ret[i][j][k] = ivy.interp(missing_h, x_up_h, col)
-                ret = ivy.permute_dims(ret, (0, 1, 3, 2))
+        ret = ivy.permute_dims(ret, (0, 1, 3, 2))
     elif mode == "trilinear":
         if not align_corners:
             x_up_d = ivy.arange(0, ivy.shape(x)[-3])
@@ -912,5 +912,5 @@ def interpolate(
                         depth,
                     ) in enumerate(depth_ret[k]):
                         ret[i][j][k][l] = ivy.interp(missing_d, x_up_d, depth)
-                ret = ret.transpose((0, 1, 4, 2, 3))
+        ret = ret.transpose((0, 1, 4, 2, 3))
     return ivy.astype(ret, ivy.dtype(x))

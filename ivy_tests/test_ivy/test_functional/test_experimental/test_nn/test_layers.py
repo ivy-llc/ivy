@@ -233,15 +233,15 @@ def test_dct(
 
 @st.composite
 def _interp_args(draw):
-    mode = draw(st.sampled_from(["linear", "bilinear"]))
+    mode = draw(st.sampled_from(["linear", "bilinear", "trilinear"]))
     if mode == "linear":
-        size = draw(helpers.ints(min_value=4, max_value=6))
+        size = draw(helpers.ints(min_value=3, max_value=5))
         num_dims = 3
     elif mode == "bilinear":
-        size = draw(helpers.lists(arg=helpers.ints(min_value=4, max_value=6), min_size=2, max_size=2))
+        size = draw(helpers.lists(arg=helpers.ints(min_value=3, max_value=5), min_size=2, max_size=2))
         num_dims = 4
     else:
-        size = draw(helpers.lists(arg=helpers.ints(min_value=4, max_value=6), min_size=3, max_size=3))
+        size = draw(helpers.lists(arg=helpers.ints(min_value=3, max_value=5), min_size=3, max_size=3))
         num_dims = 5
 
     dtype, x = draw(
@@ -250,7 +250,7 @@ def _interp_args(draw):
             min_num_dims=num_dims,
             max_num_dims=num_dims,
             min_dim_size=1,
-            max_dim_size=3,
+            max_dim_size=2,
             large_abs_safety_factor=30,
             small_abs_safety_factor=30,
             safety_factor_scale="log",
