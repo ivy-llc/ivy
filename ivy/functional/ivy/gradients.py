@@ -14,7 +14,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -450,7 +450,7 @@ def unset_with_grads():
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -525,7 +525,7 @@ def stop_gradient(
 
 
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
@@ -676,7 +676,7 @@ grad.computes_gradients = True
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def adam_step(
     dcdw: Union[ivy.Array, ivy.NativeArray],
     mw: Union[ivy.Array, ivy.NativeArray],
@@ -829,7 +829,7 @@ adam_step.out_index = 0
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def optimizer_update(
     w: Union[ivy.Array, ivy.NativeArray],
     effective_grad: Union[ivy.Array, ivy.NativeArray],
@@ -951,7 +951,7 @@ def optimizer_update(
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def gradient_descent_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1043,7 +1043,7 @@ def gradient_descent_update(
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def lars_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1093,7 +1093,7 @@ def lars_update(
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def adam_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1257,7 +1257,7 @@ adam_update.out_index = 0
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
