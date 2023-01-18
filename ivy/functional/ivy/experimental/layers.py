@@ -1,7 +1,7 @@
 from typing import Optional, Union, Tuple, Literal
 import ivy
 from ivy.func_wrapper import (
-    handle_array_like,
+    handle_array_like_without_promotion,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
@@ -515,7 +515,7 @@ def dct(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -580,7 +580,7 @@ def fft(
 
 @handle_exceptions
 @to_native_arrays_and_back
-@handle_array_like
+@handle_array_like_without_promotion
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -625,7 +625,7 @@ def dropout1d(
 @handle_out_argument
 @handle_exceptions
 @handle_nestable
-@handle_array_like
+@handle_array_like_without_promotion
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -692,12 +692,12 @@ def ifft(
 @handle_exceptions
 @handle_nestable
 def embedding(
-        weights: Union[ivy.Array, ivy.NativeArray],
-        indices: Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        max_norm: Optional[int] = None,
-        out=None
+    weights: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out=None,
 ) -> ivy.Array:
     """Embeds a given tensor of indices using a given tensor of weights.
 
@@ -726,12 +726,11 @@ def embedding(
     ivy.array([[1., 2., 3.],
                 [7., 8., 9.]])
     """
-    ivy.assertions.check_equal(
-        len(weights.shape), 2, message="weights must be 2-d"
-    )
+    ivy.assertions.check_equal(len(weights.shape), 2, message="weights must be 2-d")
 
-    ret = ivy.empty(indices.shape + (weights.shape[1],),
-                    dtype=ivy.as_ivy_dtype(weights.dtype))
+    ret = ivy.empty(
+        indices.shape + (weights.shape[1],), dtype=ivy.as_ivy_dtype(weights.dtype)
+    )
     if not ivy.is_ivy_array(indices):
         indices = ivy.array(indices, dtype=ivy.int32)
 

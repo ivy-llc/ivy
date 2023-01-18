@@ -16,25 +16,21 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
         min_dim_size=0,
         max_dim_size=10,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_transpose(
     *,
     array_and_axes,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     array, dtype, axes = array_and_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         array=array,
@@ -55,28 +51,24 @@ def test_numpy_transpose(
     axis2=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"), force_int=True
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_swapaxes(
     *,
     dtype_and_x,
     axis1,
     axis2,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],

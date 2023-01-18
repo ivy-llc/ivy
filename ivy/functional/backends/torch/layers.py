@@ -133,7 +133,7 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -191,7 +191,7 @@ def conv2d_transpose(
     padding: str,
     /,
     *,
-    output_shape=None,
+    output_shape: Tuple[int] = None,
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[torch.Tensor] = None,
@@ -216,8 +216,8 @@ def conv2d_transpose(
     not_valid_w = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
-    pad_h = _handle_padding(output_shape[2], strides[0], filter_shape[0], padding)
-    pad_w = _handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = _handle_padding(output_shape[1], strides[0], filter_shape[0], padding)
+    pad_w = _handle_padding(output_shape[2], strides[1], filter_shape[1], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
@@ -488,15 +488,15 @@ def conv3d_transpose(
 def conv_general_dilated(
     x: torch.Tensor,
     filters: torch.Tensor,
-    strides: Union[int, Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
     dims: int = 2,
     data_format: str = "channel_last",
     feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
@@ -563,14 +563,14 @@ def conv_general_dilated(
 def conv_general_transpose(
     x: torch.Tensor,
     filters: torch.Tensor,
-    strides: Union[int, Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
     dims: int = 2,
     output_shape=None,
     data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
