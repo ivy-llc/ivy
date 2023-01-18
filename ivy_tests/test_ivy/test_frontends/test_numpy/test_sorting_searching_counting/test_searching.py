@@ -24,24 +24,20 @@ def _broadcastable_trio(draw):
 @handle_frontend_test(
     fn_tree="numpy.where",
     broadcastables=_broadcastable_trio(),
+    test_with_out=st.just(False),
 )
 def test_numpy_where(
     broadcastables,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     cond, x1, x2, dtype = broadcastables
     helpers.test_frontend_function(
         input_dtypes=["bool", dtype],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         cond=cond,
@@ -56,24 +52,20 @@ def test_numpy_where(
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_nonzero(
     dtype_and_a,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=a[0],
@@ -91,14 +83,12 @@ def test_numpy_nonzero(
         force_int_axis=True,
     ),
     keep_dims=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_numpy_argmin(
     dtype_x_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
-    with_out,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
     keep_dims,
@@ -106,11 +96,8 @@ def test_numpy_argmin(
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -130,14 +117,12 @@ def test_numpy_argmin(
         force_int_axis=True,
     ),
     keep_dims=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_numpy_argmax(
     dtype_x_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
-    with_out,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
     keep_dims,
@@ -145,11 +130,8 @@ def test_numpy_argmax(
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -164,24 +146,20 @@ def test_numpy_argmax(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_flatnonzero(
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -250,24 +228,20 @@ def _search_sorted_values(draw):
 @handle_frontend_test(
     fn_tree="numpy.searchsorted",
     dtype_x_v_side_sorter=_search_sorted_values(),
+    test_with_out=st.just(False),
 )
 def test_numpy_searchsorted(
     dtype_x_v_side_sorter,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtypes, xs, side, sorter = dtype_x_v_side_sorter
     helpers.test_frontend_function(
         input_dtypes=input_dtypes + ["int64"],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=xs[0],
@@ -283,24 +257,20 @@ def test_numpy_searchsorted(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_argwhere(
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -318,14 +288,12 @@ def test_numpy_argwhere(
         force_int_axis=True,
     ),
     keep_dims=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_numpy_nanargmax(
     dtype_x_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
-    with_out,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
     keep_dims,
@@ -333,11 +301,8 @@ def test_numpy_nanargmax(
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -357,14 +322,12 @@ def test_numpy_nanargmax(
         force_int_axis=True,
     ),
     keep_dims=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_numpy_nanargmin(
     dtype_x_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
-    with_out,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
     keep_dims,
@@ -372,11 +335,8 @@ def test_numpy_nanargmin(
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],

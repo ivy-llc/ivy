@@ -232,12 +232,12 @@ def test_array__setitem__(
     query, x_dtype = query_dtype_and_x
     dtype, x = x_dtype
     assume(not init_as_variable[0])
-    if ivy.is_int_dtype(dtype[0]):
+    if ivy.is_uint_dtype(dtype[0]):
+        val = abs(int(val))
+    elif ivy.is_int_dtype(dtype[0]):
         val = int(val)
     elif ivy.is_bool_dtype(dtype[0]):
         val = bool(val)
-    elif ivy.is_uint_dtype(dtype[0]):
-        val = abs(int(val))
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},

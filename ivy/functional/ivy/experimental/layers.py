@@ -692,12 +692,12 @@ def ifft(
 @handle_exceptions
 @handle_nestable
 def embedding(
-        weights: Union[ivy.Array, ivy.NativeArray],
-        indices: Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        max_norm: Optional[int] = None,
-        out=None
+    weights: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out=None,
 ) -> ivy.Array:
     """Embeds a given tensor of indices using a given tensor of weights.
 
@@ -726,12 +726,11 @@ def embedding(
     ivy.array([[1., 2., 3.],
                 [7., 8., 9.]])
     """
-    ivy.assertions.check_equal(
-        len(weights.shape), 2, message="weights must be 2-d"
-    )
+    ivy.assertions.check_equal(len(weights.shape), 2, message="weights must be 2-d")
 
-    ret = ivy.empty(indices.shape + (weights.shape[1],),
-                    dtype=ivy.as_ivy_dtype(weights.dtype))
+    ret = ivy.empty(
+        indices.shape + (weights.shape[1],), dtype=ivy.as_ivy_dtype(weights.dtype)
+    )
     if not ivy.is_ivy_array(indices):
         indices = ivy.array(indices, dtype=ivy.int32)
 
