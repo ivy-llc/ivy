@@ -18,6 +18,15 @@ def atrous_conv2d_transpose(value, filters, output_shape, rate, padding):
 
 
 @to_ivy_arrays_and_back
+def convolution(
+    input, filters, strides, padding, data_format="NHWC", dilations=None, name=None
+):
+    return ivy.conv(
+        input, filters, strides, padding, data_format=data_format, dilations=dilations
+    )
+
+
+@to_ivy_arrays_and_back
 def conv1d(
     input, filters, stride, padding, data_format="NWC", dilations=None, name=None
 ):
@@ -52,12 +61,6 @@ def conv1d_transpose(
 def gelu(features, approximate=False, name=None):
     return ivy.gelu(features, approximate=approximate)
 
-@to_ivy_arrays_and_back
-def convolution(input, filters, strides, padding, data_format="NHWC", dilations=None, name=None
-):
-    return ivy.conv(
-        input, filters, strides, padding, data_format=data_format, dilations=dilations
-    )
 
 @to_ivy_arrays_and_back
 def conv2d(
