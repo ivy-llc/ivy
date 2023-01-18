@@ -107,7 +107,9 @@ def conv2d_transpose(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    if not ivy.gpu_is_available() and dilations > 1:
+    if not ivy.gpu_is_available() and (
+        (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
+    ):
         raise ivy.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
