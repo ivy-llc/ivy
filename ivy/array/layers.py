@@ -70,9 +70,9 @@ class ArrayWithLayers(abc.ABC):
         /,
         *,
         scale: bool = True,
-        dtype: ivy.Dtype = None,
-        training_mode: bool = True,
-        seed: int = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        training: bool = True,
+        seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -91,6 +91,11 @@ class ArrayWithLayers(abc.ABC):
         dtype
             output array data type. If dtype is None, the output array data type
             must be inferred from x. Default: ``None``.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        seed
+            Set a default seed for random number generating (for
+            reproducibility).Default is ``None``.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -119,7 +124,7 @@ class ArrayWithLayers(abc.ABC):
         ...                [4., 5., 6.],
         ...                [7., 8., 9.],
         ...                [10., 11., 12.]])
-        >>> y = x.dropout(0.3, scale=Flase)
+        >>> y = x.dropout(0.3, scale=False)
         >>> print(y)
         ivy.array([[ 1.,  2., 3.],
                    [ 4.,  5., 0.],
@@ -131,7 +136,7 @@ class ArrayWithLayers(abc.ABC):
             prob,
             scale=scale,
             dtype=dtype,
-            training_mode=training_mode,
+            training=training,
             seed=seed,
             out=out,
         )
