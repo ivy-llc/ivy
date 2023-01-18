@@ -10,11 +10,6 @@ def diagonal(a, offset, axis1, axis2):
     return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
 
 
-
-
-
-
-
 @outputs_to_numpy_arrays
 def diag_indices(n, ndim=2):
     idx = ivy.arange(n, dtype=int)
