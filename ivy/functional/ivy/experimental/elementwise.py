@@ -7,6 +7,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     integer_arrays_to_float,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -16,6 +17,7 @@ from ivy.exceptions import handle_exceptions
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -212,6 +214,50 @@ def fmax(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def fmin(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Computes the element-wise minimums of two arrays. Differs from ivy.minimum
+    in the case where one of the elements is NaN. ivy.minimum returns the NaN element
+    while ivy.fmin returns the non-NaN element.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise minimums.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmin(x1, x2)
+    ivy.array([1, 3, 2])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmin(x1, x2)
+    ivy.array([ 0.,  0., nan])
+    """
+    return ivy.current_backend().fmin(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_array_like_without_promotion
 def trapz(
     y: ivy.Array,
     /,
@@ -312,6 +358,7 @@ def float_power(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_array_like_without_promotion
 def exp2(
     x: Union[ivy.Array, float, list, tuple],
     /,
@@ -389,9 +436,9 @@ def copysign(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def count_nonzero(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -399,7 +446,7 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[Union[int, ivy.Array]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Counts the number of non-zero values in the array a.
 
@@ -447,11 +494,12 @@ def count_nonzero(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def nansum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
@@ -541,6 +589,7 @@ def gcd(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def isclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -603,84 +652,7 @@ def isclose(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def isposinf(
-    x: Union[ivy.Array, float, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Test element-wise for positive infinity, return result as bool array.
-
-    Parameters
-    ----------
-    x
-        Array-like input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Returns a boolean array with values True where
-        the corresponding element of the input is positive
-        infinity and values False where the element of the
-        input is not positive infinity.
-
-    Examples
-    --------
-    >>> x = ivy.array([1, 2, ivy.inf])
-    >>> ivy.isposinf(x)
-    ivy.array([False, False,  True])
-    >>> x = [5, -ivy.inf, ivy.inf]
-    >>> ivy.isposinf(x)
-    ivy.array([False, False,  True])
-    """
-    return ivy.current_backend().isposinf(x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def isneginf(
-    x: Union[ivy.Array, float, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Test element-wise for negative infinity, return result as bool array.
-
-    Parameters
-    ----------
-    x
-        Array-like input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Returns a boolean array with values True where
-        the corresponding element of the input is negative
-        infinity and values False where the element of the
-        input is not negative infinity.
-
-    Examples
-    --------
-    >>> x = ivy.array([1, 2, -ivy.inf])
-    >>> ivy.isneginf(x)
-    ivy.array([False, False,  True])
-    >>> x = [5, -ivy.inf, ivy.inf]
-    >>> ivy.isneginf(x)
-    ivy.array([False, True,  False])
-    """
-    return ivy.current_backend().isneginf(x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
+@handle_array_like_without_promotion
 def angle(
     z: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -725,6 +697,43 @@ def angle(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_array_like_without_promotion
+def imag(
+    val: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Returns the Imaginary part of a complex numbers(x+yj).
+
+    Parameters
+    ----------
+    val
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns an array with the imaginary part of complex numbers.
+
+    Examples
+    --------
+    >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
+    >>> b
+    ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+    >>> ivy.imag(b)
+    ivy.array([2., 4., 6.])
+    """
+    return ivy.current_backend(val).imag(val, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_array_like_without_promotion
 def nan_to_num(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -819,6 +828,7 @@ def logaddexp2(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_array_like_without_promotion
 def signbit(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -852,6 +862,7 @@ def signbit(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_array_like_without_promotion
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
     /,
@@ -898,6 +909,7 @@ def diff(
 @handle_nestable
 @to_native_arrays_and_back
 @handle_exceptions
+@handle_array_like_without_promotion
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -970,6 +982,7 @@ def allclose(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_array_like_without_promotion
 def fix(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -1005,6 +1018,7 @@ def fix(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def nextafter(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1044,6 +1058,7 @@ def nextafter(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def zeta(
     x: Union[ivy.Array, ivy.NativeArray],
     q: Union[ivy.Array, ivy.NativeArray],
@@ -1052,14 +1067,15 @@ def zeta(
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
-    Compute the Hurwitz zeta function.
+    Compute the Hurwitz zeta function elementwisely with each pair
+    of floats in two arrays.
 
     Parameters
     ----------
     x
         First input array.
     q
-        Second input array.
+        Second input array, must have the same shape as the first input array
     out
         Alternate output array in which to place the result.
         The default is None.
@@ -1073,7 +1089,7 @@ def zeta(
     Examples
     --------
     >>> x = ivy.array([5.0, 3.0])
-    >>> q = ivy.array([2.0])
+    >>> q = ivy.array([2.0, 2.0])
     >>> ivy.zeta(x, q)
     ivy.array([0.0369, 0.2021])
     """
@@ -1083,6 +1099,7 @@ def zeta(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1199,3 +1216,68 @@ def xlogy(
     ivy.array([1.0986, 1.3863, 0.0000])
     """
     return ivy.current_backend(x, y).xlogy(x, y, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def real(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Tests each element ``x_i`` of the input array ``x`` to
+    take only real part from it.
+    Returns a float array, where it only contains .
+    If element has complex type with zero complex part, the return value
+    will be that element, else it only returns real part.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing test results. An element ``out_i`` is
+        ``real number`` if ``x_i`` contain real number part only
+        and if it is ``real number with complex part also`` then it
+        returns the real number part.
+        The returned array should have a data type of ``float``.
+
+    The descriptions above assume an array input for simplicity, but
+    the method also accepts :class:`ivy.Container` instances
+    in place of: class:`ivy.Array` or :class:`ivy.NativeArray`
+    instances, as shown in the type hints and also the examples below.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+    >>> x = ivy.array([[[1.1], [2], [-6.3]]])
+    >>> z = ivy.real(x)
+    >>> print(z)
+    ivy.array([[[1.1], [2.], [-6.3]]])
+
+    >>> x = ivy.array([4.2-0j, 3j, 7+5j])
+    >>> z = ivy.real(x)
+    >>> print(z)
+    ivy.array([4.2, 0., 7.])
+
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
+                          b=ivy.array([5j, 5.32-6.55j, 3.001]))
+    >>> z = ivy.real(x)
+    >>> print(z)
+    {
+        a: ivy.array([-6.7, 0.314, 1.23]),
+        b: ivy.array([0., 5.32, 3.001])
+    }
+    """
+    return ivy.current_backend(x).real(x, out=out)

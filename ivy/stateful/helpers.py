@@ -74,7 +74,7 @@ class ModuleHelpers(abc.ABC):
         Returns
         -------
         ret
-            True if the returned values of the current module should be 
+            True if the returned values of the current module should be
             tracked.
         """
         if not ivy.exists(self.top_mod):
@@ -95,8 +95,8 @@ class ModuleHelpers(abc.ABC):
 
     def check_submod_rets(self):
         """
-        Returns True if there is an expected submodule return value 
-        set by the user during the call. 
+        Returns True if there is an expected submodule return value
+        set by the user during the call.
 
         Returns
         -------
@@ -157,7 +157,7 @@ class ModuleHelpers(abc.ABC):
 
     def mod_height(self):
         """
-        Return the height of the network, with the current level being 0. 
+        Return the height of the network, with the current level being 0.
 
         Returns
         -------
@@ -339,7 +339,7 @@ class ModuleHelpers(abc.ABC):
     def mod_with_top_mod_key_chain(self, /, *, depth=None, flatten_key_chain=False):
         """
         Return a list containing the modules of the network starting from the top
-        module, and ending with the current module. 
+        module, and ending with the current module.
 
         Parameters
         ----------
@@ -347,7 +347,7 @@ class ModuleHelpers(abc.ABC):
             If specified, will return a list of modules of length starting at
             the current module and ending at the module at the specified depth.
             0 for the current module. 1 for the iimediate parent module. None for
-            the top module. Default is ``None``. 
+            the top module. Default is ``None``.
 
         flatten_key_chain
             If set True, will return return a flat container,
@@ -493,9 +493,7 @@ class ModuleHelpers(abc.ABC):
         )
 
     def _add_submod_enter(self):
-        """
-        Add key chains to submod_call_order variable of the top module.
-        """
+        """Add key chains to submod_call_order variable of the top module."""
         sco = self.top_mod().submod_call_order
         key_chain = self.mod_with_top_mod_key_chain()
         for key in key_chain[:-1]:

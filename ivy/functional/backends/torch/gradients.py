@@ -16,6 +16,8 @@ from ivy.functional.ivy.gradients import (
 
 
 def variable(x, /):
+    if ivy.is_int_dtype(x.dtype):
+        x = ivy.astype(x, ivy.default_float_dtype()).to_native()
     if not x.is_leaf:
         return x.detach().requires_grad_()
     return x.clone().requires_grad_()
@@ -25,7 +27,7 @@ def is_variable(x, /, *, exclusive: bool = False):
     return isinstance(x, torch.Tensor) and x.requires_grad
 
 
-def variable_data(x, /):
+def variable_data(x: torch.Tensor, /) -> torch.Tensor:
     return x.data
 
 
