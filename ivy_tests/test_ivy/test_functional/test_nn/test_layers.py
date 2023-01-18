@@ -292,7 +292,6 @@ def test_multi_head_attention(
 # Convolutions #
 @handle_test(
     fn_tree="functional.ivy.convolution",
-    x_f_d_df=x_and_filters(dim=1),
     ground_truth_backend="jax",
 )
 def test_convolution(
