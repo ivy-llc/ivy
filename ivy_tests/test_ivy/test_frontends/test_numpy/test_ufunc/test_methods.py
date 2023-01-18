@@ -4,7 +4,6 @@ import numpy as np
 
 # local
 import ivy.functional.frontends.numpy as np_frontend
-from ivy.functional.frontends.numpy import ufunc
 from ivy.functional.frontends.numpy.ufunc import (
     ufuncs,
 )
@@ -24,7 +23,7 @@ def test_numpy_ufunc_nargs(
     ufunc_name,
 ):
     assume(hasattr(np_frontend, ufunc_name))
-    frontend_ufunc = ufunc(ufunc_name)
+    frontend_ufunc = getattr(np_frontend, ufunc_name)
     np_ufunc = getattr(np, ufunc_name)
     assert frontend_ufunc.nargs == np_ufunc.nargs
 
@@ -37,7 +36,7 @@ def test_numpy_ufunc_nin(
     ufunc_name,
 ):
     assume(hasattr(np_frontend, ufunc_name))
-    frontend_ufunc = ufunc(ufunc_name)
+    frontend_ufunc = getattr(np_frontend, ufunc_name)
     np_ufunc = getattr(np, ufunc_name)
     assert frontend_ufunc.nin == np_ufunc.nin
 
@@ -50,7 +49,7 @@ def test_numpy_ufunc_nout(
     ufunc_name,
 ):
     assume(hasattr(np_frontend, ufunc_name))
-    frontend_ufunc = ufunc(ufunc_name)
+    frontend_ufunc = getattr(np_frontend, ufunc_name)
     np_ufunc = getattr(np, ufunc_name)
     assert frontend_ufunc.nout == np_ufunc.nout
 
@@ -63,6 +62,6 @@ def test_numpy_ufunc_identity(
     ufunc_name,
 ):
     assume(hasattr(np_frontend, ufunc_name))
-    frontend_ufunc = ufunc(ufunc_name)
+    frontend_ufunc = getattr(np_frontend, ufunc_name)
     np_ufunc = getattr(np, ufunc_name)
     assert frontend_ufunc.identity == np_ufunc.identity

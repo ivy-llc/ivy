@@ -202,8 +202,11 @@ identities = {
 
 class ufunc:
     def __init__(self, name) -> None:
-        self.__name__ = name
-        self.func = getattr(np_frontend, self.__name__)
+        self.__frontend_name__ = name
+        # removing first underscore to get original ufunc name
+        self.__name__ = name[1:]
+        # getting the function from the frontend
+        self.func = getattr(np_frontend, self.__frontend_name__)
 
     # properties #
     # ------------#
