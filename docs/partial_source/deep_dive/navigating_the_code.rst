@@ -257,6 +257,11 @@ Then, we import this submodule-specific helper function to the respective backen
         with tf.device(device):
             return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
+
+.. note::
+   We shouldn't be enabling numpy behaviour in tensorflow as it leads to issues with the bfloat16 datatype in tensorflow implementations
+
+
 **Torch**
 
 .. code-block:: python

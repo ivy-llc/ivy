@@ -103,8 +103,10 @@ def get(
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
-def mish(x: Tensor,
-         /,
-         *,
-         out: Optional[Tensor] = None,) -> Tensor:
+def mish(
+    x: Tensor,
+    /,
+    *,
+    out: Optional[Tensor] = None,
+) -> Tensor:
     return x * tf.math.tanh(tf.math.softplus(x))

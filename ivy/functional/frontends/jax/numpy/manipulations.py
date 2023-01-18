@@ -116,3 +116,8 @@ def append(arr, values, axis=None):
 @to_ivy_arrays_and_back
 def swapaxes(a, axis1, axis2):
     return ivy.swapaxes(a, axis1, axis2)
+
+
+@to_ivy_arrays_and_back
+def atleast_3d(*arys):
+    return ivy.atleast_3d(*arys)

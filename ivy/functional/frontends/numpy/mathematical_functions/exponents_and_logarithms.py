@@ -209,3 +209,8 @@ def logaddexp2(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+
+
+@to_ivy_arrays_and_back
+def i0(x):
+    return ivy.i0(x)

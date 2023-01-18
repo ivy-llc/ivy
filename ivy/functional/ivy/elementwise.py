@@ -5241,6 +5241,13 @@ def reciprocal(
     -------
     ret
         A new array with the positive value of each element in ``x``.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.reciprocal(x)
+    >>> print(y)
+    ivy.array([1.        , 0.5       , 0.33333333])
     """
     return ivy.current_backend(x).reciprocal(x, out=out)
 

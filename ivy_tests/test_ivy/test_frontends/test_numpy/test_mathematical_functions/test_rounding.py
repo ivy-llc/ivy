@@ -20,11 +20,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def test_numpy_ceil(
     dtypes_values_casting,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -32,16 +29,13 @@ def test_numpy_ceil(
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -63,22 +57,16 @@ def test_numpy_ceil(
 )
 def test_numpy_fix(
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
@@ -102,11 +90,8 @@ def test_numpy_fix(
 def test_numpy_trunc(
     dtypes_values_casting,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -114,16 +99,13 @@ def test_numpy_trunc(
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],

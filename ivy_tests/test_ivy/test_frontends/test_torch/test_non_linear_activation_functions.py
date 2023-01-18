@@ -37,22 +37,16 @@ def _filter_dtypes(input_dtype):
 def test_torch_sigmoid(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         atol=1e-2,
@@ -76,22 +70,16 @@ def test_torch_softmax(
     *,
     dtype_x_and_axis,
     dtypes,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -111,22 +99,16 @@ def test_torch_softmax(
 def test_torch_gelu(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-02,
@@ -141,29 +123,23 @@ def test_torch_gelu(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     alpha=st.floats(min_value=0.0, max_value=1.0),
-    with_inplace=st.booleans(),
+    test_inplace=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_torch_leaky_relu(
     *,
     dtype_and_x,
     alpha,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -181,22 +157,16 @@ def test_torch_leaky_relu(
 def test_torch_tanh(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         atol=1e-2,
@@ -214,22 +184,16 @@ def test_torch_tanh(
 def test_torch_logsigmoid(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -252,22 +216,16 @@ def test_torch_softmin(
     *,
     dtype_x_and_axis,
     dtypes,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -284,31 +242,24 @@ def test_torch_softmin(
     ),
     threshold=helpers.floats(min_value=0.0, max_value=1.0),
     value=helpers.ints(min_value=5, max_value=20),
-    with_inplace=st.booleans(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
 )
 def test_torch_threshold(
     *,
     dtype_and_input,
     threshold,
     value,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -325,31 +276,24 @@ def test_torch_threshold(
     ),
     threshold=helpers.floats(min_value=0.0, max_value=1.0),
     value=helpers.ints(min_value=5, max_value=20),
-    with_inplace=st.booleans(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
 )
 def test_torch_threshold_(
     *,
     dtype_and_input,
     threshold,
     value,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -364,29 +308,23 @@ def test_torch_threshold_(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    with_inplace=st.booleans(),
+    test_with_inplace=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_torch_relu6(
     *,
     dtype_and_input,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -400,30 +338,24 @@ def test_torch_relu6(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
-    with_inplace=st.booleans(),
+    test_inplace=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_torch_elu(
     *,
     dtype_and_input,
     alpha,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -438,30 +370,24 @@ def test_torch_elu(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     alpha=helpers.floats(min_value=0, max_value=1, exclude_min=True),
-    with_inplace=st.booleans(),
+    test_inplace=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_torch_elu_(
     *,
     dtype_and_input,
     alpha,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
@@ -477,30 +403,24 @@ def test_torch_elu_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
-    with_inplace=st.booleans(),
+    test_inplace=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_torch_celu(
     *,
     dtype_and_input,
     alpha,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -514,29 +434,23 @@ def test_torch_celu(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    with_inplace=st.booleans(),
+    test_inplace=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_torch_mish(
     *,
     dtype_and_input,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
-    on_device,
     fn_tree,
     frontend,
+    on_device,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -549,27 +463,21 @@ def test_torch_mish(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    with_inplace=st.booleans(),
+    test_inplace=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_torch_relu(
     dtype_and_input,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         input=input[0],
     )
@@ -581,24 +489,20 @@ def test_torch_relu(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_with_out=st.just(False),
 )
 def test_torch_relu_(
     dtype_and_input,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         input=input[0],
     )
@@ -610,29 +514,23 @@ def test_torch_relu_(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    with_inplace=st.booleans(),
+    test_inplace=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_torch_selu(
     *,
     dtype_and_input,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -647,23 +545,17 @@ def test_torch_selu(
 def test_torch_prelu(
     *,
     dtype_input_and_weight,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, inputs = dtype_input_and_weight
     _filter_dtypes(dtype)
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -679,31 +571,24 @@ def test_torch_prelu(
     ),
     lower=helpers.floats(min_value=0, max_value=0.5, exclude_min=True),
     upper=helpers.floats(min_value=0.5, max_value=1.0, exclude_min=True),
-    with_inplace=st.booleans(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
 )
 def test_torch_rrelu(
     *,
     dtype_and_input,
     lower,
     upper,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -720,31 +605,24 @@ def test_torch_rrelu(
     ),
     lower=helpers.floats(min_value=0, max_value=0.5, exclude_min=True),
     upper=helpers.floats(min_value=0.5, max_value=1.0, exclude_min=True),
-    with_inplace=st.booleans(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
 )
 def test_torch_rrelu_(
     *,
     dtype_and_input,
     lower,
     upper,
-    with_inplace,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
@@ -766,23 +644,17 @@ def test_torch_hardshrink(
     *,
     dtype_and_input,
     lambd,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -800,22 +672,16 @@ def test_torch_hardshrink(
 def test_torch_softsign(
     *,
     dtype_and_input,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -834,23 +700,17 @@ def test_torch_softshrink(
     *,
     dtype_and_input,
     lambd,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -864,28 +724,22 @@ def test_torch_softshrink(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    with_inplace=st.booleans(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
 )
 def test_torch_silu(
     *,
     dtype_and_input,
-    as_variable,
-    with_inplace,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-2,
@@ -912,23 +766,17 @@ def _glu_arrays(draw):
 def test_torch_glu(
     *,
     dtype_input_dim,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input, dim = dtype_input_dim
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -952,22 +800,16 @@ def test_torch_log_softmax(
     *,
     dtype_x_and_axis,
     dtypes,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -987,22 +829,16 @@ def test_torch_log_softmax(
 def test_torch_tanhshrink(
     *,
     dtype_and_input,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -1017,29 +853,23 @@ def test_torch_tanhshrink(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     alpha=st.floats(min_value=0, max_value=1, exclude_min=True),
-    with_inplace=st.booleans(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
 )
 def test_torch_leaky_relu_(
     *,
     dtype_and_x,
     alpha,
-    as_variable,
-    with_inplace,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
@@ -1055,29 +885,23 @@ def test_torch_leaky_relu_(
         available_dtypes=helpers.get_dtypes("float"),
         safety_factor_scale="log",
     ),
-    with_inplace=st.booleans(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
 )
 def test_torch_hardswish(
     *,
     dtype_and_input,
-    as_variable,
-    with_inplace,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -1090,29 +914,23 @@ def test_torch_hardswish(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    with_inplace=st.booleans(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
 )
 def test_torch_hardsigmoid(
     *,
     dtype_and_input,
-    as_variable,
-    with_inplace,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -1126,31 +944,24 @@ def test_torch_hardsigmoid(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     max_val=st.floats(min_value=0, max_value=1, exclude_min=True),
-    with_inplace=st.booleans(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
 )
 def test_torch_hardtanh(
     *,
     dtype_and_x,
     max_val,
-    as_variable,
-    with_inplace,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     max_min = max_val, -max_val
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -1166,31 +977,24 @@ def test_torch_hardtanh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     max_val=st.floats(min_value=0, max_value=1, exclude_min=True),
-    with_inplace=st.booleans(),
+    test_with_out=st.just(False),
+    test_inplace=st.booleans(),
 )
 def test_torch_hardtanh_(
     *,
     dtype_and_x,
     max_val,
-    as_variable,
-    with_inplace,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     max_min = max_val, -max_val
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=with_inplace,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
@@ -1216,23 +1020,17 @@ def test_torch_normalize(
     *,
     dtype_x_and_axis,
     p,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x, axis = dtype_x_and_axis
     _filter_dtypes(dtype)
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -1341,23 +1139,17 @@ def _generate_data_layer_norm(
 def test_torch_layer_norm(
     *,
     dtype_x_and_axis,
-    num_positional_args,
     epsilon,
-    as_variable,
-    with_out,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x, axis, weight, bias, new_std = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-1,
@@ -1378,27 +1170,23 @@ def test_torch_layer_norm(
     ),
     beta=st.integers(min_value=1, max_value=20),
     threshold=st.integers(min_value=0, max_value=40),
+    test_with_out=st.just(False),
 )
 def test_torch_softplus(
     *,
     dtype_and_x,
     beta,
     threshold,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -1419,25 +1207,20 @@ def test_torch_softplus(
         group=True,
     ),
     epsilon=st.floats(min_value=0.01, max_value=0.1),
+    test_with_out=st.just(False),
 )
 def test_torch_group_norm(
     dtype_x_and_axis,
-    num_positional_args,
     epsilon,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
 ):
     dtype, x, weight, bias, group_size = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         input=x[0],
         num_groups=group_size,
@@ -1475,28 +1258,23 @@ def _generate_batch_norm_data(draw):
     momentum=helpers.floats(min_value=0.01, max_value=0.1),
     eps=helpers.floats(min_value=1e-5, max_value=0.1),
     training=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_torch_batch_norm(
     *,
     data,
     momentum,
     eps,
-    num_positional_args,
-    as_variable,
-    native_array,
     training,
     frontend,
+    test_flags,
     fn_tree,
 ):
     input_dtype, input, weight, bias, running_mean, running_var = data
     helpers.test_frontend_function(
         input_dtypes=input_dtype * 5,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         input=input[0],
         weight=weight,
@@ -1521,27 +1299,22 @@ def test_torch_batch_norm(
         min_value=-100,
     ),
     output_size=helpers.ints(min_value=1, max_value=10),
+    test_with_out=st.just(False),
 )
 def test_torch_adaptive_avg_pool1d(
     *,
     dtype_and_x,
     output_size,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     frontend,
+    test_flags,
     fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -1565,27 +1338,22 @@ def test_torch_adaptive_avg_pool1d(
         helpers.ints(min_value=1, max_value=10),
         helpers.ints(min_value=1, max_value=10),
     ),
+    test_with_out=st.just(False),
 )
 def test_torch_adaptive_avg_pool2d(
     *,
     dtype_and_x,
     output_size,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     frontend,
+    test_flags,
     fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],

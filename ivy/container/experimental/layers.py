@@ -1208,3 +1208,53 @@ class ContainerWithLayersExperimental(ContainerBase):
             n=n,
             out=out,
         )
+
+    @staticmethod
+    def static_embedding(
+        weight: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        max_norm: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+
+        return ContainerBase.cont_multi_map_in_function(
+            "embedding",
+            weight,
+            indices,
+            max_norm=max_norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def embedding(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        max_norm: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+
+        return self.static_embedding(
+            self,
+            indices,
+            max_norm=max_norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
