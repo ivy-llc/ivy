@@ -32,7 +32,7 @@ def zeros_like(a, dtype=None, shape=None):
 
 @handle_jax_dtype
 @outputs_to_frontend_arrays
-def arange(start, stop=None, step=1, dtype=None):
+def arange(start, stop=None, step=None, dtype=None):
     return ivy.arange(start, stop, step=step, dtype=dtype)
 
 
