@@ -95,7 +95,7 @@ def test_linear(
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
-    training_mode=st.booleans(),
+    training=st.booleans(),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
 )
@@ -104,7 +104,7 @@ def test_dropout(
     dtype_and_x,
     prob,
     scale,
-    training_mode,
+    training,
     seed,
     test_flags,
     backend_fw,
@@ -125,7 +125,7 @@ def test_dropout(
         prob=prob,
         scale=scale,
         dtype=dtype[0],
-        training_mode=training_mode,
+        training=training,
         seed=seed,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -432,8 +432,9 @@ def test_conv1d(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
     if backend_fw.current_backend_str() == "tensorflow":
-        assume(not (on_device == "cpu" and dilations > 1))
+        assume(not (on_device == "cpu" and dilations > 1 and test_flags.test_gradients))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -506,8 +507,15 @@ def test_conv2d(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
     if backend_fw.current_backend_str() == "tensorflow":
-        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
+        assume(
+            not (
+                on_device == "cpu"
+                and any(i > 1 for i in dilations)
+                and test_flags.test_gradients
+            )
+        )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
