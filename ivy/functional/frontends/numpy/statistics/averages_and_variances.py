@@ -286,3 +286,15 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
     if ivy.all(all_nan):
         ret = ivy.astype(ret, ivy.array([float("inf")]))
     return ret
+
+
+@to_ivy_arrays_and_back
+def ptp(
+    a,
+    axis=None,
+    out=None,
+    keepdims=False,
+):
+    high = ivy.max(a, axis=axis, keepdims=keepdims, out=out)
+    low = ivy.min(a, axis=axis, keepdims=keepdims, out=out)
+    return high - low
