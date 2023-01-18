@@ -172,7 +172,7 @@ def sum(
         return x.type(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
-        return torch.sum(input=x, dtype=dtype)
+        return torch.sum(input=x, dim=(), dtype=dtype, keepdim=keepdims)
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
