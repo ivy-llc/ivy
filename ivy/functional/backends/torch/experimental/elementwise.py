@@ -6,6 +6,7 @@ import torch
 
 # local
 import ivy
+from ivy import promote_types_of_inputs
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
@@ -19,6 +20,7 @@ def lcm(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return torch.abs(torch.lcm(x1, x2, out=out))
 
 
@@ -32,6 +34,7 @@ def fmod(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return torch.fmod(x1, x2, out=None)
 
 
@@ -46,10 +49,24 @@ def fmax(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return torch.fmax(x1, x2, out=None)
 
 
 fmax.support_native_out = True
+
+
+def fmin(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fmin(x1, x2, out=None)
+
+
+fmin.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
@@ -118,6 +135,10 @@ def copysign(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.type(ivy.default_float_dtype(as_native=True))
+        x2 = x2.type(ivy.default_float_dtype(as_native=True))
     return torch.copysign(torch.as_tensor(x1), x2, out=out)
 
 
@@ -162,7 +183,7 @@ def nansum(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
@@ -180,8 +201,7 @@ def gcd(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1 = x1 if type(x1) == torch.Tensor else torch.Tensor(x1)
-    x2 = x2 if type(x2) == torch.Tensor else torch.Tensor(x2)
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return torch.gcd(x1, x2, out=out)
 
 
@@ -220,6 +240,20 @@ def angle(
 angle.support_native_out = True
 
 
+def imag(
+    input: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if input.dtype != torch.complex64:
+        input = input.to(torch.complex64)
+    return torch.imag(input)
+
+
+imag.support_native_out = False
+
+
 def nan_to_num(
     x: torch.Tensor,
     /,
@@ -245,8 +279,10 @@ def logaddexp2(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1 = x1 if type(x1) == torch.Tensor else torch.Tensor(x1)
-    x2 = x2 if type(x2) == torch.Tensor else torch.Tensor(x2)
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.type(ivy.default_float_dtype(as_native=True))
+        x2 = x2.type(ivy.default_float_dtype(as_native=True))
     return torch.logaddexp2(x1, x2, out=out)
 
 
@@ -338,10 +374,10 @@ def zeta(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.special.zeta(x, q)
+    return torch.special.zeta(x, q, out=out)
 
 
-zeta.support_native_out = False
+zeta.support_native_out = True
 
 
 def gradient(
@@ -368,4 +404,20 @@ def gradient(
 def xlogy(
     x: torch.tensor, y: torch.tensor, /, *, out: Optional[torch.tensor] = None
 ) -> torch.tensor:
+    x, y = promote_types_of_inputs(x, y)
     return torch.xlogy(x, y, out=out)
+
+
+def real(
+    x: Union[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.real(x)
+
+
+def isposinf(
+    x: Union[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.isposinf(x)

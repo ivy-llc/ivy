@@ -17,7 +17,7 @@ from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 
 # Helpers #
@@ -158,9 +158,9 @@ class NestedSequence(Protocol[_T_co]):
 @handle_exceptions
 def arange(
     start: Number,
+    /,
     stop: Optional[Number] = None,
     step: Optional[Number] = 1,
-    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -428,7 +428,7 @@ def ones(
 @infer_dtype
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -533,7 +533,7 @@ def full_like(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -650,7 +650,7 @@ def ones_like(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -765,7 +765,7 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -813,7 +813,7 @@ def tril(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -910,7 +910,7 @@ def empty(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1105,7 +1105,6 @@ def eye(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -1294,16 +1293,14 @@ def meshgrid(
             [4, 1],
             [4, 1]])
 
-        >>> x = ivy.array([1, 2, 3])
-        >>> y = ivy.array([4, 5, 6])
-        >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
-        >>> print(xv)
-        ivy.array([[1, 2, 3]])
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
+    >>> print(xv)
+    ivy.array([[1, 2, 3]])
 
-        >>> print(yv)
-        ivy.array([[4],
-                [5],
-                [6]])
+    >>> print(yv)
+    ivy.array([[4], [5], [6]])
 
     With :class:`ivy.NativeArray` input:
 
@@ -1616,7 +1613,7 @@ def native_array(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
@@ -1660,7 +1657,56 @@ def one_hot(
     ret
         Tensor of zeros with the same shape and type as a, unless dtype provided which
         overrides.
+    
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
 
+    >>> x = ivy.array([3, 1])
+    >>> y = 5
+    >>> z = x.one_hot(5)
+    >>> print(z)
+    ivy.array([[0., 0., 0., 1., 0.],
+    ...    [0., 1., 0., 0., 0.]])
+
+    >>> x = ivy.array([0])
+    >>> y = 5
+    >>> ivy.one_hot(x, y)
+    ivy.array([[1., 0., 0., 0., 0.]])
+
+    >>> x = ivy.array([0])
+    >>> y = 5
+    >>> ivy.one_hot(x, 5, out=z)
+    ivy.array([[1., 0., 0., 0., 0.]])
+    >>> print(z)
+    ivy.array([[1., 0., 0., 0., 0.]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2]), \
+        b=ivy.array([3, 1]), c=ivy.array([2, 3]))
+    >>> y = 5
+    >>> z = x.one_hot(y)
+    >>> print(z)
+    {
+        a: ivy.array([[0., 1., 0., 0., 0.], 
+                    [0., 0., 1., 0., 0.]]),
+        b: ivy.array([[0., 0., 0., 1., 0.], 
+                    [0., 1., 0., 0., 0.]]),
+        c: ivy.array([[0., 0., 1., 0., 0.], 
+                    [0., 0., 0., 1., 0.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([2]), \
+        b=ivy.array([]), c=ivy.native_array([4]))
+    >>> y = 7
+    >>> z = x.one_hot(y)
+    >>> print(z)
+    {
+        a: ivy.array([[0., 0., 1., 0., 0., 0., 0.]]),
+        b: ivy.array([], shape=(0, 7)),
+        c: ivy.array([[0., 0., 0., 0., 1., 0., 0.]])
+    }
     """
     return current_backend(indices).one_hot(
         indices,
@@ -1680,7 +1726,7 @@ def one_hot(
 @infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],

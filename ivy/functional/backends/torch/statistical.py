@@ -16,6 +16,7 @@ from . import backend_version
 # -------------------#
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def min(
     x: torch.Tensor,
     /,
@@ -37,6 +38,7 @@ def min(
 min.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def max(
     x: torch.Tensor,
     /,
@@ -170,7 +172,7 @@ def sum(
         return x.type(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
-        return torch.sum(input=x, dtype=dtype)
+        return torch.sum(input=x, dim=(), dtype=dtype, keepdim=keepdims)
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 

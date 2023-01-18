@@ -74,7 +74,7 @@ class EagerTensor:
         return array(self._ivy_array)
 
     def __add__(self, y, name="add"):
-        return y.__radd__(self._ivy_array)
+        return self.__radd__(y)
 
     def __div__(self, x, name="div"):
         return tf_frontend.math.divide(x, self._ivy_array, name=name)
@@ -84,7 +84,7 @@ class EagerTensor:
 
     def __array__(self, dtype=None, name="array"):
         dtype = to_ivy_dtype(dtype)
-        return array(ivy.asarray(self._ivy_array, dtype=dtype))
+        return self.ivy_array.__array__(dtype)
 
     def __bool__(self, name="bool"):
         if isinstance(self._ivy_array, int):
@@ -212,3 +212,8 @@ class EagerTensor:
             "ivy.functional.frontends.tensorflow.EagerTensor object "
             "doesn't support assignment"
         )
+
+
+# Dummy Tensor class to help with compilation, don't add methods here
+class Tensor(EagerTensor):
+    pass

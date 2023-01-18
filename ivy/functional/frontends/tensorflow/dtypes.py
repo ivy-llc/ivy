@@ -13,6 +13,10 @@ class DType:
         return "ivy.frontends.tensorflow." + self._ivy_dtype
 
     @property
+    def ivy_dtype(self):
+        return self._ivy_dtype
+
+    @property
     def as_datatype_enum(self):
         return tf_frontend.tensorflow_type_to_enum[self._ivy_dtype]
 
@@ -119,7 +123,7 @@ def as_dtype(type_value):
     if type_value in tf_frontend.tensorflow_type_to_enum:
         return DType(tf_frontend.tensorflow_type_to_enum[type_value])
     if isinstance(type_value, np_frontend.dtype):
-        return DType(tf_frontend.tensorflow_type_to_enum[type_value._ivy_dtype])
+        return DType(tf_frontend.tensorflow_type_to_enum[type_value.ivy_dtype])
     if issubclass(type_value, np_frontend.generic):
         return DType(
             tf_frontend.tensorflow_type_to_enum[
@@ -134,7 +138,8 @@ def as_dtype(type_value):
 
 @to_ivy_arrays_and_back
 def cast(x, dtype, name=None):
-    assert ivy.can_cast(x.dtype, dtype), "Cannot cast from {} to {}".format(
-        x.dtype, dtype
-    )
+    if ivy.is_array(x):
+        assert ivy.can_cast(x.dtype, dtype), "Cannot cast from {} to {}".format(
+            x.dtype, dtype
+        )
     return ivy.astype(x, dtype, copy=False)
