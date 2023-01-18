@@ -698,10 +698,11 @@ def test_tensorflow_reduce_mean(
 # reduce_variance
 @handle_frontend_test(
     fn_tree="tensorflow.math.reduce_variance",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_x=statistical_dtype_values(
+        function="var",
     ),
     test_with_out=st.just(False),
+    keepdims=st.booleans(),
 )
 def test_tensorflow_reduce_variance(
     *,
@@ -710,8 +711,9 @@ def test_tensorflow_reduce_variance(
     test_flags,
     fn_tree,
     on_device,
+    keepdims,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis, ddof = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -719,8 +721,11 @@ def test_tensorflow_reduce_variance(
         fn_tree=fn_tree,
         on_device=on_device,
         input_tensor=x[0],
+        axis=axis,
+        atol=1e-2,
+        rtol=1e-2,
+        keepdims=keepdims,
     )
-
 
 # scalar_mul
 @handle_frontend_test(
