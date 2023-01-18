@@ -233,19 +233,16 @@ def test_dct(
 
 @st.composite
 def _interp_args(draw):
-    mode = draw(st.sampled_from(["linear"]))
-    # b = helpers.ints(min_value=1, max_value=2)
-    # c = helpers.ints(min_value=1, max_value=2)
-    # w = helpers.ints(min_value=1, max_value=3)
+    mode = draw(st.sampled_from(["linear", "bilinear"]))
     if mode == "linear":
-        # shape = (b, c, w)
         size = draw(helpers.ints(min_value=4, max_value=6))
         num_dims = 3
-    else:
-        # h = helpers.ints(min_value=1, max_value=3)
-        # shape = (b, c, h, w)
-        size = helpers.list_of_length(x=[4, 5, 6], length=2)
+    elif mode == "bilinear":
+        size = draw(helpers.lists(arg=helpers.ints(min_value=4, max_value=6), min_size=2, max_size=2))
         num_dims = 4
+    else:
+        size = draw(helpers.lists(arg=helpers.ints(min_value=4, max_value=6), min_size=3, max_size=3))
+        num_dims = 5
 
     dtype, x = draw(
         helpers.dtype_and_values(
@@ -254,8 +251,8 @@ def _interp_args(draw):
             max_num_dims=num_dims,
             min_dim_size=1,
             max_dim_size=3,
-            large_abs_safety_factor=20,
-            small_abs_safety_factor=20,
+            large_abs_safety_factor=30,
+            small_abs_safety_factor=30,
             safety_factor_scale="log",
         )
     )

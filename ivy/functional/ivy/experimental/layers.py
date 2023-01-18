@@ -856,7 +856,7 @@ def interpolate(
             x_up_w = ivy.linspace(0, 1, ivy.shape(x)[-1])
             missing_h = ivy.linspace(0, 1, size[0])
             missing_w = ivy.linspace(0, 1, size[1])
-        ret = ivy.zeros(ivy.shape(x)[:-2] + (size[0], size[1]))
+        ret = ivy.zeros(ivy.shape(x)[:-2] + (size[1], size[0]))
         for i, ba in enumerate(x):
             for j, ch in enumerate(ba):
                 row_ret = ivy.zeros((ivy.shape(x)[-2], size[1]))
@@ -865,7 +865,7 @@ def interpolate(
                 row_ret = row_ret.T
                 for k, col in enumerate(row_ret):
                     ret[i][j][k] = ivy.interp(missing_h, x_up_h, col)
-                ret[i][j] = ret[i][j].T
+                ret = ivy.permute_dims(ret, (0, 1, 3, 2))
     elif mode == "trilinear":
         if not align_corners:
             x_up_d = ivy.arange(0, ivy.shape(x)[-3])
