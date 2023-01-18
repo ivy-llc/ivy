@@ -137,7 +137,7 @@
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">handle_array_like</span><span class="p">,</span>
+    <span class="n">handle_array_like_without_promotion</span><span class="p">,</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
@@ -651,7 +651,7 @@
 <div class="viewcode-block" id="fft"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/layers/fft.html#ivy.functional.ivy.experimental.fft">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_exceptions</span>
-<span class="nd">@handle_array_like</span>
+<span class="nd">@handle_array_like_without_promotion</span>
 <span class="k">def</span> <span class="nf">fft</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -716,7 +716,7 @@
 
 <div class="viewcode-block" id="dropout1d"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/layers/dropout1d.html#ivy.functional.ivy.experimental.dropout1d">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_array_like</span>
+<span class="nd">@handle_array_like_without_promotion</span>
 <span class="k">def</span> <span class="nf">dropout1d</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -761,7 +761,7 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_nestable</span>
-<span class="nd">@handle_array_like</span>
+<span class="nd">@handle_array_like_without_promotion</span>
 <span class="k">def</span> <span class="nf">ifft</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
