@@ -727,6 +727,7 @@ def test_tensorflow_reduce_variance(
         keepdims=keepdims,
     )
 
+
 # scalar_mul
 @handle_frontend_test(
     fn_tree="tensorflow.math.scalar_mul",
