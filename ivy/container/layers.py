@@ -350,7 +350,7 @@ class ContainerWithLayers(ContainerBase):
 
     @staticmethod
     def static_dropout1d(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: ivy.Container,
         prob: float,
         /,
         *,
