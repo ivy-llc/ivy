@@ -46,6 +46,10 @@ def conv1d_transpose(
     dilations: int = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
+    if not ivy.gpu_is_available() and dilations > 1:
+        raise ivy.exceptions.IvyException(
+            "Tensorflow does not support dilations greater than 1 when device is cpu"
+        )
     filters = tf.transpose(filters, (0, 2, 1))
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
@@ -103,6 +107,12 @@ def conv2d_transpose(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
+    if not ivy.gpu_is_available() and (
+        (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
+    ):
+        raise ivy.exceptions.IvyException(
+            "Tensorflow does not support dilations greater than 1 when device is cpu"
+        )
     if isinstance(strides, int):
         strides = [strides] * 2
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
@@ -235,7 +245,7 @@ def conv_general_dilated(
     dims: int = 2,
     data_format: str = "channel_last",
     feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
