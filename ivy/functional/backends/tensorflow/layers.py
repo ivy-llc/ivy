@@ -247,9 +247,10 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations):
             _handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
             for i in range(dims)
         ]
-        pad_list = [(0, 0)] + [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)] + [(0, 0)]
+        pad_list = [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)]
     else:
         pad_list = padding
+    pad_list = [(0, 0)] + pad_list + [(0, 0)]
     return tf.pad(
         x,
         pad_list,
