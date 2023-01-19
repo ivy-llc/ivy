@@ -229,6 +229,7 @@ numpy_str_to_type_table = {
     "h": "int16",
     "i": "int32",
     "l": "int64",
+    "q": "int64",
     "B": "uint8",
     "H": "uint16",
     "I": "uint32",
