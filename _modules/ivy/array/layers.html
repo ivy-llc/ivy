@@ -286,6 +286,37 @@
         <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NWC&quot;</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.dropout1d. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.droput1d also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            The input array x to perform dropout on.</span>
+<span class="sd">        prob</span>
+<span class="sd">            The probability of zeroing out each array element, float between 0 and 1.</span>
+<span class="sd">        training</span>
+<span class="sd">            Turn on dropout if training, turn off otherwise. Default is ``True``.</span>
+<span class="sd">        data_format</span>
+<span class="sd">            &quot;NWC&quot; or &quot;NCW&quot;. Default is ``&quot;NCW&quot;``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have</span>
+<span class="sd">            a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Result array of the output after dropout is performed.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 1, 1]).reshape([1, 1, 3])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.dropout1d(0.5)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([[[2., 0, 2.]]])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dropout1d</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
             <span class="n">prob</span><span class="p">,</span>
