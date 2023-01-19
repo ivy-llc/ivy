@@ -1160,15 +1160,15 @@ def test_tensorflow_realdiv(
     )
 
 
-#one_hot
+# one_hot
 @handle_frontend_test(
     fn_tree="tensorflow.one_hot",
     dtype_and_x=helpers.dtype_and_values(
-    available_dtypes=helpers.get_dtypes("integer",full=True),
-    num_arrays=1,
-    min_value=0,
-    max_value=10,
-        ),
+        available_dtypes=helpers.get_dtypes("integer", full=True),
+        num_arrays=1,
+        min_value=0,
+        max_value=10,
+    ),
 )
 def test_tensorflow_one_hot(
     *,
@@ -1182,11 +1182,11 @@ def test_tensorflow_one_hot(
     input_dtype, x = dtype_and_x
     depth = 10
     helpers.test_frontend_function(
-    input_dtypes=['uint8','int32','int64'],
-    test_flags=test_flags,
-    frontend=frontend,
-    fn_tree=fn_tree,
-    on_device=on_device,
-    indices=x[0],
-    depth=depth,
-)
+        input_dtypes=['uint8', 'int32', 'int64'],
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        indices=x[0],
+        depth=depth,
+    )

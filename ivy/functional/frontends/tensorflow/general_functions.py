@@ -267,6 +267,7 @@ def linspace(start, stop, num, name=None, axis=0):
 def realdiv(x, y, name=None):
     return ivy.divide(x, y)
 
+
 @to_ivy_arrays_and_back
-def one_hot(indices: ivy.array, depth: int, on_value = None, off_value = None, axis = None, dtype = None, device = None, out = None):
+def one_hot(indices: ivy.array, depth: int, on_value=None, off_value=None, axis=None, dtype=None, device=None, out=None):
     return ivy.one_hot(indices, depth)
