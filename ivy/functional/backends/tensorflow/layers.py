@@ -250,17 +250,14 @@ def conv_general_dilated(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if isinstance(x_dilations, int):
-        x_dilations = (x_dilations,) * dims
-    elif len(x_dilations) == 1:
-        x_dilations = (x_dilations[0],) * dims
-    if not isinstance(strides, int):
-        strides = strides[0]
+    strides = [strides] * dims if isinstance(strides, int) else strides
+    dilations = [dilations] * dims if isinstance(dilations, int) else dilations
+    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
+
     if dims == 3:
-        strides = [1] + [strides] * 3 + [1]
-        dilations = (
-            [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
-        )
+        strides = [1] + strides + [1]
+        dilations = [1] + dilations + [1]
+
     if data_format == "channel_first":
         x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     x_shape = list(x.shape[1 : dims + 2])
