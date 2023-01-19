@@ -1,6 +1,6 @@
 import ivy
 import pytest
-from ivy.func_wrapper import handle_array_like
+from ivy.func_wrapper import handle_array_like_without_promotion
 from typing import Union, Tuple, List, Sequence
 
 
@@ -24,14 +24,17 @@ def _fn4(x: Union[Sequence[ivy.Array], ivy.Array]):
     ("fn", "x", "expected_type"),
     [
         (_fn1, (1, 2), tuple),
-        (_fn2, (1, 2), ivy.Array),
-        (_fn2, [1, 2], ivy.Array),
+        (_fn2, (1, 2), ivy.NativeArray),
+        (_fn2, [1, 2], ivy.NativeArray),
         (_fn3, [1, 2], list),
         (_fn4, [1, 2], list),
     ],
 )
-def test_handle_array_like(fn, x, expected_type):
-    assert isinstance(handle_array_like(fn)(x), expected_type)
+def test_handle_array_like_without_promotion(fn, x, expected_type):
+    if "NativeArray" in str(expected_type):
+        assert isinstance(handle_array_like_without_promotion(fn)(x), ivy.NativeArray)
+    else:
+        assert isinstance(handle_array_like_without_promotion(fn)(x), expected_type)
 
 
 def test_outputs_to_ivy_arrays():

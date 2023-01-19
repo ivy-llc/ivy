@@ -5,12 +5,14 @@ import jax.numpy as jnp
 
 import ivy
 from ivy.functional.backends.jax import JaxArray
-
+from . import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
 
 # Array API Standard #
 # ------------------ #
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def argmax(
     x: JaxArray,
     /,
@@ -36,6 +38,7 @@ def argmax(
     return ret
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def argmin(
     x: JaxArray,
     /,
