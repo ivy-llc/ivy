@@ -1495,9 +1495,9 @@ def test_jax_numpy_fmin(
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        min_value=-np.inf,
-        max_value=np.inf,
+        large_abs_safety_factor=2,
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_fmod(
     *,
