@@ -711,7 +711,7 @@ class ContainerBase(dict, abc.ABC):
                 elif not isinstance(cont, (ivy.Container, list, tuple)):
                     values.append(cont)
             value0 = values[0]
-            if len(values) > 1:
+            if len(values) >= 1:
                 this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
                 is_container = [ivy.is_ivy_container(x) for x in values]
 
