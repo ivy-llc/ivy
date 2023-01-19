@@ -14,6 +14,35 @@ from ivy.functional.ivy.layers import _deconv_length, _get_x_data_format, \
     _handle_padding
 
 
+def _pad_before_conv(x, filters, strides, padding, dims, dilations, shape=None):
+    dilations = [dilations] if isinstance(dilations, int) else dilations
+    strides = [strides] if isinstance(strides, int) else strides
+    if isinstance(padding, str):
+        if shape is None:
+            shape = list(x.shape[1: dims + 2])
+        filter_shape = list(filters.shape[:dims])
+        filter_shape = [
+            filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
+            for i in range(dims)
+        ]
+        new_pad = [
+            _handle_padding(shape[i], strides[i], filter_shape[i], padding)
+            for i in range(dims)
+        ]
+        pad_list = [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)]
+    else:
+        pad_list = padding
+    return tf.pad(
+        x,
+        [
+            (0, 0),
+            *pad_list,
+            (0, 0),
+        ],
+        "CONSTANT",
+    )
+
+
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
 def conv1d(
     x: Union[tf.Tensor, tf.Variable],
@@ -28,7 +57,8 @@ def conv1d(
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
-    res = tf.nn.conv1d(x, filters, strides, padding, "NWC", dilations)
+    x = _pad_before_conv(x, filters, strides, padding, 1, dilations)
+    res = tf.nn.conv1d(x, filters, strides, "VALID", "NWC", dilations)
     if data_format == "NCW":
         res = tf.transpose(res, (0, 2, 1))
     return res
@@ -61,12 +91,13 @@ def conv1d_transpose(
         output_shape = [x.shape[0], output_shape, filters.shape[1]]
     elif len(output_shape) == 1:
         output_shape = [x.shape[0], output_shape[0], filters.shape[1]]
+    x = _pad_before_conv(x, filters, strides, padding, 1, dilations, shape=output_shape)
     res = tf.nn.conv1d_transpose(
         x,
         filters,
         output_shape,
         strides,
-        padding,
+        "VALID",
         "NWC",
         dilations,
     )
@@ -89,7 +120,8 @@ def conv2d(
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
-    res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)
+    x = _pad_before_conv(x, filters, strides, padding, 2, dilations)
+    res = tf.nn.conv2d(x, filters, strides, "VALID", "NHWC", dilations)
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res
@@ -130,8 +162,9 @@ def conv2d_transpose(
         output_shape = [x.shape[0], new_h, new_w, filters.shape[-2]]
     elif len(output_shape) == 2:
         output_shape = [x.shape[0], output_shape[0], output_shape[1], filters.shape[-2]]
+    x = _pad_before_conv(x, filters, strides, padding, 2, dilations, shape=output_shape)
     res = tf.nn.conv2d_transpose(
-        x, filters, output_shape, strides, padding, "NHWC", dilations
+        x, filters, output_shape, strides, "VALID", "NHWC", dilations
     )
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
@@ -158,7 +191,8 @@ def depthwise_conv2d(
         strides = [1, strides[0], strides[1], 1]
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
-    res = tf.nn.depthwise_conv2d(x, filters, strides, padding, "NHWC", dilations)
+    x = _pad_before_conv(x, filters, strides, padding, 2, dilations)
+    res = tf.nn.depthwise_conv2d(x, filters, strides, "VALID", "NHWC", dilations)
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res
@@ -182,7 +216,8 @@ def conv3d(
     )
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
-    res = tf.nn.conv3d(x, filters, strides, padding, "NDHWC", dilations)
+    x = _pad_before_conv(x, filters, strides, padding, 3, dilations)
+    res = tf.nn.conv3d(x, filters, strides, "VALID", "NDHWC", dilations)
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
@@ -227,38 +262,13 @@ def conv3d_transpose(
             output_shape[2],
             filters.shape[-2],
         ]
+    x = _pad_before_conv(x, filters, strides, padding, 3, dilations, shape=output_shape)
     res = tf.nn.conv3d_transpose(
-        x, filters, output_shape, strides, padding, "NDHWC", dilations
+        x, filters, output_shape, strides, "VALID", "NDHWC", dilations
     )
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
-
-
-def _pad_before_conv(x, filters, strides, padding, dims, dilations):
-    if isinstance(padding, str):
-        x_shape = list(x.shape[1: dims + 2])
-        filter_shape = list(filters.shape[:dims])
-        filter_shape = [
-            filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
-            for i in range(dims)
-        ]
-        new_pad = [
-            _handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
-            for i in range(dims)
-        ]
-        pad_list = [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)]
-    else:
-        pad_list = padding
-    return tf.pad(
-        x,
-        [
-            (0, 0),
-            *pad_list,
-            (0, 0),
-        ],
-        "CONSTANT",
-    )
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
@@ -389,7 +399,7 @@ def conv_general_transpose(
     if data_format == "channel_first":
         x = tf.transpose(x, (0, *range(2, dims + 2), 1))
 
-    x = _pad_before_conv(x, filters, strides, padding, dims, dilations)
+    x = _pad_before_conv(x, filters, strides, padding, 1, dilations, shape=output_shape)
 
     if dims == 1:
         res = tf.concat(
