@@ -2,8 +2,11 @@
 import tensorflow as tf
 from typing import Tuple, Union, Optional
 from collections import namedtuple
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def unique_all(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -53,6 +56,7 @@ def unique_all(
     )
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def unique_counts(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -64,6 +68,7 @@ def unique_counts(
     return Results(v, c)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def unique_inverse(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -80,6 +85,7 @@ def unique_inverse(
     return Results(values, inverse_indices)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def unique_values(
     x: Union[tf.Tensor, tf.Variable],
     /,

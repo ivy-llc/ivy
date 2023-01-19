@@ -120,26 +120,22 @@ def _dtype_pred_and_labels(
         min_num_dims=1,
     ),
     threshold=st.floats(min_value=0.0, max_value=1.0),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_binary_accuracy(
     *,
     dtype_and_x,
     threshold,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=x[0],
@@ -159,16 +155,15 @@ def test_tensorflow_binary_accuracy(
         max_value=10,
     ),
     from_logits=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_sparse_categorical_crossentropy(
     *,
     y_true,
     dtype_y_pred,
     from_logits,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -181,11 +176,8 @@ def test_sparse_categorical_crossentropy(
 
     helpers.test_frontend_function(
         input_dtypes=[ivy.int32] + dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=y_true,
@@ -205,25 +197,21 @@ def test_sparse_categorical_crossentropy(
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_log_cosh(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=x[0],
@@ -234,6 +222,7 @@ def test_tensorflow_log_cosh(
 # mean_absolute_error
 @handle_frontend_test(
     fn_tree="tensorflow.keras.metrics.mean_absolute_error",
+    aliases=["tensorflow.keras.metrics.mae"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shared_dtype=True,
@@ -242,26 +231,21 @@ def test_tensorflow_log_cosh(
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_mean_absolute_error(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        all_aliases=["keras.metrics.mae"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=x[0],
@@ -283,6 +267,7 @@ def test_tensorflow_mean_absolute_error(
     ),
     from_logits=st.booleans(),
     label_smoothing=helpers.floats(min_value=0.0, max_value=1.0),
+    test_with_out=st.just(False),
 )
 def test_binary_crossentropy(
     *,
@@ -290,10 +275,8 @@ def test_binary_crossentropy(
     dtype_y_pred,
     from_logits,
     label_smoothing,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -306,11 +289,8 @@ def test_binary_crossentropy(
 
     helpers.test_frontend_function(
         input_dtypes=[ivy.int32] + dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=y_true,
@@ -334,6 +314,7 @@ def test_binary_crossentropy(
     ),
     from_logits=st.booleans(),
     label_smoothing=helpers.floats(min_value=0.0, max_value=1.0),
+    test_with_out=st.just(False),
 )
 def test_categorical_crossentropy(
     *,
@@ -341,10 +322,8 @@ def test_categorical_crossentropy(
     dtype_y_pred,
     from_logits,
     label_smoothing,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -357,11 +336,8 @@ def test_categorical_crossentropy(
 
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, dtype],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=y_true,
@@ -462,25 +438,21 @@ def _binary_focal_args(draw):
 @handle_frontend_test(
     fn_tree="tensorflow.keras.metrics.binary_focal_crossentropy",
     binary_focal_args=_binary_focal_args(),
+    test_with_out=st.just(False),
 )
 def test_binary_focal_crossentropy(
     *,
     binary_focal_args,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtypes, values = binary_focal_args
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=values[0],
@@ -503,26 +475,22 @@ def test_binary_focal_crossentropy(
         shape=(5, 10),
     ),
     k=st.integers(min_value=3, max_value=10),
+    test_with_out=st.just(False),
 )
 def test_sparse_top_k_categorical_accuracy(
     *,
     dtype_pred_and_labels,
     k,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=y_true,
@@ -543,25 +511,21 @@ def test_sparse_top_k_categorical_accuracy(
             min_num_dims=1,
         ),
     ),
+    test_with_out=st.just(False),
 )
 def test_categorical_accuracy(
     *,
     dtype_and_y,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, y = dtype_and_y
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=y[0],
@@ -572,6 +536,7 @@ def test_categorical_accuracy(
 # kl_divergence
 @handle_frontend_test(
     fn_tree="tensorflow.keras.metrics.kl_divergence",
+    aliases=["tensorflow.keras.metrics.kld"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -582,22 +547,16 @@ def test_categorical_accuracy(
 def test_tensorflow_kl_divergence(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        all_aliases=["keras.metrics.kld"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=x[0],
@@ -614,25 +573,21 @@ def test_tensorflow_kl_divergence(
         shared_dtype=True,
         min_num_dims=1,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_poisson(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=x[0],
@@ -643,6 +598,7 @@ def test_tensorflow_poisson(
 # mean_squared_error
 @handle_frontend_test(
     fn_tree="tensorflow.keras.metrics.mean_squared_error",
+    aliases=["tensorflow.keras.metrics.mse"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -655,22 +611,16 @@ def test_tensorflow_poisson(
 def test_tensorflow_mean_squared_error(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        all_aliases=["keras.metrics.mse"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=x[0],
@@ -681,6 +631,7 @@ def test_tensorflow_mean_squared_error(
 # mean_absolute_percentage_error
 @handle_frontend_test(
     fn_tree="tensorflow.keras.metrics.mean_absolute_percentage_error",
+    aliases=["tensorflow.keras.metrics.mape"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -693,22 +644,16 @@ def test_tensorflow_mean_squared_error(
 def test_tensorflow_mean_absolute_percentage_error(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        all_aliases=["keras.metrics.mape"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=x[0],
@@ -725,25 +670,21 @@ def test_tensorflow_mean_absolute_percentage_error(
         min_num_dims=2,
         min_dim_size=2,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_hinge(
     *,
     dtype_pred_and_labels,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_pred=y_pred,
@@ -760,25 +701,21 @@ def test_tensorflow_hinge(
         min_num_dims=2,
         min_dim_size=2,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_squared_hinge(
     *,
     dtype_pred_and_labels,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_pred=y_pred,
@@ -789,32 +726,28 @@ def test_tensorflow_squared_hinge(
 # mean_squared_logarithmic_error
 @handle_frontend_test(
     fn_tree="tensorflow.keras.metrics.mean_squared_logarithmic_error",
+    aliases=["tensorflow.keras.metrics.msle"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_num_dims=1,
         shared_dtype=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_metrics_mean_squared_logarithmic_error(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        all_aliases=["keras.metrics.msle"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=x[0],
@@ -834,27 +767,23 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
     y_pred=helpers.array_values(
         dtype=ivy.int32, shape=(1, 5), min_value=5, max_value=10
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_cosine_similarity(
     *,
     d_type,
     y_true,
     y_pred,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
 
     helpers.test_frontend_function(
         input_dtypes=d_type[0],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         y_true=y_true,

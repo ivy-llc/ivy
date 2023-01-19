@@ -1,5 +1,6 @@
 # local
 import ivy
+from ivy.functional.frontends.jax import DeviceArray
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
@@ -84,8 +85,8 @@ def norm(x, ord=None, axis=None, keepdims=False):
     if ord is None:
         ord = 2
     if type(axis) in [list, tuple] and len(axis) == 2:
-        return ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims)
-    return ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims)
+        return DeviceArray(ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims))
+    return DeviceArray(ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims))
 
 
 norm.supported_dtypes = (
@@ -119,7 +120,7 @@ def tensorinv(a, ind=2):
     a = ivy.reshape(a, shape=(prod, -1))
     ia = ivy.inv(a)
     new_shape = tuple([*invshape])
-    return ivy.reshape(ia, shape=new_shape)
+    return DeviceArray(ivy.reshape(ia, shape=new_shape))
 
 
 @to_ivy_arrays_and_back
