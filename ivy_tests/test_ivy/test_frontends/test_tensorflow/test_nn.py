@@ -233,6 +233,42 @@ def _x_and_filters(
     return dtype, x, filters, dilations, data_format, stride, padding, output_shape
 
 
+#convolution
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.convolution",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        stride_min=3,
+        stride_max=4,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_convolution(
+    *,
+    x_f_d_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filters=filters,
+        stride=stride,
+        padding=pad,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.nn.atrous_conv2d",
     x_f_d_df=_x_and_filters(
@@ -311,41 +347,6 @@ def test_tensorflow_atrous_conv2d_transpose(
         output_shape=output_shape,
         rate=dilations,
         padding=pad,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="tensorflow.nn.convolution",
-    x_f_d_df=_x_and_filters(
-        dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NWC"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
-        stride_min=3,
-        stride_max=4,
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_convolution(
-    *,
-    x_f_d_df,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x,
-        filters=filters,
-        stride=stride,
-        padding=pad,
-        data_format=data_format,
-        dilations=dilations,
     )
 
 
