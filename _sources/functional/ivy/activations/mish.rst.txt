@@ -5,9 +5,9 @@ mish
 
 .. autofunction:: ivy.array.array_methods.mish
 
-.. autofunction:: ivy.container.container_methods.mish
-
 .. autofunction:: ivy.container.container_methods.static_mish
+
+.. autofunction:: ivy.container.container_methods.mish
 |
 | **Supported Frameworks:**
 

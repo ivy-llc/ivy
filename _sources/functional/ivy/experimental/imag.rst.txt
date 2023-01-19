@@ -5,9 +5,9 @@ imag
 
 .. autofunction:: ivy.array.array_methods.imag
 
-.. autofunction:: ivy.container.container_methods.static_imag
-
 .. autofunction:: ivy.container.container_methods.imag
+
+.. autofunction:: ivy.container.container_methods.static_imag
 |
 | **Supported Frameworks:**
 

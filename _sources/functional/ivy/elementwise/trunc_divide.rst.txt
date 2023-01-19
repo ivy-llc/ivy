@@ -5,9 +5,9 @@ trunc_divide
 
 .. autofunction:: ivy.array.array_methods.trunc_divide
 
-.. autofunction:: ivy.container.container_methods.trunc_divide
-
 .. autofunction:: ivy.container.container_methods.static_trunc_divide
+
+.. autofunction:: ivy.container.container_methods.trunc_divide
 |
 | **Supported Frameworks:**
 

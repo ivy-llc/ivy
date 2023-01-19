@@ -5,9 +5,9 @@ isclose
 
 .. autofunction:: ivy.array.array_methods.isclose
 
-.. autofunction:: ivy.container.container_methods.static_isclose
-
 .. autofunction:: ivy.container.container_methods.isclose
+
+.. autofunction:: ivy.container.container_methods.static_isclose
 |
 | **Supported Frameworks:**
 

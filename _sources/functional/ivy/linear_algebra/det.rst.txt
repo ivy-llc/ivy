@@ -5,9 +5,9 @@ det
 
 .. autofunction:: ivy.array.array_methods.det
 
-.. autofunction:: ivy.container.container_methods.static_det
-
 .. autofunction:: ivy.container.container_methods.det
+
+.. autofunction:: ivy.container.container_methods.static_det
 |
 | **Supported Frameworks:**
 

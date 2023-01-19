@@ -3,9 +3,9 @@ tril_indices
 
 .. autofunction:: ivy.functional.ivy.experimental.tril_indices
 
-.. autofunction:: ivy.container.container_methods.static_tril_indices
-
 .. autofunction:: ivy.container.container_methods.tril_indices
+
+.. autofunction:: ivy.container.container_methods.static_tril_indices
 |
 | **Supported Frameworks:**
 

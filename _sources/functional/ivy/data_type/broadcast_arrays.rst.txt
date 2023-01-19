@@ -5,9 +5,9 @@ broadcast_arrays
 
 .. autofunction:: ivy.array.array_methods.broadcast_arrays
 
-.. autofunction:: ivy.container.container_methods.broadcast_arrays
-
 .. autofunction:: ivy.container.container_methods.static_broadcast_arrays
+
+.. autofunction:: ivy.container.container_methods.broadcast_arrays
 |
 | **Supported Frameworks:**
 

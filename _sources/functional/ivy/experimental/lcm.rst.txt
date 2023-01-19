@@ -5,9 +5,9 @@ lcm
 
 .. autofunction:: ivy.array.array_methods.lcm
 
-.. autofunction:: ivy.container.container_methods.static_lcm
-
 .. autofunction:: ivy.container.container_methods.lcm
+
+.. autofunction:: ivy.container.container_methods.static_lcm
 |
 | **Supported Frameworks:**
 

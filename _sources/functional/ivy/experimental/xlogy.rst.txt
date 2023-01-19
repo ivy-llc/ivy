@@ -5,9 +5,9 @@ xlogy
 
 .. autofunction:: ivy.array.array_methods.xlogy
 
-.. autofunction:: ivy.container.container_methods.static_xlogy
-
 .. autofunction:: ivy.container.container_methods.xlogy
+
+.. autofunction:: ivy.container.container_methods.static_xlogy
 |
 | **Supported Frameworks:**
 

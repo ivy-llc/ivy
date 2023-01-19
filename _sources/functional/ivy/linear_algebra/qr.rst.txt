@@ -5,9 +5,9 @@ qr
 
 .. autofunction:: ivy.array.array_methods.qr
 
-.. autofunction:: ivy.container.container_methods.static_qr
-
 .. autofunction:: ivy.container.container_methods.qr
+
+.. autofunction:: ivy.container.container_methods.static_qr
 |
 | **Supported Frameworks:**
 
