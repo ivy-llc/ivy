@@ -775,8 +775,8 @@ def conv1d(
     padding: str,
     /,
     *,
-    data_format: str = "NWC",
-    dilations: int = 1,
+    data_format: Optional[str] = "NWC",
+    dilations: Optional[int] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D convolution given 3-D input x and filters arrays.
@@ -864,8 +864,8 @@ def conv1d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: str = "NWC",
-    dilations: int = 1,
+    data_format: Optional[str] = "NWC",
+    dilations: Optional[int] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
@@ -922,7 +922,7 @@ def conv2d(
     padding: str,
     /,
     *,
-    data_format: str = "NHWC",
+    data_format: Optional[str] = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1050,8 +1050,8 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: str = "NHWC",
-    dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
@@ -1166,7 +1166,7 @@ def depthwise_conv2d(
     padding: Union[str, List[int]],
     /,
     *,
-    data_format: str = "NHWC",
+    data_format: Optional[str] = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1302,7 +1302,7 @@ def conv3d(
     padding: str,
     /,
     *,
-    data_format: str = "NDHWC",
+    data_format: Optional[str] = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1417,7 +1417,7 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: str = "NDHWC",
+    data_format: Optional[str] = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1523,11 +1523,11 @@ def conv_general_dilated(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: int = 2,
-    data_format: str = "channel_last",
-    feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dims: Optional[int] = 2,
+    data_format: Optional[str] = "channel_last",
+    feature_group_count: Optional[int] = 1,
+    x_dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1596,11 +1596,11 @@ def conv_general_transpose(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: int = 2,
+    dims: Optional[int] = 2,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: str = "channel_last",
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    feature_group_count: int = 1,
+    data_format: Optional[str] = "channel_last",
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    feature_group_count: Optional[int] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1620,12 +1620,16 @@ def conv_general_transpose(
         paddings.
     dims
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
+    output_shape
+        Shape of the output.
     data_format
         Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
         "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
         while "channel_last" corresponds to "NWC", "NHWC", "NDHWC" respectively.
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    feature_group_count
+         split input into groups, d_in should be divisible by the number of groups.
     bias
         Bias array of shape *[d_out]*.
     out
@@ -1662,13 +1666,13 @@ def conv(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    transpose: bool = False,
-    dims: int = 2,
+    transpose: Optional[bool] = False,
+    dims: Optional[int] = 2,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: str = "channel_last",
-    feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    data_format: Optional[str] = "channel_last",
+    feature_group_count: Optional[int] = 1,
+    x_dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
