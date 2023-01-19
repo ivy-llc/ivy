@@ -12,7 +12,7 @@ class ArrayWithRandom(abc.ABC):
         /,
         *,
         high: Union[float, ivy.Array, ivy.NativeArray] = 1.0,
-        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        shape: Optional[Union[ivy.Array, ivy.Shape, ivy.NativeShape]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         seed: Optional[int] = None,

@@ -22,7 +22,7 @@ def random_uniform(
     *,
     low: Union[float, np.ndarray] = 0.0,
     high: Union[float, np.ndarray] = 1.0,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int], np.ndarray]] = None,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None,
