@@ -1,7 +1,7 @@
 """Collection of TensorFlow network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Tuple, Union, List, Sequence
+from typing import Optional, Tuple, Union, Sequence
 
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
@@ -10,7 +10,8 @@ from tensorflow.python.types.core import Tensor
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-from ivy.functional.ivy.layers import _deconv_length, _get_x_data_format
+from ivy.functional.ivy.layers import _deconv_length, _get_x_data_format, \
+    _handle_padding
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
