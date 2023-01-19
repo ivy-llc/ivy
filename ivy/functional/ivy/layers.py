@@ -1620,12 +1620,16 @@ def conv_general_transpose(
         paddings.
     dims
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
+    output_shape
+        Shape of the output.
     data_format
         Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
         "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
         while "channel_last" corresponds to "NWC", "NHWC", "NDHWC" respectively.
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    feature_group_count
+         split input into groups, d_in should be divisible by the number of groups.
     bias
         Bias array of shape *[d_out]*.
     out
