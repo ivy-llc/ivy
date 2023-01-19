@@ -31,6 +31,7 @@ Elementwise
    elementwise/nan_to_num.rst
    elementwise/logaddexp2.rst
    elementwise/signbit.rst
+   elementwise/hypot.rst
    elementwise/diff.rst
    elementwise/allclose.rst
    elementwise/fix.rst

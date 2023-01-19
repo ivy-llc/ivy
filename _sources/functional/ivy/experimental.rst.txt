@@ -86,6 +86,7 @@ Experimental
    experimental/nan_to_num.rst
    experimental/logaddexp2.rst
    experimental/signbit.rst
+   experimental/hypot.rst
    experimental/diff.rst
    experimental/allclose.rst
    experimental/fix.rst
