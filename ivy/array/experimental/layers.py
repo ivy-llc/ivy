@@ -554,3 +554,6 @@ class ArrayWithLayersExperimental(abc.ABC):
             n=n,
             out=out,
         )
+
+    def embedding(self, indices, /, *, max_norm=None, out=None):
+        return ivy.embedding(self._data, indices, max_norm=max_norm, out=out)

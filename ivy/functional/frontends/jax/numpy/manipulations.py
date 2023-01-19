@@ -2,7 +2,7 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
-    handle_jax_dtype
+    handle_jax_dtype,
 )
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
@@ -116,3 +116,8 @@ def append(arr, values, axis=None):
 @to_ivy_arrays_and_back
 def swapaxes(a, axis1, axis2):
     return ivy.swapaxes(a, axis1, axis2)
+
+
+@to_ivy_arrays_and_back
+def atleast_3d(*arys):
+    return ivy.atleast_3d(*arys)

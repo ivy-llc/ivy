@@ -19,6 +19,11 @@ def diagonal(A, *, offset=0, dim1=-2, dim2=-1):
 
 
 @to_ivy_arrays_and_back
+def divide(input, other, *, rounding_mode=None, out=None):
+    return ivy.divide(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
 def inv(input, *, out=None):
     return ivy.inv(input, out=out)
 
@@ -143,7 +148,7 @@ def tensorinv(input, ind=2, *, out=None):
     prod_cond = "Tensor shape must satisfy prod(A.shape[:ind]) == prod(A.shape[ind:])"
     positive_ind_cond = "Expected a strictly positive integer for 'ind'"
     input_shape = ivy.shape(input)
-    assert ind > 0, f'{positive_ind_cond}'
+    assert ind > 0, f"{positive_ind_cond}"
     shape_ind_end = input_shape[:ind]
     shape_ind_start = input_shape[ind:]
     prod_ind_end = 1
@@ -152,11 +157,11 @@ def tensorinv(input, ind=2, *, out=None):
         prod_ind_start *= i
     for j in shape_ind_end:
         prod_ind_end *= j
-    assert prod_ind_end == prod_ind_start, f'{prod_cond}.'
+    assert prod_ind_end == prod_ind_start, f"{prod_cond}."
     inverse_shape = shape_ind_start + shape_ind_end
     input = ivy.reshape(input, shape=(prod_ind_end, -1))
     inverse_shape_tuple = tuple([*inverse_shape])
-    assert inv_ex(input, check_errors=True), f'{not_invertible}.'
+    assert inv_ex(input, check_errors=True), f"{not_invertible}."
     inverse_tensor = ivy.inv(input)
     return ivy.reshape(inverse_tensor, shape=inverse_shape_tuple, out=out)
 

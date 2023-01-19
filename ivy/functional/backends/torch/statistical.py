@@ -102,6 +102,7 @@ def prod(
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
@@ -172,7 +173,7 @@ def sum(
         return x.type(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
-        return torch.sum(input=x, dtype=dtype)
+        return torch.sum(input=x, dim=(), dtype=dtype, keepdim=keepdims)
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 

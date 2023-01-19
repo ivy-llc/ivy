@@ -31,7 +31,7 @@ def inner(a, b, /):
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def matmul(
+def _matmul(
     x1, x2, /, out=None, *, casting="same_kind", order="K", dtype=None, subok=True
 ):
     return ivy.matmul(x1, x2, out=out)

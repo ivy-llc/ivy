@@ -5,9 +5,14 @@ import jax.lax as jlax
 import jax.numpy as jnp
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple, Optional, Sequence
-from ivy.functional.ivy.layers import _handle_padding, _deconv_length, _get_x_data_format
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _deconv_length,
+    _get_x_data_format,
+)
 
 # Extra #
 # ------#
@@ -36,8 +41,8 @@ def conv1d(
     padding: str,
     /,
     *,
-    data_format: str = "NWC",
-    dilations: int = 1,
+    data_format: Optional[str] = "NWC",
+    dilations: Optional[int] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
@@ -54,9 +59,9 @@ def conv1d_transpose(
     padding: str,
     /,
     *,
-    output_shape=None,
-    data_format: str = "NWC",
-    dilations: int = 1,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "NWC",
+    dilations: Optional[int] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
@@ -96,8 +101,8 @@ def conv2d(
     padding: str,
     /,
     *,
-    data_format: str = "NHWC",
-    dilations: int = 1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -110,35 +115,6 @@ def conv2d(
         None,
         dilations,
         (data_format, "HWIO", data_format),
-    )
-
-
-def depthwise_conv2d(
-    x: JaxArray,
-    filters: JaxArray,
-    strides: Union[int, Tuple[int, int]],
-    padding: str,
-    /,
-    *,
-    data_format: str = "NHWC",
-    dilations: int = 1,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    strides = [strides] * 2 if isinstance(strides, int) else strides
-    strides = [strides[1], strides[2]] if len(strides) == 4 else strides
-    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    filters = jnp.squeeze(filters, 3) if filters.ndim == 4 else filters
-    cn = filters.shape[-1]
-    filters = jnp.expand_dims(filters, -2)
-    return jlax.conv_general_dilated(
-        x,
-        filters,
-        strides,
-        padding,
-        None,
-        dilations,
-        (data_format, "HWIO", data_format),
-        feature_group_count=cn,
     )
 
 
@@ -149,9 +125,9 @@ def conv2d_transpose(
     padding: str,
     /,
     *,
-    output_shape=None,
-    data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -190,6 +166,35 @@ def conv2d_transpose(
     )
 
 
+def depthwise_conv2d(
+    x: JaxArray,
+    filters: JaxArray,
+    strides: Union[int, Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    strides = [strides[1], strides[2]] if len(strides) == 4 else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    filters = jnp.squeeze(filters, 3) if filters.ndim == 4 else filters
+    cn = filters.shape[-1]
+    filters = jnp.expand_dims(filters, -2)
+    return jlax.conv_general_dilated(
+        x,
+        filters,
+        strides,
+        padding,
+        None,
+        dilations,
+        (data_format, "HWIO", data_format),
+        feature_group_count=cn,
+    )
+
+
 def conv3d(
     x: JaxArray,
     filters: JaxArray,
@@ -197,8 +202,8 @@ def conv3d(
     padding: str,
     /,
     *,
-    data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    data_format: Optional[str] = "NDHWC",
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
@@ -217,13 +222,13 @@ def conv3d(
 def conv3d_transpose(
     x: JaxArray,
     filters: JaxArray,
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int, int, int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    output_shape=None,
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    data_format: str = "NDHWC",
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+    data_format: Optional[str] = "NDHWC",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
@@ -295,11 +300,11 @@ def conv_general_dilated(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: int = 2,
-    data_format: str = "channel_last",
-    feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dims: Optional[int] = 2,
+    data_format: Optional[str] = "channel_last",
+    feature_group_count: Optional[int] = 1,
+    x_dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):
@@ -351,11 +356,11 @@ def conv_general_transpose(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: int = 2,
-    output_shape=None,
-    data_format: str = "channel_last",
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    feature_group_count: int = 1,
+    dims: Optional[int] = 2,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "channel_last",
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    feature_group_count: Optional[int] = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):
@@ -366,11 +371,9 @@ def conv_general_transpose(
     filter_df = _get_filter_dataformat(dims)
     if data_format == "channel_first":
         x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
-    x_shape = list(x.shape[1: dims + 1])
+    x_shape = list(x.shape[1 : dims + 1])
     out_shape = [
-        _deconv_length(
-            x_shape[i], strides[i], filters.shape[i], padding, dilations[i]
-        )
+        _deconv_length(x_shape[i], strides[i], filters.shape[i], padding, dilations[i])
         for i in range(dims)
     ]
     if output_shape is None:
@@ -381,14 +384,16 @@ def conv_general_transpose(
     diff = [-(output_shape[i + 1] - out_shape[i]) for i in range(dims)]
     pad = []
     for i in range(dims):
-        pad += [_conv_transpose_padding(
-            filters.shape[i], strides[i], padding, dilations[i], diff[i]
-        )]
+        pad += [
+            _conv_transpose_padding(
+                filters.shape[i], strides[i], padding, dilations[i], diff[i]
+            )
+        ]
     res = jnp.concatenate(
         [
             jlax.conv_transpose(
-                x[..., j: j + filters.shape[-1] // feature_group_count],
-                filters[..., j: j + filters.shape[-1] // feature_group_count],
+                x[..., j : j + filters.shape[-1] // feature_group_count],
+                filters[..., j : j + filters.shape[-1] // feature_group_count],
                 strides,
                 pad,
                 dilations,

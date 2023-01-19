@@ -2,6 +2,8 @@ import operator
 from typing import Union, Optional, Tuple, List
 from numbers import Number
 import tensorflow as tf
+
+from ivy import promote_types_of_inputs
 from .. import backend_version
 
 
@@ -9,7 +11,6 @@ from .. import backend_version
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import tensorflow_probability as tfp
-from tensorflow.python.ops.numpy_ops import np_config
 
 
 def sinc(
@@ -30,6 +31,7 @@ def lcm(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
 
 
@@ -44,6 +46,7 @@ def fmod(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     res = tf.experimental.numpy.remainder(tf.math.abs(x1), tf.math.abs(x2))
     return tf.where(x1 < 0, -res, res)
 
@@ -56,8 +59,7 @@ def fmax(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     temp = tf.constant(float("nan"))
-    tf.dtypes.cast(x1, tf.float64)
-    tf.dtypes.cast(x2, tf.float64)
+    x1, x2 = promote_types_of_inputs(x1, x2)
     x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
     x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
     ret = tf.experimental.numpy.maximum(x1, x2)
@@ -72,11 +74,9 @@ def fmin(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     temp = tf.constant(float("nan"))
-    tf.dtypes.cast(x1, tf.float64)
-    tf.dtypes.cast(x2, tf.float64)
+    x1, x2 = promote_types_of_inputs(x1, x2)
     x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
     x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
-    tf.experimental.numpy.experimental_enable_numpy_behavior()
     ret = tf.experimental.numpy.minimum(x1, x2)
     return ret
 
@@ -119,19 +119,16 @@ def copysign(
     *,
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    # Cast our inputs to float64 to match numpy behaviour
-    tensor_x2 = tf.convert_to_tensor(x2)
-    # Cast our inputs to float64 if needed to match numpy behaviour
-    if not tensor_x2.dtype.is_floating:
-        tensor_x2 = tf.cast(tensor_x2, tf.float64)
-    tensor_x1 = tf.convert_to_tensor(x1)
-    if not tensor_x1.dtype.is_floating:
-        tensor_x1 = tf.cast(tensor_x1, tf.float64)
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    # Cast our inputs to float to match numpy behaviour
+    if not ivy.is_float_dtype(x1):
+        x1 = tf.cast(x1, ivy.default_float_dtype(as_native=True))
+        x2 = tf.cast(x2, ivy.default_float_dtype(as_native=True))
     # Replace any zero values with 1/the value, since tf.math.sign always
     # returns 0 for positive or negative zero
-    signable_x2 = tf.where(tf.equal(tensor_x2, 0), tf.math.divide(1, x2), tensor_x2)
+    signable_x2 = tf.where(tf.equal(x2, 0), tf.math.divide(1, x2), x2)
     signs = tf.math.sign(signable_x2)
-    return tf.math.multiply(tf.math.abs(tensor_x1), signs)
+    return tf.math.multiply(tf.math.abs(x1), signs)
 
 
 def count_nonzero(
@@ -141,6 +138,7 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype is None:
         return tf.math.count_nonzero(a, axis=axis, keepdims=keepdims, name=None)
@@ -158,7 +156,6 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    np_config.enable_numpy_behavior()
     return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
@@ -172,6 +169,7 @@ def gcd(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.gcd(x1, x2)
 
 
@@ -234,11 +232,11 @@ def logaddexp2(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    dtype = x1.dtype
-    x1 = tf.cast(x1, tf.float64)
-    x2 = tf.cast(x2, tf.float64)
-    return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2)).astype(dtype)
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = tf.cast(x1, ivy.default_float_dtype(as_native=True))
+        x2 = tf.cast(x2, ivy.default_float_dtype(as_native=True))
+    return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
 
 
 def signbit(
@@ -248,6 +246,16 @@ def signbit(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.signbit(x)
+
+
+def hypot(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.sqrt(tf.math.square(x1) + tf.math.square(x2))
 
 
 def allclose(
@@ -583,4 +591,24 @@ def xlogy(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    x, y = promote_types_of_inputs(x, y)
     return tf.math.xlogy(x, y)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+def real(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.real(x)
+
+
+def isposinf(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.isposinf(x)
