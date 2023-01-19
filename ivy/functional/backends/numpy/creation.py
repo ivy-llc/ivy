@@ -232,7 +232,14 @@ def zeros_like(
 array = asarray
 
 
-def copy_array(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def copy_array(
+    x: np.ndarray,
+    *,
+    to_ivy_array: Optional[bool] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if to_ivy_array:
+        return ivy.to_ivy(x.copy())
     return x.copy()
 
 

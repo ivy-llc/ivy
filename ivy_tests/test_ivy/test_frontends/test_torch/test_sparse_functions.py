@@ -18,16 +18,13 @@ inf = float("inf")
         st.integers(min_value=1, max_value=2),
         st.floats(min_value=1.0, max_value=2.0),
     ),
+    test_with_out=st.just(False),
 )
 def test_torch_embedding(
     *,
     dtypes_indices_weights,
     max_norm,
     p,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
@@ -35,10 +32,6 @@ def test_torch_embedding(
     dtypes, indices, weight, padding_idx = dtypes_indices_weights
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,

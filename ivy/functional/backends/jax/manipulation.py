@@ -98,6 +98,8 @@ def roll(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, jnp.ndarray):
+        axis = axis.tolist()
     return jnp.roll(x, shift, axis)
 
 
