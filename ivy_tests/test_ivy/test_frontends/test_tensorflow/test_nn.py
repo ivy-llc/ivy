@@ -1089,3 +1089,32 @@ def test_tensorflow_softmax(
         logits=x[0],
         axis=axis,
     )
+
+
+# embedding_lookup
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.embedding_lookup",
+    dtypes_indices_weights=helpers.embedding_helper(),
+    max_norm=st.floats(min_value=0, max_value=5, exclude_min=True),
+)
+def test_tensorflow_embedding_lookup(
+    *,
+    dtypes_indices_weights,
+    max_norm,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtypes, indices, weight, _ = dtypes_indices_weights
+    dtypes.reverse()
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        params=weight,
+        ids=indices,
+        max_norm=max_norm,
+    )

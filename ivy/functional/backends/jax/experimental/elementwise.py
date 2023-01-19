@@ -184,6 +184,16 @@ def signbit(
     return jnp.signbit(x)
 
 
+def hypot(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.hypot(x1, x2)
+
+
 def allclose(
     x1: JaxArray,
     x2: JaxArray,
