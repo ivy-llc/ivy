@@ -31,3 +31,4 @@ with open("test_names") as f:
         if pos != -1:
             test_name = test_name[:pos]
         test_names_without_backend.append(test_name)
+ print(test_name)
