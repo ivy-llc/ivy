@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 
 
 # local
@@ -26,7 +26,7 @@ def conv1d(
     x: np.ndarray,
     filters: np.ndarray,
     strides: int,
-    padding: str,
+    padding: Union[str, Tuple[int, int]],
     /,
     *,
     data_format: str = "NWC",
@@ -62,7 +62,7 @@ def conv1d_transpose(
     x: np.ndarray,
     filters: np.ndarray,
     strides: int,
-    padding: str,
+    padding: Union[str, Tuple[int, int]],
     /,
     *,
     output_shape: List[int] = None,
@@ -112,7 +112,7 @@ def conv2d(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int, int]],
-    padding: str,
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -190,7 +190,7 @@ def conv2d_transpose(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int, int]],
-    padding: str,
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     output_shape: Tuple[int] = None,
@@ -258,7 +258,7 @@ def depthwise_conv2d(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: Union[str, List[int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -307,7 +307,7 @@ def conv3d(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -390,7 +390,7 @@ def conv3d_transpose(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, List[int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     output_shape: np.ndarray = None,
@@ -474,7 +474,7 @@ def conv_general_dilated(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: int = 2,
@@ -573,7 +573,7 @@ def conv_general_transpose(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: int = 2,
