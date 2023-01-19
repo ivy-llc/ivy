@@ -5,6 +5,7 @@ from hypothesis import strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.frontends.numpy as np_frontend
 
 
 @st.composite
@@ -224,6 +225,9 @@ def _get_safe_casting_dtype(draw, *, dtypes):
         dtype = draw(st.sampled_from(["int64", None]))
     else:
         dtype = draw(st.sampled_from(["bool", None]))
+    # filter uint64 as not supported by torch backend
+    if dtype == "uint64":
+        dtype = None
     return dtype
 
 
@@ -254,16 +258,20 @@ def dtypes_values_casting_dtype(
         dtype = draw(st.just(None))
     elif casting in ["safe", "same_kind"]:
         dtype = draw(_get_safe_casting_dtype(dtypes=dtypes))
+
     else:
         dtype = draw(
             helpers.get_dtypes(
-                get_dtypes_kind,
+                kind=get_dtypes_kind,
                 index=get_dtypes_index,
                 full=False,
                 none=get_dtypes_none,
                 key=get_dtypes_key,
             )
         )[0]
+        # filter uint64 as not supported by torch backend
+        if dtype == "uint64":
+            dtype = None
     return dtypes, values, casting, dtype
 
 
@@ -303,4 +311,30 @@ def get_dtype_and_values_and_casting(
                     key=get_dtypes_key,
                 )
             )
+
     return dtype[0], input_dtype, x, casting
+
+
+# ufunc num_positional_args helper
+@st.composite
+def get_num_positional_args_ufunc(draw, *, fn_name=None):
+    """
+    This function draws data randomly from numbers between nin and nargs
+    where nin and nargs are properties of the given ufunc.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    fn_name
+        name of the ufunc.
+
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator.
+    """
+    func = getattr(np_frontend, fn_name)
+    nin = func.nin
+    nargs = func.nargs
+    return draw(st.integers(min_value=nin, max_value=nargs))

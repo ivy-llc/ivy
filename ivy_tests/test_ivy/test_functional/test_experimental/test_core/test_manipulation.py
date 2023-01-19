@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import hypothesis.extra.numpy as nph
 
 # local
 import numpy as np
@@ -14,7 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # moveaxis
 @handle_test(
-    fn_tree="functional.experimental.moveaxis",
+    fn_tree="functional.ivy.experimental.moveaxis",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
@@ -59,6 +60,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_size=1,
         force_int=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_moveaxis(
     *,
@@ -87,7 +89,7 @@ def test_moveaxis(
 
 # ndenumerate
 @handle_test(
-    fn_tree="functional.experimental.ndenumerate",
+    fn_tree="functional.ivy.experimental.ndenumerate",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -103,7 +105,7 @@ def test_ndenumerate(dtype_and_x):
 
 # ndindex
 @handle_test(
-    fn_tree="functional.experimental.ndindex",
+    fn_tree="functional.ivy.experimental.ndindex",
     dtype_x_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -118,7 +120,7 @@ def test_ndindex(dtype_x_shape):
 
 # heaviside
 @handle_test(
-    fn_tree="functional.experimental.heaviside",
+    fn_tree="functional.ivy.experimental.heaviside",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
@@ -130,6 +132,7 @@ def test_ndindex(dtype_x_shape):
         num_arrays=2,
         shared_dtype=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_heaviside(
     *,
@@ -155,7 +158,7 @@ def test_heaviside(
 
 # flipud
 @handle_test(
-    fn_tree="functional.experimental.flipud",
+    fn_tree="functional.ivy.experimental.flipud",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
@@ -165,6 +168,7 @@ def test_heaviside(
         min_dim_size=1,
         max_dim_size=3,
     ),
+    test_gradients=st.just(False),
 )
 def test_flipud(
     *,
@@ -189,7 +193,7 @@ def test_flipud(
 
 # vstack
 @handle_test(
-    fn_tree="functional.experimental.vstack",
+    fn_tree="functional.ivy.experimental.vstack",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -200,6 +204,7 @@ def test_flipud(
             min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
         ),
     ),
+    test_gradients=st.just(False),
 )
 def test_vstack(
     *,
@@ -224,7 +229,7 @@ def test_vstack(
 
 # hstack
 @handle_test(
-    fn_tree="functional.experimental.hstack",
+    fn_tree="functional.ivy.experimental.hstack",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -235,6 +240,7 @@ def test_vstack(
             min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
         ),
     ),
+    test_gradients=st.just(False),
 )
 def test_hstack(
     dtype_and_m,
@@ -308,7 +314,7 @@ def _get_dtype_values_k_axes_for_rot90(
 
 # rot90
 @handle_test(
-    fn_tree="functional.experimental.rot90",
+    fn_tree="functional.ivy.experimental.rot90",
     dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -316,6 +322,7 @@ def _get_dtype_values_k_axes_for_rot90(
         min_dim_size=1,
         max_dim_size=10,
     ),
+    test_gradients=st.just(False),
 )
 def test_rot90(
     dtype_m_k_axes,
@@ -341,7 +348,7 @@ def test_rot90(
 
 # top_k
 @handle_test(
-    fn_tree="functional.experimental.top_k",
+    fn_tree="functional.ivy.experimental.top_k",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -354,6 +361,7 @@ def test_rot90(
     axis=helpers.ints(min_value=-1, max_value=0),
     k=helpers.ints(min_value=1, max_value=4),
     largest=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_top_k(
     *,
@@ -384,11 +392,12 @@ def test_top_k(
 
 # fliplr
 @handle_test(
-    fn_tree="functional.experimental.fliplr",
+    fn_tree="functional.ivy.experimental.fliplr",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
     ),
+    test_gradients=st.just(False),
 )
 def test_fliplr(
     *,
@@ -413,7 +422,7 @@ def test_fliplr(
 
 # i0
 @handle_test(
-    fn_tree="functional.experimental.i0",
+    fn_tree="functional.ivy.experimental.i0",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -423,6 +432,7 @@ def test_fliplr(
         min_dim_size=1,
         max_dim_size=3,
     ),
+    test_gradients=st.just(False),
 )
 def test_i0(
     *,
@@ -447,7 +457,7 @@ def test_i0(
 
 # flatten
 @handle_test(
-    fn_tree="functional.experimental.flatten",
+    fn_tree="functional.ivy.experimental.flatten",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="flatten_shape"),
@@ -460,6 +470,8 @@ def test_i0(
         force_tuple=True,
     ),
     order=st.sampled_from(["C", "F"]),
+    test_gradients=st.just(False),
+    number_positional_args=st.just(1),
 )
 def test_flatten(
     *,
@@ -551,11 +563,12 @@ def _pad_helper(draw):
 
 
 @handle_test(
-    fn_tree="functional.experimental.pad",
+    fn_tree="functional.ivy.experimental.pad",
     ground_truth_backend="numpy",
     dtype_and_input_and_other=_pad_helper(),
     reflect_type=st.sampled_from(["even", "odd"]),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_pad(
     *,
@@ -595,7 +608,7 @@ def test_pad(
 
 # vsplit
 @handle_test(
-    fn_tree="functional.experimental.vsplit",
+    fn_tree="functional.ivy.experimental.vsplit",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -608,6 +621,7 @@ def test_pad(
     indices_or_sections=helpers.get_shape(
         min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
+    test_gradients=st.just(False),
 )
 def test_vsplit(
     dtype_and_x,
@@ -633,7 +647,7 @@ def test_vsplit(
 
 # dsplit
 @handle_test(
-    fn_tree="functional.experimental.dsplit",
+    fn_tree="functional.ivy.experimental.dsplit",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -646,6 +660,7 @@ def test_vsplit(
     indices_or_sections=helpers.get_shape(
         min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
+    test_gradients=st.just(False),
 )
 def test_dsplit(
     dtype_and_x,
@@ -672,12 +687,13 @@ def test_dsplit(
 
 # atleast_1d
 @handle_test(
-    fn_tree="functional.experimental.atleast_1d",
+    fn_tree="functional.ivy.experimental.atleast_1d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_atleast_1d(
     dtype_and_x,
@@ -705,7 +721,7 @@ def test_atleast_1d(
 
 # dstack
 @handle_test(
-    fn_tree="functional.experimental.dstack",
+    fn_tree="functional.ivy.experimental.dstack",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -716,6 +732,7 @@ def test_atleast_1d(
             min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
         ),
     ),
+    test_gradients=st.just(False),
 )
 def test_dstack(
     *,
@@ -740,12 +757,13 @@ def test_dstack(
 
 # atleast_2d
 @handle_test(
-    fn_tree="functional.experimental.atleast_2d",
+    fn_tree="functional.ivy.experimental.atleast_2d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_atleast_2d(
     *,
@@ -773,12 +791,13 @@ def test_atleast_2d(
 
 
 @handle_test(
-    fn_tree="functional.experimental.atleast_3d",
+    fn_tree="functional.ivy.experimental.atleast_3d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_atleast_3d(
     dtype_and_x,
@@ -806,7 +825,7 @@ def test_atleast_3d(
 
 # take_along_axis
 @handle_test(
-    fn_tree="functional.take_along_axis",
+    fn_tree="functional.ivy.experimental.take_along_axis",
     dtype_x_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
@@ -816,6 +835,7 @@ def test_atleast_3d(
         max_dim_size=10,
         indices_same_dims=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_take_along_axis(
     *,
@@ -842,7 +862,7 @@ def test_take_along_axis(
 
 # hsplit
 @handle_test(
-    fn_tree="functional.experimental.hsplit",
+    fn_tree="functional.ivy.experimental.hsplit",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -855,6 +875,7 @@ def test_take_along_axis(
     indices_or_sections=helpers.get_shape(
         min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
+    test_gradients=st.just(False),
 )
 def test_hsplit(
     dtype_and_x,
@@ -875,4 +896,35 @@ def test_hsplit(
         fn_name=fn_name,
         x=x[0],
         indices_or_sections=indices_or_sections,
+    )
+
+
+# dstack
+@handle_test(
+    fn_tree="functional.ivy.experimental.broadcast_shapes",
+    shapes=nph.mutually_broadcastable_shapes(
+        num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5
+    ),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_broadcast_shapes(
+    *,
+    shapes,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    shapes, _ = shapes
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=["int64"],
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        shapes=shapes,
     )

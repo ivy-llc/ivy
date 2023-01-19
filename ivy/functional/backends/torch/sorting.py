@@ -4,8 +4,11 @@ from typing import Optional
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def argsort(
     x: torch.Tensor,
     /,
@@ -26,6 +29,7 @@ def argsort(
 argsort.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def sort(
     x: torch.Tensor,
     /,
@@ -46,6 +50,7 @@ def sort(
 sort.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def searchsorted(
     x: torch.Tensor,
     v: torch.Tensor,
@@ -69,6 +74,9 @@ def searchsorted(
         if sorter_dtype is not torch.int64:
             sorter = sorter.to(torch.int64)
     ret_dtype = ivy.as_native_dtype(ret_dtype)
+    func_out = out
+    if ivy.exists(out) and out.dtype != ret_dtype:
+        func_out = None
     if ret_dtype is torch.int64:
         return torch.searchsorted(
             x,
@@ -76,7 +84,7 @@ def searchsorted(
             sorter=sorter,
             side=side,
             out_int32=False,
-            out=out,
+            out=func_out,
         )
     elif ret_dtype is torch.int32:
         return torch.searchsorted(
@@ -85,9 +93,13 @@ def searchsorted(
             sorter=sorter,
             side=side,
             out_int32=True,
-            out=out,
+            out=func_out,
         )
-    return torch.searchsorted(x, v, sorter=sorter, side=side, out=out).to(ret_dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(
+            out, torch.searchsorted(x, v, sorter=sorter, side=side).to(out.dtype)
+        )
+    return torch.searchsorted(x, v, sorter=sorter, side=side).to(ret_dtype)
 
 
 searchsorted.support_native_out = True

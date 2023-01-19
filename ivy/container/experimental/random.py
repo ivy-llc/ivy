@@ -67,7 +67,7 @@ class ContainerWithRandomExperimental(ContainerBase):
                 )
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "dirichlet",
             alpha,
             key_chains=key_chains,
@@ -196,7 +196,7 @@ class ContainerWithRandomExperimental(ContainerBase):
         ret
             A container object, with values drawn from the beta distribution.
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "beta",
             alpha,
             beta,
@@ -276,6 +276,132 @@ class ContainerWithRandomExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            device=device,
+            dtype=dtype,
+            seed=seed,
+            out=out,
+        )
+
+    @staticmethod
+    def static_poisson(
+        lam: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.poisson. This method
+        simply wraps the function, and so the docstring for ivy.poisson also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        lam
+            Input container with rate parameter(s) describing the poisson
+            distribution(s) to sample.
+        shape
+            optional container including ints or tuple of ints,
+            Output shape for the arrays in the input container.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            (Default value = None).
+        dtype
+            output container array data type. If ``dtype`` is ``None``, the output data
+            type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including the drawn samples.
+
+        Examples
+        --------
+        >>> lam = ivy.Container(a=ivy.array([7,6,5]), \
+                                b=ivy.array([8,9,4]))
+        >>> shape = ivy.Container(a=(2,3), b=(1,1,3))
+        >>> ivy.Container.static_poisson(lam, shape=shape)
+        {
+            a: ivy.array([[5, 4, 6],
+                          [12, 4, 5]]),
+            b: ivy.array([[[8, 13, 3]]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "poisson",
+            lam,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            shape=shape,
+            device=device,
+            dtype=dtype,
+            out=out,
+        )
+
+    def poisson(
+        self: ivy.Container,
+        /,
+        *,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.poisson. This method
+        simply wraps the function, and so the docstring for ivy.poisson also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container with rate parameter(s) describing the poisson
+            distribution(s) to sample.
+        shape
+            optional container including ints or tuple of ints,
+            Output shape for the arrays in the input container.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            (Default value = None).
+        dtype
+            output container array data type. If ``dtype`` is ``None``, the output data
+            type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including the drawn samples.
+
+        Examples
+        --------
+        >>> lam = ivy.Container(a=ivy.array([7,6,5]), \
+                                b=ivy.array([8,9,4]))
+        >>> shape = ivy.Container(a=(2,3), b=(1,1,3))
+        >>> lam.poisson(shape=shape)
+        {
+            a: ivy.array([[5, 4, 6],
+                          [12, 4, 5]]),
+            b: ivy.array([[[8, 13, 3]]])
+        }
+        """
+        return self.static_poisson(
+            self,
+            shape=shape,
             device=device,
             dtype=dtype,
             seed=seed,
