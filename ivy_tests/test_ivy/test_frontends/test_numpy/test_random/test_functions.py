@@ -5,6 +5,19 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+@st.composite
+def _get_dtype_and_matrix(draw):
+    arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
+    random_size = draw(st.integers(min_value=1, max_value=4))
+    shape = (*arbitrary_dims, random_size, random_size)
+    return draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
 
 # random_sample
 @handle_frontend_test(
@@ -157,12 +170,10 @@ def test_numpy_normal(
 # shuffle
 @handle_frontend_test(
     fn_tree="numpy.random.shuffle",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
+    dtype_and_input=_get_dtype_and_matrix()
 )
 def test_numpy_shuffle(
-        dtype_and_x,
+        dtype_and_input,
         as_variable,
         num_positional_args,
         native_array,
@@ -170,7 +181,7 @@ def test_numpy_shuffle(
         fn_tree,
         on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
