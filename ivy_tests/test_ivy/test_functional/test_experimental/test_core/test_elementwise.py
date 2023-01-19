@@ -1040,6 +1040,6 @@ def test_hypot(
         on_device=on_device,
         atol_=1e-2,
         ground_truth_backend=ground_truth_backend,
-        x=x[0],
-        q=x[1],
+        x1=x[0],
+        x2=x[1],
     )

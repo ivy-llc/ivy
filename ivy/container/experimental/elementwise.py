@@ -2166,7 +2166,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
     def hypot(
         self: ivy.Container,
-        q: ivy.Container,
+        x2: ivy.Container,
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -2184,7 +2184,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ----------
         self
             Input container containing first input array.
-        q
+        x2
             Input container containing second input array.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
@@ -2212,7 +2212,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ...                         b=ivy.array([3.0]))
         >>> y = ivy.Container(a=ivy.array([3.0]),\
                                     b=ivy.array([4.0]))
-        >>> x.hypot()
+        >>> x.hypot(y)
         {
             a: ivy.array([3.6055]),
             b: ivy.array([5.])
@@ -2220,7 +2220,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         """
         return self.static_hypot(
             self,
-            q,
+            x2,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

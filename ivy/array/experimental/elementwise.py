@@ -821,7 +821,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
 
     def hypot(
         self: ivy.Array,
-        y: ivy.Array,
+        x2: ivy.Array,
         /,
         *,
         out: Optional[ivy.Array] = None,
@@ -835,7 +835,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ----------
         self
             First input array
-        y
+        x2
             Second input array
         out
             Optional output array, for writing the result to. It must have a shape that
@@ -854,7 +854,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         >>> x.hypot(y)
         ivy.array([5.0, 6.4031, 7.8102])
         """
-        return ivy.hypot(self._data, y, out=out)
+        return ivy.hypot(self._data, x2, out=out)
 
     def allclose(
         self: ivy.Array,
