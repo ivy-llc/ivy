@@ -790,8 +790,9 @@ def conv1d(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     data_format
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
@@ -879,8 +880,9 @@ def conv1d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -937,8 +939,9 @@ def conv2d(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     data_format
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
@@ -1065,8 +1068,9 @@ def conv2d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1182,8 +1186,9 @@ def depthwise_conv2d(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     data_format
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
@@ -1317,8 +1322,9 @@ def conv3d(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     data_format
         The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
         corresponds to inputs with shape (batch_size, depth, height, width, channels),
@@ -1432,8 +1438,9 @@ def conv3d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1543,8 +1550,9 @@ def conv_general_dilated(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     dims
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     data_format
@@ -1616,8 +1624,9 @@ def conv_general_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     dims
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     output_shape
@@ -1688,8 +1697,9 @@ def conv(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     transpose
         True for computing transpose convolution, and False for dilated convolution.
         When True, `x_dilations` must be 1 (the default).
