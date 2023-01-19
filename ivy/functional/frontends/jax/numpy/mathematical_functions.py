@@ -55,7 +55,7 @@ def floor(x):
 
 
 @to_ivy_arrays_and_back
-def mod(x1, x2):
+def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
 
@@ -238,10 +238,13 @@ def tensordot(a, b, axes=2):
 
 @to_ivy_arrays_and_back
 def divide(x1, x2, /):
-    if ivy.dtype(x1) == "int64" or ivy.dtype(x1) == "uint64":
-        x1 = ivy.astype(x1, ivy.float64)
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
-    return ivy.divide(x1, x2)
+    if ivy.dtype(x1) in ["int64", "uint64"]:
+        x1 = ivy.astype(x1, ivy.float64)
+    elif ivy.is_int_dtype(x1):
+        x1 = ivy.astype(x1, ivy.float32)
+
+    return ivy.divide(x1, x2).astype(x1.dtype)
 
 
 true_divide = divide
@@ -253,6 +256,13 @@ def exp(
     /,
 ):
     return ivy.exp(x)
+
+
+def expm1(
+    x,
+    /,
+):
+    return ivy.expm1(x)
 
 
 @to_ivy_arrays_and_back
@@ -274,6 +284,7 @@ def fmin(x1, x2):
         x1,
         x2,
     )
+    print("jax-frontend", ret)
     return ret
 
 
@@ -298,6 +309,11 @@ def heaviside(x1, x2):
 @to_ivy_arrays_and_back
 def log(x):
     return ivy.log(x)
+
+
+@to_ivy_arrays_and_back
+def log1p(x, /):
+    return ivy.log1p(x)
 
 
 @to_ivy_arrays_and_back

@@ -17,7 +17,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def add(
+def _add(
     x1,
     x2,
     /,
@@ -41,7 +41,7 @@ def add(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def subtract(
+def _subtract(
     x1,
     x2,
     /,
@@ -65,7 +65,7 @@ def subtract(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def divide(
+def _divide(
     x1,
     x2,
     /,
@@ -84,7 +84,7 @@ def divide(
     return ret
 
 
-true_divide = divide
+_true_divide = _divide
 
 
 @handle_numpy_out
@@ -92,7 +92,7 @@ true_divide = divide
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def multiply(
+def _multiply(
     x1,
     x2,
     /,
@@ -116,7 +116,7 @@ def multiply(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def power(
+def _power(
     x1,
     x2,
     /,
@@ -140,7 +140,7 @@ def power(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def float_power(
+def _float_power(
     x1,
     x2,
     /,
@@ -176,7 +176,7 @@ def vdot(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def positive(
+def _positive(
     x,
     /,
     out=None,
@@ -198,7 +198,7 @@ def positive(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def negative(
+def _negative(
     x,
     /,
     out=None,
@@ -220,7 +220,7 @@ def negative(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def floor_divide(
+def _floor_divide(
     x1,
     x2,
     /,
@@ -246,7 +246,7 @@ def floor_divide(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def reciprocal(
+def _reciprocal(
     x,
     /,
     out=None,
@@ -270,7 +270,7 @@ def reciprocal(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def mod(
+def _mod(
     x1,
     x2,
     /,
@@ -296,7 +296,7 @@ def mod(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def fmod(
+def _fmod(
     x1,
     x2,
     /,
