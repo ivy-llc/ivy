@@ -6,6 +6,7 @@ import torch
 
 # local
 import ivy
+from ivy import promote_types_of_inputs
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
@@ -19,6 +20,7 @@ def lcm(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return torch.abs(torch.lcm(x1, x2, out=out))
 
 
@@ -32,6 +34,7 @@ def fmod(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return torch.fmod(x1, x2, out=None)
 
 
@@ -46,6 +49,7 @@ def fmax(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return torch.fmax(x1, x2, out=None)
 
 
@@ -131,6 +135,10 @@ def copysign(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.type(ivy.default_float_dtype(as_native=True))
+        x2 = x2.type(ivy.default_float_dtype(as_native=True))
     return torch.copysign(torch.as_tensor(x1), x2, out=out)
 
 
@@ -193,8 +201,7 @@ def gcd(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1 = x1 if type(x1) == torch.Tensor else torch.Tensor(x1)
-    x2 = x2 if type(x2) == torch.Tensor else torch.Tensor(x2)
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return torch.gcd(x1, x2, out=out)
 
 
@@ -272,8 +279,10 @@ def logaddexp2(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1 = x1 if type(x1) == torch.Tensor else torch.Tensor(x1)
-    x2 = x2 if type(x2) == torch.Tensor else torch.Tensor(x2)
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.type(ivy.default_float_dtype(as_native=True))
+        x2 = x2.type(ivy.default_float_dtype(as_native=True))
     return torch.logaddexp2(x1, x2, out=out)
 
 
@@ -395,6 +404,7 @@ def gradient(
 def xlogy(
     x: torch.tensor, y: torch.tensor, /, *, out: Optional[torch.tensor] = None
 ) -> torch.tensor:
+    x, y = promote_types_of_inputs(x, y)
     return torch.xlogy(x, y, out=out)
 
 

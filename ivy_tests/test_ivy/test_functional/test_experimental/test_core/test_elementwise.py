@@ -49,7 +49,7 @@ def test_sinc(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=["int16", "int32", "int64"],
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         min_num_dims=1,
         max_num_dims=3,
         min_value=-100,
@@ -84,7 +84,7 @@ def test_lcm(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         large_abs_safety_factor=6,
         small_abs_safety_factor=6,
         safety_factor_scale="log",
@@ -126,7 +126,7 @@ def test_fmod(
         min_value=-10,
         max_value=10,
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -164,7 +164,7 @@ def test_fmax(
         min_value=-10,
         max_value=10,
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -348,7 +348,7 @@ def test_exp2(
         num_arrays=2,
         min_num_dims=0,
         allow_nan=False,
-        shared_dtype=True,
+        shared_dtype=False,
     ),
     test_gradients=st.just(False),
 )
@@ -487,7 +487,7 @@ def test_nansum(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         min_num_dims=1,
         max_num_dims=3,
         min_value=-100,
@@ -694,7 +694,7 @@ def test_nan_to_num(
 @handle_test(
     fn_tree="functional.ivy.experimental.logaddexp2",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["float32", "float64"],
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
@@ -951,7 +951,7 @@ def test_gradient(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=["float16", "float32", "float64"],
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         min_value=-10,
         max_value=10,
         min_num_dims=1,

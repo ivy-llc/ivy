@@ -216,8 +216,8 @@ def conv2d_transpose(
     not_valid_w = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
-    pad_h = _handle_padding(output_shape[2], strides[0], filter_shape[0], padding)
-    pad_w = _handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = _handle_padding(output_shape[1], strides[0], filter_shape[0], padding)
+    pad_w = _handle_padding(output_shape[2], strides[1], filter_shape[1], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
@@ -495,7 +495,7 @@ def conv_general_dilated(
     dims: int = 2,
     data_format: str = "channel_last",
     feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
