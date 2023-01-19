@@ -102,6 +102,7 @@ def prod(
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
