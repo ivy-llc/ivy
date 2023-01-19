@@ -30,4 +30,4 @@ jobs:
            pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
-           python duplicate_checking.py
+           python duplicate_checking_1.py
