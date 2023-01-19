@@ -5,9 +5,9 @@ adjoint
 
 .. autofunction:: ivy.array.array_methods.adjoint
 
-.. autofunction:: ivy.container.container_methods.adjoint
-
 .. autofunction:: ivy.container.container_methods.static_adjoint
+
+.. autofunction:: ivy.container.container_methods.adjoint
 |
 | **Supported Frameworks:**
 

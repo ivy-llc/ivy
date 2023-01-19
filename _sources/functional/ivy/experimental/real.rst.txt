@@ -5,9 +5,9 @@ real
 
 .. autofunction:: ivy.array.array_methods.real
 
-.. autofunction:: ivy.container.container_methods.real
-
 .. autofunction:: ivy.container.container_methods.static_real
+
+.. autofunction:: ivy.container.container_methods.real
 |
 | **Supported Frameworks:**
 

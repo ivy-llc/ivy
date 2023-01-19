@@ -5,9 +5,9 @@ diff
 
 .. autofunction:: ivy.array.array_methods.diff
 
-.. autofunction:: ivy.container.container_methods.diff
-
 .. autofunction:: ivy.container.container_methods.static_diff
+
+.. autofunction:: ivy.container.container_methods.diff
 |
 | **Supported Frameworks:**
 

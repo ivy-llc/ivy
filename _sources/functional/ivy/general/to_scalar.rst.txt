@@ -5,9 +5,9 @@ to_scalar
 
 .. autofunction:: ivy.array.array_methods.to_scalar
 
-.. autofunction:: ivy.container.container_methods.static_to_scalar
-
 .. autofunction:: ivy.container.container_methods.to_scalar
+
+.. autofunction:: ivy.container.container_methods.static_to_scalar
 |
 | **Supported Frameworks:**
 

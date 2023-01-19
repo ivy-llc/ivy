@@ -5,9 +5,9 @@ result_type
 
 .. autofunction:: ivy.array.array_methods.result_type
 
-.. autofunction:: ivy.container.container_methods.result_type
-
 .. autofunction:: ivy.container.container_methods.static_result_type
+
+.. autofunction:: ivy.container.container_methods.result_type
 |
 | **Supported Frameworks:**
 

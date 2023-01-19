@@ -5,9 +5,9 @@ dsplit
 
 .. autofunction:: ivy.array.array_methods.dsplit
 
-.. autofunction:: ivy.container.container_methods.static_dsplit
-
 .. autofunction:: ivy.container.container_methods.dsplit
+
+.. autofunction:: ivy.container.container_methods.static_dsplit
 |
 | **Supported Frameworks:**
 

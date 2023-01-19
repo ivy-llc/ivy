@@ -3,9 +3,9 @@ kaiser_bessel_derived_window
 
 .. autofunction:: ivy.functional.ivy.experimental.kaiser_bessel_derived_window
 
-.. autofunction:: ivy.container.container_methods.static_kaiser_bessel_derived_window
-
 .. autofunction:: ivy.container.container_methods.kaiser_bessel_derived_window
+
+.. autofunction:: ivy.container.container_methods.static_kaiser_bessel_derived_window
 |
 | **Supported Frameworks:**
 

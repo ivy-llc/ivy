@@ -5,9 +5,9 @@ isfinite
 
 .. autofunction:: ivy.array.array_methods.isfinite
 
-.. autofunction:: ivy.container.container_methods.static_isfinite
-
 .. autofunction:: ivy.container.container_methods.isfinite
+
+.. autofunction:: ivy.container.container_methods.static_isfinite
 |
 | **Supported Frameworks:**
 

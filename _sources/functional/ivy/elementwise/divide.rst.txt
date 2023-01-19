@@ -5,9 +5,9 @@ divide
 
 .. autofunction:: ivy.array.array_methods.divide
 
-.. autofunction:: ivy.container.container_methods.static_divide
-
 .. autofunction:: ivy.container.container_methods.divide
+
+.. autofunction:: ivy.container.container_methods.static_divide
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ eigvals
 
 .. autofunction:: ivy.array.array_methods.eigvals
 
-.. autofunction:: ivy.container.container_methods.eigvals
-
 .. autofunction:: ivy.container.container_methods.static_eigvals
+
+.. autofunction:: ivy.container.container_methods.eigvals
 |
 | **Supported Frameworks:**
 
