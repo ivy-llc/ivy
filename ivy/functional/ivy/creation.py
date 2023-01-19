@@ -1481,9 +1481,9 @@ array = asarray
 @handle_nestable
 @handle_exceptions
 def copy_array(
-    x: Union[ivy.Array, ivy.NativeArray], 
-    *, 
-    to_ivy_array: Optional[bool] = True, 
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    to_ivy_array: Optional[bool] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Copy an array.
@@ -1493,8 +1493,8 @@ def copy_array(
     x
         array, input array containing elements to copy.
     to_ivy_array
-        boolean, if True the returned array will be an ivy.Array object otherwise 
-        returns an ivy.NativeArray object (i.e. a torch.tensor, np.array, etc., 
+        boolean, if True the returned array will be an ivy.Array object otherwise
+        returns an ivy.NativeArray object (i.e. a torch.tensor, np.array, etc.,
         depending on the backend), defaults to True.
     out
         optional output array, for writing the result to. It must have a shape that the

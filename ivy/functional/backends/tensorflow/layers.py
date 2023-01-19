@@ -263,19 +263,14 @@ def conv_general_dilated(
     x_shape = list(x.shape[1 : dims + 2])
 
     # adding dilation in input
-    if dims == 1:
-        permute_list = [2]
-    else:
-        permute_list = [i for i in range(3, dims + 2)]
-        permute_list += [2]
-    x = tf.transpose(x, (0, dims + 1, *range(1, dims + 1)))
     for i in range(dims):
         if x_dilations[i] > 1:
             h = x_shape[i]
             new_height = h + (h - 1) * (x_dilations[i] - 1)
             h = tf.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
-            x = tf.matmul(tf.transpose(x, (0, 1, *permute_list)), h)
-    x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+            x = tf.experimental.numpy.swapaxes(x, 1 + i, -1)
+            x = tf.matmul(x, h)
+            x = tf.experimental.numpy.swapaxes(x, -1, 1 + i)
 
     df = _get_x_data_format(dims, "channel_last")
     if dims == 1:

@@ -303,6 +303,16 @@ def signbit(
 signbit.support_native_out = True
 
 
+def hypot(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.hypot(x1, x2)
+
+
 def diff(
     x: Union[np.ndarray, int, float, list, tuple],
     /,
