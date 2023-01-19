@@ -14,9 +14,13 @@ jobs:
           path: ivy
           persist-credentials: false
           submodules: "recursive"
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.8"
+          cache: "pip"
+          cache-dependency-path: |
+            **/optional*.txt
+            **/requirements*.txt
 
       - name: Run Docstring Tests
         run: |
