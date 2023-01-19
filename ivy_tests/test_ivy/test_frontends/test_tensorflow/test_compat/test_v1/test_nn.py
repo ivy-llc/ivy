@@ -1,8 +1,8 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -32,7 +32,7 @@ def _batch_norm_helper(draw):
         min_value=-1e02,
         max_value=1e02,
     ))
-    vectors[3] = ivy.abs(vectors[3])  # non-negative variance
+    vectors[3] = np.abs(vectors[3])  # non-negative variance
     return dtype + dtypes, x, epsilon, factor, training, data_format, vectors
 
 
