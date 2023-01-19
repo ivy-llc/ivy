@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List, Callable, Sequence
+from typing import Optional, Tuple, Union, Callable, Sequence
 
 # local
 import ivy
@@ -918,12 +918,12 @@ def conv1d_transpose(
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int, int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D convolution given 4-D input x and filters arrays.
@@ -1045,13 +1045,13 @@ def conv2d(
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int, int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
@@ -1162,12 +1162,12 @@ def conv2d_transpose(
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int, int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1412,7 +1412,7 @@ def conv3d(
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int, int, int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
