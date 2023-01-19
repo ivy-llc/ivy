@@ -12,8 +12,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_value1_value2_axis_for_tensordot,
 )
 
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-
 
 # absolute
 @handle_frontend_test(
