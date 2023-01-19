@@ -1755,9 +1755,6 @@ def test_jax_lax_dot_general(
 
 @st.composite
 def x_and_filters(draw, dim=2, transpose=False, general=False):
-    strides = draw(
-        st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
-    )
     batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
@@ -1778,7 +1775,8 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
     else:
         fc = 1
     # tensorflow backprop doesn't support dilations more than 1 on CPU
-    dilations = 1
+    strides = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+    dilations = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
     elif dim == 1:
@@ -1796,12 +1794,12 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
         for i in range(dim):
             output_shape.append(
                 _deconv_length(
-                    x_dim[i], strides[0], filter_shape[i], padding, dilations
+                    x_dim[i], strides[0], filter_shape[i], padding, dilations[i]
                 )
             )
     else:
         for i in range(dim):
-            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
+            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
             x_dim.append(draw(st.integers(min_x, min_x + 1)))
         x_dim = tuple(x_dim)
     if dim == 1:
@@ -1840,6 +1838,9 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
             max_value=1.0,
         )
     )
+    if general and not transpose:
+        x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+        dilations = (dilations, x_dilation)
     ret = (
         dtype,
         vals,
@@ -1882,6 +1883,13 @@ def test_jax_lax_conv(
     test_flags,
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
+    if ivy.current_backend_str() == "tensorflow":
+        if not ivy.gpu_is_available():
+            assume(
+                (dilation <= 1)
+                if isinstance(dilation, int)
+                else all(d <= 1 for d in dilation)
+            )
     assume(dim_num[0][1] == "C" and dim_num[1][0] == "O")
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -1914,6 +1922,13 @@ def test_jax_lax_conv_transpose(
     test_flags,
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, out_shape, fc, pref = x_f_d_other
+    if ivy.current_backend_str() == "tensorflow":
+        if not ivy.gpu_is_available():
+            assume(
+                (dilation <= 1)
+                if isinstance(dilation, int)
+                else all(d <= 1 for d in dilation)
+            )
     assume(
         dim_num[1] in ["OIW", "OIHW", "OIDHW"]
     )
@@ -1927,7 +1942,7 @@ def test_jax_lax_conv_transpose(
         rhs=filters,
         strides=stride,
         padding=pad,
-        rhs_dilation=[dilation]*(len(x.shape)-2),
+        rhs_dilation=dilation,
         dimension_numbers=dim_num,
         # transpose_kernel=transpose_kernel,
         transpose_kernel=True,
@@ -1939,19 +1954,24 @@ def test_jax_lax_conv_transpose(
 @handle_frontend_test(
     fn_tree="jax.lax.conv_general_dilated",
     x_f_d_other=_conv_helper(general=True),
-    x_dilation=st.integers(1, 3),
     test_with_out=st.just(False),
 )
 def test_jax_lax_conv_general_dilated(
     *,
     x_f_d_other,
-    x_dilation,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
+    dtype, x, filters, dilations, dim_num, stride, pad, fc, pref = x_f_d_other
+    if ivy.current_backend_str() == "tensorflow":
+        if not ivy.gpu_is_available():
+            assume(
+                (dilations[0] <= 1)
+                if isinstance(dilations[0], int)
+                else all(d <= 1 for d in dilations[0])
+            )
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -1963,9 +1983,11 @@ def test_jax_lax_conv_general_dilated(
         window_strides=stride,
         padding=pad,
         # TODO: make it work for non-default lhs_dilation
-        # lhs_dilation=[x_dilation]*(len(x.shape)-2),
+        # lhs_dilation=dilations[1],
         lhs_dilation=None,
-        rhs_dilation=[dilation]*(len(x.shape)-2),
+        # TODO: make it work for the updated sequence dilation
+        # rhs_dilation=dilations[0],
+        rhs_dilation=None,
         dimension_numbers=dim_num,
         feature_group_count=fc,
         batch_group_count=1,
