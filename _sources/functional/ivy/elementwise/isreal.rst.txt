@@ -5,9 +5,9 @@ isreal
 
 .. autofunction:: ivy.array.array_methods.isreal
 
-.. autofunction:: ivy.container.container_methods.static_isreal
-
 .. autofunction:: ivy.container.container_methods.isreal
+
+.. autofunction:: ivy.container.container_methods.static_isreal
 |
 | **Supported Frameworks:**
 

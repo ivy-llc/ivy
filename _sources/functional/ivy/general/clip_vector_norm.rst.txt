@@ -5,9 +5,9 @@ clip_vector_norm
 
 .. autofunction:: ivy.array.array_methods.clip_vector_norm
 
-.. autofunction:: ivy.container.container_methods.static_clip_vector_norm
-
 .. autofunction:: ivy.container.container_methods.clip_vector_norm
+
+.. autofunction:: ivy.container.container_methods.static_clip_vector_norm
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ cumprod
 
 .. autofunction:: ivy.array.array_methods.cumprod
 
-.. autofunction:: ivy.container.container_methods.static_cumprod
-
 .. autofunction:: ivy.container.container_methods.cumprod
+
+.. autofunction:: ivy.container.container_methods.static_cumprod
 |
 | **Supported Frameworks:**
 
