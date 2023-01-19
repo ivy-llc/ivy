@@ -535,18 +535,14 @@ def conv_general_dilated(
         pad_list[::2] = pad_list_top
         pad_list[1::2] = pad_list_bot
     else:
-        pad_list = [item for sublist in padding for item in sublist]
-        # pad_list = [
-        #     (padding[i * 2], padding[i * 2 + 1])
-        #     for i in range(int(len(padding) / 2) - 1, -1, -1)
-        # ]
+        pad_list = [item for sublist in padding for item in sublist[::-1]]
     x = torch.nn.functional.pad(
         x,
         [
             0, 0,
             0, 0,
             *pad_list,
-        ],
+        ][::-1],
         value=0,
     )
     if dims == 1:
