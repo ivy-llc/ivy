@@ -190,7 +190,7 @@ def test_numpy_poisson(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        lam=x,
+        lam=x[0],
         test_values=False,
         size=size,
     )
