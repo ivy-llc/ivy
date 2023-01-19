@@ -216,8 +216,8 @@ def conv2d_transpose(
     not_valid_w = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
-    pad_h = _handle_padding(output_shape[2], strides[0], filter_shape[0], padding)
-    pad_w = _handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = _handle_padding(output_shape[1], strides[0], filter_shape[0], padding)
+    pad_w = _handle_padding(output_shape[2], strides[1], filter_shape[1], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
@@ -512,17 +512,16 @@ def conv_general_dilated(
     if data_format == "channel_last":
         x = x.permute(0, dims + 1, *range(1, dims + 1))
     x_shape = x.shape[2:]
+
     # adding dilation to input
-    if dims == 1:
-        permute_list = [2]
-    else:
-        permute_list = [i for i in range(3, dims + 2)]
-        permute_list += [2]
     for i in range(dims):
         if x_dilations[i] > 1:
-            new_x = x_shape[i] + (x_shape[i] - 1) * (x_dilations[i] - 1)
-            h = torch.eye(new_x, dtype=x.dtype)[:: x_dilations[i]]
-            x = torch.einsum("...kl, lm -> ...km", x.permute(0, 1, *permute_list), h)
+            h = x_shape[i]
+            new_height = h + (h - 1) * (x_dilations[i] - 1)
+            h = torch.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
+            x = torch.swapaxes(x, 2 + i, -1)
+            x = torch.matmul(x, h)
+            x = torch.swapaxes(x, -1, 2 + i)
 
     x_shape = list(x.shape[2:])
     pad_specific = [

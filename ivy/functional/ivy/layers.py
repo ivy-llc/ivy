@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -25,7 +25,7 @@ from ivy.exceptions import handle_exceptions
 
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -168,17 +168,18 @@ def linear(
 # Dropout #
 
 
+@handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
     /,
     *,
     scale: bool = True,
-    dtype: ivy.Dtype = None,
-    training_mode: bool = True,
-    seed: int = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    training: bool = True,
+    seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -194,10 +195,15 @@ def dropout(
     prob
         The probability of zeroing out each array element, float between 0 and 1.
     scale
-        Whether to scale the output by `1/(1-prob)`, default is ``True``.
+        Whether to scale the output by `1/(1-prob)`. Default is ``True``.
     dtype
         output array data type. If dtype is None, the output array data type
-        must be inferred from x. Default: ``None``.
+        must be inferred from x. Default is ``None``.
+    training
+        Turn on dropout if training, turn off otherwise. Default is ``True``.
+    seed
+        Set a default seed for random number generating (for reproducibility). Default
+        is ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -205,7 +211,11 @@ def dropout(
     Returns
     -------
     ret
-        Result array of the output after dropout is performed.
+        Result array after dropout is performed.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -236,7 +246,7 @@ def dropout(
     ...                [4., 5., 6.],
     ...                [7., 8., 9.],
     ...                [10., 11., 12.]])
-    >>> y = ivy.dropout(x,0.3,scale=Flase)
+    >>> y = ivy.dropout(x,0.3,scale=False)
     >>> print(y)
     ivy.array([[ 1.,  2., 3.],
                [ 4.,  5., 0.],
@@ -296,7 +306,7 @@ def dropout(
                       [7., 0., 0.]])
     }
     """
-    if prob == 0 or not training_mode:
+    if prob == 0 or not training:
         if dtype is not None:
             x = ivy.astype(x, dtype)
         return x if not ivy.exists(out) else ivy.inplace_update(out, x)
@@ -318,7 +328,7 @@ def dropout(
 
 
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -522,7 +532,7 @@ def scaled_dot_product_attention(
 
 
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale: float,
@@ -757,7 +767,7 @@ def multi_head_attention(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -845,7 +855,7 @@ def conv1d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -904,7 +914,7 @@ def conv1d_transpose(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-@handle_array_like
+@handle_array_like_without_promotion
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1031,7 +1041,7 @@ def conv2d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1148,7 +1158,7 @@ def conv2d_transpose(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1284,7 +1294,7 @@ def depthwise_conv2d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv3d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1398,7 +1408,7 @@ def conv3d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1505,7 +1515,7 @@ def conv3d_transpose(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1578,7 +1588,7 @@ def conv_general_dilated(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1644,7 +1654,7 @@ def conv_general_transpose(
 
 @handle_out_argument
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1742,7 +1752,7 @@ def conv(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],
