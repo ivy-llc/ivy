@@ -918,12 +918,12 @@ def conv1d_transpose(
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int, int]],
     padding: str,
     /,
     *,
     data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D convolution given 4-D input x and filters arrays.
@@ -1045,13 +1045,13 @@ def conv2d(
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int, int]],
     padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
@@ -1162,12 +1162,12 @@ def conv2d_transpose(
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int, int]],
     padding: Union[str, List[int]],
     /,
     *,
     data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1412,7 +1412,7 @@ def conv3d(
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int, int, int]],
     padding: Union[str, List[int]],
     /,
     *,
