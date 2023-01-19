@@ -542,7 +542,11 @@ def conv_general_dilated(
         # ]
     x = torch.nn.functional.pad(
         x,
-        pad_list,
+        [
+            0, 0,
+            0, 0,
+            *pad_list,
+        ],
         value=0,
     )
     if dims == 1:
