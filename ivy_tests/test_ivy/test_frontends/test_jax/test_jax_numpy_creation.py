@@ -1,4 +1,5 @@
 from hypothesis import strategies as st
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -414,4 +415,134 @@ def test_jax_numpy_vander(
         x=x[0],
         N=N,
         increasing=increasing,
+    )
+
+
+# meshgrid
+@handle_frontend_test(
+    fn_tree="jax.numpy.meshgrid",
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        shared_dtype=True,
+    ),
+    sparse=st.booleans(),
+    indexing=st.sampled_from(["xy", "ij"]),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_meshgrid(
+    *,
+    dtype_and_arrays,
+    sparse,
+    indexing,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, arrays = dtype_and_arrays
+    kw = {}
+    i = 0
+    for x_ in arrays:
+        kw[f"x{i}"] = x_
+        i += 1
+    test_flags.num_positional_args = len(arrays)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        **kw,
+        copy=True,
+        sparse=sparse,
+        indexing=indexing,
+    )
+
+
+# full and full_like helper
+@st.composite
+def _input_fill_and_dtype(draw):
+    dtype = draw(helpers.get_dtypes("float", full=False))
+    dtype_and_input = draw(helpers.dtype_and_values(dtype=dtype))
+    if ivy.is_uint_dtype(dtype[0]):
+        fill_values = draw(st.integers(min_value=0, max_value=5))
+    elif ivy.is_int_dtype(dtype[0]):
+        fill_values = draw(st.integers(min_value=-5, max_value=5))
+    else:
+        fill_values = draw(st.floats(min_value=-5, max_value=5))
+    dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
+    return dtype, dtype_and_input[1], fill_values, dtype_to_cast[0]
+
+
+# full
+@handle_frontend_test(
+    fn_tree="jax.numpy.full",
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    input_fill_dtype=_input_fill_and_dtype(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_full(
+    shape,
+    input_fill_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, fill, dtype_to_cast = input_fill_dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        shape=shape,
+        fill_value=fill,
+        dtype=dtype_to_cast,
+    )
+
+
+# full_like
+@handle_frontend_test(
+    fn_tree="jax.numpy.full_like",
+    input_fill_dtype=_input_fill_and_dtype(),
+    shape=helpers.get_shape(
+        allow_none=True,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_full_like(
+    input_fill_dtype,
+    shape,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, fill, dtype_to_cast = input_fill_dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        fill_value=fill,
+        dtype=dtype_to_cast,
+        shape=shape,
     )

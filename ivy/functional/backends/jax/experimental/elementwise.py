@@ -6,6 +6,8 @@ from ivy import promote_types_of_inputs, default_float_dtype, is_float_dtype
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 import jax.scipy as js
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 jax_ArrayLike = Union[JaxArray, Number]
 
@@ -175,6 +177,7 @@ def logaddexp2(
     return jnp.logaddexp2(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def signbit(
     x: Union[JaxArray, float, int, list, tuple],
     /,

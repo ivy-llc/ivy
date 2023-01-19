@@ -12,6 +12,8 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_value1_value2_axis_for_tensordot,
 )
 
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+
 
 # absolute
 @handle_frontend_test(
@@ -1956,4 +1958,86 @@ def test_jax_numpy_fix(
         on_device=on_device,
         test_values=False,
         x=x[0],
+    )
+
+
+# sign
+@handle_frontend_test(
+    fn_tree="jax.numpy.sign",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_jax_numpy_sign(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# reciprocal
+@handle_frontend_test(
+    fn_tree="jax.numpy.reciprocal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+    ),
+)
+def test_jax_numpy_reciprocal(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+    )
+
+
+# outer
+@handle_frontend_test(
+    fn_tree="jax.numpy.outer",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        shared_dtype=True,
+    ),
+)
+def test_jax_numpy_outer(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        b=xs[1],
     )

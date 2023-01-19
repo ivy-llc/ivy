@@ -5,6 +5,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 )
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
+from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
 
 
 @to_ivy_arrays_and_back
@@ -379,3 +380,17 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
 @to_ivy_arrays_and_back
 def fix(x, out=None):
     return ivy.fix(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def sign(x, /):
+    return ivy.sign(x)
+
+
+@to_ivy_arrays_and_back
+def reciprocal(x, /):
+    return ivy.reciprocal(x)
+
+
+def outer(a, b, out=None):
+    return ivy.outer(a, b)

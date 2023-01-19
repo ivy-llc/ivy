@@ -94,3 +94,24 @@ def vander(x, N=None, increasing=False):
         return ivy.array([], dtype=x.dtype)
     else:
         return ivy.vander(x, N=N, increasing=increasing, out=None)
+
+
+@to_ivy_arrays_and_back
+def meshgrid(*xi, copy=True, sparse=False, indexing="xy"):
+    # TODO: add sparse check
+    ret = ivy.meshgrid(*xi, indexing=indexing)
+    if copy:
+        return [ivy.copy_array(x) for x in ret]
+    return ret
+
+
+@to_ivy_arrays_and_back
+def full(shape, fill_value, dtype=None):
+    return ivy.full(shape, fill_value, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def full_like(a, fill_value, dtype=None, shape=None):
+    if shape:
+        return ivy.full(shape, fill_value, dtype=dtype)
+    return ivy.full_like(a, fill_value, dtype=dtype)
