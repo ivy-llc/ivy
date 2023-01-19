@@ -233,7 +233,6 @@ def _x_and_filters(
     return dtype, x, filters, dilations, data_format, stride, padding, output_shape
 
 
-#convolution
 @handle_frontend_test(
     fn_tree="tensorflow.nn.convolution",
     x_f_d_df=_x_and_filters(
