@@ -31,8 +31,9 @@ def fused_batch_norm(
                 "input tensor must be of 4 or 5 dimensions, got {}".format(dims)
             )
     if is_training:
-        x_mean = ivy.mean(x, axis=-1)
-        x_var = ivy.var(x, axis=-1)
+        dims_to_avg = tuple(range(0, len(x.shape))[:-1])
+        x_mean = ivy.mean(x, axis=dims_to_avg)
+        x_var = ivy.var(x, axis=dims_to_avg)
         x_norm = scale * (x - x_mean) / ivy.sqrt(x_var + epsilon) + offset
     else:
         # dtype = ivy.promote_types(x, mean)
