@@ -53,7 +53,7 @@ class ContainerWithSortingExperimental(ContainerBase):
                 )
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "msort",
             a,
             key_chains=key_chains,

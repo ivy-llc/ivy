@@ -441,7 +441,9 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
 
 
 def meshgrid(
-    *arrays: torch.Tensor, sparse: bool = False, indexing="xy"
+    *arrays: torch.Tensor,
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[torch.Tensor]:
     if not sparse:
         return list(torch.meshgrid(*arrays, indexing=indexing))
@@ -560,30 +562,15 @@ def zeros_like(
 array = asarray
 
 
-def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return x.clone()
-
-
-@with_unsupported_device_and_dtypes(
-    {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
-)
-def logspace(
-    start: Union[torch.Tensor, int],
-    stop: Union[torch.Tensor, int],
-    /,
-    num: int,
+def copy_array(
+    x: torch.Tensor,
     *,
-    base: float = 10.0,
-    axis: Optional[int] = None,
-    dtype: torch.dtype,
-    device: torch.device,
+    to_ivy_array: Optional[bool] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return ivy.pow(ivy.asarray(base, dtype=dtype), power_seq)
-
-
-logspace.support_native_out = True
+    if to_ivy_array:
+        return ivy.to_ivy(x.clone())
+    return x.clone()
 
 
 def one_hot(

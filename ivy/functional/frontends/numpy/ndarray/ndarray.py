@@ -8,7 +8,7 @@ import ivy.functional.frontends.numpy as np_frontend
 class ndarray:
     def __init__(self, shape, dtype="float32", order=None):
         if isinstance(dtype, np_frontend.dtype):
-            dtype = dtype._ivy_dtype
+            dtype = dtype.ivy_dtype
         self._ivy_array = ivy.empty(shape, dtype=dtype)
         self._dtype = dtype
 
@@ -44,7 +44,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return self._dtype
+        return self._ivy_array.dtype
 
     # Setters #
     # --------#
@@ -88,7 +88,7 @@ class ndarray:
         else:
             return np_frontend.reshape(self._ivy_array, newshape, order="C")
 
-    def transpose(self, *axes):
+    def transpose(self, axes, /):
         if axes and isinstance(axes[0], tuple):
             axes = axes[0]
         return np_frontend.transpose(self._ivy_array, axes=axes)
@@ -103,7 +103,7 @@ class ndarray:
         return np_frontend.any(self._ivy_array, axis, out, keepdims, where=where)
 
     def argsort(self, *, axis=-1, kind=None, order=None):
-        return np_frontend.argsort(self._ivy_array, axis, kind, order)
+        return np_frontend.argsort(self._ivy_array, axis=axis, kind=kind, order=order)
 
     def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
         return np_frontend.mean(
@@ -153,21 +153,21 @@ class ndarray:
 
     def clip(
         self,
-        a_min,
-        a_max,
+        min,
+        max,
         /,
         out=None,
         *,
         where=True,
         casting="same_kind",
-        order="k",
+        order="K",
         dtype=None,
         subok=True,
     ):
         return np_frontend.clip(
             self._ivy_array,
-            a_min,
-            a_max,
+            min,
+            max,
             out=out,
             where=where,
             casting=casting,
@@ -267,6 +267,9 @@ class ndarray:
     def __truediv__(self, value, /):
         return np_frontend.true_divide(self._ivy_array, value)
 
+    def __pow__(self, value, /):
+        return np_frontend.power(self._ivy_array, value)
+
     def __and__(self, value, /):
         return np_frontend.logical_and(self._ivy_array, value)
 
@@ -349,6 +352,9 @@ class ndarray:
 
     def __imul__(self, value, /):
         return np_frontend.multiply(self._ivy_array, value)
+
+    def __itruediv__(self, value, /):
+        return np_frontend.true_divide(self._ivy_array, value)
 
     def __ipow__(self, value, /):
         return np_frontend.power(self._ivy_array, value)

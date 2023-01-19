@@ -27,7 +27,7 @@ def random_uniform(
     *,
     low: Union[float, tf.Tensor, tf.Variable] = 0.0,
     high: Union[float, tf.Tensor, tf.Variable] = 1.0,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int], tf.Tensor]] = None,
     dtype: DType,
     device: str,
     seed: Optional[int] = None,
@@ -96,8 +96,9 @@ def multinomial(
         if not replace:
             orig_probs_shape = list(probs.shape)
             probs_flat = tf.reshape(probs, (-1, orig_probs_shape[-1]))
-            probs_flat = probs_flat / \
-                tf.math.reduce_sum(probs_flat, axis=-1, keepdims=True)
+            probs_flat = probs_flat / tf.math.reduce_sum(
+                probs_flat, axis=-1, keepdims=True
+            )
             probs_stack = tf.split(probs_flat, probs_flat.shape[0])
             samples_stack = []
             for prob in probs_stack:
@@ -114,7 +115,8 @@ def multinomial(
                 samples_stack.append(indices)
             samples_flat = tf.stack(samples_stack)
             return tf.convert_to_tensor(
-                tf.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
+                tf.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples])
+            )
         else:
             if len(probs.numpy().shape) == 1:
                 probs = tf.expand_dims(probs, axis=0)

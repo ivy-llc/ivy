@@ -64,7 +64,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: (7, 6, 2)
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "moveaxis",
             a,
             source,
@@ -159,7 +159,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([1.0, 1.0])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "heaviside",
             x1,
             x2,
@@ -251,7 +251,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([3, 2, 1, 0])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "flipud",
             m,
             key_chains=key_chains,
@@ -377,7 +377,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                           [2]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "vstack",
             xs,
             key_chains=key_chains,
@@ -456,7 +456,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             a: ivy.array([1, 2, 3, 0, 0, 0])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "hstack",
             xs,
             key_chains=key_chains,
@@ -527,7 +527,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                           [1, 7]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "rot90",
             m,
             k=k,
@@ -676,7 +676,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             ]
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "top_k",
             x,
             k,
@@ -820,7 +820,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                           [6, 5, 4]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "fliplr",
             m,
             key_chains=key_chains,
@@ -908,7 +908,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array(11.30192195)
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "i0",
             x,
             key_chains=key_chains,
@@ -1017,7 +1017,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([9, 13, 11, 15, 10, 14, 12, 16])
         }]
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "flatten",
             x,
             key_chains=key_chains,
@@ -1131,7 +1131,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         wraps the function, and so the docstring for ivy.pad also applies to
         this method with minimal changes.
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "pad",
             input,
             pad_width,
@@ -1264,7 +1264,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "vsplit",
             ary,
             indices_or_sections=indices_or_sections,
@@ -1396,7 +1396,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "dsplit",
             ary,
             indices_or_sections=indices_or_sections,
@@ -1513,7 +1513,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             c: ivy.array([[3]]),
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "atleast_1d",
             *arys,
             key_chains=key_chains,
@@ -1661,7 +1661,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([[0, 1, 2])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "dstack",
             xs,
             key_chains=key_chains,
@@ -1717,7 +1717,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             c: ivy.array([[3]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "atleast_2d",
             *arys,
             key_chains=key_chains,
@@ -1838,7 +1838,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             c: ivy.array([[[3]]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "atleast_3d",
             *arys,
             key_chains=key_chains,
@@ -1970,7 +1970,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                           [8, 7]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "take_along_axis",
             arr,
             indices,
@@ -2120,10 +2120,10 @@ class ContainerWithManipulationExperimental(ContainerBase):
                         [14., 15.]])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "hsplit",
             ary,
-            indices_or_sections=indices_or_sections,
+            indices_or_sections,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2197,6 +2197,95 @@ class ContainerWithManipulationExperimental(ContainerBase):
                         [14., 15.]])
         }
         """
-        return self.static_hsplit(
-            self, indices_or_sections=indices_or_sections, out=out
+        return self.static_hsplit(self, indices_or_sections, out=out)
+
+    @staticmethod
+    def static_broadcast_shapes(
+        shapes: Union[ivy.Container, List[Tuple[int]]],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.broadcast_shapes.
+        This method simply wraps the function, and so the docstring for
+        ivy.hsplit also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        shapes
+            the container with shapes to broadcast.
+
+        Returns
+        -------
+        ret
+            Container with broadcasted shapes.
+
+        Examples
+        --------
+        >>> shapes = ivy.Container(a = [(2, 3), (2, 1)],
+        ...                        b = [(2, 3), (1, 3)],
+        ...                        c = [(2, 3), (2, 3)],
+        ...                        d = [(2, 3), (2, 1), (1, 3), (2, 3)])
+        >>> z = ivy.Container.static_broadcast_shapes(shapes)
+        >>> print(z)
+        {
+            a: (2, 3),
+            b: (2, 3),
+            c: (2, 3),
+            d: (2, 3)
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "broadcast_shapes",
+            shapes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
+
+    def broadcast_shapes(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.broadcast_shapes.
+         This method simply wraps the function, and so the docstring for
+         ivy.broadcast_shapes also applies to this method with minimal
+         changes.
+
+        Parameters
+        ----------
+        self
+            the container with shapes to broadcast.
+
+        Returns
+        -------
+        ret
+            Container with broadcasted shapes.
+
+        Examples
+        --------
+        >>> shapes = ivy.Container(a = [(2, 3), (2, 1)],
+        ...                        b = [(2, 3), (1, 3)],
+        ...                        c = [(2, 3), (2, 3)],
+        ...                        d = [(2, 3), (2, 1), (1, 3), (2, 3)])
+        >>> z = shapes.broadcast_shapes()
+        >>> print(z)
+        {
+            a: (2, 3),
+            b: (2, 3),
+            c: (2, 3),
+            d: (2, 3)
+        }
+
+        """
+        return self.static_broadcast_shapes(self, out=out)
