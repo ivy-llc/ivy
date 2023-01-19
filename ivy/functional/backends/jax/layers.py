@@ -12,26 +12,11 @@ from ivy.functional.ivy.layers import (
     _handle_padding,
     _deconv_length,
     _get_x_data_format,
+    _conv_transpose_padding,
 )
 
 # Extra #
 # ------#
-
-
-def _conv_transpose_padding(k, s, padding, dilation, diff=0):
-    k = (k - 1) * dilation + 1
-    if padding == "VALID":
-        pad_len = k + s - 2 + max(k - s, 0)
-        pad_a = k - 1
-    else:
-        pad_len = k + s - 2
-        pad_len -= diff
-        if s > k - 1:
-            pad_a = k - 1
-        else:
-            pad_a = int(jnp.ceil(pad_len / 2))
-    pad_b = pad_len - pad_a
-    return pad_a, pad_b
 
 
 def conv1d(
