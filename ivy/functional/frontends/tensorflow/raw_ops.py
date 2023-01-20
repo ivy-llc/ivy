@@ -483,6 +483,11 @@ Sigmoid = to_ivy_arrays_and_back(
 
 
 @to_ivy_arrays_and_back
+def Softmax(*, logits, name="Softmax"):
+    return ivy.softmax(logits, axis=1)
+
+
+@to_ivy_arrays_and_back
 def Softplus(*, features, name="Softplus"):
     return ivy.softplus(features)
 
