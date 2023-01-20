@@ -244,7 +244,7 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
 
 
 @to_ivy_arrays_and_back
-def Rsqrt(x, name=None):
+def Rsqrt(*, x, name="Rsqrt"):
     return 1 / ivy.sqrt(x)
 
 
