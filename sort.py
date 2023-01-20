@@ -24,9 +24,9 @@ def sort(
     out: Optional[ivy.Array] = None,
 ):
     if axis == 1:
-        x = ivy.sort(x, axis=1, out=out)
+       x = ivy.sort(x, axis=1, out=out)
     if descending:
-        x = ivy.sort(x, descending, out=out)
+       x = ivy.sort(x, descending, out=out)
     if not stable:
-        x = ivy.sort(x, stable=False, out=out)
+       x = ivy.sort(x, stable=False, out=out)
     return x
