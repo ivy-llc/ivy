@@ -567,6 +567,10 @@ class Tensor:
         self._ivy_array = self.acosh().ivy_array
         return self
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def numpy(self):
+        return ivy.to_numpy(self._ivy_array)
+
     # Special Methods #
     # -------------------#
 
