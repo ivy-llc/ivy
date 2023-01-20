@@ -80,13 +80,6 @@ def convert_to_tensor(value, dtype=None, dtype_hint=None, name=None):
 
 
 @to_ivy_arrays_and_back
-def cond(pred, true_fn=None, false_fn=None, name=None):
-    if pred:
-        return true_fn
-    return false_fn
-
-
-@to_ivy_arrays_and_back
 def einsum(equation, *inputs, **kwargs):
     return ivy.einsum(equation, *inputs)
 
