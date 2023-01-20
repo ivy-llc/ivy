@@ -2437,3 +2437,36 @@ def test_numpy_instance_abs__(
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
+
+ 
+# __len__
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+    ),
+)
+def test_numpy_instance_len__(
+    dtype_and_x,
+    as_variable,
+    native_array
+    ):
+    input_dtype, x=dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=[],
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        all_as_kwargs_np_method={},
+        as_variable_flags_method=[],
+        num_positional_args_method=0,
+        native_array_flags_method=[],
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="__len__",
+    )
