@@ -5,7 +5,6 @@ import ivy
 
 
 class ArrayWithNormsExperimental(abc.ABC):
-
     def l2_normalize(self, axis=None, out=None):
         """Normalizes the array to have unit L2 norm.
 

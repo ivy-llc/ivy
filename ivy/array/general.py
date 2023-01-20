@@ -34,6 +34,18 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             Boolean, whether or not x is a native array.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 1, 2])
+        >>> ret = x.is_native_array()
+        >>> print(ret)
+        False
+
+        >>> x = ivy.native_array([9.1, -8.3])
+        >>> ret = x.is_native_array(exclusive=True)
+        >>> print(ret)
+        True
         """
         return ivy.is_native_array(self, exclusive=exclusive)
 
@@ -56,6 +68,18 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an ivy array.
 
+        Examples
+        --------
+        >>> x = ivy.array([0, 1, 2])
+        >>> ret = x.is_ivy_array()
+        >>> print(ret)
+        True
+
+        >>> x = ivy.native_array([9.1, -8.3])
+        >>> ret = x.is_ivy_array(exclusive=True)
+        >>> print(ret)
+        False
+
         """
         return ivy.is_ivy_array(self, exclusive=exclusive)
 
@@ -77,6 +101,17 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             Boolean, whether or not x is an array.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 1, 2])
+        >>> print(x.is_array())
+        True
+
+        >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
+        >>> print(x.is_array(exclusive=True))
+        True
+
         """
         return ivy.is_array(self, exclusive=exclusive)
 
@@ -95,6 +130,12 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             Boolean, whether or not x is an ivy container.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 1, 2])
+        >>> print(x.is_ivy_container())
+        False
         """
         return ivy.is_ivy_container(self)
 
@@ -122,6 +163,22 @@ class ArrayWithGeneral(abc.ABC):
             Boolean, whether or not the inputs are equal, or matrix array of booleans if
             equality_matrix=True is set.
 
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 1, 0, 0, 1, -1])
+        >>> x2 = ivy.array([1, 1, 0, 0, 1, -1])
+        >>> y = x1.all_equal(x2)
+        >>> print(y)
+        True
+
+        >>> x1 = ivy.array([0, 0])
+        >>> x2 = ivy.array([0, 0])
+        >>> x3 = ivy.array([1, 0])
+        >>> y = x1.all_equal(x2, x3, equality_matrix=True)
+        >>> print(y)
+        ivy.array([[ True,  True, False],
+           [ True,  True, False],
+           [False, False,  True]])
         """
         arrays = [self] + [x for x in x2]
         return ivy.all_equal(*arrays, equality_matrix=equality_matrix)
@@ -700,6 +757,20 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not the input arrays are equal
 
+        Examples
+        --------
+        >>> x = ivy.array([-1,0])
+        >>> y = ivy.array([1,0])
+        >>> z = x.array_equal(y)
+        >>> print(z)
+        False
+
+        >>> a = ivy.array([1, 2])
+        >>> b = ivy.array([1, 2])
+        >>> c = a.array_equal(b)
+        >>> print(c)
+        True
+
         """
         return ivy.array_equal(self, x)
 
@@ -791,7 +862,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([1,2,3])
+        >>> x = ivy.array([1, 2, 3])
         >>> y = 1.5
         >>> z = x.fourier_encode(y)
         >>> print(z)
@@ -805,9 +876,9 @@ class ArrayWithGeneral(abc.ABC):
                      0.0000000e+00, -1.0000000e+00, 1.0000000e+00, 1.0000000e+00,
                      1.0000000e+00]])
 
-        >>> x = ivy.array([3,10])
+        >>> x = ivy.array([3, 10])
         >>> y = 2.5
-        >>> z = x.fourier_encode(y,num_bands=3)
+        >>> z = x.fourier_encode(y, num_bands=3)
         >>> print(z)
         ivy.array([[ 3.0000000e+00,  3.6739404e-16,  3.6739404e-16,  3.6739404e-16,
                     -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
@@ -882,6 +953,18 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             True if x is not None, else False.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 1.2])
+        >>> y = x.exists()
+        >>> print(y)
+        True
+
+        >>> x = ivy.array(None)
+        >>> y = x.exists()
+        >>> print(y)
+        True
         """
         return ivy.exists(self)
 
@@ -917,6 +1000,13 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             x if x exists (is not None), else default.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 1.2])
+        >>> y = x.default(0)
+        >>> print(y)
+        ivy.array([1. , 2. , 3. , 1.2])
 
         """
         return ivy.default(

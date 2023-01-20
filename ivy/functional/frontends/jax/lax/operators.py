@@ -90,14 +90,32 @@ def concatenate(operands, dimension):
     return ivy.concat(operands, axis=dimension)
 
 
+def _format_rhs(rhs, dims):
+    if dims == 1:
+        return ivy.permute_dims(rhs, axes=(2, 1, 0))
+    elif dims == 2:
+        return ivy.permute_dims(rhs, axes=(2, 3, 1, 0))
+    elif dims == 3:
+        return ivy.permute_dims(rhs, axes=(2, 3, 4, 1, 0))
+
+
 @to_ivy_arrays_and_back
 def conv(
     lhs, rhs, window_strides, padding, precision=None, preferred_element_type=None
 ):
     if preferred_element_type:
-        lhs = ivy.astype(lhs, dtype=preferred_element_type)
-        rhs = ivy.astype(rhs, dtype=preferred_element_type)
-    return ivy.conv2d(lhs, rhs, window_strides, padding)
+        lhs = ivy.astype(lhs, preferred_element_type)
+        rhs = ivy.astype(rhs, preferred_element_type)
+    dims = len(lhs.shape) - 2
+    rhs = _format_rhs(rhs, dims)
+    return ivy.conv_general_dilated(
+        lhs,
+        rhs,
+        window_strides,
+        padding,
+        dims=dims,
+        data_format="channel_first",
+    )
 
 
 @to_ivy_arrays_and_back

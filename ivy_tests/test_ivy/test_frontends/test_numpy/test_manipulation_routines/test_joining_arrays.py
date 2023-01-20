@@ -41,22 +41,16 @@ def _arrays_idx_n_dtypes(draw):
 )
 def test_numpy_concatenate(
     xs_n_input_dtypes_n_unique_idx,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     xs, input_dtypes, unique_idx, casting, dtype = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         arrays=xs,
@@ -81,11 +75,8 @@ def test_numpy_concatenate(
 def test_numpy_stack(
     dtype_and_x,
     factor,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -95,11 +86,8 @@ def test_numpy_stack(
         xs += [x[0]]
     helpers.test_frontend_function(
         input_dtypes=[dtype[0]] * (factor + 1),
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         arrays=xs,
@@ -119,11 +107,8 @@ def test_numpy_stack(
 def test_numpy_vstack(
     dtype_and_x,
     factor,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -133,11 +118,8 @@ def test_numpy_vstack(
         xs += [x[0]]
     helpers.test_frontend_function(
         input_dtypes=[dtype[0]] * (factor + 1),
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         tup=xs,
@@ -156,11 +138,8 @@ def test_numpy_vstack(
 def test_numpy_hstack(
     dtype_and_x,
     factor,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -174,11 +153,8 @@ def test_numpy_hstack(
         ]
     helpers.test_frontend_function(
         input_dtypes=[dtype[0]] * (factor + 1),
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         tup=xs,

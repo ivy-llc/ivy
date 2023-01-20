@@ -4,16 +4,15 @@ import ivy
 
 
 class ContainerWithNormsExperimental(ContainerBase):
-
     @staticmethod
     def static_l2_normalize(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            axis: int = None,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out=None
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        axis: int = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out=None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.l2_normalize.
@@ -72,13 +71,13 @@ class ContainerWithNormsExperimental(ContainerBase):
         )
 
     def l2_normalize(
-            self,
-            axis=None,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out=None
+        self,
+        axis=None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out=None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.l2_normalize.
         This method simply wraps the function, and so the
@@ -131,5 +130,5 @@ class ContainerWithNormsExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )

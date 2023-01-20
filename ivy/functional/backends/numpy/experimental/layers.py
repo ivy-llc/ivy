@@ -6,6 +6,7 @@ from typing import Optional, Union, Tuple, Literal
 
 # local
 import ivy
+from ivy.functional.ivy.layers import _handle_padding
 
 
 def max_pool1d(
@@ -32,7 +33,7 @@ def max_pool1d(
     if data_format == "NCW":
         x = np.swapaxes(x, 1, 2)
 
-    pad_w = ivy.handle_padding(x.shape[1], strides[0], kernel[0], padding)
+    pad_w = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
     x = np.pad(
         x,
         [
@@ -89,8 +90,8 @@ def max_pool2d(
         x = np.transpose(x, (0, 2, 3, 1))
 
     x_shape = list(x.shape[1:3])
-    pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
     x = np.pad(
         x,
         [
@@ -151,9 +152,9 @@ def max_pool3d(
         x = np.transpose(x, (0, 2, 3, 4, 1))
 
     x_shape = list(x.shape[1:4])
-    pad_d = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_h = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    pad_w = ivy.handle_padding(x_shape[2], strides[2], kernel[2], padding)
+    pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
 
     x = np.pad(
         x,
@@ -218,7 +219,7 @@ def avg_pool1d(
     if data_format == "NCW":
         x = np.swapaxes(x, 1, 2)
 
-    pad_w = ivy.handle_padding(x.shape[1], strides[0], kernel[0], padding)
+    pad_w = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
     x = np.pad(
         x,
         [
@@ -274,8 +275,8 @@ def avg_pool2d(
         x = np.transpose(x, (0, 2, 3, 1))
 
     x_shape = list(x.shape[1:3])
-    pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
     x = np.pad(
         x,
         [
@@ -336,9 +337,9 @@ def avg_pool3d(
         x = np.transpose(x, (0, 2, 3, 4, 1))
 
     x_shape = list(x.shape[1:4])
-    pad_d = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_h = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    pad_w = ivy.handle_padding(x_shape[2], strides[2], kernel[2], padding)
+    pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
 
     x = np.pad(
         x,
@@ -526,12 +527,12 @@ def dropout1d(
 
 
 def ifft(
-        x: np.ndarray,
-        dim: int,
-        *,
-        norm: Optional[str] = "backward",
-        n: Optional[Union[int, Tuple[int]]] = None,
-        out: Optional[np.ndarray] = None,
+    x: np.ndarray,
+    dim: int,
+    *,
+    norm: Optional[str] = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if not isinstance(dim, int):
         raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")

@@ -1,6 +1,8 @@
 # global
 import pytest
+
 import ivy
+import ivy.functional.frontends.torch as torch_frontend
 
 # local
 from ivy.functional.frontends.torch import Tensor
@@ -19,6 +21,16 @@ class Database:
 
 ivy.set_numpy_backend()
 cache = Database()
+
+
+@pytest.mark.parametrize(["length", "dim"], [[4, 2], [27, 3], [3, 1]])
+def test_view_tensor_no_error(length, dim):
+    size = tuple([int(length ** (1 / dim))] * dim)
+    test_input = torch_frontend.arange(length)
+    _ = test_input.view(size=size)
+    _ = test_input.view(*size)
+    _ = test_input.view(size)
+    _ = test_input.view(list(size))
 
 
 @pytest.mark.parametrize(["test_input"], [[1], [2], [-3]])

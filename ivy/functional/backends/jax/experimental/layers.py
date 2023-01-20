@@ -348,12 +348,12 @@ def dropout1d(
 
 
 def ifft(
-        x: JaxArray,
-        dim: int,
-        *,
-        norm: Optional[str] = "backward",
-        n: Union[int, Tuple[int]] = None,
-        out: Optional[JaxArray] = None,
+    x: JaxArray,
+    dim: int,
+    *,
+    norm: Optional[str] = "backward",
+    n: Union[int, Tuple[int]] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not isinstance(dim, int):
         raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")

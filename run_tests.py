@@ -116,7 +116,7 @@ if __name__ == "__main__":
                 coll, submod, test_fn = get_submodule(test)
                 print(coll, submod, test_fn)
                 remove_from_db(db[coll[0]], coll[1], submod, backend, test_fn)
-    except:
+    except Exception:
         pass
 
     if failed:

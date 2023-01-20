@@ -445,13 +445,13 @@ class ArrayWithLayersExperimental(abc.ABC):
         )
 
     def fft(
-            self: ivy.Array,
-            dim: int,
-            /,
-            *,
-            norm: Optional[str] = "backward",
-            n: Optional[Union[int, Tuple[int]]] = None,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        dim: int,
+        /,
+        *,
+        norm: Optional[str] = "backward",
+        n: Optional[Union[int, Tuple[int]]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.ifft. This method simply
         wraps the function, and so the docstring for ivy.ifft also applies to
@@ -554,3 +554,6 @@ class ArrayWithLayersExperimental(abc.ABC):
             n=n,
             out=out,
         )
+
+    def embedding(self, indices, /, *, max_norm=None, out=None):
+        return ivy.embedding(self._data, indices, max_norm=max_norm, out=out)
