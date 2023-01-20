@@ -1929,8 +1929,62 @@
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container static method variant of ivy.qr. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.qr also applies to this method with</span>
+<span class="sd">        minimal changes.</span>
+
+<span class="sd">        Returns the qr decomposition x = QR of a full column rank matrix (or a stack of</span>
+<span class="sd">        matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an</span>
+<span class="sd">        upper-triangular matrix (or a stack of matrices).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            input container having shape (..., M, N) and whose innermost two dimensions</span>
+<span class="sd">            form MxN matrices of rank N. Should have a floating-point data type.</span>
+<span class="sd">        mode</span>
+<span class="sd">            decomposition mode. Should be one of the following modes:</span>
+<span class="sd">            - &#39;reduced&#39;: compute only the leading K columns of q, such that q and r have</span>
+<span class="sd">            dimensions (..., M, K) and (..., K, N), respectively, and where</span>
+<span class="sd">            K = min(M, N).</span>
+<span class="sd">            - &#39;complete&#39;: compute q and r with dimensions (..., M, M) and (..., M, N),</span>
+<span class="sd">            respectively.</span>
+<span class="sd">            Default: &#39;reduced&#39;.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output tuple of containers, for writing the result to. The arrays</span>
+<span class="sd">            must have shapes that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            a namedtuple (Q, R) whose</span>
+<span class="sd">            - first element must have the field name Q and must be an container whose</span>
+<span class="sd">            shape depends on the value of mode and contain matrices with orthonormal</span>
+<span class="sd">            columns. If mode is &#39;complete&#39;, the container must have shape (..., M, M).</span>
+<span class="sd">            If mode is &#39;reduced&#39;, the container must have shape (..., M, K), where</span>
+<span class="sd">            K = min(M, N). The first x.ndim-2 dimensions must have the same size as</span>
+<span class="sd">            those of the input container x.</span>
+<span class="sd">            - second element must have the field name R and must be an container whose</span>
+<span class="sd">            shape depends on the value of mode and contain upper-triangular matrices. If</span>
+<span class="sd">            mode is &#39;complete&#39;, the container must have shape (..., M, N). If mode is</span>
+<span class="sd">            &#39;reduced&#39;, the container must have shape (..., K, N), where K = min(M, N).</span>
+<span class="sd">            The first x.ndim-2 dimensions must have the same size as those of the input</span>
+<span class="sd">            x.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_function</span><span class="p">(</span>
             <span class="s2">&quot;qr&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
@@ -1951,8 +2005,62 @@
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.qr. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.qr also applies to this method with</span>
+<span class="sd">        minimal changes.</span>
+
+<span class="sd">        Returns the qr decomposition x = QR of a full column rank matrix (or a stack of</span>
+<span class="sd">        matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an</span>
+<span class="sd">        upper-triangular matrix (or a stack of matrices).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container having shape (..., M, N) and whose innermost two dimensions</span>
+<span class="sd">            form MxN matrices of rank N. Should have a floating-point data type.</span>
+<span class="sd">        mode</span>
+<span class="sd">            decomposition mode. Should be one of the following modes:</span>
+<span class="sd">            - &#39;reduced&#39;: compute only the leading K columns of q, such that q and r have</span>
+<span class="sd">            dimensions (..., M, K) and (..., K, N), respectively, and where</span>
+<span class="sd">            K = min(M, N).</span>
+<span class="sd">            - &#39;complete&#39;: compute q and r with dimensions (..., M, M) and (..., M, N),</span>
+<span class="sd">            respectively.</span>
+<span class="sd">            Default: &#39;reduced&#39;.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output tuple of containers, for writing the result to. The arrays</span>
+<span class="sd">            must have shapes that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            a namedtuple (Q, R) whose</span>
+<span class="sd">            - first element must have the field name Q and must be an container whose</span>
+<span class="sd">            shape depends on the value of mode and contain matrices with orthonormal</span>
+<span class="sd">            columns. If mode is &#39;complete&#39;, the container must have shape (..., M, M).</span>
+<span class="sd">            If mode is &#39;reduced&#39;, the container must have shape (..., M, K), where</span>
+<span class="sd">            K = min(M, N). The first x.ndim-2 dimensions must have the same size as</span>
+<span class="sd">            those of the input container x.</span>
+<span class="sd">            - second element must have the field name R and must be an container whose</span>
+<span class="sd">            shape depends on the value of mode and contain upper-triangular matrices. If</span>
+<span class="sd">            mode is &#39;complete&#39;, the container must have shape (..., M, N). If mode is</span>
+<span class="sd">            &#39;reduced&#39;, the container must have shape (..., K, N), where K = min(M, N).</span>
+<span class="sd">            The first x.ndim-2 dimensions must have the same size as those of the input</span>
+<span class="sd">            x.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_qr</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
@@ -3010,7 +3118,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+    <p>&#169; Copyright 2020-2023, Ivy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

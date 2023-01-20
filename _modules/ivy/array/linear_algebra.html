@@ -746,8 +746,52 @@
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;reduced&quot;</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.qr. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.qr also applies to this method with</span>
+<span class="sd">        minimal changes.</span>
+
+<span class="sd">        Returns the qr decomposition x = QR of a full column rank matrix (or a stack of</span>
+<span class="sd">        matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an</span>
+<span class="sd">        upper-triangular matrix (or a stack of matrices).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array having shape (..., M, N) and whose innermost two dimensions form</span>
+<span class="sd">            MxN matrices of rank N. Should have a floating-point data type.</span>
+<span class="sd">        mode</span>
+<span class="sd">            decomposition mode. Should be one of the following modes:</span>
+<span class="sd">            - &#39;reduced&#39;: compute only the leading K columns of q, such that q and r have</span>
+<span class="sd">            dimensions (..., M, K) and (..., K, N), respectively, and where</span>
+<span class="sd">            K = min(M, N).</span>
+<span class="sd">            - &#39;complete&#39;: compute q and r with dimensions (..., M, M) and (..., M, N),</span>
+<span class="sd">            respectively.</span>
+<span class="sd">            Default: &#39;reduced&#39;.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output tuple of arrays, for writing the result to. The arrays must</span>
+<span class="sd">            have shapes that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            a namedtuple (Q, R) whose</span>
+<span class="sd">            - first element must have the field name Q and must be an array whose shape</span>
+<span class="sd">            depends on the value of mode and contain matrices with orthonormal columns.</span>
+<span class="sd">            If mode is &#39;complete&#39;, the array must have shape (..., M, M). If mode is</span>
+<span class="sd">            &#39;reduced&#39;, the array must have shape (..., M, K), where K = min(M, N). The</span>
+<span class="sd">            first x.ndim-2 dimensions must have the same size as those of the input</span>
+<span class="sd">            array x.</span>
+<span class="sd">            - second element must have the field name R and must be an array whose shape</span>
+<span class="sd">            depends on the value of mode and contain upper-triangular matrices. If mode</span>
+<span class="sd">            is &#39;complete&#39;, the array must have shape (..., M, N). If mode is &#39;reduced&#39;,</span>
+<span class="sd">            the array must have shape (..., K, N), where K = min(M, N). The first</span>
+<span class="sd">            x.ndim-2 dimensions must have the same size as those of the input x.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithLinearAlgebra.slogdet"><a class="viewcode-back" href="../../../data_classes/array/linear_algebra/ArrayWithLinearAlgebra.html#ivy.array.linear_algebra.ArrayWithLinearAlgebra.slogdet">[docs]</a>    <span class="k">def</span> <span class="nf">slogdet</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
@@ -1039,7 +1083,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+    <p>&#169; Copyright 2020-2023, Ivy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
