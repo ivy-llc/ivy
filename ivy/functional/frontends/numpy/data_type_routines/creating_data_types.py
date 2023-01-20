@@ -6,6 +6,10 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 def to_ivy_dtype(dtype_in):
+    if dtype_in is None:
+        return
+    if isinstance(dtype_in, ivy.Dtype):
+        return dtype_in
     if isinstance(dtype_in, str):
         if dtype_in.strip("><=") in np_frontend.numpy_str_to_type_table:
             return ivy.Dtype(np_frontend.numpy_str_to_type_table[dtype_in.strip("><=")])
@@ -14,10 +18,15 @@ def to_ivy_dtype(dtype_in):
         return ivy.as_ivy_dtype(dtype_in)
     if dtype_in in (int, float, bool):
         return {int: ivy.int64, float: ivy.float64, bool: ivy.bool}[dtype_in]
-    if issubclass(dtype_in, np_frontend.generic):
-        return np_frontend.numpy_scalar_to_dtype[dtype_in]
+    if isinstance(dtype_in, np_frontend.dtype):
+        return dtype_in.ivy_dtype
+    if isinstance(dtype_in, type):
+        if issubclass(dtype_in, np_frontend.generic):
+            return np_frontend.numpy_scalar_to_dtype[dtype_in]
+        if hasattr(dtype_in, "dtype"):
+            return dtype_in.dtype.ivy_dtype
     else:
-        ivy.as_ivy_dtype(dtype_in)
+        return ivy.as_ivy_dtype(dtype_in)
 
 
 class dtype:
@@ -147,3 +156,7 @@ class dtype:
     @property
     def subtype(self):
         return None
+
+    @property
+    def ivy_dtype(self):
+        return self._ivy_dtype

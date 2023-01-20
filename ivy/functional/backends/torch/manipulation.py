@@ -124,12 +124,13 @@ def roll(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if torch.is_tensor(axis):
+        axis = axis.tolist()
     # manually cover the case when shift is int, and axis is a tuple/list
     if isinstance(shift, int) and (type(axis) in [list, tuple]):
         shift = [shift for _ in range(len(axis))]
     if isinstance(shift, torch.Tensor):
         shift = shift.tolist()
-        shift = tuple([shift])
     return torch.roll(x, shift, axis)
 
 
@@ -290,7 +291,7 @@ def swapaxes(
     return torch.transpose(x, axis0, axis1)
 
 
-@with_unsupported_dtypes({"1.11.0": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0": ("float16", "complex")}, backend_version)
 def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],

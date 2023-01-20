@@ -441,7 +441,9 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
 
 
 def meshgrid(
-    *arrays: torch.Tensor, sparse: bool = False, indexing="xy"
+    *arrays: torch.Tensor,
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[torch.Tensor]:
     if not sparse:
         return list(torch.meshgrid(*arrays, indexing=indexing))
@@ -560,7 +562,14 @@ def zeros_like(
 array = asarray
 
 
-def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def copy_array(
+    x: torch.Tensor,
+    *,
+    to_ivy_array: Optional[bool] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if to_ivy_array:
+        return ivy.to_ivy(x.clone())
     return x.clone()
 
 

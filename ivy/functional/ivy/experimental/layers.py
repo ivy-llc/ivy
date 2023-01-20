@@ -1,7 +1,7 @@
 from typing import Optional, Union, Tuple, Literal
 import ivy
 from ivy.func_wrapper import (
-    handle_array_like,
+    handle_array_like_without_promotion,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
@@ -515,7 +515,7 @@ def dct(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -578,9 +578,10 @@ def fft(
     return ivy.current_backend(x).fft(x, dim, norm=norm, n=n, out=out)
 
 
+@handle_nestable
 @handle_exceptions
 @to_native_arrays_and_back
-@handle_array_like
+@handle_array_like_without_promotion
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -615,7 +616,157 @@ def dropout1d(
     ret
         an array with some channels zero-ed and the rest of channels are
          scaled by (1/1-prob).
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 1, 1]).reshape([1, 1, 3])
+    >>> y = x.dropout1d(0.5)
+    >>> print(y)
+    ivy.array([[[2., 0, 2.]]])
+
+    >>> x = ivy.array([1, 1, 1]).reshape([1, 1, 3])
+    >>> y = ivy.dropout1d(x, 1, training=False, data_format="NCW")
+    >>> print(y)
+    ivy.array([[[1, 1, 1]]])
+
+    With one :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([100, 200, 300]).reshape([1, 1, 3]),
+    ...                   b=ivy.array([400, 500, 600]).reshape([1, 1, 3]))
+    >>> y = ivy.dropout1d(x, 0.5)
+    >>> print(y)
+    {
+    a: ivy.array([[[200., 400., 0.]]]),
+    b: ivy.array([[[0., 0., 0.]]])
+    }
     """
     return ivy.current_backend(x).dropout1d(
         x, prob, training=training, data_format=data_format, out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+def ifft(
+    x: Union[ivy.Array, ivy.NativeArray],
+    dim: int,
+    *,
+    norm: Optional[str] = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""Computes the one dimensional discrete Fourier transform given input at least
+    1-D input x.
+
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*,
+        where d_in indicates the dimension that needs IFFT.
+    dim
+        The dimension along which to take the one dimensional IFFT.
+    norm
+        Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+        "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
+        "forward" indicates normalization by $\frac{1}{n}$.
+    n
+        Optional argument indicating the sequence length, if given, the input would be
+        padded with zero or truncated to length n before performing IFFT.
+        Should be a integer greater than 1.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the IFFT operation.
+
+    Examples
+    --------
+    >>> ivy.ifft(np.exp(2j * np.pi * np.arange(8) / 8), 0)
+    ivy.array([-4.30636606e-17+1.43029718e-18j,  0.00000000e+00+1.53080850e-17j,
+                1.43029718e-18+1.53080850e-17j,  0.00000000e+00+9.58689626e-18j,
+                1.24474906e-17+2.91858728e-17j,  0.00000000e+00+1.53080850e-17j,
+                2.91858728e-17+1.53080850e-17j,  1.00000000e+00-1.01435406e-16j])
+    >>> ivy.ifft(np.exp(2j * np.pi * np.arange(8) / 8), 0, n=16)
+    ivy.array([-2.15318303e-17+7.15148591e-19j,  6.25000000e-02+9.35378602e-02j,
+                0.00000000e+00+7.65404249e-18j,  6.25000000e-02+4.17611649e-02j,
+                7.15148591e-19+7.65404249e-18j,  6.25000000e-02+1.24320230e-02j,
+                0.00000000e+00+4.79344813e-18j,  6.25000000e-02-1.24320230e-02j,
+                6.22374531e-18+1.45929364e-17j,  6.25000000e-02-4.17611649e-02j,
+                0.00000000e+00+7.65404249e-18j,  6.25000000e-02-9.35378602e-02j,
+                1.45929364e-17+7.65404249e-18j,  6.25000000e-02-3.14208718e-01j,
+                5.00000000e-01-5.07177031e-17j,  6.25000000e-02+3.14208718e-01j])
+    >>> ivy.ifft(np.exp(2j * np.pi * np.arange(8) / 8), 0, norm="ortho")
+    ivy.array([-1.21802426e-16+4.04549134e-18j,  0.00000000e+00+4.32978028e-17j,
+                4.04549134e-18+4.32978028e-17j,  0.00000000e+00+2.71158374e-17j,
+                3.52068201e-17+8.25501143e-17j,  0.00000000e+00+4.32978028e-17j,
+                8.25501143e-17+4.32978028e-17j,  2.82842712e+00-2.86902654e-16j])
+    """
+    return ivy.current_backend(x).ifft(x, dim, norm=norm, n=n, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_exceptions
+@handle_nestable
+def embedding(
+    weights: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out=None,
+) -> ivy.Array:
+    """Embeds a given tensor of indices using a given tensor of weights.
+
+    Parameters
+    ----------
+    weights
+        The weights tensor.
+    indices
+        The indices tensor.
+    max_norm
+        The maximum norm of the embeddings.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the embedding operation.
+
+    Examples
+    --------
+    >>> weights = ivy.array([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]])
+    >>> indices = ivy.array([0, 2])
+    >>> print(ivy.embedding(weights, indices, max_norm=5))
+    ivy.array([[1., 2., 3.],
+                [7., 8., 9.]])
+    """
+    ivy.assertions.check_equal(len(weights.shape), 2, message="weights must be 2-d")
+
+    ret = ivy.empty(
+        indices.shape + (weights.shape[1],), dtype=ivy.as_ivy_dtype(weights.dtype)
+    )
+    if not ivy.is_ivy_array(indices):
+        indices = ivy.array(indices, dtype=ivy.int32)
+
+    for i, x in ivy.ndenumerate(indices):
+
+        if ivy.exists(max_norm):
+            ret[i] = ivy.clip_vector_norm(weights[x, :], max_norm)
+        else:
+            ret[i] = weights[x, :]
+    return ret

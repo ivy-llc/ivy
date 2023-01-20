@@ -55,7 +55,7 @@ def floor(x):
 
 
 @to_ivy_arrays_and_back
-def mod(x1, x2):
+def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
 
@@ -124,6 +124,11 @@ def float_power(x1, x2):
 
 @to_ivy_arrays_and_back
 def deg2rad(x):
+    return ivy.deg2rad(x)
+
+
+@to_ivy_arrays_and_back
+def radians(x):
     return ivy.deg2rad(x)
 
 
@@ -233,10 +238,13 @@ def tensordot(a, b, axes=2):
 
 @to_ivy_arrays_and_back
 def divide(x1, x2, /):
-    if ivy.dtype(x1) == "int64" or ivy.dtype(x1) == "uint64":
-        x1 = ivy.astype(x1, ivy.float64)
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
-    return ivy.divide(x1, x2)
+    if ivy.dtype(x1) in ["int64", "uint64"]:
+        x1 = ivy.astype(x1, ivy.float64)
+    elif ivy.is_int_dtype(x1):
+        x1 = ivy.astype(x1, ivy.float32)
+
+    return ivy.divide(x1, x2).astype(x1.dtype)
 
 
 true_divide = divide
@@ -250,6 +258,13 @@ def exp(
     return ivy.exp(x)
 
 
+def expm1(
+    x,
+    /,
+):
+    return ivy.expm1(x)
+
+
 @to_ivy_arrays_and_back
 def fmax(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
@@ -258,6 +273,18 @@ def fmax(x1, x2):
         x1,
         x2,
     )
+    return ret
+
+
+@to_ivy_arrays_and_back
+def fmin(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    ret = ivy.where(
+        ivy.bitwise_or(ivy.less(x1, x2), ivy.isnan(x2)),
+        x1,
+        x2,
+    )
+    print("jax-frontend", ret)
     return ret
 
 
@@ -282,6 +309,11 @@ def heaviside(x1, x2):
 @to_ivy_arrays_and_back
 def log(x):
     return ivy.log(x)
+
+
+@to_ivy_arrays_and_back
+def log1p(x, /):
+    return ivy.log1p(x)
 
 
 @to_ivy_arrays_and_back
@@ -321,3 +353,29 @@ def trace(a, offset=0, axis1=0, axis2=1, out=None):
 @to_ivy_arrays_and_back
 def log2(x):
     return ivy.log2(x)
+
+
+@to_ivy_arrays_and_back
+def vdot(a, b):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.multiply(a, b).sum()
+
+
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("bfloat16",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def cbrt(x, /):
+    all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0)
+    return ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive)
+
+
+@to_ivy_arrays_and_back
+def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
+    return ivy.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
+@to_ivy_arrays_and_back
+def fix(x, out=None):
+    return ivy.fix(x, out=out)

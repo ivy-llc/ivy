@@ -26,7 +26,6 @@ numpy_promotion_table = {
     (ivy.bool, ivy.float64): ivy.float64,
     (ivy.bool, ivy.complex64): ivy.complex64,
     (ivy.bool, ivy.complex128): ivy.complex128,
-    (ivy.bool, ivy.complex256): ivy.complex256,
     (ivy.bool, ivy.bool): ivy.bool,
     (ivy.int8, ivy.bool): ivy.int8,
     (ivy.int8, ivy.int8): ivy.int8,
@@ -170,17 +169,59 @@ numpy_promotion_table = {
     (ivy.bfloat16, ivy.float64): ivy.float64,
     (ivy.float64, ivy.bfloat16): ivy.float64,
     (ivy.complex64, ivy.bool): ivy.complex64,
+    (ivy.complex64, ivy.int8): ivy.complex64,
+    (ivy.complex64, ivy.int16): ivy.complex64,
+    (ivy.complex64, ivy.int32): ivy.complex128,
+    (ivy.complex64, ivy.int64): ivy.complex128,
+    (ivy.complex64, ivy.uint8): ivy.complex64,
+    (ivy.complex64, ivy.uint16): ivy.complex64,
+    (ivy.complex64, ivy.uint32): ivy.complex128,
+    (ivy.complex64, ivy.uint64): ivy.complex128,
+    (ivy.complex64, ivy.float16): ivy.complex64,
+    (ivy.complex64, ivy.float32): ivy.complex64,
+    (ivy.complex64, ivy.float64): ivy.complex128,
+    (ivy.complex64, ivy.bfloat16): ivy.complex64,
     (ivy.complex64, ivy.complex64): ivy.complex64,
     (ivy.complex64, ivy.complex128): ivy.complex128,
-    (ivy.complex64, ivy.complex256): ivy.complex256,
     (ivy.complex128, ivy.bool): ivy.complex128,
+    (ivy.complex128, ivy.int8): ivy.complex128,
+    (ivy.complex128, ivy.int16): ivy.complex128,
+    (ivy.complex128, ivy.int32): ivy.complex128,
+    (ivy.complex128, ivy.int64): ivy.complex128,
+    (ivy.complex128, ivy.uint8): ivy.complex128,
+    (ivy.complex128, ivy.uint16): ivy.complex128,
+    (ivy.complex128, ivy.uint32): ivy.complex128,
+    (ivy.complex128, ivy.uint64): ivy.complex128,
+    (ivy.complex128, ivy.float16): ivy.complex128,
+    (ivy.complex128, ivy.float32): ivy.complex128,
+    (ivy.complex128, ivy.float64): ivy.complex128,
+    (ivy.complex128, ivy.bfloat16): ivy.complex128,
     (ivy.complex128, ivy.complex64): ivy.complex128,
     (ivy.complex128, ivy.complex128): ivy.complex128,
-    (ivy.complex128, ivy.complex256): ivy.complex256,
-    (ivy.complex256, ivy.bool): ivy.complex256,
-    (ivy.complex256, ivy.complex64): ivy.complex256,
-    (ivy.complex256, ivy.complex128): ivy.complex256,
-    (ivy.complex256, ivy.complex256): ivy.complex256,
+    (ivy.int8, ivy.complex64): ivy.complex64,
+    (ivy.int16, ivy.complex64): ivy.complex64,
+    (ivy.int32, ivy.complex64): ivy.complex128,
+    (ivy.int64, ivy.complex64): ivy.complex128,
+    (ivy.uint8, ivy.complex64): ivy.complex64,
+    (ivy.uint16, ivy.complex64): ivy.complex64,
+    (ivy.uint32, ivy.complex64): ivy.complex128,
+    (ivy.uint64, ivy.complex64): ivy.complex128,
+    (ivy.float16, ivy.complex64): ivy.complex64,
+    (ivy.float32, ivy.complex64): ivy.complex64,
+    (ivy.float64, ivy.complex64): ivy.complex128,
+    (ivy.bfloat16, ivy.complex64): ivy.complex64,
+    (ivy.int8, ivy.complex128): ivy.complex128,
+    (ivy.int16, ivy.complex128): ivy.complex128,
+    (ivy.int32, ivy.complex128): ivy.complex128,
+    (ivy.int64, ivy.complex128): ivy.complex128,
+    (ivy.uint8, ivy.complex128): ivy.complex128,
+    (ivy.uint16, ivy.complex128): ivy.complex128,
+    (ivy.uint32, ivy.complex128): ivy.complex128,
+    (ivy.uint64, ivy.complex128): ivy.complex128,
+    (ivy.float16, ivy.complex128): ivy.complex128,
+    (ivy.float32, ivy.complex128): ivy.complex128,
+    (ivy.float64, ivy.complex128): ivy.complex128,
+    (ivy.bfloat16, ivy.complex128): ivy.complex128,
 }
 
 numpy_str_to_type_table = {
@@ -188,6 +229,7 @@ numpy_str_to_type_table = {
     "h": "int16",
     "i": "int32",
     "l": "int64",
+    "q": "int64",
     "B": "uint8",
     "H": "uint16",
     "I": "uint32",
@@ -199,7 +241,6 @@ numpy_str_to_type_table = {
     "E": "bfloat16",
     "F": "complex64",
     "D": "complex128",
-    "G": "complex256",
     "f2": "float16",
     "f4": "float32",
     "f8": "float64",
@@ -213,7 +254,7 @@ numpy_str_to_type_table = {
     "u8": "uint64",
     "c8": "complex64",
     "c16": "complex128",
-    "c32": "complex256",
+    "bool_": "bool",
 }
 
 numpy_type_to_str_and_num_table = {
@@ -232,7 +273,6 @@ numpy_type_to_str_and_num_table = {
     "bfloat16": ("E", 256),
     "complex64": ("F", 14),
     "complex128": ("D", 15),
-    "complex256": ("G", 16),
 }
 
 numpy_scalar_to_dtype = {
@@ -256,10 +296,10 @@ numpy_scalar_to_dtype = {
     half: ivy.float16,
     single: ivy.float32,
     float_: ivy.float64,
+    bfloat16: ivy.bfloat16,
     complexfloating: ivy.complex128,
     csingle: ivy.complex64,
     complex_: ivy.complex128,
-    clongfloat: ivy.complex256,
 }
 
 numpy_dtype_to_scalar = {v: k for k, v in numpy_scalar_to_dtype.items()}
@@ -280,7 +320,6 @@ numpy_casting_rules = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.int8: [
         ivy.int8,
@@ -292,7 +331,6 @@ numpy_casting_rules = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.int16: [
         ivy.int16,
@@ -302,10 +340,9 @@ numpy_casting_rules = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
-    ivy.int32: [ivy.int32, ivy.int64, ivy.float64, ivy.complex128, ivy.complex256],
-    ivy.int64: [ivy.int64, ivy.float64, ivy.complex128, ivy.complex256],
+    ivy.int32: [ivy.int32, ivy.int64, ivy.float64, ivy.complex128],
+    ivy.int64: [ivy.int64, ivy.float64, ivy.complex128],
     ivy.uint8: [
         ivy.uint8,
         ivy.uint16,
@@ -319,7 +356,6 @@ numpy_casting_rules = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.uint16: [
         ivy.uint16,
@@ -331,7 +367,6 @@ numpy_casting_rules = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.uint32: [
         ivy.uint32,
@@ -339,28 +374,24 @@ numpy_casting_rules = {
         ivy.int64,
         ivy.float64,
         ivy.complex128,
-        ivy.complex256,
     ],
-    ivy.uint64: [ivy.uint64, ivy.float64, ivy.complex128, ivy.complex256],
+    ivy.uint64: [ivy.uint64, ivy.float64, ivy.complex128],
     ivy.float16: [
         ivy.float16,
         ivy.float32,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
     ivy.float32: [
         ivy.float32,
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-        ivy.complex256,
     ],
-    ivy.float64: [ivy.float64, ivy.complex128, ivy.complex256],
-    ivy.complex64: [ivy.complex64, ivy.complex128, ivy.complex256],
-    ivy.complex128: [ivy.complex128, ivy.complex256],
-    ivy.complex256: [ivy.complex256],
+    ivy.float64: [ivy.float64, ivy.complex128],
+    ivy.complex64: [ivy.complex64, ivy.complex128],
+    ivy.complex128: [ivy.complex128],
 }
 
 
@@ -391,6 +422,19 @@ def promote_types_of_numpy_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
+    # Ignore type of 0-dim arrays to mimic numpy
+    if (
+        hasattr(x1, "shape")
+        and x1.shape == ()
+        and not (hasattr(x2, "shape") and x2.shape == ())
+    ):
+        x1 = ivy.to_scalar(x1[()])
+    if (
+        hasattr(x2, "shape")
+        and x2.shape == ()
+        and not (hasattr(x1, "shape") and x1.shape == ())
+    ):
+        x2 = ivy.to_scalar(x2[()])
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
@@ -433,7 +477,7 @@ from . import ma
 from . import fft
 from . import random
 from . import ndarray
-from . import ufunc
+from .ufunc import ufunc
 
 from . import linalg
 from .linalg.matrix_and_vector_products import (
@@ -441,7 +485,6 @@ from .linalg.matrix_and_vector_products import (
     # vdot,
     inner,
     outer,
-    matmul,
     matrix_power,
     tensordot,
     # einsum,
@@ -454,3 +497,165 @@ from .linalg.decompositions import cholesky, qr, svd
 from .linalg.norms_and_other_numbers import det, slogdet, matrix_rank, norm, trace
 
 from .linalg.solving_equations_and_inverting_matrices import pinv, inv, solve
+
+# importing private functions for ufunc initialization #
+# -----------------------------------------------------#
+
+from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import (
+    _absolute,
+    _cbrt,
+    _copysign,
+    _fabs,
+    _heaviside,
+    _sign,
+    _sqrt,
+    _square,
+)
+
+from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (
+    _add,
+    _divide,
+    _float_power,
+    _floor_divide,
+    _fmod,
+    _mod,
+    _multiply,
+    _negative,
+    _positive,
+    _power,
+    _reciprocal,
+    _subtract,
+    _true_divide,
+)
+
+from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (
+    _arccos,
+    _arcsin,
+    _arctan,
+    _cos,
+    _deg2rad,
+    _rad2deg,
+    _sin,
+    _tan,
+)
+
+from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
+    _arccosh,
+    _arcsinh,
+    _arctanh,
+    _cosh,
+    _sinh,
+    _tanh,
+)
+
+from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
+    _ceil,
+    _trunc,
+)
+
+from ivy.functional.frontends.numpy.logic.comparison import (
+    _equal,
+    _greater,
+    _greater_equal,
+    _less,
+    _less_equal,
+    _not_equal,
+)
+
+from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (
+    _exp,
+    _exp2,
+    _expm1,
+    _log,
+    _log10,
+    _log1p,
+    _log2,
+    _logaddexp,
+    _logaddexp2,
+)
+
+from ivy.functional.frontends.numpy.logic.array_type_testing import (
+    _isfinite,
+    _isinf,
+    _isnan,
+)
+
+from ivy.functional.frontends.numpy.logic.logical_operations import (
+    _logical_and,
+    _logical_not,
+    _logical_or,
+    _logical_xor,
+)
+
+from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import _matmul
+
+from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
+    _maximum,
+    _minimum,
+)
+
+# initializing ufuncs #
+# ---------------------#
+
+absolute = ufunc("_absolute")
+cbrt = ufunc("_cbrt")
+copysign = ufunc("_copysign")
+fabs = ufunc("_fabs")
+heaviside = ufunc("_heaviside")
+sign = ufunc("_sign")
+sqrt = ufunc("_sqrt")
+square = ufunc("_square")
+add = ufunc("_add")
+divide = ufunc("_divide")
+float_power = ufunc("_float_power")
+floor_divide = ufunc("_floor_divide")
+fmod = ufunc("_fmod")
+mod = ufunc("_mod")
+multiply = ufunc("_multiply")
+negative = ufunc("_negative")
+positive = ufunc("_positive")
+power = ufunc("_power")
+reciprocal = ufunc("_reciprocal")
+subtract = ufunc("_subtract")
+true_divide = ufunc("_divide")
+arccos = ufunc("_arccos")
+arcsin = ufunc("_arcsin")
+arctan = ufunc("_arctan")
+cos = ufunc("_cos")
+deg2rad = ufunc("_deg2rad")
+rad2deg = ufunc("_rad2deg")
+sin = ufunc("_sin")
+tan = ufunc("_tan")
+arccosh = ufunc("_arccosh")
+arcsinh = ufunc("_arcsinh")
+arctanh = ufunc("_arctanh")
+cosh = ufunc("_cosh")
+sinh = ufunc("_sinh")
+tanh = ufunc("_tanh")
+ceil = ufunc("_ceil")
+trunc = ufunc("_trunc")
+equal = ufunc("_equal")
+greater = ufunc("_greater")
+greater_equal = ufunc("_greater_equal")
+less = ufunc("_less")
+less_equal = ufunc("_less_equal")
+not_equal = ufunc("_not_equal")
+exp = ufunc("_exp")
+exp2 = ufunc("_exp2")
+expm1 = ufunc("_expm1")
+log = ufunc("_log")
+log10 = ufunc("_log10")
+log1p = ufunc("_log1p")
+log2 = ufunc("_log2")
+logaddexp = ufunc("_logaddexp")
+logaddexp2 = ufunc("_logaddexp2")
+isfinite = ufunc("_isfinite")
+isinf = ufunc("_isinf")
+isnan = ufunc("_isnan")
+logical_and = ufunc("_logical_and")
+logical_not = ufunc("_logical_not")
+logical_or = ufunc("_logical_or")
+logical_xor = ufunc("_logical_xor")
+matmul = ufunc("_matmul")
+maximum = ufunc("_maximum")
+minimum = ufunc("_minimum")

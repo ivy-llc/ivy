@@ -7,7 +7,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -19,7 +19,7 @@ from ivy.exceptions import handle_exceptions
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray]
 ) -> Tuple[
@@ -137,7 +137,7 @@ def unique_all(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray]
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
@@ -237,7 +237,7 @@ def unique_inverse(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -303,7 +303,7 @@ def unique_values(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def unique_counts(
     x: Union[ivy.Array, ivy.NativeArray]
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:

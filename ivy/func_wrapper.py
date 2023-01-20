@@ -5,8 +5,6 @@ from types import FunctionType
 from typing import Callable
 import inspect
 
-# import typing
-
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
@@ -14,6 +12,7 @@ FN_DECORATORS = [
     "infer_dtype",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
+    "outputs_to_native_arrays",
     "inputs_to_native_arrays",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
@@ -21,7 +20,7 @@ FN_DECORATORS = [
     "handle_exceptions",
     "with_unsupported_dtypes",
     "handle_nans",
-    "handle_array_like",
+    "handle_array_like_without_promotion",
 ]
 
 
@@ -51,37 +50,42 @@ def _get_first_array(*args, **kwargs):
 # ---------------#
 
 
-def handle_array_like(fn: Callable) -> Callable:
+def handle_array_like_without_promotion(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         args = list(args)
         num_args = len(args)
         try:
-            type_hints = dict(inspect.signature(fn).parameters)
-        except TypeError:
+            type_hints = inspect.signature(fn).parameters
+        except (TypeError, ValueError):
             return fn(*args, **kwargs)
-        parameters = [param.name for param in type_hints.values()]
+        parameters = list(type_hints.keys())
         annotations = [param.annotation for param in type_hints.values()]
 
         for i, (annotation, parameter, arg) in enumerate(
             zip(annotations, parameters, args)
         ):
             annotation_str = str(annotation)
-            if "Array" in annotation_str and all(
-                sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
+            if (
+                ("rray" in annotation_str or "Tensor" in annotation_str)
+                and parameter != "out"
+                and all(
+                    sq not in annotation_str
+                    for sq in ["Sequence", "List", "Tuple", "float", "int", "bool"]
+                )
             ):
 
                 if i < num_args:
-                    if isinstance(arg, (list, tuple)):
+                    if not ivy.is_array(arg):
                         args[i] = ivy.array(arg)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
-                    if isinstance(kwarg, (list, tuple)):
+                    if not ivy.is_array(arg):
                         kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_array_like = True
+    new_fn.handle_array_like_without_promotion = True
     return new_fn
 
 
@@ -193,6 +197,41 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
 
     new_fn.outputs_to_ivy_arrays = True
     return new_fn
+
+
+def output_to_native_arrays(fn: Callable) -> Callable:
+    """
+    Calls the function, and then converts all `ivy.Array` instances in
+    the function return into `ivy.NativeArray` instances.
+
+    Parameters
+    ----------
+    args
+        The arguments to be passed to the function.
+
+    kwargs
+        The keyword arguments to be passed to the function.
+
+    Returns
+    -------
+        The return of the function, with ivy arrays as native arrays.
+    """
+
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        return ivy.to_native(ret, nested=True, include_derived={tuple: True})
+
+    new_fn.outputs_to_native_arrays = True
+    return new_fn
+
+
+def to_ivy_arrays_and_back(fn: Callable) -> Callable:
+    """
+    Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
+    and return arrays are all converted to `ivy.NativeArray` instances.
+    """
+    return output_to_native_arrays(inputs_to_ivy_arrays(fn))
 
 
 def to_native_arrays_and_back(fn: Callable) -> Callable:
@@ -360,6 +399,13 @@ def handle_out_argument(fn: Callable) -> Callable:
         # compute return, and then handle the inplace update explicitly
 
         ret = fn(*args, **kwargs)
+        if not ivy.is_array(ret) and not ivy.is_ivy_container(ret):
+            return ivy.nested_multi_map(
+                lambda x, _: ivy.inplace_update(
+                    x[0], ivy.astype(x[1], ivy.dtype(x[0]))
+                ),
+                [out, ret],
+            )
         return ivy.inplace_update(out, ivy.astype(ret, ivy.dtype(out)))
         # return output matches the dtype of the out array to match numpy and torch
 

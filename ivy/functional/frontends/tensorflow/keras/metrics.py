@@ -2,7 +2,6 @@ import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
-@to_ivy_arrays_and_back
 def _binary_matches(y_true, y_pred, threshold=0.5):
     threshold = ivy.astype(ivy.array(threshold), y_pred.dtype)
     y_pred = ivy.astype(ivy.greater(y_pred, threshold), y_pred.dtype)
@@ -11,7 +10,6 @@ def _binary_matches(y_true, y_pred, threshold=0.5):
     )
 
 
-@to_ivy_arrays_and_back
 def _cond_convert_labels(y_true):
     are_zeros = ivy.equal(y_true, 0.0)
     are_ones = ivy.equal(y_true, 1.0)

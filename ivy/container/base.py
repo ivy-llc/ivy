@@ -172,15 +172,20 @@ class ContainerBase(dict, abc.ABC):
         inspect_fn = fn
         if isinstance(fn, str):
             inspect_fn = ivy.__dict__[fn]
+        # retrieve indices where leaves of args are also nested
         arg_cont_idxs = ivy.nested_argwhere(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
+        # retrieve indices where leaves of kwargs are also nested
         kwarg_cont_idxs = ivy.nested_argwhere(
             kwargs, ivy.is_ivy_container, to_ignore=ivy.Container
         )
-        # retrieve all the containers in args and kwargs
+
+        # retrieve all the containers in args
         arg_conts = ivy.multi_index_nest(args, arg_cont_idxs)
         num_arg_conts = len(arg_conts)
+
+        # retrieve all the containers in kwargs
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
         # Combine the retrieved containers from args and kwargs into a single list
         with_out = (
@@ -188,7 +193,16 @@ class ContainerBase(dict, abc.ABC):
             and out is not None
         )
         if with_out:
-            conts = arg_conts + kwarg_conts + [out]
+            out_conts = [out]
+            num_out_conts = 1
+            out_cont_idxs = []
+            if not ivy.is_array(out) and not ivy.is_ivy_container(out):
+                out_cont_idxs = ivy.nested_argwhere(
+                    out, ivy.is_ivy_container, to_ignore=ivy.Container
+                )
+                out_conts = ivy.multi_index_nest(out, out_cont_idxs)
+                num_out_conts = len(out_conts)
+            conts = arg_conts + kwarg_conts + out_conts
         else:
             conts = arg_conts + kwarg_conts
         ivy.assertions.check_exists(conts, message="no containers found in arguments")
@@ -200,8 +214,8 @@ class ContainerBase(dict, abc.ABC):
 
         def map_fn(vals, _):
             if with_out:
-                out = vals[-1]
-                del vals[-1]
+                out = vals[-num_out_conts:]
+                del vals[-num_out_conts:]
             arg_vals = vals[:num_arg_conts]
             a = ivy.copy_nest(args, to_mutable=True)
             ivy.set_nest_at_indices(a, arg_cont_idxs, arg_vals)
@@ -209,6 +223,7 @@ class ContainerBase(dict, abc.ABC):
             kw = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
             if with_out:
+                out = out[0] if len(out) == 1 else out
                 return fn(*a, out=out, **kw)
             else:
                 return fn(*a, **kw)
@@ -224,16 +239,22 @@ class ContainerBase(dict, abc.ABC):
             prune_unapplied,
             map_nests=map_sequences,
         )
-        if ivy.exists(out):
-            out.inplace_update(ret)
-            ret = out
 
         # Multiple containers for functions returning multiple arrays
-        for values in ret.values():
-            if isinstance(values, list):
-                for v in values:
-                    if ivy.is_ivy_array(v):
-                        return ret.cont_unstack_conts(0)
+        if ivy.is_ivy_container(ret):
+            for values in ret.values():
+                if isinstance(values, (tuple, list)):
+                    for v in values:
+                        if ivy.is_ivy_array(v):
+                            return ret.cont_unstack_conts(0)
+
+        if with_out:
+            for out_cont_idx, out_cont in zip(out_cont_idxs, out_conts):
+                out_cont.cont_inplace_update(ivy.index_nest(ret, out_cont_idx))
+            if len(out_conts) == 1:
+                out.cont_inplace_update(ret)
+            ret = out
+
         return ret
 
     @staticmethod
@@ -255,7 +276,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         if ivy.exists(out):
-            out.inplace_update(ret)
+            out.cont_inplace_update(ret)
             ret = out
         return ret
 
@@ -632,8 +653,7 @@ class ContainerBase(dict, abc.ABC):
         map_nests=False,
         assert_identical=False,
     ):
-        """Apply function to all array values from a collection of identically
-        structured containers.
+        """Apply function to all array values from a collection of containers.
 
         Parameters
         ----------
@@ -664,11 +684,15 @@ class ContainerBase(dict, abc.ABC):
             Container
 
         """
+        # retrieve all keys and the first container if it exists
+        keys = set([])
         container0 = None
-        for cont in containers:
-            if isinstance(cont, ivy.Container):
-                container0 = cont
-                break
+        for container in containers:
+            if isinstance(container, ivy.Container):
+                if container0 is None:
+                    container0 = container
+                keys = keys.union(container.keys())
+
         ivy.assertions.check_exists(
             container0,
             message="No containers found in the inputs to ivy.Container.cont_multi_map",
@@ -678,55 +702,28 @@ class ContainerBase(dict, abc.ABC):
                 container0.cont_config if isinstance(container0, ivy.Container) else {}
             )
         return_dict = dict()
-        for key in container0.keys():
-            values = [
-                cont[key] if isinstance(cont, ivy.Container) and key in cont else cont
-                for cont in containers
-            ]
+
+        for key in keys:
+            values = []
+            for cont in containers:
+                if isinstance(cont, (ivy.Container, list, tuple)) and key in cont:
+                    values.append(cont[key])
+                elif not isinstance(cont, (ivy.Container, list, tuple)):
+                    values.append(cont)
             value0 = values[0]
-            this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
-            is_container = [ivy.is_ivy_container(x) for x in values]
+            if len(values) >= 1:
+                this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
+                is_container = [ivy.is_ivy_container(x) for x in values]
 
-            def _found_in_key_chains(this_key_chain, key_chains):
-                if key_chains is None:
+                def _found_in_key_chains(this_key_chain, key_chains):
+                    if key_chains is None:
+                        return False
+                    for key_chain in key_chains:
+                        if this_key_chain.startswith(key_chain):
+                            return True
                     return False
-                for key_chain in key_chains:
-                    if this_key_chain.startswith(key_chain):
-                        return True
-                return False
 
-            if not assert_identical and not all(is_container) and any(is_container):
-                found = _found_in_key_chains(this_key_chain, key_chains)
-                if key_chains is not None:
-                    if (found and not to_apply) or (not found and to_apply):
-                        if prune_unapplied:
-                            continue
-                        return_dict[key] = value0
-                        continue
-                return_dict[key] = func(values, this_key_chain)
-            else:
-                if isinstance(value0, ivy.Container):
-                    ret = ivy.Container.cont_multi_map(
-                        func,
-                        values,
-                        key_chains,
-                        to_apply,
-                        prune_unapplied,
-                        this_key_chain,
-                        config,
-                        map_nests,
-                        assert_identical,
-                    )
-                    if ret:
-                        return_dict[key] = ret
-                elif any(isinstance(x, (list, tuple)) for x in values) and map_nests:
-                    ret = ivy.nested_multi_map(
-                        lambda x, _: func(x, None), values, to_ivy=False
-                    )
-                    if prune_unapplied and not ret:
-                        continue
-                    return_dict[key] = ret
-                else:
+                if not assert_identical and not all(is_container) and any(is_container):
                     found = _found_in_key_chains(this_key_chain, key_chains)
                     if key_chains is not None:
                         if (found and not to_apply) or (not found and to_apply):
@@ -735,6 +732,42 @@ class ContainerBase(dict, abc.ABC):
                             return_dict[key] = value0
                             continue
                     return_dict[key] = func(values, this_key_chain)
+                else:
+                    if isinstance(value0, ivy.Container):
+                        ret = ivy.Container.cont_multi_map(
+                            func,
+                            values,
+                            key_chains,
+                            to_apply,
+                            prune_unapplied,
+                            this_key_chain,
+                            config,
+                            map_nests,
+                            assert_identical,
+                        )
+                        if ret:
+                            return_dict[key] = ret
+                    elif (
+                        any(isinstance(x, (list, tuple)) for x in values) and map_nests
+                    ):
+                        ret = ivy.nested_multi_map(
+                            lambda x, _: func(x, None), values, to_ivy=False
+                        )
+                        if prune_unapplied and not ret:
+                            continue
+                        return_dict[key] = ret
+                    else:
+                        found = _found_in_key_chains(this_key_chain, key_chains)
+                        if key_chains is not None:
+                            if (found and not to_apply) or (not found and to_apply):
+                                if prune_unapplied:
+                                    continue
+                                return_dict[key] = value0
+                                continue
+                        return_dict[key] = func(values, this_key_chain)
+            else:
+                return_dict[key] = value0
+
             # noinspection PyProtectedMember
         return ivy.Container(return_dict, **config)
 
@@ -1494,7 +1527,7 @@ class ContainerBase(dict, abc.ABC):
         for k, v in key_chains.items():
             if isinstance(v, dict):
                 ret_cont = self._cont_prune_key_chains_input_as_dict(v, return_cont[k])
-                if ret_cont.shape[0] == 0:
+                if ret_cont.cont_shape[0] == 0:
                     del return_cont[k]
             else:
                 del return_cont[k]
@@ -3215,7 +3248,7 @@ class ContainerBase(dict, abc.ABC):
         def to_list(x, _=""):
             try:
                 return self._cont_ivy.to_list(x)
-            except (IvyBackendException):
+            except (IvyException, IvyBackendException):
                 return x
 
         return self.cont_map(to_list)
@@ -3774,6 +3807,9 @@ class ContainerBase(dict, abc.ABC):
                     .cont_to_dict(),
                     indent=self._print_indent,
                 )
+            )
+            json_dumped_str = json_dumped_str.replace("true", "True").replace(
+                "false", "False"
             )
 
             def _add_newline(str_in):
