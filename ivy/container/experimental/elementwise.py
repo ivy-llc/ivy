@@ -1407,184 +1407,6 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_isposinf(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.isposinf. This method simply wraps
-        the function, and so the docstring for ivy.isposinf also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            container with the base input arrays.
-        out
-            optional output container, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Container including a boolean array with values
-            True where the corresponding element of the input
-            is positive infinity and values False where the
-            element of the input is not positive infinity.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                                b=ivy.array([5, ivy.inf, ivy.inf]))
-        >>> ivy.Container.static_isposinf(x)
-        {
-            a: ivy.array([False, True, False]),
-            b: ivy.array([False, True, True])
-        }
-        """
-        return ContainerBase.cont_multi_map_in_function(
-            "isposinf",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def isposinf(
-        self: ivy.Container,
-        /,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.isposinf. This method simply
-        wraps the function, and so the docstring for ivy.isposinf also applies to
-        this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            container with the base input arrays.
-        out
-            optional output container, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Returns container including a boolean array with values
-            True where the corresponding element of the input
-            is positive infinity and values False where the
-            element of the input is not positive infinity.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                               b=ivy.array([5, ivy.inf, ivy.inf]))
-        >>> x.isposinf()
-        {
-            a: ivy.array([False, True, False]),
-            b: ivy.array([False, True, True])
-        }
-        """
-        return self.static_isposinf(self, out=out)
-
-    @staticmethod
-    def static_isneginf(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.isneginf. This method simply wraps
-        the function, and so the docstring for ivy.isneginf also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            container with the base input arrays.
-        out
-            optional output container, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Container including a boolean array with values
-            True where the corresponding element of the input
-            is negative infinity and values False where the
-            element of the input is not negative infinity.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                                b=ivy.array([5, -ivy.inf, -ivy.inf]))
-        >>> ivy.Container.static_isneginf(x)
-        {
-            a: ivy.array([False, False, True]),
-            b: ivy.array([False, True, True])
-        }
-        """
-        return ContainerBase.cont_multi_map_in_function(
-            "isneginf",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def isneginf(
-        self: ivy.Container,
-        /,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.isneginf. This method simply
-        wraps the function, and so the docstring for ivy.isneginf also applies to
-        this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            container with the base input arrays.
-        out
-            optional output container, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Returns container including a boolean array with values
-            True where the corresponding element of the input
-            is negative infinity and values False where the
-            element of the input is not negative infinity.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                               b=ivy.array([5, -ivy.inf, -ivy.inf]))
-        >>> x.isneginf()
-        {
-            a: ivy.array([False, False, True]),
-            b: ivy.array([False, True, True])
-        }
-        """
-        return self.static_isneginf(self, out=out)
-
-    @staticmethod
     def static_angle(
         z: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2097,6 +1919,136 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_signbit(self, out=out)
+
+    @staticmethod
+    def static_hypot(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hypot. This method simply wraps
+        the function, and so the docstring for ivy.hypot also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            Input container containing first input array.
+        x2
+            Input container containing second input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the hypot function computed element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.0]),\
+        ...                         b=ivy.array([3.0]))
+        >>> y = ivy.Container(a=ivy.array([3.0]),\
+                                    b=ivy.array([4.0]))
+        >>> ivy.Container.static_hypot(x, y)
+        {
+            a: ivy.array([3.6055]),
+            b: ivy.array([5.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "hypot",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hypot(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.hypot. This method simply
+        wraps the function, and so the docstring for ivy.hypot also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing first input array.
+        x2
+            Input container containing second input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the hypot function computed element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.0]),\
+        ...                         b=ivy.array([3.0]))
+        >>> y = ivy.Container(a=ivy.array([3.0]),\
+                                    b=ivy.array([4.0]))
+        >>> x.hypot(y)
+        {
+            a: ivy.array([3.6055]),
+            b: ivy.array([5.])
+        }
+        """
+        return self.static_hypot(
+            self,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
 
     @staticmethod
     def static_allclose(

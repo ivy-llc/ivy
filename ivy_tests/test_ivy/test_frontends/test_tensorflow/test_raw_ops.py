@@ -2,6 +2,8 @@
 import sys
 import ivy
 from hypothesis import assume, strategies as st
+from ivy.functional.frontends.tensorflow.nn import _convolution_broadcast_helper
+from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_nn import _x_and_filters
 import numpy as np
 import math
 
@@ -2850,4 +2852,55 @@ def test_tensorflow_ConcatV2(
         fn_tree=fn_tree,
         values=xs,
         axis=unique_idx,
+    )
+
+
+# Conv3D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Conv3D",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NDHWC"]),
+        padding=st.sampled_from(["SAME", "VALID"]),
+        type="3d",
+        # Tensorflow backprop doesn't support dilations more than 1 on CPU
+        dilation_min=1,
+        dilation_max=1,
+    ),
+)
+def test_tensorflow_Conv3D(
+    *,
+    x_f_d_df,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+
+    # Broadcast stirdes and dilations to correct dims for the ground truth
+    # backend func to run correctly
+    stride = _convolution_broadcast_helper(
+        stride, num_spatial_dims=3, channel_index=4, name="strides"
+    )
+    dilation = _convolution_broadcast_helper(
+        dilation, num_spatial_dims=3, channel_index=4, name="dilations"
+    )
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filter=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
     )

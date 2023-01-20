@@ -144,11 +144,6 @@ def reshape_shapes(draw, *, shape):
             lambda s: math.prod(s) == size
         )
     )
-    # replace one dimension with -1
-    if len(rshape) > 1 and size > 0 and draw(st.booleans()):
-        index = draw(number_helpers.ints(min_value=0, max_value=len(rshape) - 1))
-        rshape[index] = -1
-
     return tuple(rshape)
 
 

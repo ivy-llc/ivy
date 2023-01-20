@@ -800,7 +800,7 @@ def test_zeros_like(
 @handle_test(
     fn_tree="functional.ivy.copy_array",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    to_ivy_array_bool=st.booleans()
+    to_ivy_array_bool=st.booleans(),
 )
 def test_copy_array(
     *,

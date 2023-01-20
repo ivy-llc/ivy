@@ -17,7 +17,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @handle_numpy_dtype
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def equal(
+def _equal(
     x1,
     x2,
     /,
@@ -53,7 +53,7 @@ def array_equal(a1, a2, equal_nan=False):
 @handle_numpy_dtype
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def greater(
+def _greater(
     x1,
     x2,
     /,
@@ -77,7 +77,7 @@ def greater(
 @handle_numpy_dtype
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def greater_equal(
+def _greater_equal(
     x1,
     x2,
     /,
@@ -101,7 +101,7 @@ def greater_equal(
 @handle_numpy_dtype
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def less(
+def _less(
     x1,
     x2,
     /,
@@ -125,7 +125,7 @@ def less(
 @handle_numpy_dtype
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def less_equal(
+def _less_equal(
     x1,
     x2,
     /,
@@ -149,7 +149,7 @@ def less_equal(
 @handle_numpy_dtype
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def not_equal(
+def _not_equal(
     x1,
     x2,
     /,
