@@ -26,12 +26,12 @@ def _add_dilations(x, dilations, axis):
 def conv1d(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: int,
+    strides: Union[int, Tuple[int]],
     padding: str,
     /,
     *,
-    data_format: Optional[str] = "NWC",
-    dilations: Optional[int] = 1,
+    data_format: str = "NWC",
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, (tuple, list)):
@@ -395,7 +395,7 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: Optional[str ]= "NDHWC",
+    data_format: Optional[str] = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ):
@@ -481,8 +481,12 @@ def conv_general_dilated(
     dims: Optional[int] = 2,
     data_format: Optional[str] = "channel_last",
     feature_group_count: Optional[int] = 1,
-    x_dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    x_dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
@@ -577,7 +581,9 @@ def conv_general_transpose(
     dims: Optional[int] = 2,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: Optional[str] = "channel_last",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     feature_group_count: Optional[int] = 1,
     bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
