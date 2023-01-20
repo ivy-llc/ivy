@@ -71,7 +71,7 @@ def _broadcastable_trio(draw):
     cond_dtype = helpers.get_dtypes("bool")
     cond = draw(
         helpers.array_values(
-            dtype="bool",
+            dtype=cond_dtype,
             shape=cond_shape
         )
     )
