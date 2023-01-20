@@ -107,63 +107,45 @@ def test_tensorflow_clip_by_value(
     )
 
 # make_ndarray
-@handle_frontend_test(
-    fn_tree="tensorflow.make_ndarray",
-    input_and_ranges=_get_clip_inputs(),
-)
-def test_tensorflow_make_ndarray(
-    *,
-    input_and_ranges,
-    as_variable,
-    native_array,
-    frontend,
-    fn_tree,
-    on_device,
-    num_positional_args,
-):
-    x_dtype, x, min, max = input_and_ranges
-    helpers.test_frontend_function(
-        input_dtypes=x_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        t=x[0],
-        clip_value_min=min,
-        clip_value_max=max,
+@st.composite
+def _make_ndarray_helper(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
     )
+    dtype, x = draw(
+        helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"), 
+        shape=shape),
+    )
+    return dtype, x
 
-# make_ndarray
 @handle_frontend_test(
     fn_tree="tensorflow.make_ndarray",
-    input_and_ranges=_get_clip_inputs(),
+    dtype_and_x=_make_ndarray_helper()
 )
 def test_tensorflow_make_ndarray(
     *,
-    input_and_ranges,
+    dtype_and_x,
+    num_positional_args,
     as_variable,
     native_array,
-    frontend,
-    fn_tree,
     on_device,
-    num_positional_args,
+    fn_tree,
+    frontend,
+
 ):
-    x_dtype, x, min, max = input_and_ranges
+    input_dtype, tensor = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=x_dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        on_device=on_device,
         frontend=frontend,
         fn_tree=fn_tree,
-        on_device=on_device,
-        t=x[0],
-        clip_value_min=min,
-        clip_value_max=max,
+        tensor=tensor[0]
     )
 
 
