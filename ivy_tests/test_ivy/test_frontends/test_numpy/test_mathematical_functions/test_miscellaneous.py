@@ -105,6 +105,9 @@ def test_numpy_clip(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="cbrt"
+    ),
 )
 def test_numpy_cbrt(
     dtypes_values_casting,
@@ -151,6 +154,9 @@ def test_numpy_cbrt(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="sqrt"
+    ),
 )
 def test_numpy_sqrt(
     dtypes_values_casting,
@@ -195,6 +201,9 @@ def test_numpy_sqrt(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="square"
+    ),
 )
 def test_numpy_square(
     dtypes_values_casting,
@@ -239,6 +248,9 @@ def test_numpy_square(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="absolute"
+    ),
 )
 def test_numpy_absolute(
     dtypes_values_casting,
@@ -277,6 +289,9 @@ def test_numpy_absolute(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="fabs"
+    ),
 )
 def test_numpy_fabs(
     dtypes_values_casting,
@@ -315,6 +330,9 @@ def test_numpy_fabs(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="sign"
+    ),
 )
 def test_numpy_sign(
     dtypes_values_casting,
@@ -355,6 +373,9 @@ def test_numpy_sign(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="heaviside"
+    ),
 )
 def test_numpy_heaviside(
     dtypes_values_casting,
@@ -569,6 +590,9 @@ def test_numpy_convolve(
     ),
     where=np_frontend_helpers.where(),
     test_with_out=st.just(False),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="copysign"
+    ),
 )
 def test_numpy_copysign(
     dtypes_values_casting,

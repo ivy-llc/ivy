@@ -349,9 +349,9 @@ class ArrayWithCreation(abc.ABC):
     # ----- #
 
     def copy_array(
-        self: ivy.Array, 
-        *, 
-        to_ivy_array: Optional[bool] = True, 
+        self: ivy.Array,
+        *,
+        to_ivy_array: Optional[bool] = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -364,8 +364,8 @@ class ArrayWithCreation(abc.ABC):
         self
             input array
         to_ivy_array
-            boolean, if True the returned array will be an ivy.Array object otherwise 
-            returns an ivy.NativeArray object (i.e. a torch.tensor, np.array, etc., 
+            boolean, if True the returned array will be an ivy.Array object otherwise
+            returns an ivy.NativeArray object (i.e. a torch.tensor, np.array, etc.,
             depending on the backend), defaults to True.
         out
             optional output array, for writing the result to. It must have a shape that

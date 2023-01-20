@@ -677,7 +677,8 @@ def test_conv_general_dilated(
     if backend_fw.current_backend_str() == "tensorflow":
         if not ivy.gpu_is_available():
             assume(
-                (dilations[0] <= 1) if isinstance(dilations[0], int)
+                (dilations[0] <= 1)
+                if isinstance(dilations[0], int)
                 else all(d <= 1 for d in dilations[0])
             )
     helpers.test_function(
@@ -738,7 +739,8 @@ def test_conv_general_transpose(
     if backend_fw.current_backend_str() == "tensorflow":
         if not ivy.gpu_is_available():
             assume(
-                (dilations <= 1) if isinstance(dilations, int)
+                (dilations <= 1)
+                if isinstance(dilations, int)
                 else all(d <= 1 for d in dilations)
             )
     helpers.test_function(

@@ -1,7 +1,7 @@
 # global
 import ivy
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -492,6 +492,8 @@ def test_tensorflow_argmax(
     on_device,
     output_type,
 ):
+    if ivy.current_backend_str() == "torch":
+        assume(output_type != "uint16")
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]

@@ -5,6 +5,7 @@ import jax.lax as jlax
 import jax.numpy as jnp
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple, Optional, Sequence
 from ivy.functional.ivy.layers import (
@@ -40,8 +41,8 @@ def conv1d(
     padding: str,
     /,
     *,
-    data_format: str = "NWC",
-    dilations: int = 1,
+    data_format: Optional[str] = "NWC",
+    dilations: Optional[int] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
@@ -58,9 +59,9 @@ def conv1d_transpose(
     padding: str,
     /,
     *,
-    output_shape=None,
-    data_format: str = "NWC",
-    dilations: int = 1,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "NWC",
+    dilations: Optional[int] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
@@ -100,7 +101,7 @@ def conv2d(
     padding: str,
     /,
     *,
-    data_format: str = "NHWC",
+    data_format: Optional[str] = "NHWC",
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -124,8 +125,8 @@ def conv2d_transpose(
     padding: str,
     /,
     *,
-    output_shape: Tuple[int] = None,
-    data_format: str = "NHWC",
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "NHWC",
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -172,7 +173,7 @@ def depthwise_conv2d(
     padding: str,
     /,
     *,
-    data_format: str = "NHWC",
+    data_format: Optional[str] = "NHWC",
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -201,7 +202,7 @@ def conv3d(
     padding: str,
     /,
     *,
-    data_format: str = "NDHWC",
+    data_format: Optional[str] = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -221,13 +222,13 @@ def conv3d(
 def conv3d_transpose(
     x: JaxArray,
     filters: JaxArray,
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int, int, int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    output_shape=None,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
-    data_format: str = "NDHWC",
+    data_format: Optional[str] = "NDHWC",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
@@ -299,11 +300,15 @@ def conv_general_dilated(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: int = 2,
-    data_format: str = "channel_last",
-    feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dims: Optional[int] = 2,
+    data_format: Optional[str] = "channel_last",
+    feature_group_count: Optional[int] = 1,
+    x_dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):
@@ -355,11 +360,13 @@ def conv_general_transpose(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: int = 2,
-    output_shape=None,
-    data_format: str = "channel_last",
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    feature_group_count: int = 1,
+    dims: Optional[int] = 2,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "channel_last",
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    feature_group_count: Optional[int] = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):
