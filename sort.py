@@ -7,6 +7,8 @@ from ivy.func_wrapper import (
     handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -21,10 +23,10 @@ def sort(
     stable: bool = True,
     out: Optional[ivy.Array] = None,
 ):
-    if axis==1:
-        x=ivy.sort(x,axis=1,out=out)
-    if descending:
-        x=ivy.sort(x,descending,out=out)
-    if stable is False:
-        x = ivy.sort(x, stable == False,out=out)
+    if axis==1 :
+        x=ivy.sort(x, axis=1, out=out)
+    if descending :
+        x=ivy.sort(x, descending, out=out)
+    if not stable :
+        x = ivy.sort(x, stable == False, out=out)
     return x
