@@ -364,15 +364,57 @@ class ArrayWithLayers(abc.ABC):
     def conv1d_transpose(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
-        strides: int,
+        strides: Union[int, Tuple[int]],
         padding: str,
         /,
         *,
         output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         data_format: str = "NWC",
-        dilations: int = 1,
+        dilations: Union[int, Tuple[int]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.conv1d_transpose. This method simply
+        wraps the function, and so the docstring for ivy.conv1d_transpose also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
+        filters
+            Convolution filters *[fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating the
+            per-dimension paddings.
+        output_shape
+            Shape of the output (Default value = None)
+        data_format
+            "NWC" or "NCW". Defaults to "NWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the transpose convolution operation.
+
+        Examples
+        --------
+        >>> x = ivy.array([[[1., 2.], [3., 4.], [6., 7.], [9., 11.]]])  # NWC
+        >>> filters = ivy.array([[[0., 1.], [1., 1.]]])  # WIO (I == C)
+        >>> result = x.conv1d_transpose(filters, (1,), 'VALID')
+        >>> print(result)
+        ivy.array([[[ 2.,  3.],
+        ...         [ 4.,  7.],
+        ...         [ 7., 13.],
+        ...         [11., 20.]]])
+        """
         return ivy.conv1d_transpose(
             self._data,
             filters,
