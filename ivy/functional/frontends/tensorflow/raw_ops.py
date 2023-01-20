@@ -338,9 +338,9 @@ def RealDiv(*, x, y, name="RealDiv"):
     return ivy.divide(x, y)
 
 
-Reshape = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.general_functions.reshape)
-)
+@to_ivy_arrays_and_back
+def Reshape(*, tensor, shape, name="Reshape"):
+    return ivy.reshape(tensor, shape)
 
 
 @to_ivy_arrays_and_back
