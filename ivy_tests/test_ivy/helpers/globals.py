@@ -95,7 +95,8 @@ def _get_ivy_numpy(version=None):
 def _get_ivy_jax(version=None):
     """Import JAX module from ivy"""
     if version:
-        config.allow_global_framework_imports(fw=[version])
+        config.allow_global_framework_imports(fw=[version.split('/')[0]+'/'+version.split('/')[1]])
+        config.allow_global_framework_imports(fw=[version.split('/')[2] + '/' + version.split('/')[3]])
     try:
         import ivy.functional.backends.jax
     except ImportError:
