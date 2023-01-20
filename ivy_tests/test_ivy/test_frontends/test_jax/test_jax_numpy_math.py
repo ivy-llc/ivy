@@ -1489,6 +1489,37 @@ def test_jax_numpy_fmin(
     )
 
 
+# fmod
+@handle_frontend_test(
+    fn_tree="jax.numpy.fmod",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_fmod(
+    *,
+    dtype_and_inputs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_inputs
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
 # maximum
 @handle_frontend_test(
     fn_tree="jax.numpy.maximum",
