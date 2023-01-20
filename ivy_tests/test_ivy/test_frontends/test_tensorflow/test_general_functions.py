@@ -106,6 +106,7 @@ def test_tensorflow_clip_by_value(
         clip_value_max=max,
     )
 
+
 # make_ndarray
 @st.composite
 def _make_ndarray_helper(draw):
@@ -115,10 +116,12 @@ def _make_ndarray_helper(draw):
         )
     )
     dtype, x = draw(
-        helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"), 
-        shape=shape),
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"), 
+            shape=shape),
     )
     return dtype, x
+
 
 @handle_frontend_test(
     fn_tree="tensorflow.make_ndarray",

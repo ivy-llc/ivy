@@ -236,7 +236,9 @@ def LogicalOr(*, x, y, name="LogicalOr"):
 def LogicalNot(*, x, name="LogicalNot"):
     return ivy.logical_not(x)
 
+
 MakeNdarray = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.make_ndarray))
+
 
 @to_ivy_arrays_and_back
 def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
