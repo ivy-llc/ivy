@@ -48,7 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Setting Up</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#clone-ivy">Clone Ivy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#forking-and-cloning-the-repo">Forking and cloning the repo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pycharm">PyCharm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#virtual-environments-no-docker">Virtual environments - No Docker</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#using-miniconda">Using miniconda</a></li>
@@ -174,17 +174,24 @@
 <h1>Setting Up<a class="headerlink" href="#setting-up" title="Permalink to this heading"></a></h1>
 <p>We’re really happy you’d like to learn how to contribute towards Ivy 🙂</p>
 <p>This page explains the main steps to get started!</p>
-<section id="clone-ivy">
-<h2>Clone Ivy<a class="headerlink" href="#clone-ivy" title="Permalink to this heading"></a></h2>
-<p>The first step is simple, clone Ivy!</p>
+<section id="forking-and-cloning-the-repo">
+<h2>Forking and cloning the repo<a class="headerlink" href="#forking-and-cloning-the-repo" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>You first need to fork the Ivy repository from the repository page here <a class="reference external" href="https://github.com/unifyai/ivy">repo</a> by using the fork button on the top right. This creates a copy of Ivy repository in your GitHub account.</p></li>
+<li><p>Clone your forked repo to your local machine.</p></li>
+</ol>
 <p>Depending on your preferred mode of cloning, any of the below should work:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone --recurse-submodules git@github.com:unifyai/ivy.git
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone --recurse-submodules git@github.com:YOUR_USERNAME/ivy.git
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone --recurse-submodules https://github.com/unifyai/ivy.git
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone --recurse-submodules https://github.com/YOUR_USERNAME/ivy.git
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>gh repo clone unifyai/ivy your_folder -- --recurse-submodules
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
+</pre></div>
+</div>
+<p>The add Ivy original repository as upstream, to easily sync with latest changes.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git remote add upstream https://github.com/unifyai/ivy.git
 </pre></div>
 </div>
 </section>
