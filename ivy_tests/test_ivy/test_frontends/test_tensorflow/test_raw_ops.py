@@ -2914,7 +2914,6 @@ def test_tensorflow_Conv3D(
         max_num_dims=2,
     ),
     test_with_out=st.just(False),
-    number_positional_args=st.just(0),
 )
 def test_tensorflow_Softmax(
     dtype_values_axis,
