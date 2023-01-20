@@ -1136,6 +1136,36 @@ class ContainerWithCreation(ContainerBase):
         ret
             container with tensors of zeros with the same shape and type as the inputs,
             unless dtype provided which overrides.
+        
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2]), \
+            b=ivy.array([3, 1]), c=ivy.array([2, 3]))
+        >>> y = 5
+        >>> z = ivy.Container.static_one_hot(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([[0., 1., 0., 0., 0.], 
+                        [0., 0., 1., 0., 0.]]),
+            b: ivy.array([[0., 0., 0., 1., 0.], 
+                        [0., 1., 0., 0., 0.]]),
+            c: ivy.array([[0., 0., 1., 0., 0.], 
+                        [0., 0., 0., 1., 0.]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1, 2]), \
+            b=ivy.array([]), c=ivy.native_array([4]))
+        >>> y = 5
+        >>> z = ivy.Container.static_one_hot(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([[0., 1., 0., 0., 0.], 
+                        [0., 0., 1., 0., 0.]]),
+            b: ivy.array([], shape=(0, 5)),
+            c: ivy.array([[0., 0., 0., 0., 1.]])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "one_hot",
@@ -1166,7 +1196,7 @@ class ContainerWithCreation(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
-    ):
+    ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.one_hot. This method
         simply wraps the function, and so the docstring for ivy.one_hot
@@ -1207,6 +1237,36 @@ class ContainerWithCreation(ContainerBase):
         ret
             container with tensors of zeros with the same shape and type as the inputs,
             unless dtype provided which overrides.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2]), \
+             b=ivy.array([3, 1]), c=ivy.array([2, 3]))
+        >>> y = 5
+        >>> z = x.one_hot(y)
+        >>> print(z)
+        {
+            a: ivy.array([[0., 1., 0., 0., 0.], 
+                        [0., 0., 1., 0., 0.]]),
+            b: ivy.array([[0., 0., 0., 1., 0.], 
+                        [0., 1., 0., 0., 0.]]),
+            c: ivy.array([[0., 0., 1., 0., 0.], 
+                        [0., 0., 0., 1., 0.]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1, 2]), \
+             b=ivy.array([]), c=ivy.native_array([4]))
+        >>> y = 5
+        >>> z = x.one_hot(y)
+        >>> print(z)
+        {
+            a: ivy.array([[0., 1., 0., 0., 0.], 
+                        [0., 0., 1., 0., 0.]]),
+            b: ivy.array([], shape=(0, 5)),
+            c: ivy.array([[0., 0., 0., 0., 1.]])
+        }
         """
         return self.static_one_hot(
             self,

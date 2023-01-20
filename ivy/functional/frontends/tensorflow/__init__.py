@@ -279,7 +279,7 @@ from .dtypes import DType, as_dtype, cast
 from . import ragged
 from .ragged import *
 from . import tensor
-from .tensor import EagerTensor
+from .tensor import EagerTensor, Tensor
 from . import keras
 from . import linalg
 from . import math

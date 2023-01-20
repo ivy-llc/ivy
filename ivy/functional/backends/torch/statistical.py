@@ -16,6 +16,7 @@ from . import backend_version
 # -------------------#
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def min(
     x: torch.Tensor,
     /,
@@ -37,6 +38,7 @@ def min(
 min.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def max(
     x: torch.Tensor,
     /,

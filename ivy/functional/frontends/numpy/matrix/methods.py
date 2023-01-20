@@ -3,7 +3,10 @@ import ivy
 import numpy as np
 
 # local
-from ivy.functional.frontends.numpy import from_zero_dim_arrays_to_scalar
+from ivy.functional.frontends.numpy import (
+    from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
+)
 
 
 class matrix:
@@ -105,12 +108,14 @@ class matrix:
     # Instance Methods #
     # ---------------- #
 
+    @handle_numpy_out
     @from_zero_dim_arrays_to_scalar
     def argmax(self, axis=None, out=None):
         if ivy.exists(axis):
             return ivy.argmax(self.A, axis=axis, keepdims=True, out=out)
         return ivy.argmax(self.A, axis=axis, out=out)
 
+    @handle_numpy_out
     def any(self, axis=None, out=None):
         if ivy.exists(axis):
             return ivy.any(self.A, axis=axis, keepdims=True, out=out)
