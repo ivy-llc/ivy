@@ -2913,22 +2913,20 @@ def test_tensorflow_Conv3D(
         min_num_dims=2,
         max_num_dims=2,
     ),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
 )
 def test_tensorflow_Softmax(
     dtype_values_axis,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, values = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=0,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
