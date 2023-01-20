@@ -165,35 +165,35 @@ def tuple_to_version(tup):
     return s[:-1]
 
 # example usage
-if __name__ == "__main__":
-    fw1=sys.argv[1]
-    fw2=sys.argv[2]
-    python=sys.argv[3]
-    conf=package_conflicts(fw1,fw2)
-    if not conf:
-        sys.exit("-1")
-    if 'python' in conf:
-        if tuple_to_version(conf['python'])>python:
-            conf['python']=[conf['python'],-1]
-        elif tuple_to_version(conf['python'])<python:
-            conf['python']=[conf['python'],-2]
-
-        else: del conf['python']
-    f=open("additional_requirements.txt","w")
-    for key,val in conf.items():
-        if key=='python':
-            if val[-1]==-1:
-                print(f"The environment has python {python} which is lower than the required version {tuple_to_version(val[0])} do anticipate unexpected results")
-            else:
-                print(
-                    f"The environment has python {python} which is greater than the required version {tuple_to_version(val[0])} do anticipate unexpected results")
-
-        f.write(f"{key}=={val}")
-
-
+# if __name__ == "__main__":
+#     fw1=sys.argv[1]
+#     fw2=sys.argv[2]
+#     python=sys.argv[3]
+#     conf=package_conflicts(fw1,fw2)
+#     if not conf:
+#         sys.exit("-1")
+#     if 'python' in conf:
+#         if tuple_to_version(conf['python'])>python:
+#             conf['python']=[conf['python'],-1]
+#         elif tuple_to_version(conf['python'])<python:
+#             conf['python']=[conf['python'],-2]
+#
+#         else: del conf['python']
+#     f=open("additional_requirements.txt","w")
+#     for key,val in conf.items():
+#         if key=='python':
+#             if val[-1]==-1:
+#                 print(f"The environment has python {python} which is lower than the required version {tuple_to_version(val[0])} do anticipate unexpected results")
+#             else:
+#                 print(
+#                     f"The environment has python {python} which is greater than the required version {tuple_to_version(val[0])} do anticipate unexpected results")
+#
+#         f.write(f"{key}=={val}")
 
 
-# print(package_conflicts("torch/1.5.0", "torch/1.5.0"))
+
+
+print(package_conflicts("h5py/3.7.0", "h5py/3.7.0"))
 # #
 # # print(get_package_requirements('tensorflow/2.2.0')["info"]["requires_dist"])
 # print(get_package_requirements('torch/1.5.0')["info"]["requires_python"])

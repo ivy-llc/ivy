@@ -5,6 +5,8 @@ import numpy as np
 import types
 import importlib
 import inspect
+import sys
+from ... import config
 
 try:
     import tensorflow as tf
@@ -29,6 +31,53 @@ from .assertions import (
     value_test,
     check_unsupported_dtype,
 )
+available_frameworks=available_frameworks()
+
+def remove_all_current_framework(framework):
+    temp=sys.modules
+    hold={}
+    unhold={}
+    for key,item in sys.modules.items():
+        if getattr(item, '__file__',None) :
+            if '/opt/miniconda/fw/' + framework in getattr(item, '__file__', 'willywonka'):
+                hold[key] = item
+            else:
+                unhold[key]=item
+        else:
+            unhold[key] = item
+    sys.modules.clear()
+    first_diff = {k: hold[k] for k in set(hold) - set(temp)}
+    second_diff={k: unhold[k] for k in set(unhold) - set(first_diff)}
+    if  second_diff:
+        unhold.update(second_diff)
+    sys.modules.update(unhold)
+    if '/opt/miniconda/fw/'+framework in sys.path:
+        sys.path.remove('/opt/miniconda/fw/'+framework)
+    return (hold,framework)
+
+def get_back_previous_framework(hold_dict,curr_framework,previous_framework):
+    temp = sys.modules
+    hold = {}
+    unhold = {}
+    for key, item in sys.modules.items():
+        if getattr(item, '__file__',None) :
+            if '/opt/miniconda/fw/' + curr_framework in getattr(item, '__file__', 'willywonka'):
+                hold[key] = item
+            else:
+                unhold[key] = item
+        else:
+            unhold[key] = item
+    sys.modules.clear()
+    first_diff = {k: hold[k] for k in set(hold) - set(temp)}
+    second_diff = {k: unhold[k] for k in set(unhold) - set(first_diff)}
+    if  second_diff:
+        unhold.update(second_diff)
+    if  unhold:
+        hold_dict.update(unhold)
+    sys.modules.update(hold_dict)
+    if '/opt/miniconda/fw/' + curr_framework in sys.path:
+        sys.path.remove('/opt/miniconda/fw/' + curr_framework)
+    sys.path.append('/opt/miniconda/fw/' + previous_framework)
 
 
 def empty_func(*args, **kwargs):
@@ -455,6 +504,7 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
+    print("yeah mr white science!!!!")
     assert (
         not with_out or not with_inplace
     ), "only one of with_out or with_inplace can be set as True"
@@ -522,7 +572,6 @@ def test_frontend_function(
         frontend_fn = getattr(function_module, fn_name)
         # check and replace NativeClass object in arguments with ivy counterparts
         from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
-
         convs = {"numpy": convnumpy}
 
         if "torch" in available_frameworks:
@@ -540,8 +589,8 @@ def test_frontend_function(
 
             convs["jax"] = convjax
 
-        if frontend in convs:
-            conv = convs[frontend]
+        if frontend.split('/')[0] in convs:
+            conv = convs[frontend.split('/')[0]]
             args = ivy.nested_map(args, fn=conv, include_derived=True)
             kwargs = ivy.nested_map(kwargs, fn=conv, include_derived=True)
 
@@ -617,75 +666,297 @@ def test_frontend_function(
         )
 
         # temporarily set frontend framework as backend
-        ivy.set_backend(frontend)
-        try:
-            # create frontend framework args
-            args_frontend = ivy.nested_map(
-                args_np,
-                lambda x: ivy.native_array(x)
-                if isinstance(x, np.ndarray)
-                else ivy.as_native_dtype(x)
-                if isinstance(x, ivy.Dtype)
-                else x,
-                shallow=False,
-            )
-            kwargs_frontend = ivy.nested_map(
-                kwargs_np,
-                lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
-                shallow=False,
-            )
+        if '/' in frontend:
+            if frontend.split('/')[0]==ivy.current_backend_str():
+                if frontend.split('/')[1]==importlib.import_module(frontend.split('/')[0]).__version__:
+                    ivy.set_backend(frontend.split('/')[0])
+                    try:
+                        # create frontend framework args
+                        args_frontend = ivy.nested_map(
+                            args_np,
+                            lambda x: ivy.native_array(x)
+                            if isinstance(x, np.ndarray)
+                            else ivy.as_native_dtype(x)
+                            if isinstance(x, ivy.Dtype)
+                            else x,
+                            shallow=False,
+                        )
+                        kwargs_frontend = ivy.nested_map(
+                            kwargs_np,
+                            lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+                            shallow=False,
+                        )
 
-            # change ivy dtypes to native dtypes
-            if "dtype" in kwargs_frontend:
-                kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
+                        # change ivy dtypes to native dtypes
+                        if "dtype" in kwargs_frontend:
+                            kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
 
-            # change ivy device to native devices
-            if "device" in kwargs_frontend:
-                kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
+                        # change ivy device to native devices
+                        if "device" in kwargs_frontend:
+                            kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
 
-            # check and replace the NativeClass objects in arguments
-            # with true counterparts
-            args_frontend = ivy.nested_map(
-                args_frontend, fn=convtrue, include_derived=True, max_depth=10
-            )
-            kwargs_frontend = ivy.nested_map(
-                kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
-            )
+                        # check and replace the NativeClass objects in arguments
+                        # with true counterparts
+                        args_frontend = ivy.nested_map(
+                            args_frontend, fn=convtrue, include_derived=True, max_depth=10
+                        )
+                        kwargs_frontend = ivy.nested_map(
+                            kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
+                        )
 
-            # compute the return via the frontend framework
-            module_name = fn_tree[25 : fn_tree.rfind(".")]
-            frontend_fw = importlib.import_module(module_name)
-            try:
-                frontend_ret = frontend_fw.__dict__[fn_name](
-                    *args_frontend, **kwargs_frontend
-                )
-            except KeyError:
-                # catch cases where the alias belongs to a higher-level module
-                # e.g. torch.inverse tested as an alias to torch.linalg.inv
-                module_name = module_name[: module_name.rfind(".")]
-                frontend_fw = importlib.import_module(module_name)
-                frontend_ret = frontend_fw.__dict__[fn_name](
-                    *args_frontend, **kwargs_frontend
-                )
+                        # compute the return via the frontend framework
+                        module_name = fn_tree[25: fn_tree.rfind(".")]
+                        frontend_fw = importlib.import_module(module_name)
+                        try:
+                            frontend_ret = frontend_fw.__dict__[fn_name](
+                                *args_frontend, **kwargs_frontend
+                            )
+                        except KeyError:
+                            # catch cases where the alias belongs to a higher-level module
+                            # e.g. torch.inverse tested as an alias to torch.linalg.inv
+                            module_name = module_name[: module_name.rfind(".")]
+                            frontend_fw = importlib.import_module(module_name)
+                            frontend_ret = frontend_fw.__dict__[fn_name](
+                                *args_frontend, **kwargs_frontend
+                            )
 
-            if ivy.isscalar(frontend_ret):
-                frontend_ret_np_flat = [np.asarray(frontend_ret)]
+                        if ivy.isscalar(frontend_ret):
+                            frontend_ret_np_flat = [np.asarray(frontend_ret)]
+                        else:
+                            # tuplify the frontend return
+                            if not isinstance(frontend_ret, tuple):
+                                frontend_ret = (frontend_ret,)
+                            frontend_ret_idxs = ivy.nested_argwhere(
+                                frontend_ret, ivy.is_native_array
+                            )
+                            frontend_ret_flat = ivy.multi_index_nest(
+                                frontend_ret, frontend_ret_idxs
+                            )
+                            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+                    except Exception as e:
+                        ivy.unset_backend()
+                        raise e
+                    # unset frontend framework from backend
+                    ivy.unset_backend()
+                else:
+                    #things get heated up here
+                    ivy.set_backend(frontend.split('/')[0])
+
+                    try:
+                        # create frontend framework args
+                        args_frontend = ivy.nested_map(
+                            args_np,
+                            lambda x: ivy.native_array(x)
+                            if isinstance(x, np.ndarray)
+                            else ivy.as_native_dtype(x)
+                            if isinstance(x, ivy.Dtype)
+                            else x,
+                            shallow=False,
+                        )
+                        kwargs_frontend = ivy.nested_map(
+                            kwargs_np,
+                            lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+                            shallow=False,
+                        )
+
+                        # change ivy dtypes to native dtypes
+                        if "dtype" in kwargs_frontend:
+                            kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
+
+                        # change ivy device to native devices
+                        if "device" in kwargs_frontend:
+                            kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
+
+                        # check and replace the NativeClass objects in arguments
+                        # with true counterparts
+                        args_frontend = ivy.nested_map(
+                            args_frontend, fn=convtrue, include_derived=True, max_depth=10
+                        )
+                        kwargs_frontend = ivy.nested_map(
+                            kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
+                        )
+
+                        # compute the return via the frontend framework
+                        module_name = fn_tree[25: fn_tree.rfind(".")]
+                        # frontend_fw = importlib.import_module(module_name)
+                        frontend_fw=config.custom_import(frontend.split('/')[0]+'/'+frontend.split('/')[1],globally_done=frontend.split('/')[0]+'/'+importlib.import_module(frontend.split('/')[0]).__version__)
+                        try:
+                            frontend_ret = frontend_fw.__dict__[fn_name](
+                                *args_frontend, **kwargs_frontend
+                            )
+                        except KeyError:
+                            # catch cases where the alias belongs to a higher-level module
+                            # e.g. torch.inverse tested as an alias to torch.linalg.inv
+                            module_name = module_name[: module_name.rfind(".")]
+                            frontend_fw = importlib.import_module(module_name)
+                            frontend_ret = frontend_fw.__dict__[fn_name](
+                                *args_frontend, **kwargs_frontend
+                            )
+
+                        if ivy.isscalar(frontend_ret):
+                            frontend_ret_np_flat = [np.asarray(frontend_ret)]
+
+                        else:
+                            # tuplify the frontend return
+                            if not isinstance(frontend_ret, tuple):
+                                frontend_ret = (frontend_ret,)
+                            frontend_ret_idxs = ivy.nested_argwhere(
+                                frontend_ret, ivy.is_native_array
+                            )
+                            frontend_ret_flat = ivy.multi_index_nest(
+                                frontend_ret, frontend_ret_idxs
+                            )
+                            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+
+                    except Exception as e:
+                        ivy.unset_backend()
+                        raise e
+                    # unset frontend framework from backend
+
+
+                    ivy.unset_backend()
             else:
-                # tuplify the frontend return
-                if not isinstance(frontend_ret, tuple):
-                    frontend_ret = (frontend_ret,)
-                frontend_ret_idxs = ivy.nested_argwhere(
-                    frontend_ret, ivy.is_native_array
+                ivy.set_backend(frontend.split('/')[0])
+                try:
+                    # create frontend framework args
+                    args_frontend = ivy.nested_map(
+                        args_np,
+                        lambda x: ivy.native_array(x)
+                        if isinstance(x, np.ndarray)
+                        else ivy.as_native_dtype(x)
+                        if isinstance(x, ivy.Dtype)
+                        else x,
+                        shallow=False,
+                    )
+                    kwargs_frontend = ivy.nested_map(
+                        kwargs_np,
+                        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+                        shallow=False,
+                    )
+
+                    # change ivy dtypes to native dtypes
+                    if "dtype" in kwargs_frontend:
+                        kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
+
+                    # change ivy device to native devices
+                    if "device" in kwargs_frontend:
+                        kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
+
+                    # check and replace the NativeClass objects in arguments
+                    # with true counterparts
+                    args_frontend = ivy.nested_map(
+                        args_frontend, fn=convtrue, include_derived=True, max_depth=10
+                    )
+                    kwargs_frontend = ivy.nested_map(
+                        kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
+                    )
+
+                    # compute the return via the frontend framework
+                    module_name = fn_tree[25: fn_tree.rfind(".")]
+                    frontend_fw = importlib.import_module(module_name)
+                    try:
+                        frontend_ret = frontend_fw.__dict__[fn_name](
+                            *args_frontend, **kwargs_frontend
+                        )
+                    except KeyError:
+                        # catch cases where the alias belongs to a higher-level module
+                        # e.g. torch.inverse tested as an alias to torch.linalg.inv
+                        module_name = module_name[: module_name.rfind(".")]
+                        frontend_fw = importlib.import_module(module_name)
+                        frontend_ret = frontend_fw.__dict__[fn_name](
+                            *args_frontend, **kwargs_frontend
+                        )
+
+                    if ivy.isscalar(frontend_ret):
+                        frontend_ret_np_flat = [np.asarray(frontend_ret)]
+                    else:
+                        # tuplify the frontend return
+                        if not isinstance(frontend_ret, tuple):
+                            frontend_ret = (frontend_ret,)
+                        frontend_ret_idxs = ivy.nested_argwhere(
+                            frontend_ret, ivy.is_native_array
+                        )
+                        frontend_ret_flat = ivy.multi_index_nest(
+                            frontend_ret, frontend_ret_idxs
+                        )
+                        frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+                except Exception as e:
+                    ivy.unset_backend()
+                    raise e
+                # unset frontend framework from backend
+                ivy.unset_backend()
+        else:
+            ivy.set_backend(frontend.split('/')[0])
+            try:
+                # create frontend framework args
+                args_frontend = ivy.nested_map(
+                    args_np,
+                    lambda x: ivy.native_array(x)
+                    if isinstance(x, np.ndarray)
+                    else ivy.as_native_dtype(x)
+                    if isinstance(x, ivy.Dtype)
+                    else x,
+                    shallow=False,
                 )
-                frontend_ret_flat = ivy.multi_index_nest(
-                    frontend_ret, frontend_ret_idxs
+                kwargs_frontend = ivy.nested_map(
+                    kwargs_np,
+                    lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+                    shallow=False,
                 )
-                frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
-        except Exception as e:
+
+                # change ivy dtypes to native dtypes
+                if "dtype" in kwargs_frontend:
+                    kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
+
+                # change ivy device to native devices
+                if "device" in kwargs_frontend:
+                    kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
+
+                # check and replace the NativeClass objects in arguments
+                # with true counterparts
+                args_frontend = ivy.nested_map(
+                    args_frontend, fn=convtrue, include_derived=True, max_depth=10
+                )
+                kwargs_frontend = ivy.nested_map(
+                    kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
+                )
+
+                # compute the return via the frontend framework
+                module_name = fn_tree[25: fn_tree.rfind(".")]
+                frontend_fw = importlib.import_module(module_name)
+                try:
+                    frontend_ret = frontend_fw.__dict__[fn_name](
+                        *args_frontend, **kwargs_frontend
+                    )
+                except KeyError:
+                    # catch cases where the alias belongs to a higher-level module
+                    # e.g. torch.inverse tested as an alias to torch.linalg.inv
+                    module_name = module_name[: module_name.rfind(".")]
+                    frontend_fw = importlib.import_module(module_name)
+                    frontend_ret = frontend_fw.__dict__[fn_name](
+                        *args_frontend, **kwargs_frontend
+                    )
+
+                if ivy.isscalar(frontend_ret):
+                    frontend_ret_np_flat = [np.asarray(frontend_ret)]
+                else:
+                    # tuplify the frontend return
+                    if not isinstance(frontend_ret, tuple):
+                        frontend_ret = (frontend_ret,)
+                    frontend_ret_idxs = ivy.nested_argwhere(
+                        frontend_ret, ivy.is_native_array
+                    )
+                    frontend_ret_flat = ivy.multi_index_nest(
+                        frontend_ret, frontend_ret_idxs
+                    )
+                    frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+            except Exception as e:
+                ivy.unset_backend()
+                raise e
+            # unset frontend framework from backend
             ivy.unset_backend()
-            raise e
-        # unset frontend framework from backend
-        ivy.unset_backend()
+
+        #the if-else thing too messy, can be simplified
 
         ret_np_flat = flatten_and_to_np(ret=ret)
         # assuming value test will be handled manually in the test function
@@ -708,6 +979,7 @@ def test_frontend_function(
             atol=atol,
             ground_truth_backend=frontend,
         )
+
         return ret, frontend_ret
 
     # Call the frontend testing function
@@ -719,7 +991,7 @@ def test_frontend_function(
         # for each alias in aliases list
         for alias in all_aliases:
             function, function_module, fn_name, frontend_submods = _get_function(
-                fn_tree=f"ivy.functional.frontends.{frontend}.{alias}"
+                fn_tree=f"ivy.functional.frontends.{frontend.split('/')[0]}.{alias}"
             )
 
             # testing unsupported in that backend
@@ -1412,7 +1684,7 @@ def test_frontend_method(
     )
 
     # Compute the return with the native frontend framework
-    ivy.set_backend(frontend)
+    ivy.set_backend(frontend.split('/')[0])
     args_constructor_frontend = ivy.nested_map(
         args_constructor_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
@@ -1460,7 +1732,7 @@ def test_frontend_method(
     frontend_ret = ins_gt.__getattribute__(frontend_method_data.method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
-    if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
+    if frontend.split('/')[0] == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
         frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
     elif ivy.isscalar(frontend_ret):
         frontend_ret_np_flat = [np.asarray(frontend_ret)]

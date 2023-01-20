@@ -1,0 +1,22 @@
+h5py==3.7.0
+pytest==7.1.2
+networkx==2.8.4
+hypothesis==6.55.0
+pymongo==4.3.3
+redis==4.3.4
+matplotlib==3.5.2
+opencv-python==4.6.0.66 # mod_name=cv2
+tensorflow-addons==0.17.1 # mod_name=tensorflow_addons
+tensorflow-probability==0.17.0 # mod_name=tensorflow_probability
+functorch==0.1.1
+scipy==1.8.1
+dm-haiku==0.0.6 # mod_name=haiku
+pydriller
+tqdm
+coverage
+einops
+psutil
+termcolor
+colorama
+packaging
+nvidia-ml-py<=11.495.46 # mod_name=pynvml

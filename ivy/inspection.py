@@ -1,6 +1,6 @@
 # global
 from typing import get_type_hints
-
+from typing import Union
 # local
 import ivy
 
@@ -103,7 +103,10 @@ def fn_array_spec(fn):
         specification
 
     """
-    type_hints = get_type_hints(fn)
+    try:
+        type_hints = get_type_hints(fn)
+    except:
+        type_hints=dict()
     array_idxs = list()
     for i, (k, v) in enumerate(type_hints.items()):
         a_idxs = _get_array_idxs(v)
