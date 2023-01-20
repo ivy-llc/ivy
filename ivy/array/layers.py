@@ -150,6 +150,37 @@ class ArrayWithLayers(abc.ABC):
         data_format: str = "NWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.dropout1d. This method simply
+        wraps the function, and so the docstring for ivy.droput1d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array x to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        data_format
+            "NWC" or "NCW". Default is ``"NCW"``.
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the output after dropout is performed.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 1, 1]).reshape([1, 1, 3])
+        >>> y = x.dropout1d(0.5)
+        >>> print(y)
+        ivy.array([[[2., 0, 2.]]])
+        """
         return ivy.dropout1d(
             self._data,
             prob,

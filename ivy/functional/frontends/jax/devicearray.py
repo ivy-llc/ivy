@@ -7,16 +7,23 @@ from ivy.functional.frontends.numpy import dtype
 
 
 class DeviceArray:
-    def __init__(self, array):
+    def __init__(self, array, weak_type=False):
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
         self._dtype = dtype(self._ivy_array.dtype)
+        self.weak_type = weak_type
 
     def __repr__(self):
-        return (
-            "ivy.frontends.jax.DeviceArray(" + str(ivy.to_list(self._ivy_array)) + ")"
+        main = (
+            "ivy.frontends.jax.DeviceArray("
+            + str(ivy.to_list(self._ivy_array))
+            + ", dtype="
+            + str(self._ivy_array.dtype)
         )
+        if self.weak_type:
+            return main + ", weak_type=True)"
+        return main + ")"
 
     # Properties #
     # ---------- #

@@ -233,9 +233,9 @@ array = asarray
 
 
 def copy_array(
-    x: np.ndarray, 
-    *, 
-    to_ivy_array: Optional[bool] = True, 
+    x: np.ndarray,
+    *,
+    to_ivy_array: Optional[bool] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if to_ivy_array:

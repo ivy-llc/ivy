@@ -1119,14 +1119,18 @@ def infer_default_dtype(
     >>> ivy.infer_default_dtype(x.dtype)
     'uint32'
     """
-    if ivy.is_float_dtype(dtype):
+    if ivy.is_complex_dtype(dtype):
+        default_dtype = ivy.default_complex_dtype(as_native=as_native)
+    elif ivy.is_float_dtype(dtype):
         default_dtype = ivy.default_float_dtype(as_native=as_native)
     elif ivy.is_uint_dtype(dtype):
         default_dtype = ivy.default_uint_dtype(as_native=as_native)
-    elif ivy.is_complex_dtype(dtype):
-        default_dtype = ivy.default_complex_dtype(as_native=as_native)
-    else:
+    elif ivy.is_int_dtype(dtype):
         default_dtype = ivy.default_int_dtype(as_native=as_native)
+    elif as_native:
+        default_dtype = ivy.as_native_dtype("bool")
+    else:
+        default_dtype = ivy.as_ivy_dtype("bool")
     return default_dtype
 
 
@@ -1168,6 +1172,8 @@ def default_dtype(
             return ivy.default_complex_dtype(input=item, as_native=as_native)
         elif ivy.is_float_dtype(item):
             return ivy.default_float_dtype(input=item, as_native=as_native)
+        elif ivy.is_uint_dtype(item):
+            return ivy.default_int_dtype(input=item, as_native=as_native)
         elif ivy.is_int_dtype(item):
             return ivy.default_int_dtype(input=item, as_native=as_native)
         elif as_native:
