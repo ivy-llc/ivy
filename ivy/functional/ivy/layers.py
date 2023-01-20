@@ -1526,8 +1526,12 @@ def conv_general_dilated(
     dims: Optional[int] = 2,
     data_format: Optional[str] = "channel_last",
     feature_group_count: Optional[int] = 1,
-    x_dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    x_dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1599,7 +1603,9 @@ def conv_general_transpose(
     dims: Optional[int] = 2,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: Optional[str] = "channel_last",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     feature_group_count: Optional[int] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
@@ -1671,8 +1677,12 @@ def conv(
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: Optional[str] = "channel_last",
     feature_group_count: Optional[int] = 1,
-    x_dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    x_dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:

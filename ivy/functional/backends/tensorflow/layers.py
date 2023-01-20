@@ -245,8 +245,12 @@ def conv_general_dilated(
     dims: Optional[int] = 2,
     data_format: Optional[str] = "channel_last",
     feature_group_count: Optional[int] = 1,
-    x_dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    x_dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -352,7 +356,9 @@ def conv_general_transpose(
     dims: Optional[int] = 2,
     data_format: Optional[str] = "channel_last",
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     feature_group_count: Optional[int] = 1,
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,

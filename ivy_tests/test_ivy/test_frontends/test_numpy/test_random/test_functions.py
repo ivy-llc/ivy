@@ -134,3 +134,38 @@ def test_numpy_normal(
         scale=scale,
         size=size,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.geometric",
+    input_dtypes=helpers.get_dtypes("float"),
+    p=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=9.999999747378752e-06,
+        max_value=0.9999899864196777,
+    ),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+)
+def test_numpy_geometric(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    p,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        p=p,
+        size=size,
+    )
