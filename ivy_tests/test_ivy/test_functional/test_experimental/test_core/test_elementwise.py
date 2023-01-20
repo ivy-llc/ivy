@@ -1007,3 +1007,39 @@ def test_real(
         on_device=on_device,
         x=x[0],
     )
+
+
+# hypot
+@handle_test(
+    fn_tree="functional.ivy.experimental.hypot",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    test_gradients=st.just(False),
+)
+def test_hypot(
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-2,
+        ground_truth_backend=ground_truth_backend,
+        x1=x[0],
+        x2=x[1],
+    )
