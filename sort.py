@@ -15,18 +15,18 @@ from ivy.exceptions import handle_exceptions
 @handle_exceptions
 @handle_array_like
 def sort(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[ivy.Array] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: int = -1,
+        descending: bool = False,
+        stable: bool = True,
+        out: Optional[ivy.Array] = None,
 ):
-    if axis == 1 :
+    if axis == 1:
         x = ivy.sort(x, axis=1, out=out)
-    if descending :
+    if descending:
         x = ivy.sort(x, descending, out=out)
-    if not stable :
+    if not stable:
         x = ivy.sort(x, stable=False, out=out)
     return x
