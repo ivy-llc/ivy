@@ -150,8 +150,8 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
 
 
 @to_ivy_arrays_and_back
-def dropout(x, prob, scale, dtype, name=None):
-    return ivy.dropout(x, prob, scale, dtype)
+def dropout(x, rate, noise_shape=None, name=None):
+    return ivy.dropout(ivy.ones(noise_shape[0], noise_shape[1]) * x, rate).ivy.numpy()
 
 
 @to_ivy_arrays_and_back
