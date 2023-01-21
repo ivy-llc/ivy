@@ -256,6 +256,9 @@ class Tensor:
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self._ivy_array, other)
 
+    def bitwise_or(self, other, *, out=None):
+        return torch_frontend.bitwise_or(self._ivy_array, other)
+
     def contiguous(self, memory_format=None):
         return torch_frontend.tensor(self.ivy_array)
 
