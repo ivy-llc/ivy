@@ -15,24 +15,31 @@ We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
 This page explains the main steps to get started!
 
-Clone Ivy
----------
+Forking and cloning the repo
+----------------------------
 
-The first step is simple, clone Ivy!
+#. You first need to fork the Ivy repository from the repository page here `repo`_ by using the fork button on the top right. This creates a copy of Ivy repository in your GitHub account.
+#. Clone your forked repo to your local machine.
 
 Depending on your preferred mode of cloning, any of the below should work:
 
 .. code-block:: none
 
-    git clone --recurse-submodules git@github.com:unifyai/ivy.git
+    git clone --recurse-submodules git@github.com:YOUR_USERNAME/ivy.git
 
 .. code-block:: none
 
-    git clone --recurse-submodules https://github.com/unifyai/ivy.git
+    git clone --recurse-submodules https://github.com/YOUR_USERNAME/ivy.git
 
 .. code-block:: none
 
-    gh repo clone unifyai/ivy your_folder -- --recurse-submodules
+    gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
+
+The add Ivy original repository as upstream, to easily sync with latest changes.
+
+.. code-block:: none
+
+    git remote add upstream https://github.com/unifyai/ivy.git
 
 PyCharm
 -------

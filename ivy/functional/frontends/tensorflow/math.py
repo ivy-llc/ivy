@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy import with_supported_dtypes
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -400,3 +401,12 @@ def minimum(x, y, name=None):
 @to_ivy_arrays_and_back
 def sigmoid(x, name=None):
     return ivy.sigmoid(x)
+
+
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def tanh(x, name=None):
+    return ivy.tanh(x)
