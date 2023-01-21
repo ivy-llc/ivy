@@ -327,6 +327,17 @@ def signbit(
 signbit.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+def hypot(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.hypot(x1, x2)
+
+
 def allclose(
     x1: torch.Tensor,
     x2: torch.Tensor,

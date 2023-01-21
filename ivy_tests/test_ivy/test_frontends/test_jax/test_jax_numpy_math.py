@@ -519,6 +519,64 @@ def test_jax_numpy_arccosh(
     )
 
 
+# arcsin
+@handle_frontend_test(
+    fn_tree="jax.numpy.arcsin",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
+)
+def test_jax_numpy_arcsin(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        rtol=1e-2,
+        atol=1e-2,
+    )
+
+
+# log1p
+@handle_frontend_test(
+    fn_tree="jax.numpy.log1p",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
+)
+def test_jax_numpy_log1p(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # arcsinh
 @handle_frontend_test(
     fn_tree="jax.numpy.arcsinh",
@@ -1428,6 +1486,37 @@ def test_jax_numpy_fmin(
         on_device=on_device,
         x1=inputs[0],
         x2=inputs[1],
+    )
+
+
+# fmod
+@handle_frontend_test(
+    fn_tree="jax.numpy.fmod",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_fmod(
+    *,
+    dtype_and_inputs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_inputs
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
     )
 
 

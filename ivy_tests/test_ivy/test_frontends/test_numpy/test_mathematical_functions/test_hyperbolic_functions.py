@@ -20,6 +20,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="sinh"
+    ),
 )
 def test_numpy_sinh(
     dtypes_values_casting,
@@ -66,6 +69,9 @@ def test_numpy_sinh(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="cosh"
+    ),
 )
 def test_numpy_cosh(
     dtypes_values_casting,
@@ -112,6 +118,9 @@ def test_numpy_cosh(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="tanh"
+    ),
 )
 def test_numpy_tanh(
     dtypes_values_casting,
@@ -158,6 +167,9 @@ def test_numpy_tanh(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="arcsinh"
+    ),
 )
 def test_numpy_arcsinh(
     dtypes_values_casting,
@@ -206,6 +218,9 @@ def test_numpy_arcsinh(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="arccosh"
+    ),
 )
 def test_numpy_arccosh(
     dtypes_values_casting,
@@ -254,6 +269,9 @@ def test_numpy_arccosh(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="arctanh"
+    ),
 )
 def test_numpy_arctanh(
     dtypes_values_casting,

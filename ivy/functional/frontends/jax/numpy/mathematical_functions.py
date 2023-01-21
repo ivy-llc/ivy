@@ -55,7 +55,7 @@ def floor(x):
 
 
 @to_ivy_arrays_and_back
-def mod(x1, x2):
+def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
 
@@ -289,6 +289,12 @@ def fmin(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def fmod(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return ivy.fmod(x1, x2)
+
+
+@to_ivy_arrays_and_back
 def maximum(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.maximum(x1, x2)
@@ -309,6 +315,11 @@ def heaviside(x1, x2):
 @to_ivy_arrays_and_back
 def log(x):
     return ivy.log(x)
+
+
+@to_ivy_arrays_and_back
+def log1p(x, /):
+    return ivy.log1p(x)
 
 
 @to_ivy_arrays_and_back
