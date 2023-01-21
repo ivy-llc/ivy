@@ -17,12 +17,12 @@ from ivy.functional.ivy.layers import _deconv_length, _get_x_data_format
 def conv1d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
-    strides: int,
+    strides: Union[int, Tuple[int]],
     padding: str,
     /,
     *,
-    data_format: Optional[str] = "NWC",
-    dilations: Optional[int] = 1,
+    data_format: str = "NWC",
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCW":
