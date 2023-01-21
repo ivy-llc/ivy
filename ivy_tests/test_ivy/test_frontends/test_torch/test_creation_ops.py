@@ -543,4 +543,3 @@ def test_torch_heaviside(
         values=values[0],
         on_device=on_device,
     )
-        
