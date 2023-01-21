@@ -206,3 +206,34 @@ def einsum(
     dtype = _get_promoted_type_of_operands(operands)
     operands = (tf.cast(operand, tf.float32) for operand in operands)
     return tf.cast(tf.einsum(equation, *operands), dtype)
+
+
+    @staticmethod
+    def using_file_hystogram(self: ivy.Array, 
+        /, 
+        *,
+        name: Optional[ivy.Array, ivy.NativeArray],
+        data:Optional[Union[Tensorfloat64]],
+        step:Optional[Union[ivyArray,ivy.NativeArray]] = None, 
+        buckets:Optional[ivy.Array[int]], 
+        description:Optional[ivy.Array[str]]
+        ) -> ivy.Array:
+
+
+        a = tf.summary.create_file_writer('test/logs')
+        with a.as_default():
+            for step in range(100):
+            
+            # Generate fake "activations".
+
+                activations = [
+                    tf.random.normal([1000], mean=step, stddev=1),
+                    tf.random.normal([1000], mean=step, stddev=10),
+                    tf.random.normal([1000], mean=step, stddev=100),
+                ]
+
+                tf.summary.histogram("layer1/activate", activations[0], step=step)
+                tf.summary.histogram("layer2/activate", activations[1], step=step)
+                tf.summary.histogram("layer3/activate", activations[2], step=step)
+
+        return using_file_hystogram
