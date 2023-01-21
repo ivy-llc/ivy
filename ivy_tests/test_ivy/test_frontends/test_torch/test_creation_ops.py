@@ -514,6 +514,7 @@ def _heaviside_helper(draw):
 )
     return  input_dtype, data, values
 
+
 # heaviside
 @handle_frontend_test(
     fn_tree="torch.heaviside",
@@ -543,4 +544,3 @@ def test_torch_heaviside(
         values=values[0],
         on_device=on_device,
     )
-
