@@ -466,7 +466,7 @@ def test_torch_ger(
     )
 
 
-#inner
+# inner
 @handle_frontend_test(
     fn_tree="torch.inner",
     dtype_and_matrices=_get_dtype_input_and_matrices(with_input=True),
