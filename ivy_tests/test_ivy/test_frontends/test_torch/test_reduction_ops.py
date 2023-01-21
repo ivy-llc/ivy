@@ -696,7 +696,7 @@ def test_torch_std_mean(
             ),
             key="shape",
         ),
-    ).filter(lambda x: "bfloat16" not in x[0] and "float16" not in x[0]),
+    ),
     sorted=st.booleans(),
     return_inverse=st.booleans(),
     return_counts=st.booleans(),
