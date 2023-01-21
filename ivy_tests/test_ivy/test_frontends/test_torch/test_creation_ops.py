@@ -505,23 +505,23 @@ def _heaviside_helper(draw):
     )
     _, values = draw(
         helpers.dtype_and_values(
-        available_dtypes=input_dtype,
-        shape=helpers.get_shape(
-            min_num_dims=1,
-            max_num_dims=1,
-            min_dim_size=1,
-            max_dim_size=1,
+            available_dtypes=input_dtype,
+            shape=helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=1,
+                max_dim_size=1,
+                )
             )
         )
-    )
-    return  input_dtype, data, values
+    return input_dtype, data, values
 
 
 # heaviside
 @handle_frontend_test(
     fn_tree="torch.heaviside",
     dtype_and_input=_heaviside_helper(),
-    )
+)
 def test_torch_heaviside(
     *,
     dtype_and_input,
