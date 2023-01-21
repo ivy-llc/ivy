@@ -16,11 +16,11 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def exp(
+def _exp(
     x,
     /,
-    *,
     out=None,
+    *,
     where=True,
     casting="same_kind",
     order="K",
@@ -38,7 +38,7 @@ def exp(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def expm1(
+def _expm1(
     x,
     /,
     out=None,
@@ -60,7 +60,7 @@ def expm1(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def exp2(
+def _exp2(
     x,
     /,
     out=None,
@@ -82,7 +82,7 @@ def exp2(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def log(
+def _log(
     x,
     /,
     out=None,
@@ -104,7 +104,7 @@ def log(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def log10(
+def _log10(
     x,
     /,
     out=None,
@@ -126,7 +126,7 @@ def log10(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def log2(
+def _log2(
     x,
     /,
     out=None,
@@ -148,7 +148,7 @@ def log2(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def log1p(
+def _log1p(
     x,
     /,
     out=None,
@@ -170,7 +170,7 @@ def log1p(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def logaddexp(
+def _logaddexp(
     x1,
     x2,
     /,
@@ -193,7 +193,7 @@ def logaddexp(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def logaddexp2(
+def _logaddexp2(
     x1,
     x2,
     /,
@@ -209,3 +209,8 @@ def logaddexp2(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+
+
+@to_ivy_arrays_and_back
+def i0(x):
+    return ivy.i0(x)
