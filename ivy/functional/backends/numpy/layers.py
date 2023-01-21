@@ -26,12 +26,12 @@ def _add_dilations(x, dilations, axis):
 def conv1d(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: int,
+    strides: Union[int, Tuple[int]],
     padding: str,
     /,
     *,
-    data_format: Optional[str] = "NWC",
-    dilations: Optional[int] = 1,
+    data_format: str = "NWC",
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, (tuple, list)):
