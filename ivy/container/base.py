@@ -4028,6 +4028,58 @@ class ContainerBase(dict, abc.ABC):
             New container after updating.
 
         """
+
+        def _map_fn(container, fn):
+            if isinstance(container, (dict, ivy.Container)):
+                new_container = ivy.Container()
+                for key, value in container.items():
+                    new_container[key] = _map_fn(value, fn)
+            elif isinstance(container, (list, tuple)):
+                new_container = [_map_fn(i, fn) for i in container]
+            elif isinstance(container, ivy.Array):
+                new_container = fn(container.data)
+            else:
+                new_container = fn(container)
+            return new_container
+
+        if query == "_backend":
+            self._backend = val
+
+        if query == "dynamic_backend":
+            from ivy.functional.ivy.gradients import _variable
+            from ivy.backend_handler import _determine_backend_from_args
+
+            if val == False:
+                self._backend = _determine_backend_from_args(self)
+            else:
+                with ivy.dynamic_backend_as(True):
+                    is_variable = self._backend.is_variable
+                    to_numpy = self._backend.to_numpy
+                    variable_data = self._backend.variable_data
+
+                    if all(_map_fn(self, is_variable).values()) and not (str(self._backend).__contains__("jax")):
+                        native_cont = _map_fn(self, variable_data)
+                        np_cont = _map_fn(native_cont, to_numpy)
+                        ivy_cont = _map_fn(np_cont, ivy.array)
+                        new_cont = _map_fn(ivy_cont, _variable)
+                        self.cont_inplace_update(new_cont)
+
+                        # delete reference of unused variables
+                        del native_cont
+                        del np_cont
+                        del ivy_cont
+                        del new_cont
+                    else:
+                        np_cont = _map_fn(self, to_numpy)
+                        new_cont = _map_fn(np_cont, ivy.array)
+                        self.cont_inplace_update(new_cont)
+
+                        del np_cont
+                        del new_cont
+
+            self._dynamic_backend = val
+            return
+
         if isinstance(query, str) and ("/" in query or "." in query):
             return self.cont_set_at_key_chain(query, val, inplace=True)
         else:

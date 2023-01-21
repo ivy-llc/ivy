@@ -149,6 +149,29 @@ class Array(
 
     @dynamic_backend.setter
     def dynamic_backend(self, value):
+        from ivy.functional.ivy.gradients import _variable
+        from ivy.backend_handler import _determine_backend_from_args
+
+        if value == False:
+            self._backend = _determine_backend_from_args(self)
+        else:
+            with ivy.dynamic_backend_as(True):
+                if self._backend.is_variable(self.data) and not (str(self._backend).__contains__("jax")) :
+                    native_data = self._backend.variable_data(self.data)
+                    np_data = self._backend.to_numpy(native_data)
+                    new_arr = ivy.array(np_data)
+                    self._data = _variable(new_arr.data)
+
+                    del native_data
+                    del np_data
+                    del new_arr
+                else:
+                    np_data = self._backend.to_numpy(self.data)
+                    self._data = ivy.array(np_data).data
+
+                    del np_data
+
+
         self._dynamic_backend = value
 
     @property

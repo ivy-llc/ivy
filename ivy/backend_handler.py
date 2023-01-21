@@ -1,15 +1,10 @@
 # global
-import torch.nn
-
 import ivy
 import importlib
 import numpy as np
 from ivy import verbosity
 from typing import Optional
 import gc
-import tensorflow as tf
-import jax
-import torch
 
 # local
 from ivy.func_wrapper import _wrap_function
@@ -36,6 +31,7 @@ _array_types["numpy"] = "ivy.functional.backends.numpy"
 _array_types["jax.interpreters.xla"] = "ivy.functional.backends.jax"
 _array_types["jaxlib.xla_extension"] = "ivy.functional.backends.jax"
 _array_types["tensorflow.python.framework.ops"] = "ivy.functional.backends.tensorflow"
+_array_types["tensorflow.python.ops.resource_variable_ops"] = "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
 _array_types["torch.nn.parameter"] = "ivy.functional.backends.torch"
 
@@ -52,8 +48,15 @@ _backend_reverse_dict["ivy.functional.backends.tensorflow"] = "tensorflow"
 _backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
 
 
+_static_backend_dict = dict()
 # Backend Getting/Setting #
 # ----------------------- #
+
+def _load_static_backends():
+    _static_backend_dict["ivy.functional.backends.numpy"] = importlib.import_module("ivy.functional.backends.numpy")
+    _static_backend_dict["ivy.functional.backends.torch"] = importlib.import_module("ivy.functional.backends.torch")
+    _static_backend_dict["ivy.functional.backends.jax"] = importlib.import_module("ivy.functional.backends.jax")
+    _static_backend_dict["ivy.functional.backends.tensorflow"] = importlib.import_module("ivy.functional.backends.tensorflow")
 
 
 def _determine_backend_from_args(args):
@@ -80,25 +83,28 @@ def _determine_backend_from_args(args):
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>    # noqa
 
     """
-    for arg in args:
-        arg_type = type(arg)
-        # function is called recursively if arg is a list/tuple
-        if arg_type in [list, tuple]:
+    arg_type = type(args)
+    if isinstance(args, ivy.Array):
+        args = args.data
+
+    if isinstance(args, dict):
+        for key, value in args.items():
+            # recursively call the function for each value in the dictionary
+            lib = _determine_backend_from_args(value)
+            if lib:
+                return lib
+        # check if args is a list or tuple
+    elif arg_type in [list, tuple]:
+        for arg in args:
+            # recursively call the function for each element in the list/tuple
             lib = _determine_backend_from_args(arg)
             if lib:
                 return lib
-        # function is called recursively if arg is a dict
-        elif arg_type is dict:
-            lib = _determine_backend_from_args(list(arg.values()))
-            if lib:
-                return lib
-        else:
-            # use the _array_types dict to map the module where arg comes from, to the
-            # corresponding Ivy backend
-            if arg.__class__.__module__ in _array_types:
-                module_name = _array_types[arg.__class__.__module__]
-                return importlib.import_module(module_name)
-
+    else:
+        # check if the class module of the arg is in _array_types
+        if args.__class__.__module__ in _array_types:
+            module_name = _array_types[args.__class__.__module__]
+            return _static_backend_dict[module_name]
 
 def fn_name_from_version_specific_fn_name(name, version):
     """
@@ -170,7 +176,6 @@ def set_backend_to_specific_version(backend):
             if orig_name:
                 backend.__dict__[orig_name] = backend.__dict__[key]
                 backend.__dict__[orig_name].__name__ = orig_name
-
 
 def current_backend(*args, **kwargs):
     """Returns the current backend. Priorities:
@@ -247,6 +252,47 @@ def set_backend(backend: str):
         isinstance(backend, str) and backend not in _backend_dict,
         "backend must be one from {}".format(list(_backend_dict.keys())),
     )
+
+    if len(backend_stack) == 0:
+        _load_static_backends()
+
+    # Dynamic Backend
+    from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
+
+    variable_ids = set()  # create an empty set to store variable object ids
+
+    def _is_var(obj):
+
+        if isinstance(obj, ivy.Container):
+            return all(_is_variable(obj).values())
+        else:
+            return _is_variable(obj)
+
+    # first convert all ivy.Array and ivy.Container instances to numpy using the current backend
+    gc.collect()
+    for obj in gc.get_objects():
+        if isinstance(obj, (ivy.Array, ivy.Container)):
+
+            if obj.dynamic_backend:
+                with ivy.dynamic_backend_as(True):
+                    if _is_var(obj) and ivy.current_backend_str() != "jax":
+                        # add variable object id to set
+                        variable_ids.add(id(obj))
+                        native_var = _variable_data(obj)
+                        np_data = ivy.to_numpy(native_var)
+
+                        del native_var
+                    else:
+                        np_data = obj.to_numpy()
+
+                    if isinstance(obj, ivy.Container):
+                        obj.cont_inplace_update(np_data)
+                    else:
+                        obj._data = np_data
+
+                    del np_data
+
+    # update the global dict with the new backend
     ivy.locks["backend_setter"].acquire()
     global ivy_original_dict
     if not backend_stack:
@@ -274,56 +320,38 @@ def set_backend(backend: str):
         ivy.__dict__[k] = _wrap_function(
             key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
         )
-    # update data of all dynamic backend ivy.Array and ivy.Container instances in the project scope
+
+    # now convert all ivy.Array and ivy.Container instances from numpy
+    # to native arrays using the newly set backend
     for obj in gc.get_objects():
-        if isinstance(obj, ivy.Array):
-            if obj.dynamic_backend or (obj.dynamic_backend is None and ivy.get_dynamic_backend()):
-                obj._data = backend_conversion(obj._data, backend)
-        if isinstance(obj, ivy.Container):
-            if obj.dynamic_backend or (obj.dynamic_backend is None and ivy.get_dynamic_backend()):
-                new_vars = ivy.Container(obj.cont_multi_map_in_function(stateful_backend_conversion,obj, backend ))
-                obj.cont_inplace_update(new_vars)
+        if isinstance(obj, (ivy.Array, ivy.Container)):
+
+            if obj.dynamic_backend:
+                with ivy.dynamic_backend_as(True):
+                    # check if object was originally a variable
+                    if id(obj) in variable_ids:
+                        native_arr = ivy.nested_map(
+                            obj, ivy.array, include_derived=True, shallow=False
+                        )
+                        new_data = _variable(native_arr)
+
+                        del native_arr
+                    else:
+                        new_data = ivy.nested_map(
+                            obj, ivy.array, include_derived=True, shallow=False
+                        )
+
+                    if isinstance(obj, ivy.Container):
+                        obj.cont_inplace_update(new_data)
+                    else:
+                        obj._data = new_data.data
+
+                    del new_data
+
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
 
-def stateful_backend_conversion(stateful_tensor, backend):
-    data_np = stateful_to_numpy(stateful_tensor)
-    if backend.current_backend_str() == "numpy":
-        return data_np
-    elif backend.current_backend_str() == "torch":
-        return backend.torch.nn.Parameter(backend.torch.tensor(data_np))
-    elif backend.current_backend_str() == "jax":
-        return backend.jax.numpy.array(data_np)
-    elif backend.current_backend_str() == "tensorflow":
-        return backend.tf.Variable(data_np)
-    else:
-        raise ValueError(f"Unsupported backend {backend}")
-def stateful_to_numpy(stateful_tensor):
-    if isinstance(stateful_tensor, np.ndarray):
-        return stateful_tensor
-    elif isinstance(stateful_tensor, torch.nn.Parameter):
-        return stateful_tensor.detach().cpu().numpy()
-    elif isinstance(stateful_tensor, tf.Variable):
-        return stateful_tensor.numpy()
-    elif isinstance(stateful_tensor, jax.interpreters.xla.DeviceArray):
-        return np.array(stateful_tensor)
-    else:
-        raise ValueError("Invalid stateful tensor")
-def backend_conversion(data, backend):
-    """Convert data to a specific backend format using numpy as intermediary"""
-
-    data_np = np.array(data)
-    if ivy.current_backend_str() == "numpy":
-        return data_np
-    elif ivy.current_backend_str() == "torch":
-        return backend.torch.from_numpy(data_np)
-    elif ivy.current_backend_str() == "jax":
-        return backend.jax.numpy.array(data_np)
-    elif ivy.current_backend_str() == "tensorflow":
-        return backend.tf.convert_to_tensor(data_np)
-    else:
-        raise ValueError(f"Unsupported backend {backend}")
 def set_numpy_backend():
     """Sets NumPy to be the global backend. equivalent to `ivy.set_backend("numpy")`."""
     set_backend("numpy")
