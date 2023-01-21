@@ -303,12 +303,12 @@ class ArrayWithLayers(abc.ABC):
     def conv1d(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
-        strides: int,
+        strides: Union[int, Tuple[int]],
         padding: str,
         /,
         *,
         data_format: str = "NWC",
-        dilations: int = 1,
+        dilations: Union[int, Tuple[int]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -318,17 +318,17 @@ class ArrayWithLayers(abc.ABC):
 
         Parameters
         ----------
-        x
-            Input image *[batch_size,w,d_in]*.
+        self
+            Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
         filters
             Convolution filters *[fw,d_in,d_out]*.
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            SAME" or "VALID" indicating the algorithm, or list indicating the
+            "SAME" or "VALID" indicating the algorithm, or list indicating the
             per-dimension paddings.
         data_format
-            NWC" or "NCW". Defaults to "NWC".
+            "NWC" or "NCW". Defaults to "NWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         out
