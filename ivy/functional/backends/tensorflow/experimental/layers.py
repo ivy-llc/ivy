@@ -317,3 +317,25 @@ def embedding(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
+
+
+def stft(
+        signal: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        frame_length: Union[int, tf.Tensor],
+        frame_step: Union[int, tf.Tensor],
+        fft_length: Union[int, tf.Tensor] = None,
+        window_fn: str = "hann_window",
+        pad_end: bool = False,
+        name: str = None
+) -> Union[tf.Tensor, tf.Variable]:
+    if signal.dtype not in (tf.float32, tf.float64):
+        signal = tf.cast(signal, tf.float32)
+    if tf.rank(signal).numpy() < 1:
+        raise ivy.exceptions.IvyError("Expected signal tensor with rank at least 1, received unexpected input")
+    if isinstance(window_fn, str):
+        window_fn = getattr(tf.signal, window_fn)
+
+    return tf.signal.stft(signal, frame_length=frame_length, frame_step=frame_step, fft_length=fft_length,
+                          window_fn=window_fn, pad_end=pad_end, name=name)

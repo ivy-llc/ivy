@@ -1258,3 +1258,160 @@ class ContainerWithLayersExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+
+    @staticmethod
+    def static_stft(
+            signal: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            /,
+            *,
+            frame_length: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+            frame_step: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            fft_length: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+            window_fn: str = "hann_window",
+            pad_end: bool = False,
+            name: str = None,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stft. This method simply
+        wraps the function, and so the docstring for ivy.stft also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        signal
+            Container with input signal to be transformed
+        frame_length
+            Window length in samples
+        frame_step
+            Number of samples to step
+        fft_length
+            Size of FFT to apply. If not specified, uses the smallest power of 2 closest to frame_length
+        window_fn
+            Window function to use - takes in window length and dtype, returns a tensor of [window_length] samples. No windowing is applied if not specified
+        pad_end
+            Whether to pad the end of signals with zeros when the provided frame length and step produces a frame that lies partially past its end
+        name
+            An optional name for the operation.
+        out
+            Optional output container for writing the results to
+
+        Returns
+        -------
+        ret
+            Container with transformed signals
+
+        Examples
+        --------
+        >>> x = ivy.Container([[1., 3., 4.], [5., 15., 20.], [9., 27., 36.]])
+        >>> x.static_stft(frame_length=1, frame_step=10, fft_length=1)
+        ivy.array([[[ 1.+0.j],
+        [ 3.+0.j],
+        [ 4.+0.j]],
+
+       [[ 5.+0.j],
+        [15.+0.j],
+        [20.+0.j]],
+
+       [[ 9.+0.j],
+        [27.+0.j],
+        [36.+0.j]]])
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "stft",
+            signal,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            frame_length=frame_length,
+            frame_step=frame_step,
+            fft_length=fft_length,
+            window_fn=window_fn,
+            pad_end=pad_end,
+            name=name
+        )
+
+    def stft(
+            self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            /,
+            *,
+            frame_length: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+            frame_step: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            fft_length: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+            window_fn: str = "hann_window",
+            pad_end: bool = True,
+            name: str = None,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.stft. This method simply
+        wraps the function, and so the docstring for ivy.stft also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container with input signal to be transformed
+        frame_length
+            Window length in samples
+        frame_step
+            Number of samples to step
+        fft_length
+            Size of FFT to apply. If not specified, uses the smallest power of 2 closest to frame_length
+        window_fn
+            Window function to use - takes in window length and dtype, returns a tensor of [window_length] samples. No windowing is applied if not specified
+        pad_end
+            Whether to pad the end of signals with zeros when the provided frame length and step produces a frame that lies partially past its end
+        name
+            An optional name for the operation.
+        out
+            Optional output container for writing the results to
+
+        Returns
+        -------
+        ret
+            The transformed signals
+
+        Examples
+        --------
+        >>> x = ivy.Container([[1., 3., 4.], [5., 15., 20.], [9., 27., 36.]])
+        >>> x.stft(frame_length=1, frame_step=10, fft_length=1)
+        ivy.array([[[ 1.+0.j],
+        [ 3.+0.j],
+        [ 4.+0.j]],
+
+       [[ 5.+0.j],
+        [15.+0.j],
+        [20.+0.j]],
+
+       [[ 9.+0.j],
+        [27.+0.j],
+        [36.+0.j]]])
+
+        """
+        self.static_stft(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            frame_length=frame_length,
+            frame_step=frame_step,
+            fft_length=fft_length,
+            window_fn=window_fn,
+            pad_end=pad_end,
+            name=name
+        )

@@ -557,3 +557,63 @@ class ArrayWithLayersExperimental(abc.ABC):
 
     def embedding(self, indices, /, *, max_norm=None, out=None):
         return ivy.embedding(self._data, indices, max_norm=max_norm, out=out)
+
+
+    def stft(
+            self: ivy.Array,
+            /,
+            *,
+            frame_length: Union[int, ivy.Array, ivy.NativeArray],
+            frame_step: Union[int, ivy.Array, ivy.NativeArray],
+            fft_length: Union[int, ivy.Array, ivy.NativeArray] = None,
+            window_fn: str = "hann_window",
+            pad_end: bool = False,
+            name: str = None
+    ) -> ivy.Array:
+        """
+        Computes the Short-time Fourier Transform of signals.
+
+
+        Parameters
+        ----------
+        signal
+            Input signal to be transformed
+        frame_length
+            Window length in samples
+        frame_step
+            Number of samples to step
+        fft_length
+            Size of FFT to apply. If not specified, uses the smallest power of 2 closest to frame_length
+        window_fn
+            Window function to use - takes in window length and dtype, returns a tensor of [window_length] samples. No windowing is applied if not specified
+        pad_end
+            Whether to pad the end of signals with zeros when the provided frame length and step produces a frame that lies partially past its end
+        name
+            An optional name for the operation.
+
+        Returns
+        -------
+        ret
+            Transformed signal
+
+        Examples
+        --------
+        >>> x = ivy.array([[1., 3., 4.], [5., 15., 20.], [9., 27., 36.]])
+        >>> x.stft(frame_length=1, frame_step=10, fft_length=1)
+        ivy.array([[[ 1.+0.j],
+        [ 3.+0.j],
+        [ 4.+0.j]],
+
+       [[ 5.+0.j],
+        [15.+0.j],
+        [20.+0.j]],
+
+       [[ 9.+0.j],
+        [27.+0.j],
+        [36.+0.j]]])
+
+        """
+        return ivy.stft(
+            self._data, frame_length=frame_length, frame_step=frame_step,
+            fft_length=fft_length, window_fn=window_fn, pad_end=pad_end, name=name
+        )
