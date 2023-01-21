@@ -578,6 +578,7 @@ def fft(
     return ivy.current_backend(x).fft(x, dim, norm=norm, n=n, out=out)
 
 
+@handle_nestable
 @handle_exceptions
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
@@ -615,6 +616,34 @@ def dropout1d(
     ret
         an array with some channels zero-ed and the rest of channels are
          scaled by (1/1-prob).
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 1, 1]).reshape([1, 1, 3])
+    >>> y = x.dropout1d(0.5)
+    >>> print(y)
+    ivy.array([[[2., 0, 2.]]])
+
+    >>> x = ivy.array([1, 1, 1]).reshape([1, 1, 3])
+    >>> y = ivy.dropout1d(x, 1, training=False, data_format="NCW")
+    >>> print(y)
+    ivy.array([[[1, 1, 1]]])
+
+    With one :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([100, 200, 300]).reshape([1, 1, 3]),
+    ...                   b=ivy.array([400, 500, 600]).reshape([1, 1, 3]))
+    >>> y = ivy.dropout1d(x, 0.5)
+    >>> print(y)
+    {
+    a: ivy.array([[[200., 400., 0.]]]),
+    b: ivy.array([[[0., 0., 0.]]])
+    }
     """
     return ivy.current_backend(x).dropout1d(
         x, prob, training=training, data_format=data_format, out=out

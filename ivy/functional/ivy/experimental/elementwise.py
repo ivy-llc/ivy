@@ -862,6 +862,41 @@ def signbit(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def hypot(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns the hypotenuse given the two sides of a right angle triangle
+
+    Parameters
+    ----------
+    x1
+        The first input array
+    x2
+        The second input array
+
+    Returns
+    -------
+    ret
+        An array with the hypotenuse
+
+    Examples
+    --------
+    >>> a = ivy.array([3.0, 4.0, 5.0])
+    >>> b = ivy.array([4.0, 5.0, 6.0])
+    >>> ivy.hypot(a, b)
+    ivy.array([5.0, 6.4031, 7.8102])
+    """
+    return ivy.current_backend(x1, x2).hypot(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 @handle_array_like_without_promotion
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
