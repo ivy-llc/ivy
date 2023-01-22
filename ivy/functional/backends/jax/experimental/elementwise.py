@@ -517,3 +517,11 @@ def isposinf(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isposinf(x)
+
+
+def sequence_empty(
+    *,
+    shape: [Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: DType,
+    out: Optional[JaxArray] = None,) -> JaxArray:
+    return jnp.zeros(shape, dtype=dtype)
