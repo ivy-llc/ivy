@@ -734,6 +734,7 @@ def test_jax_numpy_atleast_3d(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=10),
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_atleast_2d(
         *,
