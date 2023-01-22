@@ -297,6 +297,7 @@ def diff(
     axis: Optional[int] = -1,
     prepend: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = x if type(x) == torch.Tensor else torch.Tensor(x)
     prepend = (
