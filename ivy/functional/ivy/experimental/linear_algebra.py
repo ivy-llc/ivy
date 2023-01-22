@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -23,6 +24,7 @@ def _check_valid_dimension_size(std):
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -97,6 +99,7 @@ def diagflat(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -136,6 +139,7 @@ def kron(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -175,6 +179,7 @@ def matrix_exp(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -235,6 +240,7 @@ def eig(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -276,6 +282,7 @@ def eigvals(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

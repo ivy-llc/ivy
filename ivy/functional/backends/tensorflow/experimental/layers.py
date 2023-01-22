@@ -260,12 +260,12 @@ def dropout1d(
 
 
 def ifft(
-        x: Union[tf.Tensor, tf.Variable],
-        dim: int,
-        *,
-        norm: Optional[str] = "backward",
-        n: Union[int, Tuple[int]] = None,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    dim: int,
+    *,
+    norm: Optional[str] = "backward",
+    n: Union[int, Tuple[int]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not isinstance(dim, int):
         raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
@@ -306,3 +306,14 @@ def ifft(
         ret = tf.signal.ifft(x, operation_name)
     ret = _ifft_norm(ret, dim, norm=norm)
     return ret
+
+
+def embedding(
+    weights: Union[tf.Tensor, tf.Variable],
+    indices: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    max_norm: Optional[float] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)

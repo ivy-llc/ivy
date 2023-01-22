@@ -256,3 +256,21 @@ def strided_slice(
                     end_i = int(end[i])
                 full_slice += (slice(begin_i, end_i, int(strides[i])),)
     return input_[full_slice]
+
+
+@to_ivy_arrays_and_back
+def linspace(start, stop, num, name=None, axis=0):
+    return ivy.linspace(start, stop, num, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def realdiv(x, y, name=None):
+    return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def one_hot(indices: ivy.array,
+            depth: int, on_value=None,
+            off_value=None, axis=None,
+            dtype=None, device=None, out=None):
+    return ivy.one_hot(indices, depth)

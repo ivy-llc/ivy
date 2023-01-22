@@ -7,6 +7,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
@@ -19,6 +20,7 @@ def convolve(a, v, mode="full"):
     return ivy.frontends.numpy.correlate(a, v[::-1], mode)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -56,11 +58,12 @@ def clip(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def sqrt(
+def _sqrt(
     x,
     /,
     out=None,
@@ -77,11 +80,12 @@ def sqrt(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def cbrt(
+def _cbrt(
     x,
     /,
     out=None,
@@ -99,11 +103,12 @@ def cbrt(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def square(
+def _square(
     x,
     /,
     out=None,
@@ -120,11 +125,12 @@ def square(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def absolute(
+def _absolute(
     x,
     /,
     out=None,
@@ -141,11 +147,12 @@ def absolute(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def fabs(
+def _fabs(
     x,
     /,
     out=None,
@@ -162,11 +169,12 @@ def fabs(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def sign(
+def _sign(
     x,
     /,
     out=None,
@@ -183,11 +191,12 @@ def sign(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def heaviside(
+def _heaviside(
     x1,
     x2,
     /,
@@ -289,11 +298,12 @@ def interp(x, xp, fp, left=None, right=None, period=None):
         return ivy.astype(ivy.array(ret), "float64")
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def copysign(
+def _copysign(
     x1,
     x2,
     /,

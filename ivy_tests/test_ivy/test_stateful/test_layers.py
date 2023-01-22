@@ -6,6 +6,7 @@ from hypothesis import strategies as st, assume
 
 # local
 import ivy
+from ivy.functional.ivy.layers import _deconv_length
 from ivy.functional.ivy.gradients import _variable
 from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
@@ -366,9 +367,7 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
         output_shape = []
         for i in range(dim):
             output_shape.append(
-                ivy.deconv_length(
-                    x_dim[i], strides, filter_shape[i], padding, dilations
-                )
+                _deconv_length(x_dim[i], strides, filter_shape[i], padding, dilations)
             )
     filter_shape = list(filter_shape)
     if dim == 1:

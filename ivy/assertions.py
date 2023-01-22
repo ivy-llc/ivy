@@ -129,6 +129,18 @@ def check_shape(x1, x2, message=""):
         raise ivy.exceptions.IvyException(message)
 
 
+def check_same_dtype(x1, x2, message=""):
+    message = (
+        message
+        if message != ""
+        else "{} and {} must have the same dtype ({} vs {})".format(
+            x1, x2, ivy.dtype(x1), ivy.dtype(x2)
+        )
+    )
+    if ivy.dtype(x1) != ivy.dtype(x2):
+        raise ivy.exceptions.IvyException(message)
+
+
 # Creation #
 # -------- #
 
