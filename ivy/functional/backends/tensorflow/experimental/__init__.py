@@ -9,6 +9,7 @@ from .gradients import *
 from .layers import *
 from .linear_algebra import *
 from .manipulation import *
+from .norms import *
 from .random import *
 from .searching import *
 from .set import *
@@ -28,6 +29,7 @@ del (
     layers,
     linear_algebra,
     manipulation,
+    norms,
     random,
     searching,
     set,

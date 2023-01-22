@@ -66,6 +66,7 @@ def test_jax_devicearray_property_at(x_y_index):
     xy, idx = x_y_index
     x = DeviceArray(xy[0])
     y = DeviceArray(xy[1])
+    idx = idx[0]
     x_set = x.at[idx].set(y[idx])
     assert x_set[idx] == y[idx]
     assert x.at[idx].get() == x[idx]

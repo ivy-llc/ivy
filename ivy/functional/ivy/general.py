@@ -22,7 +22,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.functional.ivy.device import dev
 
@@ -205,6 +205,20 @@ def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     -------
     ret
         Boolean, whether or not x is an array.
+
+    Examples
+    --------
+    >>> x = ivy.array([0, 1, 2])
+    >>> print(ivy.is_array(x))
+    True
+
+    >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
+    >>> print(ivy.is_array(x, exclusive=True))
+    True
+
+    >>> x = [2, 3]
+    >>> print(ivy.is_array(x))
+    False
     """
     return ivy.is_ivy_array(x, exclusive=exclusive) or ivy.is_native_array(
         x, exclusive=exclusive
@@ -224,6 +238,16 @@ def is_ivy_container(x: Any, /) -> bool:
     -------
     ret
         Boolean, whether or not x is an ivy container.
+
+    Examples
+    --------
+    >>> x = ivy.Container()
+    >>> print(ivy.is_ivy_container(x))
+    True
+
+    >>> x = [2, 3]
+    >>> print(ivy.is_ivy_container(x))
+    False
 
     """
     return isinstance(x, ivy.Container)
@@ -488,7 +512,7 @@ def get_show_func_wrapper_trace_mode() -> bool:
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def array_equal(
     x0: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -625,7 +649,7 @@ def all_equal(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def to_numpy(
     x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
 ) -> np.ndarray:
@@ -694,7 +718,7 @@ def isscalar(x: Any, /) -> bool:
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """Converts an array with a single element into a scalar.
 
@@ -748,7 +772,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """Creates a (possibly nested) list from input array.
 
@@ -762,9 +786,8 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     ret
         A list representation of the input array ``x``.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1, 0, 1])
@@ -805,8 +828,8 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
         a: [[-1, 0, 1], [-1, 0, 1], [1,0,-1]]
     }
 
-    >>> x =
-    ... ivy.Container(a=ivy.array([[[-1, 0, 1],[1, 0, -1]],[[1, -1, 0],[1, 0, -1]]]))
+    >>> x = ivy.Container(a=ivy.array([[[-1, 0, 1],[1, 0, -1]],
+    ...                                [[1, -1, 0],[1, 0, -1]]]))
     >>> y = ivy.to_list(x)
     >>> print(y)
     {
@@ -820,7 +843,6 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
 @handle_nestable
 @outputs_to_ivy_arrays
 @handle_exceptions
-@handle_array_like
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -907,7 +929,6 @@ def clip_vector_norm(
 
 @handle_nestable
 @handle_exceptions
-@handle_array_like
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -987,7 +1008,7 @@ def clip_matrix_norm(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
     max_freq: Union[float, ivy.Array, ivy.NativeArray],
@@ -1043,7 +1064,7 @@ def fourier_encode(
 
     >>> x = ivy.array([3,10])
     >>> y = 2.5
-    >>> z = ivy.fourier_encode(x,y, num_bands=3)
+    >>> z = ivy.fourier_encode(x, y, num_bands=3)
     >>> print(z)
     ivy.array([[ 3.0000000e+00,  3.6739404e-16,  3.6739404e-16, 3.6739404e-16,
                 -1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
@@ -1090,7 +1111,7 @@ def fourier_encode(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def value_is_nan(
     x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1149,7 +1170,7 @@ def value_is_nan(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def has_nans(
     x: Union[ivy.Array, ivy.NativeArray], /, *, include_infs: bool = True
 ) -> bool:
@@ -1457,7 +1478,7 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
 
     Examples
     --------
-    with: if the function is executed without any exception:
+    with a function that is executed without any exception:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
@@ -1465,7 +1486,7 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
     >>> print(z.__name__)
     add
 
-    with: if the function is executed with an exception:
+    with a function that is executed with an exception:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = 'hemant'
@@ -1655,7 +1676,7 @@ def current_backend_str() -> Union[str, None]:
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1723,7 +1744,7 @@ def einops_rearrange(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1792,7 +1813,7 @@ einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1945,7 +1966,7 @@ def set_min_base(val: float) -> None:
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def stable_divide(
     numerator: Union[Number, ivy.Array, ivy.NativeArray],
     denominator: Union[Number, ivy.Array, ivy.NativeArray],
@@ -2044,7 +2065,6 @@ def stable_divide(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
 def stable_pow(
     base: Union[Number, ivy.Array, ivy.NativeArray],
     exponent: Union[Number, ivy.Array, ivy.NativeArray],
@@ -2363,7 +2383,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 @to_native_arrays_and_back
 @handle_nestable
-@handle_array_like
+@handle_array_like_without_promotion
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     query: Union[ivy.Array, ivy.NativeArray, Tuple],
@@ -2565,7 +2585,7 @@ def inplace_increment(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -2605,7 +2625,6 @@ def scatter_flat(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -2686,7 +2705,7 @@ def scatter_nd(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -2792,7 +2811,7 @@ def gather(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -2885,7 +2904,7 @@ def multiprocessing(context: str = None):
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> Union[ivy.Shape, ivy.NativeShape]:
@@ -2982,7 +3001,7 @@ def shape_array_mode() -> bool:
 
 @to_native_arrays_and_back
 @handle_nestable
-@handle_array_like
+@handle_array_like_without_promotion
 def get_num_dims(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> int:

@@ -343,6 +343,11 @@ def true_divide(input, other, *, out=None):
     return ivy.divide(input, other, out=out)
 
 
+@to_ivy_arrays_and_back
+def floor_divide(input, other, *, out=None):
+    return ivy.floor_divide(input, other, out=out)
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def log1p(input, *, out=None):

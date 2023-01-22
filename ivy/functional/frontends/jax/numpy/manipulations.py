@@ -2,9 +2,9 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
+    handle_jax_dtype,
 )
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_dtype
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
@@ -28,7 +28,7 @@ def clip(a, a_min=None, a_max=None, out=None):
     return ivy.clip(a, a_min, a_max, out=out)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def concatenate(arrays, axis=0, dtype=None):
     ret = ivy.concat(arrays, axis=axis)
@@ -112,6 +112,16 @@ def append(arr, values, axis=None):
         return ivy.concat((ivy.flatten(arr), ivy.flatten(values)), axis=0)
     else:
         return ivy.concat((arr, values), axis=axis)
+
+
+@to_ivy_arrays_and_back
+def swapaxes(a, axis1, axis2):
+    return ivy.swapaxes(a, axis1, axis2)
+
+
+@to_ivy_arrays_and_back
+def atleast_3d(*arys):
+    return ivy.atleast_3d(*arys)
 
 
 @to_ivy_arrays_and_back
