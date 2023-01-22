@@ -74,7 +74,7 @@ class EagerTensor:
         return array(self._ivy_array)
 
     def __add__(self, y, name="add"):
-        return y.__radd__(self._ivy_array)
+        return self.__radd__(y)
 
     def __div__(self, x, name="div"):
         return tf_frontend.math.divide(x, self._ivy_array, name=name)

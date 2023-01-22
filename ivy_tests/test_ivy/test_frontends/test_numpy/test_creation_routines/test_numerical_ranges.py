@@ -51,26 +51,22 @@ def _get_dtype_and_range(draw):
     stop=helpers.ints(min_value=1, max_value=50),
     step=helpers.ints(min_value=1, max_value=5),
     dtype=helpers.get_dtypes("float"),
+    test_with_out=st.just(False),
 )
 def test_numpy_arange(
     start,
     stop,
     step,
     dtype,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.as_ivy_dtype("int8")],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         start=start,
@@ -86,26 +82,22 @@ def test_numpy_arange(
     dtype_start_stop=_get_dtype_and_range(),
     num=helpers.ints(min_value=2, max_value=5),
     axis=helpers.ints(min_value=-1, max_value=0),
+    test_with_out=st.just(False),
 )
 def test_numpy_linspace(
     dtype_start_stop,
     num,
     axis,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtypes, start, stop = dtype_start_stop
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         start=start,
@@ -125,27 +117,23 @@ def test_numpy_linspace(
     num=helpers.ints(min_value=5, max_value=50),
     base=helpers.ints(min_value=2, max_value=10),
     axis=helpers.ints(min_value=-1, max_value=0),
+    test_with_out=st.just(False),
 )
 def test_numpy_logspace(
     dtype_start_stop,
     num,
     base,
     axis,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtypes, start, stop = dtype_start_stop
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-01,
@@ -173,6 +161,7 @@ def test_numpy_logspace(
     copy=st.booleans(),
     sparse=st.booleans(),
     indexing=st.sampled_from(["xy", "ij"]),
+    test_with_out=st.just(False),
 )
 def test_numpy_meshgrid(
     *,
@@ -180,9 +169,8 @@ def test_numpy_meshgrid(
     copy,
     sparse,
     indexing,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -192,14 +180,11 @@ def test_numpy_meshgrid(
     for x_ in arrays:
         kw[f"x{i}"] = x_
         i += 1
-    num_positional_args = len(arrays)
+    test_flags.num_positional_args = len(arrays)
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,

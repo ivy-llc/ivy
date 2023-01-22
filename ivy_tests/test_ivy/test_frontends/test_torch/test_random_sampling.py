@@ -34,24 +34,18 @@ def _pop_size_num_samples_replace_n_probs(draw):
 def test_torch_multinomial(
     *,
     everything,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     prob_dtype, batch_size, num_samples, replace, probs = everything
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=prob_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
             frontend=frontend,
+            test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -82,6 +76,7 @@ def test_torch_manual_seed(
     seed,
     fn_tree,
     frontend,
+    test_flags,
 ):
     # just test calling the function
     frontend_fw = importlib.import_module(fn_tree[25 : fn_tree.rfind(".")])
@@ -104,24 +99,18 @@ def test_torch_manual_seed(
 def test_torch_poisson(
     *,
     dtype_and_lam,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     lam_dtype, lam = dtype_and_lam
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=lam_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
             frontend=frontend,
+            test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,

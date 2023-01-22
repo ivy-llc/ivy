@@ -306,3 +306,9 @@ def cross(input, other, dim=None, *, out=None):
 @to_ivy_arrays_and_back
 def gcd(input, other, *, out=None):
     return ivy.gcd(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def tensordot(a, b, dims=2, out=None):
+    a, b = ivy.promote_types_of_inputs(a, b)
+    return ivy.tensordot(a, b, axes=dims, out=out)

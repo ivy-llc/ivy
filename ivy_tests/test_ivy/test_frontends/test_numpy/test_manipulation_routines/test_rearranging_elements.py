@@ -15,27 +15,23 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     shift=helpers.ints(min_value=1, max_value=10),
     axis=helpers.ints(min_value=-1, max_value=1),
+    test_with_out=st.just(False),
 )
 def test_numpy_roll(
     *,
     dtype_and_x,
     shift,
     axis,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -58,25 +54,21 @@ def _dtype_x_bounded_axis(draw, **kwargs):
         min_num_dims=1,
         min_dim_size=1,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_flip(
     *,
     dtype_x_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         m=x[0],
@@ -91,25 +83,21 @@ def test_numpy_flip(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_fliplr(
     *,
     dtype_and_m,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         m=m[0],
@@ -128,25 +116,21 @@ def test_numpy_fliplr(
         min_dim_size=1,
         max_dim_size=3,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_flipud(
     *,
     dtype_and_m,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         m=m[0],
@@ -215,25 +199,21 @@ def _get_dtype_values_k_axes_for_rot90(
         min_dim_size=1,
         max_dim_size=10,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_rot90(
     *,
     dtype_m_k_axes,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, m, k, axes = dtype_m_k_axes
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         m=m[0],
