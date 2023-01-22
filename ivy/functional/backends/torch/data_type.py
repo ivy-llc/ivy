@@ -1,5 +1,5 @@
 # global
-from typing import Union, Sequence, List
+from typing import Optional, Union, Sequence, List
 
 import torch
 
@@ -73,7 +73,12 @@ class Finfo:
 
 
 def astype(
-    x: torch.Tensor, dtype: torch.dtype, /, *, copy: bool = True
+    x: torch.Tensor,
+    dtype: torch.dtype,
+    /,
+    *,
+    copy: bool = True,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
@@ -89,7 +94,11 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     {"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def broadcast_to(
-    x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
+    x: torch.Tensor,
+    /,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if x.ndim > len(shape):
         return torch.broadcast_to(x.reshape(-1), shape)
@@ -134,6 +143,8 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> ivy.Dty
         return ivy.default_int_dtype()
     if dtype_in is float:
         return ivy.default_float_dtype()
+    if dtype_in is complex:
+        return ivy.default_complex_dtype()
     if dtype_in is bool:
         return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
@@ -153,6 +164,8 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torc
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
         return ivy.default_float_dtype(as_native=True)
+    if dtype_in is complex:
+        return ivy.default_complex_dtype(as_native=True)
     if dtype_in is bool:
         return torch.bool
     if not isinstance(dtype_in, str):
@@ -184,7 +197,3 @@ def dtype_bits(dtype_in: Union[torch.dtype, str]) -> int:
         .replace("float", "")
         .replace("complex", "")
     )
-
-
-# ToDo:
-# 1. can_cast : Add support for complex64, complex128

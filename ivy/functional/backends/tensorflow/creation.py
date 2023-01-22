@@ -27,6 +27,7 @@ from . import backend_version
         "2.9.1 and below": (
             "float16",
             "bfloat16",
+            "complex",
         )
     },
     backend_version,
@@ -284,8 +285,11 @@ def linspace(
         return tf.cast(ans, dtype)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bool",)}, backend_version)
 def meshgrid(
-    *arrays: Union[tf.Tensor, tf.Variable], sparse: bool = False, indexing: str = "xy"
+    *arrays: Union[tf.Tensor, tf.Variable],
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if not sparse:
         return tf.meshgrid(*arrays, indexing=indexing)
@@ -336,6 +340,7 @@ def tril(
     return tf.experimental.numpy.tril(x, k)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bool",)}, backend_version)
 def triu(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -379,25 +384,12 @@ array = asarray
 def copy_array(
     x: Union[tf.Tensor, tf.Variable],
     *,
+    to_ivy_array: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if to_ivy_array:
+        return ivy.to_ivy(tf.identity(x))
     return tf.identity(x)
-
-
-def logspace(
-    start: Union[tf.Tensor, tf.Variable, int],
-    stop: Union[tf.Tensor, tf.Variable, int],
-    /,
-    num: int,
-    *,
-    base: float = 10.0,
-    axis: Optional[int] = None,
-    dtype: tf.DType,
-    device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return ivy.pow(ivy.asarray(base, dtype=dtype), power_seq)
 
 
 def one_hot(

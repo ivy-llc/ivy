@@ -1,13 +1,17 @@
 import operator
 from typing import Optional, Union, Tuple, List
 from numbers import Number
+
+from ivy import promote_types_of_inputs, default_float_dtype, is_float_dtype
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
+import jax.scipy as js
 
 jax_ArrayLike = Union[JaxArray, Number]
 
 
 def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.lcm(x1, x2)
 
 
@@ -22,6 +26,7 @@ def fmod(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.fmod(x1, x2)
 
 
@@ -32,7 +37,18 @@ def fmax(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.fmax(x1, x2)
+
+
+def fmin(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fmin(x1, x2)
 
 
 def trapz(
@@ -63,7 +79,7 @@ def exp2(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.exp2(x)
+    return jnp.power(2, x)
 
 
 def copysign(
@@ -73,6 +89,10 @@ def copysign(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not is_float_dtype(x1):
+        x1 = x1.astype(default_float_dtype(as_native=True))
+        x2 = x2.astype(default_float_dtype(as_native=True))
     return jnp.copysign(x1, x2)
 
 
@@ -85,6 +105,8 @@ def count_nonzero(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if dtype is None:
         return jnp.count_nonzero(a, axis=axis, keepdims=keepdims)
     return jnp.array(jnp.count_nonzero(a, axis=axis, keepdims=keepdims), dtype=dtype)
@@ -94,7 +116,7 @@ def nansum(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[jnp.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
@@ -109,6 +131,7 @@ def gcd(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.gcd(x1, x2)
 
 
@@ -123,24 +146,6 @@ def isclose(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-
-
-def isposinf(
-    x: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.isposinf(x, out=out)
-
-
-def isneginf(
-    x: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.isneginf(x, out=out)
 
 
 def nan_to_num(
@@ -163,6 +168,10 @@ def logaddexp2(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not is_float_dtype(x1):
+        x1 = x1.astype(default_float_dtype(as_native=True))
+        x2 = x2.astype(default_float_dtype(as_native=True))
     return jnp.logaddexp2(x1, x2)
 
 
@@ -173,6 +182,16 @@ def signbit(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.signbit(x)
+
+
+def hypot(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.hypot(x1, x2)
 
 
 def allclose(
@@ -229,6 +248,15 @@ def angle(
     return jnp.angle(z, deg=deg)
 
 
+def imag(
+    val: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.imag(val)
+
+
 def zeta(
     x: JaxArray,
     q: JaxArray,
@@ -236,17 +264,20 @@ def zeta(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    inf_indices = jnp.union1d(
-        jnp.array(jnp.where(x == 1.0)), jnp.array(jnp.where(q <= 0))
-    )
-    nan_indices = jnp.where(x <= 0)
+    temp = jnp.logical_and(jnp.greater(x, 0), jnp.equal(jnp.remainder(x, 2), 0))
+    temp = jnp.logical_and(temp, jnp.less_equal(q, 0))
+    temp = jnp.logical_and(temp, jnp.equal(jnp.remainder(q, 1), 0))
+    inf_indices = jnp.logical_or(temp, jnp.equal(x, 1))
+    temp = jnp.logical_and(jnp.not_equal(jnp.remainder(x, 2), 0), jnp.greater(x, 1))
+    temp = jnp.logical_and(temp, jnp.less_equal(q, 0))
+    nan_indices = jnp.logical_or(temp, jnp.less(x, 1))
     n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x
         n, res = n + 1, res + term
     ret = jnp.round(res, decimals=4)
-    ret = ret.at[inf_indices].set(jnp.inf)
     ret = ret.at[nan_indices].set(jnp.nan)
+    ret = ret.at[inf_indices].set(jnp.inf)
     return ret
 
 
@@ -468,3 +499,21 @@ def gradient(
         return outvals[0]
     else:
         return outvals
+
+
+def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    x, y = promote_types_of_inputs(x, y)
+    return js.special.xlogy(x, y)
+
+
+def real(x: Union[JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.real(x)
+
+
+def isposinf(
+    x: Union[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.isposinf(x)

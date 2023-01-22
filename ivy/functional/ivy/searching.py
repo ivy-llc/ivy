@@ -10,7 +10,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 
 
@@ -22,14 +22,15 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
@@ -47,8 +48,11 @@ def argmax(
         If this is set to True, the axes which are reduced are left in the result as
         dimensions with size one. With this option, the result will broadcast correctly
         against the array.
-    output_dtype
+    dtype
         Optional data type of the output array.
+    select_last_index
+        If this is set to True, the index corresponding to the
+        last occurrence of the maximum value will be returned
     out
         If provided, the result will be inserted into this array. It should be of the
         appropriate shape and dtype.
@@ -96,7 +100,7 @@ def argmax(
     ivy.array([[0], [2]])
 
     >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
-    >>> y = ivy.argmax(x, axis=1, output_dtype=ivy.int64)
+    >>> y = ivy.argmax(x, axis=1, dtype=ivy.int64)
     >>> print(y, y.dtype)
     ivy.array([0, 2]) int64
 
@@ -108,7 +112,12 @@ def argmax(
 
     """
     return current_backend(x).argmax(
-        x, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        x,
+        axis=axis,
+        keepdims=keepdims,
+        dtype=dtype,
+        select_last_index=select_last_index,
+        out=out,
     )
 
 
@@ -116,7 +125,7 @@ def argmax(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -124,6 +133,7 @@ def argmin(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
@@ -206,14 +216,19 @@ def argmin(
 
     """
     return current_backend(x).argmin(
-        x, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        x,
+        axis=axis,
+        keepdims=keepdims,
+        output_dtype=output_dtype,
+        select_last_index=select_last_index,
+        out=out,
     )
 
 
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -350,7 +365,7 @@ def nonzero(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -439,7 +454,7 @@ def where(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

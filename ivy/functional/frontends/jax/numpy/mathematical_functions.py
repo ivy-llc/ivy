@@ -3,6 +3,7 @@ import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
@@ -28,6 +29,7 @@ def arctan(x):
 
 @to_ivy_arrays_and_back
 def arctan2(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.atan2(x1, x2)
 
 
@@ -53,7 +55,8 @@ def floor(x):
 
 
 @to_ivy_arrays_and_back
-def mod(x1, x2):
+def mod(x1, x2, /):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
 
 
@@ -115,11 +118,17 @@ def ceil(x):
 
 @to_ivy_arrays_and_back
 def float_power(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.float_power(x1, x2)
 
 
 @to_ivy_arrays_and_back
 def deg2rad(x):
+    return ivy.deg2rad(x)
+
+
+@to_ivy_arrays_and_back
+def radians(x):
     return ivy.deg2rad(x)
 
 
@@ -130,6 +139,7 @@ def exp2(x):
 
 @to_ivy_arrays_and_back
 def gcd(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.gcd(x1, x2)
 
 
@@ -140,16 +150,19 @@ def i0(x):
 
 @to_ivy_arrays_and_back
 def kron(a, b):
+    a, b = promote_types_of_jax_inputs(a, b)
     return ivy.kron(a, b)
 
 
 @to_ivy_arrays_and_back
 def lcm(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.lcm(x1, x2)
 
 
 @to_ivy_arrays_and_back
 def logaddexp2(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.logaddexp2(x1, x2)
 
 
@@ -164,13 +177,25 @@ def sqrt(x, /):
 
 
 @to_ivy_arrays_and_back
+def square(x, /):
+    return ivy.square(x)
+
+
+@to_ivy_arrays_and_back
 def arctanh(x):
     return ivy.atanh(x)
 
 
 @to_ivy_arrays_and_back
 def multiply(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.multiply(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def matmul(a, b, *, precision=None):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.matmul(a, b)
 
 
 @to_ivy_arrays_and_back
@@ -180,6 +205,7 @@ def log10(x):
 
 @to_ivy_arrays_and_back
 def logaddexp(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.logaddexp(x1, x2)
 
 
@@ -206,15 +232,19 @@ def rad2deg(
 
 @to_ivy_arrays_and_back
 def tensordot(a, b, axes=2):
+    a, b = promote_types_of_jax_inputs(a, b)
     return ivy.tensordot(a, b, axes=axes)
 
 
 @to_ivy_arrays_and_back
 def divide(x1, x2, /):
-    if ivy.dtype(x1) == "int64" or ivy.dtype(x1) == "uint64":
-        x1 = ivy.astype(x1, ivy.float64)
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
-    return ivy.divide(x1, x2)
+    if ivy.dtype(x1) in ["int64", "uint64"]:
+        x1 = ivy.astype(x1, ivy.float64)
+    elif ivy.is_int_dtype(x1):
+        x1 = ivy.astype(x1, ivy.float32)
+
+    return ivy.divide(x1, x2).astype(x1.dtype)
 
 
 true_divide = divide
@@ -228,8 +258,16 @@ def exp(
     return ivy.exp(x)
 
 
+def expm1(
+    x,
+    /,
+):
+    return ivy.expm1(x)
+
+
 @to_ivy_arrays_and_back
 def fmax(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     ret = ivy.where(
         ivy.bitwise_or(ivy.greater(x1, x2), ivy.isnan(x2)),
         x1,
@@ -239,15 +277,111 @@ def fmax(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def fmin(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    ret = ivy.where(
+        ivy.bitwise_or(ivy.less(x1, x2), ivy.isnan(x2)),
+        x1,
+        x2,
+    )
+    print("jax-frontend", ret)
+    return ret
+
+
+@to_ivy_arrays_and_back
+def fmod(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return ivy.fmod(x1, x2)
+
+
+@to_ivy_arrays_and_back
 def maximum(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.maximum(x1, x2)
 
 
 @to_ivy_arrays_and_back
 def minimum(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.minimum(x1, x2)
 
 
 @to_ivy_arrays_and_back
 def heaviside(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.heaviside(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def log(x):
+    return ivy.log(x)
+
+
+@to_ivy_arrays_and_back
+def log1p(x, /):
+    return ivy.log1p(x)
+
+
+@to_ivy_arrays_and_back
+def copysign(x1, x2):
+    return ivy.copysign(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def sinc(x):
+    return ivy.sinc(x)
+
+
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "jax",
+)
+@to_ivy_arrays_and_back
+def nextafter(x1, x2):
+    return ivy.nextafter(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def remainder(x1, x2):
+    return ivy.remainder(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def trace(a, offset=0, axis1=0, axis2=1, out=None):
+    return ivy.trace(a, offset=offset, axis1=axis1, axis2=axis2, out=out)
+
+
+@to_ivy_arrays_and_back
+def log2(x):
+    return ivy.log2(x)
+
+
+@to_ivy_arrays_and_back
+def vdot(a, b):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.multiply(a, b).sum()
+
+
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("bfloat16",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def cbrt(x, /):
+    all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0)
+    return ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive)
+
+
+@to_ivy_arrays_and_back
+def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
+    return ivy.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
+@to_ivy_arrays_and_back
+def fix(x, out=None):
+    return ivy.fix(x, out=out)
