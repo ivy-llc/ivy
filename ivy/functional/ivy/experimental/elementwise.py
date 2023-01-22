@@ -938,7 +938,12 @@ def diff(
     >>> ivy.diff(x)
     ivy.array([ 1,  2,  3, -7])
     """
-    return ivy.current_backend().diff(x, n=n, axis=axis, prepend=prepend, append=append)
+    return ivy.current_backend().diff(x,
+                                      n=n,
+                                      axis=axis,
+                                      prepend=prepend,
+                                      append=append,
+                                      out=out)
 
 
 @handle_nestable
