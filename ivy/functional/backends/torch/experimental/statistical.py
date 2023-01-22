@@ -43,7 +43,7 @@ def nanmean(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nanmean(a, axis=axis, keepdim=keepdims, dtype=dtype, out=out)
+    return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
 
 
 nanmean_support_native_out = True
@@ -100,3 +100,21 @@ def quantile(
         return a
 
     return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
+
+
+def corrcoef(
+    x: torch.Tensor,
+    /,
+    *,
+    y: Optional[torch.Tensor] = None,
+    rowvar: Optional[bool] = True,
+    out: Optional[torch.tensor] = None,
+) -> torch.Tensor:
+    if y is None:
+        xarr = x
+    else:
+        axis = 0 if rowvar else 1
+        xarr = torch.concat([x, y], dim=axis)
+        xarr = xarr.T if not rowvar else xarr
+
+    return torch.corrcoef(xarr)

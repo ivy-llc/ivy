@@ -3,12 +3,13 @@ import logging
 
 # local
 import ivy
-from ivy.functional.experimental.sparse_array import (
+from ivy.functional.ivy.experimental.sparse_array import (
+    _is_valid_format,
+    _verify_bsc_components,
+    _verify_bsr_components,
     _verify_coo_components,
-    _verify_csr_components,
     _verify_csc_components,
-    _is_coo,
-    _is_csr,
+    _verify_csr_components,
 )
 
 
@@ -21,52 +22,69 @@ def native_sparse_array(
     data=None,
     *,
     coo_indices=None,
-    csr_crow_indices=None,
-    csr_col_indices=None,
-    csc_ccol_indices=None,
-    csc_row_indices=None,
+    crow_indices=None,
+    col_indices=None,
+    ccol_indices=None,
+    row_indices=None,
     values=None,
     dense_shape=None,
+    format="coo",
 ):
     ivy.assertions.check_exists(
         data,
         inverse=True,
         message=(
-            "data cannot be specified, Numpy does not support sparse         array"
-            " natively"
+            "data cannot be specified, Numpy does not support sparse array" " natively"
         ),
     )
-    if _is_coo(
+
+    if not _is_valid_format(
         coo_indices,
-        csr_crow_indices,
-        csr_col_indices,
-        csc_ccol_indices,
-        csc_row_indices,
+        crow_indices,
+        col_indices,
+        ccol_indices,
+        row_indices,
         values,
         dense_shape,
+        format,
     ):
-        _verify_coo_components(
-            indices=coo_indices, values=values, dense_shape=dense_shape
+        raise ivy.exceptions.IvyException(
+            "format should be one of the strings coo, csr, csc, bsr, and bsc."
         )
-    elif _is_csr(
-        coo_indices,
-        csr_crow_indices,
-        csr_col_indices,
-        csc_ccol_indices,
-        csc_row_indices,
-        values,
-        dense_shape,
-    ):
+
+    format = format.lower()
+
+    if format == "coo":
+        _verify_coo_components(
+            indices=coo_indices,
+            values=values,
+            dense_shape=dense_shape,
+        )
+    elif format == "csr":
         _verify_csr_components(
-            crow_indices=csr_crow_indices,
-            col_indices=csr_col_indices,
+            crow_indices=crow_indices,
+            col_indices=col_indices,
+            values=values,
+            dense_shape=dense_shape,
+        )
+    elif format == "bsr":
+        _verify_bsr_components(
+            crow_indices=crow_indices,
+            col_indices=col_indices,
+            values=values,
+            dense_shape=dense_shape,
+        )
+    elif format == "csc":
+        _verify_csc_components(
+            ccol_indices=ccol_indices,
+            row_indices=row_indices,
             values=values,
             dense_shape=dense_shape,
         )
     else:
-        _verify_csc_components(
-            ccol_indices=csc_ccol_indices,
-            row_indices=csc_row_indices,
+        _verify_bsc_components(
+            ccol_indices=ccol_indices,
+            row_indices=row_indices,
             values=values,
             dense_shape=dense_shape,
         )

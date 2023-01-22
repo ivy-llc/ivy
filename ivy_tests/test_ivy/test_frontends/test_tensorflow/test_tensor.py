@@ -21,7 +21,24 @@ CLASS_TREE = "ivy.functional.frontends.tensorflow.EagerTensor"
 @given(
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
-def test_array_property_device(
+def test_tensorflow_tensor_property_ivy_array(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = EagerTensor(data[0])
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
+    ret_gt = helpers.flatten_and_to_np(ret=data[0])
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="tensorflow",
+    )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_tensorflow_tensor_property_device(
     dtype_x,
 ):
     _, data = dtype_x
@@ -35,7 +52,7 @@ def test_array_property_device(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_ndarray_property_dtype(
+def test_tensorflow_tensor_property_dtype(
     dtype_x,
 ):
     dtype, data = dtype_x
@@ -49,7 +66,7 @@ def test_numpy_ndarray_property_dtype(
         ret_shape=True,
     ),
 )
-def test_numpy_ndarray_property_shape(
+def test_tensorflow_tensor_property_shape(
     dtype_x,
 ):
     dtype, data, shape = dtype_x
@@ -1256,9 +1273,11 @@ def test_tensorflow_instance_rmatmul(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_tensorflow_instance_array(
     dtype_and_x,
+    dtype,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
@@ -1276,10 +1295,12 @@ def test_tensorflow_instance_array(
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=[],
+        method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=[],
-        method_all_as_kwargs_np={},
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "dtype": dtype[0],
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )

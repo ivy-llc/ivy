@@ -8,9 +8,9 @@ from operator import mul
 
 # local
 import ivy
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtypes
 from . import general_helpers as gh
 from . import dtype_helpers, number_helpers
-import ivy.functional.backends.numpy as ivy_np  # ToDo should be removed.
 
 
 @st.composite
@@ -83,7 +83,7 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
 def dtype_and_values(
     draw,
     *,
-    available_dtypes=ivy_np.valid_dtypes,
+    available_dtypes=get_dtypes("valid"),
     num_arrays=1,
     abs_smallest_val=None,
     min_value=None,
@@ -237,144 +237,6 @@ def dtype_and_values(
 
 
 @st.composite
-def array_or_none(
-    draw,
-    *,
-    array_dtype,
-    num_arrays=1,
-    abs_smallest_val=None,
-    min_value=None,
-    max_value=None,
-    large_abs_safety_factor=1.1,
-    small_abs_safety_factor=1.1,
-    safety_factor_scale="linear",
-    allow_inf=False,
-    allow_nan=False,
-    exclude_min=False,
-    exclude_max=False,
-    min_num_dims=0,
-    max_num_dims=5,
-    min_dim_size=1,
-    max_dim_size=10,
-    shape=None,
-    shared_dtype=False,
-    ret_shape=False,
-    dtype=None,
-    array_api_dtypes=False,
-):
-    """
-    Draws either a list of arrays with elements corresponding to the given data type
-    or None values.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    array_dtype
-        Supported types are integer, float, valid, numeric, and unsigned
-    num_arrays
-        Number of arrays to be drawn.
-    abs_smallest_val
-        sets the absolute smallest value to be generated for float data types,
-        this has no effect on integer data types. If none, the default data type
-        absolute smallest value is used.
-    min_value
-        minimum value of elements in each array.
-    max_value
-        maximum value of elements in each array.
-    large_abs_safety_factor
-        A safety factor of 1 means that all values are included without limitation,
-
-        when a "linear" safety factor scaler is used,  a safety factor of 2 means
-        that only 50% of the range is included, a safety factor of 3 means that
-        only 33% of the range is included etc.
-
-        when a "log" safety factor scaler is used, a data type with maximum
-        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
-    small_abs_safety_factor
-        A safety factor of 1 means that all values are included without limitation,
-        this has no effect on integer data types.
-
-        when a "linear" safety factor scaler is used, a data type with minimum
-        representable number of 0.0001 and a safety factor of 2 transforms the
-        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
-
-        when a "log" safety factor scaler is used, a data type with minimum
-        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
-        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
-    safety_factor_scale
-        The operation to use for the safety factor scaling. Can be "linear" or "log".
-        Default value = "linear".
-    allow_inf
-        if True, allow inf in the arrays.
-    allow_nan
-        if True, allow Nans in the arrays.
-    exclude_min
-        if True, exclude the minimum limit.
-    exclude_max
-        if True, exclude the maximum limit.
-    min_num_dims
-        minimum size of the shape tuple.
-    max_num_dims
-        maximum size of the shape tuple.
-    min_dim_size
-        minimum value of each integer in the shape tuple.
-    max_dim_size
-        maximum value of each integer in the shape tuple.
-    shape
-        shape of the arrays in the list.
-    shared_dtype
-        if True, if dtype is None, a single shared dtype is drawn for all arrays.
-    ret_shape
-        if True, the shape of the arrays is also returned.
-    dtype
-        A list of data types for the given arrays.
-    array_api_dtypes
-        if True, use data types that can be promoted with the array_api_promotion
-        table.
-
-    Returns
-    -------
-    A strategy that draws a list of dtype and arrays (as lists).
-    """
-    selected_type = draw(st.sampled_from((array_dtype, None)))
-    if selected_type is None:
-        dtype, values = [None], [None]
-    else:
-        res = draw(
-            dtype_and_values(
-                available_dtypes=dtype_helpers.get_dtypes(array_dtype),
-                num_arrays=num_arrays,
-                abs_smallest_val=abs_smallest_val,
-                min_value=min_value,
-                max_value=max_value,
-                large_abs_safety_factor=large_abs_safety_factor,
-                small_abs_safety_factor=small_abs_safety_factor,
-                safety_factor_scale=safety_factor_scale,
-                allow_inf=allow_inf,
-                allow_nan=allow_nan,
-                exclude_min=exclude_min,
-                exclude_max=exclude_max,
-                min_num_dims=min_num_dims,
-                max_num_dims=max_num_dims,
-                min_dim_size=min_dim_size,
-                max_dim_size=max_dim_size,
-                shape=shape,
-                shared_dtype=shared_dtype,
-                ret_shape=ret_shape,
-                dtype=dtype,
-                array_api_dtypes=array_api_dtypes,
-            )
-        )
-        dtype, values = res[0], res[1]
-        if ret_shape:
-            shape = res[2]
-            return dtype, values, shape
-    return dtype, values
-
-
-@st.composite
 def dtype_values_axis(
     draw,
     *,
@@ -403,6 +265,7 @@ def dtype_values_axis(
     min_axes_size=1,
     max_axes_size=None,
     force_int_axis=False,
+    force_tuple_axis=False,
     ret_shape=False,
 ):
     """Draws a list of arrays with elements from the given data type,
@@ -472,8 +335,10 @@ def dtype_values_axis(
         minimum size of the axis tuple.
     max_axes_size
         maximum size of the axis tuple.
+    force_tuple_axis
+        if true, all axis will be returned as a tuple.
     force_int_axis
-        if True, and only one axis is drawn, the returned axis will be an integer.
+        if true and only one axis is drawn, the returned axis will be an int.
     shape
         shape of the array. if None, a random shape is drawn.
     shared_dtype
@@ -524,6 +389,7 @@ def dtype_values_axis(
                     max_size=max_axes_size,
                     allow_neg=allow_neg_axes,
                     force_int=force_int_axis,
+                    force_tuple=force_tuple_axis,
                 )
             )
     else:
@@ -538,7 +404,7 @@ def array_indices_axis(
     draw,
     *,
     array_dtypes,
-    indices_dtypes=ivy_np.valid_int_dtypes,
+    indices_dtypes=get_dtypes("valid"),
     disable_random_axis=False,
     axis_zero=False,
     allow_inf=False,
@@ -661,12 +527,15 @@ def array_indices_axis(
 @st.composite
 def arrays_and_axes(
     draw,
+    available_dtypes=get_dtypes("float"),
     allow_none=False,
-    min_num_dims=0,
+    min_num_dims=1,
     max_num_dims=5,
     min_dim_size=1,
     max_dim_size=10,
     num=2,
+    returndtype=False,
+    force_int_axis=False,
 ):
     shapes = list()
     for _ in range(num):
@@ -680,20 +549,34 @@ def arrays_and_axes(
             )
         )
         shapes.append(shape)
+    if isinstance(available_dtypes, st._internal.SearchStrategy):
+        available_dtypes = draw(available_dtypes)
+
+    dtype = draw(
+        dtype_helpers.array_dtypes(num_arrays=num, available_dtypes=available_dtypes)
+    )
     arrays = list()
     for shape in shapes:
         arrays.append(
-            draw(
-                array_values(dtype="int32", shape=shape, min_value=-200, max_value=200)
-            )
+            draw(array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20))
         )
-    all_axes_ranges = list()
-    for shape in shapes:
-        if None in all_axes_ranges:
-            all_axes_ranges.append(st.integers(0, len(shape) - 1))
+    if force_int_axis:
+        if len(shape) <= 2:
+            axes = draw(st.one_of(st.integers(0, len(shape) - 1), st.none()))
         else:
-            all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
-    axes = draw(st.tuples(*all_axes_ranges))
+            axes = draw(st.integers(0, len(shape) - 1))
+    else:
+        all_axes_ranges = list()
+        for shape in shapes:
+            if None in all_axes_ranges:
+                all_axes_ranges.append(st.integers(0, len(shape) - 1))
+            else:
+                all_axes_ranges.append(
+                    st.one_of(st.none(), st.integers(0, len(shape) - 1))
+                )
+        axes = draw(st.tuples(*all_axes_ranges))
+    if returndtype:
+        return dtype, arrays, axes
     return arrays, axes
 
 
@@ -801,9 +684,7 @@ def array_values(
         dtype = draw(dtype)
         dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
 
-    if "complex" in dtype:
-        dtype = "float32" if dtype == "complex64" else "float64"
-    if "float" in dtype:
+    if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
         dtype_info = ivy.finfo(dtype)
     elif "int" in dtype:
@@ -849,6 +730,8 @@ def array_values(
                 "bfloat16": {"cast_type": "float32", "width": 32},
                 "float32": {"cast_type": "float32", "width": 32},
                 "float64": {"cast_type": "float64", "width": 64},
+                "complex64": {"cast_type": "complex64", "width": 32},
+                "complex128": {"cast_type": "complex128", "width": 64},
             }
             # The smallest possible value is determined by one of the arguments
             if min_value > -abs_smallest_val or max_value < abs_smallest_val:
@@ -897,12 +780,16 @@ def array_values(
                         exclude_max=exclude_max,
                     ),
                 )
+            if "complex" in dtype:
+                float_strategy = st.tuples(float_strategy, float_strategy)
             values = draw(
                 list_of_length(
                     x=float_strategy,
                     length=size,
                 )
             )
+            if "complex" in dtype:
+                values = [complex(*v) for v in values]
     else:
         values = draw(list_of_length(x=st.booleans(), length=size))
 
@@ -1020,7 +907,7 @@ def arrays_for_pooling(draw, min_dims, max_dims, min_side, max_side):
     )
     dtype, x = draw(
         dtype_and_values(
-            available_dtypes=dtype_helpers.get_dtypes("float"),
+            available_dtypes=get_dtypes("float"),
             shape=in_shape,
             num_arrays=1,
             max_value=100,

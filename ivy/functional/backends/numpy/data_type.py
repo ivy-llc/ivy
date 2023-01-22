@@ -110,23 +110,15 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
 
 
 def broadcast_to(
-    x: np.ndarray, shape: Union[ivy.NativeShape, Sequence[int]]
+    x: np.ndarray,
+    /,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if x.ndim > len(shape):
         return np.broadcast_to(x.reshape([-1]), shape)
     return np.broadcast_to(x, shape)
-
-
-def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype, /) -> bool:
-    if isinstance(from_, np.ndarray):
-        from_ = str(from_.dtype)
-    from_ = str(from_)
-    to = str(to)
-    if "bool" in from_ and (("int" in to) or ("float" in to)):
-        return False
-    if "int" in from_ and "float" in to:
-        return False
-    return np.can_cast(from_, to)
 
 
 @_handle_nestable_dtype_info
@@ -161,10 +153,18 @@ def as_ivy_dtype(dtype_in: Union[np.dtype, str, bool, int, float]) -> ivy.Dtype:
         return ivy.default_int_dtype()
     if dtype_in is float:
         return ivy.default_float_dtype()
+    if dtype_in is complex:
+        return ivy.default_complex_dtype()
     if dtype_in is bool:
         return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
-        return ivy.Dtype(dtype_in)
+        if dtype_in in native_dtype_dict:
+            return ivy.Dtype(dtype_in)
+        else:
+            raise ivy.exceptions.IvyException(
+                "Cannot convert to ivy dtype."
+                f" {dtype_in} is not supported by NumPy backend."
+            )
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
@@ -174,6 +174,8 @@ def as_native_dtype(dtype_in: Union[np.dtype, str, bool, int, float]) -> np.dtyp
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
         return ivy.default_float_dtype(as_native=True)
+    if dtype_in is complex:
+        return ivy.default_complex_dtype(as_native=True)
     if dtype_in is bool:
         return np.dtype("bool")
     if not isinstance(dtype_in, str):

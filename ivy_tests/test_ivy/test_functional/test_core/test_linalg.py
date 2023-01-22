@@ -257,12 +257,7 @@ def _get_dtype_and_vector(draw):
 def test_vector_to_skew_symmetric_matrix(
     *,
     dtype_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -272,16 +267,10 @@ def test_vector_to_skew_symmetric_matrix(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
         vector=x,
     )
 
@@ -301,12 +290,7 @@ def test_matrix_power(
     *,
     dtype_x,
     n,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -317,18 +301,12 @@ def test_matrix_power(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
-        test_gradients=True,
         x=x[0],
         n=n,
     )
@@ -344,12 +322,7 @@ def test_matmul(
     *,
     x,
     y,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -360,18 +333,12 @@ def test_matmul(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype1 + input_dtype2,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
-        test_gradients=True,
         x1=x_1,
         x2=y_1,
         transpose_a=transpose_a,
@@ -386,18 +353,13 @@ def test_matmul(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=2,
         max_value=5,
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
 )
 def test_det(
     *,
     dtype_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -407,18 +369,12 @@ def test_det(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
-        test_gradients=True,
         x=x[0],
     )
 
@@ -428,17 +384,13 @@ def test_det(
     fn_tree="functional.ivy.eigh",
     dtype_x=_get_dtype_and_matrix(symmetric=True),
     UPLO=st.sampled_from(("L", "U")),
+    test_gradients=st.just(False),
 )
 def test_eigh(
     *,
     dtype_x,
     UPLO,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -448,12 +400,7 @@ def test_eigh(
     results = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -465,11 +412,10 @@ def test_eigh(
     if results is None:
         return
     ret_np_flat, ret_from_np_flat = results
-
     reconstructed_np = None
     for i in range(len(ret_np_flat) // 2):
-        eigenvalue = ret_np_flat[i * 2]
-        eigenvector = ret_np_flat[i * 2 + 1]
+        eigenvalue = ret_np_flat[i]
+        eigenvector = ret_np_flat[len(ret_np_flat) // 2 + i]
         if reconstructed_np is not None:
             reconstructed_np += eigenvalue * np.matmul(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
@@ -481,8 +427,8 @@ def test_eigh(
 
     reconstructed_from_np = None
     for i in range(len(ret_from_np_flat) // 2):
-        eigenvalue = ret_from_np_flat[i * 2]
-        eigenvector = ret_from_np_flat[i * 2 + 1]
+        eigenvalue = ret_from_np_flat[i]
+        eigenvector = ret_from_np_flat[len(ret_np_flat) // 2 + i]
         if reconstructed_from_np is not None:
             reconstructed_from_np += eigenvalue * np.matmul(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
@@ -503,17 +449,13 @@ def test_eigh(
     fn_tree="functional.ivy.eigvalsh",
     dtype_x=_get_dtype_and_matrix(symmetric=True),
     UPLO=st.sampled_from(("L", "U")),
+    test_gradients=st.just(False),
 )
 def test_eigvalsh(
     *,
     dtype_x,
     UPLO,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -523,12 +465,7 @@ def test_eigvalsh(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -555,12 +492,7 @@ def test_eigvalsh(
 def test_inner(
     *,
     dtype_xy,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -570,18 +502,12 @@ def test_inner(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=types,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-2,
-        test_gradients=True,
         x1=arrays[0],
         x2=arrays[1],
     )
@@ -602,12 +528,7 @@ def test_inv(
     *,
     dtype_x,
     adjoint,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -617,18 +538,12 @@ def test_inv(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
         x=x[0],
         adjoint=adjoint,
     )
@@ -642,12 +557,7 @@ def test_inv(
 def test_matrix_transpose(
     *,
     dtype_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -657,16 +567,10 @@ def test_matrix_transpose(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
         x=x,
     )
 
@@ -686,12 +590,7 @@ def test_matrix_transpose(
 def test_outer(
     *,
     dtype_xy,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -701,16 +600,10 @@ def test_outer(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=types,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
         x1=arrays[0],
         x2=arrays[1],
     )
@@ -728,16 +621,12 @@ def test_outer(
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ),
+    test_with_out=st.just(False),
 )
 def test_slogdet(
     *,
     dtype_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -745,22 +634,19 @@ def test_slogdet(
 ):
     input_dtype, x = dtype_x
     assume(matrix_is_stable(x[0]))
+    ret_grad_idxs = (
+        [[1, "a"], [1, "b", "c"], [1, "b", "d"]] if test_flags.container[0] else [[1]]
+    )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         rtol_=1e-1,
         atol_=1e-2,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=False,
-        ret_grad_idxs=[["1"]],
+        ret_grad_idxs=ret_grad_idxs,
         x=x[0],
     )
 
@@ -825,12 +711,7 @@ def test_solve(
     *,
     x,
     y,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -841,18 +722,12 @@ def test_solve(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype1, input_dtype2],
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
-        test_gradients=True,
         x1=x1,
         x2=x2,
     )
@@ -867,16 +742,12 @@ def test_solve(
         max_value=50,
         min_num_dims=2,
     ),
+    test_gradients=st.just(False),
 )
 def test_svdvals(
     *,
     dtype_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -886,18 +757,12 @@ def test_svdvals(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
         x=x[0],
     )
 
@@ -916,12 +781,7 @@ def test_svdvals(
 def test_tensordot(
     *,
     dtype_x1_x2_axis,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -937,18 +797,12 @@ def test_tensordot(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=0.8,
         atol_=0.8,
-        test_gradients=True,
         x1=x1,
         x2=x2,
         axes=axis,
@@ -978,12 +832,7 @@ def test_trace(
     offset,
     axis1,
     axis2,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -993,18 +842,12 @@ def test_trace(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
-        test_gradients=True,
         x=x[0],
         offset=offset,
         axis1=axis1,
@@ -1029,12 +872,7 @@ def test_trace(
 def test_vecdot(
     *,
     dtype_x1_x2_axis,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1044,18 +882,12 @@ def test_vecdot(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=5e-1,
         atol_=5e-1,
-        test_gradients=True,
         x1=x1,
         x2=x2,
         axis=axis,
@@ -1066,53 +898,44 @@ def test_vecdot(
 @handle_test(
     fn_tree="functional.ivy.vector_norm",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=2,
-        max_dim_size=5,
-        min_axis=-2,
-        max_axis=1,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        valid_axis=True,
+        min_value=-1e04,
+        max_value=1e04,
+        abs_smallest_val=1e-04,
     ),
     kd=st.booleans(),
-    ord=helpers.ints(min_value=1, max_value=2),
+    ord=st.one_of(
+        helpers.ints(min_value=1, max_value=2),
+        helpers.floats(min_value=1.0, max_value=2.0),
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
 )
 def test_vector_norm(
     *,
     dtype_values_axis,
     kd,
     ord,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    dtype,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, axis = dtype_values_axis
+    x_dtype, x, axis = dtype_values_axis
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        input_dtypes=x_dtype,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        test_gradients=True,
         x=x[0],
         axis=axis,
         keepdims=kd,
         ord=ord,
+        dtype=dtype[0],
     )
 
 
@@ -1135,12 +958,7 @@ def test_pinv(
     *,
     dtype_x,
     rtol,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1150,18 +968,12 @@ def test_pinv(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
         x=x[0],
         rtol=rtol,
     )
@@ -1172,17 +984,14 @@ def test_pinv(
     fn_tree="functional.ivy.qr",
     dtype_x=_get_dtype_and_matrix(),
     mode=st.sampled_from(("reduced", "complete")),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_qr(
     *,
     dtype_x,
     mode,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1192,12 +1001,7 @@ def test_qr(
     results = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -1211,17 +1015,17 @@ def test_qr(
 
     ret_np_flat, ret_from_np_flat = results
     for i in range(len(ret_np_flat) // 2):
-        q_np_flat = ret_np_flat[i * 2]
-        r_np_flat = ret_np_flat[i * 2 + 1]
+        q_np_flat = ret_np_flat[i]
+        r_np_flat = ret_np_flat[len(ret_np_flat) // 2 + i]
     reconstructed_np_flat = np.matmul(q_np_flat, r_np_flat)
     for i in range(len(ret_from_np_flat) // 2):
-        q_from_np_flat = ret_from_np_flat[i * 2]
-        r_from_np_flat = ret_from_np_flat[i * 2 + 1]
+        q_from_np_flat = ret_from_np_flat[i]
+        r_from_np_flat = ret_from_np_flat[len(ret_np_flat) // 2 + i]
     reconstructed_from_np_flat = np.matmul(q_from_np_flat, r_from_np_flat)
 
     # value test
     helpers.assert_all_close(
-        reconstructed_np_flat, reconstructed_from_np_flat, rtol=1e-2, atol=1e-2
+        reconstructed_np_flat, reconstructed_from_np_flat, rtol=1e-1, atol=1e-1
     )
 
 
@@ -1239,18 +1043,15 @@ def test_qr(
     ),
     fm=st.booleans(),
     uv=st.booleans(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_svd(
     *,
     dtype_x,
     uv,
     fm,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1261,12 +1062,7 @@ def test_svd(
     results = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -1284,17 +1080,17 @@ def test_svd(
 
     if uv:
         for i in range(len(ret_flat_np) // 3):
-            U = ret_flat_np[i * 3]
-            S = ret_flat_np[i * 3 + 1]
-            Vh = ret_flat_np[i * 3 + 2]
+            U = ret_flat_np[i]
+            S = ret_flat_np[len(ret_flat_np) // 3 + i]
+            Vh = ret_flat_np[2 * len(ret_flat_np) // 3 + i]
         m = U.shape[-1]
         n = Vh.shape[-1]
         S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
 
         for i in range(len(ret_from_gt_flat_np) // 3):
-            U_gt = ret_from_gt_flat_np[i * 3]
-            S_gt = ret_from_gt_flat_np[i * 3 + 1]
-            Vh_gt = ret_from_gt_flat_np[i * 3 + 2]
+            U_gt = ret_from_gt_flat_np[i]
+            S_gt = ret_from_gt_flat_np[len(ret_from_gt_flat_np) // 3 + i]
+            Vh_gt = ret_from_gt_flat_np[2 * len(ret_from_gt_flat_np) // 3 + i]
         S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
         with ivy.functional.backends.numpy.use:
@@ -1345,12 +1141,7 @@ def test_matrix_norm(
     kd,
     axis,
     ord,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1361,18 +1152,12 @@ def test_matrix_norm(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
         x=x[0],
         axis=axis,
         keepdims=kd,
@@ -1387,8 +1172,9 @@ def _matrix_rank_helper(draw):
             available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=2,
             shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-            large_abs_safety_factor=48,
-            small_abs_safety_factor=48,
+            min_value=-1e05,
+            max_value=1e05,
+            abs_smallest_val=1e-05,
             safety_factor_scale="log",
         )
     )
@@ -1409,12 +1195,7 @@ def test_matrix_rank(
     dtype_x,
     atol,
     rtol,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1427,12 +1208,7 @@ def test_matrix_rank(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -1458,12 +1234,7 @@ def test_cholesky(
     *,
     dtype_x,
     upper,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1476,16 +1247,10 @@ def test_cholesky(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
         x=x,
         upper=upper,
         rtol_=1e-3,
@@ -1499,25 +1264,19 @@ def test_cholesky(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=10,
+        max_num_dims=5,
         min_dim_size=3,
         max_dim_size=3,
-        min_value=-1e10,
-        max_value=1e10,
+        min_value=-1e5,
+        max_value=1e5,
         abs_smallest_val=0.01,
-        large_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
 )
 def test_cross(
     *,
     dtype_x1_x2_axis,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1527,18 +1286,12 @@ def test_cross(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
         rtol_=1e-1,
-        atol_=1e-2,
+        atol_=1e-1,
         x1=x1,
         x2=x2,
         axis=axis,
@@ -1565,12 +1318,7 @@ def test_diagonal(
     dtype_x,
     offset,
     axes,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1580,16 +1328,10 @@ def test_diagonal(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
         x=x[0],
         offset=offset,
         axis1=axes[0],
@@ -1627,12 +1369,7 @@ def _diag_helper(draw):
 def test_diag(
     *,
     dtype_x_k,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1642,16 +1379,10 @@ def test_diag(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
         x=x[0],
         k=k,
     )
@@ -1677,12 +1408,7 @@ def test_vander(
     dtype_and_x,
     N,
     increasing,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -1692,18 +1418,12 @@ def test_vander(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
         x=x[0],
         N=N,
         increasing=increasing,

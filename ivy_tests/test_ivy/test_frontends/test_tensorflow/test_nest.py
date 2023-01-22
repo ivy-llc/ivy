@@ -13,27 +13,23 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     expand_composite=st.booleans(),
     use_array=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_flatten(
     *,
     dtype_and_x,
     expand_composite,
     use_array,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
-    num_positional_args,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         structure=x[0] if use_array else x[0].tolist(),

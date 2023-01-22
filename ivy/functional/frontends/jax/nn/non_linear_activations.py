@@ -176,7 +176,7 @@ def leaky_relu(x, negative_slope=0.01):
 @to_ivy_arrays_and_back
 def log_sigmoid(x):
     x = _type_conversion(x)
-    return -ivy.softplus(-x).astype(x.dtype)
+    return ivy.negative(ivy.softplus(ivy.negative(x))).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -302,6 +302,13 @@ def softmax(x, axis=-1):
 def softplus(x):
     x = _type_conversion(x)
     return ivy.softplus(x).astype(x.dtype)
+
+
+@to_ivy_arrays_and_back
+def selu(x):
+    alpha = 1.6732632423543772848170429916717
+    scale = 1.0507009873554804934193349852946
+    return scale * elu(x, alpha)
 
 
 @to_ivy_arrays_and_back

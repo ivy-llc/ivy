@@ -7,13 +7,17 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-def add(
+@from_zero_dim_arrays_to_scalar
+def _add(
     x1,
     x2,
     /,
@@ -32,10 +36,12 @@ def add(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-def subtract(
+@from_zero_dim_arrays_to_scalar
+def _subtract(
     x1,
     x2,
     /,
@@ -54,10 +60,12 @@ def subtract(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-def divide(
+@from_zero_dim_arrays_to_scalar
+def _divide(
     x1,
     x2,
     /,
@@ -76,13 +84,15 @@ def divide(
     return ret
 
 
-true_divide = divide
+_true_divide = _divide
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-def multiply(
+@from_zero_dim_arrays_to_scalar
+def _multiply(
     x1,
     x2,
     /,
@@ -101,10 +111,12 @@ def multiply(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-def power(
+@from_zero_dim_arrays_to_scalar
+def _power(
     x1,
     x2,
     /,
@@ -123,10 +135,12 @@ def power(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-def float_power(
+@from_zero_dim_arrays_to_scalar
+def _float_power(
     x1,
     x2,
     /,
@@ -147,6 +161,7 @@ def float_power(
 
 
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def vdot(
     a,
     b,
@@ -156,10 +171,12 @@ def vdot(
     return ivy.multiply(a, b).sum()
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-def positive(
+@from_zero_dim_arrays_to_scalar
+def _positive(
     x,
     /,
     out=None,
@@ -176,10 +193,12 @@ def positive(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-def negative(
+@from_zero_dim_arrays_to_scalar
+def _negative(
     x,
     /,
     out=None,
@@ -196,10 +215,12 @@ def negative(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-def floor_divide(
+@from_zero_dim_arrays_to_scalar
+def _floor_divide(
     x1,
     x2,
     /,
@@ -220,10 +241,12 @@ def floor_divide(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-def reciprocal(
+@from_zero_dim_arrays_to_scalar
+def _reciprocal(
     x,
     /,
     out=None,
@@ -234,18 +257,20 @@ def reciprocal(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    if dtype is None:
+        dtype = ivy.as_ivy_dtype(x.dtype)
     ret = ivy.reciprocal(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+    return ret.astype(dtype)
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-def mod(
+@from_zero_dim_arrays_to_scalar
+def _mod(
     x1,
     x2,
     /,
@@ -261,6 +286,32 @@ def mod(
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
         x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.remainder(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _fmod(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
+        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
+    ret = ivy.fmod(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret

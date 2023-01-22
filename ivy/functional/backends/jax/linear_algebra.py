@@ -270,7 +270,11 @@ def pinv(
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def qr(
-    x: JaxArray, /, *, mode: str = "reduced", out: Optional[JaxArray] = None
+    x: JaxArray,
+    /,
+    *,
+    mode: str = "reduced",
+    out: Optional[Tuple[JaxArray, JaxArray]] = None,
 ) -> Tuple[JaxArray, JaxArray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
@@ -385,20 +389,25 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    keepdims: Optional[bool] = False,
+    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if dtype and x.dtype != dtype:
+        x = x.astype(dtype)
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if axis is None:
         jnp_normalized_vector = jnp.linalg.norm(jnp.ravel(x), ord, axis, keepdims)
     else:
-        jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
-
-    if jnp_normalized_vector.shape == ():
-        ret = jnp.expand_dims(jnp_normalized_vector, 0)
-    else:
-        ret = jnp_normalized_vector
-    return ret
+        if isinstance(ord, (int, float)) and ord != 0:
+            jnp_normalized_vector = jnp.sum(
+                jnp.abs(x) ** ord, axis=axis, keepdims=keepdims
+            ) ** (1.0 / ord)
+        else:
+            jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
+    return jnp_normalized_vector
 
 
 # Extra #

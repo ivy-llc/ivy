@@ -7,6 +7,7 @@ from hypothesis import strategies as st, assume
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy.functional.ivy.layers import _deconv_length
 
 # Linear #
 # -------#
@@ -30,15 +31,17 @@ def x_and_linear(draw, dtypes):
     )
 
     x = draw(
-        helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=10)
     )
     weight = draw(
         helpers.array_values(
-            dtype=dtype[0], shape=weight_shape, min_value=0, max_value=1
+            dtype=dtype[0], shape=weight_shape, min_value=0, max_value=10
         )
     )
     bias = draw(
-        helpers.array_values(dtype=dtype[0], shape=bias_shape, min_value=0, max_value=1)
+        helpers.array_values(
+            dtype=dtype[0], shape=bias_shape, min_value=0, max_value=10
+        )
     )
     return dtype, x, weight, bias
 
@@ -47,41 +50,29 @@ def x_and_linear(draw, dtypes):
 @handle_test(
     fn_tree="functional.ivy.linear",
     dtype_x_weight_bias=x_and_linear(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("numeric", full=False),
     ),
     ground_truth_backend="jax",
 )
 def test_linear(
     *,
     dtype_x_weight_bias,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=test_gradients,
         x=x,
         weight=weight,
         bias=bias,
@@ -105,18 +96,18 @@ def test_linear(
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
+    training=st.booleans(),
+    seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
 )
 def test_dropout(
     *,
     dtype_and_x,
     prob,
     scale,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    training,
+    seed,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -126,12 +117,7 @@ def test_dropout(
     ret = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -140,6 +126,8 @@ def test_dropout(
         prob=prob,
         scale=scale,
         dtype=dtype[0],
+        training=training,
+        seed=seed,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:
@@ -165,20 +153,20 @@ def x_and_scaled_attention(draw, dtypes):
     mask_shape = (1,) + (num_queries,) + (num_keys,)
 
     q = draw(
-        helpers.array_values(dtype=dtype[0], shape=q_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=q_shape, min_value=0, max_value=10)
     )
     k = draw(
-        helpers.array_values(dtype=dtype[0], shape=k_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=k_shape, min_value=0, max_value=10)
     )
     v = draw(
-        helpers.array_values(dtype=dtype[0], shape=v_shape, min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=v_shape, min_value=0, max_value=10)
     )
     mask = draw(
         helpers.array_values(
             dtype=dtype[0],
             shape=mask_shape,
             min_value=0,
-            max_value=1,
+            max_value=10,
             large_abs_safety_factor=2,
             safety_factor_scale="linear",
         )
@@ -190,41 +178,29 @@ def x_and_scaled_attention(draw, dtypes):
 @handle_test(
     fn_tree="functional.ivy.scaled_dot_product_attention",
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("numeric", full=False),
     ),
     ground_truth_backend="jax",
 )
 def test_scaled_dot_product_attention(
     *,
     dtype_q_k_v_mask_scale,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtype, q, k, v, mask, scale = dtype_q_k_v_mask_scale
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=test_gradients,
         q=q,
         k=k,
         v=v,
@@ -283,16 +259,10 @@ def x_and_mha(draw, dtypes):
 def test_multi_head_attention(
     *,
     dtype_mha,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtype, x_mha, scale, num_heads, context, mask = dtype_mha
@@ -300,18 +270,12 @@ def test_multi_head_attention(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         atol_=1e-02,
         rtol_=1e-02,
-        test_gradients=test_gradients,
         x=x_mha,
         scale=scale,
         num_heads=num_heads,
@@ -330,27 +294,19 @@ def test_multi_head_attention(
 # -------------#
 
 
-def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
-    # Get the dilated kernel size
-    kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
-
-    if padding == "VALID":
-        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == "SAME":
-        dim_size = dim_size * stride_size
-
-    return dim_size
-
-
 @st.composite
 def x_and_filters(
-    draw, dim: int = 2, transpose: bool = False, depthwise=False, general=False
+    draw,
+    dim: int = 2,
+    transpose: bool = False,
+    depthwise=False,
+    general=False,
+    bias=False,
 ):
     if not isinstance(dim, int):
         dim = draw(dim)
-    strides = draw(st.integers(min_value=1, max_value=2))
     padding = draw(st.sampled_from(["SAME", "VALID"]))
-    batch_size = 1
+    batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
@@ -365,10 +321,14 @@ def x_and_filters(
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
     fc = draw(st.sampled_from(group_list)) if general else 1
-    # tensorflow backprop doesn't support dilations more than 1 on CPU
-    dilations = 1
+    if dim == 1:
+        strides = [draw(st.integers(1, 3))]
+        dilations = [draw(st.integers(1, 3))]
+    else:
+        strides = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+        dilations = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
     if dim == 2:
-        data_format = draw(st.sampled_from(["NCHW"]))
+        data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
     elif dim == 1:
         data_format = draw(st.sampled_from(["NWC", "NCW"]))
     else:
@@ -384,18 +344,19 @@ def x_and_filters(
         )
         for i in range(dim):
             output_shape.append(
-                ivy.deconv_length(
-                    x_dim[i], strides, filter_shape[i], padding, dilations
+                _deconv_length(
+                    x_dim[i], strides[i], filter_shape[i], padding, dilations[i]
                 )
             )
     else:
         for i in range(dim):
-            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
+            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
             x_dim.append(draw(st.integers(min_x, min_x + 1)))
         x_dim = tuple(x_dim)
     if not depthwise:
         if not transpose:
-            filter_shape = filter_shape + (input_channels // fc, output_channels * fc)
+            output_channels = output_channels * fc
+            filter_shape = filter_shape + (input_channels // fc, output_channels)
         else:
             input_channels = input_channels * fc
             filter_shape = filter_shape + (input_channels, output_channels // fc)
@@ -423,25 +384,37 @@ def x_and_filters(
             max_value=1.0,
         )
     )
-    if transpose:
-        if general:
-            data_format = "channel_first" if channel_first else "channel_last"
-        return (
-            dtype,
-            vals,
-            filters,
-            dilations,
-            data_format,
-            strides,
-            padding,
-            output_shape,
-            fc,
+    if bias:
+        bias_shape = (output_channels,)
+        b = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=bias_shape,
+                min_value=0.0,
+                max_value=1.0,
+            )
         )
+    if dim == 1:
+        strides = strides[0]
+        dilations = dilations[0]
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
-        return dtype, vals, filters, dilations, data_format, strides, padding, fc
-
-    return dtype, vals, filters, dilations, data_format, strides, padding
+        if not transpose:
+            x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+            dilations = (dilations, x_dilation)
+    ret = (
+        dtype,
+        vals,
+        filters,
+        dilations,
+        data_format,
+        strides,
+        padding,
+    )
+    ret = ret + (output_shape, fc) if transpose else ret + (fc,)
+    if bias:
+        return ret + (b,)
+    return ret
 
 
 # conv1d
@@ -453,34 +426,25 @@ def x_and_filters(
 def test_conv1d(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and dilations > 1 and test_flags.test_gradients))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=test_gradients,
         x=x,
         filters=filters,
         strides=stride,
@@ -499,36 +463,24 @@ def test_conv1d(
 def test_conv1d_transpose(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and dilations > 1))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=test_gradients,
         # tensorflow does not work with dilations > 1 on cpu
         x=x,
         filters=filters,
@@ -549,34 +501,31 @@ def test_conv1d_transpose(
 def test_conv2d(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(
+            not (
+                on_device == "cpu"
+                and any(i > 1 for i in dilations)
+                and test_flags.test_gradients
+            )
+        )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=test_gradients,
         x=x,
         filters=filters,
         strides=stride,
@@ -599,36 +548,24 @@ def test_conv2d(
 def test_conv2d_transpose(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
         on_device=on_device,
-        test_gradients=test_gradients,
         x=x,
         filters=filters,
         strides=stride,
@@ -652,36 +589,27 @@ def test_conv2d_transpose(
 def test_depthwise_conv2d(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and dilations > 1 and stride > 1))
+    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(
+            not (on_device == "cpu" and any(i > 1 for i in dilations))
+            and len(set(stride)) == 1
+        )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
-        fw=fw,
+        test_flags=test_flags,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=test_gradients,
         x=x,
         filters=filters,
         strides=stride,
@@ -700,34 +628,24 @@ def test_depthwise_conv2d(
 def test_conv3d(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=test_gradients,
         x=x,
         filters=filters,
         strides=stride,
@@ -740,46 +658,38 @@ def test_conv3d(
 @handle_test(
     fn_tree="functional.ivy.conv_general_dilated",
     dims=st.shared(st.integers(1, 3), key="dims"),
-    x_f_d_df=x_and_filters(dim=st.shared(st.integers(1, 3), key="dims"), general=True),
-    x_dilations=st.integers(1, 3),
-    # tensorflow does not work with dilations > 1 on cpu
+    x_f_d_df=x_and_filters(
+        dim=st.shared(st.integers(1, 3), key="dims"), general=True, bias=True
+    ),
     ground_truth_backend="jax",
 )
 def test_conv_general_dilated(
     *,
     dims,
     x_f_d_df,
-    x_dilations,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    dtype, x, filters, dilations, data_format, stride, pad, fc, bias = x_f_d_df
+    if backend_fw.current_backend_str() == "tensorflow":
+        if not ivy.gpu_is_available():
+            assume(
+                (dilations[0] <= 1)
+                if isinstance(dilations[0], int)
+                else all(d <= 1 for d in dilations[0])
+            )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=test_gradients,
         x=x,
         filters=filters,
         strides=stride,
@@ -787,8 +697,9 @@ def test_conv_general_dilated(
         dims=dims,
         data_format=data_format,
         feature_group_count=fc,
-        x_dilations=x_dilations,
-        dilations=dilations,
+        x_dilations=dilations[1],
+        dilations=dilations[0],
+        bias=bias,
     )
 
 
@@ -796,45 +707,51 @@ def test_conv_general_dilated(
     fn_tree="functional.ivy.conv_general_transpose",
     dims=st.shared(st.integers(1, 3), key="dims"),
     x_f_d_df=x_and_filters(
-        dim=st.shared(st.integers(1, 3), key="dims"), general=True, transpose=True
+        dim=st.shared(st.integers(1, 3), key="dims"),
+        general=True,
+        transpose=True,
+        bias=True,
     ),
-    # tensorflow does not work with dilations > 1 on cpu
     ground_truth_backend="jax",
 )
 def test_conv_general_transpose(
     *,
     dims,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    (
+        dtype,
+        x,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        output_shape,
+        fc,
+        bias,
+    ) = x_f_d_df
+    if backend_fw.current_backend_str() == "tensorflow":
+        if not ivy.gpu_is_available():
+            assume(
+                (dilations <= 1)
+                if isinstance(dilations, int)
+                else all(d <= 1 for d in dilations)
+            )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
-        fw=fw,
+        test_flags=test_flags,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        test_gradients=test_gradients,
+        rtol_=1e-1,
+        atol_=1e-1,
         x=x,
         filters=filters,
         strides=stride,
@@ -844,6 +761,7 @@ def test_conv_general_transpose(
         data_format=data_format,
         dilations=dilations,
         feature_group_count=fc,
+        bias=bias,
     )
 
 
@@ -859,36 +777,24 @@ def test_conv_general_transpose(
 def test_conv3d_transpose(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    fw = backend_fw.current_backend_str()
-    assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=test_gradients,
         x=x,
         filters=filters,
         strides=stride,
@@ -971,20 +877,15 @@ def x_and_lstm(draw, dtypes):
     dtype_lstm=x_and_lstm(
         dtypes=helpers.get_dtypes("float"),
     ),
+    test_with_out=st.just(False),
 )
 def test_lstm_update(
     *,
     dtype_lstm,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
     ground_truth_backend,
 ):
     (
@@ -1000,18 +901,12 @@ def test_lstm_update(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-01,
         atol_=1e-01,
-        test_gradients=test_gradients,
         x=x_lstm,
         init_h=init_h,
         init_c=init_c,

@@ -4,13 +4,17 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting_special,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting_special
-def isfinite(
+@from_zero_dim_arrays_to_scalar
+def _isfinite(
     x,
     /,
     out=None,
@@ -27,10 +31,12 @@ def isfinite(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting_special
-def isinf(
+@from_zero_dim_arrays_to_scalar
+def _isinf(
     x,
     /,
     out=None,
@@ -47,10 +53,12 @@ def isinf(
     return ret
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting_special
-def isnan(
+@from_zero_dim_arrays_to_scalar
+def _isnan(
     x,
     /,
     out=None,

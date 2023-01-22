@@ -214,3 +214,45 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             interpolation=interpolation,
             out=out,
         )
+
+    def corrcoef(
+        self: ivy.Array,
+        /,
+        *,
+        y: ivy.Array = None,
+        rowvar: Optional[bool] = True,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.corrcoef. This method simply
+        wraps the function, and so the docstring for ivy.corrcoef also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array.
+        y
+            An additional input array.
+            `y` has the same shape as `x`.
+        rowvar
+            If rowvar is True (default), then each row represents a variable, with
+            observations in the columns. Otherwise, the relationship is transposed:
+            each column represents a variable, while the rows contain observations.
+
+        Returns
+        -------
+        ret
+            The corrcoef of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([[0., 1., 2.], [2., 1., 0.]])
+        >>> a.corrcoef()
+            ivy.array([[ 1., -1.],
+                       [-1.,  1.]])
+        >>> a.corrcoef(rowvar=False)
+            ivy.array([[ 1., nan, -1.],
+                       [nan, nan, nan],
+                       [-1., nan,  1.]])
+        """
+        return ivy.corrcoef(self._data, y=y, rowvar=rowvar, out=out)

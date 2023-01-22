@@ -1,18 +1,20 @@
 # global
 import ivy
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
     handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
-def sinh(
+@from_zero_dim_arrays_to_scalar
+def _sinh(
     x,
     /,
     out=None,
@@ -32,8 +34,8 @@ def sinh(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
-def cosh(
+@from_zero_dim_arrays_to_scalar
+def _cosh(
     x,
     /,
     out=None,
@@ -53,8 +55,8 @@ def cosh(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
-def tanh(
+@from_zero_dim_arrays_to_scalar
+def _tanh(
     x,
     /,
     out=None,
@@ -75,8 +77,8 @@ def tanh(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
-def arcsinh(
+@from_zero_dim_arrays_to_scalar
+def _arcsinh(
     x,
     /,
     out=None,
@@ -96,8 +98,8 @@ def arcsinh(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
-def arccosh(
+@from_zero_dim_arrays_to_scalar
+def _arccosh(
     x,
     /,
     out=None,
@@ -117,8 +119,8 @@ def arccosh(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
-@from_zero_dim_arrays_to_float
-def arctanh(
+@from_zero_dim_arrays_to_scalar
+def _arctanh(
     x,
     /,
     out=None,

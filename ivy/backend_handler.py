@@ -31,6 +31,7 @@ _array_types["jax.interpreters.xla"] = "ivy.functional.backends.jax"
 _array_types["jaxlib.xla_extension"] = "ivy.functional.backends.jax"
 _array_types["tensorflow.python.framework.ops"] = "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
+_array_types["torch.nn.parameter"] = "ivy.functional.backends.torch"
 
 _backend_dict = dict()
 _backend_dict["numpy"] = "ivy.functional.backends.numpy"
@@ -359,17 +360,17 @@ def unset_backend():
 
     Examples
     --------
-    Torch is the last set backend hence is the backend backend used here:
+    Torch is the last set backend hence is the backend used in the first examples.
+    However, as seen in the example after, if `unset_backend` is called before
+    `ivy.native_array` then tensorflow will become the current backend and any
+    torch backend implementations in the Ivy dict will be swapped with the
+    tensorflow implementation::
 
     >>> ivy.set_backend("tensorflow")
     >>> ivy.set_backend("torch")
     >>> x = ivy.native_array([1])
     >>> print(type(x))
     <class 'torch.Tensor'>
-
-    However if `unset_backend` is called before `ivy.native_array` then tensorflow
-    will become the current backend and any torch backend implementations in the
-    Ivy dict will be swapped with the tensorflow implementation:
 
     >>> ivy.set_backend("tensorflow")
     >>> ivy.set_backend("torch")
