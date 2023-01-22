@@ -1192,7 +1192,6 @@ def test_tensorflow_one_hot(
     )
 
 
-
 @st.composite
 def _boolean_mask_helper(draw):
     tensor_shape = draw(
@@ -1213,7 +1212,7 @@ def _boolean_mask_helper(draw):
             dtype=dtype,
             shape=tensor_shape,
             min_value=-5.0,
-            max_value=5.0,        ),
+            max_value=5.0),
     )
     mask_dim = draw(
         helpers.number(
