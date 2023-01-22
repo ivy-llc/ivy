@@ -789,3 +789,25 @@ class ArrayWithManipulationExperimental(abc.ABC):
                     [14., 15.]]))
         """
         return ivy.hsplit(self._data, indices_or_sections, out=out)
+
+    def expand(
+        self: ivy.Array,
+        shape: Union[ivy.Shape, ivy.NativeShape],
+        /,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+
+        Parameters
+        ----------
+        shape
+        device
+        out
+
+        Returns
+        -------
+
+        """
+        return ivy.expand(self._data, shape, device=device, out=out)

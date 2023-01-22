@@ -928,3 +928,56 @@ def test_broadcast_shapes(
         on_device=on_device,
         shapes=shapes,
     )
+
+
+@handle_test(
+    fn_tree="expand",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=False),
+        shape=st.shared(
+            helpers.get_shape(
+                allow_none=False,
+                min_num_dims=1,
+                max_num_dims=5,
+                min_dim_size=1,
+                max_dim_size=5,
+            ),
+            key="value_shape",
+        ),
+    ),
+    shape=st.shared(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=5,
+        ),
+        key="value_shape",
+    ),
+    container_flags=st.just([False]),
+    test_instance_method=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_expand(
+    *,
+    dtype_and_x,
+    shape,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x,
+        shape=shape,
+        device=on_device,
+    )

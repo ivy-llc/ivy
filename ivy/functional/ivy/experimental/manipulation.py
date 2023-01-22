@@ -1573,3 +1573,38 @@ def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     (3, 3)
     """
     return ivy.current_backend().broadcast_shapes(shapes)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_out_argument
+@handle_array_like_without_promotion
+def expand(
+    x: Union[ivy.Array, ivy.NativeArray],
+    shape: Union[ivy.Shape, ivy.NativeShape],
+    /,
+    *,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Broadcast the input Array following the given shape
+    and the broadcast rule.
+    Parameters
+    ----------
+    x
+        Array input.
+    shape
+        A 1-D Array indicates the shape you want to expand to,
+        following the broadcast rule
+    out
+        optional output array, for writing the result to.
+    Returns
+    -------
+    ret
+        Output Array
+    """
+    ones = ivy.ones(shape, dtype=x.dtype, device=device, out=out)
+    return x * ones
