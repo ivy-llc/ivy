@@ -393,7 +393,7 @@ def zeta(
     return result
 
 
-zeta.support_native_out = false
+zeta.support_native_out = False
 
 
 def gradient(
