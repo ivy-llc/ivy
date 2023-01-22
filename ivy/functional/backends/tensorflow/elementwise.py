@@ -572,6 +572,14 @@ def round(
         return tf.round(x)
 
 
+def sequence_empty(x: Tensor,
+    *,
+    shape: [Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: DType,
+    out: Optional[Tensor] = None,) -> Tensor:
+    return tf.zeros(shape, dtype=dtype)
+
+
 def sign(
     x: Union[tf.Tensor, tf.Variable],
     /,
