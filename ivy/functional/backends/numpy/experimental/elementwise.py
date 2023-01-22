@@ -440,5 +440,5 @@ def sequence_empty(
     *,
     shape: [Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: DType,
-    out: Optional[Tensor] = None,) -> Tensor:
+    out: Optional[np.ndarray] = None,) -> np.ndarray:
     return np.zeros(shape, dtype=dtype)
