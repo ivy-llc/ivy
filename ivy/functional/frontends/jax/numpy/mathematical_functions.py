@@ -213,6 +213,12 @@ def logaddexp(x1, x2):
 def degrees(x):
     return ivy.rad2deg(x)
 
+@to_ivy_arrays_and_back
+def reciprocal(
+        x,
+        /,
+):
+    return ivy.reciprocal(x)
 
 @to_ivy_arrays_and_back
 def negative(
