@@ -750,7 +750,6 @@ def test_jax_numpy_atleast_2d(
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
