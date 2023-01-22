@@ -5,6 +5,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 )
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_dtype
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -114,5 +115,5 @@ def append(arr, values, axis=None):
 
 
 @to_ivy_arrays_and_back
-def tril_indices(n_rows, n_cols=None, k=None, device=None):
+def tril_indices(n_rows, n_cols=None, k=0, device=None):
     return ivy.tril_indices(n_rows, n_cols, k, device=device)

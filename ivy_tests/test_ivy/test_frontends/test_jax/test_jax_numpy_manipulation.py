@@ -2,6 +2,7 @@
 from hypothesis import strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
@@ -638,27 +639,33 @@ def test_jax_numpy_append(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.tril_indices",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("integer"))
+    n_rows=st.integers(min_value=1, max_value=10),
+    n_cols=st.integers(min_value=1, max_value=10),
+    k=st.integers(min_value=-8, max_value=8),
 )
 def test_jax_numpy_tril_indices(
     *,
-    dtype_and_x,
+    n_rows,
+    n_cols,
+    k,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     on_device,
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[ivy.int32],
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0]
+        n_rows=n_rows,
+        n_cols=n_cols,
+        k=k,
     )
