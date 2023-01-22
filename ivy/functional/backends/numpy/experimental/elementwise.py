@@ -434,3 +434,11 @@ def isposinf(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.isposinf(x)
+
+
+def sequence_empty(
+    *,
+    shape: [Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: DType,
+    out: Optional[Tensor] = None,) -> Tensor:
+    return np.zeros(shape, dtype=dtype)
