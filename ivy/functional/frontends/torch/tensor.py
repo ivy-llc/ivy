@@ -256,6 +256,9 @@ class Tensor:
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self._ivy_array, other)
 
+    def bitwise_or(self, other, *, out=None):
+        return torch_frontend.bitwise_or(self._ivy_array, other)
+
     def contiguous(self, memory_format=None):
         return torch_frontend.tensor(self.ivy_array)
 
@@ -566,6 +569,10 @@ class Tensor:
     def acosh_(self):
         self._ivy_array = self.acosh().ivy_array
         return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def numpy(self):
+        return ivy.to_numpy(self._ivy_array)
 
     # Special Methods #
     # -------------------#

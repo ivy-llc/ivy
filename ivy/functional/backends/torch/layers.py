@@ -24,12 +24,12 @@ def _out_shape(x, strides, pad, dilations, filters):
 def conv1d(
     x: torch.Tensor,
     filters: torch.Tensor,
-    strides: int,
+    strides: Union[int, Tuple[int]],
     padding: str,
     /,
     *,
-    data_format: Optional[str] = "NWC",
-    dilations: Optional[int] = 1,
+    data_format: str = "NWC",
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, (tuple, list)):
