@@ -840,13 +840,12 @@ def dft(
 
     """
     if inverse:
-        res = ivy.ifft(x, axis, norm=norm, n=dft_length, out=out)
+        res = ifft(x, axis, norm=norm, n=dft_length, out=out)
     else:
-        res = ivy.fft(x, axis, norm=norm, n=dft_length, out=out)
+        res = fft(x, axis, norm=norm, n=dft_length, out=out)
 
     if onesided:
         slices = [slice(0, a) for a in res.shape]
         slices[axis] = slice(0, res.shape[axis] // 2 + 1)
         res = res[tuple(slices)]
-
     return res

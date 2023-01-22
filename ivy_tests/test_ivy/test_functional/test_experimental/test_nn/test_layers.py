@@ -424,7 +424,7 @@ def test_embedding(
 
 
 @handle_test(
-    fn_tree="functional.ivy.experimental.dft",
+    fn_tree="dft",
     d_xfft_axis_n_length=x_and_fft(helpers.get_dtypes("complex")),
     d_xifft_axis_n_length=x_and_ifft(),
     inverse=st.booleans(),
@@ -441,7 +441,6 @@ def test_dft(
     fn_name,
     ground_truth_backend,
 ):
-    print(fn_name)
     if inverse:
         dtype, x, axis, norm, dft_length = d_xifft_axis_n_length
     else:
@@ -453,13 +452,12 @@ def test_dft(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
-        rtol_=1e-2,
-        atol_=1e-2,
-        test_gradients=False,
         x=x,
         axis=axis,
         inverse=inverse,
         onesided=onesided,
         dft_length=dft_length,
         norm=norm,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
