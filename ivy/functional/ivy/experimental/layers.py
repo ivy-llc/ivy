@@ -626,7 +626,7 @@ def dropout1d(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 1, 1]).reshape([1, 1, 3])
-    >>> y = x.dropout1d(0.5)
+    >>> y = ivy.dropout1d(x, 0.5)
     >>> print(y)
     ivy.array([[[2., 0, 2.]]])
 
