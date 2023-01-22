@@ -385,10 +385,15 @@ def zeta(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.special.zeta(x, q, out=out)
+    temp = torch.logical_and(torch.ne(torch.remainder(x, 2), 0), torch.ge(x, 1))
+    temp = torch.logical_and(temp, torch.le(q, 0))
+    nan_indices = torch.logical_or(temp, torch.lt(x, 1))
+    result = torch.special.zeta(x, q)
+    result.masked_fill_(nan_indices, float('nan'))
+    return result
 
 
-zeta.support_native_out = True
+zeta.support_native_out = false
 
 
 def gradient(
