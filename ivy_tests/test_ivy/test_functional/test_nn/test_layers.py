@@ -321,12 +321,22 @@ def x_and_filters(
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
     fc = draw(st.sampled_from(group_list)) if general else 1
-    if dim == 1:
-        strides = [draw(st.integers(1, 3))]
-        dilations = [draw(st.integers(1, 3))]
-    else:
-        strides = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
-        dilations = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+    strides = draw(
+        st.one_of(
+            st.integers(1, 3),
+            st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
+        )
+        if dim > 1
+        else st.integers(1, 3)
+    )
+    dilations = draw(
+        st.one_of(
+            st.integers(1, 3),
+            st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
+        )
+        if dim > 1
+        else st.integers(1, 3)
+    )
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
     elif dim == 1:
@@ -334,7 +344,8 @@ def x_and_filters(
     else:
         data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
 
-    x_dim = []
+    full_strides = [strides] * dim if isinstance(strides, int) else strides
+    full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if transpose:
         output_shape = []
         x_dim = draw(
@@ -345,12 +356,13 @@ def x_and_filters(
         for i in range(dim):
             output_shape.append(
                 _deconv_length(
-                    x_dim[i], strides[i], filter_shape[i], padding, dilations[i]
+                    x_dim[i], full_strides[i], filter_shape[i], padding, full_dilations[i]
                 )
             )
     else:
+        x_dim = []
         for i in range(dim):
-            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
+            min_x = filter_shape[i] + (filter_shape[i] - 1) * (full_dilations[i] - 1)
             x_dim.append(draw(st.integers(min_x, min_x + 1)))
         x_dim = tuple(x_dim)
     if not depthwise:
@@ -394,13 +406,15 @@ def x_and_filters(
                 max_value=1.0,
             )
         )
-    if dim == 1:
-        strides = strides[0]
-        dilations = dilations[0]
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
         if not transpose:
-            x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+            x_dilation = draw(
+                st.one_of(
+                    st.integers(1, 3),
+                    st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
+                )
+            )
             dilations = (dilations, x_dilation)
     ret = (
         dtype,
@@ -415,6 +429,16 @@ def x_and_filters(
     if bias:
         return ret + (b,)
     return ret
+
+
+def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
+    if backend_fw.current_backend_str() == "tensorflow":
+        assume(not (
+                on_device == "cpu" and
+                (dilations > 1)
+                if isinstance(dilations, int)
+                else any(d > 1 for d in dilations)
+        ))
 
 
 # conv1d
@@ -434,8 +458,7 @@ def test_conv1d(
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
-    if backend_fw.current_backend_str() == "tensorflow":
-        assume(not (on_device == "cpu" and dilations > 1 and test_flags.test_gradients))
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -470,8 +493,7 @@ def test_conv1d_transpose(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    if backend_fw.current_backend_str() == "tensorflow":
-        assume(not (on_device == "cpu" and dilations > 1))
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -509,14 +531,7 @@ def test_conv2d(
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
-    if backend_fw.current_backend_str() == "tensorflow":
-        assume(
-            not (
-                on_device == "cpu"
-                and any(i > 1 for i in dilations)
-                and test_flags.test_gradients
-            )
-        )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -555,8 +570,7 @@ def test_conv2d_transpose(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    if backend_fw.current_backend_str() == "tensorflow":
-        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -596,11 +610,7 @@ def test_depthwise_conv2d(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
-    if backend_fw.current_backend_str() == "tensorflow":
-        assume(
-            not (on_device == "cpu" and any(i > 1 for i in dilations))
-            and len(set(stride)) == 1
-        )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -635,8 +645,7 @@ def test_conv3d(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
-    if backend_fw.current_backend_str() == "tensorflow":
-        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -674,13 +683,7 @@ def test_conv_general_dilated(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc, bias = x_f_d_df
-    if backend_fw.current_backend_str() == "tensorflow":
-        if not ivy.gpu_is_available():
-            assume(
-                (dilations[0] <= 1)
-                if isinstance(dilations[0], int)
-                else all(d <= 1 for d in dilations[0])
-            )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -736,13 +739,7 @@ def test_conv_general_transpose(
         fc,
         bias,
     ) = x_f_d_df
-    if backend_fw.current_backend_str() == "tensorflow":
-        if not ivy.gpu_is_available():
-            assume(
-                (dilations <= 1)
-                if isinstance(dilations, int)
-                else all(d <= 1 for d in dilations)
-            )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -784,8 +781,7 @@ def test_conv3d_transpose(
     ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    if backend_fw.current_backend_str() == "tensorflow":
-        assume(not (on_device == "cpu" and any(i > 1 for i in dilations)))
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,

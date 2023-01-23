@@ -319,14 +319,14 @@ def get_dtype_and_values_and_casting(
 @st.composite
 def get_num_positional_args_ufunc(draw, *, fn_name=None):
     """
-    This function draws data randomly from numbers between nin and nargs
+    Draws data randomly from numbers between nin and nargs
     where nin and nargs are properties of the given ufunc.
 
     Parameters
     ----------
     draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
+        special function that draws data randomly (but is reproducible)
+        from a given data-set (ex. list).
     fn_name
         name of the ufunc.
 

@@ -426,9 +426,7 @@ def Sum(*, input, axis, keep_dims=False, name="Sum"):
 Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 
 
-@to_ivy_arrays_and_back
-def Tanh(*, x, name="Tanh"):
-    return ivy.tanh(x)
+Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
 
 
 @to_ivy_arrays_and_back
