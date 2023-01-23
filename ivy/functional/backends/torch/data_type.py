@@ -138,7 +138,7 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dty
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> ivy.Dtype:
+def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float], /) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
     if dtype_in is float:
@@ -159,7 +159,8 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> ivy.Dty
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, backend_version)
-def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torch.dtype:
+def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float],
+                    /) -> torch.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
@@ -185,7 +186,7 @@ def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:
     return as_ivy_dtype(x.dtype)
 
 
-def dtype_bits(dtype_in: Union[torch.dtype, str]) -> int:
+def dtype_bits(dtype_in: Union[torch.dtype, str], /) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
