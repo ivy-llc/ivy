@@ -307,7 +307,6 @@ def tanhshrink(input):
     return ivy.subtract(input, ivy.tanh(input))
 
 
-@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def leaky_relu_(input, negative_slope=0.01):
     ret = ivy.leaky_relu(input, alpha=negative_slope)
