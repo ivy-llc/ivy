@@ -122,14 +122,14 @@ def broadcast_to(
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[np.dtype, str, np.ndarray]) -> Finfo:
+def finfo(type: Union[np.dtype, str, np.ndarray], /) -> Finfo:
     if isinstance(type, np.ndarray):
         type = type.dtype
     return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[np.dtype, str, np.ndarray]) -> np.iinfo:
+def iinfo(type: Union[np.dtype, str, np.ndarray], /) -> np.iinfo:
     if isinstance(type, np.ndarray):
         type = type.dtype
     return np.iinfo(ivy.as_native_dtype(type))

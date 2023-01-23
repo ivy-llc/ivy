@@ -141,7 +141,7 @@ def broadcast_to(
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
+def finfo(type: Union[DType, str, tf.Tensor, tf.Variable], /) -> Finfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
     if ivy.as_native_dtype(type) == tf.bfloat16:
@@ -150,7 +150,7 @@ def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
+def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable], /) -> np.iinfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))

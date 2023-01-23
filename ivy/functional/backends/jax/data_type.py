@@ -124,12 +124,12 @@ def broadcast_to(
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[jnp.dtype, str, JaxArray]) -> Finfo:
+def finfo(type: Union[jnp.dtype, str, JaxArray], /) -> Finfo:
     return Finfo(jnp.finfo(ivy.as_native_dtype(type)))
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[jnp.dtype, str, JaxArray]) -> np.iinfo:
+def iinfo(type: Union[jnp.dtype, str, JaxArray], /) -> np.iinfo:
     return jnp.iinfo(ivy.as_native_dtype(type))
 
 
