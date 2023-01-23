@@ -215,6 +215,7 @@ def diff(
     axis: Optional[int] = -1,
     prepend: Optional[Union[JaxArray, int, float, list, tuple]] = None,
     append: Optional[Union[JaxArray, int, float, list, tuple]] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 

@@ -49,6 +49,11 @@ def ones_like_v_0p3p0_to_0p3p1(input, out=None):
 
 
 @to_ivy_arrays_and_back
+def heaviside(input, values, *, out=None):
+    return ivy.heaviside(input, values, out=out)
+
+
+@to_ivy_arrays_and_back
 def ones_like_v_0p4p0_and_above(
     input,
     *,
