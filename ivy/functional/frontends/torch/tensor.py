@@ -1,7 +1,7 @@
 # local
 import weakref
 
-import torch
+# import torch
 
 import ivy
 import ivy.functional.frontends.torch as torch_frontend

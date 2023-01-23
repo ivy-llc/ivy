@@ -1,6 +1,7 @@
 # global
 from typing import get_type_hints
 from typing import Union
+
 # local
 import ivy
 
@@ -103,10 +104,10 @@ def fn_array_spec(fn):
         specification
 
     """
-    try:
+    try:  # this is because it raises error if python version 3.8.0, in certain cases
         type_hints = get_type_hints(fn)
     except:
-        type_hints=dict()
+        type_hints = dict()
     array_idxs = list()
     for i, (k, v) in enumerate(type_hints.items()):
         a_idxs = _get_array_idxs(v)

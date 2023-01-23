@@ -9,11 +9,10 @@ import importlib
 from ... import config
 
 
-
-
 from dataclasses import dataclass
 from .available_frameworks import available_frameworks
-available_frameworks=["numpy", "jax", "tensorflow", "torch"]
+
+available_frameworks = ["numpy", "jax", "tensorflow", "torch"]
 FWS_DICT = {
     "": lambda: None,
 }
@@ -47,27 +46,31 @@ class TestData:
     fn_name: str
     supported_device_dtypes: dict = None
 
+
 def remove_all_current_framework(framework):
-    temp=sys.modules
-    hold={}
-    unhold={}
-    for key,item in sys.modules.items():
-        if getattr(item, '__file__',None) :
-            if '/opt/miniconda/fw/' + framework in getattr(item, '__file__', 'willywonka'):
+    temp = sys.modules
+    hold = {}
+    unhold = {}
+    for key, item in sys.modules.items():
+        if getattr(item, "__file__", None):
+            if "/opt/miniconda/fw/" + framework in getattr(
+                item, "__file__", "willywonka"
+            ):
                 hold[key] = item
             else:
-                unhold[key]=item
+                unhold[key] = item
         else:
             unhold[key] = item
     sys.modules.clear()
     first_diff = {k: hold[k] for k in set(hold) - set(temp)}
-    second_diff={k: unhold[k] for k in set(unhold) - set(first_diff)}
-    if  second_diff:
+    second_diff = {k: unhold[k] for k in set(unhold) - set(first_diff)}
+    if second_diff:
         unhold.update(second_diff)
     sys.modules.update(unhold)
-    if '/opt/miniconda/fw/'+framework in sys.path:
-        sys.path.remove('/opt/miniconda/fw/'+framework)
-    return (hold,framework)
+    if "/opt/miniconda/fw/" + framework in sys.path:
+        sys.path.remove("/opt/miniconda/fw/" + framework)
+    return (hold, framework)
+
 
 class InterruptedTest(BaseException):
     """
@@ -95,8 +98,12 @@ def _get_ivy_numpy(version=None):
 def _get_ivy_jax(version=None):
     """Import JAX module from ivy"""
     if version:
-        config.allow_global_framework_imports(fw=[version.split('/')[0]+'/'+version.split('/')[1]])
-        config.allow_global_framework_imports(fw=[version.split('/')[2] + '/' + version.split('/')[3]])
+        config.allow_global_framework_imports(
+            fw=[version.split("/")[0] + "/" + version.split("/")[1]]
+        )
+        config.allow_global_framework_imports(
+            fw=[version.split("/")[2] + "/" + version.split("/")[3]]
+        )
     try:
         import ivy.functional.backends.jax
     except ImportError:
@@ -164,8 +171,8 @@ def _set_frontend(framework: str):
     global CURRENT_FRONTEND
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    if '/' in framework:
-        CURRENT_FRONTEND = FWS_DICT[framework.split('/')[0]]
+    if "/" in framework:
+        CURRENT_FRONTEND = FWS_DICT[framework.split("/")[0]]
     else:
         CURRENT_FRONTEND = FWS_DICT[framework]
 
@@ -174,7 +181,7 @@ def _set_backend(framework: str):
     global CURRENT_BACKEND
     if CURRENT_BACKEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    if '/' in framework:
+    if "/" in framework:
         pass
     CURRENT_BACKEND = FWS_DICT[framework]
 

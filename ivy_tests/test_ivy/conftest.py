@@ -4,12 +4,10 @@ import pytest
 from typing import Dict
 
 
+mod_frontend = {"tensorflow": None, "numpy": None, "jax": None, "torch": None}
+mod_backend = {"tensorflow": None, "numpy": None, "jax": None, "torch": None}
 
-mod_frontend= {'tensorflow':None,'numpy':None,'jax':None,'torch':None}
-mod_backend={'tensorflow':None,'numpy':None,'jax':None,'torch':None}
-
-available_frameworks=[]
-
+available_frameworks = []
 
 
 # local
@@ -18,7 +16,7 @@ from ivy import DefaultDevice
 from ivy_tests.test_ivy.helpers import globals as test_globals
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
-available_frameworks=available_frameworks()
+available_frameworks = available_frameworks()
 GENERAL_CONFIG_DICT = {}
 UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
@@ -44,17 +42,16 @@ def pytest_configure(config):
         backend_strs = available_frameworks
     else:
         backend_strs = raw_value.split(",")
-        available_frameworks=[]
+        available_frameworks = []
 
-    #frontend
+    # frontend
 
-    frontend=config.getoption("--frontend")
+    frontend = config.getoption("--frontend")
 
     if frontend:
-        frontend_strs=frontend.split(',')
+        frontend_strs = frontend.split(",")
         for i in frontend_strs:
-            mod_frontend[i.split('/')[0]]=i
-
+            mod_frontend[i.split("/")[0]] = i
 
     # compile_graph
     raw_value = config.getoption("--compile_graph")
@@ -77,25 +74,27 @@ def pytest_configure(config):
         for device in devices:
             for compile_graph in compile_modes:
                 for implicit in implicit_modes:
-                    if '/' in backend_str:
-                        mod_backend[backend_str.split('/')[0]]=backend_str
+                    if "/" in backend_str:
+                        mod_backend[backend_str.split("/")[0]] = backend_str
                         TEST_PARAMS_CONFIG.append(
                             (
                                 device,
-                                test_globals.FWS_DICT[backend_str.split('/')[0]](backend_str),
+                                test_globals.FWS_DICT[backend_str.split("/")[0]](
+                                    backend_str
+                                ),
                                 compile_graph,
                                 implicit,
                             )
                         )
                     else:
                         TEST_PARAMS_CONFIG.append(
-                        (
-                            device,
-                            test_globals.FWS_DICT[backend_str](),
-                            compile_graph,
-                            implicit,
+                            (
+                                device,
+                                test_globals.FWS_DICT[backend_str](),
+                                compile_graph,
+                                implicit,
+                            )
                         )
-                    )
 
     process_cl_flags(config)
 
@@ -208,7 +207,6 @@ def pytest_addoption(parser):
     )
 
 
-
 def pytest_collection_finish(session):
     # Make sure we're not accidentally accessing it during test
     global TEST_PARAMS_CONFIG
@@ -218,5 +216,3 @@ def pytest_collection_finish(session):
             item_path = os.path.relpath(item.path)
             print("{}::{}".format(item_path, item.name))
         pytest.exit("Done!")
-
-

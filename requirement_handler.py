@@ -1,3 +1,4 @@
+# flake8: noqa
 from typing import List
 import operator
 import requests
