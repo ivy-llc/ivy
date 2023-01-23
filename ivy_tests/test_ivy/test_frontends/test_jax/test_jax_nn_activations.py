@@ -224,7 +224,7 @@ def _dtype_indices_classes_axis(draw):
     classes = draw(helpers.ints(min_value=2, max_value=100))
     dtype, indices, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("integer"),
             min_value=0,
             max_value=classes - 1,
             small_abs_safety_factor=4,
