@@ -186,7 +186,7 @@ def as_native_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float], /) -> jnp
         )
 
 
-def dtype(x: JaxArray, as_native: bool = False) -> ivy.Dtype:
+def dtype(x: JaxArray, *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.to_native(x).dtype
     return as_ivy_dtype(x.dtype)
