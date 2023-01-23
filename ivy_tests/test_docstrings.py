@@ -103,7 +103,14 @@ def check_docstring_examples_run(
     sub = ">>> print("
     for index, line in enumerate(trimmed_docstring):
         if sub in line:
-            end_index = trimmed_docstring.index("", index)
+            # find chunks of output
+            for i, s in enumerate(trimmed_docstring[index + 1 :]):
+                if s.startswith(">>>") or s.lower().startswith("with"):
+                    end_index = index + i + 1
+                    break
+            else:
+                # end of docstrings
+                end_index = len(trimmed_docstring)
             p_output = trimmed_docstring[index + 1 : end_index]
             p_output = ("").join(p_output).replace(" ", "")
             p_output = p_output.replace("...", "")
