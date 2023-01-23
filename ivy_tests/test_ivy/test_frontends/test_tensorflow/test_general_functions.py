@@ -1166,7 +1166,7 @@ def _multiple_shape_helper(draw):
     input_dtype, input_array, input_shape = draw(
         helpers.dtype_and_values(
             available_dtypes=["int32", "int64", 
-                              "bfloat16", "bfloat32"]
+                              "bfloat16", "bfloat32"],
             ret_shape=True
         ))
     input_dims = len(input_shape)
