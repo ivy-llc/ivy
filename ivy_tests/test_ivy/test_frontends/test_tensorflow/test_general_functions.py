@@ -365,11 +365,15 @@ def test_tensorflow_cond(
     frontend,
 ):
     def _test_true_fn():
-        return list
+        x = 1
+        y = 2
+        return [x + y]
 
     def _test_false_fn():
-        return list
-
+        x = 3
+        y = 4
+        return [x - y]
+        
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
