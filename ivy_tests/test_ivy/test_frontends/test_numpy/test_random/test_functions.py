@@ -147,17 +147,10 @@ def test_numpy_normal(
         min_value=1,
         max_value=100
     ),
-
-    size=st.tuples(
-        st.integers(min_value=1, max_value=10), st.integers(min_value=2, max_value=2)
-    ),
 )
 def test_numpy_poisson(
     dtype_and_x,
-    size,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -165,15 +158,12 @@ def test_numpy_poisson(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
         lam=x[0],
-        test_values=False,
+        test_values=False,)
 
       
 @handle_frontend_test(
