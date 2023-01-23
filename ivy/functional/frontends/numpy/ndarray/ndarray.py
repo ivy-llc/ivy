@@ -258,6 +258,9 @@ class ndarray:
     def __add__(self, value, /):
         return np_frontend.add(self._ivy_array, value)
 
+    def __radd__(self, value, /):
+        return np_frontend.add(self._ivy_array, value)
+
     def __sub__(self, value, /):
         return np_frontend.subtract(self._ivy_array, value)
 
@@ -266,6 +269,9 @@ class ndarray:
 
     def __truediv__(self, value, /):
         return np_frontend.true_divide(self._ivy_array, value)
+
+    def __rtruediv__(self, value, /):
+        return np_frontend.true_divide(value, self._ivy_array)
 
     def __pow__(self, value, /):
         return np_frontend.power(self._ivy_array, value)
