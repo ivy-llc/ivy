@@ -35,7 +35,7 @@ class Tensor:
 
     @property
     def shape(self):
-        return "torch.Size(" + str(list(self._ivy_array.shape)) + ")"
+        return self._ivy_array.shape
 
     # Setters #
     # --------#
@@ -279,14 +279,14 @@ class Tensor:
                     return self
                 else:
                     cast_tensor = self.clone()
-                    cast_tensor.ivy.array = ivy.asarray(self._ivy_array, dtype=args[0])
+                    cast_tensor.ivy_array = ivy.asarray(self._ivy_array, dtype=args[0])
                     return cast_tensor
             else:
                 if self.dtype == args[0].dtype and self.device == args[0].device:
                     return self
                 else:
                     cast_tensor = self.clone()
-                    cast_tensor.ivy.array = ivy.asarray(
+                    cast_tensor.ivy_array = ivy.asarray(
                         self._ivy_array,
                         dtype=args[0].dtype,
                         device=args[0].device,
@@ -297,7 +297,7 @@ class Tensor:
                 return self
             else:
                 cast_tensor = self.clone()
-                cast_tensor.ivy.array = ivy.asarray(
+                cast_tensor.ivy_array = ivy.asarray(
                     self._ivy_array,
                     device=kwargs["device"],
                     dtype=kwargs["dtype"],
@@ -350,7 +350,15 @@ class Tensor:
         return self.view(other.shape)
 
     def expand(self, *sizes):
-        return torch_frontend.tensor(ivy.broadcast_to(self._ivy_array, shape=sizes))
+
+        sizes = list(sizes)
+        for i, dim in enumerate(sizes):
+            if dim < 0:
+                sizes[i] = self.shape[i]
+
+        return torch_frontend.tensor(
+            ivy.broadcast_to(self._ivy_array, shape=tuple(sizes))
+        )
 
     def detach(self):
         return torch_frontend.tensor(
