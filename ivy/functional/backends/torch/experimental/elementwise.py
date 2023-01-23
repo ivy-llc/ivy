@@ -390,7 +390,7 @@ def zeta(
     temp = torch.logical_and(temp, torch.le(q, 0))
     nan_indices = torch.logical_or(temp, torch.lt(x, 1))
     result = torch.special.zeta(x, q)
-    result.masked_fill_(nan_indices, float('nan'))
+    result.masked_fill_(nan_indices, float("nan"))
     return result
 
 
