@@ -1228,7 +1228,7 @@ def test_tensorflow_one_hot(
     input_dtype, x = dtype_and_x
     depth = 10
     helpers.test_frontend_function(
-        input_dtypes=['uint8', 'int32', 'int64'],
+        input_dtypes=["uint8", "int32", "int64"],
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
