@@ -2904,3 +2904,30 @@ def test_tensorflow_Conv3D(
         data_format=data_format,
         dilations=dilation,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Softmax",
+    dtype_values_axis=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Softmax(
+    dtype_values_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, values = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=values[0],
+    )

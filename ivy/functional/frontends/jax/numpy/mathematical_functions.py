@@ -289,6 +289,12 @@ def fmin(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def fmod(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return ivy.fmod(x1, x2)
+
+
+@to_ivy_arrays_and_back
 def maximum(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.maximum(x1, x2)
@@ -379,3 +385,8 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
 @to_ivy_arrays_and_back
 def fix(x, out=None):
     return ivy.fix(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def hypot(x1, x2, /):
+    return ivy.hypot(x1, x2)
