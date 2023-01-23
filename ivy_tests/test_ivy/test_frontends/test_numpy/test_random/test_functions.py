@@ -142,14 +142,17 @@ def test_numpy_normal(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.tuples(
-            st.integers(min_value=1, max_value=2)
-        ),
+            st.integers(min_value=1, max_value=2)),
         min_value=1,
-        max_value=100
-    ),
+        max_value=100,
+        ),
+    size=st.tuples(
+                st.integers(min_value=1, max_value=10), st.integers(min_value=2, max_value=2)
+        ),
 )
 def test_numpy_poisson(
     dtype_and_x,
+    size,
     test_flags,
     frontend,
     fn_tree,
@@ -163,7 +166,8 @@ def test_numpy_poisson(
         fn_tree=fn_tree,
         on_device=on_device,
         lam=x[0],
-        test_values=False,)
+        test_values=False,
+        size=size)
 
       
 @handle_frontend_test(
