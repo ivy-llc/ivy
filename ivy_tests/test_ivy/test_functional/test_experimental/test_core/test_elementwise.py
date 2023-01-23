@@ -471,7 +471,7 @@ def test_nansum(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="numpy",
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
