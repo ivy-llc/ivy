@@ -370,10 +370,17 @@ def argmin(input, axis=None, output_type="int64", name=None):
 def truediv(x, y, name="truediv"):
     x, y = check_tensorflow_casting(x, y)
     x_dtype = ivy.dtype(x)
-    if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
-        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
-    elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
-        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+
+    if ivy.current_backend_str() == "torch":
+        if x_dtype in [ivy.int8, ivy.int16]:
+            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+        elif x_dtype in [ivy.int32, ivy.int64]:
+            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    else:
+        if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
+            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+        elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
+            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
 
 
