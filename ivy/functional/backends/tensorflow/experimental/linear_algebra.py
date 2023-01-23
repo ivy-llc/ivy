@@ -3,6 +3,8 @@ import tensorflow as tf
 
 import ivy
 
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+
 
 def diagflat(
     x: Union[tf.Tensor, tf.Variable],
@@ -61,7 +63,28 @@ def matrix_exp(
 def eig(
     x: Union[tf.Tensor],
     /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor]:
     if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
         return tf.linalg.eig(tf.cast(x, tf.float64))
     return tf.linalg.eig(x)
+
+
+def eigvals(
+    x: Union[tf.Tensor],
+    /,
+) -> Union[tf.Tensor, tf.Variable]:
+    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
+        return tf.linalg.eigvals(tf.cast(x, tf.float64))
+    return tf.linalg.eigvals(x)
+
+
+def adjoint(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    _check_valid_dimension_size(x)
+    return tf.linalg.adjoint(x)

@@ -276,7 +276,11 @@ def pinv(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def qr(
-    x: np.ndarray, /, *, mode: str = "reduced", out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    mode: str = "reduced",
+    out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
 ) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
@@ -331,7 +335,7 @@ def svd(
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
-def svdvals(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def svdvals(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.svd(x, compute_uv=False)
 
 

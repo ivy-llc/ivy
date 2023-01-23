@@ -63,13 +63,19 @@ def update_individual_test_results(collection, id, submod, backend, test, result
     return
 
 
-if __name__ == "__main__":
-    if len(sys.argv) > 2:
-        redis_url = sys.argv[1]
-        redis_pass = sys.argv[2]
-        mongo_key = sys.argv[3]
+def remove_from_db(collection, id, submod, backend, test):
+    collection.update_one(
+        {"_id": id},
+        {"$unset": {submod + "." + backend + ".": test}},
+    )
+    return
 
-    if sys.argv[4]:
+
+if __name__ == "__main__":
+    redis_url = sys.argv[1]
+    redis_pass = sys.argv[2]
+    mongo_key = sys.argv[3]
+    if len(sys.argv) > 3:
         run_id = sys.argv[4]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/"
@@ -102,6 +108,16 @@ if __name__ == "__main__":
                 update_individual_test_results(
                     db[coll[0]], coll[1], submod, backend, test_fn, res
                 )
+
+    try:
+        with open("tests_to_remove", "r") as f:
+            for line in f:
+                test, backend = line.split(",")
+                coll, submod, test_fn = get_submodule(test)
+                print(coll, submod, test_fn)
+                remove_from_db(db[coll[0]], coll[1], submod, backend, test_fn)
+    except Exception:
+        pass
 
     if failed:
         exit(1)

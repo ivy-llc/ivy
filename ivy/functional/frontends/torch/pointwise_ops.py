@@ -343,6 +343,11 @@ def true_divide(input, other, *, out=None):
     return ivy.divide(input, other, out=out)
 
 
+@to_ivy_arrays_and_back
+def floor_divide(input, other, *, out=None):
+    return ivy.floor_divide(input, other, out=out)
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def log1p(input, *, out=None):
@@ -411,3 +416,31 @@ def rad2deg(input, *, out=None):
 @to_ivy_arrays_and_back
 def positive(input, *, out=None):
     return ivy.positive(input, out=out)
+
+
+@to_ivy_arrays_and_back
+def frac(input, *, out=None):
+    return input - ivy.sign(input) * ivy.floor(ivy.abs(input))
+
+
+@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def xlogy(input, other, *, out=None):
+    return ivy.xlogy(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def copysign(input, other, *, out=None):
+    return ivy.copysign(input, other, out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def sinc(input, *, out=None):
+    return ivy.sinc(input, out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def hypot(input, other, *, out=None):
+    return ivy.hypot(input, other, out=out)

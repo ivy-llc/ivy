@@ -33,7 +33,7 @@ def is_variable(x, /, *, exclusive=False):
     )
 
 
-def variable_data(x, /):
+def variable_data(x: JaxArray, /) -> JaxArray:
     return x
 
 

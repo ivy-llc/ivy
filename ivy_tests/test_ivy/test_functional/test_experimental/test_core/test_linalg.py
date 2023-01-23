@@ -135,8 +135,9 @@ def _generate_diag_args(draw):
 
 
 @handle_test(
-    fn_tree="functional.experimental.diagflat",
+    fn_tree="functional.ivy.experimental.diagflat",
     args_packet=_generate_diag_args(),
+    test_gradients=st.just(False),
 )
 def test_diagflat(
     *,
@@ -170,7 +171,7 @@ def test_diagflat(
 
 
 @handle_test(
-    fn_tree="functional.experimental.kron",
+    fn_tree="functional.ivy.experimental.kron",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -180,6 +181,7 @@ def test_diagflat(
         num_arrays=2,
         shared_dtype=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_kron(
     dtype_x,
@@ -202,7 +204,7 @@ def test_kron(
 
 # matrix_exp
 @handle_test(
-    fn_tree="functional.experimental.matrix_exp",
+    fn_tree="functional.ivy.experimental.matrix_exp",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(ivy.double, ivy.complex64, ivy.complex128),
         min_num_dims=2,
@@ -214,6 +216,7 @@ def test_kron(
         allow_nan=False,
         shared_dtype=True,
     ),
+    test_gradients=st.just(False),
 )
 def test_matrix_exp(
     dtype_x,
@@ -244,7 +247,7 @@ def test_matrix_exp(
 
 
 @handle_test(
-    fn_tree="functional.experimental.eig",
+    fn_tree="functional.ivy.experimental.eig",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
             ivy.float32,
@@ -262,6 +265,8 @@ def test_matrix_exp(
         max_value=1.0e5,
         shared_dtype=True,
     ),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_eig(
     dtype_x,
@@ -278,5 +283,84 @@ def test_eig(
         fw=backend_fw,
         fn_name=fn_name,
         test_values=False,
+        x=x[0],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.eigvals",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=(
+            ivy.float32,
+            ivy.float64,
+            ivy.int32,
+            ivy.int64,
+            ivy.complex64,
+            ivy.complex128,
+        ),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=10,
+        max_dim_size=10,
+        min_value=1.0,
+        max_value=1.0e5,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_eigvals(
+    dtype_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x = dtype_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        test_values=False,
+        x=x[0],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.adjoint",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=(
+            ivy.float16,
+            ivy.float32,
+            ivy.float64,
+            ivy.complex64,
+            ivy.complex128,
+        ),
+        min_num_dims=2,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=10,
+        min_value=-1.0e5,
+        max_value=1.0e5,
+        allow_nan=False,
+        shared_dtype=True,
+    ),
+)
+def test_adjoint(
+    dtype_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x = dtype_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
     )

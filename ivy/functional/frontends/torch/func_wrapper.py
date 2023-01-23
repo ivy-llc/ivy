@@ -59,7 +59,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         )
         # add the original out argument back to the keyword arguments
         if has_out:
-            new_kwargs["out"] = out
+            if hasattr(out, "ivy_array"):
+                new_kwargs["out"] = out.ivy_array
+            else:
+                new_kwargs["out"] = out
         return fn(*new_args, **new_kwargs)
 
     return new_fn
@@ -73,7 +76,15 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         by the function into `Tensor` instances.
         """
         # call unmodified function
-        ret = fn(*args, **kwargs)
+        # ToDo: Remove this default dtype setting
+        #  once frontend specific backend setting is added
+        ivy.set_default_int_dtype("int64")
+        ivy.set_default_float_dtype(torch_frontend.get_default_dtype())
+        try:
+            ret = fn(*args, **kwargs)
+        finally:
+            ivy.unset_default_int_dtype()
+            ivy.unset_default_float_dtype()
         # convert all arrays in the return to `torch_frontend.Tensor` instances
         return _from_ivy_array_to_torch_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}

@@ -22,7 +22,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -37,7 +37,7 @@ max_chunk_sizes = dict()
 
 
 class DefaultDevice:
-    """"""
+    """Ivy Device Class"""
 
     def __init__(
         self,
@@ -97,6 +97,9 @@ class DefaultDevice:
         "cpu"
         """
         ivy.unset_default_device()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
         return self
 
 
@@ -657,7 +660,7 @@ def default_device(
     as_native: bool = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """Returns the input device or the default device.
-    If the as native flag is set, the device will be converted to a native device.
+    If the as_native flag is set, the device will be converted to a native device.
     If the item is provided, the item's device is returned.
     If the device is not provided, the last default device is returned.
     If a default device has not been set, the first gpu is returned if available,
@@ -781,7 +784,7 @@ def unset_default_device() -> None:
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],

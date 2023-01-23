@@ -136,7 +136,7 @@ def inner(
         x2 = x2.long()
     if ivy.exists(out):
         if out.dtype != x1.dtype:
-            return ivy.inplace_update(out, torch.inner(x1, x2).type(ret_dtype))
+            return ivy.inplace_update(out, torch.inner(x1, x2).type(out.dtype))
     return torch.inner(x1, x2, out=out).type(ret_dtype)
 
 
@@ -269,7 +269,11 @@ pinv.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def qr(
-    x: torch.Tensor, /, *, mode: str = "reduced", out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    mode: str = "reduced",
+    out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
@@ -423,7 +427,13 @@ def vecdot(
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     if dtype != "float64":
         x1, x2 = x1.to(dtype=torch.float32), x2.to(dtype=torch.float32)
-    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).to(dtype=dtype)
+    if ivy.exists(out):
+        if ivy.as_ivy_dtype(out.dtype) == ivy.as_ivy_dtype(x1.dtype):
+            return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
+        return ivy.inplace_update(
+            out, torch.tensordot(x1, x2, dims=([axis], [axis])).to(out.dtype)
+        )
+    return torch.tensordot(x1, x2, dims=([axis], [axis])).to(dtype)
 
 
 vecdot.support_native_out = True

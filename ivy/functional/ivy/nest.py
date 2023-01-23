@@ -4,6 +4,7 @@
 from builtins import map as _map
 from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, Sequence
 import copy
+from collections import UserDict
 
 # local
 import ivy
@@ -207,7 +208,10 @@ def set_nest_at_index(
         _result[index[0]] = set_nest_at_index(
             nest[index[0]], index[1:], value, shallow, _result[index[0]]
         )
-    _result = nest_type(_result)
+    try:
+        _result = nest_type(_result)
+    except TypeError:
+        _result = nest_type(*_result)
     return _result
 
 
@@ -324,7 +328,10 @@ def map_nest_at_index(
         _result[index[0]] = map_nest_at_index(
             nest[index[0]], index[1:], fn, shallow, _result[index[0]]
         )
-    _result = nest_type(_result)
+    try:
+        _result = nest_type(_result)
+    except TypeError:
+        _result = nest_type(*_result)
     return _result
 
 
@@ -489,7 +496,10 @@ def set_nest_at_indices(
         values = [values] * len(indices)
     for index, value in zip(indices, values):
         result = set_nest_at_index(nest, index, value, _result=result, shallow=shallow)
-    result = nest_type(result)
+    try:
+        result = nest_type(result)
+    except TypeError:
+        result = nest_type(*result)
     return result
 
 
@@ -590,7 +600,10 @@ def map_nest_at_indices(
     result = list(result) if is_tuple else result
     for i, index in enumerate(indices):
         result = map_nest_at_index(nest, index, fn, _result=result, shallow=shallow)
-    result = nest_type(result)
+    try:
+        result = nest_type(result)
+    except TypeError:
+        result = nest_type(*result)
     return result
 
 
@@ -725,7 +738,9 @@ def nested_argwhere(
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
-    elif isinstance(nest, dict) and not isinstance(nest, to_ignore):
+    elif (isinstance(nest, dict) or isinstance(nest, UserDict)) and not isinstance(
+        nest, to_ignore
+    ):
         n = 0
         _indices = []
         for k, v in nest.items():
@@ -1266,10 +1281,10 @@ def copy_nest(
 def nested_multi_map(
     func: Callable,
     nests: List[Iterable],
-    key_chains=None,
+    index_chains=None,
     to_apply=True,
     prune_unapplied=False,
-    key_chain="",
+    index_chain="",
     config=None,
     to_ivy=True,
 ):
@@ -1282,15 +1297,15 @@ def nested_multi_map(
         Function to apply to each nest entry.
     nest
         nests to map.
-    key_chains
+    index_chains
         The key-chains to apply or not apply the method to. Default is ``None``.
     to_apply
-        If True, the method will be applied to key_chains, otherwise key_chains will
+        If True, the method will be applied to index_chains, otherwise index_chains will
         be skipped. Default is ``True``.
     prune_unapplied
-        Whether to prune key_chains for which the function was not applied,
+        Whether to prune index_chains for which the function was not applied,
         otherwise the leftmost nest value is used. Default is ``False``.
-    key_chain
+    index_chain
         Chain of keys for this dict entry (Default value = '')
     config
         The configuration for the nests. Default is the same as nest0.
@@ -1343,14 +1358,14 @@ def nested_multi_map(
                 key = (
                     str(index) if isinstance(nest, (tuple, list)) else list(nest)[index]
                 )
-            this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
+            this_index_chain = key if index_chain == "" else (index_chain + "/" + key)
             ret = ivy.nested_multi_map(
                 func,
                 values,
-                key_chains,
+                index_chains,
                 to_apply,
                 prune_unapplied,
-                this_key_chain,
+                this_index_chain,
                 config,
                 to_ivy,
             )
@@ -1363,18 +1378,18 @@ def nested_multi_map(
     else:
         values = nests
         value0 = values[0]
-        this_key_chain = key_chain
+        this_index_chain = index_chain
 
-        def _found_in_key_chains(this_key_chain, key_chains):
-            if key_chains is None:
+        def _found_in_index_chains(this_index_chain, index_chains):
+            if index_chains is None:
                 return False
-            for key_chain in key_chains:
-                if this_key_chain.startswith(key_chain):
+            for index_chain in index_chains:
+                if this_index_chain.startswith(index_chain):
                     return True
             return False
 
-        if key_chains is not None:
-            found = _found_in_key_chains(this_key_chain, key_chains)
+        if index_chains is not None:
+            found = _found_in_index_chains(this_index_chain, index_chains)
             if (found and not to_apply) or (not found and to_apply):
                 if prune_unapplied:
                     return return_nest
@@ -1383,7 +1398,7 @@ def nested_multi_map(
                         value0 = ivy.array(value0)
                 return_nest.append(value0) if isinstance(
                     return_nest, list
-                ) else return_nest.update({this_key_chain: value0}) if isinstance(
+                ) else return_nest.update({this_index_chain: value0}) if isinstance(
                     return_nest, dict
                 ) else return_nest
                 return (
@@ -1393,7 +1408,7 @@ def nested_multi_map(
                     if ivy.is_ivy_container(nest)
                     else return_nest
                 )
-        ret = func(values, this_key_chain)
+        ret = func(values, this_index_chain)
         if to_ivy:
             if isinstance(nest, (ivy.Array, ivy.NativeArray)):
                 return ret

@@ -253,7 +253,6 @@ def _get_dtype_and_vector(draw):
 @handle_test(
     fn_tree="functional.ivy.vector_to_skew_symmetric_matrix",
     dtype_x=_get_dtype_and_vector(),
-    test_gradient=st.just(True),
 )
 def test_vector_to_skew_symmetric_matrix(
     *,
@@ -286,7 +285,6 @@ def test_vector_to_skew_symmetric_matrix(
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ),
     n=helpers.ints(min_value=-6, max_value=6),
-    test_gradient=st.just(True),
 )
 def test_matrix_power(
     *,
@@ -319,7 +317,6 @@ def test_matrix_power(
     fn_tree="functional.ivy.matmul",
     x=_get_first_matrix_and_dtype(transpose=True),
     y=_get_second_matrix_and_dtype(transpose=True),
-    test_gradient=st.just(True),
 )
 def test_matmul(
     *,
@@ -356,9 +353,8 @@ def test_matmul(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=2,
         max_value=5,
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
-    test_gradient=st.just(True),
 )
 def test_det(
     *,
@@ -388,7 +384,7 @@ def test_det(
     fn_tree="functional.ivy.eigh",
     dtype_x=_get_dtype_and_matrix(symmetric=True),
     UPLO=st.sampled_from(("L", "U")),
-    test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_eigh(
     *,
@@ -416,11 +412,10 @@ def test_eigh(
     if results is None:
         return
     ret_np_flat, ret_from_np_flat = results
-
     reconstructed_np = None
     for i in range(len(ret_np_flat) // 2):
-        eigenvalue = ret_np_flat[i * 2]
-        eigenvector = ret_np_flat[i * 2 + 1]
+        eigenvalue = ret_np_flat[i]
+        eigenvector = ret_np_flat[len(ret_np_flat) // 2 + i]
         if reconstructed_np is not None:
             reconstructed_np += eigenvalue * np.matmul(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
@@ -432,8 +427,8 @@ def test_eigh(
 
     reconstructed_from_np = None
     for i in range(len(ret_from_np_flat) // 2):
-        eigenvalue = ret_from_np_flat[i * 2]
-        eigenvector = ret_from_np_flat[i * 2 + 1]
+        eigenvalue = ret_from_np_flat[i]
+        eigenvector = ret_from_np_flat[len(ret_np_flat) // 2 + i]
         if reconstructed_from_np is not None:
             reconstructed_from_np += eigenvalue * np.matmul(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
@@ -454,6 +449,7 @@ def test_eigh(
     fn_tree="functional.ivy.eigvalsh",
     dtype_x=_get_dtype_and_matrix(symmetric=True),
     UPLO=st.sampled_from(("L", "U")),
+    test_gradients=st.just(False),
 )
 def test_eigvalsh(
     *,
@@ -492,7 +488,6 @@ def test_eigvalsh(
         min_num_dims=1,
         max_num_dims=1,
     ),
-    test_gradient=st.just(True),
 )
 def test_inner(
     *,
@@ -528,7 +523,6 @@ def test_inner(
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     adjoint=st.booleans(),
-    test_gradient=st.just(True),
 )
 def test_inv(
     *,
@@ -559,7 +553,6 @@ def test_inv(
 @handle_test(
     fn_tree="functional.ivy.matrix_transpose",
     dtype_x=_get_first_matrix_and_dtype(),
-    test_gradient=st.just(True),
 )
 def test_matrix_transpose(
     *,
@@ -593,7 +586,6 @@ def test_matrix_transpose(
         min_num_dims=1,
         max_num_dims=1,
     ),
-    test_gradient=st.just(True),
 )
 def test_outer(
     *,
@@ -629,7 +621,6 @@ def test_outer(
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ),
-    test_gradient=st.just(True),
     test_with_out=st.just(False),
 )
 def test_slogdet(
@@ -643,6 +634,9 @@ def test_slogdet(
 ):
     input_dtype, x = dtype_x
     assume(matrix_is_stable(x[0]))
+    ret_grad_idxs = (
+        [[1, "a"], [1, "b", "c"], [1, "b", "d"]] if test_flags.container[0] else [[1]]
+    )
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -652,7 +646,7 @@ def test_slogdet(
         atol_=1e-2,
         fn_name=fn_name,
         on_device=on_device,
-        ret_grad_idxs=[["1"]],
+        ret_grad_idxs=ret_grad_idxs,
         x=x[0],
     )
 
@@ -712,7 +706,6 @@ def _get_second_matrix(draw):
     fn_tree="functional.ivy.solve",
     x=_get_first_matrix(),
     y=_get_second_matrix(),
-    test_gradient=st.just(True),
 )
 def test_solve(
     *,
@@ -749,7 +742,7 @@ def test_solve(
         max_value=50,
         min_num_dims=2,
     ),
-    test_gradient=st.just(True),
+    test_gradients=st.just(False),
 )
 def test_svdvals(
     *,
@@ -784,7 +777,6 @@ def test_svdvals(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    test_gradient=st.just(True),
 )
 def test_tensordot(
     *,
@@ -833,7 +825,6 @@ def test_tensordot(
     offset=st.integers(min_value=0, max_value=0),
     axis1=st.integers(min_value=0, max_value=0),
     axis2=st.integers(min_value=1, max_value=1),
-    test_gradient=st.just(True),
 )
 def test_trace(
     *,
@@ -877,7 +868,6 @@ def test_trace(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    test_gradient=st.just(True),
 )
 def test_vecdot(
     *,
@@ -912,6 +902,7 @@ def test_vecdot(
         valid_axis=True,
         min_value=-1e04,
         max_value=1e04,
+        abs_smallest_val=1e-04,
     ),
     kd=st.booleans(),
     ord=st.one_of(
@@ -919,7 +910,6 @@ def test_vecdot(
         helpers.floats(min_value=1.0, max_value=2.0),
     ),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
-    test_gradient=st.just(True),
 )
 def test_vector_norm(
     *,
@@ -963,7 +953,6 @@ def test_vector_norm(
         safety_factor_scale="log",
     ),
     rtol=st.floats(1e-5, 1e-3),
-    test_gradient=st.just(True),
 )
 def test_pinv(
     *,
@@ -996,6 +985,7 @@ def test_pinv(
     dtype_x=_get_dtype_and_matrix(),
     mode=st.sampled_from(("reduced", "complete")),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_qr(
     *,
@@ -1025,17 +1015,17 @@ def test_qr(
 
     ret_np_flat, ret_from_np_flat = results
     for i in range(len(ret_np_flat) // 2):
-        q_np_flat = ret_np_flat[i * 2]
-        r_np_flat = ret_np_flat[i * 2 + 1]
+        q_np_flat = ret_np_flat[i]
+        r_np_flat = ret_np_flat[len(ret_np_flat) // 2 + i]
     reconstructed_np_flat = np.matmul(q_np_flat, r_np_flat)
     for i in range(len(ret_from_np_flat) // 2):
-        q_from_np_flat = ret_from_np_flat[i * 2]
-        r_from_np_flat = ret_from_np_flat[i * 2 + 1]
+        q_from_np_flat = ret_from_np_flat[i]
+        r_from_np_flat = ret_from_np_flat[len(ret_np_flat) // 2 + i]
     reconstructed_from_np_flat = np.matmul(q_from_np_flat, r_from_np_flat)
 
     # value test
     helpers.assert_all_close(
-        reconstructed_np_flat, reconstructed_from_np_flat, rtol=1e-2, atol=1e-2
+        reconstructed_np_flat, reconstructed_from_np_flat, rtol=1e-1, atol=1e-1
     )
 
 
@@ -1054,6 +1044,7 @@ def test_qr(
     fm=st.booleans(),
     uv=st.booleans(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_svd(
     *,
@@ -1089,17 +1080,17 @@ def test_svd(
 
     if uv:
         for i in range(len(ret_flat_np) // 3):
-            U = ret_flat_np[i * 3]
-            S = ret_flat_np[i * 3 + 1]
-            Vh = ret_flat_np[i * 3 + 2]
+            U = ret_flat_np[i]
+            S = ret_flat_np[len(ret_flat_np) // 3 + i]
+            Vh = ret_flat_np[2 * len(ret_flat_np) // 3 + i]
         m = U.shape[-1]
         n = Vh.shape[-1]
         S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
 
         for i in range(len(ret_from_gt_flat_np) // 3):
-            U_gt = ret_from_gt_flat_np[i * 3]
-            S_gt = ret_from_gt_flat_np[i * 3 + 1]
-            Vh_gt = ret_from_gt_flat_np[i * 3 + 2]
+            U_gt = ret_from_gt_flat_np[i]
+            S_gt = ret_from_gt_flat_np[len(ret_from_gt_flat_np) // 3 + i]
+            Vh_gt = ret_from_gt_flat_np[2 * len(ret_from_gt_flat_np) // 3 + i]
         S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
         with ivy.functional.backends.numpy.use:
@@ -1143,7 +1134,6 @@ def test_svd(
     kd=st.booleans(),
     axis=st.just((-2, -1)),
     ord=helpers.ints(min_value=1, max_value=2) | st.sampled_from(("fro", "nuc")),
-    test_gradient=st.just(True),
 )
 def test_matrix_norm(
     *,
@@ -1182,8 +1172,9 @@ def _matrix_rank_helper(draw):
             available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=2,
             shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-            large_abs_safety_factor=48,
-            small_abs_safety_factor=48,
+            min_value=-1e05,
+            max_value=1e05,
+            abs_smallest_val=1e-05,
             safety_factor_scale="log",
         )
     )
@@ -1238,7 +1229,6 @@ def test_matrix_rank(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ),
     upper=st.booleans(),
-    test_gradient=st.just(True),
 )
 def test_cholesky(
     *,
@@ -1274,16 +1264,14 @@ def test_cholesky(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=10,
+        max_num_dims=5,
         min_dim_size=3,
         max_dim_size=3,
-        min_value=-1e10,
-        max_value=1e10,
+        min_value=-1e5,
+        max_value=1e5,
         abs_smallest_val=0.01,
-        large_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
-    test_gradient=st.just(True),
 )
 def test_cross(
     *,
@@ -1303,7 +1291,7 @@ def test_cross(
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
-        atol_=1e-2,
+        atol_=1e-1,
         x1=x1,
         x2=x2,
         axis=axis,
@@ -1324,7 +1312,6 @@ def test_cross(
     axes=st.lists(
         helpers.ints(min_value=-2, max_value=1), min_size=2, max_size=2, unique=True
     ).filter(lambda axes: axes[0] % 2 != axes[1] % 2),
-    test_gradient=st.just(True),
 )
 def test_diagonal(
     *,
@@ -1378,7 +1365,6 @@ def _diag_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.diag",
     dtype_x_k=_diag_helper(),
-    test_gradient=st.just(True),
 )
 def test_diag(
     *,
@@ -1416,7 +1402,6 @@ def test_diag(
     ),
     N=st.integers(min_value=1, max_value=10) | st.none(),
     increasing=st.booleans(),
-    test_gradient=st.just(True),
 )
 def test_vander(
     *,

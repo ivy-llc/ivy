@@ -53,7 +53,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             b: (7, 6, 2)
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "median",
             input,
             axis=axis,
@@ -163,7 +163,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             y: 1.8
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "nanmean",
             input,
             axis=axis,
@@ -270,7 +270,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             b: (ivy.array([5, 0], ivy.array([0, 2])))
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "unravel_index",
             indices,
             shape=shape,
@@ -431,7 +431,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             y: ivy.array([1., 3.])
         }
         """
-        return ContainerBase.cont_multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "quantile",
             a,
             q,
@@ -568,3 +568,103 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_corrcoef(
+        x: ivy.Container,
+        /,
+        *,
+        y: ivy.Container = None,
+        rowvar: Optional[bool] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = False,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.corrcoef. This method simply wraps
+        the function, and so the docstring for ivy.corrcoef also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container including arrays.
+        y
+            An additional input container.
+        rowvar
+            If rowvar is True (default), then each row represents a variable, with
+            observations in the columns. Otherwise, the relationship is transposed:
+            each column represents a variable, while the rows contain observations.
+
+        Returns
+        -------
+        ret
+            The corrcoef of the array elements in the container.
+
+        Examples
+        --------
+        >>> a = ivy.Container(w=ivy.array([[1., 2.], [3., 4.]]), \
+                                 z=ivy.array([[0., 1., 2.], [2., 1., 0.]]))
+        >>> ivy.Container.corrcoef(a)
+        {
+            w: ivy.array([[1., 1.], 
+                          [1., 1.]]),
+            z: ivy.array([[1., -1.], 
+                          [-1., 1.]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "corrcoef",
+            x,
+            y=y,
+            rowvar=rowvar,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def corrcoef(
+        self: ivy.Container,
+        /,
+        *,
+        y: ivy.Container = None,
+        rowvar: Optional[bool] = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.corrcoef. This method simply
+        wraps the function, and so the docstring for ivy.corrcoef also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        y
+            An additional input container.
+        rowvar
+            If rowvar is True (default), then each row represents a variable, with
+            observations in the columns. Otherwise, the relationship is transposed:
+            each column represents a variable, while the rows contain observations.
+
+        Returns
+        -------
+        ret
+            The corrcoef of the array elements in the input container.
+
+        Examples
+        --------
+        >>> a = ivy.Container(w=ivy.array([[1., 2.], [3., 4.]]), \
+                                 z=ivy.array([[0., 1., 2.], [2., 1., 0.]]))
+        >>> ivy.Container.corrcoef(a)
+        {
+            w: ivy.array([[1., 1.], 
+                          [1., 1.]]),
+            z: ivy.array([[1., -1.], 
+                          [-1., 1.]])
+        }
+        """
+        return self.static_corrcoef(self, y=y, rowvar=rowvar, out=out)

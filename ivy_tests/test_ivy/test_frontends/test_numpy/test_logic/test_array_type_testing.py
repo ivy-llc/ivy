@@ -1,4 +1,5 @@
 # global
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -12,37 +13,36 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
+                min_value=-np.inf,
+                max_value=np.inf,
             )
         ],
         special=True,
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="isifinite"
+    ),
 )
 def test_numpy_isfinite(
     dtypes_values_casting,
     where,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=dtypes,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -61,37 +61,36 @@ def test_numpy_isfinite(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
+                min_value=-np.inf,
+                max_value=np.inf,
             )
         ],
         special=True,
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="isinf"
+    ),
 )
 def test_numpy_isinf(
     dtypes_values_casting,
     where,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=dtypes,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -110,37 +109,37 @@ def test_numpy_isinf(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
+                min_value=-np.inf,
+                max_value=np.inf,
+                allow_nan=True,
             )
         ],
         special=True,
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="isnan"
+    ),
 )
 def test_numpy_isnan(
     dtypes_values_casting,
     where,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=dtypes,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
