@@ -19,6 +19,8 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
     ret = ivy.array(object, dtype=dtype)
     if ivy.get_num_dims(ret) < ndmin:
         ret = ivy.expand_dims(ret, axis=list(range(ndmin - ivy.get_num_dims(ret))))
+    if ret.shape == () and dtype is None:
+        return DeviceArray(ret, weak_type=True)
     return DeviceArray(ret)
 
 
@@ -39,15 +41,13 @@ def arange(start, stop=None, step=1, dtype=None):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def zeros(shape, dtype=None):
-    if dtype is None:
-        dtype = ivy.float64
-    return ivy.zeros(shape, dtype=dtype)
+    return DeviceArray(ivy.zeros(shape, dtype=dtype))
 
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def ones(shape, dtype=None):
-    return ivy.ones(shape, dtype=dtype)
+    return DeviceArray(ivy.ones(shape, dtype=dtype))
 
 
 @handle_jax_dtype
@@ -61,7 +61,7 @@ def ones_like(a, dtype=None, shape=None):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def asarray(a, dtype=None, order=None):
-    return ivy.asarray(a, dtype=dtype)
+    return array(a, dtype=dtype, order=order)
 
 
 @handle_jax_dtype
@@ -74,7 +74,7 @@ def hstack(tup, dtype=None):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def eye(N, M=None, k=0, dtype=None):
-    return ivy.eye(N, M, k=k, dtype=dtype)
+    return DeviceArray(ivy.eye(N, M, k=k, dtype=dtype))
 
 
 @to_ivy_arrays_and_back
@@ -85,4 +85,12 @@ def triu(m, k=0):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def empty(shape, dtype=None):
-    return ivy.empty(shape, dtype=dtype)
+    return DeviceArray(ivy.empty(shape, dtype=dtype))
+
+
+@to_ivy_arrays_and_back
+def vander(x, N=None, increasing=False):
+    if N == 0:
+        return ivy.array([], dtype=x.dtype)
+    else:
+        return ivy.vander(x, N=N, increasing=increasing, out=None)

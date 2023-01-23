@@ -1,6 +1,9 @@
 from typing import Optional, Union, Tuple, List
 import numpy as np
 import numpy.typing as npt
+
+import ivy
+from ivy import promote_types_of_inputs
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -20,6 +23,7 @@ def lcm(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.abs(
         np.lcm(
             x1,
@@ -40,6 +44,7 @@ def fmod(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.fmod(
         x1,
         x2,
@@ -58,6 +63,7 @@ def fmax(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.fmax(
         x1,
         x2,
@@ -81,6 +87,7 @@ def fmin(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.fmin(
         x1,
         x2,
@@ -145,6 +152,10 @@ def copysign(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.astype(ivy.default_float_dtype(as_native=True))
+        x2 = x2.astype(ivy.default_float_dtype(as_native=True))
     return np.copysign(x1, x2, out=out)
 
 
@@ -194,6 +205,7 @@ def gcd(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.gcd(x1, x2, out=out)
 
 
@@ -269,6 +281,10 @@ def logaddexp2(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.astype(ivy.default_float_dtype(as_native=True))
+        x2 = x2.astype(ivy.default_float_dtype(as_native=True))
     return np.logaddexp2(x1, x2, out=out)
 
 
@@ -285,6 +301,16 @@ def signbit(
 
 
 signbit.support_native_out = True
+
+
+def hypot(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.hypot(x1, x2)
 
 
 def diff(
@@ -390,6 +416,7 @@ def gradient(
 def xlogy(
     x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    x, y = promote_types_of_inputs(x, y)
     if (x == 0).all():
         return 0.0
     else:
@@ -398,3 +425,12 @@ def xlogy(
 
 def real(x: Union[np.ndarray], /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.real(x)
+
+
+def isposinf(
+    x: Union[np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.isposinf(x)

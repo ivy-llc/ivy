@@ -9,11 +9,13 @@ import ivy.functional.frontends.jax as jax_frontend
 import ivy.functional.frontends.numpy as np_frontend
 
 
-def _is_jax_frontend_array(x):
-    return isinstance(x, jax_frontend.DeviceArray)
-
-
 def _from_jax_frontend_array_to_ivy_array(x):
+    if (
+        isinstance(x, jax_frontend.DeviceArray)
+        and x.weak_type
+        and x.ivy_array.shape == ()
+    ):
+        return ivy.to_scalar(x.ivy_array)
     if hasattr(x, "ivy_array"):
         return x.ivy_array
     return x
@@ -26,6 +28,21 @@ def _from_ivy_array_to_jax_frontend_array(x, nested=False, include_derived=None)
         )
     elif isinstance(x, ivy.Array):
         return jax_frontend.DeviceArray(x)
+    return x
+
+
+def _from_ivy_array_to_jax_frontend_array_weak_type(
+    x, nested=False, include_derived=None
+):
+    if nested:
+        return ivy.nested_map(
+            x,
+            _from_ivy_array_to_jax_frontend_array_weak_type,
+            include_derived,
+            shallow=False,
+        )
+    elif isinstance(x, ivy.Array):
+        return jax_frontend.DeviceArray(x, weak_type=True)
     return x
 
 
@@ -67,6 +84,14 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
+        weak_type = not any(
+            (isinstance(arg, jax_frontend.DeviceArray) and arg.weak_type is False)
+            or ivy.is_array(arg)
+            or isinstance(arg, (tuple, list))
+            for arg in args
+        )
+        if "dtype" in kwargs and kwargs["dtype"] is not None:
+            weak_type = False
         # call unmodified function
         # ToDo: Remove this default dtype setting
         #  once frontend specific backend setting is added
@@ -81,6 +106,12 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         else:
             ret = fn(*args, **kwargs)
         # convert all arrays in the return to `jax_frontend.DeviceArray` instances
+        if weak_type:
+            return _from_ivy_array_to_jax_frontend_array_weak_type(
+                ret,
+                nested=True,
+                include_derived={tuple: True},
+            )
         return _from_ivy_array_to_jax_frontend_array(
             ret, nested=True, include_derived={tuple: True}
         )

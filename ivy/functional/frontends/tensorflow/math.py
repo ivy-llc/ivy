@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy import with_supported_dtypes
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -369,10 +370,17 @@ def argmin(input, axis=None, output_type="int64", name=None):
 def truediv(x, y, name="truediv"):
     x, y = check_tensorflow_casting(x, y)
     x_dtype = ivy.dtype(x)
-    if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
-        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
-    elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
-        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+
+    if ivy.current_backend_str() == "torch":
+        if x_dtype in [ivy.int8, ivy.int16]:
+            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+        elif x_dtype in [ivy.int32, ivy.int64]:
+            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    else:
+        if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
+            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+        elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
+            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
 
 
@@ -380,3 +388,32 @@ def truediv(x, y, name="truediv"):
 def equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.equal(x, y)
+
+
+@to_ivy_arrays_and_back
+def floor(x, name=None):
+    return ivy.floor(x)
+
+
+@to_ivy_arrays_and_back
+def ceil(x, name=None):
+    return ivy.ceil(x)
+
+
+@to_ivy_arrays_and_back
+def minimum(x, y, name=None):
+    return ivy.minimum(x, y)
+
+
+@to_ivy_arrays_and_back
+def sigmoid(x, name=None):
+    return ivy.sigmoid(x)
+
+
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def tanh(x, name=None):
+    return ivy.tanh(x)

@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     integer_arrays_to_float,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -99,7 +99,7 @@ ACTIVATION_FUNCTIONS = [
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -206,7 +206,7 @@ def get(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -270,7 +270,7 @@ def leaky_relu(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -340,7 +340,7 @@ def log_softmax(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def relu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -393,7 +393,7 @@ def relu(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -434,7 +434,7 @@ def sigmoid(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -482,7 +482,7 @@ def softmax(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -538,7 +538,7 @@ def softplus(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:

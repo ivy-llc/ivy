@@ -14,7 +14,7 @@ _zero = np.asarray(0, dtype="uint8")
 _one = np.asarray(1, dtype="uint8")
 
 
-def _not_too_close_to_zero(x):
+def not_too_close_to_zero(x):
     f = np.vectorize(lambda item: item + (_one if np.isclose(item, 0) else _zero))
     return f(x)
 
@@ -1470,8 +1470,8 @@ def test_pow(
     if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
         x[1] = np.abs(x[1])
 
-    x[0] = _not_too_close_to_zero(x[0])
-    x[1] = _not_too_close_to_zero(x[1])
+    x[0] = not_too_close_to_zero(x[0])
+    x[1] = not_too_close_to_zero(x[1])
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,

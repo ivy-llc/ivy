@@ -13,6 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
     copy=st.booleans(),
     ndmin=helpers.ints(min_value=0, max_value=10),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_array(
     *,
@@ -20,21 +21,16 @@ def test_jax_numpy_array(
     dtype,
     copy,
     ndmin,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
+    test_flags,
     frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         object=x[0],
@@ -59,14 +55,13 @@ def test_jax_numpy_array(
         max_dim_size=10,
     ),
     dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_zeros_like(
     dtype_and_x,
     dtype,
     shape,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -74,11 +69,8 @@ def test_jax_numpy_zeros_like(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -94,6 +86,7 @@ def test_jax_numpy_zeros_like(
     stop=st.integers(min_value=-100, max_value=100) | st.none(),
     step=st.integers(min_value=-100, max_value=100).filter(lambda x: x != 0),
     dtype=helpers.get_dtypes("numeric", full=False),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_arange(
     *,
@@ -101,20 +94,15 @@ def test_jax_numpy_arange(
     stop,
     step,
     dtype,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
+    test_flags,
     frontend,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         start=start,
@@ -135,25 +123,21 @@ def test_jax_numpy_arange(
         max_dim_size=10,
     ),
     dtypes=helpers.get_dtypes("numeric", full=False),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_zeros(
     *,
     dtypes,
     shape,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
+    test_flags,
     frontend,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         shape=shape,
@@ -172,24 +156,20 @@ def test_jax_numpy_zeros(
         max_dim_size=10,
     ),
     dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_ones(
     shape,
     dtype,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         shape=shape,
@@ -211,14 +191,13 @@ def test_jax_numpy_ones(
         max_dim_size=10,
     ),
     dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_ones_like(
     dtype_and_x,
     shape,
     dtype,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -226,11 +205,8 @@ def test_jax_numpy_ones_like(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -250,12 +226,11 @@ def test_jax_numpy_ones_like(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_asarray(
     dtype_and_a,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -263,11 +238,8 @@ def test_jax_numpy_asarray(
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=a,
@@ -286,23 +258,19 @@ def test_jax_numpy_asarray(
             min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=5
         ),
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_hstack(
     dtype_and_tup,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
 ):
     input_dtype, x = dtype_and_tup
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         tup=x,
     )
@@ -315,6 +283,7 @@ def test_jax_numpy_hstack(
     m=st.none() | helpers.ints(min_value=3, max_value=10),
     k=helpers.ints(min_value=-2, max_value=2),
     dtypes=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_eye(
     *,
@@ -322,20 +291,15 @@ def test_jax_numpy_eye(
     m,
     k,
     dtypes,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
+    test_flags,
     frontend,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         N=n,
@@ -357,13 +321,12 @@ def test_jax_numpy_eye(
         max_dim_size=5,
     ),
     k=helpers.ints(min_value=-10, max_value=10),
+    test_with_out=st.just(False),
 )
 def test_numpy_triu(
     dtype_and_x,
     k,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -371,11 +334,8 @@ def test_numpy_triu(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         m=x[0],
@@ -394,27 +354,64 @@ def test_numpy_triu(
         max_dim_size=10,
     ),
     dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_empty(
     shape,
     dtype,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
         shape=shape,
         dtype=dtype[0],
+    )
+
+
+# vander
+@handle_frontend_test(
+    fn_tree="jax.numpy.vander",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.tuples(
+            st.integers(min_value=1, max_value=5),
+        ),
+    ),
+    N=st.integers(min_value=0, max_value=5),
+    increasing=st.booleans(),
+)
+def test_jax_numpy_vander(
+    *,
+    dtype_and_x,
+    N,
+    increasing,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        N=N,
+        increasing=increasing,
     )

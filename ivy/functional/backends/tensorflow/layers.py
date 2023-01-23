@@ -17,12 +17,12 @@ from ivy.functional.ivy.layers import _deconv_length, _get_x_data_format
 def conv1d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
-    strides: int,
+    strides: Union[int, Tuple[int]],
     padding: str,
     /,
     *,
     data_format: str = "NWC",
-    dilations: int = 1,
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCW":
@@ -42,11 +42,13 @@ def conv1d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: str = "NWC",
-    dilations: int = 1,
+    data_format: Optional[str] = "NWC",
+    dilations: Optional[int] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    if not ivy.gpu_is_available() and dilations > 1:
+    if ivy.dev(x) == 'cpu' and (
+        (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
+    ):
         raise ivy.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
@@ -82,12 +84,10 @@ def conv2d(
     padding: str,
     /,
     *,
-    data_format: str = "NHWC",
-    dilations: int = 1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(strides, int):
-        strides = strides[0]
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)
@@ -105,19 +105,20 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: str = "NHWC",
-    dilations=1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
+    if ivy.dev(x) == 'cpu' and (
+        (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
+    ):
+        raise ivy.exceptions.IvyException(
+            "Tensorflow does not support dilations greater than 1 when device is cpu"
+        )
     if isinstance(strides, int):
         strides = [strides] * 2
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filters = tf.transpose(filters, (0, 1, 3, 2))
-    if not ivy.gpu_is_available() and (dilations[0] > 1 or dilations[1] > 1):
-        raise ivy.exceptions.IvyException(
-            "conv2d_transpose does not support dilations greater than 1 when device"
-            "is cpu for tensorflow"
-        )
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     if output_shape is None:
@@ -146,21 +147,12 @@ def depthwise_conv2d(
     padding: Union[str, List[int]],
     /,
     *,
-    data_format: str = "NHWC",
-    dilations: Union[int, Tuple[int, int]] = 1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    if (
-        not ivy.gpu_is_available()
-        and (dilations[0] > 1 or dilations[1] > 1)
-        and (strides[0] > 1 or strides[1] > 1)
-    ):
-        raise ivy.exceptions.IvyException(
-            "depthwise_conv2d does not support dilations greater than 1 and"
-            "strides greater than 1 when device is cpu for tensorflow"
-        )
     if tf.rank(filters) == 3:
         filters = tf.expand_dims(filters, -1)
     if len(strides) == 2:
@@ -181,8 +173,8 @@ def conv3d(
     padding: str,
     /,
     *,
-    data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    data_format: Optional[str] = "NDHWC",
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
@@ -201,26 +193,19 @@ def conv3d(
 def conv3d_transpose(
     x: Tensor,
     filters: Tensor,
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int, int, int]],
     padding: str,
     /,
     *,
-    output_shape=None,
-    data_format: str = "NDHWC",
-    dilations: int = 1,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "NDHWC",
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tensor:
     strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
     dilations = (
         [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
     )
-    if not ivy.gpu_is_available() and (
-        dilations[1] > 1 or dilations[2] > 1 or dilations[3] > 1
-    ):
-        raise ivy.exceptions.IvyException(
-            "conv3d_transpose does not support dilations greater than 1 when"
-            "device is cpu for tensorflow"
-        )
     filters = tf.transpose(filters, (0, 1, 2, 4, 3))
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
@@ -255,47 +240,43 @@ def conv3d_transpose(
 def conv_general_dilated(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
-    strides: Union[int, Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
-    dims: int = 2,
-    data_format: str = "channel_last",
-    feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dims: Optional[int] = 2,
+    data_format: Optional[str] = "channel_last",
+    feature_group_count: Optional[int] = 1,
+    x_dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if isinstance(x_dilations, int):
-        x_dilations = (x_dilations,) * dims
-    elif len(x_dilations) == 1:
-        x_dilations = (x_dilations[0],) * dims
-    if not isinstance(strides, int):
-        strides = strides[0]
+    strides = [strides] * dims if isinstance(strides, int) else strides
+    dilations = [dilations] * dims if isinstance(dilations, int) else dilations
+    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
+
     if dims == 3:
-        strides = [1] + [strides] * 3 + [1]
-        dilations = (
-            [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
-        )
+        strides = [1] + strides + [1]
+        dilations = [1] + dilations + [1]
+
     if data_format == "channel_first":
         x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     x_shape = list(x.shape[1 : dims + 2])
 
     # adding dilation in input
-    if dims == 1:
-        permute_list = [2]
-    else:
-        permute_list = [i for i in range(3, dims + 2)]
-        permute_list += [2]
-    x = tf.transpose(x, (0, dims + 1, *range(1, dims + 1)))
     for i in range(dims):
         if x_dilations[i] > 1:
             h = x_shape[i]
             new_height = h + (h - 1) * (x_dilations[i] - 1)
             h = tf.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
-            x = tf.matmul(tf.transpose(x, (0, 1, *permute_list)), h)
-    x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+            x = tf.experimental.numpy.swapaxes(x, 1 + i, -1)
+            x = tf.matmul(x, h)
+            x = tf.experimental.numpy.swapaxes(x, -1, 1 + i)
 
     df = _get_x_data_format(dims, "channel_last")
     if dims == 1:
@@ -371,19 +352,19 @@ def conv_general_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int, int]],
-    padding: str,
+    padding: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     /,
     *,
-    dims: int = 2,
-    data_format: str = "channel_last",
-    output_shape=None,
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    feature_group_count: int = 1,
+    dims: Optional[int] = 2,
+    data_format: Optional[str] = "channel_last",
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    feature_group_count: Optional[int] = 1,
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(strides, int):
-        strides = strides[0]
     if data_format == "channel_first":
         x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     if dims == 1:
