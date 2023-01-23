@@ -5,16 +5,8 @@ import numpy as np
 import types
 import importlib
 import inspect
-import sys
 from ... import config
 
-
-def reimports():
-    import numpy as np
-    import ivy
-
-
-reimports()
 try:
     import tensorflow as tf
 except ImportError:
@@ -623,7 +615,8 @@ def test_frontend_function(
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend.split("/")[0])
     if "/" in frontend:
-        # multiversion zone, changes made in non-multiversion zone should be applied here too
+        # multiversion zone, changes made in non-multiversion zone should
+        # be applied here too
         if (
             frontend.split("/")[1]
             != importlib.import_module(frontend.split("/")[0]).__version__
@@ -766,7 +759,8 @@ def test_frontend_function(
                 raise e
 
     else:
-        # non-multiversion zone, changes made here should be applied to multiversion zone too
+        # non-multiversion zone, changes made here should be
+        # applied to multiversion zone too
         try:
             # create frontend framework args
             args_frontend = ivy.nested_map(

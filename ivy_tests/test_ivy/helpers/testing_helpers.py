@@ -25,7 +25,8 @@ from ivy_tests.test_ivy.helpers.available_frameworks import (
     available_frameworks,
     ground_truth,
 )
-ground_truth=ground_truth()
+
+ground_truth = ground_truth()
 
 
 cmd_line_args = (

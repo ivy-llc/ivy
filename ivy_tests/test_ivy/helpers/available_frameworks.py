@@ -1,7 +1,6 @@
 # A list of available backends that can be used for testing.
 
 
-
 def available_frameworks():
     available_frameworks_lis = ["numpy", "jax", "tensorflow", "torch"]
     try:
@@ -27,10 +26,9 @@ def available_frameworks():
     return available_frameworks_lis
 
 
-
 def ground_truth():
-    available_framework_lis=available_frameworks()
-    g_truth=''
+    available_framework_lis = available_frameworks()
+    g_truth = ""
     if "tensorflow" in available_framework_lis:
         g_truth = "tensorflow"
     elif "torch" in available_framework_lis:
