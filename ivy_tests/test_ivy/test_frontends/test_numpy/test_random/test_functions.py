@@ -145,10 +145,10 @@ def test_numpy_normal(
             st.integers(min_value=1, max_value=2)),
         min_value=1,
         max_value=100,
-        ),
+    ),
     size=st.tuples(
                 st.integers(min_value=1, max_value=10), st.integers(min_value=2, max_value=2)
-        ),
+    ),
 )
 def test_numpy_poisson(
     dtype_and_x,
