@@ -35,7 +35,7 @@ class Tensor:
 
     @property
     def shape(self):
-        return "torch.Size(" + str(list(self._ivy_array.shape)) + ")"
+        return self._ivy_array.shape
 
     # Setters #
     # --------#
@@ -350,7 +350,15 @@ class Tensor:
         return self.view(other.shape)
 
     def expand(self, *sizes):
-        return torch_frontend.tensor(ivy.broadcast_to(self._ivy_array, shape=sizes))
+
+        sizes = list(sizes)
+        for i, dim in enumerate(sizes):
+            if dim < 0:
+                sizes[i] = self.shape[i]
+
+        return torch_frontend.tensor(
+            ivy.broadcast_to(self._ivy_array, shape=tuple(sizes))
+        )
 
     def detach(self):
         return torch_frontend.tensor(
