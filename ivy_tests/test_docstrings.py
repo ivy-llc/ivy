@@ -85,7 +85,6 @@ def check_docstring_examples_run(
         ).__doc__
     else:
         docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
-
     if docstring is None:
         return True
 
@@ -93,7 +92,6 @@ def check_docstring_examples_run(
 
     trimmed_docstring = trim(docstring=docstring)
     trimmed_docstring = trimmed_docstring.split("\n")
-
     # end_index: -1, if print statement is not found in the docstring
     end_index = -1
 
@@ -105,10 +103,7 @@ def check_docstring_examples_run(
     sub = ">>> print("
     for index, line in enumerate(trimmed_docstring):
         if sub in line:
-            for i, s in enumerate(trimmed_docstring[index + 1 :]):
-                if s.startswith(">>>") or s.lower().startswith("with"):
-                    end_index = index + i + 1
-                    break
+            end_index = trimmed_docstring.index("", index)
             p_output = trimmed_docstring[index + 1 : end_index]
             p_output = ("").join(p_output).replace(" ", "")
             p_output = p_output.replace("...", "")
@@ -124,10 +119,12 @@ def check_docstring_examples_run(
     for line in trimmed_docstring:
         if line.startswith(">>>"):
             executable_lines.append(line.split(">>>")[1][1:])
-        if line.startswith("..."):
+            is_multiline_executable = True
+        if line.startswith("...") and is_multiline_executable:
             executable_lines[-1] += line.split("...")[1][1:]
         if ">>> print(" in line:
-            break
+            is_multiline_executable = False
+            continue
 
     # noinspection PyBroadException
     f = StringIO()
@@ -183,6 +180,8 @@ def check_docstring_examples_run(
     num_output = num_output.split(",")
     num_parsed_output = num_parsed_output.split(",")
     docstr_result = True
+    # print("N_OUTPUT", num_output)
+    # print("N_PUTPUT", num_parsed_output)
     for (doc_u, doc_v) in zip(num_output, num_parsed_output):
         try:
             docstr_result = np.allclose(
