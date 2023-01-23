@@ -2,6 +2,7 @@ import operator
 from typing import Union, Optional, Tuple, List
 from numbers import Number
 import tensorflow as tf
+from tensorflow.python.ops.numpy_ops import np_math_ops
 
 from ivy import promote_types_of_inputs
 from .. import backend_version
@@ -156,6 +157,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    np_math_ops.enable_numpy_methods_on_tensor()
     return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
@@ -604,12 +606,3 @@ def real(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.real(x)
-
-
-def isposinf(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.isposinf(x)
