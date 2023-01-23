@@ -351,12 +351,14 @@ class Tensor:
 
     def expand(self, *sizes):
 
-        sizes = tuple(sizes)
+        sizes = list(sizes)
         for i, dim in enumerate(sizes):
             if dim < 0:
                 sizes[i] = self.shape[i]
 
-        return torch_frontend.tensor(ivy.broadcast_to(self._ivy_array, shape=sizes))
+        return torch_frontend.tensor(
+            ivy.broadcast_to(self._ivy_array, shape=tuple(sizes))
+        )
 
     def detach(self):
         return torch_frontend.tensor(
