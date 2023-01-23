@@ -1910,6 +1910,6 @@ def _conv_transpose_padding(k, s, padding, dilation, diff=0):
         if s > k - 1:
             pad_a = k - 1
         else:
-            pad_a = int(jnp.ceil(pad_len / 2))
+            pad_a = int(ivy.ceil(pad_len / 2))
     pad_b = pad_len - pad_a
     return pad_a, pad_b
