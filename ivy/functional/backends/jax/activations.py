@@ -16,11 +16,7 @@ from ivy.functional.backends.jax import JaxArray
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def gelu(
-    x: JaxArray,
-    /,
-    *,
-    approximate: bool = False,
-    out: Optional[JaxArray] = None,
+    x: JaxArray , / , * , approximate: bool = False, out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jax.nn.gelu(x, approximate)
 
