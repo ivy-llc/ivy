@@ -96,7 +96,6 @@ def sigmoid(input):
     return ivy.sigmoid(input)
 
 
-@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def leaky_relu(input, negative_slope=0.01, inplace=False):
     ret = ivy.leaky_relu(input, alpha=negative_slope)

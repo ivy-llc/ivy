@@ -574,14 +574,14 @@ def test_frontend_function(
             first_array = ivy.func_wrapper._get_first_array(*copy_args, **copy_kwargs)
             ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
             if ivy.native_inplace_support:
-                assert ret_.data is first_array.data
+                assert ret_ is first_array
             assert first_array is ret_
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
             first_array = ivy.func_wrapper._get_first_array(*args, **kwargs)
             if ivy.native_inplace_support:
-                assert ret.data is first_array.data
+                assert ret is first_array
             assert first_array is ret
             args, kwargs = copy_args, copy_kwargs
 
