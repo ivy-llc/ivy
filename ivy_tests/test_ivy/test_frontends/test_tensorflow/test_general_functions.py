@@ -1173,6 +1173,7 @@ def _multiple_shape_helper(draw):
     dt_n_multiples = draw(
         helpers.dtype_and_values(
             available_dtypes=["int32", "int64"],
+            max_value=10,
             shape=draw(helpers.get_shape(min_num_dims=1, max_num_dims=1,
                                          min_dim_size=input_dims,
                                          max_dim_size=input_dims)),
