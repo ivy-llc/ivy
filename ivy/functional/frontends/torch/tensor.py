@@ -279,14 +279,14 @@ class Tensor:
                     return self
                 else:
                     cast_tensor = self.clone()
-                    cast_tensor.ivy.array = ivy.asarray(self._ivy_array, dtype=args[0])
+                    cast_tensor.ivy_array = ivy.asarray(self._ivy_array, dtype=args[0])
                     return cast_tensor
             else:
                 if self.dtype == args[0].dtype and self.device == args[0].device:
                     return self
                 else:
                     cast_tensor = self.clone()
-                    cast_tensor.ivy.array = ivy.asarray(
+                    cast_tensor.ivy_array = ivy.asarray(
                         self._ivy_array,
                         dtype=args[0].dtype,
                         device=args[0].device,
@@ -297,7 +297,7 @@ class Tensor:
                 return self
             else:
                 cast_tensor = self.clone()
-                cast_tensor.ivy.array = ivy.asarray(
+                cast_tensor.ivy_array = ivy.asarray(
                     self._ivy_array,
                     device=kwargs["device"],
                     dtype=kwargs["dtype"],
