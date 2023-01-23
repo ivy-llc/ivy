@@ -2931,3 +2931,71 @@ def test_tensorflow_Softmax(
         on_device=on_device,
         logits=values[0],
     )
+
+
+# Elu
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Elu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-3,
+        max_value=3,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    name=st.just(None),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
+)
+def test_tensorflow_Elu(
+    *, 
+    dtype_and_x,
+    name,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+        name=name,
+    )
+
+# Elu New
+# @handle_frontend_test(
+#     fn_tree="tensorflow.raw_ops.Elu",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         min_value=-3,
+#         max_value=3,
+#         min_num_dims=1,
+#         max_num_dims=3,
+#         min_dim_size=1,
+#         max_dim_size=3,
+#     ),
+#     test_with_out=st.just(False),
+# )
+# def test_tensorflow_Elu(
+#     dtype_and_x,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     input_dtype, x = dtype_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         x=x[0],
+#     )
