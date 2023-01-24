@@ -208,7 +208,10 @@ def set_nest_at_index(
         _result[index[0]] = set_nest_at_index(
             nest[index[0]], index[1:], value, shallow, _result[index[0]]
         )
-    _result = nest_type(_result)
+    try:
+        _result = nest_type(_result)
+    except TypeError:
+        _result = nest_type(*_result)
     return _result
 
 
@@ -325,7 +328,10 @@ def map_nest_at_index(
         _result[index[0]] = map_nest_at_index(
             nest[index[0]], index[1:], fn, shallow, _result[index[0]]
         )
-    _result = nest_type(_result)
+    try:
+        _result = nest_type(_result)
+    except TypeError:
+        _result = nest_type(*_result)
     return _result
 
 
@@ -490,7 +496,10 @@ def set_nest_at_indices(
         values = [values] * len(indices)
     for index, value in zip(indices, values):
         result = set_nest_at_index(nest, index, value, _result=result, shallow=shallow)
-    result = nest_type(result)
+    try:
+        result = nest_type(result)
+    except TypeError:
+        result = nest_type(*result)
     return result
 
 
@@ -591,7 +600,10 @@ def map_nest_at_indices(
     result = list(result) if is_tuple else result
     for i, index in enumerate(indices):
         result = map_nest_at_index(nest, index, fn, _result=result, shallow=shallow)
-    result = nest_type(result)
+    try:
+        result = nest_type(result)
+    except TypeError:
+        result = nest_type(*result)
     return result
 
 

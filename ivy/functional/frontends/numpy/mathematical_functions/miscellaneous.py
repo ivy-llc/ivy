@@ -63,7 +63,7 @@ def clip(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def sqrt(
+def _sqrt(
     x,
     /,
     out=None,
@@ -85,7 +85,7 @@ def sqrt(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def cbrt(
+def _cbrt(
     x,
     /,
     out=None,
@@ -108,7 +108,7 @@ def cbrt(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def square(
+def _square(
     x,
     /,
     out=None,
@@ -130,7 +130,7 @@ def square(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def absolute(
+def _absolute(
     x,
     /,
     out=None,
@@ -152,7 +152,7 @@ def absolute(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def fabs(
+def _fabs(
     x,
     /,
     out=None,
@@ -174,7 +174,7 @@ def fabs(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def sign(
+def _sign(
     x,
     /,
     out=None,
@@ -196,7 +196,7 @@ def sign(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def heaviside(
+def _heaviside(
     x1,
     x2,
     /,
@@ -303,7 +303,7 @@ def interp(x, xp, fp, left=None, right=None, period=None):
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def copysign(
+def _copysign(
     x1,
     x2,
     /,
