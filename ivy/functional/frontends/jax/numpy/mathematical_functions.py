@@ -390,3 +390,8 @@ def fix(x, out=None):
 @to_ivy_arrays_and_back
 def hypot(x1, x2, /):
     return ivy.hypot(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def floor_divide(x1, x2, /, out=None):
+    return ivy.floor_divide(x1, x2, out=out)
