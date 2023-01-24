@@ -270,7 +270,11 @@ def pinv(
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def qr(
-    x: JaxArray, /, *, mode: str = "reduced", out: Optional[JaxArray] = None
+    x: JaxArray,
+    /,
+    *,
+    mode: str = "reduced",
+    out: Optional[Tuple[JaxArray, JaxArray]] = None,
 ) -> Tuple[JaxArray, JaxArray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)

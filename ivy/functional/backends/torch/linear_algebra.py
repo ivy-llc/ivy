@@ -269,7 +269,11 @@ pinv.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def qr(
-    x: torch.Tensor, /, *, mode: str = "reduced", out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    mode: str = "reduced",
+    out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
