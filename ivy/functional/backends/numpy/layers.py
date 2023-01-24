@@ -98,19 +98,17 @@ def conv1d(
 ) -> np.ndarray:
     strides = [strides] if isinstance(strides, int) else strides
     dilations = [dilations] if isinstance(dilations, int) else dilations
+    if data_format == "NCW":
+        x = np.transpose(x, (0, 2, 1))
 
     # adding dilations
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    filter_shape = list(filters.shape[0:1])
-
-    if data_format == "NCW":
-        x = np.transpose(x, (0, 2, 1))
-
     x = _pad_before_conv(x, filters, strides, padding, 1, dilations)
 
     x_shape = x.shape
+    filter_shape = list(filters.shape[0:1])
     input_dim = filters.shape[-2]
     output_dim = filters.shape[-1]
     new_w = (x_shape[1] - filter_shape[0]) // strides[0] + 1
@@ -202,17 +200,10 @@ def conv2d(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, int):
-        strides = [strides] * 2
-    elif len(strides) == 1:
-        strides = [strides[0]] * 2
+    strides = [strides]*2 if isinstance(strides, int) else strides
+    dilations = [dilations]*2 if isinstance(dilations, int) else dilations
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
-
-    if isinstance(dilations, int):
-        dilations = [dilations] * 2
-    elif len(dilations) == 1:
-        dilations = [dilations[0]] * 2
 
     # adding dilations
     if dilations[1] > 1:
@@ -251,6 +242,7 @@ def conv2d(
     )
     # B x OH x OW x O
     res = np.sum(mult, (3, 4, 5))
+
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
     return res
@@ -384,10 +376,8 @@ def conv3d(
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, int):
-        strides = [strides] * 3
-    if isinstance(dilations, int):
-        dilations = [dilations] * 3
+    strides = [strides]*3 if isinstance(strides, int) else strides
+    dilations = [dilations]*3 if isinstance(dilations, int) else dilations
     if data_format == "NCDHW":
         x = np.transpose(x, (0, 2, 3, 4, 1))
 
@@ -433,6 +423,7 @@ def conv3d(
     )
     # B x OD X OH x OW x O
     res = np.sum(mult, (4, 5, 6, 7))
+
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
     return res
@@ -595,8 +586,8 @@ def conv_general_dilated(
         # B x OH x OW x O
         res.append(np.sum(mult, tuple([i for i in range(dims + 1, dims * 2 + 2)])))
     res = np.concatenate(res, axis=-1)
-
     res = np.add(res, bias) if bias is not None else res
+
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
