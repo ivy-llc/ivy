@@ -1170,7 +1170,7 @@ def _multiple_shape_helper(draw):
             max_value=10,
             ret_shape=True
         ))
-    input_dims = abs(len(input_shape))
+    input_dims = len(input_shape)
 
     dt_n_multiples = draw(
         helpers.dtype_and_values(
