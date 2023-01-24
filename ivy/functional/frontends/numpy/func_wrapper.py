@@ -76,6 +76,20 @@ def handle_numpy_casting(fn: Callable) -> Callable:
             message="casting must be one of [no, equiv, safe, same_kind, unsafe]",
         )
         args = list(args)
+
+        args_0dim_idxs = ivy.nested_argwhere(
+            args, lambda x: isinstance(x, (int, float))
+        )
+        args_0dim_to_check = ivy.multi_index_nest(args, args_0dim_idxs)
+        # kwargs_0dim_idxs = ivy.nested_argwhere(
+        #     kwargs, lambda x: isinstance(x, (int, float))
+        # )
+        # kwargs_0dim_to_check = ivy.multi_index_nest(kwargs, kwargs_0dim_idxs)
+        if args_0dim_to_check:
+            ivy.map_nest_at_indices(args, args_0dim_idxs, lambda x: ivy.array(x))
+        # if kwargs_0dim_to_check:
+        #     ivy.map_nest_at_indices(kwargs, kwargs_0dim_idxs, lambda x: ivy.array(x))
+
         args_idxs = ivy.nested_argwhere(args, ivy.is_array)
         args_to_check = ivy.multi_index_nest(args, args_idxs)
         kwargs_idxs = ivy.nested_argwhere(kwargs, ivy.is_array)
