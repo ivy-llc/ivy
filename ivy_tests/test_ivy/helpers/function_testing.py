@@ -586,19 +586,15 @@ def test_frontend_function(
             # if returned reference is inputted reference
             # and if inputted reference's content is correctly updated
             copy_kwargs["inplace"] = True
-            if test_flags.native_arrays and ivy.native_inplace_support:
-                first_array = ivy.func_wrapper._get_first_array(
-                    *copy_args, **copy_kwargs
-                )
-                ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
-                assert first_array is ret_
+            first_array = ivy.func_wrapper._get_first_array(*copy_args, **copy_kwargs)
+            ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
+            assert first_array is ret_
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
             first_array = ivy.func_wrapper._get_first_array(*args, **kwargs)
-            if ivy.native_inplace_support:
-                assert ret is first_array
-            assert first_array is ret
+            ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
+            assert first_array is ret_
             args, kwargs = copy_args, copy_kwargs
 
     # create NumPy args
