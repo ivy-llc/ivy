@@ -1425,7 +1425,7 @@ def test_tensorflow_rsqrt(
     )
 
 
-# rsqrt
+# nextafter
 @handle_frontend_test(
     fn_tree="tensorflow.math.nextafter",
     dtype_and_x=helpers.dtype_and_values(
