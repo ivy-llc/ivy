@@ -269,7 +269,6 @@ def realdiv(x, y, name=None):
 
 
 @with_unsupported_dtypes({"2.9.0 and below": ("uint16")}, "tensorflow")
-@handle_tf_dtype
 @to_ivy_arrays_and_back
 def tile(input, multiples, name=None):
     return ivy.tile(input, multiples)
