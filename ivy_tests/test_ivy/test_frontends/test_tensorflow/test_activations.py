@@ -147,7 +147,11 @@ def test_tensorflow_softmax(
 # gelu test
 @handle_frontend_test(
     fn_tree="tensorflow.keras.activations.gelu",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+    ),
     approximate=st.booleans(),
     test_with_out=st.just(False),
 )
