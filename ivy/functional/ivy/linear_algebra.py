@@ -1569,6 +1569,7 @@ def pinv(
 
 
 @to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -1577,7 +1578,8 @@ def qr(
     /,
     *,
     mode: str = "reduced",
-) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+    out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
     matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
@@ -1595,6 +1597,9 @@ def qr(
         - 'complete': compute q and r with dimensions (..., M, M) and (..., M, N),
           respectively.
         Default: 'reduced'.
+    out
+        optional output tuple of arrays, for writing the result to. The arrays must have
+        shapes that the inputs broadcast to.
 
     Returns
     -------
@@ -1623,7 +1628,7 @@ def qr(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).qr(x, mode=mode)
+    return current_backend(x).qr(x, mode=mode, out=out)
 
 
 @to_native_arrays_and_back
