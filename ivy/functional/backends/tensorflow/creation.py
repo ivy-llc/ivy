@@ -373,6 +373,15 @@ def zeros_like(
     with tf.device(device):
         return tf.zeros_like(x, dtype=dtype)
 
+def sequence_empty(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    dtype: tf.DType,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.empty(x, dtype=dtype)
+
 
 # Extra #
 # ------#
