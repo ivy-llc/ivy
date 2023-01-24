@@ -780,7 +780,7 @@ def array_values(
                         exclude_max=exclude_max,
                     ),
                 )
-                                if "float" in dtype or "complex" in dtype:
+                if "float" in dtype or "complex" in dtype:
                     kind_dtype = "float"
                     dtype_info = ivy.finfo(dtype)
                 elif "int" in dtype:
