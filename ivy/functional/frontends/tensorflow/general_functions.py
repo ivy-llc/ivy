@@ -267,7 +267,7 @@ def linspace(start, stop, num, name=None, axis=0):
 def realdiv(x, y, name=None):
     return ivy.divide(x, y)
 
-
+@with_unsupported_dtypes({"2.10.0 and below": ("uint16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def tile(input, multiples, name=None):
     return ivy.tile(input, multiples)
