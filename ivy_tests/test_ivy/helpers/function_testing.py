@@ -79,14 +79,6 @@ except ImportError:
     is_torch_native_array = empty_func
 
 
-# ToDo, this is temporary until unsupported_dtype is embedded
-# into helpers.get_dtypes
-def _assert_dtypes_are_valid(input_dtypes: Union[List[ivy.Dtype], List[str]]):
-    for dtype in input_dtypes:
-        if dtype not in ivy.valid_dtypes + ivy.valid_complex_dtypes:
-            raise Exception(f"{dtype} is not a valid data type.")
-
-
 # Function testing
 
 
@@ -189,7 +181,6 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
-    _assert_dtypes_are_valid(input_dtypes)
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
@@ -1040,7 +1031,6 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    _assert_dtypes_are_valid(method_input_dtypes)
     # split the arguments into their positional and keyword components
 
     # Constructor arguments #
@@ -1049,7 +1039,6 @@ def test_method(
         ivy.default(init_as_variable_flags, []),
         ivy.default(init_native_array_flags, []),
     )
-    _assert_dtypes_are_valid(init_input_dtypes)
 
     init_all_as_kwargs_np = ivy.default(init_all_as_kwargs_np, dict())
     (
@@ -1361,8 +1350,6 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    _assert_dtypes_are_valid(init_input_dtypes)
-    _assert_dtypes_are_valid(method_input_dtypes)
 
     # split the arguments into their positional and keyword components
 
