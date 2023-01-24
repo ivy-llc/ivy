@@ -321,6 +321,9 @@ class ndarray:
 
     def __ne__(self, value, /):
         return np_frontend.not_equal(self._ivy_array, value)
+    
+    def __len__(self):
+        return len(self.ivy_array)
 
     def __eq__(self, value, /):
         return ivy.array(np_frontend.equal(self._ivy_array, value), dtype=ivy.bool)
