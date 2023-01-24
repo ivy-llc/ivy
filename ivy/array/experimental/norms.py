@@ -90,7 +90,8 @@ class ArrayWithNormsExperimental(abc.ABC):
 
         >>> x = ivy.eye(3, 3).reshape((1, 3, 3, 1))
         >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5],
-        ...                   data_format='NCHW', affine=True, track_running_stats=False)
+        ...                   data_format='NCHW', affine=True,
+        ...                   track_running_stats=False)
         ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],
                 [[0.29290909],[2.41418171],[0.29290909]],
                 [[0.14645454],[0.14645454],[1.20709085]]]])
@@ -100,7 +101,8 @@ class ArrayWithNormsExperimental(abc.ABC):
 
         >>> x = ivy.eye(3, 3).reshape((1, 3, 3, 1))
         >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5],
-        ...                    data_format='NCHW', affine=True, track_running_stats=False)
+        ...                   data_format='NCHW',affine=True,
+        ...                   track_running_stats=False)
         (ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],
                 [[0.29290909],[2.41418171],[0.29290909]],
                 [[0.14645454],[0.14645454],[1.20709085]]]]),
