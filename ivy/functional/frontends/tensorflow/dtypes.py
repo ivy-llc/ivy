@@ -2,7 +2,10 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 import ivy.functional.frontends.numpy as np_frontend
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_tf_dtype,
+)
 
 
 class DType:
@@ -136,6 +139,7 @@ def as_dtype(type_value):
     )
 
 
+@handle_tf_dtype
 @to_ivy_arrays_and_back
 def cast(x, dtype, name=None):
     if ivy.is_array(x):
