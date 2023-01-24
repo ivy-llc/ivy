@@ -260,37 +260,48 @@ def set_backend(backend: str):
     from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
 
     variable_ids = set()  # create an empty set to store variable object ids
-
+    intermediate_objs = [] # create an empty list to store intermediate objects created during conversion
     def _is_var(obj):
 
         if isinstance(obj, ivy.Container):
-            return all(_is_variable(obj).values())
+            def _map_fn(x):
+
+                x = x.data if isinstance(x, ivy.Array) else x
+                if x.__class__.__module__ in ("numpy", "jax.interpreters.xla","jaxlib.xla_extension"):
+                    return False
+
+                return _is_variable(x)
+
+            return obj.cont_map(lambda x,kc: _map_fn(x)).cont_all_true()
+
         else:
+            obj = obj.data if isinstance(obj, ivy.Array) else obj
+            if obj.__class__.__module__ in ("numpy", "jax.interpreters.xla", "jaxlib.xla_extension"):
+                return False
             return _is_variable(obj)
 
     # first convert all ivy.Array and ivy.Container instances to numpy using the current backend
-    gc.collect()
-    for obj in gc.get_objects():
-        if isinstance(obj, (ivy.Array, ivy.Container)):
+    objs = [obj for obj in gc.get_objects() if isinstance(obj, (ivy.Array, ivy.Container))]
 
-            if obj.dynamic_backend:
-                with ivy.dynamic_backend_as(True):
-                    if _is_var(obj) and ivy.current_backend_str() != "jax":
-                        # add variable object id to set
-                        variable_ids.add(id(obj))
-                        native_var = _variable_data(obj)
-                        np_data = ivy.to_numpy(native_var)
+    for obj in objs:
 
-                        del native_var
-                    else:
-                        np_data = obj.to_numpy()
+        if obj.dynamic_backend:
 
-                    if isinstance(obj, ivy.Container):
-                        obj.cont_inplace_update(np_data)
-                    else:
-                        obj._data = np_data
+            intermediate_objs.append(obj)
+            if _is_var(obj):
+                # add variable object id to set
+                variable_ids.add(id(obj))
+                native_var = _variable_data(obj)
+                np_data = ivy.to_numpy(native_var)
 
-                    del np_data
+            else:
+                np_data = obj.to_numpy()
+
+            if isinstance(obj, ivy.Container):
+                obj.cont_inplace_update(np_data)
+            else:
+                obj._data = np_data
+
 
     # update the global dict with the new backend
     ivy.locks["backend_setter"].acquire()
@@ -323,30 +334,24 @@ def set_backend(backend: str):
 
     # now convert all ivy.Array and ivy.Container instances from numpy
     # to native arrays using the newly set backend
-    for obj in gc.get_objects():
-        if isinstance(obj, (ivy.Array, ivy.Container)):
+    for obj in intermediate_objs:
 
-            if obj.dynamic_backend:
-                with ivy.dynamic_backend_as(True):
-                    # check if object was originally a variable
-                    if id(obj) in variable_ids:
-                        native_arr = ivy.nested_map(
-                            obj, ivy.array, include_derived=True, shallow=False
-                        )
-                        new_data = _variable(native_arr)
+        # check if object was originally a variable
+        if id(obj) in variable_ids:
+            native_arr = ivy.nested_map(
+                obj, ivy.array, include_derived=True, shallow=False
+            )
+            new_data = _variable(native_arr)
 
-                        del native_arr
-                    else:
-                        new_data = ivy.nested_map(
-                            obj, ivy.array, include_derived=True, shallow=False
-                        )
+        else:
+            new_data = ivy.nested_map(
+                obj, ivy.array, include_derived=True, shallow=False
+            )
 
-                    if isinstance(obj, ivy.Container):
-                        obj.cont_inplace_update(new_data)
-                    else:
-                        obj._data = new_data.data
-
-                    del new_data
+        if isinstance(obj, ivy.Container):
+            obj.cont_inplace_update(new_data)
+        else:
+            obj._data = new_data.data
 
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
