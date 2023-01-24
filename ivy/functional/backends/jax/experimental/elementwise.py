@@ -518,3 +518,12 @@ def isposinf(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isposinf(x)
+
+
+def conj(
+    x: Union[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.conj(x)

@@ -438,3 +438,13 @@ def isposinf(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.isposinf(x)
+
+
+def conj(
+    x: Union[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    conjx = torch.conj(x)
+    return torch.resolve_conj(input=conjx)
