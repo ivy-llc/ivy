@@ -3,6 +3,7 @@ from typing import List
 import operator
 import requests
 import sys
+
 url = "https://pypi.python.org/pypi/"
 
 
@@ -108,13 +109,12 @@ def get_package_versions(lis: List):
         return dict()
     dic = dict()
     for i in lis:
-        if ';' in i:
-            i=i[:i.index(';')]
+        if ";" in i:
+            i = i[: i.index(";")]
         if " " in i:
             dic[i.split(" ")[0]] = get_version_from_string(i.split(" ")[1])
         else:
-            dic[i]=()
-
+            dic[i] = ()
 
     return dic
 
@@ -122,7 +122,7 @@ def get_package_versions(lis: List):
 def resolution(conflict_keys, dic1, dic2):
     resolution = {}
     for i in conflict_keys:
-        if dic1[i]==dic2[i]:
+        if dic1[i] == dic2[i]:
             continue
         for j in dic1[i]:
             for k in dic2[i]:
@@ -159,11 +159,13 @@ def package_conflicts(pkg1, pkg2=None):
 def get_package_requirements(pkg):
     return requests.get(url + str(pkg) + "/json").json()
 
+
 def tuple_to_version(tup):
-    s=''
+    s = ""
     for i in tup:
-        s+=str(i)+'.'
+        s += str(i) + "."
     return s[:-1]
+
 
 # example usage
 # if __name__ == "__main__":
@@ -190,8 +192,6 @@ def tuple_to_version(tup):
 #                     f"The environment has python {python} which is greater than the required version {tuple_to_version(val[0])} do anticipate unexpected results")
 #
 #         f.write(f"{key}=={val}")
-
-
 
 
 print(package_conflicts("h5py/3.7.0", "h5py/3.7.0"))

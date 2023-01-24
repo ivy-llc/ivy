@@ -417,3 +417,13 @@ def sigmoid(x, name=None):
 @to_ivy_arrays_and_back
 def tanh(x, name=None):
     return ivy.tanh(x)
+
+
+@to_ivy_arrays_and_back
+def rsqrt(x, name=None):
+    return ivy.reciprocal(ivy.sqrt(x))
+
+
+@to_ivy_arrays_and_back
+def nextafter(x1, x2, name=None):
+    return ivy.nextafter(x1, x2)
