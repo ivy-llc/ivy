@@ -23,11 +23,11 @@ def _add_dilations(x, dilations, axis):
     )
 
 
-def _pad_before_conv(x, filters, strides, padding, dims, dilations, transpose=False, output_shape=None):
+def _pad_before_conv(x, filter_shape, strides, padding, dims, dilations, output_shape=None, x_shape=None):
     if isinstance(padding, str):
-        if not transpose:
+        if x_shape is None:
             pad_specific = [
-                _handle_padding(x.shape[1 + i], strides[i], filters.shape[i], padding)
+                _handle_padding(x.shape[1 + i], strides[i], filter_shape[i], padding)
                 for i in range(dims)
             ]
             pad_list = [
@@ -38,30 +38,29 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations, transpose=Fa
             if output_shape is None:
                 new_shape = [
                     _deconv_length(
-                        x.shape[i + 1], strides[i], filters.shape[i], padding,
+                        x_shape[i + 1], strides[i], filter_shape[i], padding,
                         dilations[i]
                     )
                     for i in range(dims)
                 ]
-                output_shape = [x.shape[0], *new_shape, filters.shape[-1]]
+                output_shape = [x_shape[0], *new_shape, filter_shape[-1]]
             elif len(output_shape) == dims:
-                output_shape = [x.shape[0]] + list(output_shape) + [filters.shape[-1]]
+                output_shape = [x_shape[0]] + list(output_shape) + [filter_shape[-1]]
             pad_specific = [
-                _handle_padding(output_shape[i + 1], strides[i], filters.shape[i], padding)
+                _handle_padding(output_shape[i + 1], strides[i], filter_shape[i], padding)
                 for i in range(dims)
             ]
             extra_pad = [
                 max(
                     0,
                     output_shape[i + 1]
-                    - (x.shape[i + 1] + filters.shape[i] - 1 - pad_specific[i]),
+                    - (x.shape[i + 1] + filter_shape[i] - 1 - pad_specific[i]),
                 )
                 for i in range(dims)
             ]
-            pad_top = [filters.shape[i] - 1 - (pad_specific[i] // 2) for i in range(dims)]
+            pad_top = [filter_shape[i] - 1 - (pad_specific[i] // 2) for i in range(dims)]
             pad_bot = [
-                filters.shape[i] - 1 - (pad_specific[i] - pad_specific[i] // 2) + extra_pad[
-                    i]
+                filter_shape[i] - 1 - (pad_specific[i] - pad_specific[i] // 2) + extra_pad[i]
                 for i in range(dims)
             ]
             pad_list = [(pad_top[i], pad_bot[i]) for i in range(dims)]
@@ -105,7 +104,7 @@ def conv1d(
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    x = _pad_before_conv(x, filters, strides, padding, 1, dilations)
+    x = _pad_before_conv(x, filters.shape, strides, padding, 1, dilations)
 
     x_shape = x.shape
     filter_shape = list(filters.shape[0:1])
@@ -211,7 +210,7 @@ def conv2d(
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    x = _pad_before_conv(x, filters, strides, padding, 2, dilations)
+    x = _pad_before_conv(x, filters.shape, strides, padding, 2, dilations)
 
     x_shape = x.shape
     filter_shape = list(filters.shape[0:2])
@@ -389,7 +388,7 @@ def conv3d(
     if dilations[2] > 1:
         filters = _add_dilations(filters, dilations[2], axis=2)
 
-    x = _pad_before_conv(x, filters, strides, padding, 3, dilations)
+    x = _pad_before_conv(x, filters.shape, strides, padding, 3, dilations)
 
     x_shape = x.shape
     filter_shape = list(filters.shape[0:3])
@@ -544,7 +543,7 @@ def conv_general_dilated(
         if x_dilations[j] > 1:
             x = _add_dilations(x, x_dilations[j], axis=j + 1)
 
-    x = _pad_before_conv(x, filters, strides, padding, dims, dilations)
+    x = _pad_before_conv(x, filters.shape, strides, padding, dims, dilations)
 
     x_shape = x.shape
     filter_shape = list(filters.shape[0:dims])
