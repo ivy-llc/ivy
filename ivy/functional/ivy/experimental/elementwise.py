@@ -1338,14 +1338,16 @@ def conj(
         x
             input array.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an arrray of the same dtype as the input array with the complex conjugates of the
-            complex values present in the input array. If x is a scalar then a scalar will be returned.
+            an arrray of the same dtype as the input array with
+            the complex conjugates of the complex values present
+            in the input array. If x is a scalar then a scalar
+            will be returned.
 
         The descriptions above assume an array input for simplicity, but
         the method also accepts :class:`ivy.Container` instances
