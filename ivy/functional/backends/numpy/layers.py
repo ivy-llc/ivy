@@ -23,56 +23,62 @@ def _add_dilations(x, dilations, axis):
     )
 
 
-def _pad_before_conv(x, filter_shape, strides, padding, dims, dilations, output_shape=None, x_shape=None):
+# TODO: fix conv1d transpose
+
+
+def _pad_before_conv(x, filter_shape, strides, padding, dims):
     if isinstance(padding, str):
-        if x_shape is None:
-            pad_specific = [
-                _handle_padding(x.shape[1 + i], strides[i], filter_shape[i], padding)
-                for i in range(dims)
-            ]
-            pad_list = [
-                (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
-                for i in range(dims)
-            ]
-        else:
-            if output_shape is None:
-                new_shape = [
-                    _deconv_length(
-                        x_shape[i + 1], strides[i], filter_shape[i], padding,
-                        dilations[i]
-                    )
-                    for i in range(dims)
-                ]
-                output_shape = [x_shape[0], *new_shape, filter_shape[-1]]
-            elif len(output_shape) == dims:
-                output_shape = [x_shape[0]] + list(output_shape) + [filter_shape[-1]]
-            pad_specific = [
-                _handle_padding(output_shape[i + 1], strides[i], filter_shape[i], padding)
-                for i in range(dims)
-            ]
-            extra_pad = [
-                max(
-                    0,
-                    output_shape[i + 1]
-                    - (x.shape[i + 1] + filter_shape[i] - 1 - pad_specific[i]),
-                )
-                for i in range(dims)
-            ]
-            pad_top = [filter_shape[i] - 1 - (pad_specific[i] // 2) for i in range(dims)]
-            pad_bot = [
-                filter_shape[i] - 1 - (pad_specific[i] - pad_specific[i] // 2) + extra_pad[i]
-                for i in range(dims)
-            ]
-            pad_list = [(pad_top[i], pad_bot[i]) for i in range(dims)]
+        pad_specific = [
+            _handle_padding(x.shape[1 + i], strides[i], filter_shape[i], padding)
+            for i in range(dims)
+        ]
+        pad_list = [
+            (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+            for i in range(dims)
+        ]
     else:
         pad_list = padding
-        # for i in range(dims):
-        #     extra_pad = max(
-        #         0,
-        #         output_shape[i + 1]
-        #         - (x.shape[i + 1] + filters.shape[i] - 1 - pad_list[i][0] - pad_list[i][1]),
-        #     )
-        #     pad_list[i] = (pad_list[i][0], pad_list[i][1] + extra_pad)
+    return np.pad(
+        x,
+        [
+            (0, 0),
+            *pad_list,
+            (0, 0),
+        ],
+        "constant",
+    )
+
+
+def _pad_before_conv_tranpose(x, filter_shape, strides, padding, dims, dilations, output_shape):
+    if output_shape is None:
+        new_shape = [
+            _deconv_length(
+                x.shape[i + 1], strides[i], filter_shape[i], padding,
+                dilations[i]
+            )
+            for i in range(dims)
+        ]
+        output_shape = [x.shape[0], *new_shape, filter_shape[-1]]
+    elif len(output_shape) == dims:
+        output_shape = [x.shape[0]] + list(output_shape) + [filter_shape[-1]]
+    pad_specific = [
+        _handle_padding(output_shape[i + 1], strides[i], filter_shape[i], padding)
+        for i in range(dims)
+    ]
+    extra_pad = [
+        max(
+            0,
+            output_shape[i + 1]
+            - (x.shape[i + 1] + filter_shape[i] - 1 - pad_specific[i]),
+        )
+        for i in range(dims)
+    ]
+    pad_top = [filter_shape[i] - 1 - (pad_specific[i] // 2) for i in range(dims)]
+    pad_bot = [
+        filter_shape[i] - 1 - (pad_specific[i] - pad_specific[i] // 2) + extra_pad[i]
+        for i in range(dims)
+    ]
+    pad_list = [(pad_top[i], pad_bot[i]) for i in range(dims)]
     return np.pad(
         x,
         [
@@ -104,7 +110,7 @@ def conv1d(
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    x = _pad_before_conv(x, filters.shape, strides, padding, 1, dilations)
+    x = _pad_before_conv(x, filters.shape, strides, padding, 1)
 
     x_shape = x.shape
     filter_shape = list(filters.shape[0:1])
@@ -150,41 +156,24 @@ def conv1d_transpose(
     dilations: Optional[int] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, (tuple, list)):
-        strides = strides[0]
-    if isinstance(dilations, (tuple, list)):
-        dilations = dilations[0]
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
-    if output_shape is not None:
-        if len(output_shape) == 1:
-            output_shape = [1, x.shape[0], output_shape[0], x.shape[-1]]
-        else:
-            output_shape = [1] + list(output_shape)
-    x_shape = (1,) + x.shape
-    filter_shape = (1,) + filters.shape
-    x_strides = (x.strides[0],) + x.strides
-    filter_strides = (filters.strides[0],) + filters.strides
-    x = np.lib.stride_tricks.as_strided(x, shape=x_shape, strides=x_strides)
-    filters = np.lib.stride_tricks.as_strided(
-        filters, shape=filter_shape, strides=filter_strides
-    )
-    x = np.transpose(x, (1, 0, 2, 3))
-    res = conv2d_transpose(
-        x,
-        filters,
-        strides,
-        padding,
-        output_shape=output_shape,
-        data_format="NHWC",
-        dilations=dilations,
-    )
-    res = np.transpose(res, (1, 0, 2, 3))
-    res = np.lib.stride_tricks.as_strided(
-        res, shape=res.shape[1:], strides=res.strides[1:]
-    )
+    strides = [strides] if isinstance(strides, int) else strides
+    dilations = [dilations] if isinstance(dilations, int) else dilations
+
+    if strides[0] > 1:
+        x = _add_dilations(x, strides[0], axis=1)
+
+    if dilations[0] > 1:
+        filters = _add_dilations(filters, dilations[0], axis=0)
+
+    x = _pad_before_conv_tranpose(x, filters.shape, strides, padding, 1, dilations, output_shape)
+
+    x = np.flip(x, 1)
+    res = np.flip(conv1d(x, filters, 1, "VALID", data_format="NWC", dilations=1), 1)
+
     if data_format == "NCW":
-        res = np.transpose(res, (0, 2, 1))
+        res = np.transpose(x, (0, 2, 1))
     return res
 
 
@@ -210,7 +199,7 @@ def conv2d(
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    x = _pad_before_conv(x, filters.shape, strides, padding, 2, dilations)
+    x = _pad_before_conv(x, filters.shape, strides, padding, 2)
 
     x_shape = x.shape
     filter_shape = list(filters.shape[0:2])
@@ -261,20 +250,9 @@ def conv2d_transpose(
 ):
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
-
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
 
-    if output_shape is None:
-        new_h = _deconv_length(
-            x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
-        )
-        new_w = _deconv_length(
-            x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
-        )
-        output_shape = [x.shape[0], new_h, new_w, filters.shape[-1]]
-    elif len(output_shape) == 2:
-        output_shape = [x.shape[0]] + list(output_shape) + [filters.shape[-1]]
     if strides[1] > 1:
         x = _add_dilations(x, strides[1], axis=2)
     if strides[0] > 1:
@@ -285,31 +263,14 @@ def conv2d_transpose(
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    pad_h = _handle_padding(output_shape[1], strides[0], filters.shape[0], padding)
-    pad_w = _handle_padding(output_shape[2], strides[1], filters.shape[1], padding)
-
-    extra_h = max(0, output_shape[1] - (x.shape[1] + filters.shape[0] - 1 - pad_h))
-    extra_w = max(0, output_shape[2] - (x.shape[2] + filters.shape[1] - 1 - pad_w))
-    pad_h_top = filters.shape[0] - 1 - (pad_h // 2)
-    pad_h_bot = filters.shape[0] - 1 - (pad_h - pad_h // 2)
-    pad_w_left = filters.shape[1] - 1 - (pad_w // 2)
-    pad_w_right = filters.shape[1] - 1 - (pad_w - pad_w // 2)
-    x = np.pad(
-        x,
-        [
-            (0, 0),
-            (pad_h_top, pad_h_bot + extra_h),
-            (pad_w_left, pad_w_right + extra_w),
-            (0, 0),
-        ],
-        "constant",
-    )
+    x = _pad_before_conv_tranpose(x, filters.shape, strides, padding, 2, dilations, output_shape)
 
     x = np.flip(x, (1, 2))
     res = np.flip(
         conv2d(x, filters, 1, "VALID", data_format="NHWC", dilations=1),
         (1, 2),
     )
+
     if data_format == "NCHW":
         res = np.transpose(res, (0, 3, 1, 2))
     return res
@@ -388,7 +349,7 @@ def conv3d(
     if dilations[2] > 1:
         filters = _add_dilations(filters, dilations[2], axis=2)
 
-    x = _pad_before_conv(x, filters.shape, strides, padding, 3, dilations)
+    x = _pad_before_conv(x, filters.shape, strides, padding, 3)
 
     x_shape = x.shape
     filter_shape = list(filters.shape[0:3])
@@ -444,19 +405,6 @@ def conv3d_transpose(
         x = np.transpose(x, (0, 2, 3, 4, 1))
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
-    if output_shape is None:
-        new_d = _deconv_length(
-            x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
-        )
-        new_h = _deconv_length(
-            x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
-        )
-        new_w = _deconv_length(
-            x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
-        )
-        output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[-1]]
-    elif len(output_shape) == 3:
-        output_shape = [x.shape[0]] + list(output_shape) + [filters.shape[-1]]
 
     if strides[2] > 1:
         x = _add_dilations(x, strides[2], axis=3)
@@ -472,41 +420,14 @@ def conv3d_transpose(
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    pad_d = _handle_padding(output_shape[1], strides[0], filters.shape[0], padding)
-    pad_h = _handle_padding(output_shape[2], strides[1], filters.shape[1], padding)
-    pad_w = _handle_padding(output_shape[3], strides[2], filters.shape[2], padding)
-    extra_d = max(0, output_shape[1] - (x.shape[1] + filters.shape[0] - 1 - pad_d))
-    extra_h = max(0, output_shape[2] - (x.shape[2] + filters.shape[1] - 1 - pad_h))
-    extra_w = max(0, output_shape[3] - (x.shape[3] + filters.shape[2] - 1 - pad_w))
-    pad_d_top = filters.shape[0] - 1 - (pad_d // 2)
-    pad_d_bot = filters.shape[0] - 1 - (pad_d - pad_d // 2)
-    pad_h_top = filters.shape[1] - 1 - (pad_h // 2)
-    pad_h_bot = filters.shape[1] - 1 - (pad_h - pad_h // 2)
-    pad_w_left = filters.shape[2] - 1 - (pad_w // 2)
-    pad_w_right = filters.shape[2] - 1 - (pad_w - pad_w // 2)
+    x = _pad_before_conv_tranpose(x, filters.shape, strides, padding, 3, dilations, output_shape)
 
-    if filters.shape[0] == 1:
-        pad_d_top, pad_d_bot = pad_d_bot, pad_d_top
-    if filters.shape[1] == 1:
-        pad_h_top, pad_h_bot = pad_h_bot, pad_h_top
-    if filters.shape[2] == 1:
-        pad_w_left, pad_w_right = pad_w_right, pad_w_left
-    x = np.pad(
-        x,
-        [
-            (0, 0),
-            (pad_d_top, pad_d_bot + extra_d),
-            (pad_h_top, pad_h_bot + extra_h),
-            (pad_w_left, pad_w_right + extra_w),
-            (0, 0),
-        ],
-        "constant",
-    )
     x = np.flip(x, (1, 2, 3))
     res = np.flip(
         conv3d(x, filters, 1, "VALID", data_format="NDHWC", dilations=1),
         (1, 2, 3),
     )
+
     if data_format == "NCDHW":
         res = np.transpose(res, (0, 4, 1, 2, 3))
     return res
@@ -531,11 +452,11 @@ def conv_general_dilated(
     bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
+    if data_format == "channel_first":
+        x = np.transpose(x, (0, *range(2, dims + 2), 1))
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
-    if data_format == "channel_first":
-        x = np.transpose(x, (0, *range(2, dims + 2), 1))
 
     for j in range(dims):
         if dilations[j] > 1:
@@ -543,7 +464,7 @@ def conv_general_dilated(
         if x_dilations[j] > 1:
             x = _add_dilations(x, x_dilations[j], axis=j + 1)
 
-    x = _pad_before_conv(x, filters.shape, strides, padding, dims, dilations)
+    x = _pad_before_conv(x, filters.shape, strides, padding, dims)
 
     x_shape = x.shape
     filter_shape = list(filters.shape[0:dims])
@@ -609,57 +530,19 @@ def conv_general_transpose(
     bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if data_format == "channel_first":
         x = np.transpose(x, (0, *range(2, dims + 2), 1))
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
-    if output_shape is None:
-        new_shape = [
-            _deconv_length(
-                x.shape[i + 1], strides[i], filters.shape[i], padding, dilations[i]
-            )
-            for i in range(dims)
-        ]
-        output_shape = [x.shape[0], *new_shape, filters.shape[-1]]
-    elif len(output_shape) == dims:
-        output_shape = [x.shape[0]] + list(output_shape) + [filters.shape[-1]]
 
     for j in range(dims):
         if dilations[j] > 1:
             filters = _add_dilations(filters, dilations[j], axis=j)
         if strides[j] > 1:
             x = _add_dilations(x, strides[j], axis=j + 1)
-    if isinstance(padding, str):
-        pad_specific = [
-            _handle_padding(output_shape[i + 1], strides[i], filters.shape[i], padding)
-            for i in range(dims)
-        ]
-    else:
-        pad_specific = padding
-    extra_pad = [
-        max(
-            0,
-            output_shape[i + 1]
-            - (x.shape[i + 1] + filters.shape[i] - 1 - pad_specific[i]),
-        )
-        for i in range(dims)
-    ]
-    pad_top = [filters.shape[i] - 1 - (pad_specific[i] // 2) for i in range(dims)]
-    pad_bot = [
-        filters.shape[i] - 1 - (pad_specific[i] - pad_specific[i] // 2) + extra_pad[i]
-        for i in range(dims)
-    ]
-    pad_list = [(pad_top[i], pad_bot[i]) for i in range(dims)]
-    x = np.pad(
-        x,
-        [
-            (0, 0),
-            *pad_list,
-            (0, 0),
-        ],
-        "constant",
-    )
+
+    x = _pad_before_conv_tranpose(x, filters.shape, strides, padding, dims, dilations, output_shape)
+
     x = np.flip(x, (*range(1, dims + 1),))
     res = np.concatenate(
         [
@@ -682,6 +565,7 @@ def conv_general_transpose(
         axis=-1,
     )
     res = np.add(res, bias) if bias is not None else res
+
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
