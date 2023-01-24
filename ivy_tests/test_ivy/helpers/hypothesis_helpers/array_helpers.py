@@ -787,14 +787,12 @@ def array_values(
                     kind_dtype = "int"
                     dtype_info = ivy.iinfo(dtype)
                 elif "bool" in dtype:
-
-
                     # new code to generate random float array with subnormal values
                     if allow_subnormal:
                         arr = np.random.randn(*shape)
                     else:
                         arr = np.random.randn(*shape)
-                        arr = arr[np.isneginf(arr) | np.isposinf(arr) | np.isfinite(arr)]
+                        arr = arr[np.isneginf(arr)|np.isposinf(arr)|np.isfinite(arr)]
                     return arr
                 else:
                     raise ValueError("unsupported data type")
