@@ -268,8 +268,8 @@ def realdiv(x, y, name=None):
     return ivy.divide(x, y)
 
 
+@with_unsupported_dtypes({"2.9.0 and below": ("uint16",)}, "tensorflow")
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.9.0 and below": ("unsigned")}, "tensorflow")
 def tile(input, multiples, name=None):
     return ivy.tile(input, multiples)
 
