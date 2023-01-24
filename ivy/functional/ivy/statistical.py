@@ -9,7 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     integer_arrays_to_float,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -36,7 +36,7 @@ def _get_promoted_type_of_operands(operands):
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-@handle_array_like
+@handle_array_like_without_promotion
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -137,7 +137,7 @@ def min(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -244,7 +244,7 @@ def max(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -351,7 +351,7 @@ def mean(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -472,7 +472,7 @@ def prod(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -604,7 +604,7 @@ def std(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -736,7 +736,7 @@ def sum(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -850,7 +850,7 @@ def var(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -991,7 +991,7 @@ def cumsum(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1138,7 +1138,7 @@ def cumprod(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],

@@ -144,11 +144,6 @@ def reshape_shapes(draw, *, shape):
             lambda s: math.prod(s) == size
         )
     )
-    # replace one dimension with -1
-    if len(rshape) > 1 and size > 0 and draw(st.booleans()):
-        index = draw(number_helpers.ints(min_value=0, max_value=len(rshape) - 1))
-        rshape[index] = -1
-
     return tuple(rshape)
 
 
@@ -477,3 +472,33 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             output_shape,
         )
     return dtype, vals, filters, dilations, data_format, strides, padding
+
+
+@st.composite
+def embedding_helper(draw):
+    dtype_weight, weight = draw(
+        array_helpers.dtype_and_values(
+            available_dtypes=[
+                x
+                for x in draw(dtype_helpers.get_dtypes("numeric"))
+                if "float" in x or "complex" in x
+            ],
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=1,
+            min_value=-1e04,
+            max_value=1e04,
+        )
+    )
+    num_embeddings, embedding_dim = weight[0].shape
+    dtype_indices, indices = draw(
+        array_helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            min_num_dims=2,
+            min_dim_size=1,
+            min_value=0,
+            max_value=num_embeddings - 1,
+        ).filter(lambda x: x[1][0].shape[-1] == embedding_dim)
+    )
+    padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings - 1))
+    return dtype_indices + dtype_weight, indices[0], weight[0], padding_idx

@@ -387,3 +387,37 @@ def test_ifft(
         norm=norm,
         n=n,
     )
+
+
+# embedding
+@handle_test(
+    fn_tree="functional.ivy.experimental.embedding",
+    dtypes_indices_weights=helpers.embedding_helper(),
+    max_norm=st.one_of(st.none(), st.floats(min_value=1, max_value=5)),
+    number_positional_args=st.just(2),
+)
+def test_embedding(
+    *,
+    dtypes_indices_weights,
+    max_norm,
+    test_flags,
+    backend_fw,
+    on_device,
+    fn_name,
+    ground_truth_backend,
+):
+    dtypes, indices, weights, _ = dtypes_indices_weights
+    dtypes = [dtypes[1], dtypes[0]]
+
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        xs_grad_idxs=[[0, 0]],
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        weights=weights,
+        indices=indices,
+        max_norm=max_norm,
+    )

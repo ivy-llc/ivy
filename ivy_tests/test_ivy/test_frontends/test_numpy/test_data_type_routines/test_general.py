@@ -12,6 +12,8 @@ from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
     from_=helpers.get_dtypes("valid", full=False),
     to=helpers.get_dtypes("valid", full=False),
     casting=st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(3),
 )
 @settings(max_examples=200)
 def test_numpy_can_cast(
@@ -19,19 +21,15 @@ def test_numpy_can_cast(
     from_,
     to,
     casting,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     helpers.test_frontend_function(
         input_dtypes=[],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=3,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         from_=from_[0],
@@ -45,6 +43,7 @@ def test_numpy_can_cast(
     fn_tree="numpy.promote_types",
     type1=helpers.get_dtypes("valid", full=False),
     type2=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
 )
 # there are 100 combinations of dtypes, so run 200 examples to make sure all are tested
 @settings(max_examples=200)
@@ -52,20 +51,15 @@ def test_numpy_promote_types(
     *,
     type1,
     type2,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=[],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         type1=type1[0],

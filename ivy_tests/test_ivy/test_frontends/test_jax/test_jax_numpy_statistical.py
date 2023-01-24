@@ -35,26 +35,21 @@ def test_jax_numpy_einsum(
     *,
     eq_n_op,
     dtype,
-    as_variable,
-    native_array,
-    with_out,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     kw = {}
     i = 0
     for x_ in eq_n_op:
         kw["x{}".format(i)] = x_
         i += 1
-    num_positional_args = i
+    test_flags.num_positional_args = i
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         **kw,
@@ -79,13 +74,10 @@ def test_jax_numpy_mean(
     dtype,
     keepdims,
     where,
-    num_positional_args,
-    with_out,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     x_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -93,17 +85,14 @@ def test_jax_numpy_mean(
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=x_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
 
     np_helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         atol=1e-1,
@@ -135,13 +124,10 @@ def test_jax_numpy_var(
     dtype,
     keepdims,
     where,
-    num_positional_args,
-    with_out,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     x_dtype, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
@@ -149,17 +135,14 @@ def test_jax_numpy_var(
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=x_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
 
     np_helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -189,22 +172,16 @@ def test_jax_numpy_argmin(
     *,
     dtype_and_x,
     keepdims,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -229,25 +206,21 @@ def test_jax_numpy_argmin(
             key="a_s_d",
         ),
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_bincount(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -260,6 +233,7 @@ def test_jax_numpy_bincount(
 # cumprod
 @handle_frontend_test(
     fn_tree="jax.numpy.cumprod",
+    aliases=["jax.numpy.cumproduct"],
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -272,27 +246,22 @@ def test_jax_numpy_bincount(
         force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("float", none=True, full=False),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_cumprod(
     *,
     dtype_x_axis,
     dtype,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        all_aliases=["numpy.cumproduct"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-2,
@@ -317,26 +286,22 @@ def test_jax_numpy_cumprod(
         force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("numeric", none=True, full=False),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_cumsum(
     *,
     dtype_x_axis,
     dtype,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -359,13 +324,10 @@ def test_jax_numpy_sum(
     initial,
     where,
     keepdims,
-    with_out,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     x_dtype, x, axis, castable_dtype = dtype_x_axis_castable
 
@@ -374,17 +336,14 @@ def test_jax_numpy_sum(
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=x_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
 
     np_helpers.test_frontend_function(
         input_dtypes=[x_dtype],
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-1,
@@ -402,6 +361,7 @@ def test_jax_numpy_sum(
 # min
 @handle_frontend_test(
     fn_tree="jax.numpy.min",
+    aliases=["jax.numpy.amin"],
     dtype_x_axis=statistical_dtype_values(function="min"),
     where=np_helpers.where(),
     keepdims=st.booleans(),
@@ -411,13 +371,10 @@ def test_jax_numpy_min(
     dtype_x_axis,
     keepdims,
     where,
-    num_positional_args,
-    with_out,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     x_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -425,18 +382,14 @@ def test_jax_numpy_min(
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=x_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
 
     np_helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        all_aliases=["numpy.amin"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -450,6 +403,7 @@ def test_jax_numpy_min(
 # max
 @handle_frontend_test(
     fn_tree="jax.numpy.max",
+    aliases=["jax.numpy.amax"],
     dtype_x_axis=statistical_dtype_values(function="max"),
     where=np_helpers.where(),
     keepdims=st.booleans(),
@@ -459,13 +413,10 @@ def test_jax_numpy_max(
     dtype_x_axis,
     keepdims,
     where,
-    num_positional_args,
-    with_out,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     x_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -473,18 +424,14 @@ def test_jax_numpy_max(
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=x_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
 
     np_helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        all_aliases=["numpy.amax"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -517,13 +464,10 @@ def test_jax_numpy_average(
     *,
     dtype_x_axis,
     returned,
-    num_positional_args,
-    with_out,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     x_dtype, x, axis = dtype_x_axis
 
@@ -532,11 +476,8 @@ def test_jax_numpy_average(
 
     np_helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         atol=2e-2,
@@ -551,6 +492,7 @@ def test_jax_numpy_average(
 # nanmax
 @handle_frontend_test(
     fn_tree="jax.numpy.nanmax",
+    aliases=["jax.numpy.nanmax"],
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -567,11 +509,8 @@ def test_jax_numpy_average(
 )
 def test_numpy_nanmax(
     dtype_x_axis,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
     where,
@@ -585,17 +524,13 @@ def test_numpy_nanmax(
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        all_aliases=["numpy.nanmax"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -626,11 +561,8 @@ def test_numpy_nanmax(
 )
 def test_numpy_nanmin(
     dtype_x_axis,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
     where,
@@ -644,17 +576,14 @@ def test_numpy_nanmin(
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
         all_aliases=["numpy.nanmin"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],

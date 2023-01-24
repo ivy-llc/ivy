@@ -1,6 +1,8 @@
 import operator
 from typing import Optional, Union, Tuple, List
 from numbers import Number
+
+from ivy import promote_types_of_inputs, default_float_dtype, is_float_dtype
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 import jax.scipy as js
@@ -9,6 +11,7 @@ jax_ArrayLike = Union[JaxArray, Number]
 
 
 def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.lcm(x1, x2)
 
 
@@ -23,6 +26,7 @@ def fmod(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.fmod(x1, x2)
 
 
@@ -33,6 +37,7 @@ def fmax(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.fmax(x1, x2)
 
 
@@ -84,6 +89,10 @@ def copysign(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not is_float_dtype(x1):
+        x1 = x1.astype(default_float_dtype(as_native=True))
+        x2 = x2.astype(default_float_dtype(as_native=True))
     return jnp.copysign(x1, x2)
 
 
@@ -122,6 +131,7 @@ def gcd(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.gcd(x1, x2)
 
 
@@ -158,6 +168,10 @@ def logaddexp2(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not is_float_dtype(x1):
+        x1 = x1.astype(default_float_dtype(as_native=True))
+        x2 = x2.astype(default_float_dtype(as_native=True))
     return jnp.logaddexp2(x1, x2)
 
 
@@ -168,6 +182,16 @@ def signbit(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.signbit(x)
+
+
+def hypot(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.hypot(x1, x2)
 
 
 def allclose(
@@ -191,6 +215,7 @@ def diff(
     axis: Optional[int] = -1,
     prepend: Optional[Union[JaxArray, int, float, list, tuple]] = None,
     append: Optional[Union[JaxArray, int, float, list, tuple]] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
@@ -478,8 +503,18 @@ def gradient(
 
 
 def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    x, y = promote_types_of_inputs(x, y)
     return js.special.xlogy(x, y)
 
 
 def real(x: Union[JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.real(x)
+
+
+def isposinf(
+    x: Union[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.isposinf(x)
