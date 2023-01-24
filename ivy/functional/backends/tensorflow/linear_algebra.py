@@ -488,7 +488,9 @@ def qr(
     /,
     *,
     mode: str = "reduced",
-    out: Optional[tf.Tensor] = None,
+    out: Optional[
+        Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]
+    ] = None,
 ) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":

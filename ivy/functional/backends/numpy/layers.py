@@ -2,10 +2,11 @@
 
 # global
 import numpy as np
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 
 
 # local
+import ivy
 from ivy.functional.ivy.layers import (
     _handle_padding,
     _deconv_length,
@@ -25,12 +26,12 @@ def _add_dilations(x, dilations, axis):
 def conv1d(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: int,
+    strides: Union[int, Tuple[int]],
     padding: str,
     /,
     *,
     data_format: str = "NWC",
-    dilations: int = 1,
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, (tuple, list)):
@@ -65,9 +66,9 @@ def conv1d_transpose(
     padding: str,
     /,
     *,
-    output_shape: List[int] = None,
-    data_format: str = "NWC",
-    dilations: int = 1,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "NWC",
+    dilations: Optional[int] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, (tuple, list)):
@@ -115,8 +116,8 @@ def conv2d(
     padding: str,
     /,
     *,
-    data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, int):
@@ -193,9 +194,9 @@ def conv2d_transpose(
     padding: str,
     /,
     *,
-    output_shape=None,
-    data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ):
     if data_format == "NCHW":
@@ -257,12 +258,12 @@ def conv2d_transpose(
 def depthwise_conv2d(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int, int]],
     padding: Union[str, List[int]],
     /,
     *,
-    data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ):
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -310,9 +311,9 @@ def conv3d(
     padding: str,
     /,
     *,
-    data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
-    out: np.ndarray = None,
+    data_format: Optional[str] = "NDHWC",
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, int):
         strides = [strides] * 3
@@ -389,13 +390,13 @@ def conv3d(
 def conv3d_transpose(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int, int, int]],
     padding: Union[str, List[int]],
     /,
     *,
-    output_shape: np.ndarray = None,
-    data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "NDHWC",
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ):
     if data_format == "NCDHW":
@@ -473,15 +474,19 @@ def conv3d_transpose(
 def conv_general_dilated(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: Union[int, Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
-    dims: int = 2,
-    data_format: str = "channel_last",
-    feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    dims: Optional[int] = 2,
+    data_format: Optional[str] = "channel_last",
+    feature_group_count: Optional[int] = 1,
+    x_dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
@@ -569,17 +574,19 @@ def conv_general_dilated(
 def conv_general_transpose(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: Union[int, Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
-    dims: int = 2,
-    output_shape=None,
-    data_format: str = "channel_last",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
-    feature_group_count: int = 1,
+    dims: Optional[int] = 2,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "channel_last",
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    feature_group_count: Optional[int] = 1,
     bias: Optional[np.ndarray] = None,
-    out: np.ndarray = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
     if data_format == "channel_first":

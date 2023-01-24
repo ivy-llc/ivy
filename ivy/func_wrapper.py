@@ -4,7 +4,6 @@ import logging
 from types import FunctionType
 from typing import Callable
 import inspect
-import typing
 
 
 # for wrapping (sequence matters)
@@ -21,7 +20,7 @@ FN_DECORATORS = [
     "handle_exceptions",
     "with_unsupported_dtypes",
     "handle_nans",
-    "handle_array_like",
+    "handle_array_like_without_promotion",
 ]
 
 
@@ -51,42 +50,42 @@ def _get_first_array(*args, **kwargs):
 # ---------------#
 
 
-def handle_array_like(fn: Callable) -> Callable:
+def handle_array_like_without_promotion(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
+        args = list(args)
+        num_args = len(args)
         try:
-            signature = inspect.signature(fn)
-            type_hints = typing.get_type_hints(fn)
+            type_hints = inspect.signature(fn).parameters
         except (TypeError, ValueError):
             return fn(*args, **kwargs)
-        has_out = False
-        out = None
-        if "out" in kwargs:
-            out = kwargs["out"]
-            del kwargs["out"]
-            has_out = True
-        params = signature.parameters
-        for name, param in params.items():
-            if param.kind in (param.POSITIONAL_OR_KEYWORD, param.KEYWORD_ONLY):
-                annotation = type_hints.get(name)
-                if annotation is not None:
-                    annotation_str = str(annotation)
-                    if "Array" in annotation_str and all(
-                        sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
-                    ):
-                        if param.kind == param.POSITIONAL_OR_KEYWORD:
-                            if param.name in kwargs:
-                                if isinstance(kwargs[param.name], (list, tuple)):
-                                    kwargs[param.name] = ivy.array(kwargs[param.name])
-                        elif param.kind == param.KEYWORD_ONLY:
-                            if param.name in kwargs:
-                                if isinstance(kwargs[param.name], (list, tuple)):
-                                    kwargs[param.name] = ivy.array(kwargs[param.name])
-        if has_out:
-            kwargs["out"] = out
+        parameters = list(type_hints.keys())
+        annotations = [param.annotation for param in type_hints.values()]
+
+        for i, (annotation, parameter, arg) in enumerate(
+            zip(annotations, parameters, args)
+        ):
+            annotation_str = str(annotation)
+            if (
+                ("rray" in annotation_str or "Tensor" in annotation_str)
+                and parameter != "out"
+                and all(
+                    sq not in annotation_str
+                    for sq in ["Sequence", "List", "Tuple", "float", "int", "bool"]
+                )
+            ):
+
+                if i < num_args:
+                    if not ivy.is_array(arg):
+                        args[i] = ivy.array(arg)
+                elif parameters in kwargs:
+                    kwarg = kwargs[parameter]
+                    if not ivy.is_array(arg):
+                        kwargs[parameter] = ivy.array(kwarg)
+
         return fn(*args, **kwargs)
 
-    new_fn.handle_array_like = True
+    new_fn.handle_array_like_without_promotion = True
     return new_fn
 
 

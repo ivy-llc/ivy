@@ -562,7 +562,14 @@ def zeros_like(
 array = asarray
 
 
-def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def copy_array(
+    x: torch.Tensor,
+    *,
+    to_ivy_array: Optional[bool] = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if to_ivy_array:
+        return ivy.to_ivy(x.clone())
     return x.clone()
 
 

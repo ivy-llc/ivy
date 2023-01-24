@@ -32,7 +32,11 @@ def leaky_relu(
 
 @with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
 def gelu(
-    x: torch.Tensor, /, *, approximate: bool = False, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    approximate: bool = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if approximate:
         return (
