@@ -1,5 +1,5 @@
 import pytest
-from ...conftest import mod_backend, mod_frontend
+from ...conftest import mod_frontend
 
 
 @pytest.fixture(scope="session")

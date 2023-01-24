@@ -1,5 +1,6 @@
 from .. import config
-if hasattr(config,'try_except'):
+
+if hasattr(config, "try_except"):
     config.try_except()
 from . import helpers
 

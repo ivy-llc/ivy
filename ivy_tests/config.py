@@ -1,3 +1,4 @@
+# flake8: noqa
 import os
 import sys
 import importlib
@@ -17,7 +18,7 @@ def allow_global_framework_imports(fw=["numpy/1.23.1"]):
 def try_except():
     try:
         import numpy
-    except:
+    except ImportError:
         allow_global_framework_imports()
 
 
@@ -34,7 +35,8 @@ def reset_sys_modules_to_base():
 # to import a specific pkg along with version name, to be used by the test functions
 def custom_import(
     pkg, base="/opt/miniconda/fw/", globally_done=None
-):  # format is pkg_name/version , globally_done means if we have imported any framework before globally
+):  # format is pkg_name/version , globally_done means
+    # if we have imported any framework before globally
     if globally_done:  # i.e import numpy etc
         if pkg == globally_done:
             ret = importlib.import_module(pkg.split("/")[0])

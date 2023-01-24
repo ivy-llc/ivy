@@ -1,6 +1,6 @@
 # global
 from typing import get_type_hints
-from typing import Union
+
 
 # local
 import ivy
