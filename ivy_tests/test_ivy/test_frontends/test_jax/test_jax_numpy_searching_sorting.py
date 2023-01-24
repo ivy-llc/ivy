@@ -245,3 +245,4 @@ def test_jax_numpy_extract(
         condition=cond,
         arr=xs[0],
     )
+    
