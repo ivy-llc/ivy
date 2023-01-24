@@ -791,8 +791,8 @@ def array_values(
                     if allow_subnormal:
                         arr = np.random.randn(*shape)
                     else:
-                        arr = np.random.randn(*shape)
-                        arr = arr[np.isneginf(arr) | np.isposinf(arr) | np.isfinite(arr)]
+                         mask = np.isneginf(arr) | np.isposinf(arr) | np.isfinite(arr)
+                         arr = arr[mask]
                     return arr
                 else:
                     raise ValueError("unsupported data type")
