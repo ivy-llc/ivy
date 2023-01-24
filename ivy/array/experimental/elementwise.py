@@ -1138,7 +1138,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         Parameters
         ----------
         self
-            input array. Should have a real-valued floating-point data type.
+            input array.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
