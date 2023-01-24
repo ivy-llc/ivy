@@ -30,19 +30,20 @@ def test_numpy_mean(
     on_device,
     keep_dims,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtypes, x, axis = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
 
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
 
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -75,19 +76,20 @@ def test_numpy_nanmean(
     on_device,
     keep_dims,
 ):
-    input_dtype, a, axis = dtype_and_a
+    input_dtypes, a, axis = dtype_and_a
     if isinstance(axis, tuple):
         axis = axis[0]
 
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
 
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -120,18 +122,19 @@ def test_numpy_std(
     on_device,
     keep_dims,
 ):
-    input_dtype, x, axis, correction = dtype_and_x
+    input_dtypes, x, axis, correction = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
-    assume(np.dtype(dtype[0]) >= np.dtype(input_dtype[0]))
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
+    assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -213,18 +216,19 @@ def test_numpy_nanstd(
     on_device,
     keep_dims,
 ):
-    input_dtype, a, axis, axis_excess = dtype_and_a
+    input_dtypes, a, axis, axis_excess = dtype_and_a
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
 
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -244,7 +248,6 @@ def test_numpy_nanstd(
     fn_tree="numpy.cov",
     dtype_and_x=statistical_dtype_values(function="cov"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
     test_with_out=st.just(False),
 )
@@ -252,24 +255,16 @@ def test_numpy_cov(
     dtype_and_x,
     dtype,
     frontend,
-    where,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtypes, x, axis = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
 
-    as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
-
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -299,18 +294,19 @@ def test_numpy_nanvar(
     on_device,
     keep_dims,
 ):
-    x_dtype, x, axis, ddof = dtype_x_axis
+    input_dtypes, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=x_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
 
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=x_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

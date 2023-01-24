@@ -68,15 +68,16 @@ def test_numpy_clip(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, min, max, casting, dtype = input_and_ranges
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    input_dtypes, x, min, max, casting, dtype = input_and_ranges
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -117,15 +118,16 @@ def test_numpy_cbrt(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -166,15 +168,16 @@ def test_numpy_sqrt(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -213,15 +216,16 @@ def test_numpy_square(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -260,9 +264,16 @@ def test_numpy_absolute(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, casting, dtype = dtypes_values_casting
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -301,9 +312,16 @@ def test_numpy_fabs(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, casting, dtype = dtypes_values_casting
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -342,9 +360,16 @@ def test_numpy_sign(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, casting, dtype = dtypes_values_casting
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -386,12 +411,13 @@ def test_numpy_heaviside(
     on_device,
 ):
     input_dtypes, (x1_list, x2_list), casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -602,15 +628,16 @@ def test_numpy_copysign(
     fn_tree,
     on_device,
 ):
-    input_dtype, xs, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

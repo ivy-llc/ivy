@@ -29,22 +29,23 @@ def test_numpy_sum(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
     if initial is not None:
         (
             where,
-            as_variable,
+            test_flags.as_variable,
             test_flags.native_arrays,
+            input_dtypes,
         ) = np_frontend_helpers.handle_where_and_array_bools(
             where=where,
-            input_dtype=input_dtype,
+            input_dtype=input_dtypes,
             as_variable=test_flags.as_variable,
             native_array=test_flags.native_arrays,
         )
     else:
         where = None
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -80,22 +81,23 @@ def test_numpy_prod(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
     if initial is not None:
         (
             where,
-            as_variable,
+            test_flags.as_variable,
             test_flags.native_arrays,
+            input_dtypes,
         ) = np_frontend_helpers.handle_where_and_array_bools(
             where=where,
-            input_dtype=input_dtype,
+            input_dtype=input_dtypes,
             as_variable=test_flags.as_variable,
             native_array=test_flags.native_arrays,
         )
     else:
         where = None
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -128,9 +130,9 @@ def test_numpy_cumsum(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtypes, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -160,9 +162,9 @@ def test_numpy_cumprod(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtypes, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -192,9 +194,9 @@ def test_numpy_nancumprod(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtypes, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -224,9 +226,9 @@ def test_numpy_nancumsum(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtypes, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -262,15 +264,16 @@ def test_numpy_nanprod(
     where,
     keepdims,
 ):
-    input_dtype, x, axis = dtype_and_x
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    input_dtypes, x, axis = dtype_and_x
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -308,15 +311,16 @@ def test_numpy_nansum(
     where,
     keepdims,
 ):
-    input_dtype, x, axis = dtype_and_x
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    input_dtypes, x, axis = dtype_and_x
+    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            as_variable=test_flags.as_variable,
+            native_array=test_flags.native_arrays,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
