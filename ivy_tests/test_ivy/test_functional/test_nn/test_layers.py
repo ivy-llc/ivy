@@ -676,6 +676,45 @@ def test_conv3d(
     )
 
 
+# conv3d_transpose
+@handle_test(
+    fn_tree="functional.ivy.conv3d_transpose",
+    x_f_d_df=x_and_filters(
+        dim=3,
+        transpose=True,
+    ),
+    ground_truth_backend="jax",
+)
+def test_conv3d_transpose(
+    *,
+    x_f_d_df,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x,
+        filters=filters,
+        strides=stride,
+        padding=pad,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
 @handle_test(
     fn_tree="functional.ivy.conv_general_dilated",
     dims=st.shared(st.integers(1, 3), key="dims"),
@@ -771,45 +810,6 @@ def test_conv_general_transpose(
         dilations=dilations,
         feature_group_count=fc,
         bias=bias,
-    )
-
-
-# conv3d_transpose
-@handle_test(
-    fn_tree="functional.ivy.conv3d_transpose",
-    x_f_d_df=x_and_filters(
-        dim=3,
-        transpose=True,
-    ),
-    ground_truth_backend="jax",
-)
-def test_conv3d_transpose(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        x=x,
-        filters=filters,
-        strides=stride,
-        padding=pad,
-        output_shape=output_shape,
-        data_format=data_format,
-        dilations=dilations,
     )
 
 
