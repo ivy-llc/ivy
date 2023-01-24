@@ -1074,4 +1074,3 @@ def test_binarizer(
         x=x[0],
         threshold=threshold,
     )
-
