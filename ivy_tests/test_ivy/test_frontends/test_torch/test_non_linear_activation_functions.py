@@ -310,7 +310,7 @@ def test_torch_threshold_(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    test_with_inplace=st.booleans(),
+    test_inplace=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_torch_relu6(
