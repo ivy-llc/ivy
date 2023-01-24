@@ -322,16 +322,14 @@ def x_and_filters(
     fc = draw(st.sampled_from(group_list)) if general else 1
     strides = draw(
         st.one_of(
-            st.integers(1, 3),
-            st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
+            st.integers(1, 3), st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
         )
         if dim > 1
         else st.integers(1, 3)
     )
     dilations = draw(
         st.one_of(
-            st.integers(1, 3),
-            st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
+            st.integers(1, 3), st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
         )
         if dim > 1
         else st.integers(1, 3)
@@ -359,7 +357,7 @@ def x_and_filters(
                     full_strides[i],
                     filter_shape[i],
                     padding,
-                    full_dilations[i]
+                    full_dilations[i],
                 )
             )
     else:
@@ -415,7 +413,7 @@ def x_and_filters(
             x_dilation = draw(
                 st.one_of(
                     st.integers(1, 3),
-                    st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
+                    st.lists(st.integers(1, 3), min_size=dim, max_size=dim),
                 )
             )
             dilations = (dilations, x_dilation)
@@ -436,12 +434,13 @@ def x_and_filters(
 
 def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
     if backend_fw.current_backend_str() == "tensorflow":
-        assume(not (
-            on_device == "cpu"
-            and (dilations > 1)
-            if isinstance(dilations, int)
-            else any(d > 1 for d in dilations)
-        ))
+        assume(
+            not (
+                on_device == "cpu" and (dilations > 1)
+                if isinstance(dilations, int)
+                else any(d > 1 for d in dilations)
+            )
+        )
 
 
 # conv1d
