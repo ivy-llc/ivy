@@ -196,8 +196,9 @@ class ContainerWithNormsExperimental(ContainerBase):
         ...                      b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
         >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),
         ...                       b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
-        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW',
-        ...                                    affine=True, track_running_stats=False)
+        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias,
+        ...                                    data_format='NCHW', affine=True,
+        ...                                    track_running_stats=False)
         {
             a: ivy.array([[[[0.68283635],[0.25858182],[0.25858182]],
                            [[1.14645457],[2.20709086],[1.14645457]],
@@ -215,7 +216,7 @@ class ContainerWithNormsExperimental(ContainerBase):
         }
 
         With :class:`track_running_stats=True`:
-        ret : The normalized container, Running mean container, Running stddev container.
+        ret : normalized container, Running mean container, Running stddev container
 
         >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
         ...                   b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
@@ -223,8 +224,9 @@ class ContainerWithNormsExperimental(ContainerBase):
         ...                      b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
         >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),
         ...                       b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
-        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW',
-        ...                                    affine=True, track_running_stats=True)
+        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias,
+        ...                                    data_format='NCHW', affine=True,
+        ...                                    track_running_stats=True)
         [{
             a: ivy.array([[[[0.68283635],[0.25858182],[0.25858182]],
                            [[1.14645457],[2.20709086],[1.14645457]],
@@ -272,7 +274,8 @@ class ContainerWithNormsExperimental(ContainerBase):
         momentum: Optional[float] = 0.1,
         data_format: str = "NCHW",
         running_mean: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
-        running_stddev: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
+        running_stddev: Optional[Union[ivy.Container, ivy.Array,
+                                       ivy.NativeArray]] = None,
         affine: Optional[bool] = True,
         track_running_stats: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
@@ -326,8 +329,9 @@ class ContainerWithNormsExperimental(ContainerBase):
         ...                      b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
         >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),
         ...                       b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
-        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW',
-        ...                                    affine=True, track_running_stats=False)
+        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias,
+        ...                                    data_format='NCHW',affine=True,
+        ...                                    track_running_stats=False)
         {
             a: ivy.array([[[[0.68283635],[0.25858182],[0.25858182]],
                            [[1.14645457],[2.20709086],[1.14645457]],
@@ -345,7 +349,7 @@ class ContainerWithNormsExperimental(ContainerBase):
         }
 
         With :class:`track_running_stats=True`:
-        ret : The normalized container, Running mean container, Running stddev container.
+        ret : normalized container, Running mean container, Running stddev container
 
         >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
                               b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
@@ -353,8 +357,9 @@ class ContainerWithNormsExperimental(ContainerBase):
         ...                      b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
         >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),
         ...                       b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
-        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW',
-        ...                                    affine=True, track_running_stats=True)
+        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias,
+        ...                                    data_format='NCHW',affine=True,
+        ...                                    track_running_stats=True)
         [{
             a: ivy.array([[[[0.68283635],[0.25858182],[0.25858182]],
                            [[1.14645457],[2.20709086],[1.14645457]],
