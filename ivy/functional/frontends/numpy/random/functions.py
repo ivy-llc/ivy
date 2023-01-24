@@ -39,3 +39,9 @@ def geometric(p, size=None):
 @from_zero_dim_arrays_to_scalar
 def normal(loc=0.0, scale=1.0, size=None):
     return ivy.random_normal(mean=loc, std=scale, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def poisson(lam=1.0, size=None):
+    return ivy.poisson(lam=lam, shape=size)
