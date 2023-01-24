@@ -4,7 +4,6 @@
 from hypothesis import strategies as st, assume
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 from ivy.functional.ivy.layers import _deconv_length
@@ -356,7 +355,11 @@ def x_and_filters(
         for i in range(dim):
             output_shape.append(
                 _deconv_length(
-                    x_dim[i], full_strides[i], filter_shape[i], padding, full_dilations[i]
+                    x_dim[i],
+                    full_strides[i],
+                    filter_shape[i],
+                    padding,
+                    full_dilations[i]
                 )
             )
     else:
@@ -434,10 +437,10 @@ def x_and_filters(
 def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
     if backend_fw.current_backend_str() == "tensorflow":
         assume(not (
-                on_device == "cpu" and
-                (dilations > 1)
-                if isinstance(dilations, int)
-                else any(d > 1 for d in dilations)
+            on_device == "cpu"
+            and (dilations > 1)
+            if isinstance(dilations, int)
+            else any(d > 1 for d in dilations)
         ))
 
 
