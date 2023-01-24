@@ -15,8 +15,8 @@ from ivy.functional.ivy.layers import _deconv_length, _get_x_data_format, \
 
 
 def _pad_before_conv(x, filters, strides, padding, dims, dilations, shape=None):
-    dilations = [dilations] if isinstance(dilations, int) else dilations
-    strides = [strides] if isinstance(strides, int) else strides
+    dilations = [dilations] * dims if isinstance(dilations, int) else dilations
+    strides = [strides] * dims if isinstance(strides, int) else strides
     if isinstance(padding, str):
         if shape is None:
             shape = list(x.shape[1: dims + 2])
@@ -148,8 +148,7 @@ def conv2d_transpose(
         raise ivy.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
-    if isinstance(strides, int):
-        strides = [strides] * 2
+    strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filters = tf.transpose(filters, (0, 1, 3, 2))
     if data_format == "NCHW":
@@ -185,12 +184,8 @@ def depthwise_conv2d(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    strides = [strides] * 2 if isinstance(strides, int) else strides
-    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     if tf.rank(filters) == 3:
         filters = tf.expand_dims(filters, -1)
-    if len(strides) == 2:
-        strides = [1, strides[0], strides[1], 1]
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     x = _pad_before_conv(x, filters, strides, padding, 2, dilations)
@@ -212,13 +207,13 @@ def conv3d(
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
+    if data_format == "NCDHW":
+        x = tf.transpose(x, (0, 2, 3, 4, 1))
+    x = _pad_before_conv(x, filters, strides, padding, 3, dilations)
     strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
     dilations = (
         [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
     )
-    if data_format == "NCDHW":
-        x = tf.transpose(x, (0, 2, 3, 4, 1))
-    x = _pad_before_conv(x, filters, strides, padding, 3, dilations)
     res = tf.nn.conv3d(x, filters, strides, "VALID", "NDHWC", dilations)
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
@@ -293,22 +288,14 @@ def conv_general_dilated(
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    strides = [strides] * dims if isinstance(strides, int) else strides
-    dilations = [dilations] * dims if isinstance(dilations, int) else dilations
-    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
-
-    if dims == 3:
-        strides = [1] + strides + [1]
-        dilations = [1] + dilations + [1]
-
     if data_format == "channel_first":
         x = tf.transpose(x, (0, *range(2, dims + 2), 1))
-    x_shape = list(x.shape[1 : dims + 2])
 
     # adding dilation in input
+    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
     for i in range(dims):
         if x_dilations[i] > 1:
-            h = x_shape[i]
+            h = x.shape[1+i]
             new_height = h + (h - 1) * (x_dilations[i] - 1)
             h = tf.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
             x = tf.experimental.numpy.swapaxes(x, 1 + i, -1)
@@ -316,8 +303,13 @@ def conv_general_dilated(
             x = tf.experimental.numpy.swapaxes(x, -1, 1 + i)
 
     x = _pad_before_conv(x, filters, strides, padding, dims, dilations)
-
     df = _get_x_data_format(dims, "channel_last")
+    if dims == 3:
+        strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
+        dilations = (
+                [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) +
+                [1]
+        )
     if dims == 1:
         res = tf.concat(
             [
