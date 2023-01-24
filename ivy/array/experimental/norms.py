@@ -37,16 +37,16 @@ class ArrayWithNormsExperimental(abc.ABC):
             self,
             /,
             *,
-            scale = None,
-            bias = None,
-            eps = 1e-05,
-            momentum = 0.1,
-            data_format = "NCHW",
-            running_mean = None,
-            running_stddev = None,
-            affine = True,
-            track_running_stats = False,
-            out = None,
+            scale=None,
+            bias=None,
+            eps=1e-05,
+            momentum=0.1,
+            data_format="NCHW",
+            running_mean=None,
+            running_stddev=None,
+            affine=True,
+            track_running_stats=False,
+            out=None,
     ):
         """Applies Instance Normalization over a 4D input along C dimension.
 
@@ -73,8 +73,8 @@ class ArrayWithNormsExperimental(abc.ABC):
         track_running_stats
             Whether to track the running statistics of the input array.
         out
-            Optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            Optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -89,7 +89,8 @@ class ArrayWithNormsExperimental(abc.ABC):
         ret : The normalized array.
 
         >>> x = ivy.eye(3, 3).reshape((1, 3, 3, 1))
-        >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format='NCHW', affine=True, track_running_stats=False)
+        >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format='NCHW',
+        ...                   affine=True, track_running_stats=False)
         ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],
                 [[0.29290909],[2.41418171],[0.29290909]],
                 [[0.14645454],[0.14645454],[1.20709085]]]])
@@ -98,7 +99,8 @@ class ArrayWithNormsExperimental(abc.ABC):
         ret : The normalized array, Running mean, Running stddev.
 
         >>> x = ivy.eye(3, 3).reshape((1, 3, 3, 1))
-        >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format='NCHW', affine=True, track_running_stats=False)
+        >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format='NCHW',
+        ...                   affine=True, track_running_stats=False)
         (ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],
                 [[0.29290909],[2.41418171],[0.29290909]],
                 [[0.14645454],[0.14645454],[1.20709085]]]]),

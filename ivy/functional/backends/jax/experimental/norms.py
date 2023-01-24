@@ -11,7 +11,8 @@ def l2_normalize(x: JaxArray, axis: int = None, out=None) -> JaxArray:
     denorm = jnp.maximum(denorm, 1e-12)
     return x / denorm
 
-@with_unsupported_dtypes({"0.3.14 and below": ("float16","bfloat16")}, backend_version)
+
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def instance_norm(
     x: JaxArray,
     /,
@@ -35,7 +36,7 @@ def instance_norm(
         running_mean = jnp.expand_dims(running_mean, axis=(0, 2, 3))
     if running_stddev is not None:
         running_stddev = jnp.expand_dims(running_stddev, axis=(0, 2, 3))
-    if data_format =='NHWC':
+    if data_format == 'NHWC':
         x = jnp.transpose(x, (0, 3, 1, 2))
     elif data_format != 'NCHW':
         raise NotImplementedError
@@ -55,7 +56,7 @@ def instance_norm(
             running_stddev = jnp.ones_like(var)
         running_mean = momentum * running_mean + (1 - momentum) * mean
         running_stddev = momentum * running_stddev + (1 - momentum) * jnp.sqrt(var)
-        if data_format =='NHWC':
+        if data_format == 'NHWC':
             normalized = jnp.transpose(normalized, (0, 2, 3, 1))
             running_mean = jnp.transpose(running_mean, (0, 2, 3, 1))
             running_stddev = jnp.transpose(running_stddev, (0, 2, 3, 1))

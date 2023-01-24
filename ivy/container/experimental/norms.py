@@ -175,8 +175,8 @@ class ContainerWithNormsExperimental(ContainerBase):
         track_running_stats
             Whether to track the running statistics of the input container.
         out
-            Optional output container, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            Optional output container, for writing the result to. It must
+            have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -192,43 +192,61 @@ class ContainerWithNormsExperimental(ContainerBase):
 
         >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
                               b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
-        >>> bias = ivy.Container(a=ivy.array([0.4, 1.5, 1]),b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
-        >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
-        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW', affine=True, track_running_stats=False)
+        >>> bias = ivy.Container(a=ivy.array([0.4, 1.5, 1]),
+        ...                      b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
+        >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),
+        ...                       b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
+        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW',
+        ...                                    affine=True, track_running_stats=False)
         {
             a: ivy.array([[[[0.68283635],[0.25858182],[0.25858182]],
                            [[1.14645457],[2.20709086],[1.14645457]],
                            [[0.29290909],[0.29290909],[2.41418171]]]]),
-            b: ivy.array([[[[1.59998751],[1.10000312],[1.10000312],[1.10000312],[1.10000312]],
-                            [[2.20000625],[3.19997501],[2.20000625],[2.20000625],[2.20000625]],
-                            [[1.25000787],[1.25000787],[2.49996877],[1.25000787],[1.25000787]],
-                            [[3.35001087],[3.35001087],[3.35001087],[5.09995651],[3.35001087]],
-                            [[1.30002821],[1.30002821],[1.30002821],[1.30002821],[5.79988766]]]])
+            b: ivy.array([[[[1.59998751],[1.10000312],[1.10000312],
+                            [1.10000312],[1.10000312]],
+                            [[2.20000625],[3.19997501],[2.20000625],
+                            [2.20000625],[2.20000625]],
+                            [[1.25000787],[1.25000787],[2.49996877],
+                            [1.25000787],[1.25000787]],
+                            [[3.35001087],[3.35001087],[3.35001087],
+                            [5.09995651],[3.35001087]],
+                            [[1.30002821],[1.30002821],[1.30002821],
+                            [1.30002821],[5.79988766]]]])
         }
 
         With :class:`track_running_stats=True`:
         ret : The normalized container, Running mean container, Running stddev container.
 
         >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
-                              b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
-        >>> bias = ivy.Container(a=ivy.array([0.4, 1.5, 1]),b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
-        >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
-        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW', affine=True, track_running_stats=True)
+        ...                   b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
+        >>> bias = ivy.Container(a=ivy.array([0.4, 1.5, 1]),
+        ...                      b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
+        >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),
+        ...                       b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
+        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW',
+        ...                                    affine=True, track_running_stats=True)
         [{
             a: ivy.array([[[[0.68283635],[0.25858182],[0.25858182]],
                            [[1.14645457],[2.20709086],[1.14645457]],
                            [[0.29290909],[0.29290909],[2.41418171]]]]),
-            b: ivy.array([[[[1.59998751],[1.10000312],[1.10000312],[1.10000312],[1.10000312]],
-                            [[2.20000625],[3.19997501],[2.20000625],[2.20000625],[2.20000625]],
-                            [[1.25000787],[1.25000787],[2.49996877],[1.25000787],[1.25000787]],
-                            [[3.35001087],[3.35001087],[3.35001087],[5.09995651],[3.35001087]],
-                            [[1.30002821],[1.30002821],[1.30002821],[1.30002821],[5.79988766]]]])
+            b: ivy.array([[[[1.59998751],[1.10000312],[1.10000312],
+                            [1.10000312],[1.10000312]],
+                            [[2.20000625],[3.19997501],[2.20000625],
+                            [2.20000625],[2.20000625]],
+                            [[1.25000787],[1.25000787],[2.49996877],
+                            [1.25000787],[1.25000787]],
+                            [[3.35001087],[3.35001087],[3.35001087],
+                            [5.09995651],[3.35001087]],
+                            [[1.30002821],[1.30002821],[1.30002821],
+                            [1.30002821],[5.79988766]]]])
         }, {
             a: ivy.array([[[[0.30000001]],[[0.30000001]],[[0.30000001]]]]),
-            b: ivy.array([[[[0.17999999]],[[0.17999999]],[[0.17999999]],[[0.17999999]],[[0.17999999]]]])
+            b: ivy.array([[[[0.17999999]],[[0.17999999]],[[0.17999999]],
+                            [[0.17999999]],[[0.17999999]]]])
         }, {
             a: ivy.array([[[[0.52426404]],[[0.52426404]],[[0.52426404]]]]),
-            b: ivy.array([[[[0.46000001]],[[0.46000001]],[[0.45999998]],[[0.45999998]],[[0.45999998]]]])
+            b: ivy.array([[[[0.46000001]],[[0.46000001]],[[0.45999998]],
+                            [[0.45999998]],[[0.45999998]]]])
         }]
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -287,8 +305,8 @@ class ContainerWithNormsExperimental(ContainerBase):
         track_running_stats
             Whether to track the running statistics of the input container.
         out
-            Optional output container, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            Optional output container, for writing the result to. It must
+            have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -304,18 +322,26 @@ class ContainerWithNormsExperimental(ContainerBase):
 
         >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
                               b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
-        >>> bias = ivy.Container(a=ivy.array([0.4, 1.5, 1]),b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
-        >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
-        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW', affine=True, track_running_stats=False)
+        >>> bias = ivy.Container(a=ivy.array([0.4, 1.5, 1]),
+        ...                      b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
+        >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),
+        ...                       b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
+        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW',
+        ...                                    affine=True, track_running_stats=False)
         {
             a: ivy.array([[[[0.68283635],[0.25858182],[0.25858182]],
                            [[1.14645457],[2.20709086],[1.14645457]],
                            [[0.29290909],[0.29290909],[2.41418171]]]]),
-            b: ivy.array([[[[1.59998751],[1.10000312],[1.10000312],[1.10000312],[1.10000312]],
-                            [[2.20000625],[3.19997501],[2.20000625],[2.20000625],[2.20000625]],
-                            [[1.25000787],[1.25000787],[2.49996877],[1.25000787],[1.25000787]],
-                            [[3.35001087],[3.35001087],[3.35001087],[5.09995651],[3.35001087]],
-                            [[1.30002821],[1.30002821],[1.30002821],[1.30002821],[5.79988766]]]])
+            b: ivy.array([[[[1.59998751],[1.10000312],[1.10000312],
+                            [1.10000312],[1.10000312]],
+                            [[2.20000625],[3.19997501],[2.20000625],
+                            [2.20000625],[2.20000625]],
+                            [[1.25000787],[1.25000787],[2.49996877],
+                            [1.25000787],[1.25000787]],
+                            [[3.35001087],[3.35001087],[3.35001087],
+                            [5.09995651],[3.35001087]],
+                            [[1.30002821],[1.30002821],[1.30002821],
+                            [1.30002821],[5.79988766]]]])
         }
 
         With :class:`track_running_stats=True`:
@@ -323,24 +349,34 @@ class ContainerWithNormsExperimental(ContainerBase):
 
         >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
                               b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
-        >>> bias = ivy.Container(a=ivy.array([0.4, 1.5, 1]),b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
-        >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
-        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW', affine=True, track_running_stats=True)
+        >>> bias = ivy.Container(a=ivy.array([0.4, 1.5, 1]),
+        ...                      b=ivy.array([1.2, 2.4, 1.5, 3.7, 2.2]))
+        >>> scale = ivy.Container(a=ivy.array([0.2, 0.5, 1]),
+        ...                       b=ivy.array([0.2, 0.4, 0.5, 0.7, 1.8]))
+        >>> ivy.Container.static_instance_norm(x, scale=scale, bias=bias, data_format='NCHW',
+        ...                                    affine=True, track_running_stats=True)
         [{
             a: ivy.array([[[[0.68283635],[0.25858182],[0.25858182]],
                            [[1.14645457],[2.20709086],[1.14645457]],
                            [[0.29290909],[0.29290909],[2.41418171]]]]),
-            b: ivy.array([[[[1.59998751],[1.10000312],[1.10000312],[1.10000312],[1.10000312]],
-                            [[2.20000625],[3.19997501],[2.20000625],[2.20000625],[2.20000625]],
-                            [[1.25000787],[1.25000787],[2.49996877],[1.25000787],[1.25000787]],
-                            [[3.35001087],[3.35001087],[3.35001087],[5.09995651],[3.35001087]],
-                            [[1.30002821],[1.30002821],[1.30002821],[1.30002821],[5.79988766]]]])
+            b: ivy.array([[[[1.59998751],[1.10000312],[1.10000312],
+                            [1.10000312],[1.10000312]],
+                            [[2.20000625],[3.19997501],[2.20000625],
+                            [2.20000625],[2.20000625]],
+                            [[1.25000787],[1.25000787],[2.49996877],
+                            [1.25000787],[1.25000787]],
+                            [[3.35001087],[3.35001087],[3.35001087],
+                            [5.09995651],[3.35001087]],
+                            [[1.30002821],[1.30002821],[1.30002821],
+                            [1.30002821],[5.79988766]]]])
         }, {
             a: ivy.array([[[[0.30000001]],[[0.30000001]],[[0.30000001]]]]),
-            b: ivy.array([[[[0.17999999]],[[0.17999999]],[[0.17999999]],[[0.17999999]],[[0.17999999]]]])
+            b: ivy.array([[[[0.17999999]],[[0.17999999]],[[0.17999999]],
+                            [[0.17999999]],[[0.17999999]]]])
         }, {
             a: ivy.array([[[[0.52426404]],[[0.52426404]],[[0.52426404]]]]),
-            b: ivy.array([[[[0.46000001]],[[0.46000001]],[[0.45999998]],[[0.45999998]],[[0.45999998]]]])
+            b: ivy.array([[[[0.46000001]],[[0.46000001]],
+                            [[0.45999998]],[[0.45999998]],[[0.45999998]]]])
         }]
         """
         return self.static_instance_norm(

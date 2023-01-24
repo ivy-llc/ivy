@@ -27,13 +27,13 @@ def instance_norm(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) :
     if scale is not None:
-        scale = tf.reshape(scale, shape=(1,1,1,-1))
+        scale = tf.reshape(scale, shape=(1, 1, 1, -1))
     if bias is not None:
-        bias = tf.reshape(bias, shape=(1,1,1,-1))
+        bias = tf.reshape(bias, shape=(1, 1, 1, -1))
     if running_mean is not None:
-        running_mean = tf.reshape(running_mean, shape=(1,1,1,-1))
+        running_mean = tf.reshape(running_mean, shape=(1, 1, 1, -1))
     if running_stddev is not None:
-        running_stddev = tf.reshape(running_stddev, shape=(1,1,1,-1))
+        running_stddev = tf.reshape(running_stddev, shape=(1, 1, 1, -1))
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     elif data_format != "NHWC":
@@ -62,7 +62,7 @@ def instance_norm(
             running_stddev = tf.ones_like(var)
         running_mean = momentum * running_mean + (1 - momentum) * mean
         running_stddev = momentum * running_stddev + (1 - momentum) * tf.sqrt(var)
-        if data_format =='NCHW':
+        if data_format == 'NCHW':
             normalized = tf.transpose(normalized, (0, 3, 1, 2))
             running_mean = tf.transpose(running_mean, (0, 3, 1, 2))
             running_stddev = tf.transpose(running_stddev, (0, 3, 1, 2))

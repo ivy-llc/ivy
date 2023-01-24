@@ -6,6 +6,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# Helpers
 @st.composite
 def _generate_data_instance_norm(
     draw,
@@ -92,7 +93,7 @@ def _generate_data_instance_norm(
     return dtype, values, axis, weight_values, bias_values, data_format
 
 
-#instance_norm
+# instance_norm
 @handle_test(
     fn_tree="functional.ivy.experimental.instance_norm",
     values_tuple=_generate_data_instance_norm(

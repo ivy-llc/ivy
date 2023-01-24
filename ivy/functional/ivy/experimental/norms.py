@@ -109,7 +109,8 @@ def instance_norm(
     ret : The normalized array.
 
     >>> x = ivy.eye(3, 3).reshape((1, 3, 3, 1))
-    >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format='NCHW', affine=True, track_running_stats=False)
+    >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format='NCHW',
+    ...                   affine=True, track_running_stats=False)
     ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],
             [[0.29290909],[2.41418171],[0.29290909]],
             [[0.14645454],[0.14645454],[1.20709085]]]])
@@ -118,23 +119,24 @@ def instance_norm(
     ret : The normalized array, Running mean, Running stddev.
 
     >>> x = ivy.eye(3, 3).reshape((1, 3, 3, 1))
-    >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format='NCHW', affine=True, track_running_stats=False)
+    >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format='NCHW',
+    ...                   affine=True, track_running_stats=False)
     (ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],
             [[0.29290909],[2.41418171],[0.29290909]],
             [[0.14645454],[0.14645454],[1.20709085]]]]),
-     ivy.array([[[[0.30000001]],[[0.30000001]],[[0.30000001]]]]),
-     ivy.array([[[[0.52426404]],[[0.52426404]],[[0.52426404]]]]))
+         ivy.array([[[[0.30000001]],[[0.30000001]],[[0.30000001]]]]),
+         ivy.array([[[[0.52426404]],[[0.52426404]],[[0.52426404]]]]))
     """
     return current_backend(x).instance_norm(
-    x,
-    scale = scale,
-    bias = bias,
-    eps = eps,
-    momentum = momentum,
-    data_format = data_format,
-    running_mean = running_mean,
-    running_stddev = running_stddev,
-    affine = affine,
-    track_running_stats = track_running_stats,
-    out = out,
+        x,
+        scale=scale,
+        bias=bias,
+        eps=eps,
+        momentum=momentum,
+        data_format=data_format,
+        running_mean=running_mean,
+        running_stddev=running_stddev,
+        affine=affine,
+        track_running_stats=track_running_stats,
+        out=out,
     )

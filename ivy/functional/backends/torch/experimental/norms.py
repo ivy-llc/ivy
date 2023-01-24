@@ -15,7 +15,8 @@ def l2_normalize(
 
 l2_normalize.support_native_out = True
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, backend_version)
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def instance_norm(
     x: torch.Tensor,
     /,
@@ -65,11 +66,12 @@ def instance_norm(
         running_stddev = momentum * running_stddev + (1 - momentum) * torch.sqrt(var)
         if data_format == 'NHWC':
             normalized = torch.permute(normalized, (0, 2, 3, 1))
-            running_mean =  torch.permute(running_mean, (0, 2, 3, 1))
-            running_stddev =  torch.permute(running_stddev, (0, 2, 3, 1))
+            running_mean = torch.permute(running_mean, (0, 2, 3, 1))
+            running_stddev = torch.permute(running_stddev, (0, 2, 3, 1))
         return normalized, running_mean, running_stddev
     if data_format == 'NHWC':
         normalized = torch.permute(normalized, (0, 2, 3, 1))
     return normalized
+
 
 instance_norm.support_native_out = False
