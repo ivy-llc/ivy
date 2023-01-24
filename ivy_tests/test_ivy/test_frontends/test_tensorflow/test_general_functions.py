@@ -1165,7 +1165,7 @@ def test_tensorflow_realdiv(
 def _multiple_shape_helper(draw):
     input_dtype, input_array, input_shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=["int32", "int64"],
+            available_dtypes=helpers.get_dtypes("numeric"),
             ret_shape=True
         ))
     input_dims = len(input_shape)
