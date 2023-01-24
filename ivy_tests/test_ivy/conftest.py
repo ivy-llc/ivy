@@ -4,10 +4,18 @@ import pytest
 from typing import Dict
 
 
-mod_frontend = {"tensorflow": None, "numpy": None, "jax": None, "torch": None}
-mod_backend = {"tensorflow": None, "numpy": None, "jax": None, "torch": None}
-
-available_frameworks = []
+mod_frontend = {
+    "tensorflow": None,
+    "numpy": None,
+    "jax": None,
+    "torch": None,
+}  # multiversion
+mod_backend = {
+    "tensorflow": None,
+    "numpy": None,
+    "jax": None,
+    "torch": None,
+}  # multiversion
 
 
 # local
@@ -42,7 +50,6 @@ def pytest_configure(config):
         backend_strs = available_frameworks
     else:
         backend_strs = raw_value.split(",")
-        available_frameworks = []
 
     # frontend
 
