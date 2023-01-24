@@ -497,14 +497,14 @@ def test_numpy_floor_divide(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
                 min_value=0,
                 exclude_min=True,
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -601,7 +601,7 @@ def test_numpy_reciprocal(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
                 shared_dtype=True,
                 large_abs_safety_factor=6,
