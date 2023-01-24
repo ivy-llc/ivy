@@ -2101,11 +2101,11 @@ def test_jax_numpy_fix(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
-        min_value=2.0,
-        max_value=20.0,
+        min_value=-10.0,
+        max_value=10.0,
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
-        safety_factor_scale="log",
+        safety_factor_scale="linear",
     ),
 )
 def test_jax_numpy_floor_divide(
@@ -2120,6 +2120,10 @@ def test_jax_numpy_floor_divide(
     with_out,
 ):
     input_dtype, x = dtype_values
+    # Making sure division by zero doesn't occur
+    assume(not np.any(np.isclose(x[1], 0)))
+    # Absolute tolerance is 1,
+    # due to flooring can cause absolute error of 1 due to precision
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2131,4 +2135,5 @@ def test_jax_numpy_floor_divide(
         fn_tree=fn_tree,
         x1=x[0],
         x2=x[1],
+        atol=1,
     )
