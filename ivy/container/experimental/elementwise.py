@@ -3179,8 +3179,10 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            a container containing output array(s) of the same dtype as the input array(s) with the complex conjugates
-            of the complex values present in the input array. If x is a container of scalar(s) then a container of
+            a container containing output array(s) of the same dtype
+            as the input array(s) with the complex conjugates of the
+            complex values present in the input array.
+            If x is a container of scalar(s) then a container of
             scalar(s) will be returned.
 
         Examples
