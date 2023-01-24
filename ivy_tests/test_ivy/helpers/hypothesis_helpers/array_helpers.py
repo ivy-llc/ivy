@@ -780,6 +780,24 @@ def array_values(
                         exclude_max=exclude_max,
                     ),
                 )
+                                if "float" in dtype or "complex" in dtype:
+                    kind_dtype = "float"
+                    dtype_info = ivy.finfo(dtype)
+                elif "int" in dtype:
+                    kind_dtype = "int"
+                    dtype_info = ivy.iinfo(dtype)
+                elif "bool" in dtype:
+
+
+                    # new code to generate random float array with subnormal values
+                    if allow_subnormal:
+                        arr = np.random.randn(*shape)
+                    else:
+                        arr = np.random.randn(*shape)
+                        arr = arr[np.isneginf(arr) | np.isposinf(arr) | np.isfinite(arr)]
+                    return arr
+                else:
+                    raise ValueError("unsupported data type")
             if "complex" in dtype:
                 float_strategy = st.tuples(float_strategy, float_strategy)
             values = draw(
