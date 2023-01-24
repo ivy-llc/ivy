@@ -2059,5 +2059,5 @@ def test_torch_hypot(
         on_device=on_device,
         atol=1e-2,
         input=x[0],
-        other=x[1]
+        other=x[1],
     )

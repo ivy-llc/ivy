@@ -46,7 +46,7 @@ def conv1d_transpose(
     dilations: Optional[int] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    if ivy.dev(x) == 'cpu' and (
+    if ivy.dev(x) == "cpu" and (
         (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
     ):
         raise ivy.exceptions.IvyException(
@@ -109,7 +109,7 @@ def conv2d_transpose(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    if ivy.dev(x) == 'cpu' and (
+    if ivy.dev(x) == "cpu" and (
         (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
     ):
         raise ivy.exceptions.IvyException(
