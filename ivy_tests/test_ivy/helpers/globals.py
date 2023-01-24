@@ -9,7 +9,8 @@ from ... import config
 
 from dataclasses import dataclass
 
-available_frameworks = ["numpy", "jax", "tensorflow", "torch"]   #needed for multiversion
+# needed for multiversion
+available_frameworks = ["numpy", "jax", "tensorflow", "torch"]
 FWS_DICT = {
     "": lambda: None,
 }
