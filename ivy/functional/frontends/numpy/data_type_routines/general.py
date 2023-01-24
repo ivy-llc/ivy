@@ -38,11 +38,11 @@ def can_cast(from_, to, casting="safe"):
     if casting == "same_kind":
         if from_ == to or "bool" in from_:
             return True
-        if "int" in from_ and "float" in to:
+        if "int" in from_ and ("float" in to or "complex" in to):
             return True
-        elif "float" in from_ and "float" in to:
+        elif "float" in from_ and ("float" in to or "complex" in to):
             return True
-        elif "uint" in from_ and ("int" in to or "float" in to):
+        elif "uint" in from_ and ("int" in to or "float" in to or "complex" in to):
             return True
         elif "int" in from_ and "int" in to and "uint" not in to:
             return True

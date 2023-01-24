@@ -1,10 +1,11 @@
 # local
-import ivy
-import weakref
 import functools
+import weakref
 from typing import Callable
-from ivy.functional.frontends.torch.tensor import Tensor
+
+import ivy
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.functional.frontends.torch.tensor import Tensor
 
 
 def _merge_from_original(method: Callable) -> Callable:

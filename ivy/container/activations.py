@@ -308,9 +308,8 @@ class ContainerWithActivations(ContainerBase):
         >>> y = ivy.Container.static_gelu(x)
         >>> print(y)
         {
-            a: ivy.array([0.185, -0.046])
+             a: ivy.array([0.185, -0.046])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "gelu",
@@ -367,12 +366,13 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a =ivy.array([0.3, -0.1]))
+        >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.9, -1.]))
         >>> y = x.gelu()
-        >>> print(y)
-        {
-            a: ivy.array([0.185, -0.046])
-        }
+            print(y)
+            {
+                 a: ivy.array([0.841, 1.95]),
+                 b: ivy.array([-0.166, -0.159])
+            }
 
         """
         return self.static_gelu(
@@ -912,6 +912,128 @@ class ContainerWithActivations(ContainerBase):
         return self.static_log_softmax(
             self,
             axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_mish(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.mish.
+        This method simply wraps the function, and so the docstring
+        for ivy.mish also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the rectified linear activation unit function
+            applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+        >>> y = ivy.Container.static_mish(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.86509842, -0.30883577]),
+            b: ivy.array([0.28903052, -0.10714479])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "mish",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def mish(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.mish.
+        This method simply wraps the function, and so the docstring
+        for ivy.mish also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the rectified linear activation unit function
+            applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+        >>> y = x.mish()
+        >>> print(y)
+        {
+            a: ivy.array([0.86509842, -0.30883577]),
+            b: ivy.array([0.28903052, -0.10714479])
+        }
+
+        """
+        return self.static_mish(
+            self,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

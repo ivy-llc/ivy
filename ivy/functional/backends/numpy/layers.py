@@ -2,11 +2,16 @@
 
 # global
 import numpy as np
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 
 
 # local
 import ivy
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _deconv_length,
+    _get_x_data_format,
+)
 
 
 def _add_dilations(x, dilations, axis):
@@ -21,17 +26,17 @@ def _add_dilations(x, dilations, axis):
 def conv1d(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: int,
+    strides: Union[int, Tuple[int]],
     padding: str,
     /,
     *,
     data_format: str = "NWC",
-    dilations: int = 1,
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, tuple):
+    if isinstance(strides, (tuple, list)):
         strides = strides[0]
-    if isinstance(dilations, tuple):
+    if isinstance(dilations, (tuple, list)):
         dilations = dilations[0]
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
@@ -61,14 +66,14 @@ def conv1d_transpose(
     padding: str,
     /,
     *,
-    output_shape: List[int] = None,
-    data_format: str = "NWC",
-    dilations: int = 1,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "NWC",
+    dilations: Optional[int] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, tuple):
+    if isinstance(strides, (tuple, list)):
         strides = strides[0]
-    if isinstance(dilations, tuple):
+    if isinstance(dilations, (tuple, list)):
         dilations = dilations[0]
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
@@ -111,8 +116,8 @@ def conv2d(
     padding: str,
     /,
     *,
-    data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, int):
@@ -136,8 +141,8 @@ def conv2d(
         x = np.transpose(x, (0, 2, 3, 1))
 
     x_shape = list(x.shape[1:3])
-    pad_h = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_w = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = _handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_w = _handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
     x = np.pad(
         x,
         [
@@ -189,9 +194,9 @@ def conv2d_transpose(
     padding: str,
     /,
     *,
-    output_shape=None,
-    data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ):
     if data_format == "NCHW":
@@ -201,10 +206,10 @@ def conv2d_transpose(
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
 
     if output_shape is None:
-        new_h = ivy.deconv_length(
+        new_h = _deconv_length(
             x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
         )
-        new_w = ivy.deconv_length(
+        new_w = _deconv_length(
             x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
         )
         output_shape = [x.shape[0], new_h, new_w, filters.shape[-1]]
@@ -220,8 +225,8 @@ def conv2d_transpose(
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    pad_h = ivy.handle_padding(output_shape[1], strides[0], filters.shape[0], padding)
-    pad_w = ivy.handle_padding(output_shape[2], strides[1], filters.shape[1], padding)
+    pad_h = _handle_padding(output_shape[1], strides[0], filters.shape[0], padding)
+    pad_w = _handle_padding(output_shape[2], strides[1], filters.shape[1], padding)
 
     extra_h = max(0, output_shape[1] - (x.shape[1] + filters.shape[0] - 1 - pad_h))
     extra_w = max(0, output_shape[2] - (x.shape[2] + filters.shape[1] - 1 - pad_w))
@@ -253,12 +258,12 @@ def conv2d_transpose(
 def depthwise_conv2d(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int, int]],
     padding: Union[str, List[int]],
     /,
     *,
-    data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ):
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -306,9 +311,9 @@ def conv3d(
     padding: str,
     /,
     *,
-    data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
-    out: np.ndarray = None,
+    data_format: Optional[str] = "NDHWC",
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, int):
         strides = [strides] * 3
@@ -330,9 +335,9 @@ def conv3d(
         x = np.transpose(x, (0, 2, 3, 4, 1))
 
     x_shape = list(x.shape[1:4])
-    pad_d = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_h = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
-    pad_w = ivy.handle_padding(x_shape[2], strides[2], filter_shape[2], padding)
+    pad_d = _handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_h = _handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    pad_w = _handle_padding(x_shape[2], strides[2], filter_shape[2], padding)
 
     x = np.pad(
         x,
@@ -385,13 +390,13 @@ def conv3d(
 def conv3d_transpose(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int, int, int]],
     padding: Union[str, List[int]],
     /,
     *,
-    output_shape: np.ndarray = None,
-    data_format: str = "NDHWC",
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "NDHWC",
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ):
     if data_format == "NCDHW":
@@ -399,13 +404,13 @@ def conv3d_transpose(
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
     if output_shape is None:
-        new_d = ivy.deconv_length(
+        new_d = _deconv_length(
             x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
         )
-        new_h = ivy.deconv_length(
+        new_h = _deconv_length(
             x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
         )
-        new_w = ivy.deconv_length(
+        new_w = _deconv_length(
             x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
         )
         output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[-1]]
@@ -426,9 +431,9 @@ def conv3d_transpose(
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    pad_d = ivy.handle_padding(output_shape[1], strides[0], filters.shape[0], padding)
-    pad_h = ivy.handle_padding(output_shape[2], strides[1], filters.shape[1], padding)
-    pad_w = ivy.handle_padding(output_shape[3], strides[2], filters.shape[2], padding)
+    pad_d = _handle_padding(output_shape[1], strides[0], filters.shape[0], padding)
+    pad_h = _handle_padding(output_shape[2], strides[1], filters.shape[1], padding)
+    pad_w = _handle_padding(output_shape[3], strides[2], filters.shape[2], padding)
     extra_d = max(0, output_shape[1] - (x.shape[1] + filters.shape[0] - 1 - pad_d))
     extra_h = max(0, output_shape[2] - (x.shape[2] + filters.shape[1] - 1 - pad_h))
     extra_w = max(0, output_shape[3] - (x.shape[3] + filters.shape[2] - 1 - pad_w))
@@ -469,15 +474,19 @@ def conv3d_transpose(
 def conv_general_dilated(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: Union[int, Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
-    dims: int = 2,
-    data_format: str = "channel_last",
-    feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
-    dilations: Union[int, Tuple[int, int, int]] = 1,
+    dims: Optional[int] = 2,
+    data_format: Optional[str] = "channel_last",
+    feature_group_count: Optional[int] = 1,
+    x_dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     bias: Optional[np.ndarray] = None,
     out: np.ndarray = None,
 ) -> np.ndarray:
@@ -500,7 +509,7 @@ def conv_general_dilated(
 
     x_shape = list(x.shape[1 : dims + 1])
     pad_specific = [
-        ivy.handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
+        _handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
         for i in range(dims)
     ]
     pad_list = [
@@ -565,17 +574,19 @@ def conv_general_dilated(
 def conv_general_transpose(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: Union[int, Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
-    dims: int = 2,
-    output_shape=None,
-    data_format: str = "channel_last",
-    dilations: Union[int, Tuple[int, int, int]] = 1,
-    feature_group_count: int = 1,
+    dims: Optional[int] = 2,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: Optional[str] = "channel_last",
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    feature_group_count: Optional[int] = 1,
     bias: Optional[np.ndarray] = None,
-    out: np.ndarray = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
     if data_format == "channel_first":
@@ -584,7 +595,7 @@ def conv_general_transpose(
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     if output_shape is None:
         new_shape = [
-            ivy.deconv_length(
+            _deconv_length(
                 x.shape[i + 1], strides[i], filters.shape[i], padding, dilations[i]
             )
             for i in range(dims)
@@ -600,7 +611,7 @@ def conv_general_transpose(
             x = _add_dilations(x, strides[j], axis=j + 1)
 
     pad_specific = [
-        ivy.handle_padding(output_shape[i + 1], strides[i], filters.shape[i], padding)
+        _handle_padding(output_shape[i + 1], strides[i], filters.shape[i], padding)
         for i in range(dims)
     ]
     extra_pad = [
@@ -636,7 +647,7 @@ def conv_general_transpose(
                     1,
                     "VALID",
                     dims=dims,
-                    data_format=ivy.get_x_data_format(dims, "channel_last"),
+                    data_format=_get_x_data_format(dims, "channel_last"),
                     dilations=1,
                 ),
                 (*range(1, dims + 1),),

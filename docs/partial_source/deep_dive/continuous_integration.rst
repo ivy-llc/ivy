@@ -57,9 +57,11 @@ Ivy’s Functional API functions :code:`binary_cross_entropy_with_logits`, :code
 How do we (or at least try to) achieve this?
 
 Implementation
-A Top-Down View:
+--------------
+A Top-Down View
+---------------
 In order to implement this, we use the magic of Test Coverage!
-Test Coverage refers to finding statements (lines) in your code that are executed (or could have been executed), on running a particular test. For example, (TODO: Give an example of Ivy Test and its coverage).
+Test Coverage refers to finding statements (lines) in your code that are executed (or could have been executed), on running a particular test.
 
 We use the Python Coverage Package (https://coverage.readthedocs.io/en/7.0.0/) for determining the Test Coverage of our tests.
 
@@ -67,15 +69,7 @@ The way it works is by running a particular pytest, and then logging each line (
 
 Computing Test Coverage for all Ivy tests, allows us to find, for each line of code, which tests affect the same. We create a Dictionary (Mapping) to store this information as follows (The actual Mapping we prepare is a bit different from this design, but we will follow this for now due to Pedagogical Purposes):
 
-.. math::
-
-    \begin{flalign}
-    \{ \\
-     \ \ \ \ "f_1": [\{\}, \{"t_1","t_3","t_7"\}, …, \{"t_10","t_11","t_15"\}], \\
-     \ \ \ \ … \\
-     \ \ \ \ "f_m": [\{\}, \{"t_11","t_23","t_37"\}, …, \{"t_32","t_54","t_65"\}] \\
-    \}
-    \end{flalign}
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping.png?raw=true
 
 The dictionary thus stores a list for each file f1 … fm. The list is a sequence encapsulating the lines of the file. Each index of the list contains a set of tests, which are mapped to the corresponding line in the file.
 
@@ -217,18 +211,7 @@ Storage Space (unifyai/Mapping)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The GitHub Repository allows only storing 100 MB of files per commit. The current design of the mapping takes a huge space as test names are long strings and are stored repeatedly for each line that is impacted by the tests. In order to reduce the space requirement for storing the Mapping, we restructure the Mapping as follows:
 
-
-.. math::
-
-    \begin{flalign}
-    \{ \\
-     \ \ \ \ "index\_mapping":\ [t_1, t_2, …, t_n], \\
-     \ \ \ \ "test\_mapping":\ \{"t_1": 1, "t_2": 2, …, "t_n": n\}, \\
-     \ \ \ \ "f_1": [\{\}, \{"1","3","7"\}, …, \{"10","11","15"\}], \\
-     \ \ \ \ … \\
-     \ \ \ \ "f_m": [\{\}, \{"11","23","37"\}, …, \{"32","54","65"\}] \\
-    \}
-    \end{flalign}
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping2.png?raw=true
 
 We include the :code:`index_mapping` and the :code:`test_mapping` fields, which map indices to tests and tests to indices, respectively. This allows us to just store the test index for each line in the Mapping, reducing the storage requirement significantly.
 
@@ -267,6 +250,7 @@ The Synchronized Object here is the unifyai/Mapping Repository, and is accessed
 through push (Write) and pull (Read) to the Repository.
 The Determine Test Coverage Workflow and the Intelligent Tests Workflow can run concurrently, while both of them write to the Mapping Repository.
 Consider the following Case for Runner 2:
+
 #. The Determine Test Coverage workflow has been running, and is about to complete for Runner 2. Meanwhile, a commit made on the master triggers the intelligent-tests workflow.
 #. The runner 2 in the intelligent-tests workflow, pulls the Mapping from the master2 branch of unifyai/Mapping repository, and starts running the determined tests (based on changes made in the commit).
 #. The det-test-coverage workflow completes for runner2, which makes a push to the corresponding branch in the unifyai/Mapping Repository.
@@ -297,10 +281,24 @@ The Test Results update the corresponding cell on the Dashboards.
 
 Manually Dispatched Workflows
 -----------------------------
-Manual Tests
-Manual Tests (PR)
 
-==TODO==
+In order to trigger any particular test for any reason (maybe Intelligent Testing missed the Test), you can
+follow the following steps:
+
+#. Visit `GitHub Actions <https://github.com/unifyai/ivy/actions/workflows/manual-tests.yml>`_
+#. Click on Run Workflow
+#. Add the Name of the test as: :code:`ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_`
+#. If you want the test to be triggered for a particular Backend, append it with a “,” as: :code:`ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,tensorflow`
+#. Check the result there and then itself, or wait (for ~20 minutes) for the dashboard to update.
+
+Manual Tests are also available for PRs.
+You can also run the Manual Tests Workflow on a Fork Repository (while reviewing PRs), as follows:
+
+1. Visit https://github.com/RashulChutani/ivy/actions/workflows/manual-tests-pr.yml by going to the
+“Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
+2. Trigger the Workflow by following Steps 2-4 described above.
+
+This might take some time to run as the Fork may have limited runners.
 
 CI Pipeline ➡️
 -------------
@@ -348,13 +346,7 @@ The rest of the procedure remains the same as given in the Push section above.
 Dashboard
 ---------
 In order to view the status of the tests, at any point in time, we maintain a dashboard containing the results of the latest Workflow that ran each test.
-These are the links to the Dashboard for the given workflows:
-
-#. `Array API Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/array_api_dashboard.md>`_
-#. `Ivy Core Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_core_dashboard.md>`_
-#. `Ivy NN Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_nn_dashboard.md>`_
-#. `Ivy Stateful Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/stateful_dashboard.md>`_
-
+The Dashboards are available on the :code:`dashboard` branch of the Ivy Repository.
 The status badges are clickable, and will take you directly to the Action log of the latest workflow that ran the corresponding test.
 
 **Round Up**

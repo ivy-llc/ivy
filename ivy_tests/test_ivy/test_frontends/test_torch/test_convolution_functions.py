@@ -12,8 +12,8 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
         dim = draw(dim)
     strides = draw(
         st.one_of(
-            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
-            st.integers(min_value=1, max_value=2),
+            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=3),
         )
     )
     padding = draw(
@@ -23,7 +23,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
             st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
         )
     )
-    batch_size = 1
+    batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
@@ -93,22 +93,16 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
 def test_torch_conv1d(
     *,
     dtype_vals,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=vals,
@@ -128,22 +122,16 @@ def test_torch_conv1d(
 def test_torch_conv2d(
     *,
     dtype_vals,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=vals,
@@ -163,22 +151,16 @@ def test_torch_conv2d(
 def test_torch_conv3d(
     *,
     dtype_vals,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=vals,
@@ -223,22 +205,16 @@ def test_torch_unfold(
     dilation,
     padding,
     stride,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     args_dtypes = list([dtype_and_input_and_shape[0][0]] + ["uint8"] * 4)
     helpers.test_frontend_function(
         input_dtypes=args_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=dtype_and_input_and_shape[1][0],
@@ -269,22 +245,16 @@ def test_torch_fold(
     dilation,
     padding,
     stride,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     args_dtypes = list([dtype_and_input_and_shape[0][0]] + ["uint8"] * 5)
     helpers.test_frontend_function(
         input_dtypes=args_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=dtype_and_input_and_shape[1][0],

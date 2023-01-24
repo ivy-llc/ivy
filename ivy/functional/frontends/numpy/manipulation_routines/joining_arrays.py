@@ -5,10 +5,12 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 import ivy.functional.frontends.numpy as np_frontend
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
@@ -25,6 +27,7 @@ def concatenate(arrays, /, axis=0, out=None, *, dtype=None, casting="same_kind")
     return ivy.concat(arrays, axis=axis, out=out).astype(out_dtype, copy=False)
 
 
+@handle_numpy_out
 @to_ivy_arrays_and_back
 def stack(arrays, axis=0, out=None):
     return ivy.stack(arrays, axis=axis, out=out)

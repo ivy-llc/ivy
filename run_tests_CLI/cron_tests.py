@@ -26,14 +26,17 @@ for test_name in test_names_without_backend:
         test_names.append(test_backend)
 
 test_names = list(set(test_names))
+test_names.sort()
 
 # Run 150 tests in each iteration of the cron job
 num_tests = len(test_names)
 tests_per_run = 150
 start = run_iter * tests_per_run
 end = (run_iter + 1) * tests_per_run
+print("Running Tests:")
 with open("tests_to_run", "w") as f:
     for i in range(start, end):
         i = i % num_tests
         test = test_names[i]
+        print(test)
         f.write(test + "\n")

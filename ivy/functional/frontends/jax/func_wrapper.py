@@ -1,17 +1,21 @@
 # global
 import functools
 from typing import Callable
+import inspect
 
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
-
-
-def _is_jax_frontend_array(x):
-    return isinstance(x, jax_frontend.DeviceArray)
+import ivy.functional.frontends.numpy as np_frontend
 
 
 def _from_jax_frontend_array_to_ivy_array(x):
+    if (
+        isinstance(x, jax_frontend.DeviceArray)
+        and x.weak_type
+        and x.ivy_array.shape == ()
+    ):
+        return ivy.to_scalar(x.ivy_array)
     if hasattr(x, "ivy_array"):
         return x.ivy_array
     return x
@@ -24,6 +28,21 @@ def _from_ivy_array_to_jax_frontend_array(x, nested=False, include_derived=None)
         )
     elif isinstance(x, ivy.Array):
         return jax_frontend.DeviceArray(x)
+    return x
+
+
+def _from_ivy_array_to_jax_frontend_array_weak_type(
+    x, nested=False, include_derived=None
+):
+    if nested:
+        return ivy.nested_map(
+            x,
+            _from_ivy_array_to_jax_frontend_array_weak_type,
+            include_derived,
+            shallow=False,
+        )
+    elif isinstance(x, ivy.Array):
+        return jax_frontend.DeviceArray(x, weak_type=True)
     return x
 
 
@@ -65,6 +84,14 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
+        weak_type = not any(
+            (isinstance(arg, jax_frontend.DeviceArray) and arg.weak_type is False)
+            or ivy.is_array(arg)
+            or isinstance(arg, (tuple, list))
+            for arg in args
+        )
+        if "dtype" in kwargs and kwargs["dtype"] is not None:
+            weak_type = False
         # call unmodified function
         # ToDo: Remove this default dtype setting
         #  once frontend specific backend setting is added
@@ -79,6 +106,12 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         else:
             ret = fn(*args, **kwargs)
         # convert all arrays in the return to `jax_frontend.DeviceArray` instances
+        if weak_type:
+            return _from_ivy_array_to_jax_frontend_array_weak_type(
+                ret,
+                nested=True,
+                include_derived={tuple: True},
+            )
         return _from_ivy_array_to_jax_frontend_array(
             ret, nested=True, include_derived={tuple: True}
         )
@@ -88,3 +121,41 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
+
+
+def handle_jax_dtype(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, dtype=None, **kwargs):
+        if len(args) > (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            kwargs = {
+                **dict(
+                    zip(
+                        list(inspect.signature(fn).parameters.keys())[
+                            dtype_pos + 1 : len(args)
+                        ],
+                        args[dtype_pos + 1 :],
+                    )
+                ),
+                **kwargs,
+            }
+            args = args[:dtype_pos]
+        elif len(args) == (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            args = args[:-1]
+
+        if not dtype:
+            return fn(*args, dtype=dtype, **kwargs)
+
+        dtype = np_frontend.to_ivy_dtype(dtype)
+        if not jax_frontend.config.jax_enable_x64:
+            dtype = (
+                jax_frontend.numpy.dtype_replacement_dict[dtype]
+                if dtype in jax_frontend.numpy.dtype_replacement_dict
+                else dtype
+            )
+
+        return fn(*args, dtype=dtype, **kwargs)
+
+    dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
+    return new_fn
