@@ -792,7 +792,7 @@ def array_values(
                         arr = np.random.randn(*shape)
                     else:
                         arr = np.random.randn(*shape)
-                        arr = arr[np.isneginf(arr)|np.isposinf(arr)|np.isfinite(arr)]
+                        arr = arr[np.isneginf(arr) | np.isposinf(arr) | np.isfinite(arr)]
                     return arr
                 else:
                     raise ValueError("unsupported data type")
