@@ -219,9 +219,8 @@ def test_jax_numpy_nanargmin(
         keepdims=keep_dims,
     )
 
+
 # sort_complex
-
-
 @handle_frontend_test(
     fn_tree="jax.numpy.sort_complex",
     dtype_and_x=helpers.dtype_and_values(
