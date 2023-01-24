@@ -2466,7 +2466,7 @@ def test_numpy_instance_len__(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "object": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
