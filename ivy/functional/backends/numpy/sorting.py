@@ -80,8 +80,5 @@ def lexsort(
     /,
     *,
     axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.lexsort(x, axis)

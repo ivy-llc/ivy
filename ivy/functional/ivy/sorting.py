@@ -244,14 +244,12 @@ def lexsort(
     /,
     *,
     axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     """
     return ivy.current_backend(x).lexsort(
-        x, axis=axis, descending=descending, stable=stable, out=out
+        x, axis=axis
     )
 
 
