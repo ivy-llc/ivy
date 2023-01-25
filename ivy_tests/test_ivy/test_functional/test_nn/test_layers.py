@@ -613,6 +613,13 @@ def test_depthwise_conv2d(
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
+    # tensorflow only supports equal length strides in row and column
+    if (
+        "tensorflow" in backend_fw.__name__
+        and isinstance(stride, list)
+        and len(stride) > 1
+    ):
+        assume(stride[0] == stride[1])
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
