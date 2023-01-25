@@ -415,6 +415,7 @@ def embedding_lookup(params, ids, max_norm=None, name=None):
     return ivy.embedding(params, ids, max_norm=max_norm)
 
 
+@to_ivy_arrays_and_back
 def relu(features, name=None):
     return ivy.relu(features)
 

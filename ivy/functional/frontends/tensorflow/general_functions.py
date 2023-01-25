@@ -122,6 +122,22 @@ def concat(values, axis, name=None):
 
 
 @to_ivy_arrays_and_back
+def matmul(
+    a,
+    b,
+    transpose_a=False,
+    transpose_b=False,
+    adjoint_a=False,
+    adjoint_b=False,
+    a_is_sparse=False,
+    b_is_sparse=False,
+    output_type=None,
+    name=None,
+):
+    return ivy.matmul(a, b)
+
+
+@to_ivy_arrays_and_back
 def shape(input, out_type=ivy.int32, name=None):
     out_type = to_ivy_dtype(out_type)
     if out_type in ["int32", "int64"]:
@@ -266,6 +282,12 @@ def linspace(start, stop, num, name=None, axis=0):
 @to_ivy_arrays_and_back
 def realdiv(x, y, name=None):
     return ivy.divide(x, y)
+
+
+@with_unsupported_dtypes({"2.9.0 and below": ("uint16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def tile(input, multiples, name=None):
+    return ivy.tile(input, multiples)
 
 
 @to_ivy_arrays_and_back
