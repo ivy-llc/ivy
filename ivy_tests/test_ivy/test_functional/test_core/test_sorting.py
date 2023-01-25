@@ -13,7 +13,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.argsort",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
         min_axis=-1,
@@ -53,7 +52,6 @@ def test_argsort(
 @handle_test(
     fn_tree="functional.ivy.sort",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
         min_axis=-1,
@@ -94,13 +92,13 @@ def _searchsorted_case1(draw):
     # 1-D for x, N-D for v
     dtype_x, x = draw(
         helpers.dtype_and_values(
-            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
+            dtype=draw(helpers.get_dtypes(full=False, key="searchsorted")),
             shape=(draw(st.integers(min_value=1, max_value=5)),),
         )
     )
     dtype_v, v = draw(
         helpers.dtype_and_values(
-            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
+            dtype=draw(helpers.get_dtypes(full=False, key="searchsorted")),
             min_num_dims=1,
         )
     )
@@ -119,13 +117,13 @@ def _searchsorted_case2(draw):
     nv = draw(st.integers(min_value=1, max_value=5))
     dtype_x, x = draw(
         helpers.dtype_and_values(
-            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
+            dtype=draw(helpers.get_dtypes(full=False, key="searchsorted")),
             shape=arb_leading_dims + (nx,),
         )
     )
     dtype_v, v = draw(
         helpers.dtype_and_values(
-            dtype=draw(helpers.get_dtypes("numeric", full=False, key="searchsorted")),
+            dtype=draw(helpers.get_dtypes(full=False, key="searchsorted")),
             shape=arb_leading_dims + (nv,),
         )
     )
@@ -138,7 +136,7 @@ def _searchsorted_case2(draw):
     dtypes_and_xs=st.one_of(_searchsorted_case1(), _searchsorted_case2()),
     side=st.sampled_from(["left", "right"]),
     use_sorter=st.booleans(),
-    ret_dtype=helpers.get_dtypes("integer", full=False),
+    ret_dtype=helpers.get_dtypes("integer", full=False, prune_function=False),
     test_gradients=st.just(False),
 )
 def test_searchsorted(
@@ -156,7 +154,9 @@ def test_searchsorted(
 ):
     dtypes, xs = dtypes_and_xs
     if use_sorter:
-        sorter_dtype = data.draw(helpers.get_dtypes("signed_integer", full=False))
+        sorter_dtype = data.draw(
+            helpers.get_dtypes("signed_integer", full=False, prune_function=False)
+        )
         dtypes += sorter_dtype
         sorter = np.argsort(xs[0]).astype(sorter_dtype[0])
     else:

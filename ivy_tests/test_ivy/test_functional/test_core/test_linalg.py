@@ -132,7 +132,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
 @st.composite
 def _get_dtype_and_matrix(draw, *, symmetric=False):
     # batch_shape, shared, random_size
-    input_dtype = draw(st.shared(st.sampled_from(draw(helpers.get_dtypes("float")))))
+    input_dtype = draw(st.shared(st.sampled_from(draw())))
     random_size = draw(helpers.ints(min_value=2, max_value=4))
     batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
     if symmetric:
@@ -172,7 +172,7 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False):
     # batch_shape, random_size, shared
     input_dtype = draw(
         st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+            st.sampled_from(draw(helpers.get_dtypes())),
             key="shared_dtype",
         ).filter(lambda x: "float16" not in x)
     )
@@ -203,7 +203,7 @@ def _get_second_matrix_and_dtype(draw, *, transpose=False):
     # batch_shape, shared, random_size
     input_dtype = draw(
         st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+            st.sampled_from(draw(helpers.get_dtypes())),
             key="shared_dtype",
         ).filter(lambda x: "float16" not in x)
     )
@@ -235,7 +235,7 @@ def _get_dtype_and_vector(draw):
     # batch_shape, shared, random_size
     input_dtype = draw(
         st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+            st.sampled_from(draw(helpers.get_dtypes())),
             key="shared_dtype",
         )
     )
@@ -279,7 +279,6 @@ def test_vector_to_skew_symmetric_matrix(
 @handle_test(
     fn_tree="functional.ivy.matrix_power",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=1e-3,
         max_value=20,
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
@@ -350,7 +349,6 @@ def test_matmul(
 @handle_test(
     fn_tree="functional.ivy.det",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=2,
         max_value=5,
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
@@ -480,7 +478,6 @@ def test_eigvalsh(
 @handle_test(
     fn_tree="functional.ivy.inner",
     dtype_xy=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
@@ -517,7 +514,6 @@ def test_inner(
 @handle_test(
     fn_tree="functional.ivy.inv",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=2,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
@@ -579,7 +575,6 @@ def test_matrix_transpose(
 @handle_test(
     fn_tree="functional.ivy.outer",
     dtype_xy=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_value=1,
         max_value=50,
@@ -615,7 +610,6 @@ def test_outer(
 @handle_test(
     fn_tree="functional.ivy.slogdet",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=2,
         max_value=5,
         safety_factor_scale="log",
@@ -659,7 +653,7 @@ def _get_first_matrix(draw):
     # float16 causes a crash when filtering out matrices
     # for which `np.linalg.cond` is large.
     input_dtype_strategy = st.shared(
-        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+        st.sampled_from(draw(helpers.get_dtypes())).filter(
             lambda x: "float16" not in x
         ),
         key="shared_dtype",
@@ -685,7 +679,7 @@ def _get_second_matrix(draw):
     # float16 causes a crash when filtering out matrices
     # for which `np.linalg.cond` is large.
     input_dtype_strategy = st.shared(
-        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+        st.sampled_from(draw(helpers.get_dtypes())).filter(
             lambda x: "float16" not in x
         ),
         key="shared_dtype",
@@ -737,7 +731,6 @@ def test_solve(
 @handle_test(
     fn_tree="functional.ivy.svdvals",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
         min_num_dims=2,
@@ -771,7 +764,6 @@ def test_svdvals(
 @handle_test(
     fn_tree="functional.ivy.tensordot",
     dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -813,7 +805,6 @@ def test_tensordot(
 @handle_test(
     fn_tree="functional.ivy.trace",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=1,
@@ -859,7 +850,6 @@ def test_trace(
 @handle_test(
     fn_tree="functional.ivy.vecdot",
     dtype_x1_x2_axis=dtype_value1_value2_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
         large_abs_safety_factor=100,
         small_abs_safety_factor=100,
         safety_factor_scale="log",
@@ -898,7 +888,6 @@ def test_vecdot(
 @handle_test(
     fn_tree="functional.ivy.vector_norm",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         min_value=-1e04,
         max_value=1e04,
@@ -943,7 +932,6 @@ def test_vector_norm(
 @handle_test(
     fn_tree="functional.ivy.pinv",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -1033,7 +1021,6 @@ def test_qr(
 @handle_test(
     fn_tree="functional.ivy.svd",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=2,
@@ -1119,7 +1106,6 @@ def test_svd(
 @handle_test(
     fn_tree="functional.ivy.matrix_norm",
     dtype_value_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=2), key="shape"),
         min_num_dims=2,
         max_num_dims=2,
@@ -1169,7 +1155,6 @@ def test_matrix_norm(
 def _matrix_rank_helper(draw):
     dtype_x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=2,
             shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
             min_value=-1e05,
@@ -1223,7 +1208,6 @@ def test_matrix_rank(
 @handle_test(
     fn_tree="functional.ivy.cholesky",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
@@ -1262,7 +1246,6 @@ def test_cholesky(
 @handle_test(
     fn_tree="functional.ivy.cross",
     dtype_x1_x2_axis=dtype_value1_value2_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=3,
@@ -1302,7 +1285,6 @@ def test_cross(
 @handle_test(
     fn_tree="functional.ivy.diagonal",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=1,
@@ -1343,7 +1325,6 @@ def test_diagonal(
 def _diag_helper(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
             small_abs_safety_factor=2,
             large_abs_safety_factor=2,
             safety_factor_scale="log",
@@ -1392,7 +1373,6 @@ def test_diag(
 @handle_test(
     fn_tree="functional.ivy.vander",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         shape=st.tuples(
             helpers.ints(min_value=1, max_value=10),
         ),

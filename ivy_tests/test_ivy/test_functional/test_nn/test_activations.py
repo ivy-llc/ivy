@@ -12,7 +12,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -43,7 +42,7 @@ def test_relu(
 @handle_test(
     fn_tree="functional.ivy.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False, key="leaky_relu"),
+        available_dtypes=helpers.get_dtypes(full=False, key="leaky_relu"),
         large_abs_safety_factor=16,
         small_abs_safety_factor=16,
         safety_factor_scale="log",
@@ -79,7 +78,6 @@ def test_leaky_relu(
 @handle_test(
     fn_tree="functional.ivy.gelu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -115,7 +113,6 @@ def test_gelu(
 @handle_test(
     fn_tree="functional.ivy.sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -148,7 +145,6 @@ def test_sigmoid(
 @handle_test(
     fn_tree="functional.ivy.softmax",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
@@ -185,7 +181,6 @@ def test_softmax(
 @handle_test(
     fn_tree="functional.ivy.softplus",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
@@ -264,7 +259,6 @@ def test_log_softmax(
 @handle_test(
     fn_tree="functional.ivy.mish",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",

@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 # is_native_dtype
 @handle_test(
     fn_tree="functional.ivy.experimental.is_native_dtype",
-    input_dtype=helpers.get_dtypes("valid", full=False),
+    input_dtype=helpers.get_dtypes(full=False),
 )
 @settings(max_examples=200)
 def test_is_native_dtype(

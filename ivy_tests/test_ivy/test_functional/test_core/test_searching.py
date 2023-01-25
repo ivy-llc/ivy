@@ -16,7 +16,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 def _dtype_x_limited_axis(draw, *, allow_none=False):
     dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=1,
             min_dim_size=1,
             ret_shape=True,
@@ -35,7 +34,6 @@ def _broadcastable_trio(draw):
     cond = draw(helpers.array_values(dtype="bool", shape=shape))
     dtypes, xs = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
             num_arrays=2,
             shape=shape,
             shared_dtype=True,
@@ -124,7 +122,6 @@ def test_argmin(
 @handle_test(
     fn_tree="functional.ivy.nonzero",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -193,7 +190,7 @@ def test_where(
 # argwhere
 @handle_test(
     fn_tree="functional.ivy.argwhere",
-    x=helpers.dtype_and_values(available_dtypes=("bool",)),
+    x=helpers.dtype_and_values(),
 )
 def test_argwhere(
     *,

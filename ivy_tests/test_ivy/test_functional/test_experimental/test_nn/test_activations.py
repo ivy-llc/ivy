@@ -7,7 +7,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.logit",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",

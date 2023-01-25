@@ -10,7 +10,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.binary_cross_entropy_with_logits",
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -19,7 +18,6 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -31,7 +29,6 @@ from ivy_tests.test_ivy.helpers import handle_test
     ),
     dtype_and_pos_weight=st.one_of(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
             min_value=0,
             max_value=1,
             allow_inf=False,

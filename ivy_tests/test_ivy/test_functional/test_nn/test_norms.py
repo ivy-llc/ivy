@@ -85,9 +85,7 @@ def _generate_data_layer_norm(
 
 @handle_test(
     fn_tree="functional.ivy.layer_norm",
-    values_tuple=_generate_data_layer_norm(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
+    values_tuple=_generate_data_layer_norm(),
     new_std=st.floats(min_value=0.01, max_value=0.1),
     epsilon=st.floats(min_value=0.01, max_value=0.1),
 )

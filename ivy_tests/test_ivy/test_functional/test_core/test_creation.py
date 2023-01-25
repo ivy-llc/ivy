@@ -47,7 +47,6 @@ def test_native_array(
 @handle_test(
     fn_tree="functional.ivy.linspace",
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=-1e5,
         max_value=1e5,
@@ -102,7 +101,6 @@ def test_linspace(
 @handle_test(
     fn_tree="functional.ivy.logspace",
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=None,
         max_value=None,
@@ -201,7 +199,6 @@ def test_arange(
 @handle_test(
     fn_tree="functional.ivy.asarray",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=st.integers(min_value=1, max_value=10),
         min_num_dims=0,
         max_num_dims=5,
@@ -301,7 +298,6 @@ def test_empty(
 @handle_test(
     fn_tree="functional.ivy.empty_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -390,7 +386,6 @@ def test_eye(
 @handle_test(
     fn_tree="functional.ivy.from_dlpack",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -522,7 +517,6 @@ def test_full_like(
 @handle_test(
     fn_tree="functional.ivy.meshgrid",
     dtype_and_arrays=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=st.integers(min_value=2, max_value=5),
         min_num_dims=1,
         max_num_dims=1,
@@ -610,7 +604,6 @@ def test_ones(
 @handle_test(
     fn_tree="functional.ivy.ones_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -646,7 +639,6 @@ def test_ones_like(
 @handle_test(
     fn_tree="functional.ivy.tril",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -684,7 +676,6 @@ def test_tril(
 @handle_test(
     fn_tree="functional.ivy.triu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -762,7 +753,6 @@ def test_zeros(
 @handle_test(
     fn_tree="functional.ivy.zeros_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -799,7 +789,7 @@ def test_zeros_like(
 # TODO: possible refactor to use the helpers.test_function method
 @handle_test(
     fn_tree="functional.ivy.copy_array",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(),
     to_ivy_array_bool=st.booleans(),
 )
 def test_copy_array(
@@ -830,7 +820,6 @@ def _dtype_indices_depth_axis(draw):
     depth = draw(helpers.ints(min_value=2, max_value=100))
     dtype, indices, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
             min_value=0,
             max_value=depth - 1,
             small_abs_safety_factor=4,

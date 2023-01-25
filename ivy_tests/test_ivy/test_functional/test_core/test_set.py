@@ -12,7 +12,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.unique_values",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -47,7 +46,6 @@ def test_unique_values(
 @handle_test(
     fn_tree="functional.ivy.unique_all",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -83,7 +81,6 @@ def test_unique_all(
 @handle_test(
     fn_tree="functional.ivy.unique_counts",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=2,
@@ -119,7 +116,6 @@ def test_unique_counts(
 @handle_test(
     fn_tree="functional.ivy.unique_inverse",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=2,

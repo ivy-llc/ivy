@@ -141,7 +141,7 @@ def array_dtypes(
     draw,
     *,
     num_arrays=st.shared(nh.ints(min_value=1, max_value=4), key="num_arrays"),
-    available_dtypes=get_dtypes("valid"),
+    available_dtypes=get_dtypes(),
     shared_dtype=False,
     array_api_dtypes=False,
 ):

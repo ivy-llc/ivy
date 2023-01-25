@@ -20,7 +20,6 @@ def _generate_diag_args(draw):
 
     dtype_x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
             shape=x_shape,
             min_value=-1e2,
             max_value=1e2,
@@ -173,7 +172,6 @@ def test_diagflat(
 @handle_test(
     fn_tree="functional.ivy.experimental.kron",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,

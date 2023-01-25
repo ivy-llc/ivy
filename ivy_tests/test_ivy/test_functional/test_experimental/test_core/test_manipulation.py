@@ -17,7 +17,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.moveaxis",
     dtype_and_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
         max_value=100,
         shape=st.shared(
@@ -91,7 +90,6 @@ def test_moveaxis(
 @handle_test(
     fn_tree="functional.ivy.experimental.ndenumerate",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
     ),
 )
@@ -107,7 +105,6 @@ def test_ndenumerate(dtype_and_x):
 @handle_test(
     fn_tree="functional.ivy.experimental.ndindex",
     dtype_x_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         ret_shape=True,
     ),
@@ -122,7 +119,6 @@ def test_ndindex(dtype_x_shape):
 @handle_test(
     fn_tree="functional.ivy.experimental.heaviside",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
         max_value=100,
         min_num_dims=1,
@@ -160,7 +156,6 @@ def test_heaviside(
 @handle_test(
     fn_tree="functional.ivy.experimental.flipud",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
         max_value=100,
         min_num_dims=1,
@@ -195,7 +190,6 @@ def test_flipud(
 @handle_test(
     fn_tree="functional.ivy.experimental.vstack",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         shared_dtype=True,
@@ -231,7 +225,6 @@ def test_vstack(
 @handle_test(
     fn_tree="functional.ivy.experimental.hstack",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         shared_dtype=True,
@@ -265,7 +258,7 @@ def test_hstack(
 @st.composite
 def _get_dtype_values_k_axes_for_rot90(
     draw,
-    available_dtypes,
+    available_dtypes=helpers.get_dtypes(),
     min_value=None,
     max_value=None,
     allow_inf=False,
@@ -316,7 +309,6 @@ def _get_dtype_values_k_axes_for_rot90(
 @handle_test(
     fn_tree="functional.ivy.experimental.rot90",
     dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -350,7 +342,6 @@ def test_rot90(
 @handle_test(
     fn_tree="functional.ivy.experimental.top_k",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
@@ -394,7 +385,6 @@ def test_top_k(
 @handle_test(
     fn_tree="functional.ivy.experimental.fliplr",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
     ),
     test_gradients=st.just(False),
@@ -424,7 +414,6 @@ def test_fliplr(
 @handle_test(
     fn_tree="functional.ivy.experimental.i0",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         min_num_dims=1,
@@ -459,7 +448,6 @@ def test_i0(
 @handle_test(
     fn_tree="functional.ivy.experimental.flatten",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="flatten_shape"),
     ),
     axes=helpers.get_axis(
@@ -547,7 +535,7 @@ def _pad_helper(draw):
         dtypes = "numeric"
     dtype, input, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes(dtypes),
+            available_dtypes=dtypes,
             ret_shape=True,
             min_num_dims=1,
             min_value=-100,
@@ -610,7 +598,6 @@ def test_pad(
 @handle_test(
     fn_tree="functional.ivy.experimental.vsplit",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         min_num_dims=2,
@@ -649,7 +636,6 @@ def test_vsplit(
 @handle_test(
     fn_tree="functional.ivy.experimental.dsplit",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         min_num_dims=3,
@@ -689,7 +675,6 @@ def test_dsplit(
 @handle_test(
     fn_tree="functional.ivy.experimental.atleast_1d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
     test_with_out=st.just(False),
@@ -723,7 +708,6 @@ def test_atleast_1d(
 @handle_test(
     fn_tree="functional.ivy.experimental.dstack",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         shared_dtype=True,
@@ -759,7 +743,6 @@ def test_dstack(
 @handle_test(
     fn_tree="functional.ivy.experimental.atleast_2d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
     test_with_out=st.just(False),
@@ -793,7 +776,6 @@ def test_atleast_2d(
 @handle_test(
     fn_tree="functional.ivy.experimental.atleast_3d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
     test_with_out=st.just(False),
@@ -827,7 +809,6 @@ def test_atleast_3d(
 @handle_test(
     fn_tree="functional.ivy.experimental.take_along_axis",
     dtype_x_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
         min_num_dims=1,
         max_num_dims=5,
@@ -864,7 +845,6 @@ def test_take_along_axis(
 @handle_test(
     fn_tree="functional.ivy.experimental.hsplit",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         min_num_dims=2,

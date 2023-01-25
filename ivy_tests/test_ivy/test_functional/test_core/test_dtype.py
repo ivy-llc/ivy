@@ -64,7 +64,7 @@ def dtypes_shared(draw, num_dtypes):
     return draw(
         st.shared(
             st.lists(
-                st.sampled_from(draw(helpers.get_dtypes("valid"))),
+                st.sampled_from(draw(helpers.get_dtypes())),
                 min_size=num_dtypes,
                 max_size=num_dtypes,
             ),
@@ -81,7 +81,6 @@ def dtypes_shared(draw, num_dtypes):
 def astype_helper(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=1,
             small_abs_safety_factor=4,
             large_abs_safety_factor=4,
@@ -90,7 +89,7 @@ def astype_helper(draw):
     )
 
     cast_dtype = draw(
-        helpers.get_castable_dtype(draw(helpers.get_dtypes("valid")), dtype[0], x)
+        helpers.get_castable_dtype(draw(helpers.get_dtypes()), dtype[0], x)
     )
     return dtype, x, cast_dtype
 
@@ -219,9 +218,7 @@ def test_broadcast_to(
 # can_cast
 @handle_test(
     fn_tree="functional.ivy.can_cast",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=1
-    ),
+    dtype_and_x=helpers.dtype_and_values(num_arrays=1),
     to_dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -361,7 +358,6 @@ def test_iinfo(
 @handle_test(
     fn_tree="functional.ivy.result_type",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays"),
         shared_dtype=False,
     ),
@@ -569,9 +565,7 @@ def test_dtype_bits(
 # is_bool_dtype
 @handle_test(
     fn_tree="functional.ivy.is_bool_dtype",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=False)
-    ),
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes(full=False)),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
@@ -599,9 +593,7 @@ def test_is_bool_dtype(
 # is_float_dtype
 @handle_test(
     fn_tree="functional.ivy.is_float_dtype",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=False)
-    ),
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes(full=False)),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
@@ -629,9 +621,7 @@ def test_is_float_dtype(
 # is_int_dtype
 @handle_test(
     fn_tree="functional.ivy.is_int_dtype",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=False)
-    ),
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes(full=False)),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
@@ -659,9 +649,7 @@ def test_is_int_dtype(
 # is_uint_dtype
 @handle_test(
     fn_tree="functional.ivy.is_uint_dtype",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=False)
-    ),
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes(full=False)),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
@@ -689,9 +677,7 @@ def test_is_uint_dtype(
 # is_complex_dtype
 @handle_test(
     fn_tree="functional.ivy.is_complex_dtype",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=False)
-    ),
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes(full=False)),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
@@ -720,8 +706,8 @@ def test_is_complex_dtype(
 # TODO: fix instance method
 @handle_test(
     fn_tree="functional.ivy.promote_types",
-    type1=helpers.get_dtypes("valid", full=False),
-    type2=helpers.get_dtypes("valid", full=False),
+    type1=helpers.get_dtypes(full=False),
+    type2=helpers.get_dtypes(full=False),
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
@@ -754,7 +740,6 @@ def test_promote_types(
 @handle_test(
     fn_tree="functional.ivy.type_promote_arrays",
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=False,
     ),
@@ -1039,7 +1024,7 @@ def test_function_dtype_versioning_frontend(
 # invalid_dtype
 @handle_test(
     fn_tree="functional.ivy.invalid_dtype",
-    dtype_in=helpers.get_dtypes("valid", full=False),
+    dtype_in=helpers.get_dtypes(full=False),
 )
 def test_invalid_dtype(
     *,
@@ -1069,7 +1054,7 @@ def test_invalid_dtype(
 # unset_default_dtype
 @handle_test(
     fn_tree="functional.ivy.unset_default_dtype",
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype=helpers.get_dtypes(full=False),
 )
 def test_unset_default_dtype(
     *,

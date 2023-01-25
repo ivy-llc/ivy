@@ -20,7 +20,6 @@ def statistical_dtype_values(draw, *, function):
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("float"),
             large_abs_safety_factor=large_abs_safety_factor,
             small_abs_safety_factor=small_abs_safety_factor,
             safety_factor_scale="log",
@@ -54,7 +53,6 @@ def statistical_dtype_values(draw, *, function):
     if function == "quantile":
         q = draw(
             helpers.array_values(
-                dtype=helpers.get_dtypes("float"),
                 shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1),
                 min_value=0.0,
                 max_value=1.0,
@@ -161,7 +159,6 @@ def max_value_as_shape_prod(draw):
     )
     dtype_and_x = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("integer"),
             min_value=0,
             max_value=np.prod(shape) - 1,
         )

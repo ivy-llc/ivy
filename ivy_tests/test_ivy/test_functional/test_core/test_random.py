@@ -13,7 +13,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.random_uniform",
     dtype_and_low=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-1000,
         max_value=100,
         min_num_dims=1,
@@ -21,14 +20,13 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_dim_size=2,
     ),
     dtype_and_high=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=101,
         max_value=1000,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=2,
     ),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes(full=False),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
 )
@@ -78,7 +76,6 @@ def test_random_uniform(
 @handle_test(
     fn_tree="functional.ivy.random_normal",
     dtype_and_mean=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=-1000,
         max_value=1000,
         min_num_dims=1,
@@ -86,14 +83,13 @@ def test_random_uniform(
         min_dim_size=2,
     ),
     dtype_and_std=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=1000,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=2,
     ),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes(full=False),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
 )
@@ -139,7 +135,7 @@ def test_random_normal(
 
 @st.composite
 def _pop_size_num_samples_replace_n_probs(draw):
-    prob_dtype = draw(helpers.get_dtypes("float", full=False))
+    prob_dtype = draw(helpers.get_dtypes(full=False))
     batch_size = draw(helpers.ints(min_value=1, max_value=5))
     population_size = draw(helpers.ints(min_value=1, max_value=20))
     replace = draw(st.booleans())
@@ -299,7 +295,6 @@ def test_seed(seed_val):
 @handle_test(
     fn_tree="functional.ivy.shuffle",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
         min_num_dims=1,
         min_dim_size=2,

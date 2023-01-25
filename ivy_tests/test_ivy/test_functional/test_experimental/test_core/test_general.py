@@ -14,13 +14,11 @@ def _isin_data_generation_helper(draw):
     assume_unique = draw(st.booleans())
     if assume_unique:
         dtype_and_x = helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
             num_arrays=2,
             shared_dtype=True,
         ).filter(lambda x: np.array_equal(x[1][0], np.unique(x[1][0])))
     else:
         dtype_and_x = helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
             num_arrays=2,
             shared_dtype=True,
         )

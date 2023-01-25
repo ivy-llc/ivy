@@ -178,7 +178,6 @@ def test_avg_pool2d(
 def valid_dct(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
             max_value=65280,
             min_value=-65280,
             min_num_dims=1,
@@ -232,7 +231,7 @@ def test_dct(
 
 
 @st.composite
-def x_and_fft(draw, dtypes):
+def x_and_fft(draw, dtypes=helpers.get_dtypes()):
     min_fft_points = 2
     dtype = draw(dtypes)
     x_dim = draw(
@@ -256,7 +255,7 @@ def x_and_fft(draw, dtypes):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.fft",
-    d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
+    d_x_d_n_n=x_and_fft(),
     ground_truth_backend="numpy",
     test_gradients=st.just(False),
 )
@@ -289,7 +288,6 @@ def test_fft(
 @handle_test(
     fn_tree="functional.ivy.experimental.dropout1d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
         allow_inf=False,
@@ -339,7 +337,7 @@ def test_dropout1d(
 @st.composite
 def x_and_ifft(draw):
     min_fft_points = 2
-    dtype = draw(helpers.get_dtypes("complex"))
+    dtype = draw(helpers.get_dtypes())
     x_dim = draw(
         helpers.get_shape(
             min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4

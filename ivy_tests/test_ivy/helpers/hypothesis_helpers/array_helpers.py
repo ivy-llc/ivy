@@ -403,8 +403,8 @@ def dtype_values_axis(
 def array_indices_axis(
     draw,
     *,
-    array_dtypes,
-    indices_dtypes=get_dtypes("valid"),
+    array_dtypes=get_dtypes(),
+    indices_dtypes=get_dtypes(),
     disable_random_axis=False,
     axis_zero=False,
     allow_inf=False,
