@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List, Callable
+from typing import Optional, Tuple, Union, List, Callable, Sequence
 
 # local
 import ivy
@@ -180,6 +180,7 @@ def dropout(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     training: bool = True,
     seed: Optional[int] = None,
+    noise_shape: Sequence[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -310,8 +311,9 @@ def dropout(
         if dtype is not None:
             x = ivy.astype(x, dtype)
         return x if not ivy.exists(out) else ivy.inplace_update(out, x)
+    noise_shape = noise_shape if ivy.exists(noise_shape) else x.shape
     mask = (
-        ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype, seed=seed)
+        ivy.random_uniform(shape=noise_shape, device=ivy.dev(x), dtype=dtype, seed=seed)
         < prob
     )
     x = ivy.where(
