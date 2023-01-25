@@ -1,7 +1,6 @@
 # global
 from hypothesis import strategies as st, assume
 import math
-from torch import resolve_conj
 
 # local
 import ivy
@@ -94,7 +93,7 @@ def test_torch_adjoint(
         test_values=False,
         input=value[0],
     )
-    frontend_ret = resolve_conj(frontend_ret)
+    frontend_ret = frontend_ret.resolve_conj()
     ret_np_flat = flatten_and_to_np(ret=ret)
 
     ivy.set_backend("torch")
