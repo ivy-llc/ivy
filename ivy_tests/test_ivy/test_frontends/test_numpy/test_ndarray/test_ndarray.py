@@ -743,7 +743,6 @@ def test_numpy_instance_cumsum(
     frontend,
 ):
     input_dtype, x, axis, dtype = dtype_x_axis_dtype
-    assume("float16" not in input_dtype and "float16" not in dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
