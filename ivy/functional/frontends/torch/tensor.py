@@ -652,6 +652,10 @@ class Tensor:
         return torch_frontend.ne(self._ivy_array, other)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __pow__(self, other):
+        return torch_frontend.pow(self._ivy_array, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __rsub__(self, other):
         return torch_frontend.subtract(other, self._ivy_array)
 
