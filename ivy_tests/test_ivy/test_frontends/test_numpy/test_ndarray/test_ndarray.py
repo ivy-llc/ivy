@@ -19,6 +19,9 @@ from ivy.functional.frontends.numpy import ndarray
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.test_miscellaneous import (  # noqa
     _get_clip_inputs,
 )
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.test_sums_products_differences import (  # noqa
+    _get_castable_dtypes_values,
+)
 
 
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
@@ -728,18 +731,10 @@ def test_numpy_instance_cumprod(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="cumsum",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype_x_axis_dtype=_get_castable_dtypes_values(),
 )
 def test_numpy_instance_cumsum(
-    dtype_x_axis,
-    dtype,
+    dtype_x_axis_dtype,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
@@ -747,8 +742,8 @@ def test_numpy_instance_cumsum(
     frontend_method_data,
     frontend,
 ):
-    input_dtype, x, axis = dtype_x_axis
-
+    input_dtype, x, axis, dtype = dtype_x_axis_dtype
+    assume("float16" not in input_dtype and "float16" not in dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -763,7 +758,7 @@ def test_numpy_instance_cumsum(
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={
             "axis": axis,
-            "dtype": dtype[0],
+            "dtype": dtype,
             "out": None,
         },
         frontend=frontend,
