@@ -260,7 +260,7 @@ def set_backend(backend: str):
     from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
 
     variable_ids = set()  # create an empty set to store variable object ids
-    intermediate_objs = [] # create an empty list to store intermediate objects created during conversion
+    numpy_objs = [] # create an empty list to store numpy objects created during 1st conversion step
     def _is_var(obj):
 
         if isinstance(obj, ivy.Container):
@@ -280,14 +280,30 @@ def set_backend(backend: str):
                 return False
             return _is_variable(obj)
 
-    # first convert all ivy.Array and ivy.Container instances to numpy using the current backend
-    objs = [obj for obj in gc.get_objects() if isinstance(obj, (ivy.Array, ivy.Container))]
+    def _remove_intermediate_arrays(arr_list, cont_list):
+        cont_list = [cont.cont_to_flat_list() for cont in cont_list]
 
-    for obj in objs:
+        cont_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item) for cont in cont_list for item in cont]
+        arr_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item) for item in arr_list]
+
+        new_objs = {k:v for k,v in zip(arr_ids, arr_list) if k not in cont_ids}
+
+        return list(new_objs.values())
+    
+    # get all ivy array and container instances in the project scope 
+    array_list, container_list = [[obj for obj in gc.get_objects() if isinstance(obj, obj_type)] for obj_type in
+                                  (ivy.Array, ivy.Container)]
+    
+    # remove numpy intermediate objects
+    new_objs = _remove_intermediate_arrays(array_list,container_list)
+    new_objs += container_list
+
+    # now convert all ivy.Array and ivy.Container instances to numpy using the current backend
+    for obj in new_objs:
 
         if obj.dynamic_backend:
 
-            intermediate_objs.append(obj)
+            numpy_objs.append(obj)
             if _is_var(obj):
                 # add variable object id to set
                 variable_ids.add(id(obj))
@@ -334,7 +350,7 @@ def set_backend(backend: str):
 
     # now convert all ivy.Array and ivy.Container instances from numpy
     # to native arrays using the newly set backend
-    for obj in intermediate_objs:
+    for obj in numpy_objs:
 
         # check if object was originally a variable
         if id(obj) in variable_ids:
