@@ -2555,6 +2555,5 @@ def test_numpy_instance_len__(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend=frontend,
-        frontend_method_data=frontend_method_data,        
+        frontend_method_data=frontend_method_data,
     )
- 

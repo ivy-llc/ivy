@@ -1455,5 +1455,5 @@ def test_tensorflow_nextafter(
         fn_tree=fn_tree,
         on_device=on_device,
         x1=x[0],
-        x2=x[1]
+        x2=x[1],
     )
