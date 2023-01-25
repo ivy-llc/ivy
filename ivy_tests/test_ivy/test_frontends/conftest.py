@@ -9,7 +9,7 @@ def run_around_tests(request, on_device, backend_fw, frontend, compile_graph, im
     if hasattr(request.function, "test_data"):
         try:
             test_globals.setup_frontend_test(
-                request.function.test_data, frontend, backend_fw.backend
+                request.function.test_data, frontend, backend_fw.backend, on_device
             )
         except Exception as e:
             test_globals.teardown_frontend_test()
