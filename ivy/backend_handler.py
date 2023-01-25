@@ -104,6 +104,8 @@ def _determine_backend_from_args(args):
         # check if the class module of the arg is in _array_types
         if args.__class__.__module__ in _array_types:
             module_name = _array_types[args.__class__.__module__]
+            if not _static_backend_dict:
+                return importlib.import_module(module_name)
             return _static_backend_dict[module_name]
 
 def fn_name_from_version_specific_fn_name(name, version):
