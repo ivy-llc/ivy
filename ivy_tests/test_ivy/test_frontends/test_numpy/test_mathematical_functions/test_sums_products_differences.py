@@ -109,26 +109,40 @@ def test_numpy_prod(
     )
 
 
+@st.composite
+def _get_castable_dtypes_values(draw):
+    available_dtypes = helpers.get_dtypes("numeric")
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
+    dtype, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            num_arrays=1,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+            shape=shape,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    dtype1, values, dtype2 = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
+    )
+    return [dtype1], [values], axis, dtype2
+
+
 # cumsum
 @handle_frontend_test(
     fn_tree="numpy.cumsum",
-    dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype_and_x_axis_dtype=_get_castable_dtypes_values(),
 )
 def test_numpy_cumsum(
-    dtype_and_x,
-    dtype,
+    dtype_and_x_axis_dtype,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, dtype = dtype_and_x_axis_dtype
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -137,7 +151,7 @@ def test_numpy_cumsum(
         on_device=on_device,
         x=x[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
