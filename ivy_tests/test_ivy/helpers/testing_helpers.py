@@ -154,29 +154,6 @@ def _import_fn(fn_tree: str):
     return callable_fn, fn_name, module_to_import
 
 
-def _generate_shared_test_flags(
-    param_names: list,
-    _given_kwargs: dict,
-    fn_tree: str,
-):
-    """
-    Generates flags that all tests use.
-
-    Returns
-    -------
-    shared flags that all tests use.
-    """
-    possible_flags = {
-        "num_positional_args": num_positional_args(fn_name=fn_tree),
-        "as_variable": pf.BuiltNativeArrayStrategy,
-        "native_array": pf.BuiltNativeArrayStrategy,
-        "with_out": pf.BuiltWithOutStrategy,
-    }
-    for k in set(param_names).intersection(possible_flags.keys()):
-        _given_kwargs[k] = possible_flags[k]
-    return _given_kwargs
-
-
 def _get_method_supported_devices_dtypes(
     method_name: str, class_module: str, class_name: str
 ):

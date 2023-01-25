@@ -386,7 +386,7 @@ def zeta(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    temp = torch.logical_and(torch.ne(torch.remainder(x, 2), 0), torch.ge(x, 1))
+    temp = torch.logical_and(torch.ne(torch.remainder(x, 2), 0), torch.gt(x, 1))
     temp = torch.logical_and(temp, torch.le(q, 0))
     nan_indices = torch.logical_or(temp, torch.lt(x, 1))
     result = torch.special.zeta(x, q)
