@@ -3,7 +3,7 @@
 # local
 import ivy
 from typing import Optional, Union
-from ivy.func_wrapper import handle_nestable, handle_array_like
+from ivy.func_wrapper import handle_nestable, handle_array_like_without_promotion
 from ivy.exceptions import handle_exceptions
 
 # Helpers #
@@ -25,7 +25,7 @@ def _reduce_loss(red, loss, axis, out):
 
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -79,7 +79,7 @@ def cross_entropy(
 
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -185,7 +185,7 @@ def binary_cross_entropy(
 
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],

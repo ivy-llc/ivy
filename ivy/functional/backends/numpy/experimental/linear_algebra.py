@@ -102,7 +102,12 @@ def matrix_exp(
     return np.exp(x)
 
 
-def eig(x: np.ndarray, /) -> Tuple[np.ndarray]:
+def eig(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> Tuple[np.ndarray]:
     if ivy.dtype(x) == ivy.float16:
         x = x.astype(np.float32)
     e, v = np.linalg.eig(x)

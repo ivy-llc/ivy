@@ -1,7 +1,7 @@
 # global
 import ivy
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -492,6 +492,8 @@ def test_tensorflow_argmax(
     on_device,
     output_type,
 ):
+    if ivy.current_backend_str() == "torch":
+        assume(output_type != "uint16")
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
@@ -1143,6 +1145,8 @@ def test_tensorflow_truediv(
             "int64",
         ],
         num_arrays=2,
+        min_value=1,
+        max_value=7,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
@@ -1363,4 +1367,93 @@ def test_tensorflow_sigmoid(
         rtol=1e-2,
         atol=1e-2,
         x=x[0],
+    )
+
+
+# tanh
+@handle_frontend_test(
+    fn_tree="tensorflow.math.tanh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_tanh(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# rsqrt
+@handle_frontend_test(
+    fn_tree="tensorflow.math.rsqrt",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_rsqrt(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-02,
+        x=x[0],
+    )
+
+
+# nextafter
+@handle_frontend_test(
+    fn_tree="tensorflow.math.nextafter",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_nextafter(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
     )
