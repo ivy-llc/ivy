@@ -1890,10 +1890,10 @@ def _handle_padding(x, strides, filters, padding):
 
 def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
-    if padding == "VALID":
-        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    else:
+    if padding == "SAME":
         dim_size = dim_size * stride_size
+    else:
+        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
     return dim_size
 
 
@@ -1917,15 +1917,15 @@ def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
 
 def _conv_transpose_padding(k, s, padding, dilation, diff=0):
     k = (k - 1) * dilation + 1
-    if padding == "VALID":
-        pad_len = k + s - 2 + max(k - s, 0)
-        pad_a = k - 1
-    else:
+    if padding == "SAME":
         pad_len = k + s - 2
         pad_len -= diff
         if s > k - 1:
             pad_a = k - 1
         else:
             pad_a = int(ivy.ceil(pad_len / 2))
+    else:
+        pad_len = k + s - 2 + max(k - s, 0)
+        pad_a = k - 1
     pad_b = pad_len - pad_a
     return pad_a, pad_b

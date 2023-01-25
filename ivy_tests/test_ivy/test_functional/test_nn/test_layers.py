@@ -354,22 +354,25 @@ def x_and_filters(
     full_strides = [strides] * dim if isinstance(strides, int) else strides
     full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if transpose:
-        output_shape = []
         x_dim = draw(
             helpers.get_shape(
                 min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
             )
         )
-        for i in range(dim):
-            output_shape.append(
-                _deconv_length(
-                    x_dim[i],
-                    full_strides[i],
-                    filter_shape[i],
-                    padding,
-                    full_dilations[i],
+        if draw(st.booleans()):
+            output_shape = []
+            for i in range(dim):
+                output_shape.append(
+                    _deconv_length(
+                        x_dim[i],
+                        full_strides[i],
+                        filter_shape[i],
+                        padding,
+                        full_dilations[i],
+                    )
                 )
-            )
+        else:
+            output_shape = None
     else:
         x_dim = []
         for i in range(dim):
