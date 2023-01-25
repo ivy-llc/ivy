@@ -146,9 +146,6 @@ class ndarray:
     def sort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.sort(self.data, axis=axis, kind=kind, order=order)
 
-    def lexsort(self, *, axis=-1):
-        return np_frontend.sort(self, axis=axis)
-
     def copy(self, order="C"):
         return np_frontend.copy(self.data, order=order)
 
