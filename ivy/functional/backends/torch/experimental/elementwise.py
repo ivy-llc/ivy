@@ -297,6 +297,7 @@ def diff(
     axis: Optional[int] = -1,
     prepend: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = x if type(x) == torch.Tensor else torch.Tensor(x)
     prepend = (
@@ -325,6 +326,17 @@ def signbit(
 
 
 signbit.support_native_out = True
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+def hypot(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.hypot(x1, x2)
 
 
 def allclose(
@@ -374,10 +386,15 @@ def zeta(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.special.zeta(x, q, out=out)
+    temp = torch.logical_and(torch.ne(torch.remainder(x, 2), 0), torch.gt(x, 1))
+    temp = torch.logical_and(temp, torch.le(q, 0))
+    nan_indices = torch.logical_or(temp, torch.lt(x, 1))
+    result = torch.special.zeta(x, q)
+    result.masked_fill_(nan_indices, float("nan"))
+    return result
 
 
-zeta.support_native_out = True
+zeta.support_native_out = False
 
 
 def gradient(
@@ -412,12 +429,3 @@ def real(
     x: Union[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.real(x)
-
-
-def isposinf(
-    x: Union[torch.Tensor],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.isposinf(x)

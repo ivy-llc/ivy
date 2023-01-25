@@ -18,6 +18,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="cos"
+    ),
 )
 def test_numpy_cos(
     dtypes_values_casting,
@@ -62,6 +65,9 @@ def test_numpy_cos(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="tan"
+    ),
 )
 def test_numpy_tan(
     dtypes_values_casting,
@@ -106,6 +112,9 @@ def test_numpy_tan(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="arcsin"
+    ),
 )
 def test_numpy_arcsin(
     dtypes_values_casting,
@@ -152,6 +161,9 @@ def test_numpy_arcsin(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="arccos"
+    ),
 )
 def test_numpy_arccos(
     dtypes_values_casting,
@@ -198,6 +210,9 @@ def test_numpy_arccos(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="arctan"
+    ),
 )
 def test_numpy_arctan(
     dtypes_values_casting,
@@ -242,6 +257,9 @@ def test_numpy_arctan(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="rad2deg"
+    ),
 )
 def test_numpy_rad2deg(
     dtypes_values_casting,
@@ -288,6 +306,9 @@ def test_numpy_rad2deg(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="deg2rad"
+    ),
 )
 def test_numpy_deg2rad(
     dtypes_values_casting,

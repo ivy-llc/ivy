@@ -1732,7 +1732,7 @@ def _composition_1():
 _composition_1.test_unsupported_devices_and_dtypes = {
     "cpu": {
         "numpy": ("bfloat16",),
-        "jax": (),
+        "jax": ("complex64", "complex128"),
         "tensorflow": ("complex64", "complex128"),
         "torch": (
             "uint16",

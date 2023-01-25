@@ -3,7 +3,7 @@ from typing import Union
 
 
 def l2_normalize(
-    x: Union[tf.Tensor, tf.Variable], axis: int = None, out=None
+    x: Union[tf.Tensor, tf.Variable], /, *, axis: int = None, out=None
 ) -> tf.Tensor:
 
     denorm = tf.norm(x, axis=axis, keepdims=True)
