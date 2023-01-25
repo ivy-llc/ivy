@@ -431,15 +431,6 @@ def real(
     return torch.real(x)
 
 
-def isposinf(
-    x: Union[torch.Tensor],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.isposinf(x)
-
-
 def conj(
     x: Union[torch.Tensor],
     /,

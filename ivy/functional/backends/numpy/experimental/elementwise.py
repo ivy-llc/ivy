@@ -427,15 +427,6 @@ def real(x: Union[np.ndarray], /, *, out: Optional[np.ndarray] = None) -> np.nda
     return np.real(x)
 
 
-def isposinf(
-    x: Union[np.ndarray],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.isposinf(x)
-
-
 def conj(
     x: Union[np.ndarray],
     /,
