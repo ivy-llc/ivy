@@ -284,6 +284,12 @@ def realdiv(x, y, name=None):
     return ivy.divide(x, y)
 
 
+@with_unsupported_dtypes({"2.9.0 and below": ("uint16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def tile(input, multiples, name=None):
+    return ivy.tile(input, multiples)
+
+
 @to_ivy_arrays_and_back
 def one_hot(
     indices: ivy.array,
