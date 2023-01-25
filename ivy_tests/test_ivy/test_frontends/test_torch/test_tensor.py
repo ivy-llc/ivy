@@ -1687,7 +1687,7 @@ def test_torch_special_pow(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
-            "other": x[1],
+            "exponent": x[1],
         },
         frontend_method_data=frontend_method_data,
         frontend=frontend,
