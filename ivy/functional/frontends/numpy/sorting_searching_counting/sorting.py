@@ -25,10 +25,6 @@ def msort(a):
     return ivy.sort(a, axis=0)
 
 
-def sort_complex(a):
-    return ivy.sort(a)
-
-
 @to_ivy_arrays_and_back
 def lexsort(
     keys,
