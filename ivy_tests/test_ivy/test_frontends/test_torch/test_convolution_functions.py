@@ -1,7 +1,5 @@
 # global
-import random
 from hypothesis import strategies as st
-
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -14,8 +12,8 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
         dim = draw(dim)
     strides = draw(
         st.one_of(
-            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
-            st.integers(min_value=1, max_value=2),
+            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=3),
         )
     )
     padding = draw(
@@ -25,7 +23,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
             st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
         )
     )
-    batch_size = 1
+    batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
@@ -89,28 +87,22 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
 
 
 @handle_frontend_test(
-    fn_tree="torch.conv1d",
+    fn_tree="torch.nn.functional.conv1d",
     dtype_vals=x_and_filters(dim=1),
 )
 def test_torch_conv1d(
     *,
     dtype_vals,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=vals,
@@ -124,28 +116,22 @@ def test_torch_conv1d(
 
 
 @handle_frontend_test(
-    fn_tree="torch.conv2d",
+    fn_tree="torch.nn.functional.conv2d",
     dtype_vals=x_and_filters(dim=2),
 )
 def test_torch_conv2d(
     *,
     dtype_vals,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=vals,
@@ -159,28 +145,22 @@ def test_torch_conv2d(
 
 
 @handle_frontend_test(
-    fn_tree="torch.conv3d",
+    fn_tree="torch.nn.functional.conv3d",
     dtype_vals=x_and_filters(dim=3),
 )
 def test_torch_conv3d(
     *,
     dtype_vals,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=vals,
@@ -196,15 +176,12 @@ def test_torch_conv3d(
 @st.composite
 def _int_or_tuple(draw, min_val, max_val):
     val = draw(
-        random.choice(
-            [
+        st.one_of(
+            st.integers(min_val, max_val),
+            st.tuples(
                 st.integers(min_val, max_val),
-                st.tuples(st.integers(min_val, max_val)),
-                st.tuples(
-                    st.integers(min_val, max_val),
-                    st.integers(min_val, max_val),
-                ),
-            ]
+                st.integers(min_val, max_val),
+            ),
         )
     )
     return val
@@ -213,7 +190,7 @@ def _int_or_tuple(draw, min_val, max_val):
 @handle_frontend_test(
     fn_tree="torch.nn.functional.unfold",
     dtype_and_input_and_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shape=(1, 3, 6, 6),
     ),
     kernel_size=_int_or_tuple(2, 5),
@@ -228,25 +205,19 @@ def test_torch_unfold(
     dilation,
     padding,
     stride,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
-    args_dtypes = list([dtype_and_input_and_shape[0]] + ["uint8"] * 4)
+    args_dtypes = list([dtype_and_input_and_shape[0][0]] + ["uint8"] * 4)
     helpers.test_frontend_function(
         input_dtypes=args_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=dtype_and_input_and_shape[1],
+        input=dtype_and_input_and_shape[1][0],
         kernel_size=kernel_size,
         dilation=dilation,
         padding=padding,
@@ -257,7 +228,7 @@ def test_torch_unfold(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.fold",
     dtype_and_input_and_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shape=(1, 12, 12),
     ),
     output_size=_int_or_tuple(3, 5),
@@ -274,25 +245,19 @@ def test_torch_fold(
     dilation,
     padding,
     stride,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
-    args_dtypes = list([dtype_and_input_and_shape[0]] + ["uint8"] * 5)
+    args_dtypes = list([dtype_and_input_and_shape[0][0]] + ["uint8"] * 5)
     helpers.test_frontend_function(
         input_dtypes=args_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=dtype_and_input_and_shape[1],
+        input=dtype_and_input_and_shape[1][0],
         output_size=output_size,
         kernel_size=kernel_size,
         dilation=dilation,

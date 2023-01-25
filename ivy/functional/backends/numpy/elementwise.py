@@ -4,12 +4,9 @@ import numpy as np
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-
-try:
-    from scipy.special import erf as _erf
-except (ImportError, ModuleNotFoundError):
-    _erf = None
+from . import backend_version
 
 
 @_scalar_output_to_0d_array
@@ -81,6 +78,7 @@ atan.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def atan2(
     x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -100,6 +98,7 @@ atanh.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_and(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -115,6 +114,7 @@ bitwise_and.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_invert(
     x: Union[int, bool, np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -125,6 +125,7 @@ bitwise_invert.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_left_shift(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -140,6 +141,7 @@ bitwise_left_shift.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_or(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -155,6 +157,7 @@ bitwise_or.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_right_shift(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -170,6 +173,7 @@ bitwise_right_shift.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def bitwise_xor(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -184,6 +188,7 @@ def bitwise_xor(
 bitwise_xor.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 @_scalar_output_to_0d_array
 def ceil(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
@@ -206,6 +211,7 @@ def cos(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 cos.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 @_scalar_output_to_0d_array
 def cosh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.cosh(x, out=out)
@@ -266,6 +272,7 @@ expm1.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def floor(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
         ret = np.copy(x)
@@ -280,6 +287,7 @@ floor.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def floor_divide(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
@@ -330,11 +338,21 @@ isfinite.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def isinf(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.isinf(x, out=out)
-
-
-isinf.support_native_out = True
+def isinf(
+    x: np.ndarray,
+    /,
+    *,
+    detect_positive: bool = True,
+    detect_negative: bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if detect_negative and detect_positive:
+        return np.isinf(x)
+    elif detect_negative:
+        return np.isneginf(x)
+    elif detect_positive:
+        return np.isposinf(x)
+    return np.full_like(x, False, dtype=np.bool)
 
 
 @_scalar_output_to_0d_array
@@ -408,6 +426,7 @@ log2.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def logaddexp(
     x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -522,6 +541,7 @@ pow.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def remainder(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
@@ -609,7 +629,7 @@ def subtract(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
-    return np.subtract(x1, x2)
+    return np.subtract(x1, x2, out=out)
 
 
 subtract.support_native_out = True
@@ -651,14 +671,24 @@ trunc.support_native_out = True
 
 @_scalar_output_to_0d_array
 def erf(x, /, *, out: Optional[np.ndarray] = None):
-    ivy.assertions.check_exists(
-        _erf,
-        message="scipy must be installed in order to call ivy.erf with a \
-        numpy backend.",
-    )
-    ret = _erf(x, out=out)
+    a1 = 0.254829592
+    a2 = -0.284496736
+    a3 = 1.421413741
+    a4 = -1.453152027
+    a5 = 1.061405429
+    p = 0.3275911
+
+    sign = np.sign(x)
+    x = np.abs(x)
+
+    # A&S formula 7.1.26
+    t = 1.0 / (1.0 + p * x)
+    y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * np.exp(-x * x)
+    ret = sign * y
     if hasattr(x, "dtype"):
-        ret = np.asarray(_erf(x, out=out), dtype=x.dtype)
+        ret = np.asarray(ret, dtype=x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
@@ -711,13 +741,15 @@ minimum.support_native_out = True
 def reciprocal(
     x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.reciprocal(x, out=out)
+    numerator = np.ones((1,), dtype=x.dtype)
+    return np.true_divide(numerator, x, out=out)
 
 
 reciprocal.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def deg2rad(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.deg2rad(x, out=out)
 
@@ -726,6 +758,7 @@ deg2rad.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.rad2deg(x, out=out)
 

@@ -21,22 +21,16 @@ def test_torch_allclose(
     *,
     dtype_and_input,
     equal_nan,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-05,
@@ -60,22 +54,16 @@ def test_torch_allclose(
 def test_torch_equal(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     inputs_dtypes, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=inputs_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -96,22 +84,16 @@ def test_torch_equal(
 def test_torch_eq(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     inputs_dtypes, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=inputs_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -137,22 +119,16 @@ def test_torch_argsort(
     *,
     dtype_input_axis,
     descending,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -164,6 +140,7 @@ def test_torch_argsort(
 # greater_equal
 @handle_frontend_test(
     fn_tree="torch.ge",
+    aliases=["torch.greater_equal"],
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -174,23 +151,16 @@ def test_torch_argsort(
 def test_torch_greater_equal(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        all_aliases=["ge"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -201,6 +171,7 @@ def test_torch_greater_equal(
 # greater
 @handle_frontend_test(
     fn_tree="torch.gt",
+    aliases=["torch.greater"],
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -211,23 +182,16 @@ def test_torch_greater_equal(
 def test_torch_greater(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        all_aliases=["gt"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -249,22 +213,16 @@ def test_torch_isclose(
     *,
     dtype_and_input,
     equal_nan,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-05,
@@ -287,22 +245,16 @@ def test_torch_isclose(
 def test_torch_isfinite(
     *,
     dtype_and_input,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -321,22 +273,16 @@ def test_torch_isfinite(
 def test_torch_isinf(
     *,
     dtype_and_input,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -355,22 +301,16 @@ def test_torch_isinf(
 def test_torch_isposinf(
     *,
     dtype_and_input,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -389,22 +329,16 @@ def test_torch_isposinf(
 def test_torch_isneginf(
     *,
     dtype_and_input,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -429,22 +363,16 @@ def test_torch_sort(
     dtype_input_axis,
     descending,
     stable,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -466,22 +394,16 @@ def test_torch_sort(
 def test_torch_isnan(
     *,
     dtype_and_input,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -491,6 +413,7 @@ def test_torch_isnan(
 # less_equal
 @handle_frontend_test(
     fn_tree="torch.less_equal",
+    aliases=["torch.le"],
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -500,23 +423,16 @@ def test_torch_isnan(
 def test_torch_less_equal(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        all_aliases=["le"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -527,6 +443,7 @@ def test_torch_less_equal(
 # less
 @handle_frontend_test(
     fn_tree="torch.less",
+    aliases=["torch.lt"],
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -536,23 +453,16 @@ def test_torch_less_equal(
 def test_torch_less(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        all_aliases=["lt"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -563,6 +473,7 @@ def test_torch_less(
 # not_equal
 @handle_frontend_test(
     fn_tree="torch.not_equal",
+    aliases=["torch.ne"],
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -572,23 +483,16 @@ def test_torch_less(
 def test_torch_not_equal(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        all_aliases=["ne"],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -603,30 +507,30 @@ def test_torch_not_equal(
         num_arrays=2,
         shared_dtype=True,
     ),
+    assume_unique=st.booleans(),
+    invert=st.booleans(),
 )
 def test_torch_isin(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
+    assume_unique,
+    invert,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         elements=inputs[0],
         test_elements=inputs[1],
+        assume_unique=assume_unique,
+        invert=invert,
     )
 
 
@@ -641,22 +545,16 @@ def test_torch_isin(
 def test_torch_minimum(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -678,22 +576,16 @@ def test_torch_minimum(
 def test_torch_fmax(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -715,22 +607,16 @@ def test_torch_fmax(
 def test_torch_fmin(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -750,22 +636,16 @@ def test_torch_fmin(
 def test_torch_msort(
     *,
     dtype_and_input,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -784,22 +664,16 @@ def test_torch_msort(
 def test_torch_maximum(
     *,
     dtype_and_inputs,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=inputs[0],
@@ -815,7 +689,7 @@ def test_torch_maximum(
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
-    ),
+    ).filter(lambda v: len(np.unique(v[1][0])) == len(np.ravel(v[1][0]))),
     k=st.integers(min_value=1),
     keepdim=st.booleans(),
 )
@@ -824,24 +698,17 @@ def test_torch_kthvalue(
     dtype_input_axis,
     k,
     keepdim,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, input, dim = dtype_input_axis
     assume(k <= input[0].shape[dim])
-    assume("float16" not in input_dtype)  # unsupported by torch.kthvalue
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
@@ -855,7 +722,7 @@ def test_torch_kthvalue(
 # TODO: add value test after the stable sorting is added to torch
 # https://github.com/pytorch/pytorch/issues/88184
 @handle_frontend_test(
-    fn_tree="torch.kthvalue",
+    fn_tree="torch.topk",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -868,32 +735,29 @@ def test_torch_kthvalue(
     dim=helpers.ints(min_value=-1, max_value=0),
     k=helpers.ints(min_value=1, max_value=4),
     largest=st.booleans(),
+    sorted=st.booleans(),
 )
 def test_torch_topk(
     dtype_and_x,
     k,
     dim,
     largest,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
+    sorted,
     frontend,
+    test_flags,
     fn_tree,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         input=input[0],
         k=k,
         dim=dim,
         largest=largest,
+        sorted=sorted,
         out=None,
         test_values=False,
     )

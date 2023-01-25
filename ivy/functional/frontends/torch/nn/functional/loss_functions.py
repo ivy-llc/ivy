@@ -109,6 +109,25 @@ def binary_cross_entropy(
 
 
 @to_ivy_arrays_and_back
+def binary_cross_entropy_with_logits(
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+    pos_weight=None,
+):
+    reduction = _get_reduction(reduction, size_average, reduce)
+    result = ivy.binary_cross_entropy_with_logits(target, input, pos_weight=pos_weight)
+
+    if weight is not None:
+        result = ivy.multiply(weight, result)
+    result = reduction(result).astype(target.dtype)
+    return result
+
+
+@to_ivy_arrays_and_back
 def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.square(input - target)
@@ -117,6 +136,7 @@ def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def smooth_l1_loss(
     input,
     target,
@@ -151,6 +171,28 @@ def smooth_l1_loss(
 
 
 @to_ivy_arrays_and_back
+def huber_loss(
+    input,
+    target,
+    reduction="mean",
+    delta=1.0,
+):
+    delta = ivy.array(delta)
+    _diff_abs = ivy.abs(ivy.subtract(input, target))
+
+    loss = ivy.where(
+        _diff_abs < delta,  # If |xᵢ - yᵢ| < δ
+        0.5 * _diff_abs**2,  # lᵢ = 0.5(xᵢ - yᵢ)²
+        delta * (_diff_abs - 0.5 * delta),
+    )  # lᵢ = δ(|xᵢ - yᵢ| - 0.5 * δ)
+
+    reduction = _get_reduction(reduction)
+    ret = reduction(loss)
+
+    return ivy.astype(ret, input.dtype)
+
+
+@to_ivy_arrays_and_back
 def l1_loss(
     input,
     target,
@@ -162,3 +204,80 @@ def l1_loss(
     reduction = _get_reduction(reduction, size_average, reduce)
     ret = reduction(loss)
     return ret
+
+
+@to_ivy_arrays_and_back
+def nll_loss(
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    ignore_index=-100,
+    reduce=None,
+    reduction="mean",
+):
+    out = ivy.zeros_like(target)
+
+    if len(input.shape) == 1:
+        for i in range(len(target)):
+            out[i] = input[target[i]]
+    else:
+        for i in range(len(target)):
+            out[i] = input[i][target[i]]
+    loss = -out
+
+    if weight is not None:
+        loss = ivy.multiply(weight, loss)
+    reduct = _get_reduction(reduction, size_average, reduce)
+    ret = reduct(loss)
+
+    return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def soft_margin_loss(
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = ivy.log1p(ivy.exp(-input * target))
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+    return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def kl_div(
+    input, target, size_average=None, reduce=None, reduction="mean", log_target=False
+):
+    size = ivy.shape(input)
+
+    if len(size) < 1:
+        size = [1]
+
+    def loss_fn():
+        if log_target:
+            return ivy.exp(target) * (target - input)
+        return target * (ivy.log(target) - input)
+
+    def batchmean(x):
+        if not reduce:
+            return x / size[0]
+
+        if size_average:
+            return ivy.mean(x) / size[0]
+
+        return ivy.sum(x) / size[0]
+
+    loss = ivy.nan_to_num(loss_fn())
+
+    if reduction == "batchmean":
+        reduction = batchmean
+    else:
+        reduction = _get_reduction(reduction, size_average, reduce)
+
+    return reduction(loss)

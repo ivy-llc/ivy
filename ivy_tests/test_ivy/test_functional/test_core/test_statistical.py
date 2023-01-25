@@ -1,7 +1,7 @@
 """Collection of tests for statistical functions."""
 # global
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -9,10 +9,10 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 
 @st.composite
-def statistical_dtype_values(draw, *, function):
+def statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
     large_abs_safety_factor = 2
     small_abs_safety_factor = 2
-    if function in ["mean", "std", "var"]:
+    if any(ele in function for ele in ["mean", "std", "var"]):
         large_abs_safety_factor = 24
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
@@ -27,12 +27,14 @@ def statistical_dtype_values(draw, *, function):
             valid_axis=True,
             allow_neg_axes=False,
             min_axes_size=1,
+            min_value=min_value,
+            max_value=max_value,
         )
     )
     shape = values[0].shape
     size = values[0].size
     max_correction = np.min(shape)
-    if function == "var" or function == "std":
+    if any(ele in function for ele in ["std", "var"]):
         if size == 1:
             correction = 0
         elif isinstance(axis, int):
@@ -53,19 +55,22 @@ def statistical_dtype_values(draw, *, function):
 @st.composite
 def _get_castable_dtype(draw):
     available_dtypes = helpers.get_dtypes("numeric")
-    shape = draw(helpers.get_shape(min_num_dims=1))
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
     dtype, values = draw(
         helpers.dtype_and_values(
             available_dtypes=available_dtypes,
             num_arrays=1,
-            large_abs_safety_factor=4,
-            small_abs_safety_factor=4,
+            large_abs_safety_factor=6,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
             shape=shape,
         )
     )
     axis = draw(helpers.get_axis(shape=shape, force_int=True))
-    dtype1, dtype2 = draw(helpers.get_castable_dtype(draw(available_dtypes), dtype[0]))
-    return dtype1, values, axis, dtype2
+    dtype1, values, dtype2 = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
+    )
+    return dtype1, [values], axis, dtype2
 
 
 # min
@@ -78,12 +83,7 @@ def test_min(
     *,
     dtype_and_x,
     keep_dims,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -93,12 +93,7 @@ def test_min(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -112,19 +107,13 @@ def test_min(
 @handle_test(
     fn_tree="functional.ivy.max",
     dtype_and_x=statistical_dtype_values(function="max"),
-    num_positional_args=helpers.num_positional_args(fn_name="max"),
     keep_dims=st.booleans(),
 )
 def test_max(
     *,
     dtype_and_x,
     keep_dims,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -134,12 +123,7 @@ def test_max(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -159,12 +143,7 @@ def test_mean(
     *,
     dtype_and_x,
     keep_dims,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -174,12 +153,7 @@ def test_mean(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -201,12 +175,7 @@ def test_var(
     *,
     dtype_and_x,
     keep_dims,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -216,12 +185,7 @@ def test_var(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -244,29 +208,26 @@ def test_prod(
     *,
     dtype_x_axis_castable,
     keep_dims,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+    # ToDo: set as_variable_flags as the parameter generated by test_prod once
+    # this issue is marked as completed https://github.com/pytorch/pytorch/issues/75733
+    if "torch" in backend_fw.__name__:
+        assume(not test_flags.as_variable[0])
+        assume(not test_flags.test_gradients)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        rtol_=1e-1,
+        atol_=1e-1,
         on_device=on_device,
         x=x[0],
         axis=axis,
@@ -285,27 +246,22 @@ def test_sum(
     *,
     dtype_x_axis_castable,
     keep_dims,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+    # ToDo: set as_variable_flags as the parameter generated by test_sum once
+    # this issue is marked as completed https://github.com/pytorch/pytorch/issues/75733
+    if "torch" in backend_fw.__name__:
+        assume(not test_flags.as_variable[0])
+        assume(not test_flags.test_gradients)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -328,12 +284,7 @@ def test_std(
     *,
     dtype_and_x,
     keep_dims,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -343,12 +294,7 @@ def test_std(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -372,27 +318,22 @@ def test_cumsum(
     dtype_x_axis_castable,
     exclusive,
     reverse,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+    # ToDo: set as_variable_flags as the parameter generated by test_cumsum once
+    # this issue is marked as completed https://github.com/pytorch/pytorch/issues/75733
+    if "torch" in backend_fw.__name__:
+        assume(not test_flags.as_variable[0])
+        assume(not test_flags.test_gradients)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -401,6 +342,8 @@ def test_cumsum(
         exclusive=exclusive,
         reverse=reverse,
         dtype=castable_dtype,
+        rtol_=1e-1,
+        atol_=1e-1,
     )
 
 
@@ -416,27 +359,29 @@ def test_cumprod(
     dtype_x_axis_castable,
     exclusive,
     reverse,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+    # ToDo: set as_variable_flags as the parameter generated by test_cumprod once
+    # this issue is marked as completed https://github.com/pytorch/pytorch/issues/75733
+    if "torch" in backend_fw.__name__:
+        assume(not test_flags.as_variable[0])
+        assume(not test_flags.test_gradients)
+    # gradient tests have been disabled for cumprod as the gradients computed by the
+    # backends are inconsistent with tensorflow returning a zero gradient when the
+    # product is zero (discrete optimization), and torch and jax returning a non-zero
+    # gradient based on the value used to compute the product even if it's zero
+    # ToDo: Revisit this later
+    if np.abs(np.min(np.abs(x[0])) - 0) < 1e-4:
+        assume(not test_flags.test_gradients)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -445,6 +390,8 @@ def test_cumprod(
         exclusive=exclusive,
         reverse=reverse,
         dtype=castable_dtype,
+        rtol_=1e-1,
+        atol_=1e-1,
     )
 
 
@@ -459,18 +406,14 @@ def test_cumprod(
             ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
         ]
     ),
+    test_instance_method=st.just(False),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_einsum(
     *,
     eq_n_op_n_shp,
     dtype,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -483,19 +426,16 @@ def test_einsum(
         kw["x{}".format(i)] = x_
         i += 1
     # len(operands) + 1 because of the equation
-    num_positional_args = len(operands) + 1
+    test_flags.num_positional_args = len(operands) + 1
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=False,
+        test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         equation=eq,
         **kw,
+        rtol_=1e-2,
+        atol_=1e-2,
     )

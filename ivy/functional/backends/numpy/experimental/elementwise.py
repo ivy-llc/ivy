@@ -1,5 +1,9 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List
 import numpy as np
+import numpy.typing as npt
+
+import ivy
+from ivy import promote_types_of_inputs
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -19,6 +23,7 @@ def lcm(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.abs(
         np.lcm(
             x1,
@@ -39,6 +44,7 @@ def fmod(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.fmod(
         x1,
         x2,
@@ -57,6 +63,7 @@ def fmax(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.fmax(
         x1,
         x2,
@@ -70,6 +77,30 @@ def fmax(
 
 
 fmax.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def fmin(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.fmin(
+        x1,
+        x2,
+        out=None,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    )
+
+
+fmin.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -114,8 +145,26 @@ exp2.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+def copysign(
+    x1: npt.ArrayLike,
+    x2: npt.ArrayLike,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.astype(ivy.default_float_dtype(as_native=True))
+        x2 = x2.astype(ivy.default_float_dtype(as_native=True))
+    return np.copysign(x1, x2, out=out)
+
+
+copysign.support_native_out = True
+
+
+@_scalar_output_to_0d_array
 def count_nonzero(
-    x: np.ndarray,
+    a: np.ndarray,
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -125,9 +174,10 @@ def count_nonzero(
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
-    if dtype is None:
-        return np.count_nonzero(x, axis=axis, keepdims=keepdims)
-    return np.array(np.count_nonzero(x, axis=axis, keepdims=keepdims), dtype=dtype)
+    ret = np.count_nonzero(a, axis=axis, keepdims=keepdims)
+    if np.isscalar(ret):
+        return np.array(ret, dtype=dtype)
+    return ret.astype(dtype)
 
 
 count_nonzero.support_native_out = False
@@ -137,11 +187,13 @@ def nansum(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[np.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return np.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
@@ -155,6 +207,7 @@ def gcd(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.gcd(x1, x2, out=out)
 
 
@@ -171,34 +224,40 @@ def isclose(
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    ret = np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    if np.isscalar(ret):
+        return np.array(ret, dtype=np.bool)
+    return ret
 
 
 isclose.support_native_out = False
 
 
-def isposinf(
-    x: Union[np.ndarray, float, list, tuple],
+def angle(
+    z: np.ndarray,
+    /,
+    *,
+    deg: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    return np.angle(z, deg=deg)
+
+
+angle.support_native_out = False
+
+
+def imag(
+    val: np.ndarray,
     /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.isposinf(x, out=out)
+
+    return np.imag(val)
 
 
-isposinf.support_native_out = True
-
-
-def isneginf(
-    x: Union[np.ndarray, float, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.isneginf(x, out=out)
-
-
-isneginf.support_native_out = True
+imag.support_native_out = False
 
 
 def nan_to_num(
@@ -224,6 +283,10 @@ def logaddexp2(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.astype(ivy.default_float_dtype(as_native=True))
+        x2 = x2.astype(ivy.default_float_dtype(as_native=True))
     return np.logaddexp2(x1, x2, out=out)
 
 
@@ -242,6 +305,35 @@ def signbit(
 signbit.support_native_out = True
 
 
+def hypot(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.hypot(x1, x2)
+
+
+def diff(
+    x: Union[np.ndarray, int, float, list, tuple],
+    /,
+    *,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
+    append: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    prepend = prepend if prepend is not None else np._NoValue
+    append = append if append is not None else np._NoValue
+    return np.diff(x, n=n, axis=axis, prepend=prepend, append=append)
+
+
+diff.support_native_out = False
+
+
+@_scalar_output_to_0d_array
 def allclose(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -255,7 +347,7 @@ def allclose(
     return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-isclose.support_native_out = False
+allclose.support_native_out = False
 
 
 def fix(
@@ -290,16 +382,48 @@ def zeta(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    inf_indices = np.union1d(np.array(np.where(x == 1.0)), np.array(np.where(q <= 0)))
-    nan_indices = np.where(x <= 0)
+    temp = np.logical_and(np.greater(x, 0), np.equal(np.remainder(x, 2), 0))
+    temp = np.logical_and(temp, np.less_equal(q, 0))
+    temp = np.logical_and(temp, np.equal(np.remainder(q, 1), 0))
+    inf_indices = np.logical_or(temp, np.equal(x, 1))
+    temp = np.logical_and(np.not_equal(np.remainder(x, 2), 0), np.greater(x, 1))
+    temp = np.logical_and(temp, np.less_equal(q, 0))
+    nan_indices = np.logical_or(temp, np.less(x, 1))
     n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x
         n, res = n + 1, res + term
     ret = np.round(res, decimals=4)
-    ret[inf_indices] = np.inf
     ret[nan_indices] = np.nan
+    ret[inf_indices] = np.inf
     return ret
 
 
 zeta.support_native_out = False
+
+
+def gradient(
+    x: np.ndarray,
+    /,
+    *,
+    spacing: Optional[Union[int, list, tuple]] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+    edge_order: Optional[int] = 1,
+) -> Union[np.ndarray, List[np.ndarray]]:
+    if type(spacing) in (int, float):
+        return np.gradient(x, spacing, axis=axis, edge_order=edge_order)
+    return np.gradient(x, *spacing, axis=axis, edge_order=edge_order)
+
+
+def xlogy(
+    x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x, y = promote_types_of_inputs(x, y)
+    if (x == 0).all():
+        return 0.0
+    else:
+        return x * np.log(y)
+
+
+def real(x: Union[np.ndarray], /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.real(x)

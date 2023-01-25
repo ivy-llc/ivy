@@ -116,6 +116,29 @@ def conv3d_transpose(
 
 
 @to_ivy_arrays_and_back
+def depthwise_conv2d(
+    input,
+    filter,
+    strides,
+    padding="SAME",
+    data_format="NHWC",
+    dilations=[1, 1],
+    name=None,
+):
+    return ivy.depthwise_conv2d(
+        input,
+        filter,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
+depthwise_conv2d.unsupported_dtypes = ("bfloat16",)
+
+
+@to_ivy_arrays_and_back
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
     inv = 1.0 / ivy.sqrt(variance + variance_epsilon)
     if scale is not None:
@@ -225,3 +248,157 @@ def local_response_normalization(
         ]
     div = ivy.multiply(input_perm, ivy.pow(math.add(sqr_sum * alpha, bias), -beta))
     return ivy.permute_dims(div, [0, 2, 3, 1])
+
+
+@to_ivy_arrays_and_back
+def max_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
+    return ivy.max_pool1d(input, ksize, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
+def moments(x, axes, shift=None, keepdims=False, name=None):
+    return ivy.mean(x, axis=axes, keepdims=keepdims), ivy.var(
+        x, axis=axes, keepdims=keepdims
+    )
+
+
+@to_ivy_arrays_and_back
+def bias_add(value, bias, data_format=None, name=None):
+    if data_format is None:
+        data_format = "N...C"
+
+    if data_format == "N...C":
+        return ivy.add(value, bias)
+    else:
+        value = ivy.swapaxes(value, 1, -1)
+        res = ivy.add(value, bias)
+        return ivy.swapaxes(res, 1, -1)
+
+
+def _convolution_broadcast_helper(
+    arg, num_spatial_dims, channel_index, name="dilations"
+):
+    # Helper to broadcast dilations and strides to correct dims
+    if arg is None:
+        return [1] * num_spatial_dims
+    else:
+        if isinstance(arg, int):
+            arg = [arg]
+        else:
+            arg = list(arg)
+        len_arg = len(arg)
+
+        if len_arg == num_spatial_dims + 2:
+            return arg
+
+        # Broadcast to rcorrect dimensions
+        if len_arg == 1:
+            arg = arg * num_spatial_dims
+        elif len_arg != num_spatial_dims:
+            raise ValueError(
+                f"{name} should be of length 1, "
+                f"{num_spatial_dims} or {num_spatial_dims + 2}. "
+                f"Received: {name}={arg} of length {len_arg}."
+            )
+
+    # Add dimensions for batch and channel
+    if channel_index == 1:
+        return [1, 1] + arg
+    else:
+        return [1] + arg + [1]
+
+
+@to_ivy_arrays_and_back
+def convolution(
+    input,
+    filters,
+    strides=None,
+    padding="VALID",
+    data_format=None,
+    dilations=None,
+    name=None,
+):
+    # Tensorflow backend doesn't support NCW, NCHW or NCDHW on CPU
+    DATA_FORMATS = ["NWC", "NHWC", "NDHWC"]
+    ALLOWED_NUM_SPATIAL_DIMS = [1, 2, 3]
+    PADDINGS = ["VALID", "SAME"]
+
+    # Perform necessary assertions first
+
+    # Figure out input dims N
+    input_rank = input.ndim
+    filters_rank = filters.ndim
+
+    if filters_rank:
+        num_spatial_dims = int(filters_rank - 2)
+    elif input_rank:
+        num_spatial_dims = int(input_rank - 2)
+
+    # Incompatible N-D convolution
+    if num_spatial_dims not in ALLOWED_NUM_SPATIAL_DIMS:
+        raise ValueError(
+            "`num_spatial_dims` must be 1, 2, or 3. "
+            f"Received: num_spatial_dims={num_spatial_dims}."
+        )
+
+    # Incompatible padding
+    if padding not in PADDINGS:
+        raise ValueError(
+            f"Value for attr `padding` is not in the list of allowed values: {PADDINGS}"
+        )
+
+    # The number of dimensions corresponding to num_batches
+    if input_rank:
+        num_batch_dims = int(input_rank - num_spatial_dims - 1)
+    elif filters_rank:
+        num_batch_dims = 1
+
+    # Figure out the channel_index
+    if data_format is None or data_format in DATA_FORMATS:
+        channel_index = num_batch_dims + num_spatial_dims
+    else:
+        channel_index = num_batch_dims
+
+    input_shape = ivy.array(ivy.shape(input))
+    filters_shape = ivy.array(ivy.shape(filters))
+    input_depth = input_shape[channel_index]
+    filters_depth = filters_shape[-2]
+
+    # Inconsistent input and filter depths
+    if input_depth != filters_depth:
+        raise ValueError(
+            f"`input` and `filter` must have the same depth: "
+            f"{input_depth} vs {filters_depth}."
+        )
+
+    if data_format.startswith("NC"):
+        data_format = "channel_first"
+    else:
+        data_format = "channel_last"
+
+    output = ivy.conv_general_dilated(
+        input,
+        filters,
+        strides,
+        padding,
+        dims=num_spatial_dims,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+    return output
+
+
+@to_ivy_arrays_and_back
+def embedding_lookup(params, ids, max_norm=None, name=None):
+    return ivy.embedding(params, ids, max_norm=max_norm)
+
+
+@to_ivy_arrays_and_back
+def relu(features, name=None):
+    return ivy.relu(features)
+
+
+@to_ivy_arrays_and_back
+def softmax(logits, axis=None, name=None):
+    return ivy.softmax(logits, axis=axis)

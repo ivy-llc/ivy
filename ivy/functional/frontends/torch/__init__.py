@@ -1,7 +1,22 @@
 # flake8: noqa
 
+from ivy import (
+    uint8,
+    int8,
+    int16,
+    int32,
+    int64,
+    float16,
+    float32,
+    float64,
+    bfloat16,
+    bool,
+    complex64,
+    complex128,
+)
 from . import nn
 from . import tensor
+from .view_tensor import ViewTensor
 from .tensor import *
 from . import blas_and_lapack_ops
 from .blas_and_lapack_ops import *
@@ -9,6 +24,8 @@ from . import comparison_ops
 from .comparison_ops import *
 from . import creation_ops
 from .creation_ops import *
+from . import dtype
+from .dtype import *
 from . import indexing_slicing_joining_mutating_ops
 from .indexing_slicing_joining_mutating_ops import *
 from . import locally_disabling_gradient_computation
@@ -27,25 +44,23 @@ from . import tensor_functions
 from .tensor_functions import *
 from . import utilities
 from .utilities import *
+from . import linalg
+from .linalg import *
 import ivy
-from ivy import (
-    uint8,
-    int8,
-    int16,
-    int32,
-    int64,
-    float16,
-    float32,
-    float64,
-    bfloat16,
-    bool,
-)
 from ivy.exceptions import handle_exceptions
 
 # global
 from numbers import Number
 from typing import Union, Tuple, Iterable
 
+# type aliases
+char = int8
+short = int16
+int = int32
+long = int64
+half = float16
+float = float32
+double = float64
 
 # data type promotion
 torch_promotion_table = {
@@ -59,6 +74,8 @@ torch_promotion_table = {
     (uint8, float64): float64,
     (uint8, bool): uint8,
     (uint8, bfloat16): bfloat16,
+    (uint8, complex64): complex64,
+    (uint8, complex128): complex128,
     (int8, uint8): int16,
     (int8, int8): int8,
     (int8, int16): int16,
@@ -69,6 +86,8 @@ torch_promotion_table = {
     (int8, float64): float64,
     (int8, bool): int8,
     (int8, bfloat16): bfloat16,
+    (int8, complex64): complex64,
+    (int8, complex128): complex128,
     (int16, uint8): int16,
     (int16, int8): int16,
     (int16, int16): int16,
@@ -79,6 +98,8 @@ torch_promotion_table = {
     (int16, float64): float64,
     (int16, bool): int16,
     (int16, bfloat16): bfloat16,
+    (int16, complex64): complex64,
+    (int16, complex128): complex128,
     (int32, uint8): int32,
     (int32, int8): int32,
     (int32, int16): int32,
@@ -89,6 +110,8 @@ torch_promotion_table = {
     (int32, float64): float64,
     (int32, bool): int32,
     (int32, bfloat16): bfloat16,
+    (int32, complex64): complex64,
+    (int32, complex128): complex128,
     (int64, uint8): int64,
     (int64, int8): int64,
     (int64, int16): int64,
@@ -99,6 +122,8 @@ torch_promotion_table = {
     (int64, float64): float64,
     (int64, bool): int64,
     (int64, bfloat16): bfloat16,
+    (int64, complex64): complex64,
+    (int64, complex128): complex128,
     (float16, uint8): float16,
     (float16, int8): float16,
     (float16, int16): float16,
@@ -109,6 +134,8 @@ torch_promotion_table = {
     (float16, float64): float64,
     (float16, bool): float16,
     (float16, bfloat16): float32,
+    (float16, complex64): complex64,
+    (float16, complex128): complex128,
     (float32, uint8): float32,
     (float32, int8): float32,
     (float32, int16): float32,
@@ -119,6 +146,8 @@ torch_promotion_table = {
     (float32, float64): float64,
     (float32, bool): float32,
     (float32, bfloat16): float32,
+    (float32, complex64): complex64,
+    (float32, complex128): complex128,
     (float64, uint8): float64,
     (float64, int8): float64,
     (float64, int16): float64,
@@ -129,6 +158,8 @@ torch_promotion_table = {
     (float64, float64): float64,
     (float64, bool): float64,
     (float64, bfloat16): float64,
+    (float64, complex64): complex128,
+    (float64, complex128): complex128,
     (bool, uint8): uint8,
     (bool, int8): int8,
     (bool, int16): int16,
@@ -139,6 +170,8 @@ torch_promotion_table = {
     (bool, float64): float64,
     (bool, bool): bool,
     (bool, bfloat16): bfloat16,
+    (bool, complex64): complex64,
+    (bool, complex128): complex128,
     (bfloat16, uint8): bfloat16,
     (bfloat16, int8): bfloat16,
     (bfloat16, int16): bfloat16,
@@ -149,6 +182,32 @@ torch_promotion_table = {
     (bfloat16, float64): float64,
     (bfloat16, bool): bfloat16,
     (bfloat16, bfloat16): bfloat16,
+    (bfloat16, complex64): complex64,
+    (bfloat16, complex128): complex128,
+    (complex64, uint8): complex64,
+    (complex64, int8): complex64,
+    (complex64, int16): complex64,
+    (complex64, int32): complex64,
+    (complex64, int64): complex64,
+    (complex64, float16): complex64,
+    (complex64, float32): complex64,
+    (complex64, float64): complex128,
+    (complex64, bool): complex64,
+    (complex64, bfloat16): complex64,
+    (complex64, complex64): complex64,
+    (complex64, complex128): complex128,
+    (complex128, uint8): complex128,
+    (complex128, int8): complex128,
+    (complex128, int16): complex128,
+    (complex128, int32): complex128,
+    (complex128, int64): complex128,
+    (complex128, float16): complex128,
+    (complex128, float32): complex128,
+    (complex128, float64): complex128,
+    (complex128, bool): complex128,
+    (complex128, bfloat16): complex128,
+    (complex128, complex64): complex128,
+    (complex128, complex128): complex128,
 }
 
 
@@ -194,18 +253,31 @@ def promote_types_of_torch_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
-    if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
-        not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
+    # Ignore type of 0-dim arrays to mimic torch
+    if (
+        hasattr(x1, "shape")
+        and x1.shape == ()
+        and not (hasattr(x2, "shape") and x2.shape == ())
     ):
+        x1 = ivy.to_scalar(x1[()])
+    if (
+        hasattr(x2, "shape")
+        and x2.shape == ()
+        and not (hasattr(x1, "shape") and x1.shape == ())
+    ):
+        x2 = ivy.to_scalar(x2[()])
+    type1 = ivy.default_dtype(item=x1).strip("u123456789")
+    type2 = ivy.default_dtype(item=x2).strip("u123456789")
+    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
+        x1 = ivy.asarray(x1)
+        x2 = ivy.asarray(x2, dtype=x1.dtype)
+    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
+        x1 = ivy.asarray(x1, dtype=x2.dtype)
+        x2 = ivy.asarray(x2)
+    else:
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
         promoted = promote_types_torch(x1.dtype, x2.dtype)
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
-    elif hasattr(x1, "dtype"):
-        x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2, dtype=x1.dtype)
-    else:
-        x1 = ivy.asarray(x1, dtype=x2.dtype)
-        x2 = ivy.asarray(x2)
     return x1, x2

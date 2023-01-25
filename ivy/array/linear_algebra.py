@@ -19,9 +19,35 @@ class ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Examples
-        ------------------------
+        ivy.Array instance method variant of ivy.matmul. This method simply wraps the
+        function, and so the docstring for ivy.matmul also applies to this method
+        with minimal changes.
 
+        Parameters
+        ----------
+        self
+            first input array. Should have a numeric data type. Must have at least one
+            dimension.
+        x2
+            second input array. Should have a numeric data type. Must have at least one
+            dimension.
+        transpose_a
+            if True, ``x1`` is transposed before multiplication.
+        transpose_b
+            if True, ``x2`` is transposed before multiplication.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array containing the output of matrix multiplication. The returned array
+            must have a data type determined by :ref:`type-promotion`. More details
+            can be found in ivy.matmul.
+
+        Examples
+        --------
         With :class:`ivy.Array` instance inputs:
 
         >>> x = ivy.array([1., 4.])
@@ -153,6 +179,76 @@ class ArrayWithLinearAlgebra(abc.ABC):
         axis2: int = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.diagonal. This method simply wraps the
+        function, and so the docstring for ivy.diagonal also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices.
+        offset
+            offset specifying the off-diagonal relative to the main diagonal.
+            - ``offset = 0``: the main diagonal.
+            - ``offset > 0``: off-diagonal above the main diagonal.
+            - ``offset < 0``: off-diagonal below the main diagonal.
+            Default: `0`.
+        axis1
+            axis to be used as the first axis of the 2-D sub-arrays from
+            which the diagonals should be taken. Defaults to first axis (-2).
+        axis2
+            axis to be used as the second axis of the 2-D sub-arrays from which
+            the diagonals should be taken. Defaults to second axis (-1).
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the diagonals and whose shape is determined
+            by removing the last two dimensions and appending a dimension equal
+            to the size of the resulting diagonals. The returned array must
+            have the same data type as ``x``.
+
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([[1., 2.],
+        ...                [3., 4.]])
+
+        >>> d = x.diagonal()
+        >>> print(d)
+        ivy.array([1., 4.])
+
+        >>> x = ivy.array([[[1., 2.],
+        ...                 [3., 4.]],
+        ...                [[5., 6.],
+        ...                 [7., 8.]]])
+        >>> d = x.diagonal()
+        >>> print(d)
+        ivy.array([[1., 4.],
+                   [5., 8.]])
+
+        >>> x = ivy.array([[1., 2.],
+        ...                [3., 4.]])
+
+        >>> d = x.diagonal(offset=1)
+        >>> print(d)
+        ivy.array([2.])
+
+        >>> x = ivy.array([[0, 1, 2],
+        ...                [3, 4, 5],
+        ...                [6, 7, 8]])
+        >>> d = x.diagonal(offset=-1, axis1=0)
+        >>> print(d)
+        ivy.array([3, 7])
+
+        """
         return ivy.diagonal(
             self._data, offset=offset, axis1=axis1, axis2=axis2, out=out
         )
@@ -179,10 +275,22 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """
         return ivy.diag(self._data, k=k, out=out)
 
+    def eig(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> Tuple[ivy.Array]:
+        return ivy.eig(self._data, out=out)
+
     def eigh(
         self: ivy.Array,
+        /,
+        *,
+        UPLO: Optional[str] = "L",
+        out: Optional[ivy.Array] = None,
     ) -> Tuple[ivy.Array]:
-        return ivy.eigh(self._data)
+        return ivy.eigh(self._data, UPLO=UPLO, out=out)
 
     def eigvalsh(
         self: ivy.Array,
@@ -235,6 +343,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def inner(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -248,12 +357,29 @@ class ArrayWithLinearAlgebra(abc.ABC):
         This method simply wraps the function, and so the docstring for
         ivy.inv also applies to this method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array having shape ``(..., M, M)`` and whose innermost two
+            dimensions form square matrices. Should have a floating-point data type.
+
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the multiplicative inverses. The returned array
+            must have a floating-point data type determined by :ref:`type-promotion`
+            and must have the same shape as ``x``.
+
         Examples
         --------
         With :class:`ivy.Array` inputs:
 
         >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
-        >>> y = ivy.inv(x)
+        >>> y = x.inv()
         >>> print(y)
         ivy.array([[-2., 1.],[1.5, -0.5]])
         """
@@ -311,6 +437,15 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.matrix_norm(
             self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
         )
+
+    def matrix_power(
+        self: ivy.Array,
+        n: int,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.matrix_power(self._data, n, out=out)
 
     def matrix_rank(
         self: ivy.Array,
@@ -383,14 +518,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
 
     def matrix_transpose(
-        self: ivy.Array, *, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         Transposes a matrix (or a stack of matrices) ``x``.
 
         Parameters
         ----------
-        x
+        self
             input array having shape ``(..., M, N)`` and whose innermost two
             dimensions form ``MxN`` matrices.
         out
@@ -409,7 +544,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         With :class:`ivy.Array` instance inputs:
 
         >>> x = ivy.array([[1., 2.], [0., 3.]])
-        >>> y = ivy.matrix_transpose(x)
+        >>> y = x.matrix_transpose()
         >>> print(y)
         ivy.array([[1., 0.],
                    [2., 3.]])
@@ -419,6 +554,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def outer(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -426,36 +562,100 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def pinv(
         self: ivy.Array,
+        /,
         *,
         rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
+        ivy.Array instance method variant of ivy.pinv. This method simply wraps the
+        function, and so the docstring for ivy.pinv also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices. Should have a floating-point data type.
+        rtol
+            relative tolerance for small singular values. More details in ivy.pinv.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array containing the pseudo-inverses. More details in ivy.pinv.
+
         Examples
         --------
-        x = ivy.array([[1., 2.],
-        ...            [3., 4.]])
-        y = pinv(x, None, None)
-        print(y)
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> y = x.pinv()
+        >>> print(y)
         ivy.array([[-2., 1.],
-        ...        [1.5, -0.5]])
+                   [1.5, -0.5]])
 
-        x = ivy.array([[1., 2.],
-        ...            [3., 4.]])
-        out = ivy.array()
-        pinv(x, 0, out)
-        print(out)
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> z = ivy.zeros((2,2))
+        >>> x.pinv(rtol=0, out=z)
+        >>> print(z)
         ivy.array([[0.0426, 0.0964],
-        ...       [0.0605, 0.1368]])
+                   [0.0605, 0.1368]])
         """
         return ivy.pinv(self._data, rtol=rtol, out=out)
 
     def qr(
         self: ivy.Array,
+        /,
         *,
         mode: str = "reduced",
+        out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
     ) -> Tuple[ivy.Array, ivy.Array]:
-        return ivy.qr(self._data, mode=mode)
+        """
+        ivy.Array instance method variant of ivy.qr. This method simply wraps the
+        function, and so the docstring for ivy.qr also applies to this method with
+        minimal changes.
+
+        Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
+        matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
+        upper-triangular matrix (or a stack of matrices).
+
+        Parameters
+        ----------
+        self
+            input array having shape (..., M, N) and whose innermost two dimensions form
+            MxN matrices of rank N. Should have a floating-point data type.
+        mode
+            decomposition mode. Should be one of the following modes:
+            - 'reduced': compute only the leading K columns of q, such that q and r have
+            dimensions (..., M, K) and (..., K, N), respectively, and where
+            K = min(M, N).
+            - 'complete': compute q and r with dimensions (..., M, M) and (..., M, N),
+            respectively.
+            Default: 'reduced'.
+        out
+            optional output tuple of arrays, for writing the result to. The arrays must
+            have shapes that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a namedtuple (Q, R) whose
+            - first element must have the field name Q and must be an array whose shape
+            depends on the value of mode and contain matrices with orthonormal columns.
+            If mode is 'complete', the array must have shape (..., M, M). If mode is
+            'reduced', the array must have shape (..., M, K), where K = min(M, N). The
+            first x.ndim-2 dimensions must have the same size as those of the input
+            array x.
+            - second element must have the field name R and must be an array whose shape
+            depends on the value of mode and contain upper-triangular matrices. If mode
+            is 'complete', the array must have shape (..., M, N). If mode is 'reduced',
+            the array must have shape (..., K, N), where K = min(M, N). The first
+            x.ndim-2 dimensions must have the same size as those of the input x.
+
+        """
+        return ivy.qr(self._data, mode=mode, out=out)
 
     def slogdet(
         self: ivy.Array,
@@ -491,12 +691,20 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> print(y)
         slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
 
+        >>> x = ivy.array([[1.2, 2.0, 3.1],
+        ...                [6.0, 5.2, 4.0],
+        ...                [9.0, 8.0, 7.0]])
+        >>> y = x.slogdet()
+        >>> print(y)
+        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(1.098611))
+
         """
         return ivy.slogdet(self._data)
 
     def solve(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -504,23 +712,88 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def svd(
         self: ivy.Array,
+        /,
         *,
         compute_uv: bool = True,
         full_matrices: bool = True,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+        """ivy.Array instance method variant of ivy.svf. This method simply wraps the
+        function, and so the docstring for ivy.svd also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form matrices on which to perform singular value decomposition.
+            Should have a floating-point data type.
+        full_matrices
+            If ``True``, compute full-sized ``U`` and ``Vh``, such that ``U`` has shape
+            ``(..., M, M)`` and ``Vh`` has shape ``(..., N, N)``. If ``False``,
+            compute on the leading ``K`` singular vectors, such that ``U`` has
+            shape ``(..., M, K)`` and ``Vh`` has shape ``(..., K, N)`` and where
+            ``K = min(M, N)``. Default: ``True``.
+        compute_uv
+            If ``True`` then left and right singular vectors will be computed and
+            returned in ``U`` and ``Vh``, respectively. Otherwise, only the
+            singular values will be computed, which can be significantly faster.
+        .. note::
+            with backend set as torch, svd with still compute left and right singular
+            vectors irrespective of the value of compute_uv, however Ivy will still only
+            return the singular values.
+
+        Returns
+        -------
+        .. note::
+            once complex numbers are supported, each square matrix must be Hermitian.
+
+        ret
+            a namedtuple ``(U, S, Vh)``. More details in ivy.svd.
+
+            Each returned array must have the same floating-point data type as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.random_normal(shape = (9, 6))
+        >>> U, S, Vh = x.svd()
+        >>> print(U.shape, S.shape, Vh.shape)
+        (9, 9) (6,) (6, 6)
+
+        With reconstruction from SVD, result is numerically close to x
+
+        >>> reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)
+        >>> print((reconstructed_x - x > 1e-3).sum())
+        ivy.array(0)
+
+        >>> U, S, Vh = x.svd(full_matrices = False)
+        >>> print(U.shape, S.shape, Vh.shape)
+        (9, 6) (6,) (6, 6)
+        """
         return ivy.svd(self._data, compute_uv=compute_uv, full_matrices=full_matrices)
 
-    def svdvals(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def svdvals(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.svdvals(self._data, out=out)
 
     def tensordot(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         axes: Union[int, Tuple[List[int], List[int]]] = 2,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.tensordot(self._data, x2, axes=axes, out=out)
+
+    def tensorsolve(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axes: Union[int, Tuple[List[int], List[int]]] = None,
+    ) -> Tuple[ivy.Array]:
+        return ivy.tensorsolve(self._data, x2, axes=axes)
 
     def trace(
         self: ivy.Array,
@@ -591,16 +864,17 @@ class ArrayWithLinearAlgebra(abc.ABC):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
-        ord: Union[int, float, Literal[inf, -inf]] = 2,
+        keepdims: Optional[bool] = False,
+        ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.vector_norm(
-            self._data, axis=axis, keepdims=keepdims, ord=ord, out=out
+            self._data, axis=axis, keepdims=keepdims, ord=ord, dtype=dtype, out=out
         )
 
     def vector_to_skew_symmetric_matrix(
-        self: ivy.Array, *, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         return ivy.vector_to_skew_symmetric_matrix(self._data, out=out)
 

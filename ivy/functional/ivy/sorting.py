@@ -7,7 +7,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -20,7 +20,7 @@ from ivy.exceptions import handle_exceptions
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -135,7 +135,7 @@ def argsort(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -204,19 +204,11 @@ def sort(
     >>> print(y)
     ivy.array([3.2, 2.5, 1.5, 0.7])
 
-
     >>> x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])
     >>> ivy.sort(x, out=x)
     >>> print(x)
     ivy.array([[ 1.1,  2.2,  3.3],
         [-6.6, -5.5, -4.4]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[[8.9, 0], [19, 5]],[[6, 0.3], [19, 0.5]]])
-    >>> y = ivy.sort(x, descending=True)
-    >>> print(y)
-    ivy.array([[[ 8.9,  0.],[19. ,  5. ]],[[ 6. ,  0.3 ],[19. ,  0.5]]])
 
     With :class:`ivy.Container` input:
 
@@ -271,7 +263,7 @@ def lexsort(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],

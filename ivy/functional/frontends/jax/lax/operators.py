@@ -1,9 +1,12 @@
 # global
 from typing import Any
+import itertools
+import string
 
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.jax.numpy import can_cast
 
 
 @to_ivy_arrays_and_back
@@ -87,14 +90,32 @@ def concatenate(operands, dimension):
     return ivy.concat(operands, axis=dimension)
 
 
+def _format_rhs(rhs, dims):
+    if dims == 1:
+        return ivy.permute_dims(rhs, axes=(2, 1, 0))
+    elif dims == 2:
+        return ivy.permute_dims(rhs, axes=(2, 3, 1, 0))
+    elif dims == 3:
+        return ivy.permute_dims(rhs, axes=(2, 3, 4, 1, 0))
+
+
 @to_ivy_arrays_and_back
 def conv(
     lhs, rhs, window_strides, padding, precision=None, preferred_element_type=None
 ):
     if preferred_element_type:
-        lhs = ivy.astype(lhs, dtype=preferred_element_type)
-        rhs = ivy.astype(rhs, dtype=preferred_element_type)
-    return ivy.conv2d(lhs, rhs, window_strides, padding)
+        lhs = ivy.astype(lhs, preferred_element_type)
+        rhs = ivy.astype(rhs, preferred_element_type)
+    dims = len(lhs.shape) - 2
+    rhs = _format_rhs(rhs, dims)
+    return ivy.conv_general_dilated(
+        lhs,
+        rhs,
+        window_strides,
+        padding,
+        dims=dims,
+        data_format="channel_first",
+    )
 
 
 @to_ivy_arrays_and_back
@@ -117,7 +138,10 @@ def conv_transpose(
 
 @to_ivy_arrays_and_back
 def convert_element_type(operand, new_dtype):
-    return ivy.astype(operand, new_dtype)
+    assert can_cast(ivy.dtype(operand), new_dtype), "Cannot cast from {} to {}".format(
+        ivy.dtype(operand), new_dtype
+    )
+    return ivy.astype(operand, new_dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -131,17 +155,16 @@ def cosh(x):
 
 
 @to_ivy_arrays_and_back
-def cumprod(operand, axis=0, reverse=False):
-    if reverse:
-        return ivy.flip(ivy.cumprod(ivy.flip(operand), axis, dtype=operand.dtype))
-    return ivy.cumprod(operand, axis, dtype=operand.dtype)
+def cumprod(operand, axis=None, reverse=False):
+    dtype = ivy.dtype(operand)
+    return ivy.cumprod(operand, axis=axis, reverse=reverse).astype(dtype)
 
 
 @to_ivy_arrays_and_back
-def cumsum(operand, axis=0, reverse=False):
+def cumsum(operand, axis=None, reverse=False):
     if reverse:
-        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis, dtype=operand.dtype))
-    return ivy.cumsum(operand, axis, dtype=operand.dtype)
+        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis=axis, dtype=operand.dtype))
+    return ivy.cumsum(operand, axis=axis, dtype=operand.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -151,10 +174,52 @@ def div(x, y):
 
 @to_ivy_arrays_and_back
 def dot(lhs, rhs, precision=None, preferred_element_type=None):
+    ret = ivy.matmul(lhs, rhs)
     if preferred_element_type:
-        lhs = ivy.astype(lhs, dtype=preferred_element_type)
-        rhs = ivy.astype(rhs, dtype=preferred_element_type)
-    return ivy.tensordot(lhs, rhs)
+        ret = ivy.astype(ret, preferred_element_type, copy=False)
+    return ret
+
+
+@to_ivy_arrays_and_back
+def dot_general(
+    lhs, rhs, dimension_numbers, precision=None, preferred_element_type=None
+):
+    (lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch) = dimension_numbers
+    assert len(lhs.shape) == len(rhs.shape)
+    ivy.assertions.check_less(
+        len(lhs.shape), 52, "number of dimensions greater than 52 is not supported"
+    )
+    new_id = itertools.count()
+    lhs_axis_ids = [next(new_id) for _ in lhs.shape]
+    rhs_axis_ids = [next(new_id) for _ in rhs.shape]
+    lhs_out_axis_ids = lhs_axis_ids[:]
+    rhs_out_axis_ids = rhs_axis_ids[:]
+    for lhs_axis, rhs_axis in zip(lhs_contracting, rhs_contracting):
+        shared_id = next(new_id)
+        lhs_axis_ids[lhs_axis] = shared_id
+        rhs_axis_ids[rhs_axis] = shared_id
+        lhs_out_axis_ids[lhs_axis] = None
+        rhs_out_axis_ids[rhs_axis] = None
+    batch_ids = []
+    for lhs_axis, rhs_axis in zip(lhs_batch, rhs_batch):
+        shared_id = next(new_id)
+        lhs_axis_ids[lhs_axis] = shared_id
+        rhs_axis_ids[rhs_axis] = shared_id
+        lhs_out_axis_ids[lhs_axis] = None
+        rhs_out_axis_ids[rhs_axis] = None
+        batch_ids.append(shared_id)
+    out_axis_ids = list(
+        filter(lambda x: x is not None, batch_ids + lhs_out_axis_ids + rhs_out_axis_ids)
+    )
+    char_list = [*string.ascii_letters]
+    lhs_axis_ids = "".join(str(char_list[i]) for i in lhs_axis_ids)
+    rhs_axis_ids = "".join(str(char_list[i]) for i in rhs_axis_ids)
+    out_axis_ids = "".join(str(char_list[i]) for i in out_axis_ids)
+    equ_str = f"{lhs_axis_ids},{rhs_axis_ids}->{out_axis_ids}"
+    ret = ivy.einsum(equ_str, lhs, rhs)
+    if preferred_element_type:
+        ret = ivy.astype(ret, preferred_element_type, copy=False)
+    return ret
 
 
 @to_ivy_arrays_and_back
@@ -277,8 +342,17 @@ def rev(operand, dimensions):
 
 
 @to_ivy_arrays_and_back
-def round(x):
-    return ivy.round(x)
+def round(x, rounding_method=1):
+    if rounding_method == 0:
+        ret = ivy.where(
+            ivy.less(x, 0),
+            ivy.ceil(x) - (ivy.ceil(x) - ivy.floor(x)),
+            ivy.ceil(x),
+        )
+    elif rounding_method == 1:
+        ret = ivy.ceil(x)
+        ret = ivy.where(ivy.remainder(ret, 2) == 0, ret, ret - 1)
+    return ivy.where(ivy.abs(x - ivy.floor(x) - 0.5) < 1e-7, ret, ivy.round(x))
 
 
 @to_ivy_arrays_and_back
@@ -339,3 +413,18 @@ def transpose(operand, permutation):
 @to_ivy_arrays_and_back
 def shift_right_logical(x, y):
     return ivy.bitwise_right_shift(x, y)
+
+
+@to_ivy_arrays_and_back
+def asinh(x):
+    return ivy.asinh(x)
+
+
+@to_ivy_arrays_and_back
+def atanh(x):
+    return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
+def select(pred, on_true, on_false):
+    return ivy.where(pred, on_true, on_false)

@@ -52,6 +52,8 @@ valid_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
+    ivy.complex64,
+    ivy.complex128,
     ivy.bool,
 )
 valid_numeric_dtypes = (
@@ -76,18 +78,18 @@ invalid_dtypes = (
     ivy.uint32,
     ivy.uint64,
 )
-invalid_num_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
+invalid_numeric_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_int_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_float_dtypes = ()
 invalid_uint_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
-invalid_complex_dtypes = (ivy.complex256,)
+invalid_complex_dtypes = ()
 
 native_inplace_support = True
 
 supports_gradients = True
 
 
-def closest_valid_dtype(type):
+def closest_valid_dtype(type, /):
     if type is None:
         return ivy.default_dtype()
     type_str = ivy.as_ivy_dtype(type)
@@ -103,10 +105,6 @@ backend = "torch"
 # local sub-modules
 from . import activations
 from .activations import *
-from . import compilation
-from .compilation import *
-from . import converters
-from .converters import *
 from . import creation
 from .creation import *
 from . import data_type
@@ -139,3 +137,5 @@ from . import utility
 from .utility import *
 from . import experimental
 from .experimental import *
+from . import control_flow_ops
+from .control_flow_ops import *

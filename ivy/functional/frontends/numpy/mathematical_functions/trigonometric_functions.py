@@ -2,17 +2,21 @@
 import ivy
 
 # local
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
+    handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_out
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def cos(
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _cos(
     x,
     /,
     out=None,
@@ -29,10 +33,12 @@ def cos(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_out
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def sin(
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _sin(
     x,
     /,
     out=None,
@@ -49,10 +55,12 @@ def sin(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_out
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def tan(
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _tan(
     x,
     /,
     out=None,
@@ -69,10 +77,12 @@ def tan(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_out
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def arcsin(
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _arcsin(
     x,
     /,
     out=None,
@@ -89,10 +99,12 @@ def arcsin(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_out
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def arccos(
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _arccos(
     x,
     /,
     out=None,
@@ -109,10 +121,12 @@ def arccos(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_out
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def arctan(
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _arctan(
     x,
     /,
     out=None,
@@ -129,10 +143,12 @@ def arctan(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_out
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def deg2rad(
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _deg2rad(
     x,
     /,
     out=None,
@@ -151,10 +167,12 @@ def deg2rad(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_out
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def rad2deg(
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _rad2deg(
     x,
     /,
     out=None,

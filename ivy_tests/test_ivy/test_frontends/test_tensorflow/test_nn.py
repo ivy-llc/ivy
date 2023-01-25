@@ -4,8 +4,11 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-
+from ivy.functional.ivy.layers import _deconv_length
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    statistical_dtype_values,
+)
 
 
 @st.composite
@@ -30,6 +33,20 @@ def _x_and_filters(
         stride = dilations
     else:
         stride = draw(helpers.ints(min_value=stride_min, max_value=stride_max))
+
+    # Infer type from data_format if it is passed as None
+    if type is None:
+        type_data_format_mapping = {
+            "1d": ["NWC", "NCW"],
+            "2d": ["NHWC", "NCHW"],
+            "3d": ["NDHWC", "NCDHW"],
+        }
+        type = [
+            typ
+            for typ in type_data_format_mapping
+            if data_format in type_data_format_mapping[typ]
+        ][0]
+
     if type == "1d":
         if not transpose:
             filter_shape = draw(
@@ -71,7 +88,7 @@ def _x_and_filters(
         if transpose:
             output_shape = [
                 x_shape[0],
-                ivy.deconv_length(x_w, stride, filter_shape[0], padding, dilations),
+                _deconv_length(x_w, stride, filter_shape[0], padding, dilations),
                 d_in,
             ]
     elif type == "2d" or type == "depthwise":
@@ -83,6 +100,7 @@ def _x_and_filters(
                     helpers.ints(min_value=3, max_value=5),
                     helpers.ints(min_value=1, max_value=3),
                     helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=1),
                 )
             )
         elif not transpose:
@@ -130,10 +148,10 @@ def _x_and_filters(
             x_h = x_shape[2]
             x_w = x_shape[3]
         if transpose:
-            output_shape_h = ivy.deconv_length(
+            output_shape_h = _deconv_length(
                 x_h, stride, filter_shape[0], padding, dilations
             )
-            output_shape_w = ivy.deconv_length(
+            output_shape_w = _deconv_length(
                 x_w, stride, filter_shape[1], padding, dilations
             )
             output_shape = [x_shape[0], output_shape_h, output_shape_w, d_in]
@@ -184,7 +202,7 @@ def _x_and_filters(
                     helpers.ints(min_value=1, max_value=5),
                     helpers.ints(min_value=d_in, max_value=d_in),
                     helpers.ints(min_value=min_x_depth, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=min_x_height, max_value=100),
                     helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
@@ -192,13 +210,13 @@ def _x_and_filters(
             x_h = x_shape[3]
             x_w = x_shape[4]
         if transpose:
-            output_shape_d = ivy.deconv_length(
+            output_shape_d = _deconv_length(
                 x_d, stride, filter_shape[0], padding, dilations
             )
-            output_shape_h = ivy.deconv_length(
+            output_shape_h = _deconv_length(
                 x_h, stride, filter_shape[1], padding, dilations
             )
-            output_shape_w = ivy.deconv_length(
+            output_shape_w = _deconv_length(
                 x_w, stride, filter_shape[2], padding, dilations
             )
             output_shape = [output_shape_d, output_shape_h, output_shape_w]
@@ -225,25 +243,21 @@ def _x_and_filters(
         stride_max=1,
         type="2d",
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_atrous_conv2d(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         value=x,
@@ -266,14 +280,13 @@ def test_tensorflow_atrous_conv2d(
         transpose=True,
         atrous=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_atrous_conv2d_transpose(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -289,11 +302,8 @@ def test_tensorflow_atrous_conv2d_transpose(
     ) = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         value=x,
@@ -314,25 +324,21 @@ def test_tensorflow_atrous_conv2d_transpose(
         stride_max=4,
         type="1d",
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_conv1d(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
@@ -356,14 +362,13 @@ def test_tensorflow_conv1d(
         type="1d",
         transpose=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_conv1d_transpose(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -379,11 +384,8 @@ def test_tensorflow_conv1d_transpose(
     ) = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
@@ -402,26 +404,22 @@ def test_tensorflow_conv1d_transpose(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     approximate=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_gelu(
     *,
     dtype_and_x,
     approximate,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         features=x[0],
@@ -441,21 +439,16 @@ def test_tensorflow_gelu(
 def test_tensorflow_conv2d(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
@@ -476,14 +469,13 @@ def test_tensorflow_conv2d(
         type="2d",
         transpose=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_conv2d_transpose(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -499,11 +491,8 @@ def test_tensorflow_conv2d_transpose(
     ) = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
@@ -524,14 +513,13 @@ def test_tensorflow_conv2d_transpose(
         padding=st.sampled_from(["SAME"]),
         type="3d",
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_conv3d(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -540,11 +528,8 @@ def test_tensorflow_conv3d(
     filters = filters[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
@@ -567,14 +552,13 @@ def test_tensorflow_conv3d(
         type="3d",
         transpose=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_conv3d_transpose(
     *,
     x_f_d_df,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -590,11 +574,8 @@ def test_tensorflow_conv3d_transpose(
     ) = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
@@ -604,6 +585,41 @@ def test_tensorflow_conv3d_transpose(
         padding=padding,
         data_format=data_format,
         dilations=1 if not ivy.gpu_is_available() else dilation,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.depthwise_conv2d",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="depthwise",
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_depthwise_conv2d(
+    *,
+    x_f_d_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    stride = 1 if dilation > 1 else stride
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filter=filters,
+        strides=[1, stride, stride, 1],
+        padding=padding,
+        data_format=data_format,
+        dilations=[dilation, dilation],
     )
 
 
@@ -619,6 +635,7 @@ def test_tensorflow_conv3d_transpose(
     variance=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
     offset=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
     scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_batch_normalization(
     *,
@@ -627,21 +644,16 @@ def test_tensorflow_batch_normalization(
     variance,
     offset,
     scale,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -662,27 +674,23 @@ def test_tensorflow_batch_normalization(
     ),
     prob=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
     scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_dropout(
     *,
     dtype_and_x,
     prob,
     scale,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=[input_dtype] * 2,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -709,26 +717,22 @@ def test_tensorflow_dropout(
             max_value=3,
         )
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_silu(
     *,
     dtype_features,
     beta,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, features = dtype_features
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         features=features[0],
@@ -750,14 +754,13 @@ def test_tensorflow_silu(
         max_dim_size=2,
         shared_dtype=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_sigmoid_cross_entropy_with_logits(
     *,
     dtype_labels_logits,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -765,12 +768,8 @@ def test_tensorflow_sigmoid_cross_entropy_with_logits(
     labels, logits = input_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         labels=labels,
@@ -798,15 +797,14 @@ def test_tensorflow_sigmoid_cross_entropy_with_logits(
             max_value=3,
         )
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_weighted_cross_entropy_with_logits(
     *,
     dtype_labels_logits,
     pos_weight,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -814,11 +812,8 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
     labels, logits = input_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         labels=labels,
@@ -844,6 +839,7 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
     bias=st.floats(min_value=0.1, max_value=30),
     alpha=st.floats(min_value=0.1, max_value=20),
     beta=st.floats(min_value=0.1, max_value=5),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_local_response_normalization(
     *,
@@ -852,10 +848,8 @@ def test_tensorflow_local_response_normalization(
     bias,
     alpha,
     beta,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -863,11 +857,8 @@ def test_tensorflow_local_response_normalization(
     input = x[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-3,
@@ -877,4 +868,253 @@ def test_tensorflow_local_response_normalization(
         bias=bias,
         alpha=alpha,
         beta=beta,
+    )
+
+
+@st.composite
+def df(draw, data_format):
+    data_format = draw(data_format)
+    return data_format
+
+
+# max_pool1d
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.max_pool1d",
+    data_format=df(data_format=st.sampled_from(["NWC"])),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_max_pool1d(
+    *,
+    x_k_s_p,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+    )
+
+
+# moments
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.moments",
+    dtype_x_axis=statistical_dtype_values(function="mean"),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_moments(
+    *,
+    dtype_x_axis,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
+        x=x[0],
+        axes=axis,
+        keepdims=keepdims,
+    )
+
+
+@st.composite
+def _generate_bias_data(draw):
+    data_format = draw(st.sampled_from(["NC...", "N...C", None]))
+    channel_dim = 1 if data_format == "NC..." else -1
+    dtype, value, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=3,
+            ret_shape=True,
+        )
+    )
+    channel_size = shape[channel_dim]
+    bias = draw(helpers.array_values(dtype=dtype[0], shape=(channel_size,)))
+    return data_format, dtype, value, bias
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.bias_add",
+    data=_generate_bias_data(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_bias_add(
+    *,
+    data,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    data_format, dtype, value, bias = data
+    helpers.test_frontend_function(
+        input_dtypes=dtype * 2,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=value[0],
+        bias=bias,
+        data_format=data_format,
+    )
+
+
+# convolution
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.convolution",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NWC", "NHWC", "NDHWC"]),
+        padding=st.sampled_from(["SAME", "VALID"]),
+        # Tensorflow backprop doesn't support dilations more than 1 on CPU
+        dilation_min=1,
+        dilation_max=1,
+        type=None,
+        transpose=False,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_convolution(
+    *,
+    x_f_d_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filters=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )
+
+
+# relu
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.relu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_value=-20,
+        max_value=20,
+    ),
+)
+def test_tensorflow_relu(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+    )
+
+
+# softmax
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.softmax",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=4,
+        max_axes_size=3,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+)
+def test_tensorflow_softmax(
+    *,
+    dtype_x_and_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=x[0],
+        axis=axis,
+    )
+
+
+# embedding_lookup
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.embedding_lookup",
+    dtypes_indices_weights=helpers.embedding_helper(),
+    max_norm=st.floats(min_value=0, max_value=5, exclude_min=True),
+)
+def test_tensorflow_embedding_lookup(
+    *,
+    dtypes_indices_weights,
+    max_norm,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtypes, indices, weight, _ = dtypes_indices_weights
+    dtypes.reverse()
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        params=weight,
+        ids=indices,
+        max_norm=max_norm,
     )

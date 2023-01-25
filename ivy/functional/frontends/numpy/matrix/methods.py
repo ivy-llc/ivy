@@ -1,9 +1,14 @@
 # global
 import ivy
-import numpy as np
 
 # local
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
+from ivy.functional.frontends.numpy import (
+    from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
+    argmax,
+    any,
+    ndarray,
+)
 
 
 class matrix:
@@ -13,34 +18,34 @@ class matrix:
     def _init_data(self, data, dtype):
         if isinstance(data, str):
             self._process_str_data(data, dtype)
-        elif isinstance(data, list) or ivy.is_array(data):
-            data = (
-                ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
-            )
-            ivy.assertions.check_equal(len(ivy.shape(data)), 2)
+        elif isinstance(data, (list, ndarray)) or ivy.is_array(data):
+            if isinstance(data, ndarray):
+                data = data.ivy_array
+            if ivy.is_array(data) and dtype is None:
+                dtype = data.dtype
+            data = ivy.array(data, dtype=dtype)
             self._data = data
         else:
-            raise ivy.exceptions.IvyException("data must be a 2D array, list, or str")
-        self._shape = ivy.shape(self._data)
+            raise ivy.exceptions.IvyException("data must be an array, list, or str")
+        ivy.assertions.check_equal(
+            len(ivy.shape(self._data)), 2, message="data must be 2D"
+        )
         self._dtype = self._data.dtype
+        self._shape = ivy.shape(self._data)
 
     def _process_str_data(self, data, dtype):
-        is_float = "." in data
+        is_float = "." in data or "e" in data
+        data = data.replace(",", " ")
+        data = " ".join(data.split())
         data = data.split(";")
-        ivy.assertions.check_equal(
-            len(data), 2, message="only one semicolon should exist for rows splitting"
-        )
-        for i in range(2):
-            data[i] = data[i].split(",") if "," in data[i] else data[i].split()
-            data[i] = [
-                float(x.strip()) if is_float else int(x.strip()) for x in data[i]
-            ]
-        ivy.assertions.check_equal(
-            len(data[0]), len(data[1]), message="elements in each row is unequal"
-        )
-        self._data = (
-            ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
-        )
+        for i, row in enumerate(data):
+            row = row.strip().split(" ")
+            data[i] = row
+            for j, elem in enumerate(row):
+                data[i][j] = float(elem) if is_float else int(elem)
+        if dtype is None:
+            dtype = ivy.float64 if is_float else ivy.int64
+        self._data = ivy.array(data, dtype=dtype)
 
     # Properties #
     # ---------- #
@@ -56,6 +61,8 @@ class matrix:
     # flake8: noqa: E743, E741
     @property
     def I(self):
+        if ivy.is_int_dtype(self._data):
+            return ivy.inv(self._data.astype(ivy.float64))
         return ivy.inv(self._data)
 
     @property
@@ -64,7 +71,7 @@ class matrix:
 
     @property
     def data(self):
-        return hex(id(self._data))
+        return memoryview(ivy.to_numpy(self._data).tobytes())
 
     @property
     def dtype(self):
@@ -94,26 +101,17 @@ class matrix:
     # --------- #
 
     def __repr__(self):
-        sig_fig = ivy.array_significant_figures()
-        dec_vals = ivy.array_decimal_values()
-        rep = (
-            ivy.vec_sig_fig(ivy.to_numpy(self._data), sig_fig)
-            if self.size > 0
-            else ivy.to_numpy(self._data)
-        )
-        with np.printoptions(precision=dec_vals):
-            return "ivy.matrix(" + str(self._data.to_list()) + ")"
+        return "ivy.matrix(" + str(self._data.to_list()) + ")"
 
     # Instance Methods #
     # ---------------- #
 
-    @from_zero_dim_arrays_to_float
     def argmax(self, axis=None, out=None):
         if ivy.exists(axis):
-            return ivy.argmax(self.A, axis=axis, keepdims=True, out=out)
-        return ivy.argmax(self.A, axis=axis, out=out)
+            return argmax(self.A, axis=axis, keepdims=True, out=out)
+        return argmax(self.A, axis=axis, out=out)
 
     def any(self, axis=None, out=None):
         if ivy.exists(axis):
-            return ivy.any(self.A, axis=axis, keepdims=True, out=out)
-        return ivy.any(self.A, axis=axis, out=out)
+            return any(self.A, axis=axis, keepdims=True, out=out)
+        return any(self.A, axis=axis, out=out)

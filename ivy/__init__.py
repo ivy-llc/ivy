@@ -1,6 +1,7 @@
 # global
 import warnings
 from ivy._version import __version__ as __version__
+import builtins
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
@@ -63,17 +64,18 @@ class Device(str):
 
 class Dtype(str):
     def __new__(cls, dtype_str):
+        if dtype_str is builtins.int:
+            dtype_str = default_int_dtype()
+        if dtype_str is builtins.float:
+            dtype_str = default_float_dtype()
+        if dtype_str is builtins.complex:
+            dtype_str = default_complex_dtype()
+        if dtype_str is builtins.bool:
+            dtype_str = "bool"
         if not isinstance(dtype_str, str):
-            raise ivy.exceptions.IvyException("dtype_str must be type str")
-        if not (
-            "int" in dtype_str
-            or "float" in dtype_str
-            or "bool" in dtype_str
-            or "complex" in dtype_str
-        ):
-            raise ivy.exceptions.IvyException(
-                "dtype must be string and starts with int, float, complex, or bool"
-            )
+            raise ivy.exceptions.IvyException("dtype must be type str")
+        if dtype_str not in _all_ivy_dtypes_str:
+            raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
 
     def __ge__(self, other):
@@ -124,6 +126,46 @@ class Dtype(str):
 
         return self < other or self == other
 
+    @property
+    def is_bool_dtype(self):
+        return is_bool_dtype(self)
+
+    @property
+    def is_int_dtype(self):
+        return is_int_dtype(self)
+
+    @property
+    def is_float_dtype(self):
+        return is_float_dtype(self)
+
+    @property
+    def is_uint_dtype(self):
+        return is_uint_dtype(self)
+
+    @property
+    def is_complex_dtype(self):
+        return is_complex_dtype(self)
+
+    @property
+    def dtype_bits(self):
+        return dtype_bits(self)
+
+    @property
+    def as_native_dtype(self):
+        return as_native_dtype(self)
+
+    @property
+    def info(self):
+        if self.is_int_dtype or self.is_uint_dtype:
+            return iinfo(self)
+        elif self.is_float_dtype:
+            return finfo(self)
+        else:
+            raise ivy.exceptions.IvyError(f"{self} is not supported by info")
+
+    def can_cast(self, to):
+        return can_cast(self, to)
+
 
 class Shape(tuple):
     def __new__(cls, shape_tup):
@@ -146,24 +188,40 @@ class Shape(tuple):
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
+        if dtype_str is builtins.int:
+            dtype_str = default_int_dtype()
         if not isinstance(dtype_str, str):
             raise ivy.exceptions.IvyException("dtype_str must be type str")
         if "int" not in dtype_str:
             raise ivy.exceptions.IvyException(
                 "dtype must be string and starts with int"
             )
+        if dtype_str not in _all_ivy_dtypes_str:
+            raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
+
+    @property
+    def info(self):
+        return iinfo(self)
 
 
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
+        if dtype_str is builtins.float:
+            dtype_str = default_float_dtype()
         if not isinstance(dtype_str, str):
             raise ivy.exceptions.IvyException("dtype_str must be type str")
         if "float" not in dtype_str:
             raise ivy.exceptions.IvyException(
                 "dtype must be string and starts with float"
             )
+        if dtype_str not in _all_ivy_dtypes_str:
+            raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
+
+    @property
+    def info(self):
+        return finfo(self)
 
 
 class UintDtype(IntDtype):
@@ -174,7 +232,13 @@ class UintDtype(IntDtype):
             raise ivy.exceptions.IvyException(
                 "dtype must be string and starts with uint"
             )
+        if dtype_str not in _all_ivy_dtypes_str:
+            raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
+
+    @property
+    def info(self):
+        return iinfo(self)
 
 
 class ComplexDtype(Dtype):
@@ -185,7 +249,13 @@ class ComplexDtype(Dtype):
             raise ivy.exceptions.IvyException(
                 "dtype must be string and starts with complex"
             )
+        if dtype_str not in _all_ivy_dtypes_str:
+            raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
+
+    @property
+    def info(self):
+        return finfo(self)
 
 
 class Node(str):
@@ -217,8 +287,28 @@ valid_devices = ("cpu",)
 
 invalid_devices = ("gpu", "tpu")
 
+# data types as string (to be used by Dtype classes)
+# any changes here should also be reflected in the data type initialisation underneath
+_all_ivy_dtypes_str = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "bfloat16",
+    "float16",
+    "float32",
+    "float64",
+    "complex64",
+    "complex128",
+    "bool",
+)
 
 # data types
+# any changes here should also be reflected in the data type string tuple above
 int8 = IntDtype("int8")
 int16 = IntDtype("int16")
 int32 = IntDtype("int32")
@@ -234,7 +324,6 @@ float64 = FloatDtype("float64")
 double = float64
 complex64 = ComplexDtype("complex64")
 complex128 = ComplexDtype("complex128")
-complex256 = ComplexDtype("complex256")
 bool = Dtype("bool")
 
 # native data types
@@ -251,9 +340,8 @@ native_float16 = FloatDtype("float16")
 native_float32 = FloatDtype("float32")
 native_float64 = FloatDtype("float64")
 native_double = native_float64
-complex64 = ComplexDtype("complex64")
-complex128 = ComplexDtype("complex128")
-complex256 = ComplexDtype("complex256")
+native_complex64 = ComplexDtype("complex64")
+native_complex128 = ComplexDtype("complex128")
 native_bool = Dtype("bool")
 
 # all
@@ -270,6 +358,8 @@ all_dtypes = (
     float16,
     float32,
     float64,
+    complex64,
+    complex128,
     bool,
 )
 all_numeric_dtypes = (
@@ -311,7 +401,6 @@ all_uint_dtypes = (
 all_complex_dtypes = (
     complex64,
     complex128,
-    complex256,
 )
 
 # valid data types
@@ -401,6 +490,34 @@ array_api_promotion_table = {
 }
 locks = {"backend_setter": threading.Lock()}
 extra_promotion_table = {
+    (bool, uint16): uint16,
+    (bool, int32): int32,
+    (bool, float16): float16,
+    (bool, uint64): uint64,
+    (bool, float64): float64,
+    (bool, int8): int8,
+    (bool, int64): int64,
+    (bool, int16): int16,
+    (bool, bfloat16): bfloat16,
+    (bool, uint32): uint32,
+    (bool, uint8): uint8,
+    (bool, float32): float32,
+    (bool, complex64): complex64,
+    (bool, complex128): complex128,
+    (uint16, bool): uint16,
+    (int32, bool): int32,
+    (float16, bool): float16,
+    (uint64, bool): uint64,
+    (float64, bool): float64,
+    (int8, bool): int8,
+    (int64, bool): int64,
+    (int16, bool): int16,
+    (bfloat16, bool): bfloat16,
+    (uint32, bool): uint32,
+    (uint8, bool): uint8,
+    (float32, bool): float32,
+    (complex64, bool): complex64,
+    (complex128, bool): complex128,
     (uint64, int8): float64,
     (int8, uint64): float64,
     (uint64, int16): float64,
@@ -480,15 +597,58 @@ extra_promotion_table = {
     (float32, bfloat16): float32,
     (bfloat16, float64): float64,
     (float64, bfloat16): float64,
+    (complex64, int8): complex64,
+    (int8, complex64): complex64,
+    (complex64, int16): complex64,
+    (int16, complex64): complex64,
+    (complex64, int32): complex64,
+    (int32, complex64): complex64,
+    (complex64, int64): complex64,
+    (int64, complex64): complex64,
+    (complex64, uint8): complex64,
+    (uint8, complex64): complex64,
+    (complex64, uint16): complex64,
+    (uint16, complex64): complex64,
+    (complex64, uint32): complex64,
+    (uint32, complex64): complex64,
+    (complex64, uint64): complex64,
+    (uint64, complex64): complex64,
+    (complex64, float16): complex64,
+    (float16, complex64): complex64,
+    (complex64, float32): complex64,
+    (float32, complex64): complex64,
+    (complex64, float64): complex128,
+    (float64, complex64): complex128,
+    (complex64, bfloat16): complex64,
+    (bfloat16, complex64): complex64,
     (complex64, complex64): complex64,
     (complex64, complex128): complex128,
-    (complex64, complex256): complex256,
+    (complex128, int8): complex128,
+    (int8, complex128): complex128,
+    (complex128, int16): complex128,
+    (int16, complex128): complex128,
+    (complex128, int32): complex128,
+    (int32, complex128): complex128,
+    (complex128, int64): complex128,
+    (int64, complex128): complex128,
+    (complex128, uint8): complex128,
+    (uint8, complex128): complex128,
+    (complex128, uint16): complex128,
+    (uint16, complex128): complex128,
+    (complex128, uint32): complex128,
+    (uint32, complex128): complex128,
+    (complex128, uint64): complex128,
+    (uint64, complex128): complex128,
+    (complex128, float16): complex128,
+    (float16, complex128): complex128,
+    (complex128, float32): complex128,
+    (float32, complex128): complex128,
+    (complex128, float64): complex128,
+    (float64, complex128): complex128,
+    (complex128, bfloat16): complex128,
+    (bfloat16, complex128): complex128,
     (complex128, complex64): complex128,
     (complex128, complex128): complex128,
-    (complex128, complex256): complex256,
-    (complex256, complex64): complex256,
-    (complex256, complex128): complex256,
-    (complex256, complex256): complex256,
 }
 
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}
@@ -503,6 +663,7 @@ from .container import (
     Container,
     add_ivy_container_instance_methods,
 )
+from .nested_array import NestedArray
 from .backend_handler import (
     current_backend,
     get_backend,
@@ -516,6 +677,7 @@ from .backend_handler import (
     choose_random_backend,
     clear_backend_stack,
 )
+from .func_wrapper import *
 from . import assertions, backend_handler, func_wrapper, exceptions
 from . import functional
 from .functional import *
@@ -753,7 +915,7 @@ def set_array_significant_figures(sig_figs):
 
 
 def unset_array_significant_figures():
-    """"""
+    """Unset the currently set array significant figures."""
     global array_significant_figures_stack
     if array_significant_figures_stack:
         array_significant_figures_stack.pop(-1)
@@ -806,7 +968,7 @@ def set_array_decimal_values(dec_vals):
 
 
 def unset_array_decimal_values():
-    """"""
+    """Unset the currently set array decimal values."""
     global array_decimal_values_stack
     if array_decimal_values_stack:
         array_decimal_values_stack.pop(-1)
@@ -842,7 +1004,7 @@ def set_warning_level(warn_level):
 
 
 def unset_warning_level():
-    """"""
+    """Unset the currently set warning level."""
     global warning_level_stack
     if warning_level_stack:
         warning_level_stack.pop(-1)
@@ -893,7 +1055,7 @@ def set_nan_policy(warn_level):
 
 
 def unset_nan_policy():
-    """"""
+    """Unset the currently set nan policy."""
     global nan_policy_stack
     if nan_policy_stack:
         nan_policy_stack.pop(-1)

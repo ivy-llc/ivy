@@ -14,14 +14,13 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_dim_size=1,
     ),
     pred_cond=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_jax_cond(
     *,
     dtype_and_x,
     pred_cond,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -35,10 +34,7 @@ def test_jax_cond(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -56,13 +52,12 @@ def test_jax_cond(
         min_num_dims=1,
         min_dim_size=1,
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_map(
     *,
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -73,10 +68,7 @@ def test_jax_map(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -93,14 +85,13 @@ def test_jax_map(
         min_dim_size=1,
     ),
     index=helpers.ints(min_value=-10, max_value=10),
+    test_with_out=st.just(False),
 )
 def test_jax_switch(
     *,
     dtype_and_x,
     index,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -114,10 +105,7 @@ def test_jax_switch(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,

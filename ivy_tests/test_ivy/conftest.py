@@ -3,11 +3,28 @@ import os
 import pytest
 from typing import Dict
 
+
+mod_frontend = {
+    "tensorflow": None,
+    "numpy": None,
+    "jax": None,
+    "torch": None,
+}  # multiversion
+mod_backend = {
+    "tensorflow": None,
+    "numpy": None,
+    "jax": None,
+    "torch": None,
+}  # multiversion
+
+
 # local
+import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy import DefaultDevice
 from ivy_tests.test_ivy.helpers import globals as test_globals
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
-
+available_frameworks = available_frameworks()
 GENERAL_CONFIG_DICT = {}
 UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
@@ -19,6 +36,7 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 
 
 def pytest_configure(config):
+    global available_frameworks
     # device
     raw_value = config.getoption("--device")
     if raw_value == "all":
@@ -29,9 +47,18 @@ def pytest_configure(config):
     # framework
     raw_value = config.getoption("--backend")
     if raw_value == "all":
-        backend_strs = ["numpy", "jax", "tensorflow", "torch"]
+        backend_strs = available_frameworks
     else:
         backend_strs = raw_value.split(",")
+
+    # frontend
+
+    frontend = config.getoption("--frontend")
+
+    if frontend:
+        frontend_strs = frontend.split(",")
+        for i in frontend_strs:
+            mod_frontend[i.split("/")[0]] = i
 
     # compile_graph
     raw_value = config.getoption("--compile_graph")
@@ -54,14 +81,27 @@ def pytest_configure(config):
         for device in devices:
             for compile_graph in compile_modes:
                 for implicit in implicit_modes:
-                    TEST_PARAMS_CONFIG.append(
-                        (
-                            device,
-                            test_globals.FWS_DICT[backend_str](),
-                            compile_graph,
-                            implicit,
+                    if "/" in backend_str:
+                        mod_backend[backend_str.split("/")[0]] = backend_str
+                        TEST_PARAMS_CONFIG.append(
+                            (
+                                device,
+                                test_globals.FWS_DICT[backend_str.split("/")[0]](
+                                    backend_str
+                                ),
+                                compile_graph,
+                                implicit,
+                            )
                         )
-                    )
+                    else:
+                        TEST_PARAMS_CONFIG.append(
+                            (
+                                device,
+                                test_globals.FWS_DICT[backend_str](),
+                                compile_graph,
+                                implicit,
+                            )
+                        )
 
     process_cl_flags(config)
 
@@ -140,28 +180,18 @@ def process_cl_flags(config) -> Dict[str, bool]:
             )
         # skipping a test
         if v[0] or no_extra_testing:
-            GENERAL_CONFIG_DICT[k] = False
+            pf.build_flag(k, False)
         # extra testing
         if v[1]:
-            GENERAL_CONFIG_DICT[k] = True
-        # let hypothesis generate it
-        if not v[0] ^ v[1]:
-            if k in ["instance_method", "test_gradients"]:
-                UNSET_TEST_API_CONFIG["flag"].append(k)
-            elif k == "container":
-                UNSET_TEST_API_CONFIG["list"].append("container_flags")
-            elif k == "with_out":
-                UNSET_TEST_CONFIG["flag"].append(k)
-            else:
-                UNSET_TEST_CONFIG["list"].append(k)
+            pf.build_flag(k, True)
 
 
 def pytest_addoption(parser):
     parser.addoption("--device", action="store", default="cpu")
-    parser.addoption("--backend", action="store", default="all")
+    parser.addoption("-B", "--backend", action="store", default="all")
     parser.addoption("--compile_graph", action="store_true")
     parser.addoption("--with_implicit", action="store_true")
-
+    parser.addoption("--frontend", action="store", default=None)
     parser.addoption("--skip-variable-testing", action="store_true")
     parser.addoption("--skip-native-array-testing", action="store_true")
     parser.addoption("--skip-out-testing", action="store_true")
@@ -175,7 +205,6 @@ def pytest_addoption(parser):
     parser.addoption("--with-nestable-testing", action="store_true")
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
-
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
         "--my_test_dump",

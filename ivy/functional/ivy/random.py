@@ -80,6 +80,11 @@ def _check_valid_scale(std):
     )
 
 
+def _check_shapes_broadcastable(out, inp):
+    if out is not None:
+        ivy.assertions.check_shapes_broadcastable(out, inp)
+
+
 # Extra #
 # ------#
 
@@ -94,7 +99,7 @@ def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
     high: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    shape: Optional[Union[ivy.Array, ivy.Shape, ivy.NativeShape]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     seed: Optional[int] = None,
@@ -179,8 +184,8 @@ def random_uniform(
     ivy.array([0.475, 0.878])
 
     >>> z = ivy.zeros((2,))
-    >>> ivy.random_uniform(low=x, high=y, out=z)
-    ivy.array([9.41, 7.17])
+    >>> ivy.random_uniform(low=x, high=y, out=z, seed=42)
+    ivy.array([6.67270088, 7.31128597])
 
     >>> ivy.random_uniform(low=x, high=y, device='cpu')
     ivy.array([6.88, 6.75])
@@ -254,9 +259,9 @@ def random_normal(
     >>> ivy.random_normal(shape=3)
     ivy.array([-0.73  ,  0.0922, -0.515 ])
 
-    >>> ivy.random_normal(shape=(2,3))
-    ivy.array([[-0.361 ,  0.596 , -0.247 ],
-               [-1.39  ,  0.0426, -0.627 ]])
+    >>> ivy.random_normal(shape=(2, 3), seed=42)
+    ivy.array([[ 0.49671414, -0.1382643 ,  0.64768857],
+           [ 1.5230298 , -0.23415337, -0.23413695]])
 
     >>> ivy.random_normal(mean=3.0, std=6.0)
     ivy.array(4.9213753)
@@ -362,10 +367,10 @@ def multinomial(
     >>> print(y)
     ivy.array([[1, 8, 7, 8, 3]])
 
-    >>> y = ivy.multinomial(10, 5, batch_size=2)
+    >>> y = ivy.multinomial(10, 5, batch_size=2, seed=42)
     >>> print(y)
-    ivy.array([[9, 7, 9, 0, 7],
-       [7, 3, 8, 5, 4]])
+    ivy.array([[3, 9, 7, 5, 1],
+           [1, 0, 8, 6, 7]])
 
     >>> y = ivy.multinomial(10, 5, replace=False)
     >>> print(y)
@@ -469,9 +474,10 @@ def randint(
     >>> print(y)
     ivy.array([[5]])
 
-    >>> y = ivy.randint(2, 20, shape=(2, 2), device='cpu')
+    >>> y = ivy.randint(2, 20, shape=(2, 2), device='cpu', seed=42)
     >>> print(y)
-    ivy.array([[5,8],[9,3]])
+    ivy.array([[ 8, 16],
+               [12,  9]])
 
     >>> x = ivy.array([1, 2, 3])
     >>> ivy.randint(0, 10, shape=(3,), out=x)

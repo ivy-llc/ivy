@@ -424,7 +424,7 @@ For example, the following 3 pieces of code all compile to the exact same comput
 |         return self._layer(x)          |                                         |                                         |
 |                                        | # input                                 | # input                                 |
 | # build network                        | x = ivy.array([1., 2., 3.])             | x = ivy.array([1., 2., 3.])             |
-| net = Network()                        | w = ivy.random_unifrom(                 | w = ivy.random_unifrom(                 |
+| net = Network()                        | w = ivy.random_uniform(                 | w = ivy.random_uniform(                 |
 |                                        |     -1, 1, (3, 3))                      |     -1, 1, (3, 3))                      |
 | # input                                | b = ivy.zeros((3,))                     | b = ivy.zeros((3,))                     |
 | x = ivy.array([1., 2., 3.])            |                                         |                                         |
@@ -464,17 +464,28 @@ Let's take another example, but compile to Tensorflow, NumPy and JAX:
 
 Converting this code to a graph, we get a slightly different graph for each backend:
 
+Tensorflow:
+
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_tf.png?raw=true
    :align: center
    :width: 75%
+
+|
+
+Numpy:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_numpy.png?raw=true
    :align: center
    :width: 75%
 
+|
+
+Jax:
+
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_jax.png?raw=true
    :align: center
    :width: 75%
+|
 
 The example above further emphasizes that the graph compiler creates a computation graph consisting of backend functions, not Ivy functions.
 Specifically, the same Ivy code compiles to different graphs depending on the selected backend.

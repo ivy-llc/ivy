@@ -3,22 +3,41 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
+from ivy.functional.frontends.numpy import dtype
 
 
 class DeviceArray:
-    def __init__(self, data):
-        self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
+    def __init__(self, array, weak_type=False):
+        self._ivy_array = (
+            ivy.array(array) if not isinstance(array, ivy.Array) else array
+        )
+        self.weak_type = weak_type
 
     def __repr__(self):
-        return (
-            "ivy.functional.frontends.jax.DeviceArray("
-            + str(ivy.to_list(self.data))
-            + ")"
+        main = (
+            "ivy.frontends.jax.DeviceArray("
+            + str(ivy.to_list(self._ivy_array))
+            + ", dtype="
+            + str(self._ivy_array.dtype)
         )
+        if self.weak_type:
+            return main + ", weak_type=True)"
+        return main + ")"
+
+    # Properties #
+    # ---------- #
+
+    @property
+    def ivy_array(self):
+        return self._ivy_array
+
+    @property
+    def dtype(self):
+        return dtype(self._ivy_array.dtype)
 
     @property
     def at(self):
-        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self.data)
+        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self._ivy_array)
 
     # Instance Methods #
     # ---------------- #
@@ -42,10 +61,10 @@ class DeviceArray:
         return jax_frontend.lax.mul(other, self)
 
     def __div__(self, other):
-        return jax_frontend.lax.div(self, other)
+        return jax_frontend.numpy.divide(self, other)
 
     def __rdiv__(self, other):
-        return jax_frontend.lax.div(other, self)
+        return jax_frontend.numpy.divide(other, self)
 
     def __mod__(self, other):
         return jax_frontend.numpy.mod(self, other)
@@ -54,10 +73,10 @@ class DeviceArray:
         return jax_frontend.numpy.mod(other, self)
 
     def __truediv__(self, other):
-        return jax_frontend.lax.div(self, other)
+        return jax_frontend.numpy.divide(self, other)
 
     def __rtruediv__(self, other):
-        return jax_frontend.lax.div(other, self)
+        return jax_frontend.numpy.divide(other, self)
 
     def __matmul__(self, other):
         return jax_frontend.numpy.dot(self, other)
@@ -66,7 +85,7 @@ class DeviceArray:
         return jax_frontend.numpy.dot(other, self)
 
     def __pos__(self):
-        return ivy.positive(self)
+        return self
 
     def __neg__(self):
         return jax_frontend.lax.neg(self)
@@ -96,7 +115,8 @@ class DeviceArray:
         return jax_frontend.lax.pow(self, other)
 
     def __rpow__(self, other):
-        return jax_frontend.lax.pow(other, self)
+        other = ivy.asarray(other)
+        return jax_frontend.lax.pow(other, self._ivy_array)
 
     def __and__(self, other):
         return jax_frontend.numpy.bitwise_and(self, other)
@@ -131,5 +151,5 @@ class DeviceArray:
     def __rrshift__(self, other):
         return jax_frontend.lax.shift_right_logical(other, self)
 
-    def __getitem__(self, index):
-        return ivy.get_item(self, index)
+    def __getitem__(self, idx):
+        return self.at[idx].get()

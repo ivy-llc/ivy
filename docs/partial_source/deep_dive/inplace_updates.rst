@@ -7,7 +7,6 @@ Inplace Updates
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
 .. _`tf.math.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`jax.numpy.tan`: https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.tan.html?highlight=tan
-.. _`mx.nd.tan`: https://mxnet.apache.org/versions/1.6/api/r/docs/api/mx.nd.tan.html
 .. _`presence of this attribute`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L341
 .. _`by the backend function`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L372
 .. _`by the wrapper`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L377
@@ -153,7 +152,7 @@ As explained in the :ref:`Function Wrapping` section, this wrapping is applied t
 
 In the case of *primary* functions, `handle_out_argument`_ does not handle the backend-specific inplace updates in cases where the backend function being wrapped supports them directly, such as `torch.tan`_ and `numpy.tan`_, which both support the :code:`out` argument directly.
 When implementing backend-specific functions, the attribute :code:`support_native_out` should be added to all functions which wrap a function in the backend supporting inplace updates directly.
-`tf.math.tan`_, `jax.numpy.tan`_ and `mx.nd.tan`_ for example do **not** support inplace updates, and so the :code:`support_native_out` attribute should **not** be added to the :code:`tan` implementations.
+`tf.math.tan`_ and `jax.numpy.tan`_ for example do **not** support inplace updates, and so the :code:`support_native_out` attribute should **not** be added to the :code:`tan` implementations.
 
 The implementations of :func:`ivy.tan` for each backend are as follows.
 
@@ -232,6 +231,37 @@ Take a function which has multiple possible "paths" through the code:
 Here we still have the :attr:`support_native_out` attribute since we want to take advantage of the native inplace update enabled by :func:`torch.linalg.cholesky` in the first condition.
 However, in the :code:`else` statement, the last operation is :func:`torch.transpose` which does not support the :code:`out` argument, and so the native inplace update can't be performed by torch here.
 This is why we need to call :func:`ivy.inplace_update` explicitly here, to ensure the native inplace update is performed, as well as the :class:`ivy.Array` inplace update.
+
+Another case where we need to use :func:`ivy.inplace_update`_ with a function that has :attr:`support_native_out` is for the example of the :code:`torch` backend implementation of the :func:`ivy.remainder` function
+
+.. code-block:: python
+
+    def remainder(
+        x1: Union[float, torch.Tensor],
+        x2: Union[float, torch.Tensor],
+        /,
+        *,
+        modulus: bool = True,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        if not modulus:
+            res = x1 / x2
+            res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
+            diff = res - res_floored
+            diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+            if ivy.exists(out):
+                if out.dtype != x2.dtype:
+                    return ivy.inplace_update(
+                        out, torch.round(torch.mul(diff, x2)).to(out.dtype)
+                    )
+            return torch.round(torch.mul(diff, x2), out=out).to(x1.dtype)
+        return torch.remainder(x1, x2, out=out).to(x1.dtype)
+
+
+Here, even though the :func:`torch.round` function natively supports the :code:`out` argument, in case the :code:`dtype` of the :code:`out` argument is different
+from the :code:`dtype` of the result of the function, we need to use :func:`ivy.inplace_update`, while still trying to utilize the native :code:`out` argument whenever
+the :code:`dtype` is the same for maximum possible extent of the native inplace update.
 
 **Compositional Functions**
 

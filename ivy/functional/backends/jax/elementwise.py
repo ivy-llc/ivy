@@ -6,7 +6,9 @@ import jax.numpy as jnp
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from . import backend_version
 
 
 def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -57,6 +59,7 @@ def atanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arctanh(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_and(
     x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
@@ -68,12 +71,14 @@ def bitwise_and(
     return jnp.bitwise_and(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_invert(
     x: Union[int, JaxArray], /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.bitwise_not(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_left_shift(
     x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
@@ -85,6 +90,7 @@ def bitwise_left_shift(
     return jnp.left_shift(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_or(
     x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
@@ -96,6 +102,7 @@ def bitwise_or(
     return jnp.bitwise_or(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_right_shift(
     x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
@@ -107,6 +114,7 @@ def bitwise_right_shift(
     return jnp.right_shift(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def bitwise_xor(
     x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
@@ -118,6 +126,7 @@ def bitwise_xor(
     return jnp.bitwise_xor(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def ceil(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
@@ -129,6 +138,7 @@ def cos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.cos(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, backend_version)
 def cosh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.cosh(x)
 
@@ -168,6 +178,7 @@ def expm1(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.expm1(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def floor(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
@@ -175,6 +186,7 @@ def floor(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
         return jnp.floor(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def floor_divide(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
@@ -212,8 +224,21 @@ def isfinite(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isfinite(x)
 
 
-def isinf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.isinf(x)
+def isinf(
+    x: JaxArray,
+    /,
+    *,
+    detect_positive: bool = True,
+    detect_negative: bool = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if detect_positive and detect_negative:
+        return jnp.isinf(x)
+    elif detect_positive:
+        return jnp.isposinf(x)
+    elif detect_negative:
+        return jnp.isneginf(x)
+    return jnp.full_like(x, False, dtype=jnp.bool_)
 
 
 def isnan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -331,6 +356,7 @@ def pow(
     return jnp.power(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def remainder(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
@@ -398,6 +424,7 @@ def tanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tanh(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def trunc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
@@ -409,6 +436,7 @@ def trunc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 # ------#
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def erf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.scipy.special.erf(x)
 

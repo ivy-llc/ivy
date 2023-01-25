@@ -15,24 +15,31 @@ We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
 This page explains the main steps to get started!
 
-Clone Ivy
----------
+Forking and cloning the repo
+----------------------------
 
-The first step is simple, clone Ivy!
+#. You first need to fork the Ivy repository from the repository page here `repo`_ by using the fork button on the top right. This creates a copy of Ivy repository in your GitHub account.
+#. Clone your forked repo to your local machine.
 
 Depending on your preferred mode of cloning, any of the below should work:
 
 .. code-block:: none
 
-    git clone --recurse-submodules git@github.com:unifyai/ivy.git
+    git clone --recurse-submodules git@github.com:YOUR_USERNAME/ivy.git
 
 .. code-block:: none
 
-    git clone --recurse-submodules https://github.com/unifyai/ivy.git
+    git clone --recurse-submodules https://github.com/YOUR_USERNAME/ivy.git
 
 .. code-block:: none
 
-    gh repo clone --recurse-submodules unifyai/ivy your_folder
+    gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
+
+The add Ivy original repository as upstream, to easily sync with latest changes.
+
+.. code-block:: none
+
+    git remote add upstream https://github.com/unifyai/ivy.git
 
 PyCharm
 -------
@@ -233,6 +240,9 @@ MacOS
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
 
+**Important Note**
+
+When setting up on an M1 Mac, you would have to update the Dockerfile to install libraries from :code:`requirements/optional_m1_1.txt` and :code:`requirements/optional_m1_2.txt` instead of :code:`requirements/optional.txt`.
 
 **Video**
 
@@ -452,7 +462,7 @@ Ubuntu
 For windows users, the file path should be entered with "/" (forward-slashes), for other OS it would be the regular "\\" (back-slashes).
 
 GitHub Codespaces
------------------
+*******
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs.
 Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`.
@@ -464,7 +474,7 @@ How cool is that ?!
 **Important Note**
 
 There are several versions of GitHub.
-If you are using the free one you will not have access to GitHub Codespaces, to use Codespaces you have to have access to one of the paid versions which GitHub offers.
+If you are using the free one you will have *limited* access to GitHub Codespaces, you can read the exact quotas available `here <https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces#monthly-included-storage-and-core-hours-for-personal-accounts>`_.
 
 **Pre-requisites**
 

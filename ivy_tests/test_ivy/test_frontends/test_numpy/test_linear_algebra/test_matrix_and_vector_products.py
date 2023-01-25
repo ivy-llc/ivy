@@ -1,4 +1,5 @@
 # global
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -20,27 +21,22 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         max_value=10,
         num_arrays=2,
         min_num_dims=1,
+        max_num_dims=1,
         shared_dtype=True,
     ),
 )
 def test_numpy_outer(
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=xs[0],
@@ -58,24 +54,20 @@ def test_numpy_outer(
         num_arrays=2,
         shared_dtype=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_inner(
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=xs[0],
@@ -86,42 +78,35 @@ def test_numpy_inner(
 # matmul
 @handle_frontend_test(
     fn_tree="numpy.matmul",
-    x=_get_first_matrix_and_dtype(),
-    y=_get_second_matrix_and_dtype(),
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[_get_first_matrix_and_dtype, _get_second_matrix_and_dtype],
+        get_dtypes_kind="numeric",
+    ),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="matmul"
+    ),
 )
 def test_numpy_matmul(
-    x,
-    y,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
+    dtypes_values_casting,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
-    dtype1, x1 = x
-    dtype2, x2 = y
-    dtype, dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=dtype1 + dtype2,
-        get_dtypes_kind="numeric",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x1=x1,
-        x2=x2,
+        x1=x[0],
+        x2=x[1],
         out=None,
+        casting=casting,
+        order="K",
+        dtype=dtype,
         # The arguments below are currently unused.
-        # casting=casting,
-        # order="K",
-        # dtype=dtype,
         # subok=True,
     )
 
@@ -136,25 +121,21 @@ def test_numpy_matmul(
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ),
     n=helpers.ints(min_value=1, max_value=8),
+    test_with_out=st.just(False),
 )
 def test_numpy_matrix_power(
     dtype_and_x,
     n,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -164,27 +145,23 @@ def test_numpy_matrix_power(
 
 # tensordot
 @handle_frontend_test(
-    fn_tree="numpy.linalg.tensordot",
+    fn_tree="numpy.tensordot",
     dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
         helpers.get_dtypes(kind="numeric")
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_tensordot(
     dtype_values_and_axes,
-    as_variable,
-    native_array,
-    num_positional_args,
     frontend,
+    test_flags,
     fn_tree,
 ):
     dtype, a, b, axes = dtype_values_and_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         a=a,
         b=b,

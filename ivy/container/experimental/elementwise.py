@@ -1,5 +1,6 @@
 # global
 from typing import Optional, Union, List, Dict, Tuple
+from numbers import Number
 
 # local
 import ivy
@@ -61,7 +62,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([-0.090, 0.070, -0.057])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "sinc",
             x,
             key_chains=key_chains,
@@ -177,7 +178,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "lcm",
             x1,
             x2,
@@ -284,7 +285,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([ nan,  nan,  nan])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "fmod",
             x1,
             x2,
@@ -377,7 +378,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([ 0,  0,  nan])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "fmax",
             x1,
             x2,
@@ -428,6 +429,99 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_fmax(self, x2, out=out)
 
     @staticmethod
+    def static_fmin(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.fmin. This method simply wraps
+        the function, and so the docstring for ivy.fmin also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            container with the first input arrays.
+        x2
+            container with the second input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise minimums.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([2, 3, 4]),\
+                               b=ivy.array([ivy.nan, 0, ivy.nan]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 5, 2]),\
+                               b=ivy.array([0, ivy.nan, ivy.nan]))
+        >>> ivy.Container.static_fmin(x1, x2)
+        {
+            a: ivy.array([1, 3, 2]),
+            b: ivy.array([0., 0., nan])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_static_method(
+            "fmin",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def fmin(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.fmin. This method simply
+        wraps the function, and so the docstring for ivy.fmin also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the first input arrays.
+        x2
+            container with the second input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise minimums.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([2, 3, 4]),\
+                               b=ivy.array([ivy.nan, 0, ivy.nan]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 5, 2]),\
+                               b=ivy.array([0, ivy.nan, ivy.nan]))
+        >>> x1.fmin(x2)
+        {
+            a: ivy.array([1, 3, 2]),
+            b: ivy.array([0., 0., nan])
+        }
+        """
+        return self.static_fmin(self, x2, out=out)
+
+    @staticmethod
     def static_float_power(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
@@ -470,7 +564,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([1, 1])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "float_power",
             x1,
             x2,
@@ -559,7 +653,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([32., 64., 128.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "exp2",
             x,
             key_chains=key_chains,
@@ -603,6 +697,109 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_exp2(self, out=out)
+
+    @staticmethod
+    def static_copysign(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, Number],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, Number],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.copysign. This method simply wraps
+        the function, and so the docstring for ivy.copysign also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            Container, Array, or scalar to change the sign of
+        x2
+            Container, Array, or scalar from which the new signs are applied
+            Unsigned zeroes are considered positive.
+        out
+            optional output Container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            x1 with the signs of x2.
+            This is a scalar if both x1 and x2 are scalars.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([0,1,2]), b=ivy.array(-1))
+        >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
+        >>> ivy.Container.static_copysign(x1, x2)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(1.)
+        }
+        >>> ivy.Container.static_copysign(23, x1)
+        {
+            a: ivy.array([23., 23., 23.]),
+            b: ivy.array(-23.)
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "copysign",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def copysign(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.copysign. This method simply
+        wraps the function, and so the docstring for ivy.copysign also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container to change the sign of
+        x2
+            Container from which the new signs are applied
+            Unsigned zeroes are considered positive.
+        out
+            optional output Container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            x1 with the signs of x2.
+            This is a scalar if both x1 and x2 are scalars.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([0,1,2]), b=ivy.array(-1))
+        >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
+        >>> x1.copysign(x2)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(1.)
+        }
+        >>> x1.copysign(-1)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(-1.)
+        }
+        """
+        return self.static_copysign(self, x2, out=out)
 
     @staticmethod
     def static_count_nonzero(
@@ -682,7 +879,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([[[3, 4]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "count_nonzero",
             a,
             axis=axis,
@@ -803,7 +1000,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container static method variant of ivy.nansum. This method simply wraps
         the function, and so the docstring for ivy.nansum also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         x
@@ -820,13 +1017,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out
             Alternate output array in which to place the result.
             The default is None.
-        
+
         Returns
         -------
         ret
             A new array holding the result is returned unless out is specified,
             in which it is returned.
-        
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -848,7 +1045,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([7., 0.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "nansum",
             x,
             axis=axis,
@@ -874,7 +1071,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.nansum. This method simply
         wraps the function, and so the docstring for ivy.nansum also applies to this
         method with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -891,13 +1088,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out
             Alternate output array in which to place the result.
             The default is None.
-        
+
         Returns
         -------
         ret
             A new array holding the result is returned unless out is specified,
             in which it is returned.
-        
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -961,7 +1158,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([1., 2., 1.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "gcd",
             x1,
             x2,
@@ -1097,7 +1294,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([True, True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "isclose",
             a,
             b,
@@ -1210,97 +1407,126 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_isposinf(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+    def static_angle(
+        z: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        deg: Optional[bool] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.isposinf. This method simply wraps
-        the function, and so the docstring for ivy.isposinf also applies to this
+        ivy.Container static method variant of ivy.angle. This method simply wraps
+        the function, and so the docstring for ivy.angle also applies to this
         method with minimal changes.
 
         Parameters
         ----------
-        x
-            container with the base input arrays.
+        z
+            Array-like input.
+        deg
+            optional bool.
         out
-            optional output container, for writing the result to.
+            optional output array, for writing the result to.
 
         Returns
         -------
         ret
-            Container including a boolean array with values
-            True where the corresponding element of the input
-            is positive infinity and values False where the
-            element of the input is not positive infinity.
+            Returns an array of angles for each complex number in the input.
+            If def is False(default), angle is calculated in radian and if
+            def is True, then angle is calculated in degrees.
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                                b=ivy.array([5, ivy.inf, ivy.inf]))
-        >>> ivy.Container.static_isposinf(x)
+        >>> ivy.set_backend('tensorflow')
+        >>> x = ivy.Container(a=ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]),
+                                b=ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]))
+        >>> x
         {
-            a: ivy.array([False, True, False]),
-            b: ivy.array([False, True, True])
+            a: ivy.array([-2.25+4.75j, 3.25+5.75j]),
+            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+        }
+        >>> ivy.Container.static_angle(x)
+        {
+            a: ivy.array([2.01317055, 1.05634501]),
+            b: ivy.array([2.01317055, 1.05634501])
+        }
+        >>> ivy.set_backend('numpy')
+        >>> ivy.Container.static_angle(x,deg=True)
+        {
+            a: ivy.array([115.3461759, 60.524111]),
+            b: ivy.array([115.3461759, 60.524111])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
-            "isposinf",
-            x,
+        return ContainerBase.cont_multi_map_in_function(
+            "angle",
+            z,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            deg=deg,
             out=out,
         )
 
-    def isposinf(
+    def angle(
         self: ivy.Container,
         /,
         *,
+        deg: Optional[bool] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.isposinf. This method simply
-        wraps the function, and so the docstring for ivy.isposinf also applies to
+        ivy.Container instance method variant of ivy.angle. This method simply
+        wraps the function, and so the docstring for ivy.angle also applies to
         this method with minimal changes.
 
         Parameters
         ----------
-        self
-            container with the base input arrays.
+        z
+            Array-like input.
+        deg
+            optional bool.
         out
-            optional output container, for writing the result to.
+            optional output array, for writing the result to.
 
         Returns
         -------
         ret
-            Returns container including a boolean array with values
-            True where the corresponding element of the input
-            is positive infinity and values False where the
-            element of the input is not positive infinity.
+            Returns an array of angles for each complex number in the input.
+            If def is False(default), angle is calculated in radian and if
+            def is True, then angle is calculated in degrees.
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                               b=ivy.array([5, ivy.inf, ivy.inf]))
-        >>> x.isposinf()
+        >>> ivy.set_backend('tensorflow')
+        >>> x = ivy.Container(a=ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]),
+                                b=ivy.array([-2.25 + 4.75j, 3.25 + 5.75j]))
+        >>> x
         {
-            a: ivy.array([False, True, False]),
-            b: ivy.array([False, True, True])
+            a: ivy.array([-2.25+4.75j, 3.25+5.75j]),
+            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+        }
+        >>> x.angle()
+        {
+            a: ivy.array([2.01317055, 1.05634501]),
+            b: ivy.array([2.01317055, 1.05634501])
+        }
+        >>> ivy.set_backend('numpy')
+        >>> x.angle(deg=True)
+        {
+            a: ivy.array([115.3461759, 60.524111]),
+            b: ivy.array([115.3461759, 60.524111])
         }
         """
-        return self.static_isposinf(self, out=out)
+        return self.static_angle(self, deg=deg, out=out)
 
     @staticmethod
-    def static_isneginf(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+    def static_imag(
+        val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1310,38 +1536,41 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.isneginf. This method simply wraps
-        the function, and so the docstring for ivy.isneginf also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.imag. This method simply
+        wraps the function, and so the docstring for ivy.imag also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
-        x
-            container with the base input arrays.
+        val
+            Array-like input.
         out
-            optional output container, for writing the result to.
+            optional output array, for writing the result to.
 
         Returns
         -------
         ret
-            Container including a boolean array with values
-            True where the corresponding element of the input
-            is negative infinity and values False where the
-            element of the input is not negative infinity.
+            Returns an Container including arrays with the imaginary part
+            of complex numbers.
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                                b=ivy.array([5, -ivy.inf, -ivy.inf]))
-        >>> ivy.Container.static_isneginf(x)
+        >>> x = ivy.Container(a=ivy.array(np.array([1+2j, 3+4j, 5+6j])),
+                                b=ivy.array(np.array([-2.25 + 4.75j, 3.25 + 5.75j])))
+        >>> x
         {
-            a: ivy.array([False, False, True]),
-            b: ivy.array([False, True, True])
+            a: ivy.array([1.+2.j, 3.+4.j, 5.+6.j]),
+            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+        }
+        >>> ivy.Container.static_imag(x)
+        {
+            a: ivy.array([2., 4., 6.]),
+            b: ivy.array([4.75, 5.75])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
-            "isneginf",
-            x,
+        return ContainerBase.cont_multi_map_in_function(
+            "imag",
+            val,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1349,43 +1578,46 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             out=out,
         )
 
-    def isneginf(
+    def imag(
         self: ivy.Container,
         /,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.isneginf. This method simply
-        wraps the function, and so the docstring for ivy.isneginf also applies to
+        ivy.Container instance method variant of ivy.imag. This method simply
+        wraps the function, and so the docstring for ivy.imag also applies to
         this method with minimal changes.
 
         Parameters
         ----------
-        self
-            container with the base input arrays.
+        val
+            Array-like input.
         out
-            optional output container, for writing the result to.
+            optional output array, for writing the result to.
 
         Returns
         -------
         ret
-            Returns container including a boolean array with values
-            True where the corresponding element of the input
-            is negative infinity and values False where the
-            element of the input is not negative infinity.
+            Returns an Container including arrays with the imaginary part
+            of complex numbers.
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                               b=ivy.array([5, -ivy.inf, -ivy.inf]))
-        >>> x.isneginf()
+        >>> x = ivy.Container(a=ivy.array(np.array([1+2j, 3+4j, 5+6j])),
+                                b=ivy.array(np.array([-2.25 + 4.75j, 3.25 + 5.75j])))
+        >>> x
         {
-            a: ivy.array([False, False, True]),
-            b: ivy.array([False, True, True])
+            a: ivy.array([1.+2.j, 3.+4.j, 5.+6.j]),
+            b: ivy.array([-2.25+4.75j, 3.25+5.75j])
+        }
+        >>> x.imag()
+        {
+            a: ivy.array([2., 4., 6.]),
+            b: ivy.array([4.75, 5.75])
         }
         """
-        return self.static_isneginf(self, out=out)
+        return self.static_imag(self, out=out)
 
     @staticmethod
     def static_nan_to_num(
@@ -1443,7 +1675,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([1., 2., 1.,  5e+100])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "nan_to_num",
             x,
             key_chains=key_chains,
@@ -1499,12 +1731,14 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3, nan]),\
-                               b=ivy.array([1, 2, 3, inf]))
-        >>> x.nan_to_num(posinf=5e+100)
+        >>> a = ivy.array([1., 2, 3, ivy.nan], dtype="float64")
+        >>> b = ivy.array([1., 2, 3, ivy.inf], dtype="float64")
+        >>> x = ivy.Container(a=a, b=b)
+        >>> ret = x.nan_to_num(posinf=5e+100)
+        >>> print(ret)
         {
-            a: ivy.array([1.,  1.,  3.,  0.0])
-            b: ivy.array([1., 2., 1.,  5e+100])
+            a: ivy.array([1., 2., 3., 0.]),
+            b: ivy.array([1.e+000, 2.e+000, 3.e+000, 5.e+100])
         }
         """
         return self.static_nan_to_num(
@@ -1554,7 +1788,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([5.08746284, 5.169925  , 5.32192809])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "logaddexp2",
             x1,
             x2,
@@ -1642,7 +1876,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "signbit",
             x,
             key_chains=key_chains,
@@ -1685,6 +1919,136 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_signbit(self, out=out)
+
+    @staticmethod
+    def static_hypot(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hypot. This method simply wraps
+        the function, and so the docstring for ivy.hypot also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            Input container containing first input array.
+        x2
+            Input container containing second input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the hypot function computed element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.0]),\
+        ...                         b=ivy.array([3.0]))
+        >>> y = ivy.Container(a=ivy.array([3.0]),\
+                                    b=ivy.array([4.0]))
+        >>> ivy.Container.static_hypot(x, y)
+        {
+            a: ivy.array([3.6055]),
+            b: ivy.array([5.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "hypot",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hypot(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.hypot. This method simply
+        wraps the function, and so the docstring for ivy.hypot also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing first input array.
+        x2
+            Input container containing second input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the hypot function computed element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.0]),\
+        ...                         b=ivy.array([3.0]))
+        >>> y = ivy.Container(a=ivy.array([3.0]),\
+                                    b=ivy.array([4.0]))
+        >>> x.hypot(y)
+        {
+            a: ivy.array([3.6055]),
+            b: ivy.array([5.])
+        }
+        """
+        return self.static_hypot(
+            self,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
 
     @staticmethod
     def static_allclose(
@@ -1749,8 +2113,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = ivy.Container.static_allclose(x1, x2)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
 
         >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -1760,11 +2124,11 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = ivy.Container.static_allclose(x1, x2, rtol=1e-3)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "allclose",
             x1,
             x2,
@@ -1833,15 +2197,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
-        ...                         b=ivy.array([1., 2., 3.]))
-        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.]),\
-        ...                         b=ivy.array([1., 2., 3.]))
+        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
         >>> y = x1.allclose(x2)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
 
         >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -1851,8 +2213,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = x1.allclose(x2, rtol=1e-3)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
         """
         return self.static_allclose(
@@ -1867,6 +2229,90 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_diff(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.diff. This method simply wraps
+        the function, and so the docstring for ivy.diff also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container with array-like items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with the n-th discrete difference along
+            the given axis.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
+        {
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "diff",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def diff(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.diff. This method simply
+        wraps the function, and so the docstring for ivy.diff also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container with array-like items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with the n-th discrete difference along the
+            given axis.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
+        {
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
+        }
+        """
+        return self.static_diff(self, out=out)
 
     @staticmethod
     def static_fix(
@@ -1907,7 +2353,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([ 3.0 ])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "fix",
             x,
             key_chains=key_chains,
@@ -2008,7 +2454,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([5.5e-30])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "nextafter",
             x1,
             x2,
@@ -2139,7 +2585,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([0.0006, 0.0244])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "zeta",
             x,
             q,
@@ -2207,6 +2653,424 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_zeta(
             self,
             q,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_gradient(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        spacing: Optional[Union[int, list, tuple]] = 1,
+        edge_order: Optional[int] = 1,
+        axis: Optional[Union[int, list, tuple]] = None,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "gradient",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            spacing=spacing,
+            edge_order=edge_order,
+            axis=axis,
+        )
+
+    def gradient(
+        self: ivy.Container,
+        /,
+        *,
+        spacing: Optional[Union[int, list, tuple]] = 1,
+        edge_order: Optional[int] = 1,
+        axis: Optional[Union[int, list, tuple]] = None,
+    ) -> ivy.Container:
+        """Calculates gradient of x with respect to (w.r.t.) spacing
+        Parameters
+        ----------
+            x
+                input array representing outcomes of the function
+                spacing
+                if not given, indices of x will be used
+                if scalar indices of x will be scaled with this value
+                if array gradient of x w.r.t. spacing
+            edge_order
+                1 or 2, for 'frist order' and 'second order' estimation
+                of boundary values of gradient respectively.
+            axis
+                dimension(s) to approximate the gradient over.
+                By default, partial gradient is computed in every dimension
+
+
+        Returns
+        -------
+        ret
+            Array with values computed from gradient function from
+            inputs
+
+        Examples
+        --------
+        >>> coordinates = ivy.Container(
+        >>>     a=(ivy.array([-2., -1., 1., 4.]),),
+        >>>     b=(ivy.array([2., 1., -1., -4.]),)
+        >>> )
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([4., 1., 1., 16.]),
+        >>>     b=ivy.array([4., 1., 1., 16.])
+        >>> )
+        >>> ivy.gradient(values, spacing=coordinates)
+        {
+            a: ivy.array([-3., -2., 2., 5.]),
+            b: ivy.array([3., 2., -2., -5.])
+        }
+
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]]),
+        >>>     b=ivy.array([[-1, -2, -4, -8], [-10, -20, -40, -80]])
+        >>> )
+        >>> ivy.gradient(values)
+        [{
+            a: ivy.array([[9., 18., 36., 72.],
+                          [9., 18., 36., 72.]]),
+            b: ivy.array([[-9., -18., -36., -72.],
+                          [-9., -18., -36., -72.]])
+        }, {
+            a: ivy.array([[1., 1.5, 3., 4.],
+                          [10., 15., 30., 40.]]),
+            b: ivy.array([[-1., -1.5, -3., -4.],
+                          [-10., -15., -30., -40.]])
+        }]
+
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]]),
+        >>>     b=ivy.array([[-1, -2, -4, -8], [-10, -20, -40, -80]])
+        >>> )
+        >>> ivy.gradient(values, spacing=2.0)
+        [{
+            a: ivy.array([[4.5, 9., 18., 36.],
+                          [4.5, 9., 18., 36.]]),
+            b: ivy.array([[-4.5, -9., -18., -36.],
+                          [-4.5, -9., -18., -36.]])
+        }, {
+            a: ivy.array([[0.5, 0.75, 1.5, 2.],
+                          [5., 7.5, 15., 20.]]),
+            b: ivy.array([[-0.5, -0.75, -1.5, -2.],
+                          [-5., -7.5, -15., -20.]])
+        }]
+
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]]),
+        >>>     b=ivy.array([[-1, -2, -4, -8], [-10, -20, -40, -80]])
+        >>> )
+        >>> ivy.gradient(values, axis=1)
+        {
+            a: ivy.array([[1., 1.5, 3., 4.],
+                          [10., 15., 30., 40.]]),
+            b: ivy.array([[-1., -1.5, -3., -4.],
+                          [-10., -15., -30., -40.]])
+        }
+
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]]),
+        >>>     b=ivy.array([[-1, -2, -4, -8], [-10, -20, -40, -80]])
+        >>> )
+        >>> ivy.gradient(values, spacing = [3., 2.])
+        [{
+            a: ivy.array([[3., 6., 12., 24.],
+                          [3., 6., 12., 24.]]),
+            b: ivy.array([[-3., -6., -12., -24.],
+                          [-3., -6., -12., -24.]])
+        }, {
+            a: ivy.array([[0.5, 0.75, 1.5, 2.],
+                          [5., 7.5, 15., 20.]]),
+            b: ivy.array([[-0.5, -0.75, -1.5, -2.],
+                          [-5., -7.5, -15., -20.]])
+        }]
+
+        >>> coords = ivy.Container(
+        >>>    a=(ivy.array([0, 2]), ivy.array([0, 3, 6, 9])),
+        >>>    b=(ivy.array([0, -2]), ivy.array([0, -3, -6, -9]))
+        >>>)
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]]),
+        >>>     b=ivy.array([[-1, -2, -4, -8], [-10, -20, -40, -80]])
+        >>>)
+        >>> ivy.gradient(values, spacing = coords)
+        [{
+            a: ivy.array([[4.5, 9., 18., 36.],
+                          [4.5, 9., 18., 36.]]),
+            b: ivy.array([[4.5, 9., 18., 36.],
+                          [4.5, 9., 18., 36.]])
+        }, {
+            a: ivy.array([[0.33333333, 0.5, 1., 1.33333333],
+                          [3.33333333, 5., 10., 13.33333333]]),
+            b: ivy.array([[0.33333333, 0.5, 1., 1.33333333],
+                          [3.33333333, 5., 10., 13.33333333]])
+        }]
+
+        """
+        return self.static_gradient(
+            self, spacing=spacing, edge_order=edge_order, axis=axis
+        )
+
+    @staticmethod
+    def static_xlogy(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        y: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.xlogy. This method simply wraps
+        the function, and so the docstring for ivy.xlogy also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container containing first input arrays.
+        y
+            Input container containing second input arrays.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the next representable values of
+            input container's arrays, element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.zeros(3)),\
+        ...                         b=ivy.array([1.0, 2.0, 3.0]))
+        >>> y = ivy.Container(a=ivy.array([-1.0, 0.0, 1.0]),\
+        ...                         b=ivy.array([3.0, 2.0, 1.0]))
+        >>> ivy.Container.static_xlogy(x, y)
+        {
+            a: ivy.array([0.0, 0.0, 0.0]),
+            b: ivy.array([1.0986, 1.3863, 0.0000])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "xlogy",
+            x,
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def xlogy(
+        self: ivy.Container,
+        y: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.xlogy. This method simply
+        wraps the function, and so the docstring for ivy.xlogy also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing first input array.
+        y
+            Input container containing second input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the next representable values of
+            input container's arrays, element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.zeros(3)),\
+        ...                         b=ivy.array([1.0, 2.0, 3.0]))
+        >>> y = ivy.Container(a=ivy.array([-1.0, 0.0, 1.0]),\
+        ...                         b=ivy.array([3.0, 2.0, 1.0]))
+        >>> x.xlogy(y)
+        {
+            a: ivy.array([0.0, 0.0, 0.0]),
+            b: ivy.array([1.0986, 1.3863, 0.0000])
+        }
+        """
+        return self.static_xlogy(
+            self,
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_real(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.real.
+        This method simply wraps the function, and so the docstring for
+        ivy.real also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container. Should have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the test result. An element ``out_i`` is ``out_i``
+            if ``x_i`` is real number part only else ``real number part``,
+            if it contains real and complex part both.
+            The returned array should have a data type of ``float``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1+5j, 0-0j, 1.23j]),
+        ...                   b=ivy.array([7.9, 0.31+3.3j, -4.2-5.9j]))
+        >>> z = ivy.Container.static_real(x)
+        >>> print(z)
+        {
+            a: ivy.array([-1., 0., 0.]),
+            b: ivy.array([7.9, 0.31, -4.2])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "real",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def real(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.real.
+        This method simply wraps the function, and so the docstring
+        for ivy.real also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container. Should have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the test result. 
+            An element ``out_i`` is ``self_i`` if ``self_i`` is real number
+            else ``took real number part only`` if ``self_i``
+            contains real number and complex number both.
+            The returned array should have a data type of ``float``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1j, 0.335+2.345j, 1.23+7j]),\
+                          b=ivy.array([0.0, 1.2+3.3j, 1+0j]))
+        >>> x.real()
+        {
+            a: ivy.array([0., 0.335, 1.23]),
+            b: ivy.array([0.0, 1.2, 1.])
+        }
+        """
+        return self.static_real(
+            self,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

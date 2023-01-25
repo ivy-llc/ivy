@@ -3,8 +3,7 @@ import functools
 import logging
 from types import FunctionType
 from typing import Callable
-
-# import typing
+import inspect
 
 
 # for wrapping (sequence matters)
@@ -13,6 +12,7 @@ FN_DECORATORS = [
     "infer_dtype",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
+    "outputs_to_native_arrays",
     "inputs_to_native_arrays",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
@@ -20,7 +20,7 @@ FN_DECORATORS = [
     "handle_exceptions",
     "with_unsupported_dtypes",
     "handle_nans",
-    "handle_array_like",
+    "handle_array_like_without_promotion",
 ]
 
 
@@ -50,37 +50,42 @@ def _get_first_array(*args, **kwargs):
 # ---------------#
 
 
-def handle_array_like(fn: Callable) -> Callable:
+def handle_array_like_without_promotion(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
-        # args = list(args)
-        # num_args = len(args)
-        # try:
-        #     type_hints = typing.get_type_hints(fn)
-        # except TypeError:
-        #     return fn(*args, **kwargs)
-        # parameters = type_hints
-        # annotations = type_hints.values()
-        #
-        # for i, (annotation, parameter, arg) in enumerate(
-        #     zip(annotations, parameters, args)
-        # ):
-        #     annotation_str = str(annotation)
-        #     if "Array" in annotation_str and all(
-        #         sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
-        #     ):
-        #
-        #         if i < num_args:
-        #             if isinstance(arg, (list, tuple)):
-        #                 args[i] = ivy.array(arg)
-        #         elif parameters in kwargs:
-        #             kwarg = kwargs[parameter]
-        #             if isinstance(kwarg, (list, tuple)):
-        #                 kwargs[parameter] = ivy.array(kwarg)
+        args = list(args)
+        num_args = len(args)
+        try:
+            type_hints = inspect.signature(fn).parameters
+        except (TypeError, ValueError):
+            return fn(*args, **kwargs)
+        parameters = list(type_hints.keys())
+        annotations = [param.annotation for param in type_hints.values()]
+
+        for i, (annotation, parameter, arg) in enumerate(
+            zip(annotations, parameters, args)
+        ):
+            annotation_str = str(annotation)
+            if (
+                ("rray" in annotation_str or "Tensor" in annotation_str)
+                and parameter != "out"
+                and all(
+                    sq not in annotation_str
+                    for sq in ["Sequence", "List", "Tuple", "float", "int", "bool"]
+                )
+            ):
+
+                if i < num_args:
+                    if not ivy.is_array(arg):
+                        args[i] = ivy.array(arg)
+                elif parameters in kwargs:
+                    kwarg = kwargs[parameter]
+                    if not ivy.is_array(arg):
+                        kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_array_like = True
+    new_fn.handle_array_like_without_promotion = True
     return new_fn
 
 
@@ -183,68 +188,50 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        if not ivy.get_array_mode():
-            return ret
         # convert all arrays in the return to `ivy.Array` instances
-        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+        return (
+            ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+            if ivy.get_array_mode()
+            else ret
+        )
 
     new_fn.outputs_to_ivy_arrays = True
     return new_fn
 
 
-def _is_zero_dim_array(x):
-    return x.shape == () and not (ivy.isinf(x) or ivy.isnan(x))
+def output_to_native_arrays(fn: Callable) -> Callable:
+    """
+    Calls the function, and then converts all `ivy.Array` instances in
+    the function return into `ivy.NativeArray` instances.
 
+    Parameters
+    ----------
+    args
+        The arguments to be passed to the function.
 
-def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
+    kwargs
+        The keyword arguments to be passed to the function.
+
+    Returns
+    -------
+        The return of the function, with ivy arrays as native arrays.
+    """
+
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
-        """
-        Calls the function, and then converts all 0 dimensional array instances in
-        the function to float numbers if out argument is not provided.
-
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
-
-        kwargs
-            The keyword arguments to be passed to the function.
-
-        Returns
-        -------
-            The return of the function, with 0 dimensional arrays as float numbers.
-        """
-        # call unmodified function
         ret = fn(*args, **kwargs)
-        data = ret.data
-        if "out" in ivy.arg_names(fn):
-            # get out arg index
-            out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
-            # check if out is None or out is not present in args and kwargs.
-            out_args = (
-                out_arg_pos < len(args) and args[out_arg_pos] is None
-            ) or out_arg_pos >= len(args)
-        else:
-            # no out argument accepted by the function
-            out_args = True
+        return ivy.to_native(ret, nested=True, include_derived={tuple: True})
 
-        out_kwargs = ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs
-        if out_args and out_kwargs:
-            if isinstance(data, tuple):
-                # converting every scalar element of the tuple to float
-                data = ivy.copy_nest(data, to_mutable=True)
-                ret_idx = ivy.nested_argwhere(data, lambda x: x.shape == ())
-                ivy.map_nest_at_indices(data, ret_idx, lambda x: float(x))
-                return data
-            else:
-                # converting the scalar to float
-                if _is_zero_dim_array(data):
-                    return float(data)
-        return ret
-
-    new_fn.zero_dim_arrays_to_float = True
+    new_fn.outputs_to_native_arrays = True
     return new_fn
+
+
+def to_ivy_arrays_and_back(fn: Callable) -> Callable:
+    """
+    Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
+    and return arrays are all converted to `ivy.NativeArray` instances.
+    """
+    return output_to_native_arrays(inputs_to_ivy_arrays(fn))
 
 
 def to_native_arrays_and_back(fn: Callable) -> Callable:
@@ -403,11 +390,24 @@ def handle_out_argument(fn: Callable) -> Callable:
             # compute return, with backend inplace update handled by
             # the backend function
             ret = fn(*args, out=native_out, **kwargs)
-            out.data = ivy.to_native(ret)
+            if isinstance(ret, (tuple, list)):
+                for i in range(len(ret)):
+                    out[i].data = ivy.to_native(ret[i])
+            else:
+                out.data = ivy.to_native(ret)
             return out
         # compute return, and then handle the inplace update explicitly
+
         ret = fn(*args, **kwargs)
-        return ivy.inplace_update(out, ret)
+        if not ivy.is_array(ret) and not ivy.is_ivy_container(ret):
+            return ivy.nested_multi_map(
+                lambda x, _: ivy.inplace_update(
+                    x[0], ivy.astype(x[1], ivy.dtype(x[0]))
+                ),
+                [out, ret],
+            )
+        return ivy.inplace_update(out, ivy.astype(ret, ivy.dtype(out)))
+        # return output matches the dtype of the out array to match numpy and torch
 
     new_fn.handle_out_argument = True
     return new_fn
@@ -442,7 +442,12 @@ def handle_nestable(fn: Callable) -> Callable:
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
         # the passed arguments.
-        cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        if hasattr(ivy.Container, "static_" + fn_name):
+            cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        else:
+            cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
+                fn, *args, **kwargs
+            )
         if ivy.get_nestable_mode() and (
             ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
             or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
@@ -460,7 +465,9 @@ def handle_nestable(fn: Callable) -> Callable:
 # Functions #
 
 
-def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
+def _wrap_function(
+    key: str, to_wrap: Callable, original: Callable, compositional: bool = False
+) -> Callable:
     """Apply wrapping to backend implementation `to_wrap` if the original implementation
     `original` is also wrapped, and if `to_wrap` is not already wrapped. Attributes
     `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to
@@ -473,6 +480,9 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         the new implementation to potentially wrap
     original
         the original implementation of `to_wrap` which tells us which wrappers we need.
+    compositional
+        indicates whether the function being wrapped is compositional
+        (Default Value = ``False``).
 
     Returns
     -------
@@ -489,7 +499,10 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 and not linalg_k.startswith("_")
             ):
                 to_wrap.__dict__[linalg_k] = _wrap_function(
-                    linalg_k, linalg_v, ivy.__dict__[linalg_k]
+                    linalg_k,
+                    linalg_v,
+                    ivy.__dict__[linalg_k],
+                    compositional=compositional,
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
@@ -504,6 +517,18 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
         # wrap decorators
+        mixed = hasattr(original, "mixed_function")
+        if mixed:
+            to_replace = {
+                True: ["inputs_to_ivy_arrays"],
+                False: [
+                    "outputs_to_ivy_arrays",
+                    "inputs_to_native_arrays",
+                ],
+            }
+            for attr in to_replace[compositional]:
+                setattr(original, attr, True)
+
         for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
                 to_wrap = getattr(ivy, attr)(to_wrap)
@@ -604,7 +629,7 @@ def _dtype_device_wrapper_creator(attrib, t):
         }
         for key, value in version_dict.items():
             for i, v in enumerate(value):
-                if v in typesets.keys():
+                if v in typesets:
                     version_dict[key] = (
                         version_dict[key][:i] + typesets[v] + version_dict[key][i + 1 :]
                     )

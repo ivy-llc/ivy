@@ -61,7 +61,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                           [[16., 17., 18., 19.]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "max_pool1d",
             x,
             kernel,
@@ -193,7 +193,7 @@ class ContainerWithLayersExperimental(ContainerBase):
             b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "max_pool2d",
             x,
             kernel,
@@ -254,7 +254,7 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool2d(2, 2), (1, 1), "SAME"))
+        >>> print(x.max_pool2d((2, 2), (1, 1), "SAME"))
         {
             a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
             b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
@@ -328,7 +328,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                              [46, 47]]]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "max_pool3d",
             x,
             kernel,
@@ -463,7 +463,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                           [[14., 15., 16., 17.]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "avg_pool1d",
             x,
             kernel,
@@ -595,7 +595,7 @@ class ContainerWithLayersExperimental(ContainerBase):
             b: (<class ivy.array.array.Array> shape=[2, 3, 2, 2])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "avg_pool2d",
             x,
             kernel,
@@ -656,8 +656,8 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> x = ivy.Container({'a': a, 'b': b})
         >>> print(x.avg_pool2d((2, 2), (1, 1), "SAME"))
         {
-            a: ivy.array([], shape=(2, 0, 2, 2)),
-            b: (<class ivy.array.array.Array> shape=[2, 3, 2, 2])
+            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
         return self.static_avg_pool2d(
@@ -728,7 +728,7 @@ class ContainerWithLayersExperimental(ContainerBase):
                              [36., 37.]]]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "avg_pool3d",
             x,
             kernel,
@@ -790,10 +790,10 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> print(x.max_pool3d(2, 1, "VALID"))
         {
             a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[10., 11.],
-                             [12., 13.]]]],
-                       [[[[34., 35.],
-                             [36., 37.]]]]])
+            b: ivy.array([[[[[20, 21],
+                             [22, 23]]]],
+                       [[[[44, 45],
+                             [46, 47]]]]])
         }
         """
         return self.static_avg_pool3d(
@@ -875,7 +875,7 @@ class ContainerWithLayersExperimental(ContainerBase):
             b: ivy.array([242., -253., 286., -515., 467.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "dct",
             x,
             type=type,
@@ -940,5 +940,321 @@ class ContainerWithLayersExperimental(ContainerBase):
             n=n,
             axis=axis,
             norm=norm,
+            out=out,
+        )
+
+    @staticmethod
+    def static_fft(
+        x: ivy.Container,
+        dim: int,
+        /,
+        *,
+        norm: Optional[str] = "backward",
+        n: Optional[Union[int, Tuple[int]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """ivy.Container static method variant of ivy.fft. This method simply wraps
+        the function, and so the docstring for ivy.fft also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Container containing input volumes *[...,d_in,...]*,
+            where d_in indicates the dimension that needs FFT.
+        dim
+            The dimension along which to take the one dimensional FFT.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        n
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing FFT.
+            Should be a integer greater than 1.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The transformed input.
+
+        Examples
+        --------
+        >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
+        >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
+        >>> c = ivy.Container(a=a, b=b)
+        >>> dims = ivy.Container(a=0, b=0)
+        >>> ivy.Container.static_fft(c, dims)
+        {
+        a: ivy.array([0.+0.j, 12.+0.j, 8.+0.j, 4.+0.j]),
+        b: ivy.array([-3.44509285e-16+1.14423775e-17j, 8.00000000e+00-8.11483250e-16j,
+                       2.33486982e-16+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j,
+                       9.95799250e-17+2.33486982e-16j, 0.00000000e+00+7.66951701e-17j,
+                       1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "fft",
+            x,
+            dim,
+            norm=norm,
+            n=n,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def fft(
+        self: ivy.Container,
+        dim: int,
+        /,
+        *,
+        norm: Optional[str] = "backward",
+        n: Optional[Union[int, Tuple[int]]] = None,
+        out: Optional[ivy.Array] = None,
+    ):
+        """ivy.Container instance method variant of ivy.fft. This method simply wraps
+        the function, and so the docstring for ivy.fft also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container containing input volumes *[...,d_in,...]*,
+            where d_in indicates the dimension that needs FFT.
+        dim
+            The dimension along which to take the one dimensional FFT.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        n
+            Optional argument indicating the sequence length, if given, the input would
+            be padded with zero or truncated to length n before performing FFT.
+            Should be a integer greater than 1.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container containing the transformed inputs.
+
+        Examples
+        --------
+        >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
+        >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
+        >>> c = ivy.Container(a=a, b=b)
+        >>> dims = ivy.Container(a=0, b=0)
+        >>> c.fft(dims)
+        {
+        a: ivy.array([0.+0.j, 12.+0.j, 8.+0.j, 4.+0.j]),
+        b: ivy.array([-3.44509285e-16+1.14423775e-17j, 8.00000000e+00-8.11483250e-16j,
+                       2.33486982e-16+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j,
+                       9.95799250e-17+2.33486982e-16j, 0.00000000e+00+7.66951701e-17j,
+                       1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])
+        }
+        """
+        return self.static_fft(
+            self,
+            dim,
+            norm=norm,
+            n=n,
+            out=out,
+        )
+
+    @staticmethod
+    def static_ifft(
+        x: ivy.Container,
+        dim: int,
+        *,
+        norm: Optional[str] = "backward",
+        n: Optional[Union[int, Tuple[int]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """ivy.Container static method variant of ivy.ifft. This method simply wraps
+        the function, and so the docstring for ivy.ifft also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Container containing input volumes *[...,d_in,...]*,
+            where d_in indicates the dimension that needs IFFT.
+        dim
+            The dimension along which to take the one dimensional IFFT.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        n
+            Optional argument indicating the sequence length, if given, the input would
+            be padded with zero or truncated to length n before performing IFFT.
+            Should be a integer greater than 1.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The transformed input.
+
+        Examples
+        --------
+        >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
+        >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
+        >>> c = ivy.Container(a=a, b=b)
+        >>> dims = ivy.Container(a=0, b=0)
+        >>> ivy.Container.static_ifft(c, dims)
+        {
+        a: ivy.array([0.+0.j, 1.+0.j, 2.+0.j, 3.+0.j]),
+        b: ivy.array([-4.30636606e-17+1.43029718e-18j, 0.00000000e+00+1.53080850e-17j,
+                       1.43029718e-18+1.53080850e-17j, 0.00000000e+00+9.58689626e-18j,
+                       1.24474906e-17+2.91858728e-17j, 0.00000000e+00+1.53080850e-17j,
+                       2.91858728e-17+1.53080850e-17j, 1.00000000e+00-1.01435406e-16j])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "ifft",
+            x,
+            dim,
+            norm=norm,
+            n=n,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def ifft(
+        self: ivy.Container,
+        dim: int,
+        *,
+        norm: Optional[str] = "backward",
+        n: Optional[Union[int, Tuple[int]]] = None,
+        out: Optional[ivy.Array] = None,
+    ):
+        """ivy.Container instance method variant of ivy.ifft. This method simply wraps
+        the function, and so the docstring for ivy.ifft also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container containing input volumes *[...,d_in,...]*,
+            where d_in indicates the dimension that needs IFFT.
+        dim
+            The dimension along which to take the one dimensional IFFT.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        n
+            Optional argument indicating the sequence length, if given, the input
+            would be padded with zero or truncated to length n before performing IFFT.
+            Should be a integer greater than 1.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container containing the transformed inputs.
+
+        Examples
+        --------
+        >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
+        >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
+        >>> c = ivy.Container(a=a, b=b)
+        >>> dims = ivy.Container(a=0, b=0)
+        >>> c.ifft(dims)
+        {
+        a: ivy.array([0.+0.j, 1.+0.j, 2.+0.j, 3.+0.j]),
+        b: ivy.array([-4.30636606e-17+1.43029718e-18j, 0.00000000e+00+1.53080850e-17j,
+                       1.43029718e-18+1.53080850e-17j, 0.00000000e+00+9.58689626e-18j,
+                       1.24474906e-17+2.91858728e-17j, 0.00000000e+00+1.53080850e-17j,
+                       2.91858728e-17+1.53080850e-17j, 1.00000000e+00-1.01435406e-16j])
+        }
+        """
+        return self.static_ifft(
+            self,
+            dim,
+            norm=norm,
+            n=n,
+            out=out,
+        )
+
+    @staticmethod
+    def static_embedding(
+        weight: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        max_norm: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+
+        return ContainerBase.cont_multi_map_in_function(
+            "embedding",
+            weight,
+            indices,
+            max_norm=max_norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def embedding(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        max_norm: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+
+        return self.static_embedding(
+            self,
+            indices,
+            max_norm=max_norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )

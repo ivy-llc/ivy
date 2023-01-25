@@ -36,7 +36,7 @@ def arange(
 ) -> JaxArray:
     if dtype:
         dtype = as_native_dtype(dtype)
-    res = _to_device(jnp.arange(start, stop, step=step, dtype=dtype), device=device)
+    res = _to_device(jnp.arange(start, stop, step, dtype=dtype), device=device)
     if not dtype:
         if res.dtype == jnp.float64:
             return res.astype(jnp.float32)
@@ -145,7 +145,7 @@ def full(
 def full_like(
     x: JaxArray,
     /,
-    fill_value: float,
+    fill_value: Number,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
@@ -231,7 +231,9 @@ def linspace(
 
 
 def meshgrid(
-    *arrays: JaxArray, sparse: bool = False, indexing: str = "xy"
+    *arrays: JaxArray,
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[JaxArray]:
     return jnp.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
@@ -296,27 +298,12 @@ def zeros_like(
 array = asarray
 
 
-def copy_array(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.array(x)
-
-
-def logspace(
-    start: Union[JaxArray, int],
-    stop: Union[JaxArray, int],
-    /,
-    num: int,
-    *,
-    base: float = 10.0,
-    axis: int = None,
-    dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
-    out: Optional[JaxArray] = None,
+def copy_array(
+    x: JaxArray, *, to_ivy_array: Optional[bool] = True, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if axis is None:
-        axis = -1
-    return _to_device(
-        jnp.logspace(start, stop, num, base=base, dtype=dtype, axis=axis), device=device
-    )
+    if to_ivy_array:
+        return ivy.to_ivy(jnp.array(x))
+    return jnp.array(x)
 
 
 def one_hot(

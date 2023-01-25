@@ -1,6 +1,13 @@
 import ivy
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from torch import Generator
+
+try:
+    from torch import Generator
+except ImportError:
+    from types import SimpleNamespace
+
+    Generator = SimpleNamespace
 
 
 def seed() -> int:
@@ -14,6 +21,56 @@ def manual_seed(seed: int):
     return Generator().manual_seed(seed)
 
 
+@with_supported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def multinomial(input, num_samples, replacement=False, *, generator=None, out=None):
-    return ivy.multinomial(input, num_samples, replace=replacement, out=out)
+    return ivy.multinomial(
+        num_samples + 1,  # doesn't matter because `probs` is provided, but should be
+        # greater than the number of samples
+        num_samples,
+        probs=input,
+        replace=replacement,
+        out=out,
+    )
+
+
+@with_supported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def poisson(input, generator=None):
+    return ivy.poisson(input, shape=None)
+
+
+@to_ivy_arrays_and_back
+def rand(
+    size,
+    *,
+    generator=None,
+    out=None,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    pin_memory=False
+):
+    return ivy.random_uniform(
+        shape=size,
+        out=out,
+        dtype=dtype,
+        device=device,
+    )

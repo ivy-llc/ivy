@@ -5,27 +5,40 @@ import jax.numpy as jnp
 
 import ivy
 from ivy.functional.backends.jax import JaxArray
-
+from . import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
 
 # Array API Standard #
 # ------------------ #
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def argmax(
     x: JaxArray,
     /,
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ret = jnp.argmax(x, axis=axis, keepdims=keepdims)
-    if output_dtype:
-        ret = ret.astype(output_dtype)
+    if select_last_index:
+        x = jnp.flip(x, axis=axis)
+        ret = jnp.array(jnp.argmax(x, axis=axis, keepdims=keepdims))
+        if axis is not None:
+            ret = x.shape[axis] - ret - 1
+        else:
+            ret = x.size - ret - 1
+    else:
+        ret = jnp.argmax(x, axis=axis, keepdims=keepdims)
+    if dtype:
+        dtype = ivy.as_native_dtype(dtype)
+        return ret.astype(dtype)
     return ret
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def argmin(
     x: JaxArray,
     /,
@@ -33,17 +46,22 @@ def argmin(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[jnp.dtype] = None,
+    select_last_index: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ret = jnp.argmin(x, axis=axis, keepdims=keepdims)
-    # The returned array must have the default array index data type.
-    if output_dtype is not None:
-        output_dtype = ivy.as_native_dtype(output_dtype)
-        if output_dtype not in (jnp.int32, jnp.int64):
-            return jnp.array(ret, dtype=jnp.int64)
+    if select_last_index:
+        x = jnp.flip(x, axis=axis)
+        ret = jnp.array(jnp.argmin(x, axis=axis, keepdims=keepdims))
+        if axis is not None:
+            ret = x.shape[axis] - ret - 1
         else:
-            return jnp.array(ret, dtype=output_dtype)
-    return jnp.array(ret, dtype=jnp.int64)
+            ret = x.size - ret - 1
+    else:
+        ret = jnp.argmin(x, axis=axis, keepdims=keepdims)
+    if output_dtype:
+        output_dtype = ivy.as_native_dtype(output_dtype)
+        return ret.astype(output_dtype)
+    return ret
 
 
 def nonzero(

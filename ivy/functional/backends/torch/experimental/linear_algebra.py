@@ -2,11 +2,16 @@
 import math
 
 import torch
-from typing import Optional
+from typing import Optional, Tuple
 
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
+
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 
+@with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, backend_version)
 def diagflat(
     x: torch.Tensor,
     /,
@@ -65,7 +70,9 @@ def diagflat(
         )
 
     temp = x - torch.full(x.shape, padding_value).type(x.dtype)
-    diagonal_to_add = torch.diag(temp, diagonal=offset).type(x.dtype)
+    diagonal_to_add = torch.diag(temp, diagonal=offset).type(
+        x.dtype
+    )  # diag does not support float16
 
     diagonal_to_add = diagonal_to_add[tuple(slice(0, n) for n in output_array.shape)]
     diagonal_to_add = diagonal_to_add.to(x.dtype)
@@ -89,6 +96,9 @@ def diagflat(
     return ret
 
 
+diagflat.support_native_out = False
+
+
 def kron(
     a: torch.Tensor,
     b: torch.Tensor,
@@ -100,3 +110,45 @@ def kron(
 
 
 kron.support_native_out = True
+
+
+def matrix_exp(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.exp(x, out=out)
+
+
+matrix_exp.support_native_out = True
+
+
+def eig(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> Tuple[torch.Tensor]:
+    if not torch.is_complex(x):
+        x = x.to(torch.complex128)
+    return torch.linalg.eig(x)
+
+
+eig.support_native_out = False
+
+
+def eigvals(x: torch.Tensor, /) -> torch.Tensor:
+    if not torch.is_complex(x):
+        x = x.to(torch.complex128)
+    return torch.linalg.eigvals(x)
+
+
+eigvals.support_native_out = False
+
+
+def adjoint(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    _check_valid_dimension_size(x)
+    return torch.adjoint(x).resolve_conj()
