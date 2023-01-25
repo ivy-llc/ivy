@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import hypothesis.extra.numpy as nph
 
 
 # local
@@ -336,10 +337,40 @@ def test_dropout1d(
         assert u.shape == v.shape == w.shape
 
 
+@st.composite
+def x_and_separable_conv2d(draw):
+    in_shape = draw(
+        nph.array_shapes(
+            min_dims=4, max_dims=4, min_side=2, max_side=4
+        )
+    )
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=in_shape,
+            num_arrays=1,
+            max_value=100,
+            min_value=-100,
+        )
+    )
+    array_dim = x[0].ndim
+    
+    pointwise_filter = draw(
+        st.tuples(st.integers(1, in_shape[1]), st.integers(1, in_shape[2]))
+    )
+    depthwise_filter = draw(
+        st.tuples(st.integers(1, in_shape[1]), st.integers(1, in_shape[2]))
+    )
+
+    padding = draw(st.sampled_from(["VALID", "SAME"]))
+    strides = draw(st.tuples(st.integers(1, in_shape[1])))
+    return dtype, x, pointwise_filter, depthwise_filter, strides, padding
+
+
 @handle_test(
     fn_tree="functional.ivy.experimental.separable_conv2d",
     ground_truth_backend="jax",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=2, max_dims=2, min_side=1, max_side=4),
+    x_k_s_p=x_and_separable_conv2d(),
 )
 def test_separable_conv2d(
     *,
@@ -349,7 +380,7 @@ def test_separable_conv2d(
     fn_name,
     ground_truth_backend,
 ):
-    dtype, x, stride, pad = x_k_s_p
+    dtype, x, pointwise_filter, depthwise_filter, stride, pad = x_k_s_p
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -359,6 +390,8 @@ def test_separable_conv2d(
         rtol_=1e-2,
         atol_=1e-2,
         x=x[0],
+        pointwise_filter=pointwise_filter,
+        depthwise_filter=depthwise_filter,
         strides=stride,
         padding=pad,
     )
