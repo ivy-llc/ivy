@@ -288,33 +288,32 @@ def depthwise_conv2d(
     out: Optional[np.ndarray] = None,
 ):
     strides = [strides] * 2 if isinstance(strides, int) else strides
-    strides = [strides[1], strides[2]] if len(strides) == 4 else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    filters = np.squeeze(filters, 3) if filters.ndim == 4 else filters
-
     if data_format == "NHWC":
         x = np.transpose(x, (3, 0, 1, 2))
     else:
         x = np.transpose(x, (1, 0, 2, 3))
-    depth = x.shape[0]
+    filters = np.squeeze(filters, 3) if filters.ndim == 4 else filters
     filters = np.transpose(filters, (2, 0, 1))
-    x = np.expand_dims(x, -1)
     filters = np.expand_dims(filters, (-1, -2))
-    x_shape = x[0].shape
-    filter_shape = filters[0].shape
-    filter_h = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
-    filter_w = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
-    if padding == "VALID":
-        out_height = np.ceil(float(x_shape[1] - filter_h + 1) / float(strides[0]))
-        out_width = np.ceil(float(x_shape[2] - filter_w + 1) / float(strides[1]))
+    filter_h = filters.shape[1] + (filters.shape[1] - 1) * (dilations[0] - 1)
+    filter_w = filters.shape[2] + (filters.shape[2] - 1) * (dilations[1] - 1)
+    if isinstance(padding, str):
+        if padding == "VALID":
+            out_height = np.ceil(float(x.shape[2] - filter_h + 1) / float(strides[0]))
+            out_width = np.ceil(float(x.shape[3] - filter_w + 1) / float(strides[1]))
+        else:
+            out_height = np.ceil(float(x.shape[2]) / float(strides[0]))
+            out_width = np.ceil(float(x.shape[3]) / float(strides[1]))
     else:
-        out_height = np.ceil(float(x_shape[1]) / float(strides[0]))
-        out_width = np.ceil(float(x_shape[2]) / float(strides[1]))
+        out_height = np.ceil(float(x.shape[2] - filter_h + padding[0][0] + padding[0][1] + 1) / float(strides[0]))
+        out_width = np.ceil(float(x.shape[3] - filter_w + padding[1][0] + padding[1][1] + 1) / float(strides[1]))
     if data_format == "NHWC":
-        outputs = np.empty([x_shape[0], int(out_height), int(out_width), 0], x.dtype)
+        outputs = np.empty([x.shape[1], int(out_height), int(out_width), 0], x.dtype)
     else:
-        outputs = np.empty([x_shape[0], 0, int(out_height), int(out_width)], x.dtype)
-    for i in range(depth):
+        outputs = np.empty([x.shape[1], 0, int(out_height), int(out_width)], x.dtype)
+    x = np.expand_dims(x, -1)
+    for i in range(x.shape[0]):
         output = conv2d(
             x[i], filters[i], strides, padding, data_format="NHWC", dilations=dilations
         )

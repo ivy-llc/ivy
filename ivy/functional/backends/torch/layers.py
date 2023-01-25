@@ -252,37 +252,15 @@ def depthwise_conv2d(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = torch.as_tensor(x)
-    filters = torch.as_tensor(filters)
     strides = [strides] * 2 if isinstance(strides, int) else strides
-    strides = [strides[1], strides[2]] if len(strides) == 4 else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    filters = ivy.squeeze(filters, 3).to_native() if filters.ndim == 4 else filters
-
-    f_w_after_dilation = filters.shape[1] + (
-        (dilations[1] - 1) * (filters.shape[1] - 1)
-    )
-    f_h_after_dilation = filters.shape[0] + (
-        (dilations[0] - 1) * (filters.shape[0] - 1)
-    )
-    filter_shape = [f_h_after_dilation, f_w_after_dilation]
-    dims_in = filters.shape[-1]
-    filters = torch.unsqueeze(filters, -1)
-    filters = filters.permute(2, 3, 0, 1)
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    x_shape = list(x.shape[2:])
-    pad_h = _handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_w = _handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
-    x = torch.nn.functional.pad(
-        x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
-    )
-
-    if padding != "VALID" and padding != "SAME":
-        raise ivy.exceptions.IvyException(
-            "Invalid padding arg {}\n"
-            'Must be one of: "VALID" or "SAME"'.format(padding)
-        )
+    filters = ivy.squeeze(filters, 3).to_native() if filters.ndim == 4 else filters
+    filters = torch.unsqueeze(filters, -1)
+    dims_in = filters.shape[-2]
+    x = _pad_before_conv(x, filters, strides, padding, 2, dilations)
+    filters = filters.permute(2, 3, 0, 1)
     # noinspection PyArgumentEqualDefault
     res = torch.nn.functional.conv2d(
         x, filters, None, strides, "valid", dilations, dims_in

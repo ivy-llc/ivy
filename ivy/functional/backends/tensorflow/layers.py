@@ -184,10 +184,13 @@ def depthwise_conv2d(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if tf.rank(filters) == 3:
-        filters = tf.expand_dims(filters, -1)
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    strides = [1, strides[0], strides[1], 1]
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
+    if tf.rank(filters) == 3:
+        filters = tf.expand_dims(filters, -1)
     x = _pad_before_conv(x, filters, strides, padding, 2, dilations)
     res = tf.nn.depthwise_conv2d(x, filters, strides, "VALID", "NHWC", dilations)
     if data_format == "NCHW":
