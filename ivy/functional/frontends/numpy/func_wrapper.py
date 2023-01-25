@@ -77,18 +77,14 @@ def handle_numpy_casting(fn: Callable) -> Callable:
         )
         args = list(args)
 
-        args_0dim_idxs = ivy.nested_argwhere(
-            args, lambda x: isinstance(x, (int, float))
+        # check if scalar exists and convert them to 0-dim arrays,
+        # so that their dtypes are handled correctly
+        args_scalar_idxs = ivy.nested_argwhere(
+            args, lambda x: isinstance(x, (int, float, bool))
         )
-        args_0dim_to_check = ivy.multi_index_nest(args, args_0dim_idxs)
-        # kwargs_0dim_idxs = ivy.nested_argwhere(
-        #     kwargs, lambda x: isinstance(x, (int, float))
-        # )
-        # kwargs_0dim_to_check = ivy.multi_index_nest(kwargs, kwargs_0dim_idxs)
-        if args_0dim_to_check:
-            ivy.map_nest_at_indices(args, args_0dim_idxs, lambda x: ivy.array(x))
-        # if kwargs_0dim_to_check:
-        #     ivy.map_nest_at_indices(kwargs, kwargs_0dim_idxs, lambda x: ivy.array(x))
+        args_scalar_to_check = ivy.multi_index_nest(args, args_scalar_idxs)
+        if args_scalar_to_check:
+            ivy.map_nest_at_indices(args, args_scalar_idxs, lambda x: ivy.array(x))
 
         args_idxs = ivy.nested_argwhere(args, ivy.is_array)
         args_to_check = ivy.multi_index_nest(args, args_idxs)
