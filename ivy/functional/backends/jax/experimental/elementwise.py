@@ -121,6 +121,8 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return jnp.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
