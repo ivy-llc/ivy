@@ -192,6 +192,8 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return np.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
