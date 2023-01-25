@@ -146,7 +146,7 @@ def is_non_decreasing(x, name="is_non_decreasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
     if ivy.array(x).size == 2:
-        return ivy.array(x[0] <= x[1])
+        return ivy.array([x[0] <= x[1]])
     return ivy.all(ivy.less_equal(x, ivy.roll(x, -1)))
 
 
@@ -417,3 +417,13 @@ def sigmoid(x, name=None):
 @to_ivy_arrays_and_back
 def tanh(x, name=None):
     return ivy.tanh(x)
+
+
+@to_ivy_arrays_and_back
+def rsqrt(x, name=None):
+    return ivy.reciprocal(ivy.sqrt(x))
+
+
+@to_ivy_arrays_and_back
+def nextafter(x1, x2, name=None):
+    return ivy.nextafter(x1, x2)
