@@ -238,7 +238,7 @@ def sort(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def lexsort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
