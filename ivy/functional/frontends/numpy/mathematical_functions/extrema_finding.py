@@ -14,7 +14,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def minimum(
+def _minimum(
     x1,
     x2,
     /,
@@ -169,7 +169,7 @@ def nanmin(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def maximum(
+def _maximum(
     x1,
     x2,
     /,
