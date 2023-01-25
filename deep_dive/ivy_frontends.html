@@ -69,10 +69,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#the-frontend-basics">The Frontend Basics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#unused-arguments">Unused Arguments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compositions">Compositions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#missing-ivy-functions-and-complex-data-types">Missing Ivy Functions and Complex Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#missing-ivy-functions">Missing Ivy Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#temporary-compositions">Temporary Compositions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-data-types-and-devices">Supported Data Types and Devices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#classes-and-instance-methods">Classes and Instance Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Classes and Instance Methods</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#frontend-data-type-promotion-rules">Frontend Data Type Promotion Rules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#numpy-special-argument-casting">NumPy Special Argument - Casting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#frontends-duplicate-policy">Frontends Duplicate Policy</a></li>
@@ -207,6 +207,16 @@ The only exception to this rule is if the test is failing due to a bug in the Iv
 </ul>
 <p>There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs <a class="reference external" href="https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks">open task</a>.</p>
 <p><strong>NOTE:</strong> Type hints, docstrings and examples are not required when working on frontend functions.</p>
+<p><strong>Frontend Arrays</strong></p>
+<p>The native arrays of each framework have their own attributes and instance methods which differ from the attributes and instance methods of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
+As such we have implemented framework-specific array classes: <code class="xref py py-class docutils literal notranslate"><span class="pre">tf_frontend.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">torch_frontend.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy_frontend.ndarray</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">jax_frontend.DeviceArray</span></code>.
+These classes simply wrap an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>, which is stored in the <code class="code docutils literal notranslate"><span class="pre">ivy_array</span></code> attribute, and behave as closely as possible to the native framework array classes.
+This is explained further in the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_frontends.html#classes-and-instance-methods">Classes and Instance Methods</a> section.</p>
+<p>As we aim to replicate the frontend frameworks as closely as possible, all functions accept their frontend array class (as well as <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>) and return a frontend array.
+However, since most logic in each function is handled by Ivy, the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> must be extracted from any frontend array inputs.
+Therefore we add the wrapper <code class="code docutils literal notranslate"><span class="pre">&#64;to_ivy_arrays_and_back</span></code> to virtually all functions in the frontends.</p>
+<p>There are more framework-specific classes we support in the frontends such as NumPy and Tensorflow <code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code> classes, NumPy and Jax <code class="xref py py-class docutils literal notranslate"><span class="pre">Scalars</span></code>, NumPy <code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix</span></code>, etc.
+All these increase the fidelity of our frontends.</p>
 <p><strong>Jax</strong></p>
 <p>JAX has two distinct groups of functions, those in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> namespace and those in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace.
 The former set of functions map very closely to the API for the Accelerated Linear Algebra (<a class="reference external" href="https://www.tensorflow.org/xla">XLA</a>) compiler, which is used under the hood to run high performance JAX code.
@@ -242,9 +252,12 @@ By referring to the <a class="reference external" href="https://jax.readthedocs.
 In the same manner as our <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function, we simply link its return to <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, and again the computation then depends on the backend framework.</p>
 <p><strong>NumPy</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py</span>
-<span class="nd">@handle_numpy_casting</span>
+<span class="nd">@handle_numpy_out</span>
+<span class="nd">@handle_numpy_dtype</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+<span class="nd">@handle_numpy_casting</span>
+<span class="nd">@from_zero_dim_arrays_to_scalar</span>
+<span class="k">def</span> <span class="nf">_add</span><span class="p">(</span>
     <span class="n">x1</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
@@ -256,30 +269,52 @@ In the same manner as our <code class="xref py py-func docutils literal notransl
     <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="k">if</span> <span class="n">dtype</span><span class="p">:</span>
-        <span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
-        <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x2</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">promote_types_of_numpy_inputs</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">where</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ret</span><span class="p">)),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
-<p>In NumPy, <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> is categorised under <code class="xref py py-mod docutils literal notranslate"><span class="pre">mathematical_functions</span></code> with a sub-category of <code class="xref py py-mod docutils literal notranslate"><span class="pre">arithmetic_operations</span></code> as shown in the <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory.</p>
+<p>In NumPy, <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> is categorised under <code class="xref py py-mod docutils literal notranslate"><span class="pre">mathematical_functions</span></code> with a sub-category of <code class="xref py py-mod docutils literal notranslate"><span class="pre">arithmetic_operations</span></code> as shown in the <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory.
+It is important to note that <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> is a universal function (<a class="reference external" href="https://numpy.org/doc/stable/reference/ufuncs.html">ufunc</a>) in NumPy, thus the function is actually an object with instance methods like <code class="code docutils literal notranslate"><span class="pre">.at</span></code> and <code class="code docutils literal notranslate"><span class="pre">.reduce</span></code>, etc.
+We deal with this in the NumPy frontend by including a <code class="xref py py-class docutils literal notranslate"><span class="pre">ufunc</span></code> class and initialising it in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">__init__</span></code> file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/numpy/__init__.py</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations</span> <span class="kn">import</span> <span class="n">_add</span>
+<span class="n">add</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="s2">&quot;_add&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As shown, we import the above function <code class="xref py py-func docutils literal notranslate"><span class="pre">_add()</span></code> and use it to initialise the <code class="xref py py-class docutils literal notranslate"><span class="pre">ufunc</span></code> object which corresponds to the NumPy <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function.
+Practically the <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> object calls the <code class="xref py py-func docutils literal notranslate"><span class="pre">_add()</span></code> under the hood, but it has all the extra instance methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ufunc</span></code> class.
+All other functions which are <code class="xref py py-class docutils literal notranslate"><span class="pre">ufunc</span></code> objects in NumPy are implemented in the same way.
+Of course if the <code class="xref py py-class docutils literal notranslate"><span class="pre">ufunc</span></code> object and its respective function have the same name, we would run into problems where one would overwrite the other, to prevent this we make the actual function private by adding an underscore in the front of its name.
+Since only the <code class="xref py py-class docutils literal notranslate"><span class="pre">ufunc</span></code> object should be accessible to the user, this approach is sufficient.
+When adding new NumPy functions which are <code class="xref py py-class docutils literal notranslate"><span class="pre">ufuncs</span></code>, it’s important to implement them in this way in order to properly replicate their functionality.
+Namely, a private function needs to be created in the respective sub-category, this function needs to be imported in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">__init__</span></code> file, and a <code class="xref py py-class docutils literal notranslate"><span class="pre">ufunc</span></code> object needs to be created that shares the name of the function.
+For functions which are not <code class="xref py py-class docutils literal notranslate"><span class="pre">ufuncs</span></code>, they are named normally without the underscore and are implemented as any other function.</p>
 <p>The function arguments for this function are slightly more complex due to the extra optional arguments.
 Additional handling code is added to recover the behaviour according to the <a class="reference external" href="https://numpy.org/doc/1.23/reference/generated/numpy.add.html">numpy.add</a> documentation.
-For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified, the arguments will be cast to the desired type through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.astype()</span></code>.
-Additionally, <code class="code docutils literal notranslate"><span class="pre">casting</span></code> and <code class="code docutils literal notranslate"><span class="pre">order</span></code> are handled in the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_numpy_casting</span></code> and <code class="code docutils literal notranslate"><span class="pre">&#64;to_ivy_arrays_and_back</span></code> decorators respectively.
+For example, <code class="code docutils literal notranslate"><span class="pre">&#64;handle_numpy_out</span></code> is added to functions with an <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument and it handles the inplace update of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> specified by <code class="code docutils literal notranslate"><span class="pre">out</span></code>, or the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> wrapped by a frontend <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>.
+This wrapper was added because <code class="code docutils literal notranslate"><span class="pre">out</span></code> can be either a positional or keyword argument in most functions, thus it required some additional logic for proper handling.
+Additionally, <code class="code docutils literal notranslate"><span class="pre">casting</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> are handled in the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_numpy_casting</span></code> wrapper, which casts the input arguments to the desired dtype as specified by <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and the chosen <code class="code docutils literal notranslate"><span class="pre">casting</span></code> rules.
+There’s an additional wrapper for the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument <code class="code docutils literal notranslate"><span class="pre">&#64;handle_numpy_dtype</span></code>.
+This wrapper is included to handle the various formats of the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument which NumPy <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.dtypes.html#specifying-and-constructing-data-types">accepts</a>, such as type strings, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.Dtype</span></code> objects, characters, etc.
+In NumPy, most functions which can return a scalar value return it as a NumPy <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html">Scalar</a>.
+To replicate this we add the wrapper <code class="code docutils literal notranslate"><span class="pre">&#64;from_zero_dim_arrays_to_scalar</span></code> which converts outputs that would normally be 0-dim arrays from Ivy functions, to a NumPy scalar.
+Of course the returned scalar object is actually an Ivy frontend equivalent object which behaves very similarly to the frontend <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>.
+Finally, <code class="code docutils literal notranslate"><span class="pre">order</span></code> is handled in the <code class="code docutils literal notranslate"><span class="pre">&#64;to_ivy_arrays_and_back</span></code> decorator.
 The returned result is then obtained through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> just like the other examples.</p>
 <p>However, the argument <code class="code docutils literal notranslate"><span class="pre">subok</span></code> is completely unhandled here because it controls whether or not subclasses of the <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> should be permitted as inputs to the function.
 All ivy functions by default do enable subclasses of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> to be passed, and the frontend function will be operating with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances rather than <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> instances, and so we omit this argument.
 Again, it has no bearing on input-output behaviour and so this is not a problem when transpiling between frameworks.</p>
 <p>See the section “Unused Arguments” below for more details.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py</span>
-<span class="nd">@from_zero_dim_arrays_to_float</span>
-<span class="nd">@handle_numpy_casting</span>
+<span class="nd">@handle_numpy_out</span>
+<span class="nd">@handle_numpy_dtype</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
+<span class="nd">@handle_numpy_casting</span>
+<span class="nd">@from_zero_dim_arrays_to_scalar</span>
+<span class="k">def</span> <span class="nf">_tan</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -290,8 +325,6 @@ Again, it has no bearing on input-output behaviour and so this is not a problem 
     <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="k">if</span> <span class="n">dtype</span><span class="p">:</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">where</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ret</span><span class="p">)),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
@@ -299,12 +332,13 @@ Again, it has no bearing on input-output behaviour and so this is not a problem 
 </pre></div>
 </div>
 <p>For the second example, <code class="xref py py-func docutils literal notranslate"><span class="pre">tan()</span></code> has a sub-category of <code class="xref py py-mod docutils literal notranslate"><span class="pre">trigonometric_functions</span></code> according to the <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory.
-By referring to the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.tan.html">numpy.tan</a> documentation, we can see it has the same additional arguments as the <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function.
-In the same manner as <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>, we handle the argument <code class="code docutils literal notranslate"><span class="pre">out</span></code>, <code class="code docutils literal notranslate"><span class="pre">where</span></code>, <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, and <code class="code docutils literal notranslate"><span class="pre">order`but</span> <span class="pre">we</span> <span class="pre">omit</span> <span class="pre">support</span> <span class="pre">for</span> <span class="pre">:code:`subok</span></code>.</p>
+By referring to the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.tan.html">numpy.tan</a> documentation, we can see it has the same additional arguments as the <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function and it’s also a <code class="xref py py-class docutils literal notranslate"><span class="pre">ufunc</span></code>.
+In the same manner as <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>, we handle the argument <code class="code docutils literal notranslate"><span class="pre">out</span></code>, <code class="code docutils literal notranslate"><span class="pre">where</span></code>, <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, and <code class="code docutils literal notranslate"><span class="pre">order</span></code> but we omit support for <code class="code docutils literal notranslate"><span class="pre">subok</span></code>.</p>
 <p><strong>TensorFlow</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/math.py</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_tensorflow_casting</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -315,6 +349,8 @@ Just like the previous examples, the implementation wraps <code class="xref py p
 Similar to the omitted argument in the NumPy example above, the <code class="code docutils literal notranslate"><span class="pre">name</span></code> argument does not change the input-output behaviour of the function.
 Rather, this argument is added purely for the purpose of operation logging and retrieval, and also graph visualization in TensorFlow.
 Ivy does not support the unique naming of individual operations, and so we omit support for this particular argument.</p>
+<p>Additionally TensorFlow only allows explicit casting, therefore there are no promotion rules in the TensorFlow frontend, except in the case of array like or scalar inputs, which get casted to the dtype of the other argument if it’s a <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, or the default dtype if both arguments are array like or scalar.
+The function <code class="xref py py-func docutils literal notranslate"><span class="pre">check_tensorflow_casting()</span></code> is added to functions with multiple arguments such as <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>, and it ensures the second argument is the same type as the first, just as TensorFlow does.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/math.py</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -325,7 +361,8 @@ Ivy does not support the unique naming of individual operations, and so we omit 
 By referring to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/tan">tf.math.tan</a> documentation, we add the same arguments, and simply wrap <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> in this case.
 Again, we do not support the <code class="code docutils literal notranslate"><span class="pre">name</span></code> argument for the reasons outlined above.</p>
 <p><strong>NOTE</strong></p>
-<p>Many of the functions in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">tf.raw_ops</span></code> module have identical behaviour to functions in the general TensorFlow namespace e.g <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.argmax()</span></code>, with the exception of functions in the module <code class="xref py py-mod docutils literal notranslate"><span class="pre">tf.raw_ops</span></code>. However, these functions are specified to have key-word only arguments and in some cases they have different argument names.
+<p>Many of the functions in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">tf.raw_ops</span></code> module have identical behaviour to functions in the general TensorFlow namespace e.g <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.argmax()</span></code>.
+However, these functions are specified to have key-word only arguments and in some cases they have different argument names.
 In order to tackle these variations in behaviour, the <code class="code docutils literal notranslate"><span class="pre">map_raw_ops_alias</span></code> decorator was designed to wrap the functions that exist in the TensorFlow namespace, thus reducing unnecessary re-implementations.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/math.py</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
@@ -393,39 +430,31 @@ In contrast, the algorithmic approximation may have a marginal bearing on the fi
 <li><p>the function is unique to a particular frontend framework, and does not exist in the other frameworks</p></li>
 <li><p>the function has extra features and/or arguments on top of the most similar ivy function that is available</p></li>
 </ul>
-<p>In such cases, compositions are required to replicate the function behaviour.</p>
+<p>In such cases, compositions are required to replicate the function behaviour. Although the second case is less common as we try and maintain a superset within Ivy functions.</p>
 <p><strong>Examples</strong></p>
-<p>In the native TensorFlow function <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.cumprod()</span></code>, it supports an extra argument - <code class="code docutils literal notranslate"><span class="pre">reverse</span></code>, which returns a flipped result if <code class="code docutils literal notranslate"><span class="pre">True</span></code>.
-However, the backend <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code> does not support this argument or behaviour.</p>
-<p><strong>Ivy</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/ivy/statistical.py</span>
-<span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>To enable this behaviour, we need to incorporate other Ivy functions which are compositionally able to mimic the required behaviour.
-For example, we can simply reverse the result by calling <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.flip()</span></code> on the result of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code>.</p>
+<p>The native TensorFlow function <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.reduce_logsumexp()</span></code> does not have an equivalent function in Ivy, therefore its composed of multiple Ivy functions instead.</p>
 <p><strong>TensorFlow Frontend</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ret</span>
+<span class="k">def</span> <span class="nf">reduce_logsumexp</span><span class="p">(</span><span class="n">input_tensor</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;reduce_logsumexp&quot;</span><span class="p">):</span>
+    <span class="c1"># stable logsumexp trick</span>
+    <span class="n">max_input_tensor</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">input_tensor</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">input_tensor</span> <span class="o">-</span> <span class="n">max_input_tensor</span><span class="p">),</span>
+                <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+                <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">+</span> <span class="n">max_input_tensor</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">input_tensor</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Through compositions, we can easily meet the required input-output behaviour for the TensorFlow frontend function.</p>
 </section>
-<section id="missing-ivy-functions-and-complex-data-types">
-<h2>Missing Ivy Functions and Complex Data Types<a class="headerlink" href="#missing-ivy-functions-and-complex-data-types" title="Permalink to this heading"></a></h2>
+<section id="missing-ivy-functions">
+<h2>Missing Ivy Functions<a class="headerlink" href="#missing-ivy-functions" title="Permalink to this heading"></a></h2>
 <p>Sometimes, there is a clear omission of an Ivy function, which would make the frontend implementation much simpler.
 For example, at the time of writing, implementing <code class="xref py py-func docutils literal notranslate"><span class="pre">median()</span></code> for the NumPy frontend would require a very manual and heavily compositional implementation.
 However, if the function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.median()</span></code> was added to Ivy’s functional API, then this frontend implementation would become very simple, with some light wrapping around <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.median()</span></code>.</p>
@@ -434,11 +463,6 @@ When you come across such a function which is missing from Ivy, you should creat
 A member of our team will then review this issue, and if the proposed addition is deemed to be timely and sensible, then we will add this function to the “Extend Ivy Functional API” <a class="reference external" href="https://github.com/unifyai/ivy/issues/3856">ToDo list issue</a>.
 At this point in time, you can reserve the function for yourself and get it implemented in a unique PR.
 Once merged, you can then resume working on the frontend function, which will now be a much easier task with the new addition to Ivy.</p>
-<p>Some frontend functions also perform operations on complex inputs such as <code class="xref py py-func docutils literal notranslate"><span class="pre">np.sort_complex()</span></code>.
-As Ivy does not currently support complex data types, these functions cannot be implemented at this time.
-If you come across such a function, you should create an issue for it as described in the <a class="reference external" href="https://lets-unify.ai/ivy/contributing/the_basics.html#todo-list-issues">ToDo List Issues guide</a> and add the label <code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code>.
-This will help others stay away from it and notify the team to be aware of the function once we come around working on complex data type support.
-Please find another function to work on in the meantime.</p>
 </section>
 <section id="temporary-compositions">
 <h2>Temporary Compositions<a class="headerlink" href="#temporary-compositions" title="Permalink to this heading"></a></h2>
@@ -467,67 +491,47 @@ Even if the wrapped Ivy function supports more devices, we should still flag the
 Again, this is only needed if the limitations go beyond those of the framework itself.
 For example, it is not necessary to uniquely flag every single NumPy function as supporting only CPU, as this is a limitation of the entire framework, and this limitation is already <a class="reference external" href="https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21">globally flagged</a>.</p>
 <p>It could also be the case that a frontend function supports a data type, but one or more of the backend frameworks does not, and therefore the frontend function may not support the data type due to backend limitation.
-For example, the frontend function <a class="reference external" href="https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111">jax.lax.cumprod</a> do support all data types, but PyTorch does not support <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> for the function <code class="xref py py-func docutils literal notranslate"><span class="pre">cumprod()</span></code>, even though the framework generally supports handling <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> data type.
+For example, the frontend function <a class="reference external" href="https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111">jax.lax.cumprod</a> does support all data types, but PyTorch does not support <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> for the function <code class="xref py py-func docutils literal notranslate"><span class="pre">cumprod()</span></code>, even though the framework generally supports handling <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> data type.
 In that case, we should flag that the backend function does not support <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> as this is done <a class="reference external" href="https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234">here</a>.</p>
 </section>
-<section id="classes-and-instance-methods">
-<h2>Classes and Instance Methods<a class="headerlink" href="#classes-and-instance-methods" title="Permalink to this heading"></a></h2>
+<section id="id6">
+<h2>Classes and Instance Methods<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h2>
 <p>Most frameworks include instance methods and special methods on their array class for common array processing functions, such as <code class="xref py py-func docutils literal notranslate"><span class="pre">reshape()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">expand_dims()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>.
 This simple design choice comes with many advantages, some of which are explained in our <a class="reference internal" href="../design/ivy_as_a_framework/ivy_array.html#ivy-array"><span class="std std-ref">Ivy Array</span></a> section.</p>
 <p><strong>Important Note</strong>
 Before implementing the instance method or special method, make sure that the regular function in the specific frontend is already implemented.</p>
-<p>In order to implement Ivy’s frontend APIs to the extent that is required for arbitrary code transpilations, it’s necessary for us to also implement these instance methods and special methods of the framework-specific array classes (<code class="xref py py-class docutils literal notranslate"><span class="pre">tf.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">jax.numpy.ndarray</span></code> etc).</p>
+<p>In order to implement Ivy’s frontend APIs to the extent that is required for arbitrary code transpilations, it’s necessary for us to also implement these instance methods and special methods of the framework-specific array classes (<code class="xref py py-class docutils literal notranslate"><span class="pre">tf.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">jax.DeviceArray</span></code> etc).</p>
 <p><strong>Instance Method</strong></p>
 <p><strong>numpy.ndarray</strong></p>
-<p>For an example of how these are implemented, we first show the instance method for <code class="xref py py-meth docutils literal notranslate"><span class="pre">np.ndarray.add()</span></code>, which is implemented in the frontend <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/ndarray/ndarray.py#L23">ndarray class</a>:</p>
+<p>For an example of how these are implemented, we first show the instance method for <code class="xref py py-meth docutils literal notranslate"><span class="pre">np.ndarray.argsort()</span></code>, which is implemented in the frontend <a class="reference external" href="https://github.com/unifyai/ivy/blob/94679019a8331cf9d911c024b9f3e6c9b09cad02/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8">ndarray class</a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/ndarray/ndarray.py</span>
-<span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
-    <span class="n">value</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="k">return</span> <span class="n">np_frontend</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">,</span>
-    <span class="p">)</span>
+<span class="k">def</span> <span class="nf">argsort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np_frontend</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy_array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Under the hood, this simply calls the frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend.add()</span></code> function, which itself is implemented as follows:</p>
+<p>Under the hood, this simply calls the frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend.argsort()</span></code> function, which itself is implemented as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py</span>
-<span class="nd">@handle_numpy_casting</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
-<span class="n">x1</span><span class="p">,</span>
-<span class="n">x2</span><span class="p">,</span>
-<span class="o">/</span><span class="p">,</span>
-<span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="o">*</span><span class="p">,</span>
-<span class="n">where</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">,</span>
-<span class="n">order</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
-<span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">argsort</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="k">if</span> <span class="n">dtype</span><span class="p">:</span>
-    <span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
-    <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x2</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
-<span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">where</span><span class="p">):</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ret</span><span class="p">)),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-<span class="k">return</span> <span class="n">ret</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Special Method</strong></p>
 <p>Some examples referring to the special methods would make things more clear.
 For example lets take a look at how <code class="xref py py-meth docutils literal notranslate"><span class="pre">tf_frontend.tensor.__add__()</span></code> is implemented and how it’s reverse <code class="xref py py-meth docutils literal notranslate"><span class="pre">tf_frontend.tensor.__radd__()</span></code> is implemented.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/tensor.py</span>
-<span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">tf_frontend</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>For the reverse operator of <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/tensor.py</span>
 <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;radd&quot;</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">tf_frontend</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tf_frontend</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy_array</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__radd__</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Here also, both of them simply call the frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">tf_frontend.math.add()</span></code> under the hood.
@@ -536,7 +540,7 @@ The implementation for the <code class="xref py py-func docutils literal notrans
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>numpy.matrix</strong></p>
@@ -551,25 +555,31 @@ Part of the code is shown below as an example:</p>
     <span class="k">def</span> <span class="nf">_init_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_process_str_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">))</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ivy_array</span>
+            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;data must be a 2D array, list, or str&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;data must be an array, list, or str&quot;</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;data must be 2D&quot;</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>With this class available, the supported instance methods can now be included in the class.
 For example, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> has an instance method of <code class="xref py py-meth docutils literal notranslate"><span class="pre">any()</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/matrix/methods.py</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.frontends.numpy</span> <span class="kn">import</span> <span class="nb">any</span>
+<span class="o">...</span>
 <span class="k">def</span> <span class="nf">any</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We need to create these frontend array classes and all of their instance methods and also their special methods such that we are able to transpile code which makes use of these methods.
@@ -581,16 +591,23 @@ In the case of instance methods, we then replace each of the original instance m
 <p>Each frontend framework has its own rules governing the common result type for two array operands during an arithmetic operation.</p>
 <p>In order to ensure that each frontend framework implemented in Ivy has the same data type promotion behaviors as the native framework does, we have implemented data type promotion rules according to framework-specific data type promotion tables for these we are currently supporting as frontends.
 The function can be accessed through calling <code class="xref py py-func docutils literal notranslate"><span class="pre">promote_types_of_&lt;frontend&gt;_inputs()</span></code> and pass in both array operands.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
-<span class="kn">from</span> <span class="nn">ivy.functional.frontends.tensorflow</span> <span class="kn">import</span> <span class="n">promote_types_of_tensorflow_inputs</span>
-<span class="o">...</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/torch/pointwise_ops.py</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">promote_types_of_tensorflow_inputs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nb">input</span><span class="p">,</span> <span class="n">other</span> <span class="o">=</span> <span class="n">torch_frontend</span><span class="o">.</span><span class="n">promote_types_of_torch_inputs</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Although under most cases, array operands being passed into an arithmetic operation function should be the same data type, using the data type promotion rules can add a layer of sanity check to prevent data precision losses or exceptions from further arithmetic operations.</p>
+<p>TensorFlow is a framework where casting is completely explicit, except for array likes and scalars.
+As such there are not promotion rules we replicate for the TensorFlow frontend, instead we check if the two arguments of the function are the same type using <code class="xref py py-func docutils literal notranslate"><span class="pre">check_tensorflow_casting()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
+<span class="nd">@to_ivy_arrays_and_back</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_tensorflow_casting</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="numpy-special-argument-casting">
 <h2>NumPy Special Argument - Casting<a class="headerlink" href="#numpy-special-argument-casting" title="Permalink to this heading"></a></h2>
@@ -602,9 +619,12 @@ It is located in the <a class="reference external" href="https://github.com/unif
 <p>This decorator is then added to the numpy frontend functions with the <code class="code docutils literal notranslate"><span class="pre">casting</span></code> argument.
 An example of the <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function is shown below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py</span>
-<span class="nd">@handle_numpy_casting</span>
+<span class="nd">@handle_numpy_out</span>
+<span class="nd">@handle_numpy_dtype</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+<span class="nd">@handle_numpy_casting</span>
+<span class="nd">@from_zero_dim_arrays_to_scalar</span>
+<span class="k">def</span> <span class="nf">_add</span><span class="p">(</span>
     <span class="n">x1</span><span class="p">,</span>
     <span class="n">x2</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
@@ -616,6 +636,7 @@ An example of the <code class="xref py py-func docutils literal notranslate"><sp
     <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">promote_types_of_numpy_inputs</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">where</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ret</span><span class="p">)),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
@@ -645,9 +666,12 @@ An example of the <code class="xref py py-func docutils literal notranslate"><sp
 </div>
 <p>An example function using this is the <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.isfinite()</span></code> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/logic/array_type_testing.py</span>
-<span class="nd">@handle_numpy_casting_special</span>
+<span class="nd">@handle_numpy_out</span>
+<span class="nd">@handle_numpy_dtype</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">isfinite</span><span class="p">(</span>
+<span class="nd">@handle_numpy_casting_special</span>
+<span class="nd">@from_zero_dim_arrays_to_scalar</span>
+<span class="k">def</span> <span class="nf">_isfinite</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
