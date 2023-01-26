@@ -25,13 +25,6 @@ jobs:
            persist-credentials: false
            submodules: "recursive"
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-           github_token: ${{ secrets.GITHUB_TOKEN }}
-           job_name: ${{ github.job }}
-
        - name: Run Tests
          id: tests
          run: |
