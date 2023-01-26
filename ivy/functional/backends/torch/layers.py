@@ -12,10 +12,6 @@ from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _deconv_length
 
 
-def _out_shape(x, strides, pad, dilations, filters):
-    return (x - 1) * strides - 2 * pad + dilations * (filters - 1) + 1
-
-
 def _pad_before_conv(x, filters, strides, padding, dims, dilations):
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -67,13 +63,7 @@ def _pad_before_conv_tranpose(x, filters, strides, padding, dims, dilations, out
                 not_valid_pad[i] = True
         padding_list = [pad_specific[i] // 2 for i in range(dims)]
     out_shape = [
-        _out_shape(
-            x.shape[i + 2],
-            strides[i],
-            padding_list[i],
-            dilations[i],
-            filters.shape[i + 2],
-        )
+        (x.shape[i + 2] - 1) * strides[i] - 2 * padding_list[i] + dilations[i] * (filters.shape[i + 2] - 1) + 1
         for i in range(dims)
     ]
     output_padding = [max(output_shape[i + 1] - out_shape[i], 0) for i in range(dims)]
