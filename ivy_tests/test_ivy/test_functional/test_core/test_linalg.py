@@ -328,7 +328,8 @@ def test_matrix_power(
         x=x[0],
         n=n,
     )
-
+def test_diagflat():
+    """"""
 
 # matmul
 @handle_test(
