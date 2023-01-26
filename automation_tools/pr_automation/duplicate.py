@@ -25,9 +25,9 @@ def get_all_functions_from_directory(root_dir, startswith='test'):
     return functions_names
 
 def check_duplicate():
-    fn_test_core = get_all_functions_from_directory('ivy_tests/test_ivy/test_functional/test_core')
-    fn_test_nn = get_all_functions_from_directory('ivy_tests/test_ivy/test_functional/test_nn')
-    fn_test_experimental = get_all_functions_from_directory('ivy_tests/test_ivy/test_functional/test_experimental')
+    fn_test_core = get_all_functions_from_directory('ivy/ivy_tests/test_ivy/test_functional/test_core')
+    fn_test_nn = get_all_functions_from_directory('ivy/ivy_tests/test_ivy/test_functional/test_nn')
+    fn_test_experimental = get_all_functions_from_directory('ivy/ivy_tests/test_ivy/test_functional/test_experimental')
     fn_ivy_test = set(fn_test_core).union(set(fn_test_nn))
     common_list = fn_ivy_test.intersection(set(fn_test_experimental))
     return common_list
