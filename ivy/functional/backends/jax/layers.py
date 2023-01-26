@@ -12,8 +12,23 @@ from ivy.functional.ivy.layers import (
     _handle_padding,
     _deconv_length,
     _get_x_data_format,
-    _conv_transpose_padding,
 )
+
+
+def _transpose_padding_helper(k, s, padding, dilation, diff=0):
+    k = (k - 1) * dilation + 1
+    if padding == "SAME":
+        pad_len = k + s - 2
+        pad_len -= diff
+        if s > k - 1:
+            pad_a = k - 1
+        else:
+            pad_a = int(ivy.ceil(pad_len / 2))
+    else:
+        pad_len = k + s - 2 + max(k - s, 0)
+        pad_a = k - 1
+    pad_b = pad_len - pad_a
+    return pad_a, pad_b
 
 
 def _get_tranpose_padding(
@@ -34,7 +49,7 @@ def _get_tranpose_padding(
         for i in range(dims)
     ]
     pad_list = [
-        _conv_transpose_padding(
+        _transpose_padding_helper(
             filter_shape[i], strides[i], padding, dilations[i], shape_diff[i]
         )
         for i in range(dims)
