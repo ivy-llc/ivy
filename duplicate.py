@@ -35,6 +35,7 @@ def check_duplicate():
 if __name__ == "__main__":
     common_set = check_duplicate()
     if len(common_set) != 0:
+        print(common_set)
         exit(1)
 
 # print()
