@@ -30,6 +30,9 @@ def test_dynamic_backend_all_combos( middle_backend, end_backend):
     ivy_cont = ivy.Container({"w": a, "b": b})
     nativ_cont = ivy.Container({"w": tf.Variable([1, 2, 3]), "b": tf.Variable([4, 5, 6])})
 
+    # clear the backend stack after initialization of inputs
+    ivy.clear_backend_stack()
+
     # set dynamic_backend to false for all objects
     ivy_cont.dynamic_backend = False
     nativ_cont.dynamic_backend = False
@@ -37,7 +40,7 @@ def test_dynamic_backend_all_combos( middle_backend, end_backend):
     b.dynamic_backend = False
 
     # set the middle backend
-    ivy.set_backend(middle_backend)
+    ivy.set_backend(middle_backend, dynamic=True)
 
     # set dynamic_backend to true for all objects
     ivy_cont.dynamic_backend = True
@@ -46,7 +49,7 @@ def test_dynamic_backend_all_combos( middle_backend, end_backend):
     b.dynamic_backend = True
 
     # set the final backend
-    ivy.set_backend(end_backend)
+    ivy.set_backend(end_backend, dynamic=True)
 
     # add the necessary asserts to check if the data of the objects are in the correct format
 
@@ -87,7 +90,6 @@ def test_dynamic_backend_all_combos( middle_backend, end_backend):
         if end_backend == "tensorflow":
             assert isinstance(nativ_cont['b'].data, tf.Tensor)
 
-    ivy.clear_backend_stack()
 
 def test_dynamic_backend_setter():
 
@@ -95,20 +97,24 @@ def test_dynamic_backend_setter():
     type_a = type(a.data)
     a.dynamic_backend = False
 
-    ivy.set_backend("tensorflow")
+    # clear the backend stack after initialization of inputs
+    ivy.clear_backend_stack()
+
+    ivy.set_backend("tensorflow", dynamic=True)
     assert type(a.data) == type_a
 
     a.dynamic_backend = True
     assert isinstance(a.data, tf.Tensor)
 
-    ivy.set_backend("torch")
+    ivy.set_backend("torch", dynamic=True)
     assert isinstance(a.data, torch.Tensor)
-
-    ivy.clear_backend_stack()
 
 def test_variables():
 
-    ivy.set_backend("tensorflow")
+    #clear the backend stack
+    ivy.clear_backend_stack()
+
+    ivy.set_backend("tensorflow", dynamic=True)
 
     a = tf.Variable(0)
     b = tf.Variable(1)
@@ -117,13 +123,12 @@ def test_variables():
     stat_cont = ivy.Container({"w": a, "b": b})
     stat_cont.dynamic_backend = False
 
-    ivy.set_backend("torch")
+    ivy.set_backend("torch", dynamic=True)
     assert isinstance(dyn_cont["w"].data, torch.Tensor) and \
            dyn_cont["w"].data.requires_grad == True
 
     assert isinstance(stat_cont["w"], tf.Variable)
 
-    ivy.clear_backend_stack()
 
 def test_dynamic_backend_context_manager():
 

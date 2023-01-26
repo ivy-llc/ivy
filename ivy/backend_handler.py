@@ -229,9 +229,108 @@ def current_backend(*args, **kwargs):
         verbosity.cprint("Using backend from type: {}".format(f))
     return importlib.import_module(_backend_dict[implicit_backend])
 
+variable_ids = set()  # create an empty set to store variable object ids
+numpy_objs = []  # create an empty list to store numpy objects created during 1st conversion step
 
-def set_backend(backend: str):
+def convert_from_source_backend_to_numpy():
+
+    # Dynamic Backend
+    from ivy.functional.ivy.gradients import _is_variable, _variable_data
+    global variable_ids, numpy_objs
+    def _is_var(obj):
+
+        if isinstance(obj, ivy.Container):
+            def _map_fn(x):
+
+                x = x.data if isinstance(x, ivy.Array) else x
+                if x.__class__.__module__ in ("numpy", "jax.interpreters.xla", "jaxlib.xla_extension"):
+                    return False
+
+                return _is_variable(x)
+
+            return obj.cont_map(lambda x, kc: _map_fn(x)).cont_all_true()
+
+        else:
+            obj = obj.data if isinstance(obj, ivy.Array) else obj
+            if obj.__class__.__module__ in ("numpy", "jax.interpreters.xla", "jaxlib.xla_extension"):
+                return False
+            return _is_variable(obj)
+
+    def _remove_intermediate_arrays(arr_list, cont_list):
+        cont_list = [cont.cont_to_flat_list() for cont in cont_list]
+
+        cont_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item) for cont in cont_list for item in cont]
+        arr_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item) for item in arr_list]
+
+        new_objs = {k: v for k, v in zip(arr_ids, arr_list) if k not in cont_ids}
+
+        return list(new_objs.values())
+
+    # get all ivy array and container instances in the project scope
+    array_list, container_list = [[obj for obj in gc.get_objects() if isinstance(obj, obj_type)] for obj_type in
+                                  (ivy.Array, ivy.Container)]
+
+    # filter uninitialized arrays
+    array_list = [arr for arr in array_list if arr.__dict__]
+
+    # remove numpy intermediate objects
+    new_objs = _remove_intermediate_arrays(array_list, container_list)
+    new_objs += container_list
+
+    # now convert all ivy.Array and ivy.Container instances to numpy using the current backend
+    for obj in new_objs:
+
+        if obj.dynamic_backend:
+
+            numpy_objs.append(obj)
+            if _is_var(obj):
+                # add variable object id to set
+                variable_ids.add(id(obj))
+                native_var = _variable_data(obj)
+                np_data = ivy.to_numpy(native_var)
+
+            else:
+                np_data = obj.to_numpy()
+
+            if isinstance(obj, ivy.Container):
+                obj.cont_inplace_update(np_data)
+            else:
+                obj._data = np_data
+
+
+def convert_from_numpy_to_target_backend():
+
+    # Dynamic Backend
+    from ivy.functional.ivy.gradients import _variable
+    global variable_ids, numpy_objs
+
+    # convert all ivy.Array and ivy.Container instances from numpy
+    # to native arrays using the newly set backend
+    for obj in numpy_objs:
+
+        np_arr = obj.data if isinstance(obj, ivy.Array) else obj
+        # check if object was originally a variable
+        if id(obj) in variable_ids:
+            native_arr = ivy.nested_map(
+                np_arr, current_backend().asarray, include_derived=True, shallow=False
+            )
+            new_data = _variable(native_arr)
+
+        else:
+            new_data = ivy.nested_map(
+                np_arr, current_backend().asarray, include_derived=True, shallow=False
+            )
+
+        if isinstance(obj, ivy.Container):
+            obj.cont_inplace_update(new_data)
+        else:
+            obj._data = new_data.data
+
+
+def set_backend(backend: str, dynamic: bool = False):
     """Sets `backend` to be the global backend.
+    Will also convert all Array and Container objects \
+    to the new backend if `dynamic` = True
 
     Examples
     --------
@@ -258,68 +357,8 @@ def set_backend(backend: str):
     if len(backend_stack) == 0:
         _load_static_backends()
 
-    # Dynamic Backend
-    from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
-
-    variable_ids = set()  # create an empty set to store variable object ids
-    numpy_objs = [] # create an empty list to store numpy objects created during 1st conversion step
-    def _is_var(obj):
-
-        if isinstance(obj, ivy.Container):
-            def _map_fn(x):
-
-                x = x.data if isinstance(x, ivy.Array) else x
-                if x.__class__.__module__ in ("numpy", "jax.interpreters.xla","jaxlib.xla_extension"):
-                    return False
-
-                return _is_variable(x)
-
-            return obj.cont_map(lambda x,kc: _map_fn(x)).cont_all_true()
-
-        else:
-            obj = obj.data if isinstance(obj, ivy.Array) else obj
-            if obj.__class__.__module__ in ("numpy", "jax.interpreters.xla", "jaxlib.xla_extension"):
-                return False
-            return _is_variable(obj)
-
-    def _remove_intermediate_arrays(arr_list, cont_list):
-        cont_list = [cont.cont_to_flat_list() for cont in cont_list]
-
-        cont_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item) for cont in cont_list for item in cont]
-        arr_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item) for item in arr_list]
-
-        new_objs = {k:v for k,v in zip(arr_ids, arr_list) if k not in cont_ids}
-
-        return list(new_objs.values())
-    
-    # get all ivy array and container instances in the project scope 
-    array_list, container_list = [[obj for obj in gc.get_objects() if isinstance(obj, obj_type)] for obj_type in
-                                  (ivy.Array, ivy.Container)]
-    
-    # remove numpy intermediate objects
-    new_objs = _remove_intermediate_arrays(array_list,container_list)
-    new_objs += container_list
-
-    # now convert all ivy.Array and ivy.Container instances to numpy using the current backend
-    for obj in new_objs:
-
-        if obj.dynamic_backend:
-
-            numpy_objs.append(obj)
-            if _is_var(obj):
-                # add variable object id to set
-                variable_ids.add(id(obj))
-                native_var = _variable_data(obj)
-                np_data = ivy.to_numpy(native_var)
-
-            else:
-                np_data = obj.to_numpy()
-
-            if isinstance(obj, ivy.Container):
-                obj.cont_inplace_update(np_data)
-            else:
-                obj._data = np_data
-
+    if dynamic:
+        convert_from_source_backend_to_numpy()
 
     # update the global dict with the new backend
     ivy.locks["backend_setter"].acquire()
@@ -350,26 +389,8 @@ def set_backend(backend: str):
             key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
         )
 
-    # now convert all ivy.Array and ivy.Container instances from numpy
-    # to native arrays using the newly set backend
-    for obj in numpy_objs:
-
-        # check if object was originally a variable
-        if id(obj) in variable_ids:
-            native_arr = ivy.nested_map(
-                obj, ivy.array, include_derived=True, shallow=False
-            )
-            new_data = _variable(native_arr)
-
-        else:
-            new_data = ivy.nested_map(
-                obj, ivy.array, include_derived=True, shallow=False
-            )
-
-        if isinstance(obj, ivy.Container):
-            obj.cont_inplace_update(new_data)
-        else:
-            obj._data = new_data.data
+    if dynamic:
+        convert_from_numpy_to_target_backend()
 
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
@@ -481,7 +502,7 @@ def unset_backend():
     <class'tensorflow.python.framework.ops.EagerTensor'>
     """
     backend = None
-    # if the backend stack is empty, nothing is done and we just return `None`
+    # if the backend stack is empty, nothing is done then we just return `None`
     if backend_stack:
         backend = backend_stack.pop(-1)  # remove last backend from the stack
         if backend.current_backend_str() == "numpy":
