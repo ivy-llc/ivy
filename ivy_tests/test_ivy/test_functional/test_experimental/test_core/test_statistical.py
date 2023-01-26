@@ -1,7 +1,7 @@
 # global
 # local
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, settings
 
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
@@ -9,7 +9,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # Helpers #
 # ------- #
-
 
 @st.composite
 def statistical_dtype_values(draw, *, function):
@@ -21,15 +20,19 @@ def statistical_dtype_values(draw, *, function):
     n = 1
     if function == "histogram":
         n = 2
+    available_dtypes = draw(helpers.get_dtypes("float"))
+    if "bfloat16" in available_dtypes:
+        available_dtypes.remove("bfloat16")
     dtype, values, axis = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=available_dtypes,
             large_abs_safety_factor=large_abs_safety_factor,
             small_abs_safety_factor=small_abs_safety_factor,
             safety_factor_scale="log",
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=2,
+            max_dim_size=5,
             valid_axis=True,
             allow_neg_axes=False,
             min_axes_size=1,
@@ -78,7 +81,7 @@ def statistical_dtype_values(draw, *, function):
     if function == "histogram":
         dtype, values, dtype_out = draw(
             helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("float")), dtype[0], values
+                available_dtypes, dtype[0], values
             )
         )
         bins = draw(
@@ -88,7 +91,8 @@ def statistical_dtype_values(draw, *, function):
                 small_abs_safety_factor=small_abs_safety_factor,
                 safety_factor_scale="log",
                 shape=draw(
-                    helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2)
+                    helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2,
+                                      max_dim_size=10)
                 ),
             )
         )

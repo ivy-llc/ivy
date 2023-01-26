@@ -2,7 +2,19 @@ from typing import Optional, Union, Tuple, Sequence
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
+
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    backend_version,
+)
 def histogram(
     a: jnp.ndarray,
     /,
