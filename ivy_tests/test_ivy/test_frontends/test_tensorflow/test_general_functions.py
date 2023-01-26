@@ -120,10 +120,8 @@ def _make_ndarray_helper(draw):
 def test_tensorflow_make_ndarray(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
+    test_flags,
     fn_tree,
     frontend,
 
@@ -131,10 +129,7 @@ def test_tensorflow_make_ndarray(
     input_dtype, tensor = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         on_device=on_device,
         frontend=frontend,
         fn_tree=fn_tree,
