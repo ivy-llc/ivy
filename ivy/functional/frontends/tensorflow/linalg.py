@@ -179,3 +179,10 @@ def cholesky(input, name=None):
     input = symmetrize(input)
 
     return ivy.cholesky(input)
+
+
+@to_ivy_arrays_and_back
+def matmul(a, b, transpose_a=False, transpose_b=False, adjoint_a=False,
+ adjoint_b=False, a_is_sparse=False, b_is_sparse=False, name=None):
+    a, b = check_tensorflow_casting(a, b)
+    return ivy.matmul(a, b)
