@@ -444,3 +444,9 @@ def sinc(input, *, out=None):
 @to_ivy_arrays_and_back
 def hypot(input, other, *, out=None):
     return ivy.hypot(input, other, out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def sigmoid(input, *, out=None):
+    return ivy.sigmoid(input, out=out)
