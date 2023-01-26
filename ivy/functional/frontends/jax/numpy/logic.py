@@ -152,6 +152,7 @@ def invert(x, /):
 def isinf(x, /):
     return ivy.isinf(x)
 
+
 @to_ivy_arrays_and_back
 def logical_not(x, /, out=None, where=None):
     return ivy.logical_not(x, out=out)
