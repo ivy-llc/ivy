@@ -101,47 +101,6 @@ def _dilate_pad_for_tranpose(x, filters, strides, padding, dims, dilations, outp
     return x, filters
 
 
-def _pad_before_conv_tranpose(x, filter_shape, strides, padding, dims, dilations, output_shape):
-    if output_shape is None:
-        new_shape = [
-            _deconv_length(
-                x.shape[i + 1], strides[i], filter_shape[i], padding,
-                dilations[i]
-            )
-            for i in range(dims)
-        ]
-        output_shape = [x.shape[0], *new_shape, filter_shape[-1]]
-    elif len(output_shape) == dims:
-        output_shape = [x.shape[0]] + list(output_shape) + [filter_shape[-1]]
-    pad_specific = [
-        _handle_padding(output_shape[i + 1], strides[i], filter_shape[i], padding)
-        for i in range(dims)
-    ]
-    extra_pad = [
-        max(
-            0,
-            output_shape[i + 1]
-            - (x.shape[i + 1] + filter_shape[i] - 1 - pad_specific[i]),
-        )
-        for i in range(dims)
-    ]
-    pad_top = [filter_shape[i] - 1 - (pad_specific[i] // 2) for i in range(dims)]
-    pad_bot = [
-        filter_shape[i] - 1 - (pad_specific[i] - pad_specific[i] // 2) + extra_pad[i]
-        for i in range(dims)
-    ]
-    pad_list = [(pad_top[i], pad_bot[i]) for i in range(dims)]
-    return np.pad(
-        x,
-        [
-            (0, 0),
-            *pad_list,
-            (0, 0),
-        ],
-        "constant",
-    )
-
-
 def conv1d(
     x: np.ndarray,
     filters: np.ndarray,
@@ -541,16 +500,8 @@ def conv_general_transpose(
 ) -> np.ndarray:
     if data_format == "channel_first":
         x = np.transpose(x, (0, *range(2, dims + 2), 1))
-    strides = [strides] * dims if isinstance(strides, int) else strides
-    dilations = [dilations] * dims if isinstance(dilations, int) else dilations
 
-    for j in range(dims):
-        if dilations[j] > 1:
-            filters = _add_dilations(filters, dilations[j], axis=j)
-        if strides[j] > 1:
-            x = _add_dilations(x, strides[j], axis=j + 1)
-
-    x = _pad_before_conv_tranpose(x, filters.shape, strides, padding, dims, dilations, output_shape)
+    x, filters = _dilate_pad_for_tranpose(x, filters, strides, padding, dims, dilations, output_shape)
 
     x = np.flip(x, (*range(1, dims + 1),))
     res = np.concatenate(
