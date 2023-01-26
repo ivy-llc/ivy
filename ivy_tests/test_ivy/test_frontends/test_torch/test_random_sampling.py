@@ -128,3 +128,37 @@ def test_torch_poisson(
     for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+@handle_frontend_test(
+    fn_tree="torch.rand",
+    dtype=helpers.get_dtypes("float", full=False),
+    size=helpers.get_shape(
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=0,
+        max_dim_size=10,
+    ),
+)
+def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=dtype,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            size=size,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape

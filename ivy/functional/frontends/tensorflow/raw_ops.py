@@ -227,6 +227,11 @@ def Log(*, x, name="Log"):
 
 
 @to_ivy_arrays_and_back
+def Log1p(*, x, name="Log1p"):
+    return ivy.log1p(x)
+
+
+@to_ivy_arrays_and_back
 def LogicalOr(*, x, y, name="LogicalOr"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.logical_or(x, y)
@@ -426,9 +431,7 @@ def Sum(*, input, axis, keep_dims=False, name="Sum"):
 Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 
 
-@to_ivy_arrays_and_back
-def Tanh(*, x, name="Tanh"):
-    return ivy.tanh(x)
+Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
 
 
 @to_ivy_arrays_and_back
