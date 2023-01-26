@@ -20,7 +20,6 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python duplicate.py
            docker run --rm -v pwd:/ivy -v pwd/.hypothesis:/.hypothesis unifyai/ivy:latest python3 duplicate.py
          continue-on-error: true
 
