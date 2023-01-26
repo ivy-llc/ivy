@@ -88,12 +88,9 @@ def run_multiversion_testing(failed):
 
 
 if __name__ == "__main__":
-    redis_url = sys.argv[1]
-    redis_pass = sys.argv[2]
-    mongo_key = sys.argv[3]
-    version_flag = sys.argv[4]
-    if len(sys.argv) > 4:
-        run_id = sys.argv[5]
+    version_flag = sys.argv[1]
+    if len(sys.argv) > 1:
+        run_id = sys.argv[2]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/"
     failed = False
