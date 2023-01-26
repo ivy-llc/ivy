@@ -5,7 +5,10 @@ from typing import Optional, Tuple, Union, List, Callable
 # local
 import ivy
 
+
 # ToDo: implement all methods here as public instance methods
+
+# ToDo: update docstrings and typehints according to ivy\layers
 
 
 class ArrayWithLayers(abc.ABC):
