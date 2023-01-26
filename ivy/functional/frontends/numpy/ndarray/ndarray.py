@@ -262,11 +262,11 @@ class ndarray:
     def __mul__(self, value, /):
         return np_frontend.multiply(self._ivy_array, value)
 
-    def __floordiv__(self, value, /):
-        return np_frontend.floor_divide(self._ivy_array, value)
-
     def __truediv__(self, value, /):
         return np_frontend.true_divide(self._ivy_array, value)
+
+    def __floordiv__(self, value, /):
+        return np_frontend.floor_divide(self._ivy_array, value)
 
     def __rtruediv__(self, value, /):
         return np_frontend.true_divide(value, self._ivy_array)
