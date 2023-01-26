@@ -23,7 +23,7 @@ def _transpose_padding_helper(k, s, padding, dilation, diff=0):
         if s > k - 1:
             pad_a = k - 1
         else:
-            pad_a = int(ivy.ceil(pad_len / 2))
+            pad_a = int(jnp.ceil(pad_len / 2))
     else:
         pad_len = k + s - 2 + max(k - s, 0)
         pad_a = k - 1
