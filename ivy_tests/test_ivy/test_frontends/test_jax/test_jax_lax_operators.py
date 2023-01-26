@@ -1843,9 +1843,10 @@ def test_jax_lax_conv_transpose(
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, out_shape, fc, pref = x_f_d_other
     _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
-    assume(
-        dim_num[1] in ["OIW", "OIHW", "OIDHW"]
-    )
+    if dim_num[1][-1] == 'O':
+        filters = ivy.swapaxes(filters, -1, -2)
+    else:
+        filters = ivy.swapaxes(filters, 0, 1)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -1859,7 +1860,7 @@ def test_jax_lax_conv_transpose(
         rhs_dilation=dilation,
         dimension_numbers=dim_num,
         # transpose_kernel=transpose_kernel,
-        transpose_kernel=True,
+        transpose_kernel=False,
         precision=None,
         preferred_element_type=pref,
     )

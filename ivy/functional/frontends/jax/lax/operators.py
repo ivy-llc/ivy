@@ -149,20 +149,18 @@ def conv_transpose(
     if preferred_element_type:
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
-    dims = len(lhs.shape)-2
-    rhs = ivy.swapaxes(rhs, -1, -2)
-    # if not transpose_kernel:
-    #     rhs = ivy.swapaxes(rhs, -1, -2)
-    rhs = _format_rhs(rhs, dims)
-    # return ivy.conv_general_transpose(
-    return ivy.conv_general_dilated(
+    if dimension_numbers[1][-1] == 'O':
+        rhs = ivy.swapaxes(rhs, -1, -2)
+    else:
+        rhs = ivy.swapaxes(rhs, 0, 1)
+    return ivy.conv_general_transpose(
         lhs,
-        rhs,
+        _format_rhs(rhs, dimension_numbers),
         strides,
         padding,
-        dims=dims,
+        dims=len(lhs.shape)-2,
         data_format=_get_general_df(dimension_numbers[0]),
-        dilations=1 if rhs_dilation is None else rhs_dilation[0],
+        dilations=1 if rhs_dilation is None else rhs_dilation,
     )
 
 
