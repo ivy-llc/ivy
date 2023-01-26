@@ -293,14 +293,19 @@ class Tensor:
                     )
                     return cast_tensor
         else:
-            if self.dtype == kwargs["dtype"] and self.device == kwargs["device"]:
+            if (
+                "dtype" in kwargs
+                and "device" in kwargs
+                and self.dtype == kwargs["dtype"]
+                and self.device == kwargs["device"]
+            ):
                 return self
             else:
                 cast_tensor = self.clone()
                 cast_tensor.ivy_array = ivy.asarray(
                     self._ivy_array,
-                    device=kwargs["device"],
-                    dtype=kwargs["dtype"],
+                    device=kwargs["device"] if "device" in kwargs else self.device,
+                    dtype=kwargs["dtype"] if "dtype" in kwargs else self.dtype,
                 )
                 return cast_tensor
 
