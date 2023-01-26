@@ -75,9 +75,7 @@ def run_multiversion_testing(failed):
     with open("tests_to_run", "r") as f:
         for line in f:
             print(f"run test- {line}")
-            test, versions = line.split(";")
-            frontend, backend = versions.split(",")
-            frontend, backend = frontend.split("=")[1], backend.split("=")[1]
+            test, frontend, backend = line.split(",")
         ret = os.system(
             f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion python3 -m pytest --tb=short {test} --frontend={frontend} --backend={backend}'  # noqa
         )
