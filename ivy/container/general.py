@@ -2362,6 +2362,7 @@ class ContainerWithGeneral(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        include_infs: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2394,30 +2395,7 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            a container of numpy arrays copying all the element of the container
-            ``self``.
-
-        Examples
-        --------
-        With one :code:`ivy.Container` inputs:
-
-        >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
-                            b=ivy.array([1, -1, 0, 0]))
-        >>> y = ivy.Container.static_to_numpy(x)
-        >>> print(y)
-        {
-            a: array([1, 0, 1, 1], dtype=int32),
-            b: array([1, -1, 0, 0], dtype=int32)
-        }
-
-        >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
-                            b=ivy.native_array([1, 1, -1, 0]))
-        >>> y = ivy.Container.static_to_numpy(x)
-        >>> print(y)
-        {
-            a: array([1., 0., 0., 1.], dtype=float32),
-            b: array([1, 1, -1, 0], dtype=int32)
-        }
+            Boolean as to whether the input value is a nan or not.
 
         Examples
         --------
@@ -2454,25 +2432,27 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "value_is_nan",
             x,
+            include_infs=include_infs,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
 
-    def to_numpy(
+    def value_is_nan(
         self: ivy.Container,
         /,
         *,
+        include_infs: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.to_numpy. This method simply wraps
-        the function, and so the docstring for ivy.to_numpy also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.value_is_nan. This method simply
+        wraps the function, and so the docstring for ivy.value_is_nan also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -2496,38 +2476,7 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            a container of numpy arrays copying all the element of the container
-            ``self``.
-
-        Examples
-        --------
-        With one :code:`ivy.Container` instances:
-
-        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
-                    b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
-        >>> y = x.to_numpy()
-        >>> print(y)
-        {
-            a: array([[-1, 0, 1],
-                      [-1, 0, 1],
-                      [1, 0, -1]], dtype=int32),
-            b: array([[-1, 0, 0],
-                      [1, 0, 1],
-                      [1, 1, 1]], dtype=int32)
-        }
-
-        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
-                            b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
-        >>> y = ivy.Container.static_to_numpy(x)
-        >>> print(y)
-        {
-            a: array([[-1, 0, 1],
-                      [-1, 0, 1],
-                      [1, 0, -1]], dtype=int32),
-            b: array([[-1, 0, 0],
-                      [1, 0, 1],
-                      [1, 1, 1]], dtype=int32)
-        }
+            Boolean as to whether the input value is a nan or not.
 
         Examples
         --------
@@ -2555,8 +2504,9 @@ class ContainerWithGeneral(ContainerBase):
             b: False
         }
         """
-        return self.static_to_numpy(
+        return self.static_value_is_nan(
             self,
+            include_infs=include_infs,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2564,7 +2514,7 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_to_scalar(
+    def static_to_numpy(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2575,8 +2525,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.to_scalar. This method simply wraps
-        the function, and so the docstring for ivy.to_scalar also applies to this method
+        ivy.Container static method variant of ivy.to_numpy. This method simply wraps
+        the function, and so the docstring for ivy.to_numpy also applies to this method
         with minimal changes.
 
         Parameters
@@ -2600,8 +2550,8 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            a container of scalar values copying all the element of the container
-            ``x``.
+            a container of numpy arrays copying all the element of the container
+            ``self``.
 
         Examples
         --------
@@ -2612,8 +2562,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_to_numpy(x)
         >>> print(y)
         {
-            a: -1,
-            b: 3
+            a: array([1, 0, 1, 1], dtype=int32),
+            b: array([1, -1, 0, 0], dtype=int32)
         }
 
         >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),
@@ -2621,8 +2571,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_to_numpy(x)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: array([1., 0., 0., 1.], dtype=float32),
+            b: array([1, 1, -1, 0], dtype=int32)
         }
 
         """
@@ -2636,7 +2586,7 @@ class ContainerWithGeneral(ContainerBase):
             map_sequences=map_sequences,
         )
 
-    def to_scalar(
+    def to_numpy(
         self: ivy.Container,
         /,
         *,
@@ -2647,8 +2597,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.to_scalar. This method simply wraps
-        the function, and so the docstring for ivy.to_scalar also applies to this method
+        ivy.Container instance method variant of ivy.to_numpy. This method simply wraps
+        the function, and so the docstring for ivy.to_numpy also applies to this method
         with minimal changes.
 
         Parameters
@@ -2672,7 +2622,7 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            a container of scalar values copying all the element of the container
+            a container of numpy arrays copying all the element of the container
             ``self``.
 
         Examples
@@ -2700,7 +2650,6 @@ class ContainerWithGeneral(ContainerBase):
                     [1, 1, 1]], dtype=int32)
         }
 
-        
         """
         return self.static_to_numpy(
             self,
@@ -3415,6 +3364,7 @@ class ContainerWithGeneral(ContainerBase):
             **axes_lengths,
         )
 
+    @staticmethod
     def static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,

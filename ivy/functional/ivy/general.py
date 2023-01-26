@@ -835,6 +835,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     {
         a: [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
     }
+
     """
     return current_backend(x).to_list(x)
 
@@ -913,6 +914,7 @@ def clip_vector_norm(
         a: ivy.array([0., 0.894, 1.79]),
         b: ivy.array([0.849, 1.13, 1.41])
     }
+
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)

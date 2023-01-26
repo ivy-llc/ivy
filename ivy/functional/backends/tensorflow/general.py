@@ -51,14 +51,6 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, tf.Tensor) or isinstance(x, tf.Variable):
-        if exclusive and isinstance(x, tf.Variable):
-            return False
-        return True
-    return False
-
-
 def array_equal(
     x0: Union[tf.Tensor, tf.Variable],
     x1: Union[tf.Tensor, tf.Variable],
