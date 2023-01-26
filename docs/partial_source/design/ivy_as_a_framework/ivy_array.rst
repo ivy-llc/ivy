@@ -1,17 +1,17 @@
 Ivy Array
 =========
 
-Here, we explain the :code:`ivy.Array` class, which is the class used to represent all arrays in Ivy. Every Ivy method
-returns :code:`ivy.Array` instances for all returned arrays.
+Here, we explain the :class:`ivy.Array` class, which is the class used to represent all arrays in Ivy.
+Every Ivy method returns :class:`ivy.Array` instances for all returned arrays.
 
 The Array Class
 ---------------
 
-Let’s dive straight in and check out what the :code:`ivy.Array` constructor looks like.
+Let’s dive straight in and check out what the :class:`ivy.Array` constructor looks like.
 
 .. code-block:: python
 
-    # ivy/array/__init__.py
+    # ivy/array/array.py
     class Array(
         ArrayWithActivations,
         ArrayWithCreation,
@@ -74,7 +74,6 @@ Let’s dive straight in and check out what the :code:`ivy.Array` constructor lo
             else:
                 self._post_repr = ")"
             self.framework_str = ivy.current_backend_str()
-            self._is_variable = ivy.is_variable(self._data)
 
         # Properties #
         # -----------#
@@ -93,20 +92,19 @@ Let’s dive straight in and check out what the :code:`ivy.Array` constructor lo
         def shape(self):
             return ivy.Shape(self._shape)
 
-We can see that the :code:`ivy.Array` class is a simple wrapper around an :code:`ivy.NativeArray` class (such as  :code:`np.ndarray`, :code:`torch.Tensor` etc), stored in the :code:`self._data` attribute.
+We can see that the :class:`ivy.Array` class is a simple wrapper around an :class:`ivy.NativeArray` class (such as  :class:`np.ndarray`, :class:`torch.Tensor` etc), stored in the :code:`self._data` attribute.
 
-This all makes sense, but the first question you might ask is, why do we need a dedicated :code:`ivy.Array` class at all?
+This all makes sense, but the first question you might ask is, why do we need a dedicated :class:`ivy.Array` class at all?
 
-Can't we just operate with the native arrays directly such as  :code:`np.ndarray`, :code:`torch.Tensor` etc. when calling ivy methods?
+Can't we just operate with the native arrays directly such as  :class:`np.ndarray`, :class:`torch.Tensor` etc. when calling ivy methods?
 
 This is a great question, and has a couple of answers with varying importance.
-Perhaps the most important motivation for having a dedicated :code:`ivy.Array` class is the unification of array operators,
-which we discuss next!
+Perhaps the most important motivation for having a dedicated :class:`ivy.Array` class is the unification of array operators, which we discuss next!
 
 Unifying Operators
 ------------------
 
-Let's assume that there is no such thing as the :code:`ivy.Array` class,
+Let's assume that there is no such thing as the :class:`ivy.Array` class,
 and we are just returning native arrays from all Ivy methods.
 
 Consider the code below:
@@ -119,7 +117,7 @@ Consider the code below:
     print(x)
 
 Let's first assume we use numpy in the backend by calling :code:`ivy.set_backend('numpy')` in the first line.
-:code:`x` would then be a :code:`np.ndarray` instance.
+:code:`x` would then be a :class:`np.ndarray` instance.
 
 In this case, the code will execute without error, printing :code:`array([0, 2, 3])` to the console.
 
@@ -130,7 +128,8 @@ The code will now throw the error :code:`TypeError: '<class 'jaxlib.xla_extensio
 
 As can be seen from the error message, the reason for this is that JAX does not support inplace updates for arrays.
 
-This is a problem. The code written above is **pure Ivy code** which means it should behave identically irrespective of the backend, but as we've just seen it behaves **differently** with different backends.
+This is a problem.
+The code written above is **pure Ivy code** which means it should behave identically irrespective of the backend, but as we've just seen it behaves **differently** with different backends.
 Therefore, in this case, we could not claim that the Ivy code was truly framework-agnostic.
 
 For the purposes of explanation, we can re-write the above code as follows:
@@ -142,12 +141,12 @@ For the purposes of explanation, we can re-write the above code as follows:
     x.__setitem__(0, 0)
     print(x)
 
-If :code:`x` is an :code:`ivy.NativeArray` instance, such as :code:`torch.Tensor` or :code:`np.ndarray`,
-then the :code:`__setitem__` method is defined in the native array class, which is completely outside of our control.
+If :code:`x` is an :class:`ivy.NativeArray` instance, such as :class:`torch.Tensor` or :class:`np.ndarray`,
+then the :meth:`__setitem__` method is defined in the native array class, which is completely outside of our control.
 
-However, if :code:`x` is an :code:`ivy.Array` instance then the :code:`__setitem__` method is defined in the :code:`ivy.Array` class, which we do have control over.
+However, if :code:`x` is an :class:`ivy.Array` instance then the :meth:`__setitem__` method is defined in the :class:`ivy.Array` class, which we do have control over.
 
-Let's take a look at how that method is implemented in the :code:`ivy.Array` class:
+Let's take a look at how that method is implemented in the :class:`ivy.Array` class:
 
 .. code-block:: python
 
@@ -161,12 +160,14 @@ Let's take a look at how that method is implemented in the :code:`ivy.Array` cla
             )._data
             self._dtype = ivy.dtype(self._data)
 
-We can implement inplace updates in the :code:`ivy.Array` class without requiring inplace updates in the backend array classes.
-If the backend does not support inplace updates, then we can use the :code:`ivy.scatter_nd` method to return a new array and store this in the :code:`self._data` attribute.
+We can implement inplace updates in the :class:`ivy.Array` class without requiring inplace updates in the backend array classes.
+If the backend does not support inplace updates, then we can use the :func:`ivy.scatter_nd` method to return a new array and store this in the :code:`self._data` attribute.
 
-Now, with :code:`ivy.Array` instances, our code will run without error, regardless of which backend is selected. We can genuinely say our code is fully framework-agnostic.
+Now, with :class:`ivy.Array` instances, our code will run without error, regardless of which backend is selected.
+We can genuinely say our code is fully framework-agnostic.
 
-The same logic applies to all python operators. For example, if :code:`x` and :code:`y` are both :code:`ivy.NativeArray` instances then the following code **might** execute identically for all backend frameworks:
+The same logic applies to all python operators.
+For example, if :code:`x` and :code:`y` are both :class:`ivy.NativeArray` instances then the following code **might** execute identically for all backend frameworks:
 
 .. code-block:: python
 
@@ -187,14 +188,14 @@ Similarly, for demonstration purposes, this code can be rewritten as:
 Even if this works fine for all backend frameworks now, what if Ivy is updated to support new backends in future, and one of them behaves a little bit differently?
 For example, maybe one framework makes the strange decision to return rounded integer data types when integer arrays are raised to floating point powers.
 
-Without enforcing the use of the :code:`ivy.Array` class for arrays returned from Ivy methods, we would have no way to control this behaviour and unify the output :code:`z` for all backends.
+Without enforcing the use of the :class:`ivy.Array` class for arrays returned from Ivy methods, we would have no way to control this behaviour and unify the output :code:`z` for all backends.
 
-Therefore, with the design of Ivy, we have made the decision to require all arrays returned from Ivy methods to be instances of the :code:`ivy.Array` class.
+Therefore, with the design of Ivy, we have made the decision to require all arrays returned from Ivy methods to be instances of the :class:`ivy.Array` class.
 
 API Monkey Patching
 -------------------
 
-All ivy functions with array inputs/outputs have been wrapped to return :code:`ivy.Array` instances while accepting both :code:`ivy.Array` and :code:`ivy.NativeArray` instances.
+All ivy functions with array inputs/outputs have been wrapped to return :class:`ivy.Array` instances while accepting both :class:`ivy.Array` and :class:`ivy.NativeArray` instances.
 This allows for the control required to provide a unified array interface.
 For more detail on wrapping, see the the `Function Wrapping <https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html>`_ page in deep dive.
 
@@ -205,7 +206,8 @@ Instance Methods
 Taking a look at the class definition, you may wonder why there are so many parent classes!
 The only reason the Array class derives from so many different Array classes is so we can compartmentalize the different array functions into separate classes for better code readability.
 
-All methods in the Ivy functional API are implemented as public instance methods in the :code:`ivy.Array` class via inheritance. For example, a few functions in :code:`ivy.ArrayWithGeneral` are shown below.
+All methods in the Ivy functional API are implemented as public instance methods in the :class:`ivy.Array` class via inheritance.
+For example, a few functions in :class:`ivy.ArrayWithGeneral` are shown below.
 
 .. code-block:: python
 
@@ -221,7 +223,8 @@ All methods in the Ivy functional API are implemented as public instance methods
         def flip(self, axis=None, batch_shape=None):
             return ivy.flip(self, axis, batch_shape)
 
-One benefit of these instance methods is that they can help to tidy up code. For example:
+One benefit of these instance methods is that they can help to tidy up code.
+For example:
 
 .. code-block:: python
 
@@ -234,13 +237,15 @@ One benefit of these instance methods is that they can help to tidy up code. For
     # with ivy.Array
     y = x.reshape((6, 20)).matrix_transpose().flip(axis=0).reshape((2, 10, 6))
 
-In the example above, not only is the :code:`ivy.Array` approach shorter to write, but more importantly there is much better alignment between each function and the function arguments. It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
+In the example above, not only is the :class:`ivy.Array` approach shorter to write, but more importantly there is much better alignment between each function and the function arguments.
+It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
 
-In addition to the functions in the topic-specific parent classes, there are about 50 builtin methods implemented directly in the :code:`ivy.Array` class, most of which directly wrap a method in Ivy's functional API. some examples are given below.
+In addition to the functions in the topic-specific parent classes, there are about 50 builtin methods implemented directly in the :class:`ivy.Array` class, most of which directly wrap a method in Ivy's functional API.
+Some examples are given below.
 
 .. code-block:: python
 
-    # ivy/array/__init__.py
+    # ivy/array/array.py
     def __add__(self, other):
         return ivy.add(self, other)
 
@@ -255,4 +260,4 @@ In addition to the functions in the topic-specific parent classes, there are abo
 
 That should hopefully be enough to get you started with the Ivy Array 😊
 
-Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

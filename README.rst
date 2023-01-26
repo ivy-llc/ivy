@@ -1,4 +1,4 @@
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/repos/ivy/logo.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true
    :width: 100%
 
 .. raw:: html
@@ -21,12 +21,12 @@
         <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy-core.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
-        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/unifyai/ivy/docs?label=docs">
+        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/docs.yml/badge.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Atest-ivy">
-        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/unifyai/ivy/test-ivy?label=tests">
+        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/test-ivy.yml/badge.svg">
     </a>
-    <a href="https://discord.gg/G4aR9Q7DTN">
+    <a href="https://discord.gg/sXyFF8tDtm">
         <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
     </a>
     </div>
@@ -37,32 +37,30 @@
 .. raw:: html
 
     <div style="display: block;" align="center">
-        <img width="3%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img width="6%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://jax.readthedocs.io">
-            <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
+            <img width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
         </a>
-        <img width="6%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://www.tensorflow.org">
-            <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
+            <img width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
         </a>
-        <img width="6%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
-        <a href="https://mxnet.apache.org">
-            <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/mxnet_logo.png">
-        </a>
-        <img width="6%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://pytorch.org">
-            <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
+            <img width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
+        </a>
+        <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <a href="https://numpy.org">
+            <img width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
         </a>
         <img width="6%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
-        <a href="https://numpy.org">
-            <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
-        </a>
     </div>
+
 
 .. _docs: https://lets-unify.ai/ivy
 .. _Colabs: https://drive.google.com/drive/folders/16Oeu25GrQsEJh8w2B0kSrD93w4cWjJAM?usp=sharing
 .. _`contributor guide`: https://lets-unify.ai/ivy/contributing.html
-.. _`open tasks`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html
+.. _`open tasks`: https://lets-unify.ai/ivy/contributing/open_tasks.html
 
 Contents
 --------
@@ -72,7 +70,6 @@ Contents
 * `Background`_
 * `Design`_
 * `Extensions`_
-* `Roadmap`_
 * `Contributing`_
 
 Overview
@@ -101,10 +98,6 @@ Expect breaking changes and sharp edges until we release version 1.2.0 in the ne
 If you would like to contribute,
 please check out our `contributor guide`_,
 and take a look at the `open tasks`_ if you'd like to dive straight in! 🧑‍💻
-
-If you'd like to ask us questions, feel free to join in on any of our weekly "Ask us Anything!" online sessions!
-To see when the next one will be, check out the Events tab at the top left our
-`discord server <https://discord.gg/G4aR9Q7DTN>`_ 🙂
 
 Quick Start
 -----------
@@ -199,7 +192,7 @@ You should then see output like the following:
    ivy.depthwise_conv2d(                  ivy.norm(                                 ivy.to_numpy(
    ivy.dtype(                             ivy.one_hot(                              ivy.transpose(
    ivy.execute_with_gradients(            ivy.ones(                                 ivy.unstack(
-   ivy.exp(                               ivy.ones_like(                            ivy.variable(
+   ivy.exp(                               ivy.ones_like(                            ivy.vector_norm(
    ivy.expand_dims(                       ivy.pinv(                                 ivy.vector_to_skew_symmetric_matrix(
    ivy.flip(                              ivy.randint(                              ivy.verbosity
    ivy.floor(                             ivy.random                                ivy.where(
@@ -229,14 +222,14 @@ Design
 |
 | The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which falls into one of these three categories as follows:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 
 | (a) `Building Blocks <https://lets-unify.ai/ivy/design/building_blocks.html>`_
-| Back-end functional APIs ✅
+| Backend functional APIs ✅
 | Ivy functional API ✅
-| Framework Handler ✅
+| Backend Handler ✅
 | Ivy Compiler 🚧
 |
 | (b) `Ivy as a Transpiler <https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_
@@ -256,28 +249,12 @@ Extensions
 | (b) **Builder [page coming soon!]** ✅
 | :code:`ivy.Trainer`, :code:`ivy.Dataset`, :code:`ivy.Dataloader` and other helpful classes and functions for creating training workflows in only a few lines of code
 
-Roadmap
--------
-
-| We strongly welcome and encourage contributions from the community as we take on this important journey towards ML framework unification. These posts will explain exactly how you can get involved 🙂
-|
-| (a) **Standardize [page coming soon!]** 🚧
-| Align Ivy with the `Consortium for Python Data API Standards <https://data-apis.org>`_
-|
-| (b) **Front-Ends [page coming soon!]** 🚧
-| Create backend-specific front-ends for each supported ML framework
-|
-| (c) **Transpiler [page coming soon!]** 🚧
-| Verify code conversions work for each back-end and front-end combo
-|
-| (d) **Ecosystem [page coming soon!]** 🚧
-| Add multi-framework support to popular repos with a few lines changed
-
 Contributing
 ------------
 
 Join our community as a code contributor, and help accelerate our journey to unify all ML frameworks!
-Find out more in our `Contributing <https://lets-unify.ai/ivy/contributing.html>`_ guide!
+Check out all of our open tasks, and find out more info in our
+`Contributing <https://lets-unify.ai/ivy/contributing.html>`_ guide!
 
 Citation
 --------

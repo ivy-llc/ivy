@@ -1,8 +1,6 @@
 # flake8: noqa
 from . import activations
 from .activations import *
-from . import compilation
-from .compilation import *
 from . import constants
 from .constants import *
 from . import creation
@@ -13,8 +11,6 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
-from . import extensions
-from .extensions import *
 from . import general
 from .general import *
 from . import gradients
@@ -45,3 +41,5 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
+from . import control_flow_ops
+from .control_flow_ops import *

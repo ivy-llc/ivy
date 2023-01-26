@@ -1,7 +1,9 @@
-from typing import Optional, Tuple
+from numbers import Number
+from typing import Optional, Tuple, Union
+
+import numpy as np
 
 import ivy
-import numpy as np
 
 
 # Array API Standard #
@@ -14,13 +16,23 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.argmax(x, axis=axis, keepdims=keepdims, out=out)
-    return np.array(ret)
-
-
-argmax.support_native_out = True
+    if select_last_index:
+        x = np.flip(x, axis=axis)
+        ret = np.argmax(x, axis=axis, keepdims=keepdims)
+        if axis is not None:
+            ret = np.array(x.shape[axis] - ret - 1)
+        else:
+            ret = np.array(x.size - ret - 1)
+    else:
+        ret = np.array(np.argmax(x, axis=axis, keepdims=keepdims))
+    if dtype:
+        dtype = ivy.as_native_dtype(dtype)
+        ret = ret.astype(dtype)
+    return ret
 
 
 def argmin(
@@ -29,20 +41,48 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    output_dtype: Optional[np.dtype] = None,
+    select_last_index: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.argmin(x, axis=axis, keepdims=keepdims, out=out)
-    return np.array(ret)
-
-
-argmin.support_native_out = True
+    if select_last_index:
+        x = np.flip(x, axis=axis)
+        ret = np.argmin(x, axis=axis, keepdims=keepdims)
+        if axis is not None:
+            ret = np.array(x.shape[axis] - ret - 1)
+        else:
+            ret = np.array(x.size - ret - 1)
+    else:
+        ret = np.array(np.argmin(x, axis=axis, keepdims=keepdims))
+    if output_dtype:
+        output_dtype = ivy.as_native_dtype(output_dtype)
+        return ret.astype(output_dtype)
+    return ret
 
 
 def nonzero(
     x: np.ndarray,
     /,
-) -> Tuple[np.ndarray]:
-    return np.nonzero(x)
+    *,
+    as_tuple: bool = True,
+    size: Optional[int] = None,
+    fill_value: Number = 0,
+) -> Union[np.ndarray, Tuple[np.ndarray]]:
+    res = np.nonzero(x)
+
+    if size is not None:
+        if isinstance(fill_value, float):
+            res = np.asarray(res, dtype=np.float64)
+
+        diff = size - res[0].shape[0]
+        if diff > 0:
+            res = np.pad(res, ((0, 0), (0, diff)), constant_values=fill_value)
+        elif diff < 0:
+            res = np.array(res)[:, :size]
+
+    if as_tuple:
+        return tuple(res)
+    return np.stack(res, axis=1)
 
 
 def where(
@@ -54,19 +94,12 @@ def where(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.where(condition, x1, x2)
+    return ivy.astype(np.where(condition, x1, x2), x1.dtype, copy=False)
 
 
 # Extra #
 # ----- #
 
 
-def indices_where(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
-    where_x = np.where(x)
-    if len(where_x) == 1:
-        return np.expand_dims(where_x[0], -1)
-    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1, out=out)
-    return res
-
-
-indices_where.support_native_out = True
+def argwhere(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.argwhere(x)

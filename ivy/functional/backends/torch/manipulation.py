@@ -1,13 +1,23 @@
-# For Review
 # global
-import ivy
-import torch
 import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
+import torch
+
+# local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
+from . import backend_version
+
+
+def _reshape_fortran_torch(x, shape):
+    if len(x.shape) > 0:
+        x = x.permute(*reversed(range(len(x.shape))))
+    return x.reshape(shape[::-1]).permute(list(range(len(shape)))[::-1])
 
 
 # Array API Standard #
@@ -15,7 +25,11 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 
 def concat(
-    xs: List[torch.Tensor], /, *, axis: int = 0, out: Optional[torch.Tensor] = None
+    xs: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
         is_tuple = type(xs) is tuple
@@ -51,13 +65,13 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    num_dims: int = len(x.shape)
+    num_dims = len(x.shape)
     if not num_dims:
         return x
     if axis is None:
-        new_axis: List[int] = list(range(num_dims))
+        new_axis = list(range(num_dims))
     else:
-        new_axis: List[int] = axis
+        new_axis = axis
     if isinstance(new_axis, int):
         new_axis = [new_axis]
     else:
@@ -82,11 +96,23 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    order: Optional[str] = "C",
+    allowzero: Optional[bool] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    if not allowzero:
+        shape = [
+            new_s if con else old_s
+            for new_s, con, old_s in zip(shape, torch.tensor(shape) != 0, x.shape)
+        ]
     if copy:
         newarr = torch.clone(x)
+        if order == "F":
+            return _reshape_fortran_torch(newarr, shape)
         return torch.reshape(newarr, shape)
+    if order == "F":
+        return _reshape_fortran_torch(x, shape)
     return torch.reshape(x, shape)
 
 
@@ -98,9 +124,13 @@ def roll(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if torch.is_tensor(axis):
+        axis = axis.tolist()
     # manually cover the case when shift is int, and axis is a tuple/list
     if isinstance(shift, int) and (type(axis) in [list, tuple]):
         shift = [shift for _ in range(len(axis))]
+    if isinstance(shift, torch.Tensor):
+        shift = shift.tolist()
     return torch.roll(x, shift, axis)
 
 
@@ -118,7 +148,9 @@ def squeeze(
                 "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
         if x.shape[axis] != 1:
-            raise ValueError(f"Expected size of axis to be 1 but was {x.shape[axis]}")
+            raise ivy.exceptions.IvyException(
+                f"Expected size of axis to be 1 but was {x.shape[axis]}"
+            )
         return torch.squeeze(x, axis)
     if axis is None:
         return torch.squeeze(x)
@@ -164,12 +196,12 @@ def split(
     /,
     *,
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
-    axis: int = 0,
-    with_remainder: bool = False,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
 ) -> List[torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "input array had no shape, but num_sections specified was {}".format(
                     num_or_size_splits
                 )
@@ -201,6 +233,7 @@ def split(
     return list(torch.split(x, num_or_size_splits, axis))
 
 
+@with_unsupported_dtypes({"1.11.0": ("int8", "int16", "uint8")}, backend_version)
 def repeat(
     x: torch.Tensor,
     /,
@@ -216,11 +249,11 @@ def repeat(
 
 
 def tile(
-    x: torch.Tensor, /, reps: Sequence[int], *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, repeats: Sequence[int], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if isinstance(reps, torch.Tensor):
-        reps = reps.detach().cpu().numpy().tolist()
-    return x.repeat(reps)
+    if isinstance(repeats, torch.Tensor):
+        repeats = repeats.detach().cpu().numpy().tolist()
+    return x.repeat(repeats)
 
 
 def constant_pad(
@@ -235,9 +268,8 @@ def constant_pad(
         x = x.unsqueeze(0)
     if isinstance(pad_width, torch.Tensor):
         pad_width = pad_width.detach().cpu().numpy().tolist()
-    pad_width.reverse()
     pad_width_flat: List[int] = list()
-    for pad_width_sec in pad_width:
+    for pad_width_sec in reversed(pad_width):
         for item in pad_width_sec:
             pad_width_flat.append(item)
     return torch.nn.functional.pad(x, pad_width_flat, mode="constant", value=value)
@@ -259,6 +291,7 @@ def swapaxes(
     return torch.transpose(x, axis0, axis1)
 
 
+@with_unsupported_dtypes({"1.11.0": ("float16", "complex")}, backend_version)
 def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],
@@ -267,9 +300,7 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    assert torch.all(
-        torch.less(torch.tensor(x_min), x_max)
-    ), "Min value must be less than max."
+    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
@@ -280,10 +311,11 @@ def clip(
 
 
 clip.support_native_out = True
-clip.unsupported_dtypes = ("float16",)
 
 
-def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+def unstack(
+    x: torch.Tensor, /, *, axis: int = 0, keepdims: bool = False
+) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))

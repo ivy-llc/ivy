@@ -1,0 +1,9 @@
+numpy==1.23.0
+einops==0.4.1
+psutil==5.9.1
+termcolor==1.1.0
+colorama==0.4.5
+packaging==21.3
+nvidia-ml-py<=11.495.46 # mod_name=pynvml
+flask==2.2.2
+cython==0.29.33

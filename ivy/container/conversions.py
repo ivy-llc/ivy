@@ -35,20 +35,21 @@ class ContainerWithConversions(ContainerBase):
         nested
             Whether to apply the conversion on arguments in a nested manner. If so, all
             dicts, lists and tuples will be traversed to their lowest leaves in search
-            of ivy.Array and ivy.Variable instances. Default is False.
+            of ivy.Array instances. Default is ``False``.
         include_derived
             Whether to also recursive for classes derived from tuple, list and dict.
-            Default is False.
+            Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -59,7 +60,7 @@ class ContainerWithConversions(ContainerBase):
             Container object with all sub-arrays converted to their native format.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "to_native",
             x,
             nested=nested,
@@ -94,20 +95,21 @@ class ContainerWithConversions(ContainerBase):
         nested
             Whether to apply the conversion on arguments in a nested manner. If so, all
             dicts, lists and tuples will be traversed to their lowest leaves in search
-            of ivy.Array and ivy.Variable instances. Default is False.
+            of ivy.Array instances. Default is ``False``.
         include_derived
             Whether to also recursive for classes derived from tuple, list and dict.
-            Default is False.
+            Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -153,20 +155,21 @@ class ContainerWithConversions(ContainerBase):
         nested
             Whether to apply the conversion on arguments in a nested manner. If so, all
             dicts, lists and tuples will be traversed to their lowest leaves in search
-            of ivy.Array and ivy.Variable instances. Default is False.
+            of ivy.Array instances. Default is ``False``.
         include_derived
             Whether to also recursive for classes derived from tuple, list and dict.
-            Default is False.
+            Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -178,7 +181,7 @@ class ContainerWithConversions(ContainerBase):
             instances.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_function(
             "to_ivy",
             x,
             nested=nested,
@@ -213,20 +216,21 @@ class ContainerWithConversions(ContainerBase):
         nested
             Whether to apply the conversion on arguments in a nested manner. If so,
             all dicts, lists and tuples will be traversed to their lowest leaves in
-            search of ivy.Array and ivy.Variable instances. Default is False.
+            search of ivy.Array instances. Default is ``False``.
         include_derived
             Whether to also recursive for classes derived from tuple, list and dict.
-            Default is False.
+            Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
