@@ -74,7 +74,7 @@ def remove_from_db(collection, id, submod, backend, test):
 def run_multiversion_testing(failed):
     with open("tests_to_run", "r") as f:
         for line in f:
-            print(line)
+            print(f"run test- {line}")
             test, versions = line.split("|")
             frontend, backend = versions.split(",")
             frontend, backend = frontend.split("=")[1], backend.split("=")[1]

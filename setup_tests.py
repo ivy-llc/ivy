@@ -9,6 +9,7 @@ def main():
     test = sys.argv[1]
     if "," or "|" in test:
         with open("tests_to_run", "w") as f:
+            print(f'setup:- {test}')
             f.write(test + "\n")
     else:
         with open("tests_to_run", "w") as f:
