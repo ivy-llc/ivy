@@ -23,9 +23,6 @@ def _add_dilations(x, dilations, axis):
     )
 
 
-# TODO: fix conv1d transpose
-
-
 def _pad_before_conv(x, filter_shape, strides, padding, dims):
     if isinstance(padding, str):
         pad_specific = [
