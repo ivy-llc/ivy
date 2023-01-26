@@ -379,7 +379,7 @@ def interpolate(
     /,
     *,
     mode: Union[Literal["linear", "bilinear"]] = "linear",
-    align_corners: Optional[bool] = True.real,
+    align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
 ):
     # keeping the batch and channel dimension same

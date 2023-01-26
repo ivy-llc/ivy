@@ -234,7 +234,7 @@ def test_dct(
 @st.composite
 def _interp_args(draw):
     mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest"]))
-    align_corners = draw(st.booleans())
+    align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
         size = draw(helpers.ints(min_value=4, max_value=5))
         num_dims = 3
@@ -261,7 +261,7 @@ def _interp_args(draw):
         )
         size = size[0] if dim == 1 else size
         num_dims = dim + 2
-        align_corners = False
+        align_corners = None
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),

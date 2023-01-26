@@ -839,7 +839,7 @@ def interpolate(
     /,
     *,
     mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
-    align_corners: Optional[bool] = True,
+    align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
 ):
     """
@@ -860,7 +860,7 @@ def interpolate(
     """
     if mode == "linear":
         size = size[0] if isinstance(size, (list, tuple)) else size
-        if not align_corners:
+        if not align_corners or align_corners is None:
             x_up = ivy.arange(0, ivy.shape(x)[-1])
             missing = (ivy.arange(0, size) + 0.5) * (ivy.shape(x)[-1] / size) - 0.5
         else:
@@ -871,7 +871,7 @@ def interpolate(
             for j, ch in enumerate(ba):
                 ret[i][j] = ivy.interp(missing, x_up, ch)
     elif mode == "bilinear":
-        if not align_corners:
+        if not align_corners or align_corners is None:
             x_up_h = ivy.arange(0, ivy.shape(x)[-2])
             x_up_w = ivy.arange(0, ivy.shape(x)[-1])
             missing_h = (ivy.arange(0, size[0]) + 0.5) * (
@@ -896,7 +896,7 @@ def interpolate(
                     ret[i][j][k] = ivy.interp(missing_h, x_up_h, col)
         ret = ivy.permute_dims(ret, (0, 1, 3, 2))
     elif mode == "trilinear":
-        if not align_corners:
+        if not align_corners or align_corners is None:
             x_up_d = ivy.arange(0, ivy.shape(x)[-3])
             x_up_h = ivy.arange(0, ivy.shape(x)[-2])
             x_up_w = ivy.arange(0, ivy.shape(x)[-1])
@@ -946,7 +946,7 @@ def interpolate(
     elif mode == "nearest":
         size = (size,) if isinstance(size, int) else size
         dims = len(x.shape) - 2
-        ret = ivy.zeros((x.shape[:2] + size))
+        ret = ivy.zeros((x.shape[:2] + tuple(size)))
         for i, ba in enumerate(x):
             for j, ch in enumerate(ba):
                 w_scale = size[-1] / x.shape[-1]
