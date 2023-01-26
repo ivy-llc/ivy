@@ -7,7 +7,7 @@ def main():
     if len(sys.argv) < 2:
         return
     test = sys.argv[1]
-    if "," or "|" in test:
+    if "," or ";" in test:
         with open("tests_to_run", "w") as f:
             print(f'setup:- {test}')
             f.write(test + "\n")
