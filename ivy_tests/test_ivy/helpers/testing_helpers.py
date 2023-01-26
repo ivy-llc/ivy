@@ -26,6 +26,9 @@ from ivy_tests.test_ivy.helpers.available_frameworks import (
     ground_truth,
 )
 
+ground_truth = ground_truth()
+
+
 cmd_line_args = (
     "with_out",
     "instance_method",
@@ -151,29 +154,6 @@ def _import_fn(fn_tree: str):
     return callable_fn, fn_name, module_to_import
 
 
-def _generate_shared_test_flags(
-    param_names: list,
-    _given_kwargs: dict,
-    fn_tree: str,
-):
-    """
-    Generates flags that all tests use.
-
-    Returns
-    -------
-    shared flags that all tests use.
-    """
-    possible_flags = {
-        "num_positional_args": num_positional_args(fn_name=fn_tree),
-        "as_variable": pf.BuiltNativeArrayStrategy,
-        "native_array": pf.BuiltNativeArrayStrategy,
-        "with_out": pf.BuiltWithOutStrategy,
-    }
-    for k in set(param_names).intersection(possible_flags.keys()):
-        _given_kwargs[k] = possible_flags[k]
-    return _given_kwargs
-
-
 def _get_method_supported_devices_dtypes(
     method_name: str, class_module: str, class_name: str
 ):
@@ -196,7 +176,7 @@ def _get_method_supported_devices_dtypes(
     for the method
     """
     supported_device_dtypes = {}
-    backends = available_frameworks
+    backends = available_frameworks()
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _fn = getattr(class_module.__dict__[class_name], method_name)
@@ -222,8 +202,9 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     for the function
     """
     supported_device_dtypes = {}
-    backends = available_frameworks
+    backends = available_frameworks()
     for b in backends:  # ToDo can optimize this ?
+
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]

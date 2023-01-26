@@ -69,6 +69,21 @@ There will be some implicit discussion of the locations of frontend functions in
 **NOTE:** Type hints, docstrings and examples are not required when working on frontend functions.
 
 
+**Frontend Arrays**
+
+The native arrays of each framework have their own attributes and instance methods which differ from the attributes and instance methods of :class:`ivy.Array`.
+As such we have implemented framework-specific array classes: :class:`tf_frontend.Tensor`, :class:`torch_frontend.Tensor`, :class:`numpy_frontend.ndarray`, and :class:`jax_frontend.DeviceArray`.
+These classes simply wrap an :class:`ivy.Array`, which is stored in the :code:`ivy_array` attribute, and behave as closely as possible to the native framework array classes.
+This is explained further in the `Classes and Instance Methods <https://lets-unify.ai/ivy/deep_dive/ivy_frontends.html#classes-and-instance-methods>`_ section.
+
+As we aim to replicate the frontend frameworks as closely as possible, all functions accept their frontend array class (as well as :class:`ivy.Array` and :class:`ivy.NativeArray`) and return a frontend array.
+However, since most logic in each function is handled by Ivy, the :class:`ivy.Array` must be extracted from any frontend array inputs.
+Therefore we add the wrapper :code:`@to_ivy_arrays_and_back` to virtually all functions in the frontends.
+
+There are more framework-specific classes we support in the frontends such as NumPy and Tensorflow :class:`Dtype` classes, NumPy and Jax :class:`Scalars`, NumPy :class:`Matrix`, etc.
+All these increase the fidelity of our frontends.
+
+
 **Jax**
 
 JAX has two distinct groups of functions, those in the :mod:`jax.lax` namespace and those in the :mod:`jax.numpy` namespace.
@@ -116,9 +131,12 @@ In the same manner as our :func:`add` function, we simply link its return to :fu
 .. code-block:: python
 
     # in ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
-    @handle_numpy_casting
+    @handle_numpy_out
+    @handle_numpy_dtype
     @to_ivy_arrays_and_back
-    def add(
+    @handle_numpy_casting
+    @from_zero_dim_arrays_to_scalar
+    def _add(
         x1,
         x2,
         /,
@@ -130,20 +148,42 @@ In the same manner as our :func:`add` function, we simply link its return to :fu
         dtype=None,
         subok=True,
     ):
-        if dtype:
-            x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
-            x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
+        x1, x2 = promote_types_of_numpy_inputs(x1, x2)
         ret = ivy.add(x1, x2, out=out)
         if ivy.is_array(where):
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
         return ret
 
 In NumPy, :func:`add` is categorised under :mod:`mathematical_functions` with a sub-category of :mod:`arithmetic_operations` as shown in the `numpy mathematical functions`_ directory.
+It is important to note that :func:`add` is a universal function (`ufunc <https://numpy.org/doc/stable/reference/ufuncs.html>`_) in NumPy, thus the function is actually an object with instance methods like :code:`.at` and :code:`.reduce`, etc.
+We deal with this in the NumPy frontend by including a :class:`ufunc` class and initialising it in the :mod:`__init__` file:
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/numpy/__init__.py
+    from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import _add
+    add = ufunc("_add")
+
+As shown, we import the above function :func:`_add` and use it to initialise the :class:`ufunc` object which corresponds to the NumPy :func:`add` function.
+Practically the :func:`add` object calls the :func:`_add` under the hood, but it has all the extra instance methods of the :class:`ufunc` class.
+All other functions which are :class:`ufunc` objects in NumPy are implemented in the same way.
+Of course if the :class:`ufunc` object and its respective function have the same name, we would run into problems where one would overwrite the other, to prevent this we make the actual function private by adding an underscore in the front of its name.
+Since only the :class:`ufunc` object should be accessible to the user, this approach is sufficient.
+When adding new NumPy functions which are :class:`ufuncs`, it's important to implement them in this way in order to properly replicate their functionality.
+Namely, a private function needs to be created in the respective sub-category, this function needs to be imported in the :mod:`__init__` file, and a :class:`ufunc` object needs to be created that shares the name of the function.
+For functions which are not :class:`ufuncs`, they are named normally without the underscore and are implemented as any other function.
 
 The function arguments for this function are slightly more complex due to the extra optional arguments.
 Additional handling code is added to recover the behaviour according to the `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_ documentation.
-For example, if :code:`dtype` is specified, the arguments will be cast to the desired type through :func:`ivy.astype`.
-Additionally, :code:`casting` and :code:`order` are handled in the :code:`@handle_numpy_casting` and :code:`@to_ivy_arrays_and_back` decorators respectively.
+For example, :code:`@handle_numpy_out` is added to functions with an :code:`out` argument and it handles the inplace update of the :class:`ivy.Array` specified by :code:`out`, or the :class:`ivy.Array` wrapped by a frontend :class:`ndarray`.
+This wrapper was added because :code:`out` can be either a positional or keyword argument in most functions, thus it required some additional logic for proper handling.
+Additionally, :code:`casting` and :code:`dtype` are handled in the :code:`@handle_numpy_casting` wrapper, which casts the input arguments to the desired dtype as specified by :code:`dtype` and the chosen :code:`casting` rules.
+There's an additional wrapper for the :code:`dtype` argument :code:`@handle_numpy_dtype`.
+This wrapper is included to handle the various formats of the :code:`dtype` argument which NumPy `accepts <https://numpy.org/doc/stable/reference/arrays.dtypes.html#specifying-and-constructing-data-types>`_, such as type strings, :class:`numpy.Dtype` objects, characters, etc.
+In NumPy, most functions which can return a scalar value return it as a NumPy `Scalar <https://numpy.org/doc/stable/reference/arrays.scalars.html>`_.
+To replicate this we add the wrapper :code:`@from_zero_dim_arrays_to_scalar` which converts outputs that would normally be 0-dim arrays from Ivy functions, to a NumPy scalar.
+Of course the returned scalar object is actually an Ivy frontend equivalent object which behaves very similarly to the frontend :class:`ndarray`.
+Finally, :code:`order` is handled in the :code:`@to_ivy_arrays_and_back` decorator.
 The returned result is then obtained through :func:`ivy.add` just like the other examples.
 
 However, the argument :code:`subok` is completely unhandled here because it controls whether or not subclasses of the :class:`numpy.ndarray` should be permitted as inputs to the function.
@@ -155,10 +195,12 @@ See the section "Unused Arguments" below for more details.
 .. code-block:: python
 
     # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
-    @from_zero_dim_arrays_to_float
-    @handle_numpy_casting
+    @handle_numpy_out
+    @handle_numpy_dtype
     @to_ivy_arrays_and_back
-    def tan(
+    @handle_numpy_casting
+    @from_zero_dim_arrays_to_scalar
+    def _tan(
         x,
         /,
         out=None,
@@ -169,16 +211,14 @@ See the section "Unused Arguments" below for more details.
         dtype=None,
         subok=True,
     ):
-        if dtype:
-            x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
         ret = ivy.tan(x, out=out)
         if ivy.is_array(where):
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
         return ret
 
 For the second example, :func:`tan` has a sub-category of :mod:`trigonometric_functions` according to the `numpy mathematical functions`_ directory.
-By referring to the `numpy.tan`_ documentation, we can see it has the same additional arguments as the :func:`add` function.
-In the same manner as :func:`add`, we handle the argument :code:`out`, :code:`where`, :code:`dtype`, :code:`casting`, and :code:`order`but we omit support for :code:`subok`.
+By referring to the `numpy.tan`_ documentation, we can see it has the same additional arguments as the :func:`add` function and it's also a :class:`ufunc`.
+In the same manner as :func:`add`, we handle the argument :code:`out`, :code:`where`, :code:`dtype`, :code:`casting`, and :code:`order` but we omit support for :code:`subok`.
 
 **TensorFlow**
 
@@ -187,6 +227,7 @@ In the same manner as :func:`add`, we handle the argument :code:`out`, :code:`wh
     # in ivy/functional/frontends/tensorflow/math.py
     @to_ivy_arrays_and_back
     def add(x, y, name=None):
+        x, y = check_tensorflow_casting(x, y)
         return ivy.add(x, y)
 
 The :func:`add` function is categorised under the :mod:`math` folder in the TensorFlow frontend.
@@ -197,6 +238,9 @@ The arguments :code:`x` and :code:`y` are both used in the implementation, but t
 Similar to the omitted argument in the NumPy example above, the :code:`name` argument does not change the input-output behaviour of the function.
 Rather, this argument is added purely for the purpose of operation logging and retrieval, and also graph visualization in TensorFlow.
 Ivy does not support the unique naming of individual operations, and so we omit support for this particular argument.
+
+Additionally TensorFlow only allows explicit casting, therefore there are no promotion rules in the TensorFlow frontend, except in the case of array like or scalar inputs, which get casted to the dtype of the other argument if it's a :class:`Tensor`, or the default dtype if both arguments are array like or scalar.
+The function :func:`check_tensorflow_casting` is added to functions with multiple arguments such as :func:`add`, and it ensures the second argument is the same type as the first, just as TensorFlow does.
 
 .. code-block:: python
 
@@ -211,7 +255,8 @@ Again, we do not support the :code:`name` argument for the reasons outlined abov
 
 **NOTE**
 
-Many of the functions in the :mod:`tf.raw_ops` module have identical behaviour to functions in the general TensorFlow namespace e.g :func:`tf.argmax`, with the exception of functions in the module :mod:`tf.raw_ops`. However, these functions are specified to have key-word only arguments and in some cases they have different argument names.
+Many of the functions in the :mod:`tf.raw_ops` module have identical behaviour to functions in the general TensorFlow namespace e.g :func:`tf.argmax`.
+However, these functions are specified to have key-word only arguments and in some cases they have different argument names.
 In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` decorator was designed to wrap the functions that exist in the TensorFlow namespace, thus reducing unnecessary re-implementations.
 
 .. code-block:: python
@@ -295,30 +340,11 @@ In many cases, frontend functions meet the following criteria:
 * the function is unique to a particular frontend framework, and does not exist in the other frameworks
 * the function has extra features and/or arguments on top of the most similar ivy function that is available
 
-In such cases, compositions are required to replicate the function behaviour.
+In such cases, compositions are required to replicate the function behaviour. Although the second case is less common as we try and maintain a superset within Ivy functions.
 
 **Examples**
 
-In the native TensorFlow function :func:`tf.cumprod`, it supports an extra argument - :code:`reverse`, which returns a flipped result if :code:`True`.
-However, the backend :func:`ivy.cumprod` does not support this argument or behaviour.
-
-**Ivy**
-
-.. code-block:: python
-
-    # in ivy/functional/ivy/statistical.py
-    def cumprod(
-        x: Union[ivy.Array, ivy.NativeArray],
-        axis: int = 0,
-        exclusive: bool = False,
-        *,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
-
-To enable this behaviour, we need to incorporate other Ivy functions which are compositionally able to mimic the required behaviour.
-For example, we can simply reverse the result by calling :func:`ivy.flip` on the result of :func:`ivy.cumprod`.
+The native TensorFlow function :func:`tf.reduce_logsumexp` does not have an equivalent function in Ivy, therefore its composed of multiple Ivy functions instead.
 
 **TensorFlow Frontend**
 
@@ -326,15 +352,23 @@ For example, we can simply reverse the result by calling :func:`ivy.flip` on the
 
     # ivy/functional/frontends/tensorflow/math.py
     @to_ivy_arrays_and_back
-    def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
-        ret = ivy.cumprod(x, axis, exclusive)
-        if reverse:
-            return ivy.flip(ret, axis)
-        return ret
+    def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
+        # stable logsumexp trick
+        max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=True)
+        return (
+            ivy.log(
+                ivy.sum(
+                    ivy.exp(input_tensor - max_input_tensor),
+                    axis=axis,
+                    keepdims=keepdims,
+                )
+            )
+            + max_input_tensor
+        ).astype(input_tensor.dtype)
 
 Through compositions, we can easily meet the required input-output behaviour for the TensorFlow frontend function.
 
-Missing Ivy Functions and Complex Data Types
+Missing Ivy Functions
 ---------------------
 
 Sometimes, there is a clear omission of an Ivy function, which would make the frontend implementation much simpler.
@@ -346,12 +380,6 @@ When you come across such a function which is missing from Ivy, you should creat
 A member of our team will then review this issue, and if the proposed addition is deemed to be timely and sensible, then we will add this function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
 At this point in time, you can reserve the function for yourself and get it implemented in a unique PR.
 Once merged, you can then resume working on the frontend function, which will now be a much easier task with the new addition to Ivy.
-
-Some frontend functions also perform operations on complex inputs such as :func:`np.sort_complex`.
-As Ivy does not currently support complex data types, these functions cannot be implemented at this time.
-If you come across such a function, you should create an issue for it as described in the `ToDo List Issues guide <https://lets-unify.ai/ivy/contributing/the_basics.html#todo-list-issues>`_ and add the label :code:`Next Release`.
-This will help others stay away from it and notify the team to be aware of the function once we come around working on complex data type support.
-Please find another function to work on in the meantime.
 
 Temporary Compositions
 ----------------------
@@ -391,7 +419,7 @@ Again, this is only needed if the limitations go beyond those of the framework i
 For example, it is not necessary to uniquely flag every single NumPy function as supporting only CPU, as this is a limitation of the entire framework, and this limitation is already `globally flagged <https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21>`_.
 
 It could also be the case that a frontend function supports a data type, but one or more of the backend frameworks does not, and therefore the frontend function may not support the data type due to backend limitation.
-For example, the frontend function `jax.lax.cumprod <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111>`_ do support all data types, but PyTorch does not support :code:`bfloat16` for the function :func:`cumprod`, even though the framework generally supports handling :code:`bfloat16` data type.
+For example, the frontend function `jax.lax.cumprod <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111>`_ does support all data types, but PyTorch does not support :code:`bfloat16` for the function :func:`cumprod`, even though the framework generally supports handling :code:`bfloat16` data type.
 In that case, we should flag that the backend function does not support :code:`bfloat16` as this is done `here <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234>`_.
 
 Classes and Instance Methods
@@ -403,53 +431,36 @@ This simple design choice comes with many advantages, some of which are explaine
 **Important Note**
 Before implementing the instance method or special method, make sure that the regular function in the specific frontend is already implemented.
 
-In order to implement Ivy's frontend APIs to the extent that is required for arbitrary code transpilations, it's necessary for us to also implement these instance methods and special methods of the framework-specific array classes (:class:`tf.Tensor`, :class:`torch.Tensor`, :class:`numpy.ndarray`, :class:`jax.numpy.ndarray` etc).
+In order to implement Ivy's frontend APIs to the extent that is required for arbitrary code transpilations, it's necessary for us to also implement these instance methods and special methods of the framework-specific array classes (:class:`tf.Tensor`, :class:`torch.Tensor`, :class:`numpy.ndarray`, :class:`jax.DeviceArray` etc).
 
 **Instance Method**
 
 **numpy.ndarray**
 
-For an example of how these are implemented, we first show the instance method for :meth:`np.ndarray.add`, which is implemented in the frontend `ndarray class <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/ndarray/ndarray.py#L23>`_:
+For an example of how these are implemented, we first show the instance method for :meth:`np.ndarray.argsort`, which is implemented in the frontend `ndarray class <https://github.com/unifyai/ivy/blob/94679019a8331cf9d911c024b9f3e6c9b09cad02/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
 
 
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/ndarray/ndarray.py
-    def add(
-        self,
-        value,
-    ):
-        return np_frontend.add(
-            self.data,
-            value,
-        )
+    def argsort(self, *, axis=-1, kind=None, order=None):
+        return np_frontend.argsort(self._ivy_array, axis=axis, kind=kind, order=order)
 
-Under the hood, this simply calls the frontend :func:`np_frontend.add` function, which itself is implemented as follows:
+Under the hood, this simply calls the frontend :func:`np_frontend.argsort` function, which itself is implemented as follows:
 
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
-    @handle_numpy_casting
     @to_ivy_arrays_and_back
-    def add(
-    x1,
-    x2,
-    /,
-    out=None,
-    *,
-    where=True,
-    casting="same_kind",
-    order="k",
-    dtype=None,
-    subok=True,
+    def argsort(
+        x,
+        /,
+        *,
+        axis=-1,
+        kind=None,
+        order=None,
     ):
-    if dtype:
-        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
-        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
-    ret = ivy.add(x1, x2, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+        return ivy.argsort(x, axis=axis)
 
 **Special Method**
 
@@ -459,17 +470,11 @@ For example lets take a look at how :meth:`tf_frontend.tensor.__add__` is implem
 .. code-block:: python
 
     # ivy/functional/frontends/tensorflow/tensor.py
-    def __add__(self, y, name="add"):
-        return tf_frontend.add(self.data, y, name=name)
-
-For the reverse operator of :func:`add`.
-
-.. code-block:: python
-
-    # ivy/functional/frontends/tensorflow/tensor.py
     def __radd__(self, x, name="radd"):
-        return tf_frontend.add(x, self.data, name=name)
+        return tf_frontend.math.add(x, self._ivy_array, name=name)
 
+    def __add__(self, y, name="add"):
+        return self.__radd__(y)
 
 Here also, both of them simply call the frontend :func:`tf_frontend.math.add` under the hood.
 The functions with reverse operators should call the same frontend function as shown in the examples above.
@@ -480,7 +485,7 @@ The implementation for the :func:`tf_frontend.math.add` is shown as follows:
     # ivy/functional/frontends/tensorflow/math.py
     @to_ivy_arrays_and_back
     def add(x, y, name=None):
-    return ivy.add(x, y)
+        return ivy.add(x, y)
 
 **numpy.matrix**
 
@@ -499,16 +504,20 @@ Part of the code is shown below as an example:
         def _init_data(self, data, dtype):
             if isinstance(data, str):
                 self._process_str_data(data, dtype)
-            elif isinstance(data, list) or ivy.is_array(data):
-                data = (
-                    ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
-                )
-                ivy.assertions.check_equal(len(ivy.shape(data)), 2)
+            elif isinstance(data, (list, ndarray)) or ivy.is_array(data):
+                if isinstance(data, ndarray):
+                    data = data.ivy_array
+                if ivy.is_array(data) and dtype is None:
+                    dtype = data.dtype
+                data = ivy.array(data, dtype=dtype)
                 self._data = data
             else:
-                raise ivy.exceptions.IvyException("data must be a 2D array, list, or str")
-            self._shape = ivy.shape(self._data)
+                raise ivy.exceptions.IvyException("data must be an array, list, or str")
+            ivy.assertions.check_equal(
+                len(ivy.shape(self._data)), 2, message="data must be 2D"
+            )
             self._dtype = self._data.dtype
+            self._shape = ivy.shape(self._data)
 
 With this class available, the supported instance methods can now be included in the class.
 For example, :class:`numpy.matrix` has an instance method of :meth:`any`:
@@ -516,10 +525,12 @@ For example, :class:`numpy.matrix` has an instance method of :meth:`any`:
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/matrix/methods.py
+    from ivy.functional.frontends.numpy import any
+    ...
     def any(self, axis=None, out=None):
         if ivy.exists(axis):
-            return ivy.any(self.A, axis=axis, keepdims=True, out=out)
-        return ivy.any(self.A, axis=axis, out=out)
+            return any(self.A, axis=axis, keepdims=True, out=out)
+        return any(self.A, axis=axis, out=out)
 
 We need to create these frontend array classes and all of their instance methods and also their special methods such that we are able to transpile code which makes use of these methods.
 As explained in :ref:`Ivy as a Transpiler`, when transpiling code we first extract the computation graph in the source framework.
@@ -535,15 +546,24 @@ The function can be accessed through calling :func:`promote_types_of_<frontend>_
 
 .. code-block:: python
 
-    # ivy/functional/frontends/tensorflow/math.py
-    from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
-    ...
+    # ivy/functional/frontends/torch/pointwise_ops.py
     @to_ivy_arrays_and_back
-    def add(x, y, name=None):
-        x, y = promote_types_of_tensorflow_inputs(x, y)
-        return ivy.add(x, y)
+    def add(input, other, *, alpha=1, out=None):
+        input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+        return ivy.add(input, other, alpha=alpha, out=out)
 
 Although under most cases, array operands being passed into an arithmetic operation function should be the same data type, using the data type promotion rules can add a layer of sanity check to prevent data precision losses or exceptions from further arithmetic operations.
+
+TensorFlow is a framework where casting is completely explicit, except for array likes and scalars.
+As such there are not promotion rules we replicate for the TensorFlow frontend, instead we check if the two arguments of the function are the same type using :func:`check_tensorflow_casting`.
+
+.. code-block:: python
+
+    # ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
+    def add(x, y, name=None):
+        x, y = check_tensorflow_casting(x, y)
+        return ivy.add(x, y)
 
 NumPy Special Argument - Casting
 --------------------------------
@@ -561,9 +581,12 @@ An example of the :func:`add` function is shown below.
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
-    @handle_numpy_casting
+    @handle_numpy_out
+    @handle_numpy_dtype
     @to_ivy_arrays_and_back
-    def add(
+    @handle_numpy_casting
+    @from_zero_dim_arrays_to_scalar
+    def _add(
         x1,
         x2,
         /,
@@ -575,10 +598,12 @@ An example of the :func:`add` function is shown below.
         dtype=None,
         subok=True,
     ):
+        x1, x2 = promote_types_of_numpy_inputs(x1, x2)
         ret = ivy.add(x1, x2, out=out)
         if ivy.is_array(where):
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
         return ret
+
 
 There is a special case for the :code:`casting` argument, where the allowed dtype must be :code:`bool`, therefore a :code:`handle_numpy_casting_special` is included to handle this.
 
@@ -609,9 +634,12 @@ An example function using this is the :func:`numpy.isfinite` function.
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/logic/array_type_testing.py
-    @handle_numpy_casting_special
+    @handle_numpy_out
+    @handle_numpy_dtype
     @to_ivy_arrays_and_back
-    def isfinite(
+    @handle_numpy_casting_special
+    @from_zero_dim_arrays_to_scalar
+    def _isfinite(
         x,
         /,
         out=None,

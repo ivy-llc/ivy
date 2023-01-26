@@ -494,3 +494,49 @@ def test_torch_tensor(
         dtype=dtype[0],
         device=on_device,
     )
+
+
+@st.composite
+def _heaviside_helper(draw):
+    input_dtype, data = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+        )
+    )
+    _, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=input_dtype,
+            shape=helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=1,
+                max_dim_size=1,
+            ),
+        )
+    )
+    return input_dtype, data, values
+
+
+# heaviside
+@handle_frontend_test(
+    fn_tree="torch.heaviside",
+    dtype_and_input=_heaviside_helper(),
+)
+def test_torch_heaviside(
+    *,
+    dtype_and_input,
+    test_flags,
+    fn_tree,
+    on_device,
+    frontend,
+):
+    input_dtype, data, values = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=data[0],
+        values=values[0],
+        on_device=on_device,
+    )

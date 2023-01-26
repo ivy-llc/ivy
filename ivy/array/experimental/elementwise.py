@@ -552,7 +552,6 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         return ivy.isclose(
             self._data, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
         )
-    
 
     def angle(
         self: ivy.Array,
