@@ -631,7 +631,8 @@ def test_jax_numpy_isinf(
         x=x[0],
     )
 
-#logical_not
+
+# logical_not
 @handle_frontend_test(
     fn_tree="jax.numpy.logical_not",
     dtypes_values=helpers.dtype_and_values(
@@ -661,3 +662,4 @@ def test_jax_numpy_logical_not(
         on_device=on_device,
         x=x[0],
     )
+    
