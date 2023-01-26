@@ -1898,6 +1898,7 @@ def test_jax_lax_conv_general_dilated(
                 if isinstance(dilations[0], int)
                 else all(d <= 1 for d in dilations[0])
             )
+    assume(not (isinstance(pad, str) and not len(dilations[1]) == dilations[1].count(1)))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -1908,12 +1909,8 @@ def test_jax_lax_conv_general_dilated(
         rhs=filters,
         window_strides=stride,
         padding=pad,
-        # TODO: make it work for non-default lhs_dilation
-        # lhs_dilation=dilations[1],
-        lhs_dilation=None,
-        # TODO: make it work for the updated sequence dilation
-        # rhs_dilation=dilations[0],
-        rhs_dilation=None,
+        lhs_dilation=dilations[1],
+        rhs_dilation=dilations[0],
         dimension_numbers=dim_num,
         feature_group_count=fc,
         batch_group_count=1,

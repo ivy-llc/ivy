@@ -191,8 +191,8 @@ def conv_general_dilated(
         padding,
         dims=len(lhs.shape)-2,
         data_format=_get_general_df(dimension_numbers[0]),
-        x_dilations=1 if lhs_dilation is None else lhs_dilation[0],
-        dilations=1 if rhs_dilation is None else rhs_dilation[0],
+        x_dilations=1 if lhs_dilation is None else lhs_dilation,
+        dilations=1 if rhs_dilation is None else rhs_dilation,
         feature_group_count=feature_group_count,
     )
 
