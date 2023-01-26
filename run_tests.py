@@ -90,10 +90,6 @@ def run_multiversion_testing(failed):
 
 if __name__ == "__main__":
     version_flag = sys.argv[1]
-    if len(sys.argv) > 1:
-        run_id = sys.argv[2]
-    else:
-        run_id = "https://github.com/unifyai/ivy/actions/"
     failed = False
     # multiversion testing
     if version_flag == "true":
