@@ -1327,13 +1327,13 @@ def test_numpy_instance_mul__(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
-    method_name="__floordiv__",
+    method_name="__truediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
-def test_numpy_instance_floordiv__(
+def test_numpy_instance_truediv__(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -1368,13 +1368,13 @@ def test_numpy_instance_floordiv__(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
-    method_name="__truediv__",
+    method_name="__floordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
-def test_numpy_instance_truediv__(
+def test_numpy_instance_floordiv__(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
