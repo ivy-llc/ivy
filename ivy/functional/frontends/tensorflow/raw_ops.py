@@ -61,6 +61,14 @@ def Atanh(*, x, name="Atanh"):
 
 
 @to_ivy_arrays_and_back
+def AvgPool(* ,input, kernel=(3, 3), strides=2, padding="SAME" ,data_format='NHWC', name=None):
+
+    if len(ivy.shape(input)) == 3:
+        ivy.expand_dims(input, axis=-1)
+    return ivy.avg_pool2d(input, kernel, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
 def BitwiseAnd(*, x, y, name="BitwiseAnd"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.bitwise_and(x, y)
