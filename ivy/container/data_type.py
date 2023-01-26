@@ -541,6 +541,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_dtype(
         x: ivy.Container,
+        *,
         as_native: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -551,7 +552,7 @@ class ContainerWithDataTypes(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "dtype",
             x,
-            as_native,
+            as_native=as_native,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -561,6 +562,7 @@ class ContainerWithDataTypes(ContainerBase):
 
     def dtype(
         self: ivy.Container,
+        *,
         as_native: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -581,7 +583,7 @@ class ContainerWithDataTypes(ContainerBase):
         """
         return self.static_dtype(
             self,
-            as_native,
+            as_native=as_native,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

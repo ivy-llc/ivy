@@ -124,12 +124,12 @@ def broadcast_to(
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[jnp.dtype, str, JaxArray]) -> Finfo:
+def finfo(type: Union[jnp.dtype, str, JaxArray], /) -> Finfo:
     return Finfo(jnp.finfo(ivy.as_native_dtype(type)))
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[jnp.dtype, str, JaxArray]) -> np.iinfo:
+def iinfo(type: Union[jnp.dtype, str, JaxArray], /) -> np.iinfo:
     return jnp.iinfo(ivy.as_native_dtype(type))
 
 
@@ -147,7 +147,7 @@ def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> ivy.Dtype:
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float]) -> ivy.Dtype:
+def as_ivy_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float], /) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
     if dtype_in is float:
@@ -167,7 +167,7 @@ def as_ivy_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float]) -> ivy.Dtype
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-def as_native_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float]) -> jnp.dtype:
+def as_native_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float], /) -> jnp.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
@@ -186,13 +186,13 @@ def as_native_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float]) -> jnp.dt
         )
 
 
-def dtype(x: JaxArray, as_native: bool = False) -> ivy.Dtype:
+def dtype(x: JaxArray, *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.to_native(x).dtype
     return as_ivy_dtype(x.dtype)
 
 
-def dtype_bits(dtype_in: Union[jnp.dtype, str]) -> int:
+def dtype_bits(dtype_in: Union[jnp.dtype, str], /) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
