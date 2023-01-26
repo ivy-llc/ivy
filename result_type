@@ -1,0 +1,28 @@
+Reformat data_type #780
+result_type #10106
+
+functional:
+
+@to_native_arrays_and_back
+    @handle_out_argument
+    def result_type(
+            *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
+    ) -> ivy.Dtype:
+
+    return ivy.backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
+
+
+
+frontend:
+def result_type():
+    return _default_dtype
+backend:
+    def result_type(
+            arrays: Union[float, torch.Tensor],
+            dtypes: Union[float, torch.dtype],
+            /,
+            *,
+            out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        return torch.add(x1, x2, out=out)
