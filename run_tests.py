@@ -74,7 +74,6 @@ def remove_from_db(collection, id, submod, backend, test):
 def run_multiversion_testing(failed):
     with open("tests_to_run", "r") as f:
         for line in f:
-            print(f"run test- {line}")
             test, frontend, backend = line.split(",")
         ret = os.system(
             f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion python3 -m pytest --tb=short {test} --frontend={frontend} --backend={backend}'  # noqa
@@ -87,7 +86,14 @@ def run_multiversion_testing(failed):
 
 
 if __name__ == "__main__":
-    version_flag = sys.argv[1]
+    redis_url = sys.argv[1]
+    redis_pass = sys.argv[2]
+    mongo_key = sys.argv[3]
+    version_flag = sys.argv[4]
+    if len(sys.argv) > 4:
+        run_id = sys.argv[5]
+    else:
+        run_id = "https://github.com/unifyai/ivy/actions/"
     failed = False
     # multiversion testing
     if version_flag == "true":

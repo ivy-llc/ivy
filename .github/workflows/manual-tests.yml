@@ -25,13 +25,20 @@ jobs:
            persist-credentials: false
            submodules: "recursive"
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+           github_token: ${{ secrets.GITHUB_TOKEN }}
+           job_name: ${{ github.job }}
+
        - name: Run Tests
          id: tests
          run: |
            pip install pymongo
            cd ivy
            python setup_tests.py ${{ github.event.inputs.test }} 
-           python run_tests.py ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
