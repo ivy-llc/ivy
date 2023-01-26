@@ -2431,7 +2431,12 @@ def inplace_update(
         The array following the in-place update.
 
     """
-    return current_backend(x).inplace_update(x, val, ensure_in_backend, keep_input_dtype)
+    return current_backend(x).inplace_update(
+        x, 
+        val, 
+        ensure_in_backend, 
+        keep_input_dtype,
+    )
 
 
 inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
