@@ -27,7 +27,7 @@ def random_uniform(
     *,
     low: Union[float, tf.Tensor, tf.Variable] = 0.0,
     high: Union[float, tf.Tensor, tf.Variable] = 1.0,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int], tf.Tensor]] = None,
     dtype: DType,
     device: str,
     seed: Optional[int] = None,

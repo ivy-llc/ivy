@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -93,7 +93,7 @@ def concat(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -218,7 +218,7 @@ def expand_dims(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -302,7 +302,7 @@ def flip(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -391,7 +391,7 @@ def permute_dims(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -509,7 +509,7 @@ def reshape(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -618,7 +618,7 @@ def roll(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -785,7 +785,6 @@ def stack(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, ivy.Array, ivy.NativeArray],
@@ -910,7 +909,7 @@ def clip(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -996,7 +995,7 @@ def constant_pad(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1064,7 +1063,7 @@ def repeat(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1138,7 +1137,7 @@ def split(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -1317,7 +1316,7 @@ def tile(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def unstack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, axis: int = 0, keepdims: bool = False
 ) -> List[ivy.Array]:
@@ -1400,7 +1399,7 @@ def unstack(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

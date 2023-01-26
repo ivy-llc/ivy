@@ -19,6 +19,11 @@ def diagonal(A, *, offset=0, dim1=-2, dim2=-1):
 
 
 @to_ivy_arrays_and_back
+def divide(input, other, *, rounding_mode=None, out=None):
+    return ivy.divide(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
 def inv(input, *, out=None):
     return ivy.inv(input, out=out)
 

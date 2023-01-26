@@ -8,7 +8,7 @@ from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     handle_nestable,
     to_native_arrays_and_back,
-    handle_array_like,
+    handle_array_like_without_promotion,
     handle_out_argument,
 )
 
@@ -17,7 +17,7 @@ from ivy.func_wrapper import (
 @handle_nestable
 @to_native_arrays_and_back
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def logit(
     x: Union[float, int, ivy.Array],
     /,

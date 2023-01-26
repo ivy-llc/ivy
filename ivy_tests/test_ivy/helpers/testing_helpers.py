@@ -2,6 +2,7 @@
 import importlib
 import inspect
 import typing
+from typing import List
 
 from hypothesis import given, strategies as st
 
@@ -17,12 +18,16 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltGradientStrategy,
     BuiltContainerStrategy,
     BuiltWithOutStrategy,
+    BuiltInplaceStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import (
     available_frameworks,
     ground_truth,
 )
+
+ground_truth = ground_truth()
+
 
 cmd_line_args = (
     "with_out",
@@ -149,29 +154,6 @@ def _import_fn(fn_tree: str):
     return callable_fn, fn_name, module_to_import
 
 
-def _generate_shared_test_flags(
-    param_names: list,
-    _given_kwargs: dict,
-    fn_tree: str,
-):
-    """
-    Generates flags that all tests use.
-
-    Returns
-    -------
-    shared flags that all tests use.
-    """
-    possible_flags = {
-        "num_positional_args": num_positional_args(fn_name=fn_tree),
-        "as_variable": pf.BuiltNativeArrayStrategy,
-        "native_array": pf.BuiltNativeArrayStrategy,
-        "with_out": pf.BuiltWithOutStrategy,
-    }
-    for k in set(param_names).intersection(possible_flags.keys()):
-        _given_kwargs[k] = possible_flags[k]
-    return _given_kwargs
-
-
 def _get_method_supported_devices_dtypes(
     method_name: str, class_module: str, class_name: str
 ):
@@ -194,7 +176,7 @@ def _get_method_supported_devices_dtypes(
     for the method
     """
     supported_device_dtypes = {}
-    backends = available_frameworks
+    backends = available_frameworks()
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _fn = getattr(class_module.__dict__[class_name], method_name)
@@ -220,8 +202,9 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     for the function
     """
     supported_device_dtypes = {}
-    backends = available_frameworks
+    backends = available_frameworks()
     for b in backends:  # ToDo can optimize this ?
+
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
@@ -338,7 +321,17 @@ def handle_test(
     return test_wrapper
 
 
-def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
+def handle_frontend_test(
+    *,
+    fn_tree: str,
+    aliases: List[str] = None,
+    number_positional_args=None,
+    test_with_out=BuiltWithOutStrategy,
+    test_inplace=BuiltInplaceStrategy,
+    as_variable_flags=BuiltAsVariableStrategy,
+    native_array_flags=BuiltNativeArrayStrategy,
+    **_given_kwargs,
+):
     """
     A test wrapper for Ivy frontend functions.
     Sets the required test globals and creates test flags strategies.
@@ -347,26 +340,66 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
     ----------
     fn_tree
         Full function import path
+
+    number_positional_args
+        A search strategy for determining the number of positional arguments to be
+        passed to the function
+
+    test_inplace
+        A search strategy that generates a boolean to test the method with `inplace`
+        update
+
+    test_with_out
+        A search strategy that generates a boolean to test the function with an `out`
+        parameter
+
+    as_variable_flags
+        A search strategy that generates a list of boolean flags for array inputs to be
+        passed as a Variable array
+
+    native_array_flags
+        A search strategy that generates a list of boolean flags for array inputs to be
+        passed as a native array
     """
     fn_tree = "ivy.functional.frontends." + fn_tree
+    if aliases is not None:
+        for i in range(len(aliases)):
+            aliases[i] = "ivy.functional.frontends." + aliases[i]
     is_hypothesis_test = len(_given_kwargs) != 0
+
+    if is_hypothesis_test:
+        # Use the default strategy
+        if number_positional_args is None:
+            number_positional_args = num_positional_args(fn_name=fn_tree)
+        # Generate the test flags strategy
+        test_flags = pf.frontend_function_flags(
+            num_positional_args=number_positional_args,
+            with_out=test_with_out,
+            inplace=test_inplace,
+            as_variable=as_variable_flags,
+            native_arrays=native_array_flags,
+        )
 
     def test_wrapper(test_fn):
         callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
         supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
 
+        # If a test is not a Hypothesis test, we only set the test global data
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
-            given_kwargs = _generate_shared_test_flags(
-                param_names,
-                _given_kwargs,
-                fn_tree,
-            )
-            possible_arguments = {"fn_tree": st.just(fn_tree)}
+            # Check if these arguments are being asked for
+            possible_arguments = {
+                "test_flags": test_flags,
+                "fn_tree": st.sampled_from([fn_tree] + aliases)
+                if aliases is not None
+                else st.just(fn_tree),
+            }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:
-                given_kwargs[key] = possible_arguments[key]
-            wrapped_test = given(**given_kwargs)(test_fn)
+                # extend Hypothesis given kwargs with our stratigies
+                _given_kwargs[key] = possible_arguments[key]
+            # Wrap the test with the @given decorator
+            wrapped_test = given(**_given_kwargs)(test_fn)
         else:
             wrapped_test = test_fn
 

@@ -227,6 +227,11 @@ def Log(*, x, name="Log"):
 
 
 @to_ivy_arrays_and_back
+def Log1p(*, x, name="Log1p"):
+    return ivy.log1p(x)
+
+
+@to_ivy_arrays_and_back
 def LogicalOr(*, x, y, name="LogicalOr"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.logical_or(x, y)
@@ -429,9 +434,7 @@ def Sum(*, input, axis, keep_dims=False, name="Sum"):
 Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 
 
-@to_ivy_arrays_and_back
-def Tanh(*, x, name="Tanh"):
-    return ivy.tanh(x)
+Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
 
 
 @to_ivy_arrays_and_back
@@ -486,6 +489,11 @@ Sigmoid = to_ivy_arrays_and_back(
 
 
 @to_ivy_arrays_and_back
+def Softmax(*, logits, name="Softmax"):
+    return ivy.softmax(logits, axis=1)
+
+
+@to_ivy_arrays_and_back
 def Softplus(*, features, name="Softplus"):
     return ivy.softplus(features)
 
@@ -521,3 +529,35 @@ def EuclideanNorm(*, input, axis, keep_dims=False, name="EuclideanNorm"):
 
 
 ConcatV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.concat))
+
+
+@to_ivy_arrays_and_back
+def Conv3D(
+    *,
+    input,
+    filter,
+    strides,
+    padding,
+    data_format="NDHWC",
+    dilations=[1, 1, 1, 1, 1],
+    name="Conv3D",
+):
+    # ivy.backends.tensorflow expects strides and dilations to be
+    # a single integer value or a list of 3 values whereas the raw op
+    # expects a list of 5 values
+    if data_format == "NDHWC":
+        strides = strides[1:-1]
+        dilations = dilations[1:-1]
+    elif data_format == "NCDHW":
+        strides = strides[2:]
+        dilations = dilations[2:]
+
+    return tf_frontend.nn.conv3d(
+        input,
+        filter,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+        name=name,
+    )
