@@ -7,7 +7,7 @@ import random
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_nn.test_layers import x_and_filters
+from ivy_tests.test_ivy.test_functional.test_nn.test_layers import x_and_filters, _assume_tf_dilation_gt_1
 from ivy.functional.frontends.jax.numpy import can_cast
 from ivy.functional.ivy.layers import _get_x_data_format
 
@@ -1809,13 +1809,7 @@ def test_jax_lax_conv(
     test_flags,
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
-    if ivy.current_backend_str() == "tensorflow":
-        if not ivy.gpu_is_available():
-            assume(
-                (dilation <= 1)
-                if isinstance(dilation, int)
-                else all(d <= 1 for d in dilation)
-            )
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
     assume(dim_num[0][1] == "C" and dim_num[1][0] == "O")
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -1848,13 +1842,7 @@ def test_jax_lax_conv_transpose(
     test_flags,
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, out_shape, fc, pref = x_f_d_other
-    if ivy.current_backend_str() == "tensorflow":
-        if not ivy.gpu_is_available():
-            assume(
-                (dilation <= 1)
-                if isinstance(dilation, int)
-                else all(d <= 1 for d in dilation)
-            )
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
     assume(
         dim_num[1] in ["OIW", "OIHW", "OIDHW"]
     )
@@ -1891,13 +1879,7 @@ def test_jax_lax_conv_general_dilated(
     test_flags,
 ):
     dtype, x, filters, dilations, dim_num, stride, pad, fc, pref = x_f_d_other
-    if ivy.current_backend_str() == "tensorflow":
-        if not ivy.gpu_is_available():
-            assume(
-                (dilations[0] <= 1)
-                if isinstance(dilations[0], int)
-                else all(d <= 1 for d in dilations[0])
-            )
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations[0])
     assume(not (isinstance(pad, str) and not len(dilations[1]) == dilations[1].count(1)))
     helpers.test_frontend_function(
         input_dtypes=dtype,
