@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List, Callable, Sequence
+from typing import Optional, Tuple, Union, Callable, Sequence
 
 # local
 import ivy
