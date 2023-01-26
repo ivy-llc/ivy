@@ -214,10 +214,13 @@ def conv1d_transpose(
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
     x, filters = _dilate_pad_for_tranpose(x, filters, strides, padding, 1, dilations, output_shape)
-    x = np.flip(x, (1,))
-    res = np.flip(conv1d(x, filters, 1, "VALID", data_format="NWC", dilations=1), (1,))
+    x = np.flip(x, (1, ))
+    res = np.flip(
+        conv1d(x, filters, 1, "VALID", data_format="NWC", dilations=1),
+        (1, ),
+    )
     if data_format == "NCW":
-        res = np.transpose(x, (0, 2, 1))
+        res = np.transpose(res, (0, 2, 1))
     return res
 
 
