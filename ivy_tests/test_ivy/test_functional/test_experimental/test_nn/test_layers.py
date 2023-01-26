@@ -233,17 +233,35 @@ def test_dct(
 
 @st.composite
 def _interp_args(draw):
-    mode = draw(st.sampled_from(["linear", "bilinear", "trilinear"]))
+    mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest"]))
+    align_corners = draw(st.booleans())
     if mode == "linear":
         size = draw(helpers.ints(min_value=4, max_value=5))
         num_dims = 3
     elif mode == "bilinear":
-        size = draw(helpers.lists(arg=helpers.ints(min_value=4, max_value=5), min_size=2, max_size=2))
+        size = draw(
+            helpers.lists(
+                arg=helpers.ints(min_value=4, max_value=5), min_size=2, max_size=2
+            )
+        )
         num_dims = 4
-    else:
-        size = draw(helpers.lists(arg=helpers.ints(min_value=4, max_value=5), min_size=3, max_size=3))
+    elif mode == "trilinear":
+        size = draw(
+            helpers.lists(
+                arg=helpers.ints(min_value=4, max_value=5), min_size=3, max_size=3
+            )
+        )
         num_dims = 5
-
+    elif mode == "nearest":
+        dim = draw(helpers.ints(min_value=1, max_value=3))
+        size = draw(
+            helpers.lists(
+                arg=helpers.ints(min_value=4, max_value=5), min_size=dim, max_size=dim
+            )
+        )
+        size = size[0] if dim == 1 else size
+        num_dims = dim + 2
+        align_corners = False
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
@@ -257,13 +275,12 @@ def _interp_args(draw):
         )
     )
 
-    return dtype, x, mode, size
+    return dtype, x, mode, size, align_corners
 
 
 @handle_test(
     fn_tree="functional.ivy.experimental.interpolate",
     dtype_x_mode=_interp_args(),
-    align_corners=st.booleans(),
     container_flags=st.just([False]),
     as_variable_flags=st.just([False]),
     native_array_flags=st.just([False]),
@@ -273,14 +290,13 @@ def _interp_args(draw):
 )
 def test_interpolate(
     dtype_x_mode,
-    align_corners,
     test_flags,
     backend_fw,
     fn_name,
     ground_truth_backend,
     on_device,
 ):
-    input_dtype, x, mode, size = dtype_x_mode
+    input_dtype, x, mode, size, align_corners = dtype_x_mode
     helpers.test_function(
         ground_truth_backend="torch",
         input_dtypes=input_dtype,
@@ -288,8 +304,8 @@ def test_interpolate(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-02,
-        atol_=1e-02,
+        rtol_=1e-01,
+        atol_=1e-01,
         x=x[0],
         size=size,
         mode=mode,

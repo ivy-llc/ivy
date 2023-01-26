@@ -838,7 +838,7 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
     align_corners: Optional[bool] = True,
     antialias: Optional[bool] = False,
 ):
@@ -942,4 +942,32 @@ def interpolate(
                     ) in enumerate(depth_ret[k]):
                         ret[i][j][k][l] = ivy.interp(missing_d, x_up_d, depth)
         ret = ret.transpose((0, 1, 4, 2, 3))
+
+    elif mode == "nearest":
+        size = (size,) if isinstance(size, int) else size
+        dims = len(x.shape) - 2
+        ret = ivy.zeros((x.shape[:2] + size))
+        for i, ba in enumerate(x):
+            for j, ch in enumerate(ba):
+                w_scale = size[-1] / x.shape[-1]
+                if dims == 3:
+                    h_scale = size[-2] / x.shape[-2]
+                    d_scale = size[-3] / x.shape[-3]
+                    for d_dim in range(size[0]):
+                        for h_dim in range(size[1]):
+                            for w_dim in range(size[2]):
+                                ret[i][j][d_dim][h_dim][w_dim] = x[i][j][
+                                    round(d_dim // d_scale)
+                                ][round(h_dim // h_scale)][round(w_dim // w_scale)]
+                elif dims == 2:
+                    h_scale = size[-2] / x.shape[-2]
+                    for h_dim in range(size[0]):
+                        for w_dim in range(size[1]):
+                            ret[i][j][h_dim][w_dim] = x[i][j][round(h_dim // h_scale)][
+                                round(w_dim // w_scale)
+                            ]
+                elif dims == 1:
+                    for w_dim in range(size[0]):
+                        ret[i][j][w_dim] = x[i][j][round(w_dim // w_scale)]
+
     return ivy.astype(ret, ivy.dtype(x))
