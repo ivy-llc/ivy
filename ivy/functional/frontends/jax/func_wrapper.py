@@ -27,7 +27,7 @@ def _from_ivy_array_to_jax_frontend_array(x, nested=False, include_derived=None)
             x, _from_ivy_array_to_jax_frontend_array, include_derived, shallow=False
         )
     elif isinstance(x, ivy.Array):
-        return jax_frontend.DeviceArray(x)
+        return jax_frontend.DeviceArray(x.astype(_handle_x64(x.dtype)))
     return x
 
 
@@ -42,7 +42,7 @@ def _from_ivy_array_to_jax_frontend_array_weak_type(
             shallow=False,
         )
     elif isinstance(x, ivy.Array):
-        return jax_frontend.DeviceArray(x, weak_type=True)
+        return jax_frontend.DeviceArray(x.astype(_handle_x64(x.dtype)), weak_type=True)
     return x
 
 
@@ -52,8 +52,21 @@ def _native_to_ivy_array(x):
     return x
 
 
+def _handle_x64(dtype):
+    if not jax_frontend.config.jax_enable_x64:
+        dtype = (
+            jax_frontend.numpy.dtype_replacement_dict[dtype]
+            if dtype in jax_frontend.numpy.dtype_replacement_dict
+            else dtype
+        )
+    return dtype
+
+
 def _to_ivy_array(x):
-    return _from_jax_frontend_array_to_ivy_array(_native_to_ivy_array(x))
+    ret = _from_jax_frontend_array_to_ivy_array(_native_to_ivy_array(x))
+    if isinstance(ret, ivy.Array):
+        return ret.astype(_handle_x64(ret.dtype))
+    return ret
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -148,12 +161,7 @@ def handle_jax_dtype(fn: Callable) -> Callable:
             return fn(*args, dtype=dtype, **kwargs)
 
         dtype = np_frontend.to_ivy_dtype(dtype)
-        if not jax_frontend.config.jax_enable_x64:
-            dtype = (
-                jax_frontend.numpy.dtype_replacement_dict[dtype]
-                if dtype in jax_frontend.numpy.dtype_replacement_dict
-                else dtype
-            )
+        dtype = _handle_x64(dtype)
 
         return fn(*args, dtype=dtype, **kwargs)
 

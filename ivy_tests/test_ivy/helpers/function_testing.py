@@ -414,6 +414,7 @@ def test_frontend_function(
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
+    jax_enable_x64: bool = True,
     **all_as_kwargs_np,
 ):
     """Tests a frontend function for the current backend by comparing the result with
@@ -529,11 +530,16 @@ def test_frontend_function(
     copy_args = copy.deepcopy(args)
     # strip the decorator to get an Ivy array
     # ToDo, fix testing for jax frontend for x32
+
+    importlib.import_module("jax").config.update("jax_enable_x64", jax_enable_x64)
+
     if frontend == "jax":
         importlib.import_module("ivy.functional.frontends.jax").config.update(
-            "jax_enable_x64", True
+            "jax_enable_x64", jax_enable_x64
         )
+
     ret = get_frontend_ret(frontend_fn, *args_ivy, **kwargs_ivy)
+
     if test_flags.with_out:
         if not inspect.isclass(ret):
             is_ret_tuple = issubclass(ret.__class__, tuple)
