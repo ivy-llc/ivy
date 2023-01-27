@@ -10,7 +10,7 @@ from . import backend_version
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": ("float16",),
+        "1.11.0 and below": ("float16", "complex"),
     },
     backend_version,
 )
@@ -89,7 +89,7 @@ def unique_inverse(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
 
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": ("float16",),
+        "1.11.0 and below": ("float16", "complex"),
     },
     backend_version,
 )
