@@ -23,6 +23,9 @@ from ivy import inf
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="minimum"
+    ),
 )
 def test_numpy_minimum(
     dtypes_values_casting,
@@ -220,6 +223,9 @@ def test_numpy_nanmin(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="maximum"
+    ),
 )
 def test_numpy_maximum(
     dtypes_values_casting,

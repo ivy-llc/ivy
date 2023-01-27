@@ -15,6 +15,7 @@ from ivy.func_wrapper import (
     infer_dtype,
     handle_out_argument,
     outputs_to_ivy_arrays,
+    inputs_to_native_arrays,
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -1475,12 +1476,15 @@ def from_dlpack(
 array = asarray
 
 
-@to_native_arrays_and_back
+@inputs_to_native_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
 def copy_array(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    to_ivy_array: Optional[bool] = True,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Copy an array.
 
@@ -1488,6 +1492,10 @@ def copy_array(
     ----------
     x
         array, input array containing elements to copy.
+    to_ivy_array
+        boolean, if True the returned array will be an ivy.Array object otherwise
+        returns an ivy.NativeArray object (i.e. a torch.tensor, np.array, etc.,
+        depending on the backend), defaults to True.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1572,7 +1580,7 @@ def copy_array(
     }
 
     """
-    return current_backend(x).copy_array(x, out=out)
+    return current_backend(x).copy_array(x, to_ivy_array=to_ivy_array, out=out)
 
 
 @handle_exceptions
