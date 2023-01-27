@@ -1290,9 +1290,7 @@ def dsplit(
     [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
      ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
     """
-    return ivy.current_backend(ary).dsplit(
-        ary, indices_or_sections=indices_or_sections, out=out
-    )
+    return ivy.current_backend(ary).dsplit(ary, indices_or_sections, out=out)
 
 
 @to_native_arrays_and_back

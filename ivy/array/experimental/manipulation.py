@@ -590,7 +590,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
         [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
         ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
         """
-        return ivy.dsplit(self._data, indices_or_sections=indices_or_sections, out=out)
+        return ivy.dsplit(self._data, indices_or_sections, out=out)
 
     def atleast_1d(
         self: ivy.Array, *arys: Union[ivy.Array, bool, Number]
