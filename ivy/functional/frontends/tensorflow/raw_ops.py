@@ -249,6 +249,11 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
 
 
 @to_ivy_arrays_and_back
+def Rsqrt(*, x, name="Rsqrt"):
+    return ivy.sqrt(ivy.reciprocal(x))
+
+
+@to_ivy_arrays_and_back
 def MatrixInverse(*, input, adjoint=False, name="MatrixInverse"):
     return ivy.inv(input, adjoint=adjoint)
 
