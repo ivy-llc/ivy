@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
+        small_abs_safety_factor=3,
     ),
 )
 def test_numpy_sort(
@@ -21,6 +22,7 @@ def test_numpy_sort(
     frontend,
     fn_tree,
     on_device,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
 
@@ -31,6 +33,7 @@ def test_numpy_sort(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
