@@ -655,25 +655,18 @@ def test_tensorflow_linalg_cholesky(
 def test_tensorflow_matmul(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     x1, x2 = x[0], x[1].T
-    as_variable = [True]
-    num_positional_args = 2
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        test_flags=test_flags,
         on_device=on_device,
         a=x1,
         b=x2,
