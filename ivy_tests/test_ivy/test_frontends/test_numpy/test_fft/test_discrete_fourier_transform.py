@@ -1,3 +1,4 @@
+from hypothesis import reproduce_failure
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -7,7 +8,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     )
+    
 )
+# @reproduce_failure('6.55.0', b'AAIAAACAAAAAAAAAAAA=')
 def test_numpy_iftt(
     dtype_and_x,
     frontend,
