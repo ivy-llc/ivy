@@ -8,6 +8,8 @@ import ivy
 
 # ToDo: implement all methods here as public instance methods
 
+# ToDo: update docstrings and typehints according to ivy\layers
+
 
 # noinspection PyMissingConstructor
 class ContainerWithLayers(ContainerBase):
