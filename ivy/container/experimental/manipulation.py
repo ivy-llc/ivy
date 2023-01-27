@@ -2289,3 +2289,67 @@ class ContainerWithManipulationExperimental(ContainerBase):
 
         """
         return self.static_broadcast_shapes(self, out=out)
+
+    @staticmethod
+    def static_expand(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape],
+        /,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        x
+        shape
+        device
+        out
+        key_chains
+        to_apply
+        prune_unapplied
+        map_sequences
+
+        Returns
+        -------
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "expand",
+            x,
+            shape,
+            device=device,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def expand(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape],
+        /,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        shape
+        device
+        out
+
+        Returns
+        -------
+
+        """
+        return self.static_expand(self, shape, device=device, out=out)

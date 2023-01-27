@@ -84,3 +84,28 @@ def poisson(
     _check_shapes_broadcastable(shape, lam.shape)
     lam = torch.broadcast_to(lam, tuple(shape))
     return torch.poisson(lam).type(dtype).to(device)
+
+
+def bernoulli(
+    probs: Union[float, torch.Tensor],
+    *,
+    logits: Union[float, torch.Tensor] = None,
+    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
+    device: torch.device,
+    dtype: torch.dtype,
+    seed: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if seed:
+        torch.manual_seed(seed)
+    if logits is not None:
+        if not _check_shapes_broadcastable(shape, logits.shape):
+            shape = logits.shape
+    elif probs is not None:
+        if not _check_shapes_broadcastable(shape, probs.shape):
+            shape = probs.shape
+    return (
+        torch.distributions.bernoulli.Bernoulli(probs=probs, logits=logits)
+        .sample(shape)
+        .to(device, dtype)
+    )
