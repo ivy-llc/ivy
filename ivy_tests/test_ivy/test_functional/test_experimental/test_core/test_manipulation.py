@@ -214,7 +214,7 @@ def test_vstack(
     ground_truth_backend,
 ):
     input_dtype, m = dtype_and_m
-    ret_np_flat, ret_np_from_gt_flat = helpers.test_function(
+    helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -222,13 +222,6 @@ def test_vstack(
         fw=backend_fw,
         fn_name=fn_name,
         arrays=m,
-        test_values=False,
-        return_flat_np_arrays=True,
-    )
-    helpers.value_test(
-        ret_np_flat=ret_np_flat,
-        ret_np_from_gt_flat=ret_np_from_gt_flat,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
