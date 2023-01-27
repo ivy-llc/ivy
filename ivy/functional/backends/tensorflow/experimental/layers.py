@@ -34,10 +34,20 @@ def max_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
+    # add dilation to the kernel
+    # if isinstance(dilation, int):
+    dilation = (dilation,) * 2 if isinstance(dilation, int) else tuple(dilation)
+    dilation = (
+        (dilation[0],) * 2
+        if isinstance(dilation, tuple) and len(dilation) == 1
+        else tuple(dilation)
+    )
+    kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
     if not isinstance(padding, str):
         padding = [(0, 0)] + padding + [(0, 0)]
     res = tf.nn.max_pool2d(x, kernel, strides, padding)

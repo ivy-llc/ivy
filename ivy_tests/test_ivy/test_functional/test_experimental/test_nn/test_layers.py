@@ -10,7 +10,12 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(
-        min_dims=4, max_dims=4, min_side=1, max_side=4, allow_explicit_padding=True
+        min_dims=4,
+        max_dims=4,
+        min_side=1,
+        max_side=4,
+        allow_explicit_padding=True,
+        return_dilation=True,
     ),
     test_gradients=st.just(False),
     # problem with containers converting tuple padding to
@@ -24,7 +29,7 @@ def test_max_pool2d(
     backend_fw,
     fn_name,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation = x_k_s_p
     helpers.test_function(
         ground_truth_backend="jax",
         input_dtypes=dtype,
@@ -37,6 +42,7 @@ def test_max_pool2d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        dilation=dilation,
     )
 
 

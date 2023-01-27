@@ -63,6 +63,7 @@ def max_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -94,7 +95,7 @@ def max_pool2d(
         value=float("-inf"),
     )
 
-    res = torch.nn.functional.max_pool2d(x, kernel, strides, 0)
+    res = torch.nn.functional.max_pool2d(x, kernel, strides, 0, dilation)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res

@@ -12,7 +12,7 @@ from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 
 
-def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
+def general_pool(inputs, init, reduce_fn, window_shape, strides, padding, dilation):
 
     if isinstance(strides, int):
         strides = (strides,) * len(window_shape)
@@ -50,7 +50,15 @@ def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
         pad_list = [(0, 0)] + pad_list + [(0, 0)]
     else:
         pad_list = [(0, 0)] + padding + [(0, 0)]
-    y = jlax.reduce_window(inputs, init, reduce_fn, dims, strides, pad_list)
+    if isinstance(dilation, int) or (
+        isinstance(dilation, tuple) and len(dilation) == 1
+    ):
+        dilation = (1, dilation, dilation, 1)
+    else:
+        dilation = (1,) + tuple(dilation) + (1,)
+    y = jlax.reduce_window(
+        inputs, init, reduce_fn, dims, strides, pad_list, window_dilation=dilation
+    )
     if is_single_input:
         y = jnp.squeeze(y, axis=0)
     return y
@@ -94,12 +102,13 @@ def max_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
-    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding, dilation)
 
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))

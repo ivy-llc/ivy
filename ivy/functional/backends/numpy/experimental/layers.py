@@ -73,6 +73,7 @@ def max_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -90,6 +91,7 @@ def max_pool2d(
         x = np.transpose(x, (0, 2, 3, 1))
 
     x_shape = list(x.shape[1:3])
+    kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
     pad_list = padding
     if isinstance(padding, str):
         pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
