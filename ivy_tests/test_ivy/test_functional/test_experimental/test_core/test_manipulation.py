@@ -195,14 +195,12 @@ def test_flipud(
 @handle_test(
     fn_tree="functional.ivy.experimental.vstack",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
-        shared_dtype=True,
-        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=helpers.get_shape(
-            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+            min_num_dims=1,
         ),
+        shared_dtype=True,
+        num_arrays=helpers.ints(min_value=2, max_value=10),
     ),
     test_gradients=st.just(False),
 )
@@ -231,13 +229,11 @@ def test_vstack(
 @handle_test(
     fn_tree="functional.ivy.experimental.hstack",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
+        available_dtypes=helpers.get_dtypes("valid"),
         shared_dtype=True,
-        num_arrays=2,
+        num_arrays=helpers.ints(min_value=2, max_value=10),
         shape=helpers.get_shape(
-            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+            min_num_dims=1,
         ),
     ),
     test_gradients=st.just(False),

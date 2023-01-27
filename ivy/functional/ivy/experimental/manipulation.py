@@ -410,7 +410,7 @@ def vstack(
                [7, 8]])
 
     """
-    return ivy.current_backend(arrays[0]).vstack(arrays, out=out)
+    return ivy.current_backend().vstack(arrays, out=out)
 
 
 @to_native_arrays_and_back
@@ -449,7 +449,7 @@ def hstack(
     ivy.array([[5, 6, 7, 8]])
 
     """
-    return ivy.current_backend(arrays[0]).hstack(arrays, out=out)
+    return ivy.current_backend().hstack(arrays, out=out)
 
 
 @to_native_arrays_and_back
