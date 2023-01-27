@@ -246,35 +246,85 @@ inputs broadcast to.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
 <span class="gp">... </span>              <span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;height width -&gt; width height&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_rearrange</span><span class="p">(</span><span class="s2">&quot;height width -&gt; width height&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">ivy.array([[ 1, -4],</span>
-<span class="go">   [ 2, -5],</span>
-<span class="go">   [ 3, -6]])</span>
+<span class="go">    [ 2, -5],</span>
+<span class="go">    [ 3, -6]])</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span> <span class="mi">1</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">3</span><span class="p">],</span>
 <span class="gp">... </span>                 <span class="p">[</span> <span class="mi">4</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">6</span><span class="p">]],</span>
 <span class="gp">... </span>              <span class="p">[[</span> <span class="mi">7</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span>  <span class="mi">9</span><span class="p">],</span>
 <span class="gp">... </span>                 <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;c h w -&gt; c (h w)&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_rearrange</span><span class="p">(</span><span class="s2">&quot;c h w -&gt; c (h w)&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">ivy.array([[ 1,  2,  3,  4,  5,  6],</span>
-<span class="go">   [ 7,  8,  9, 10, 11, 12]])</span>
+<span class="go">    [ 7,  8,  9, 10, 11, 12]])</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
-<span class="gp">... </span>              <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;c (h w) -&gt; (c h) w&quot;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+<span class="gp">... </span>           <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">einops_rearrange</span><span class="p">(</span><span class="s2">&quot;c (h w) -&gt; (c h) w&quot;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="go">ivy.array([[ 1,  2,  3],</span>
 <span class="go">   [ 4,  5,  6],</span>
 <span class="go">   [ 7,  8,  9],</span>
 <span class="go">   [10, 11, 12]])</span>
 </pre></div>
 </div>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<p>x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],
+…                            [3.66, 24.29, 3.64]]),
+…               b=ivy.array([[4.96, 1.52, -10.67],
+…                            [4.36, 13.96, 0.3]]))
+y = ivy.einops_rearrange(x, ‘a b -&gt; b a’)
+print(y)
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>a: ivy.array([[-4.46999979, 3.66000009],</dt><dd><p>[0.93000001, 24.29000092],
+[-3.33999991, 3.6400001]]),</p>
+</dd>
+<dt>b: ivy.array([[4.96000004, 4.36000013],</dt><dd><p>[1.51999998, 13.96000004],
+[-10.67000008, 0.30000001]])</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}</p>
+<p>With varying pattern:</p>
+<p>Suppose we have a set of 32 images in “h w c” format (height-width-channel)
+&gt;&gt;&gt; images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])</p>
+<p>Concatenate images along height (vertical axis), 960 = 32 * 30
+&gt;&gt;&gt; x = ivy.einops_rearrange(images, ‘b h w c -&gt; (b h) w c’)
+&gt;&gt;&gt; print(x.shape)
+(960, 40, 3)</p>
+<p>Concatenate images along horizontal axis, 1280 = 32 * 40
+&gt;&gt;&gt; x = ivy.einops_rearrange(images, ‘b h w c -&gt; h (b w) c’)
+&gt;&gt;&gt; print(x.shape)
+(30, 1280, 3)</p>
+<p>Reorder axes to “b c h w” format for deep learning
+&gt;&gt;&gt; x = ivy.einops_rearrange(images, ‘b h w c -&gt; b c h w’)
+&gt;&gt;&gt; print(x.shape)
+(32, 3, 30, 40)</p>
+<p>Flatten each image into a vector, 3600 = 30 * 40 * 3
+&gt;&gt;&gt; x = ivy.einops_rearrange(images, ‘b h w c -&gt; b (c h w)’)
+&gt;&gt;&gt; print(x.shape)
+(32, 3600)</p>
+<p>Split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right),
+128 = 32 * 2 * 2
+&gt;&gt;&gt; x = ivy.einops_rearrange(images, ‘b (h1 h) (w1 w) c -&gt; (b h1 w1) h w c’,
+… h1=2, w1=2)
+&gt;&gt;&gt; print(x.shape)
+(128, 15, 20, 3)</p>
+<p>Space-to-depth operation
+&gt;&gt;&gt; x = ivy.einops_rearrange(images, ‘b (h h1) (w w1) c -&gt; b h w (c h1 w1)’, h1=2,
+… w1=2)
+&gt;&gt;&gt; print(x.shape)
+(32, 15, 20, 12)</p>
 </dd></dl>
 
 <dl class="py function">
