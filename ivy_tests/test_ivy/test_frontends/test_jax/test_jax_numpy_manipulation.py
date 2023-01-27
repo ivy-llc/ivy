@@ -657,7 +657,7 @@ def test_jax_numpy_atleast_3d(
         on_device=on_device,
         **arys,
     )
-    
+
 
 # atleast_2d
 @handle_frontend_test(
@@ -669,12 +669,12 @@ def test_jax_numpy_atleast_3d(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_atleast_2d(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, arrays = dtype_and_x
     arys = {}

@@ -10,7 +10,6 @@ class ndarray:
         if isinstance(dtype, np_frontend.dtype):
             dtype = dtype.ivy_dtype
         self._ivy_array = ivy.empty(shape, dtype=dtype)
-        self._dtype = dtype
 
         ivy.assertions.check_elem_in_list(
             order,
@@ -44,7 +43,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return self._ivy_array.dtype
+        return np_frontend.dtype(self._ivy_array.dtype)
 
     # Setters #
     # --------#
@@ -54,10 +53,6 @@ class ndarray:
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
-
-    @dtype.setter
-    def dtype(self, dtype):
-        self._dtype = np_frontend.dtype(dtype)
 
     # Instance Methods #
     # ---------------- #
@@ -321,6 +316,9 @@ class ndarray:
 
     def __ne__(self, value, /):
         return np_frontend.not_equal(self._ivy_array, value)
+
+    def __len__(self):
+        return len(self.ivy_array)
 
     def __eq__(self, value, /):
         return ivy.array(np_frontend.equal(self._ivy_array, value), dtype=ivy.bool)
