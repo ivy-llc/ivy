@@ -164,11 +164,11 @@ class ArrayWithManipulationExperimental(abc.ABC):
 
     def hstack(
         self: ivy.Array,
-        /,
         arrays: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
