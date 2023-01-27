@@ -192,6 +192,8 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return np.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
@@ -301,6 +303,16 @@ def signbit(
 
 
 signbit.support_native_out = True
+
+
+def hypot(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.hypot(x1, x2)
 
 
 def diff(
@@ -415,12 +427,3 @@ def xlogy(
 
 def real(x: Union[np.ndarray], /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.real(x)
-
-
-def isposinf(
-    x: Union[np.ndarray],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.isposinf(x)
