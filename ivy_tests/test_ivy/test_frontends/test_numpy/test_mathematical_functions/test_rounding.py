@@ -16,6 +16,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="ceil"
+    ),
 )
 def test_numpy_ceil(
     dtypes_values_casting,
@@ -86,6 +89,9 @@ def test_numpy_fix(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="trunc"
+    ),
 )
 def test_numpy_trunc(
     dtypes_values_casting,
