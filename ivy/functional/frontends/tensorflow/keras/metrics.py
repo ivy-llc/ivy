@@ -216,7 +216,7 @@ logcosh = log_cosh
 
 @to_ivy_arrays_and_back
 def mean_absolute_error(y_true, y_pred):
-    return ivy.mean(ivy.abs(y_true - y_pred), axis=-1).astype(y_true.dtype)
+    return ivy.mean(ivy.abs(y_true - y_pred), axis=-1)
 
 
 mae = mean_absolute_error
