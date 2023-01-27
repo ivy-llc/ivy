@@ -391,6 +391,7 @@ def fix(x, out=None):
 def real(val, /):
     return ivy.real(val)
 
+
 @to_ivy_arrays_and_back
 def hypot(x1, x2, /):
     return ivy.hypot(x1, x2)
