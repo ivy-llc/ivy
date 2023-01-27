@@ -195,14 +195,12 @@ def test_flipud(
 @handle_test(
     fn_tree="functional.ivy.experimental.vstack",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
-        shared_dtype=True,
-        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=helpers.get_shape(
-            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+            min_num_dims=2,
         ),
+        shared_dtype=True,
+        num_arrays=helpers.ints(min_value=2, max_value=10),
     ),
     test_gradients=st.just(False),
 )
@@ -216,7 +214,7 @@ def test_vstack(
     ground_truth_backend,
 ):
     input_dtype, m = dtype_and_m
-    helpers.test_function(
+    ret_np_flat, ret_np_from_gt_flat = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -224,6 +222,13 @@ def test_vstack(
         fw=backend_fw,
         fn_name=fn_name,
         arrays=m,
+        test_values=False,
+        return_flat_np_arrays=True,
+    )
+    helpers.value_test(
+        ret_np_flat=ret_np_flat,
+        ret_np_from_gt_flat=ret_np_from_gt_flat,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
