@@ -1,5 +1,7 @@
 # global
+from numbers import Number
 from typing import Union, Optional, List, Sequence
+
 import jax.dlpack
 import jax.numpy as jnp
 import jaxlib.xla_extension
@@ -9,7 +11,6 @@ import ivy
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
-from ivy.functional.ivy import default_dtype
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -35,7 +36,7 @@ def arange(
 ) -> JaxArray:
     if dtype:
         dtype = as_native_dtype(dtype)
-    res = _to_device(jnp.arange(start, stop, step=step, dtype=dtype), device=device)
+    res = _to_device(jnp.arange(start, stop, step, dtype=dtype), device=device)
     if not dtype:
         if res.dtype == jnp.float64:
             return res.astype(jnp.float32)
@@ -57,15 +58,19 @@ def asarray(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if isinstance(obj, ivy.NativeArray) and not dtype:
-        dtype = obj.dtype
+        if copy is True:
+            dtype = obj.dtype
+            return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
+        else:
+            return _to_device(obj, device=device)
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
-        dtype = default_dtype(item=obj, as_native=True)
+        dtype = ivy.default_dtype(item=obj, as_native=True)
         if copy is True:
             return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
         else:
             return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
     else:
-        dtype = default_dtype(dtype=dtype, item=obj)
+        dtype = ivy.default_dtype(dtype=dtype, item=obj)
 
     if copy is True:
         return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
@@ -140,7 +145,7 @@ def full(
 def full_like(
     x: JaxArray,
     /,
-    fill_value: float,
+    fill_value: Number,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
@@ -225,8 +230,12 @@ def linspace(
     return _to_device(ans, device=device)
 
 
-def meshgrid(*arrays: JaxArray, indexing: str = "xy") -> List[JaxArray]:
-    return jnp.meshgrid(*arrays, indexing=indexing)
+def meshgrid(
+    *arrays: JaxArray,
+    sparse: bool = False,
+    indexing: str = "xy",
+) -> List[JaxArray]:
+    return jnp.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
 def ones(
@@ -289,37 +298,45 @@ def zeros_like(
 array = asarray
 
 
-def copy_array(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.array(x)
-
-
-def logspace(
-    start: Union[JaxArray, int],
-    stop: Union[JaxArray, int],
-    /,
-    num: int,
-    *,
-    base: float = 10.0,
-    axis: int = None,
-    dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
-    out: Optional[JaxArray] = None,
+def copy_array(
+    x: JaxArray, *, to_ivy_array: Optional[bool] = True, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if axis is None:
-        axis = -1
-    return _to_device(
-        jnp.logspace(start, stop, num, base=base, dtype=dtype, axis=axis), device=device
-    )
+    if to_ivy_array:
+        return ivy.to_ivy(jnp.array(x))
+    return jnp.array(x)
 
 
 def one_hot(
     indices: JaxArray,
     depth: int,
+    /,
     *,
+    on_value: Optional[Number] = None,
+    off_value: Optional[Number] = None,
+    axis: Optional[int] = None,
+    dtype: Optional[jnp.dtype] = None,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    res = jnp.eye(depth, dtype=indices.dtype)[
-        jnp.array(indices, dtype="int64").reshape(-1)
-    ]
-    return _to_device(res.reshape(list(indices.shape) + [depth]), device)
+    on_none = on_value is None
+    off_none = off_value is None
+
+    if dtype is None:
+        if on_none and off_none:
+            dtype = jnp.float32
+        else:
+            if not on_none:
+                dtype = jnp.array(on_value).dtype
+            elif not off_none:
+                dtype = jnp.array(off_value).dtype
+
+    res = jnp.eye(depth, dtype=dtype)[jnp.array(indices, dtype="int64").reshape(-1)]
+    res = res.reshape(list(indices.shape) + [depth])
+
+    if not on_none and not off_none:
+        res = jnp.where(res == 1, on_value, off_value)
+
+    if axis is not None:
+        res = jnp.moveaxis(res, -1, axis)
+
+    return _to_device(res, device)

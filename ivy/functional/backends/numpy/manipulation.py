@@ -1,9 +1,13 @@
 # global
-import ivy
-import numpy as np
 import math
-from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
+from typing import Union, Tuple, Optional, List, Sequence
+import numpy as np
+
+# local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def _flat_array_to_1_dim_array(x):
@@ -15,7 +19,11 @@ def _flat_array_to_1_dim_array(x):
 
 
 def concat(
-    xs: List[np.ndarray], /, *, axis: int = 0, out: Optional[np.ndarray] = None
+    xs: Union[Tuple[np.ndarray, ...], List[np.ndarray]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     is_tuple = type(xs) is tuple
     if axis is None:
@@ -30,7 +38,7 @@ def concat(
     highest_dtype = xs[0].dtype
     for i in xs:
         highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
-    return ret.astype(highest_dtype)
+    return ivy.astype(ret, highest_dtype, copy=False)
 
 
 concat.support_native_out = True
@@ -76,12 +84,20 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    order: Optional[str] = "C",
+    allowzero: Optional[bool] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    if not allowzero:
+        shape = [
+            new_s if con else old_s
+            for new_s, con, old_s in zip(shape, np.array(shape) != 0, x.shape)
+        ]
     if copy:
         newarr = x.copy()
-        return np.reshape(newarr, shape)
-    return np.reshape(x, shape)
+        return np.reshape(newarr, shape, order=order)
+    return np.reshape(x, shape, order=order)
 
 
 def roll(
@@ -131,13 +147,13 @@ stack.support_native_out = True
 
 
 def split(
-    x,
+    x: np.ndarray,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[np.ndarray]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.exceptions.IvyException(
@@ -161,6 +177,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,
@@ -172,13 +189,10 @@ def repeat(
     return np.repeat(x, repeats, axis)
 
 
-repeat.unsupported_dtypes = ("uint64",)
-
-
 def tile(
-    x: np.ndarray, /, reps: Sequence[int], *, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, repeats: Sequence[int], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.tile(x, reps)
+    return np.tile(x, repeats)
 
 
 def constant_pad(
@@ -223,7 +237,9 @@ def clip(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
+    ivy.assertions.check_less(
+        ivy.array(x_min), ivy.array(x_max), message="min values must be less than max"
+    )
     return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
 
 

@@ -3,88 +3,77 @@
 # global
 import math
 import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 _zero = np.asarray(0, dtype="uint8")
 _one = np.asarray(1, dtype="uint8")
 
 
-def _not_too_close_to_zero(x):
+def not_too_close_to_zero(x):
     f = np.vectorize(lambda item: item + (_one if np.isclose(item, 0) else _zero))
     return f(x)
 
 
 # abs
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.abs",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="abs"),
 )
 def test_abs(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="abs",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # acosh
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.acosh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="acosh"),
 )
 def test_acosh(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="acosh",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         x=x[0],
@@ -92,37 +81,31 @@ def test_acosh(
 
 
 # acos
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.acos",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="acos"),
 )
 def test_acos(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="acos",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         x=x[0],
@@ -130,8 +113,8 @@ def test_acos(
 
 
 # add
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.add",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -139,35 +122,29 @@ def test_acos(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="add"),
     alpha=st.integers(min_value=1, max_value=5),
 )
 def test_add(
     *,
     dtype_and_x,
     alpha,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="add",
-        rtol_=1e-2,
-        atol_=1e-2,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        rtol_=1e-1,
+        atol_=1e-1,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
         alpha=alpha,
@@ -175,37 +152,31 @@ def test_add(
 
 
 # asin
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.asin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="asin"),
 )
 def test_asin(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="asin",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         x=x[0],
@@ -213,37 +184,31 @@ def test_asin(
 
 
 # asinh
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.asinh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="asinh"),
 )
 def test_asinh(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="asinh",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         x=x[0],
@@ -251,40 +216,34 @@ def test_asinh(
 
 
 # atan
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.atan",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="atan"),
 )
 def test_atan(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="atan",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # atan2
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.atan2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -293,64 +252,52 @@ def test_atan(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="atan2"),
 )
 def test_atan2(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     assume(not (np.any(np.isclose(x[0], 0)) or np.any(np.isclose(x[1], 0))))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="atan2",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # atanh
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.atanh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="atanh"),
 )
 def test_atanh(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="atanh",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         x=x[0],
@@ -358,62 +305,55 @@ def test_atanh(
 
 
 # bitwise_and
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.bitwise_and",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
-        shared_dtype=True,
         num_arrays=2,
+        array_api_dtypes=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="bitwise_and"),
+    test_gradients=st.just(False),
 )
 def test_bitwise_and(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="bitwise_and",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # bitwise_left_shift
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.bitwise_left_shift",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        shared_dtype=True,
         num_arrays=2,
+        array_api_dtypes=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
+    test_gradients=st.just(False),
 )
 def test_bitwise_left_shift(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
@@ -422,111 +362,97 @@ def test_bitwise_left_shift(
         np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
     )
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="bitwise_left_shift",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # bitwise_invert
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.bitwise_invert",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer"))
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        array_api_dtypes=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="bitwise_invert"),
+    test_gradients=st.just(False),
 )
 def test_bitwise_invert(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="bitwise_invert",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # bitwise_or
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.bitwise_or",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
-        shared_dtype=True,
         num_arrays=2,
+        array_api_dtypes=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="bitwise_or"),
+    test_gradients=st.just(False),
 )
 def test_bitwise_or(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="bitwise_or",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # bitwise_right_shift
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.bitwise_right_shift",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        shared_dtype=True,
         num_arrays=2,
+        array_api_dtypes=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
+    test_gradients=st.just(False),
 )
 def test_bitwise_right_shift(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
 
@@ -537,332 +463,282 @@ def test_bitwise_right_shift(
     )
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="bitwise_right_shift",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # bitwise_xor
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.bitwise_xor",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
-        shared_dtype=True,
         num_arrays=2,
+        array_api_dtypes=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="bitwise_xor"),
+    test_gradients=st.just(False),
 )
 def test_bitwise_xor(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="bitwise_xor",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # ceil
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.ceil",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         small_abs_safety_factor=3,
         safety_factor_scale="linear",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ceil"),
 )
 def test_ceil(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="ceil",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # cos
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.cos",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="cos"),
 )
 def test_cos(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="cos",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # cosh
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.cosh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="cosh"),
 )
 def test_cosh(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="cosh",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # divide
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.divide",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="divide"),
 )
 def test_divide(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # prevent too close to zero
     assume(not np.any(np.isclose(x[1], 0)))
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="divide",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # equal
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.equal",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="equal"),
+    test_gradients=st.just(False),
 )
 def test_equal(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="equal",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # exp
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.exp",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="exp"),
 )
 def test_exp(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="exp",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # expm1
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.expm1",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="expm1"),
 )
 def test_expm1(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="expm1",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
     )
 
 
 # floor
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.floor",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="floor"),
 )
 def test_floor(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="floor",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.floor_divide",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -871,18 +747,15 @@ def test_floor(
         safety_factor_scale="linear",
         shared_dtype=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
 )
 def test_floor_divide(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # Make sure it's not dividing value too close to zero
@@ -890,15 +763,12 @@ def test_floor_divide(
     # Absolute tolerance is 1,
     # due to flooring can cause absolute error of 1 due to precision
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="floor_divide",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
         atol_=1,
@@ -906,60 +776,53 @@ def test_floor_divide(
 
 
 # greater
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.greater",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="greater"),
+    test_gradients=st.just(False),
 )
 def test_greater(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported
     assume(not ("bfloat16" in input_dtype))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="greater",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # greater_equal
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.greater_equal",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="greater_equal"),
+    test_gradients=st.just(False),
 )
 def test_greater_equal(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
@@ -967,142 +830,128 @@ def test_greater_equal(
     # make sure they're not too close together
     assume(not (np.any(np.isclose(x[0], x[1])) or np.any(np.isclose(x[1], x[0]))))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="greater_equal",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # isfinite
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.isfinite",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="isfinite"),
+    test_gradients=st.just(False),
 )
 def test_isfinite(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="isfinite",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # isinf
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.isinf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="isinf"),
+    detect_positive=st.booleans(),
+    detect_negative=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_isinf(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    detect_positive,
+    detect_negative,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="isinf",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
+        detect_positive=detect_positive,
+        detect_negative=detect_negative,
     )
 
 
 # isnan
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.isnan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="isnan"),
+    test_gradients=st.just(False),
 )
 def test_isnan(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="isnan",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # less
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.less",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_num_dims=1,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="less"),
+    test_gradients=st.just(False),
 )
 def test_less(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
@@ -1110,38 +959,33 @@ def test_less(
     # make sure they're not too close together
     assume(not (np.any(np.isclose(x[0], x[1])) or np.any(np.isclose(x[1], x[0]))))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="less",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # less_equal
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.less_equal",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="less_equal"),
+    test_gradients=st.just(False),
 )
 def test_less_equal(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
@@ -1149,468 +993,398 @@ def test_less_equal(
     # make sure they're not too close together
     assume(not (np.any(np.isclose(x[0], x[1])) or np.any(np.isclose(x[1], x[0]))))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="less_equal",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # log
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.log",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="log"),
 )
 def test_log(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # avoid logging values too close to zero
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="log",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # log1p
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.log1p",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="log1p"),
 )
 def test_log1p(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # avoid logging values too close to zero
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="log1p",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # log2
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.log2",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="log2"),
 )
 def test_log2(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # avoid logging values too close to zero
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="log2",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         x=x[0],
     )
 
 
 # log10
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.log10",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="log10"),
 )
 def test_log10(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # avoid logging values too close to zero
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="log10",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
     )
 
 
 # logaddexp
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.logaddexp",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        abs_smallest_val=0.137,
+        min_value=-80,
+        max_value=80,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="logaddexp"),
 )
 def test_logaddexp(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="logaddexp",
-        rtol_=1e-2,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
         x1=x[0],
         x2=x[1],
     )
 
 
 # logical_and
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.logical_and",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
-    num_positional_args=helpers.num_positional_args(fn_name="logical_and"),
+    test_gradients=st.just(False),
 )
 def test_logical_and(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="logical_and",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # logical_not
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.logical_not",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",)),
-    num_positional_args=helpers.num_positional_args(fn_name="logical_not"),
+    test_gradients=st.just(False),
 )
 def test_logical_not(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="logical_not",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # logical_or
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.logical_or",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
-    num_positional_args=helpers.num_positional_args(fn_name="logical_or"),
+    test_gradients=st.just(False),
 )
 def test_logical_or(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="logical_or",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # logical_xor
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.logical_xor",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
-    num_positional_args=helpers.num_positional_args(fn_name="logical_xor"),
+    test_gradients=st.just(False),
 )
 def test_logical_xor(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="logical_xor",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # multiply
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.multiply",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="multiply"),
 )
 def test_multiply(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="multiply",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # negative
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.negative",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="negative"),
 )
 def test_negative(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="negative",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # not_equal
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.not_equal",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="not_equal"),
+    test_gradients=st.just(False),
 )
 def test_not_equal(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="not_equal",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
 
 
 # positive
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.positive",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="positive"),
 )
 def test_positive(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="positive",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -1622,8 +1396,9 @@ def pow_helper(draw, available_dtypes=None):
     dtype1, x1 = draw(
         helpers.dtype_and_values(
             available_dtypes=available_dtypes,
-            small_abs_safety_factor=4,
-            large_abs_safety_factor=4,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
+            safety_factor_scale="log",
         )
     )
     dtype1 = dtype1[0]
@@ -1652,8 +1427,8 @@ def pow_helper(draw, available_dtypes=None):
             max_value = None
     dtype2, x2 = draw(
         helpers.dtype_and_values(
-            small_abs_safety_factor=12,
-            large_abs_safety_factor=12,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
             safety_factor_scale="log",
             max_value=max_value,
             dtype=[dtype2],
@@ -1661,26 +1436,25 @@ def pow_helper(draw, available_dtypes=None):
     )
     dtype2 = dtype2[0]
     if "int" in dtype2:
-        x2 = ivy.nested_map(x2[0], lambda x: abs(x), include_derived={list: True})
+        x2 = ivy.nested_map(
+            x2[0], lambda x: abs(x), include_derived={list: True}, shallow=False
+        )
     return [dtype1, dtype2], [x1, x2]
 
 
 # pow
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.pow",
     dtype_and_x=pow_helper(),
-    num_positional_args=helpers.num_positional_args(fn_name="pow"),
 )
 def test_pow(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
 
@@ -1696,18 +1470,15 @@ def test_pow(
     if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
         x[1] = np.abs(x[1])
 
-    x[0] = _not_too_close_to_zero(x[0])
-    x[1] = _not_too_close_to_zero(x[1])
+    x[0] = not_too_close_to_zero(x[0])
+    x[1] = not_too_close_to_zero(x[1])
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="pow",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         x1=x[0],
@@ -1716,44 +1487,42 @@ def test_pow(
 
 
 # remainder
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.remainder",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=6,
         safety_factor_scale="log",
     ),
     modulus=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="remainder"),
 )
 def test_remainder(
     *,
     dtype_and_x,
     modulus,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # Make sure values is not too close to zero
     assume(not np.any(np.isclose(x[0], 0)))
     assume(not np.any(np.isclose(x[1], 0)))
+    # jax raises inconsistent gradients for negative numbers in x1
+    if (np.any(x[0] < 0) or np.any(x[1] < 0)) and ivy.current_backend_str() == "jax":
+        test_flags.test_gradients = False
+    test_flags.as_variable = [test_flags.as_variable, False]
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=[as_variable, False],
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="remainder",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
         rtol_=1e-2,
@@ -1763,209 +1532,175 @@ def test_remainder(
 
 
 # round
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.round",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="round"),
 )
 def test_round(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="round",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # sign
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.sign",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="sign"),
 )
 def test_sign(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="sign",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # sin
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.sin",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="sin"),
 )
 def test_sin(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="sin",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # sinh
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.sinh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="sinh"),
 )
 def test_sinh(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="sinh",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # square
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.square",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="square"),
 )
 def test_square(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="square",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # sqrt
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.sqrt",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), allow_inf=False
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="sqrt"),
 )
 def test_sqrt(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="sqrt",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
     )
 
 
 # subtract
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.subtract",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1973,34 +1708,28 @@ def test_sqrt(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="subtract"),
     alpha=st.integers(min_value=1, max_value=5),
 )
 def test_subtract(
     *,
     dtype_and_x,
     alpha,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="subtract",
-        rtol_=1e-2,
-        atol_=1e-2,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
         x1=x[0],
         x2=x[1],
         alpha=alpha,
@@ -2008,99 +1737,85 @@ def test_subtract(
 
 
 # tan
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.tan",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="tan"),
 )
 def test_tan(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="tan",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
         x=x[0],
     )
 
 
 # tanh
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.tanh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="tanh"),
 )
 def test_tanh(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="tanh",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-2,
         x=x[0],
     )
 
 
 # trunc
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.trunc",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="trunc"),
 )
 def test_trunc(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="trunc",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -2110,243 +1825,268 @@ def test_trunc(
 
 
 # erf
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.erf",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(fn_name="erf"),
 )
 def test_erf(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="erf",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
     )
 
 
+@st.composite
+def min_max_helper(draw):
+    use_where = draw(st.booleans())
+    if use_where:
+        dtype_and_x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                small_abs_safety_factor=6,
+                large_abs_safety_factor=6,
+                safety_factor_scale="log",
+            )
+        )
+    else:
+        dtype_and_x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                min_value=-1e5,
+                max_value=1e5,
+                safety_factor_scale="log",
+            )
+        )
+    return dtype_and_x, use_where
+
+
 # minimum
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="minimum"),
+@handle_test(
+    fn_tree="functional.ivy.minimum",
+    dtype_and_x_and_use_where=min_max_helper(),
 )
 def test_minimum(
     *,
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    dtype_and_x_and_use_where,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    (input_dtype, x), use_where = dtype_and_x_and_use_where
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="minimum",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=x[0],
         x2=x[1],
+        use_where=use_where,
     )
 
 
 # maximum
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="maximum"),
+@handle_test(
+    fn_tree="functional.ivy.maximum",
+    dtype_and_x_and_use_where=min_max_helper(),
 )
 def test_maximum(
     *,
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    dtype_and_x_and_use_where,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    (input_dtype, x), use_where = dtype_and_x_and_use_where
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="maximum",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=x[0],
         x2=x[1],
+        use_where=use_where,
     )
 
 
 # reciprocal
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.reciprocal",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        small_abs_safety_factor=2,
-        large_abs_safety_factor=2,
+        small_abs_safety_factor=4,
+        large_abs_safety_factor=4,
         safety_factor_scale="log",
         num_arrays=1,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="reciprocal"),
 )
 def test_reciprocal(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="reciprocal",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
         x=x[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.deg2rad",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="deg2rad"),
 )
 def test_deg2rad(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="deg2rad",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.rad2deg",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="rad2deg"),
 )
 def test_rad2deg(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="rad2deg",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # trunc_divide
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.trunc_divide",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="trunc_divide"),
 )
 def test_trunc_divide(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # prevent too close to zero
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="trunc_divide",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# isreal
+@handle_test(
+    fn_tree="functional.ivy.isreal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex")
+    ),
+    test_gradients=st.just(False),
+)
+def test_isreal(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
     )

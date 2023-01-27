@@ -1,317 +1,651 @@
 # global
-from hypothesis import given
+from hypothesis import assume, strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # add
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+@handle_frontend_test(
+    fn_tree="numpy.add",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.add"
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="add"
     ),
 )
 def test_numpy_add(
-    dtype_and_x,
-    dtype,
+    dtypes_values_casting,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
-    input_dtypes, xs = dtype_and_x
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="add",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x1=xs[0],
         x2=xs[1],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
 # subtract
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+@handle_frontend_test(
+    fn_tree="numpy.subtract",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.subtract"
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="subtract"
     ),
 )
 def test_numpy_subtract(
-    dtype_and_x,
-    dtype,
+    dtypes_values_casting,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
-    input_dtypes, xs = dtype_and_x
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="subtract",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x1=xs[0],
         x2=xs[1],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
 # vdot
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.vdot",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.vdot"
-    ),
+    test_with_out=st.just(False),
 )
 def test_numpy_vdot(
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="vdot",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
         a=xs[0],
         b=xs[1],
-        test_values=False,
     )
 
 
 # divide
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+@handle_frontend_test(
+    fn_tree="numpy.divide",
+    aliases=["numpy.true_divide"],
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="float",
     ),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.divide"
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="divide"
     ),
 )
 def test_numpy_divide(
-    dtype_and_x,
-    dtype,
+    dtypes_values_casting,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
-    input_dtypes, xs = dtype_and_x
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
+    assume(not np.any(np.isclose(xs[1], 0.0)))
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="divide",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x1=xs[0],
         x2=xs[1],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
 # multiply
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+@handle_frontend_test(
+    fn_tree="numpy.multiply",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.multiply"
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="multiply"
     ),
 )
 def test_numpy_multiply(
-    dtype_and_x,
-    dtype,
+    dtypes_values_casting,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
-    input_dtypes, xs = dtype_and_x
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="multiply",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x1=xs[0],
         x2=xs[1],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
+    )
+
+
+# power
+@handle_frontend_test(
+    fn_tree="numpy.power",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("integer"),
+                num_arrays=2,
+                min_value=0,
+                max_value=7,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="integer",
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="power"
+    ),
+)
+def test_numpy_power(
+    dtypes_values_casting,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=xs[0],
+        x2=xs[1],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
+    )
+
+
+# float_power
+@handle_frontend_test(
+    fn_tree="numpy.float_power",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="float",
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="float_power"
+    ),
+)
+def test_numpy_float_power(
+    dtypes_values_casting,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x1=xs[0],
+        x2=xs[1],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
         subok=True,
     )
 
 
 # positive
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
+@handle_frontend_test(
+    fn_tree="numpy.positive",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.positive"
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="positive"
     ),
 )
 def test_numpy_positive(
-    dtype_and_x,
-    dtype,
+    dtypes_values_casting,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="positive",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
     )
 
 
 # negative
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+@handle_frontend_test(
+    fn_tree="numpy.negative",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.negative"
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="negative"
     ),
 )
 def test_numpy_negative(
-    dtype_and_x,
-    dtype,
+    dtypes_values_casting,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="negative",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
-        casting="unsafe",
         where=where,
+        casting=casting,
+        order="K",
         dtype=dtype,
+        subok=True,
+    )
+
+
+# floor_divide
+@handle_frontend_test(
+    fn_tree="numpy.floor_divide",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                large_abs_safety_factor=4,
+                shared_dtype=True,
+                safety_factor_scale="linear",
+            )
+        ],
+        get_dtypes_kind="numeric",
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="floor_divide"
+    ),
+)
+def test_numpy_floor_divide(
+    dtypes_values_casting,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    assume(not np.any(np.isclose(x[1], 0, rtol=1e-1, atol=1e-1)))
+    assume(not np.any(np.isclose(x[0], 0, rtol=1e-1, atol=1e-1)))
+    if dtype:
+        assume(np.dtype(dtype) >= np.dtype(input_dtypes[0]))
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
+        atol=1e-2,
+        rtol=1e-2,
+    )
+
+
+# mod
+@handle_frontend_test(
+    fn_tree="numpy.mod",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                num_arrays=2,
+                min_value=0,
+                exclude_min=True,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="float",
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="mod"
+    ),
+)
+def test_numpy_mod(
+    dtypes_values_casting,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=xs[0],
+        x2=xs[1],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
+        rtol=1e-5,
+        atol=1e-5,
+    )
+
+
+# reciprocal
+@handle_frontend_test(
+    fn_tree="numpy.reciprocal",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                small_abs_safety_factor=4,
+                large_abs_safety_factor=4,
+                safety_factor_scale="log",
+            )
+        ],
+        get_dtypes_kind="numeric",
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="reciprocal"
+    ),
+)
+def test_numpy_reciprocal(
+    dtypes_values_casting,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x, casting, dtype = dtypes_values_casting
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
+    )
+    assume(not np.any(np.isclose(x[0], 0)))
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        out=None,
+        where=where,
+        casting=casting,
+        rtol=1e-2,
+        atol=1e-2,
+        order="K",
+        dtype=dtype,
+        subok=True,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fmod",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                shared_dtype=True,
+                large_abs_safety_factor=6,
+                small_abs_safety_factor=6,
+                safety_factor_scale="log",
+            )
+        ],
+        get_dtypes_kind="numeric",
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="fmod"
+    ),
+)
+def test_numpy_fmod(
+    dtypes_values_casting,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
+    assume(not np.any(np.isclose(xs[1], 0.0)))
+    if dtype:
+        assume(not np.any(np.isclose(np.cast[dtype[0]](xs[1]), 0.0)))
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=xs[0],
+        x2=xs[1],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )

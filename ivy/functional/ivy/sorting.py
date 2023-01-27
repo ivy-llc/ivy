@@ -7,6 +7,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -19,6 +20,7 @@ from ivy.exceptions import handle_exceptions
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -133,6 +135,7 @@ def argsort(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -201,19 +204,11 @@ def sort(
     >>> print(y)
     ivy.array([3.2, 2.5, 1.5, 0.7])
 
-
     >>> x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])
     >>> ivy.sort(x, out=x)
     >>> print(x)
     ivy.array([[ 1.1,  2.2,  3.3],
         [-6.6, -5.5, -4.4]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[[8.9, 0], [19, 5]],[[6, 0.3], [19, 0.5]]])
-    >>> y = ivy.sort(x, descending=True)
-    >>> print(y)
-    ivy.array([[[ 8.9,  0.],[19. ,  5. ]],[[ 6. ,  0.3 ],[19. ,  0.5]]])
 
     With :class:`ivy.Container` input:
 
@@ -247,6 +242,7 @@ def sort(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],
@@ -273,7 +269,7 @@ def searchsorted(
         'right', return the last such index.
     ret_dtype
         the data type for the return value, Default: ivy.int64,
-        only ivy.int32 or ivy.int64 is allowed.
+        only integer data types is allowed.
     sorter
         optional array of integer indices that sort array x into ascending order,
         typically the result of argsort.
@@ -289,23 +285,25 @@ def searchsorted(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x1 = ivy.array([2,1,0])
-    >>> x2 = ivy.array([1])
-    >>> y  = ivy.searchsorted(x1,x2)
+    >>> x = ivy.array([1, 2, 3])
+    >>> v = ivy.array([2])
+    >>> y  = ivy.searchsorted(x, v)
     >>> print(y)
-    ivy.array([0])
+    ivy.array([1])
 
-    >>> x1 = ivy.array([1,0,3,2])
-    >>> x2 = ivy.array([3])
-    >>> y  = ivy.searchsorted(x1, x2, side='right')
+    >>> x = ivy.array([0, 1, 2, 3])
+    >>> v = ivy.array([3])
+    >>> y  = ivy.searchsorted(x, v, side='right')
     >>> print(y)
     ivy.array([4])
 
-    >>> x1 = ivy.array([2,0,1,3])
-    >>> x2 = ivy.array([3,1,9])
-    >>> y  = ivy.searchsorted(x1, x2, side='left')
+    >>> x = ivy.array([0, 1, 2, 3, 4, 5])
+    >>> v = ivy.array([[3, 1], [10, 3], [-2, -1]])
+    >>> y  = ivy.searchsorted(x, v)
     >>> print(y)
-    ivy.array([3,2,4])
+    ivy.array([[3, 1],
+       [6, 3],
+       [0, 0]])
 
     """
     return ivy.current_backend(x, v).searchsorted(
