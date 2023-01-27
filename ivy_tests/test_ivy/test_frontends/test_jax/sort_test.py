@@ -10,7 +10,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
-        small_abs_safety_factor=3,
     ),
 )
 def test_numpy_sort(
