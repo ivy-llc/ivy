@@ -181,6 +181,8 @@ def dstack(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
     return torch.dstack(arrays, out=None)
 
 
