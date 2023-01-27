@@ -13,6 +13,8 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_dims=4, max_dims=4, min_side=1, max_side=4, allow_explicit_padding=True
     ),
     test_gradients=st.just(False),
+    # problem with containers converting tuple padding to
+    # lists which jax does not support
     container_flags=st.just([False]),
 )
 def test_max_pool2d(

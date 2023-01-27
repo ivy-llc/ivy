@@ -79,7 +79,7 @@ def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, Tuple[int], Tuple[int, int]],
     /,
     *,
     data_format: str = "NHWC",
@@ -98,7 +98,7 @@ def max_pool2d(
         The stride of the sliding window for each dimension of input.
     padding
         SAME" or "VALID" indicating the algorithm, or list
-        indicating the per-dimensio paddings.
+        indicating the per-dimension paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
     out
@@ -138,7 +138,9 @@ def max_pool2d(
 
             [[46, 47]]]])
     """
-    return ivy.current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)
+    return ivy.current_backend(x).max_pool2d(
+        x, kernel, strides, padding, data_format=data_format, out=out
+    )
 
 
 @to_native_arrays_and_back
