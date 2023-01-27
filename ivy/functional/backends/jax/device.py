@@ -47,11 +47,12 @@ def dev(
 
 
 def to_device(
-    x: JaxArray, device: jaxlib.xla_extension.Device,
+    x: JaxArray,
+    device: jaxlib.xla_extension.Device,
     /,
     *,
     stream: Optional[int] = None,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ):
     if device is not None:
         cur_dev = as_native_dev(dev(x))
