@@ -9,8 +9,11 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool2d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=4, max_dims=4, min_side=1, max_side=4, allow_explicit_padding=True
+    ),
     test_gradients=st.just(False),
+    container_flags=st.just([False]),
 )
 def test_max_pool2d(
     *,
