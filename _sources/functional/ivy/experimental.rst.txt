@@ -42,11 +42,14 @@ Experimental
    experimental/take_along_axis.rst
    experimental/hsplit.rst
    experimental/broadcast_shapes.rst
+   experimental/expand.rst
    experimental/dirichlet.rst
    experimental/beta.rst
    experimental/gamma.rst
    experimental/poisson.rst
+   experimental/bernoulli.rst
    experimental/logit.rst
+   experimental/prelu.rst
    experimental/msort.rst
    experimental/triu_indices.rst
    experimental/vorbis_window.rst
@@ -66,6 +69,7 @@ Experimental
    experimental/dropout1d.rst
    experimental/ifft.rst
    experimental/embedding.rst
+   experimental/dft.rst
    experimental/is_ivy_sparse_array.rst
    experimental/is_native_sparse_array.rst
    experimental/native_sparse_array.rst

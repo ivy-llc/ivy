@@ -692,7 +692,80 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithLayersExperimental.embedding"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithLayersExperimental.embedding">[docs]</a>    <span class="k">def</span> <span class="nf">embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">max_norm</span><span class="o">=</span><span class="n">max_norm</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">max_norm</span><span class="o">=</span><span class="n">max_norm</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithLayersExperimental.dft"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithLayersExperimental.dft">[docs]</a>    <span class="k">def</span> <span class="nf">dft</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">inverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">onesided</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">dft_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">norm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;backward&quot;</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the discrete Fourier transform of input.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input volume *[...,d_in,...]*,</span>
+<span class="sd">            where d_in indicates the dimension that needs FFT.</span>
+<span class="sd">        axis</span>
+<span class="sd">            The axis on which to perform the DFT. By default this</span>
+<span class="sd">            value is  set to 1, which corresponds to the first dimension</span>
+<span class="sd">            after the batch index.</span>
+<span class="sd">        inverse</span>
+<span class="sd">            Whether to perform the inverse discrete fourier transform.</span>
+<span class="sd">            By default this value is set to False.</span>
+<span class="sd">        onesided</span>
+<span class="sd">            If onesided is True, only values for w in [0, 1, 2, …, floor(n_fft/2) + 1]</span>
+<span class="sd">            are returned because the real-to-complex Fourier transform satisfies the</span>
+<span class="sd">            conjugate symmetry, i.e., X[m, w] = X[m,w]=X[m,n_fft-w]*. Note if the</span>
+<span class="sd">            input or window tensors are complex, then onesided output is not possible.</span>
+<span class="sd">            Enabling onesided with real inputs performs a Real-valued fast Fourier</span>
+<span class="sd">            transform (RFFT). When invoked with real or complex valued input, the</span>
+<span class="sd">            default value is False. Values can be True or False.</span>
+<span class="sd">        dft_length</span>
+<span class="sd">            The length of the signal.If greater than the axis dimension,</span>
+<span class="sd">            the signal will be zero-padded up to dft_length. If less than</span>
+<span class="sd">            the axis dimension, only the first dft_length values will be</span>
+<span class="sd">            used as the signal. It’s an optional value.</span>
+<span class="sd">        norm</span>
+<span class="sd">            Optional argument, &quot;backward&quot;, &quot;ortho&quot; or &quot;forward&quot;. Defaults to be</span>
+<span class="sd">            &quot;backward&quot;.</span>
+<span class="sd">            &quot;backward&quot; indicates no normalization.</span>
+<span class="sd">            &quot;ortho&quot; indicates normalization by 1/sqrt(n).</span>
+<span class="sd">            &quot;forward&quot; indicates normalization by 1/n.</span>
+<span class="sd">        out</span>
+<span class="sd">            Optional output array, for writing the result to. It must</span>
+<span class="sd">            have a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The Fourier Transform of the input vector.If onesided is False,</span>
+<span class="sd">            the following shape is expected: [batch_idx][signal_dim1][signal_dim2]</span>
+<span class="sd">            …[signal_dimN][2]. If axis=0 and onesided is True, the following shape</span>
+<span class="sd">            is expected: [batch_idx][floor(signal_dim1/2)+1][signal_dim2]</span>
+<span class="sd">            …[signal_dimN][2]. If axis=1 and onesided is True, the following</span>
+<span class="sd">            shape is expected: [batch_idx][signal_dim1] [floor(signal_dim2/2)+1]</span>
+<span class="sd">            …[signal_dimN][2]. If axis=N-1 and onesided is True, the following</span>
+<span class="sd">            shape is expected: [batch_idx][signal_dim1][signal_dim2]…</span>
+<span class="sd">            [floor(signal_dimN/2)+1][2]. The signal_dim at the specified axis</span>
+<span class="sd">            is equal to the dft_length.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dft</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+            <span class="n">inverse</span><span class="o">=</span><span class="n">inverse</span><span class="p">,</span>
+            <span class="n">onesided</span><span class="o">=</span><span class="n">onesided</span><span class="p">,</span>
+            <span class="n">dft_length</span><span class="o">=</span><span class="n">dft_length</span><span class="p">,</span>
+            <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>
