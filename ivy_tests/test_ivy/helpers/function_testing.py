@@ -674,6 +674,20 @@ def test_frontend_function(
                 frontend_ret = np.asarray(
                     frontend_ret
                 )  # we do this because frontend_ret comes from a module in another file
+                if ivy.isscalar(frontend_ret):
+                    frontend_ret_np_flat = [np.asarray(frontend_ret)]
+                else:
+                    # tuplify the frontend return
+                    if not isinstance(frontend_ret, tuple):
+                        frontend_ret = (frontend_ret,)
+                    frontend_ret_idxs = ivy.nested_argwhere(
+                        frontend_ret, ivy.is_native_array
+                    )
+                    frontend_ret_flat = ivy.multi_index_nest(
+                        frontend_ret, frontend_ret_idxs
+                    )
+                    frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+
             except Exception as e:
                 ivy.unset_backend()
                 raise e
@@ -722,6 +736,21 @@ def test_frontend_function(
                 frontend_ret = frontend_fw.__dict__[fn_name](
                     *args_frontend, **kwargs_frontend
                 )
+
+                if ivy.isscalar(frontend_ret):
+                    frontend_ret_np_flat = [np.asarray(frontend_ret)]
+                else:
+                    # tuplify the frontend return
+                    if not isinstance(frontend_ret, tuple):
+                        frontend_ret = (frontend_ret,)
+                    frontend_ret_idxs = ivy.nested_argwhere(
+                        frontend_ret, ivy.is_native_array
+                    )
+                    print(frontend_ret_idxs, frontend_ret)
+                    frontend_ret_flat = ivy.multi_index_nest(
+                        frontend_ret, frontend_ret_idxs
+                    )
+                    frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
             except Exception as e:
                 ivy.unset_backend()
                 raise e
@@ -769,26 +798,31 @@ def test_frontend_function(
             frontend_ret = frontend_fw.__dict__[fn_name](
                 *args_frontend, **kwargs_frontend
             )
+
+            if ivy.isscalar(frontend_ret):
+                frontend_ret_np_flat = [np.asarray(frontend_ret)]
+            else:
+                # tuplify the frontend return
+                if not isinstance(frontend_ret, tuple):
+                    frontend_ret = (frontend_ret,)
+                frontend_ret_idxs = ivy.nested_argwhere(
+                    frontend_ret, ivy.is_native_array
+                )
+                frontend_ret_flat = ivy.multi_index_nest(
+                    frontend_ret, frontend_ret_idxs
+                )
+                frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
         except Exception as e:
             ivy.unset_backend()
             raise e
-    # assuming value test will be handled manually in the test function
-    if not test_values:
-        ivy.unset_backend()
-        return ret, frontend_ret
-
-    if ivy.isscalar(frontend_ret):
-        frontend_ret_np_flat = [np.asarray(frontend_ret)]
-    else:
-        # tuplify the frontend return
-        if not isinstance(frontend_ret, tuple):
-            frontend_ret = (frontend_ret,)
-        frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
-        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-        frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     # unset frontend framework from backend
     ivy.unset_backend()
+
     ret_np_flat = flatten_and_to_np(ret=ret)
+
+    # assuming value test will be handled manually in the test function
+    if not test_values:
+        return ret, frontend_ret
 
     if isinstance(rtol, dict):
         rtol = _get_framework_rtol(rtol, ivy.backend)

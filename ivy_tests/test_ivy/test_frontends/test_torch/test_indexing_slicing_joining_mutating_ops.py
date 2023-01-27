@@ -3,7 +3,6 @@ from hypothesis import strategies as st, assume
 import math
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
@@ -84,30 +83,13 @@ def test_torch_adjoint(
     test_flags,
 ):
     input_dtype, value = dtype_and_values
-    ret, frontend_ret = helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=False,
         input=value[0],
-    )
-    frontend_ret = frontend_ret.resolve_conj()
-    ret_np_flat = flatten_and_to_np(ret=ret)
-
-    ivy.set_backend("torch")
-    if not isinstance(frontend_ret, tuple):
-        frontend_ret = (frontend_ret,)
-    frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
-    frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-    frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
-    ivy.unset_backend()
-
-    helpers.value_test(
-        ret_np_flat=ret_np_flat,
-        ret_np_from_gt_flat=frontend_ret_np_flat,
-        ground_truth_backend=frontend,
     )
 
 
