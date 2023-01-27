@@ -446,7 +446,18 @@ def _import_method(method_tree: str):
 
 
 def handle_method(
-    *, method_tree, ground_truth_backend: str = ground_truth, **_given_kwargs
+    *,
+    method_tree,
+    ground_truth_backend: str = ground_truth,
+    init_num_positional_args=None,
+    init_native_arrays=BuiltNativeArrayStrategy,
+    init_as_variable_flags=BuiltAsVariableStrategy,
+    init_container_flags=BuiltContainerStrategy,
+    method_num_positional_args=None,
+    method_native_arrays=BuiltNativeArrayStrategy,
+    method_as_variable_flags=BuiltAsVariableStrategy,
+    method_container_flags=BuiltContainerStrategy,
+    **_given_kwargs,
 ):
     """
     A test wrapper for Ivy methods.
@@ -463,44 +474,55 @@ def handle_method(
     method_tree = "ivy." + method_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
+    if is_hypothesis_test:
+        _, method_name, _, class_name, method_mod = _import_method(method_tree)
+
+        if init_num_positional_args is None:
+            init_num_positional_args = num_positional_args(
+                fn_name=class_name + ".__init__"
+            )
+
+        if method_num_positional_args is None:
+            method_num_positional_args = num_positional_args(
+                fn_name=f"{class_name}.{method_name}"
+            )
+
     def test_wrapper(test_fn):
-        callable_method, method_name, class_, class_name, method_mod = _import_method(
-            method_tree
-        )
         supported_device_dtypes = _get_method_supported_devices_dtypes(
             method_name, method_mod, class_name
         )
 
         if is_hypothesis_test:
-            fn_args = typing.get_type_hints(test_fn)
             param_names = inspect.signature(test_fn).parameters.keys()
 
-            for k, v in fn_args.items():
-                if (
-                    v is pf.NativeArrayFlags
-                    or v is pf.ContainerFlags
-                    or v is pf.AsVariableFlags
-                ):
-                    _given_kwargs[k] = st.lists(st.booleans(), min_size=1, max_size=1)
-                elif v is pf.NumPositionalArg:
-                    if k.startswith("method"):
-                        _given_kwargs[k] = num_positional_args(
-                            fn_name=f"{class_name}.{method_name}"
-                        )
-                    else:
-                        _given_kwargs[k] = num_positional_args(
-                            fn_name=class_name + ".__init__"
-                        )
-                elif v is pf.BuiltGradientStrategy:
-                    _given_kwargs[k] = v
+            init_flags = pf.method_flags(
+                num_positional_args=init_num_positional_args,
+                as_variable=init_as_variable_flags,
+                native_arrays=init_native_arrays,
+                container_flags=init_container_flags,
+            )
+
+            method_flags = pf.method_flags(
+                num_positional_args=method_num_positional_args,
+                as_variable=method_as_variable_flags,
+                native_arrays=method_native_arrays,
+                container_flags=method_container_flags,
+            )
+
             possible_arguments = {
                 "class_name": st.just(class_name),
+                "init_flags": init_flags,
+                "method_flags": method_flags,
                 "method_name": st.just(method_name),
                 "ground_truth_backend": st.just(ground_truth_backend),
             }
+
             filtered_args = set(param_names).intersection(possible_arguments.keys())
+
             for key in filtered_args:
+                # extend Hypothesis given kwargs with our strategies
                 _given_kwargs[key] = possible_arguments[key]
+
             wrapped_test = given(**_given_kwargs)(test_fn)
         else:
             wrapped_test = test_fn
