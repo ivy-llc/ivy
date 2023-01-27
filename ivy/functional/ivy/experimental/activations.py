@@ -58,3 +58,58 @@ def logit(
 
     """
     return current_backend(x).logit(x, eps=eps, out=out)
+
+
+@handle_out_argument
+@handle_nestable
+@to_native_arrays_and_back
+@handle_exceptions
+@handle_array_like_without_promotion
+def prelu(
+    x: Union[ivy.NativeArray, ivy.Array],
+    slope: Union[float, ivy.NativeArray, ivy.Array],
+    /,
+    *,
+    out: Optional["ivy.Array"] = None,
+) -> ivy.Array:
+    """
+    PRelu takes input data (Array) and slope array as input,
+    and produces one output data (array) where the function
+    f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
+    to the data array elementwise. This operator supports unidirectional
+    broadcasting (array slope should be unidirectional broadcastable to
+    input tensor X); for more details please check Broadcasting in ONNX.
+
+    Parameters
+    ----------
+    x
+        Input Array.
+    slope
+        Slope Array. The shape of slope can be smaller then first input X;
+        if so, its shape must be unidirectional broadcastable to X.
+    out
+        Optional output array.
+
+
+    Returns
+    -------
+    ret
+         Array containing Parametrized relu values.
+    """
+    try:
+        return ivy.where(x > 0, x, x * slope, out=out)
+    except ValueError as e:
+        if len(slope.shape) == 1:
+            dim = slope.shape[0]
+            new_shape = []
+            n = 0
+            for d in x.shape:
+                if d == dim:
+                    new_shape.append(d)
+                    n += 1
+                else:
+                    new_shape.append(d)
+            if n == 1:
+                xs = x * slope.reshape(tuple(new_shape), out=out)
+                return ivy.where(x > 0, x, xs, out=out)
+        raise e
