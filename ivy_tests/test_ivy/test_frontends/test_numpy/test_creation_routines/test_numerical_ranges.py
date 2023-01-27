@@ -1,11 +1,13 @@
 # global
 from numpy import mgrid as np_mgrid, ogrid as np_ogrid
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
+
+import ivy
 
 # local
 from ivy.functional.frontends.numpy import mgrid, ogrid
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_frontend_method
 
 
 # helpers
@@ -43,69 +45,61 @@ def _get_dtype_and_range(draw):
 
 
 # arange
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.arange",
     start=helpers.ints(min_value=-50, max_value=0),
     stop=helpers.ints(min_value=1, max_value=50),
     step=helpers.ints(min_value=1, max_value=5),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.arange"
-    ),
+    dtype=helpers.get_dtypes("float"),
+    test_with_out=st.just(False),
 )
 def test_numpy_arange(
     start,
     stop,
     step,
     dtype,
-    num_positional_args,
-    fw,
-    native_array,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
-        as_variable_flags=[False],
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="arange",
+        input_dtypes=[ivy.as_ivy_dtype("int8")],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         start=start,
         stop=stop,
         step=step,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
 # linspace
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.linspace",
     dtype_start_stop=_get_dtype_and_range(),
     num=helpers.ints(min_value=2, max_value=5),
     axis=helpers.ints(min_value=-1, max_value=0),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.linspace"
-    ),
+    test_with_out=st.just(False),
 )
 def test_numpy_linspace(
     dtype_start_stop,
     num,
     axis,
-    num_positional_args,
-    fw,
-    native_array,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtypes, start, stop = dtype_start_stop
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=[False],
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="linspace",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         start=start,
         stop=stop,
         num=num,
@@ -117,49 +111,45 @@ def test_numpy_linspace(
 
 
 # logspace
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.logspace",
     dtype_start_stop=_get_dtype_and_range(),
     num=helpers.ints(min_value=5, max_value=50),
     base=helpers.ints(min_value=2, max_value=10),
     axis=helpers.ints(min_value=-1, max_value=0),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.logspace"
-    ),
+    test_with_out=st.just(False),
 )
 def test_numpy_logspace(
     dtype_start_stop,
     num,
     base,
     axis,
-    num_positional_args,
-    fw,
-    native_array,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
-    dtype, start, stop = dtype_start_stop
+    input_dtypes, start, stop = dtype_start_stop
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype],
-        as_variable_flags=[False],
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="logspace",
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-01,
         start=start,
         stop=stop,
         num=num,
         endpoint=True,
         base=base,
-        dtype=dtype,
+        dtype=input_dtypes[0],
         axis=axis,
     )
 
 
 # meshgrid
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.meshgrid",
     dtype_and_arrays=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -171,46 +161,51 @@ def test_numpy_logspace(
     copy=st.booleans(),
     sparse=st.booleans(),
     indexing=st.sampled_from(["xy", "ij"]),
+    test_with_out=st.just(False),
 )
 def test_numpy_meshgrid(
+    *,
     dtype_and_arrays,
     copy,
     sparse,
     indexing,
-    fw,
-    native_array,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtypes, arrays = dtype_and_arrays
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
-    num_positional_args = len(arrays)
-    ret, ret_gt = helpers.test_frontend_function(
+    test_flags.num_positional_args = len(arrays)
+    helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=[False],
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         test_values=False,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="meshgrid",
         **kw,
         copy=copy,
         sparse=sparse,
         indexing=indexing,
     )
-    for u, v in zip(ret, ret_gt):
-        helpers.value_test(ret_np_flat=u, ret_np_from_gt_flat=v)
 
 
 # mgrid
-@handle_cmd_line_args
-@given(range=_get_range_for_grid())
+@handle_frontend_method(
+    class_tree="ivy.functional.frontends.numpy.mgrid",
+    init_tree="numpy.mgrid",
+    method_name="__getitem__",
+    range=_get_range_for_grid(),
+)
 def test_numpy_mgrid(
     range,
+    class_,
+    method_name,
 ):
     start, stop, step = range
     if start and stop and step:
@@ -237,11 +232,13 @@ def test_numpy_mgrid(
 
 
 # ogrid
-@handle_cmd_line_args
-@given(range=_get_range_for_grid())
-def test_numpy_ogrid(
-    range,
-):
+@handle_frontend_method(
+    class_tree="ivy.functional.frontends.numpy.ogrid",
+    init_tree="numpy.ogrid",
+    method_name="__getitem__",
+    range=_get_range_for_grid(),
+)
+def test_numpy_ogrid(range, class_, method_name):
     start, stop, step = range
     if start and stop and step:
         ret = ogrid[start:stop:step]

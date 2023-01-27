@@ -16,11 +16,13 @@ from jax.tree_util import tree_flatten, tree_unflatten
 # local
 import ivy
 
+backend_version = {"version": jax.__version__}
+
 config.update("jax_enable_x64", True)
 
 register_pytree_node(
     ivy.Container,
-    lambda c: tree_flatten(c.to_dict()),
+    lambda c: tree_flatten(c.cont_to_dict()),
     lambda a, c: ivy.Container(tree_unflatten(a, c)),
 )
 
@@ -48,9 +50,9 @@ NativeSparseArray = None
 
 
 # devices
-valid_devices = ("cpu", "gpu", "tpu")
+valid_devices = ("cpu",)
 
-invalid_devices = ()
+invalid_devices = ("gpu", "tpu")
 
 
 # native data types
@@ -66,10 +68,13 @@ native_bfloat16 = jnp.dtype("bfloat16")
 native_float16 = jnp.dtype("float16")
 native_float32 = jnp.dtype("float32")
 native_float64 = jnp.dtype("float64")
+native_complex64 = jnp.dtype("complex64")
+native_complex128 = jnp.dtype("complex128")
 native_double = native_float64
 native_bool = jnp.dtype("bool")
 
 # valid data types
+# ToDo: Add complex dtypes to valid_dtypes and fix all resulting failures.
 valid_dtypes = (
     ivy.int8,
     ivy.int16,
@@ -83,6 +88,8 @@ valid_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
+    ivy.complex64,
+    ivy.complex128,
     ivy.bool,
 )
 valid_numeric_dtypes = (
@@ -111,6 +118,7 @@ valid_int_dtypes = (
 )
 valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
 # invalid data types
 invalid_dtypes = ()
@@ -118,6 +126,7 @@ invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
+invalid_complex_dtypes = ()
 
 native_inplace_support = False
 
@@ -137,13 +146,10 @@ def closest_valid_dtype(type):
 
 backend = "jax"
 
+
 # local sub-modules
 from . import activations
 from .activations import *
-from . import compilation
-from .compilation import *
-from . import converters
-from .converters import *
 from . import creation
 from .creation import *
 from . import data_type
@@ -152,8 +158,6 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
-from . import extensions
-from .extensions import *
 from . import general
 from .general import *
 from . import gradients
@@ -176,3 +180,7 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
+from . import experimental
+from .experimental import *
+from . import control_flow_ops
+from .control_flow_ops import *

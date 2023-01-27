@@ -1,7 +1,13 @@
 import ivy
 import numpy as np
 
-TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+TOLERANCE_DICT = {
+    "float16": 1e-2,
+    "bfloat16": 1e-2,
+    "float32": 1e-5,
+    "float64": 1e-5,
+    None: 1e-5,
+}
 
 
 def assert_all_close(
@@ -39,7 +45,7 @@ def assert_all_close(
         )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
-        ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_gt_np])
+        ivy.Container.cont_multi_map(assert_all_close, [ret_np, ret_from_gt_np])
     else:
         if ret_np.dtype == "bfloat16" or ret_from_gt_np.dtype == "bfloat16":
             ret_np = ret_np.astype("float64")

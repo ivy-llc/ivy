@@ -1,12 +1,11 @@
 name: test-frontend-torch
 on:
-  push:
   pull_request:
     types: [labeled, opened, synchronize, reopened, review_requested]
-  workflow_dispatch:
+
 jobs:
   run-nightly-tests:
-    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') ||contains(github.event.pull_request.labels.*.name, 'PyTorch Frontend')}}
+    if: contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') ||contains(github.event.pull_request.labels.*.name, 'PyTorch Frontend')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
@@ -17,6 +16,7 @@ jobs:
           submodules: "recursive"
 
       - name: Download artifact
+        if: github.event_name == 'pull_request'
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: test-frontend-torch.yml
@@ -27,6 +27,7 @@ jobs:
         continue-on-error: true
 
       - name: Unzip Hypothesis Examples
+        if: github.event_name == 'pull_request'
         id: unzip
         run: |
           cd ivy/.hypothesis
@@ -35,7 +36,7 @@ jobs:
         continue-on-error: true
 
       - name: Create Hypothesis Directory
-        if: steps.unzip.outcome != 'success'
+        if: steps.unzip.outcome != 'success' &&  github.event_name == 'pull_request'
         run: |
           cd ivy
           mkdir -p .hypothesis
@@ -47,16 +48,18 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend all ivy_tests/test_ivy/test_frontends/test_torch
+          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend=all ivy_tests/test_ivy/test_frontends/test_torch
         continue-on-error: true
 
       - name: Zip Hypothesis Examples
+        if: github.event_name == 'pull_request'
         run: |
           cd ivy/.hypothesis
           zip -r examples.zip examples
         continue-on-error: true
 
       - name: Upload hypothesis
+        if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
           name: hypothesis_frontend_torch_zip

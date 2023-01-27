@@ -1,8 +1,7 @@
 import sys
-import os
 
 run = int(sys.argv[1])
-backends = ["numpy", "torch", "jax", "tensorflow"]
+backends = ["numpy", "jax", "tensorflow", "torch"]
 submodules = [
     "creation",
     "device",
@@ -37,4 +36,8 @@ submodule = submodules[j]
 with open("./fwsubmod.txt", "w") as outfile:
     outfile.write(f"{backend}-{submodule}")
 
-os.system(f"./run_tests_CLI/test_ivy_core.sh {backend} test_{submodule}")
+with open("./backend.txt", "w") as f:
+    f.write(f"{backend}")
+
+with open("./submodule.txt", "w") as f:
+    f.write(f"test_{submodule}")

@@ -7,18 +7,19 @@ import numpy as np
 
 # local
 import ivy
-from ivy import to_ivy, to_native
+from ivy import to_ivy
 from ivy.backend_handler import current_backend
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     infer_device,
     infer_dtype,
     handle_out_argument,
     outputs_to_ivy_arrays,
+    inputs_to_native_arrays,
     to_native_arrays_and_back,
     handle_nestable,
+    handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
-
 
 # Helpers #
 # --------#
@@ -60,6 +61,21 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
     return new_fn
 
 
+def _ivy_to_native(x):
+    # checks the first element of the leaf list and
+    # converts it to a native array if it is an ivy array
+    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
+        for i, item in enumerate(x):
+            x = list(x) if isinstance(x, tuple) else x
+            x[i] = _ivy_to_native(item)
+    else:
+        if (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
+            x = ivy.to_native(x, nested=True)
+        elif ivy.is_ivy_array(x):
+            x = ivy.to_native(x)
+    return x
+
+
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, dtype=None, **kwargs):
@@ -68,11 +84,13 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
         and return arrays are all converted to `ivy.Array` instances. This wrapper is
         specifically for the backend implementations of asarray.
         """
-        if isinstance(args[0], list):
-            return to_ivy(fn(*args, dtype=dtype, **kwargs))
-
-        # args is a tuple and therefore is immutable.
-        new_args = (to_native(args[0]),) + args[1:]
+        # When possible we want to not nest this
+        # because nested calls introduce massive overhead
+        # and the checks to see if we can avoid it are cheap
+        new_arg = _ivy_to_native(args[0])
+        new_args = (new_arg,) + args[1:]
+        if dtype is not None:
+            dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
 
     return new_fn
@@ -143,7 +161,7 @@ def arange(
     start: Number,
     /,
     stop: Optional[Number] = None,
-    step: Number = 1,
+    step: Optional[Number] = 1,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -166,7 +184,7 @@ def arange(
         the interval (exclusive). If stop is not specified, the default starting value
         is 0.
     stop
-        the end of the interval. Default: None.
+        the end of the interval. Default: ``None``.
     step
         the distance between two adjacent elements (out[i+1] - out[i]). Must not be 0;
         may be negative, this results in an empty array if stop >= start. Default: 1.
@@ -177,7 +195,7 @@ def arange(
         the output array dtype must be the default floating-point data type. Default:
         None.
     device
-        device on which to place the created array. Default: None.
+        device on which to place the created array. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -314,6 +332,9 @@ def zeros(
            [0., 0., 0., 0., 0.],
            [0., 0., 0., 0., 0.]])
 
+    >>> x = ivy.zeros(5)
+    >>> print(x)
+    ivy.array([0., 0., 0., 0., 0.])
     """
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
@@ -363,12 +384,40 @@ def ones(
 
     Examples
     --------
+    With :class:`ivy.Shape` input:
+
     >>> shape = (2,2)
     >>> y = ivy.ones(shape)
     >>> print(y)
     ivy.array([[1., 1.],
            [1., 1.]])
 
+    With :class:`ivy.Dtype` input:
+
+    >>> shape = (3,2)
+    >>> d_type = object.__new__(Dtype, "int64")
+    >>> y = ivy.ones(shape, dtype=d_type)
+    >>> print(y)
+    ivy.array([[1, 1, 1],
+           [1, 1]])
+
+    With :class:`ivy.Device` input:
+
+    >>> shape = (3,2)
+    >>> dev = object.__new__(Device, "cpu")
+    >>> y = ivy.ones(shape, device=dev)
+    >>> print(y)
+    ivy.array([[1, 1, 1],
+           [1, 1]])
+
+    With :class:`ivy.Array` input:
+
+    >>> shape = (1,5,2)
+    >>> array = ivy.array(shape)
+    >>> ivy.ones(shape, out=array)
+    >>> print(array)
+    ivy.array([[1.],
+           [1., 1., 1., 1., 1.], [1., 1.]])
     """
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
@@ -380,10 +429,11 @@ def ones(
 @infer_dtype
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    fill_value: float,
+    fill_value: Number,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -472,28 +522,6 @@ def full_like(
         a: ivy.array([15., 15., 15.]),
         b: ivy.array([15., 15., 15.])
     }
-
-    Instance Method Examples:
-    ------------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
-    >>> fill_value = 1
-    >>> y = x.full_like(fill_value)
-    >>> print(y)
-    ivy.array([1, 1, 1, 1, 1, 1])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1,2,3]),b=ivy.array([4,5,6]))
-    >>> fill_value = 10
-    >>> y = x.full_like(fill_value)
-    >>> print(y)
-    {
-        a: ivy.array([10, 10, 10]),
-        b: ivy.array([10, 10, 10])
-    }
     """
     return current_backend(x).full_like(
         x, fill_value, dtype=dtype, device=device, out=out
@@ -506,6 +534,7 @@ def full_like(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -514,8 +543,8 @@ def ones_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array filled with ones and having the same shape as an input array
-    ``x``.
+    """Returns a new array filled with ones and having the same shape as an input
+    array ``x``.
 
     Parameters
     ----------
@@ -523,10 +552,10 @@ def ones_like(
         input array from which to derive the output array shape.
     dtype
         output array data type. If ``dtype`` is ``None``, the output array data type
-        must be inferred from x. Default  ``None``.
+        must be inferred from ``x``. Default  ``None``.
     device
         device on which to place the created array. If device is ``None``, the output
-        array device must be inferred from x. Default: ``None``.
+        array device must be inferred from ``x``. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -534,7 +563,7 @@ def ones_like(
     Returns
     -------
     ret
-        an array having the same shape as x and filled with ones.
+        an array having the same shape as ``x`` and filled with ``ones``.
 
 
     This function conforms to the `Array API Standard
@@ -546,13 +575,72 @@ def ones_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
-    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
+    Functional Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> y1 = ivy.ones_like(x1)
+    >>> print(y1)
+    ivy.array([1, 1, 1, 1, 1, 1])
+
+    >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
+    >>> y2 = ivy.ones_like(x2)
+    >>> print(y2)
+    ivy.array([[1., 1., 1.],
+            [1., 1., 1.]])
+
+    >>> x3 = ivy.array([3., 2., 1.])
+    >>> y3 = ivy.zeros(3)
+    >>> ivy.ones_like(x3, out=y3)
+    ivy.array([1., 1., 1.])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
+    >>> y1 = ivy.ones_like(x1)
+    >>> print(y1)
+    ivy.array([[1, 1, 1],[1, 1, 1]])
+
+
+    >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
+    >>> y2 = ivy.ones_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
+    >>> print(y2)
+    ivy.array([1, 1, 1, 1, 1, 1])
+
+    # Array ``y2`` is now stored on the CPU.
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
     >>> y = ivy.ones_like(x)
     >>> print(y)
-    ivy.array([[1, 1, 1],
-           [1, 1, 1]])
+    {
+        a: ivy.array([1, 1, 1]),
+        b: ivy.array([1, 1, 1])
+    }
+
+    Instance Method Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([2, 3, 8, 2, 1])
+    >>> y = x.ones_like()
+    >>> print(y)
+    ivy.array([1, 1, 1, 1, 1])
+
+    With :class:'ivy.Container' input:
+
+    >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
+    >>> y = x.ones_like()
+    >>> print(y)
+    {
+        a: ivy.array([1., 1.]),
+        b: ivy.array([1., 1.])
+    }
+
     """
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
@@ -563,6 +651,7 @@ def ones_like(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -606,7 +695,7 @@ def zeros_like(
     Functional Examples
     -------------------
 
-    With :class:'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
     >>> y1 = ivy.zeros_like(x1)
@@ -624,7 +713,7 @@ def zeros_like(
     >>> ivy.zeros_like(x3, out=y3)
     ivy.array([0., 0., 0.])
 
-    With :class:'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
     >>> y1 = ivy.zeros_like(x1)
@@ -639,7 +728,7 @@ def zeros_like(
 
     # Array ``y2`` is now stored on the CPU.
 
-    With :class:'ivy.Container' input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
     >>> y = ivy.zeros_like(x)
@@ -652,7 +741,7 @@ def zeros_like(
     Instance Method Examples
     -------------------
 
-    With :class:'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2, 3, 8, 2, 1])
     >>> y = x.zeros_like()
@@ -677,6 +766,7 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -694,7 +784,7 @@ def tril(
     k
         diagonal above which to zero elements. If k = 0, the diagonal is the main
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
-        diagonal is above the main diagonal. Default: 0.
+        diagonal is above the main diagonal. Default: ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -724,6 +814,7 @@ def tril(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -741,7 +832,7 @@ def triu(
     k
         diagonal below which to zero elements. If k = 0, the diagonal is the main
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
-        diagonal is above the main diagonal. Default: 0.
+        diagonal is above the main diagonal. Default: ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -788,9 +879,9 @@ def empty(
         output array shape.
     dtype
         output array data type. If dtype is None, the output array data type must be the
-        default floating-point data type. Default: None.
+        default floating-point data type. Default: ``None``.
     device
-        device on which to place the created array. Default: None.
+        device on which to place the created array. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -820,6 +911,7 @@ def empty(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -836,10 +928,10 @@ def empty_like(
         input array from which to derive the output array shape.
     dtype
         output array data type. If dtype is None, the output array data type must be
-        inferred from x. Default  None.
+        inferred from x. Deafult: ``None``.
     device
         device on which to place the created array. If device is None, the output array
-        device must be inferred from x. Default: None.
+        device must be inferred from x. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -888,15 +980,18 @@ def eye(
         number of rows in the output array.
     n_cols
         number of columns in the output array. If None, the default number of columns in
-        the output array is equal to n_rows. Default: None.
+        the output array is equal to n_rows. Default: ``None``.
     k
         index of the diagonal. A positive value refers to an upper diagonal, a negative
-        value to a lower diagonal, and 0 to the main diagonal. Default: 0.
+        value to a lower diagonal, and 0 to the main diagonal. Default: ``0``.
+    batch_shape
+        optional input that determines returning identity array shape.
+        Default: ``None``.
     dtype
         output array data type. If dtype is None, the output array data type must be the
-        default floating-point data type. Default: None.
+        default floating-point data type. Default: ``None``.
     device
-         device on which to place the created array.
+        the device on which to place the created array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -904,7 +999,7 @@ def eye(
     Returns
     -------
     ret
-        device on which to place the created array. Default: None.
+        device on which to place the created array. Default: ``None``.
 
 
     This function conforms to the `Array API Standard
@@ -914,11 +1009,94 @@ def eye(
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    instances as a replacement to any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :'n_rows' input:
+
+    >>> x1 = ivy.eye(3)
+    >>> print(x1)
+    ivy.array([[1., 0., 0.],
+               [0., 1., 0.],
+               [0., 0., 1.]])
+
+
+    With :'n_cols' input:
+
+    >>> x1 = ivy.eye(3,4)
+    >>> print(x1)
+    ivy.array([[1., 0., 0., 0.],
+               [0., 1., 0., 0.],
+               [0., 0., 1., 0.]])
+
+
+    With :'k' input:
+
+    >>> x1 = ivy.eye(3, k=1)
+    >>> print(x1)
+    ivy.array([[0., 1., 0.],
+               [0., 0., 1.],
+               [0., 0., 0.]])
+
+
+    With :'dtype' input:
+
+    >>> x1 = ivy.eye(4, k=2, dtype=ivy.IntDtype('int32'))
+    >>> print(x1)
+    ivy.array([[0, 0, 1, 0],
+               [0, 0, 0, 1],
+               [0, 0, 0, 0],
+               [0, 0, 0, 0]])
+
+
+    With :'batch_shape' input:
+
+    >>> x1 = ivy.eye(2, 3, batch_shape=[3])
+    >>> print(x1)
+    ivy.array([[[1., 0., 0.],
+                [0., 1., 0.]],
+
+                [[1., 0., 0.],
+                [0., 1., 0.]],
+
+                [[1., 0., 0.],
+                [0., 1., 0.]]])
+    >>> x1.shape
+    (3, 2, 3)
+    # Suppose batch_shape = [a, b] then the returning identity array shape is [a, b, numRows, numColumns]
+
+
+    With :'out' input:
+
+    >>> a1 = ivy.ones(3)
+    >>> ivy.eye(3, out=a1)
+    >>> print(a1)
+    ivy.array([[1., 0., 0.],
+               [0., 1., 0.],
+               [0., 0., 1.]])
+
+
+    With :'device' input:
+
+    >>> x1 = ivy.eye(3, device=ivy.Device('cpu'))
+    >>> print(x1)
+    ivy.array([[1., 0., 0.],
+               [0., 1., 0.],
+               [0., 0., 1.]])
+
+    # Array ``x1`` is now stored on the CPU.
 
     """
     return current_backend().eye(
-        n_rows, n_cols, k, batch_shape, dtype=dtype, device=device, out=out
+        n_rows,
+        n_cols,
+        k=k,
+        batch_shape=batch_shape,
+        dtype=dtype,
+        device=device,
+        out=out,
     )
 
 
@@ -956,6 +1134,10 @@ def linspace(
         Number of values to generate.
     axis
         Axis along which the operation is performed.
+    endpoint
+        If True, stop is the last sample. Otherwise, it is not included.
+    dtype
+        output array data type.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     out
@@ -977,6 +1159,42 @@ def linspace(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Functional Examples
+    -------------------
+
+    With float input:
+
+    >>> x = ivy.linspace(1, 2, 4)
+    >>> print(x)
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    >>> x = ivy.linspace(1, 2, 4, endpoint=False)
+    >>> print(x)
+    ivy.array([1., 1.25, 1.5 , 1.75])
+
+    >>> x = ivy.linspace(1, 10, 4, dtype = int)
+    >>> print(x)
+    ivy.array([ 1,  4,  7, 10])
+
+    >>> x = ivy.linspace(1, 2, 4, device = "gpu")
+    >>> print(x)
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    >>> out = ivy.array([0,0,0,0])
+    >>> ivy.linspace(1, 2, 4, out = out)
+    >>> print(out)
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1,2])
+    >>> y = ivy.array([4,5])
+    >>> z = ivy.linspace(x, y, 4, axis = 0)
+    >>> print(z)
+    ivy.array([[1, 2],
+               [2, 3],
+               [3, 4],
+               [4, 5]])
     """
     return current_backend(start).linspace(
         start,
@@ -994,7 +1212,9 @@ def linspace(
 @handle_nestable
 @handle_exceptions
 def meshgrid(
-    *arrays: Union[ivy.Array, ivy.NativeArray], indexing: str = "xy"
+    *arrays: Union[ivy.Array, ivy.NativeArray],
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -1003,7 +1223,8 @@ def meshgrid(
     arrays
         an arbitrary number of one-dimensional arrays representing grid coordinates.
         Each array should have the same numeric data type.
-
+    sparse
+        if True, a sparse grid is returned in order to conserve memory. Default: ``False``.
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
@@ -1073,6 +1294,15 @@ def meshgrid(
             [4, 1],
             [4, 1]])
 
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> xv, yv = ivy.meshgrid(x, y, sparse=True)
+    >>> print(xv)
+    ivy.array([[1, 2, 3]])
+
+    >>> print(yv)
+    ivy.array([[4], [5], [6]])
+
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1, 2])
@@ -1087,7 +1317,7 @@ def meshgrid(
             [4, 4]])
 
     """
-    return current_backend().meshgrid(*arrays, indexing=indexing)
+    return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
 @outputs_to_ivy_arrays
@@ -1246,12 +1476,15 @@ def from_dlpack(
 array = asarray
 
 
-@to_native_arrays_and_back
+@inputs_to_native_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
 def copy_array(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    to_ivy_array: Optional[bool] = True,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Copy an array.
 
@@ -1259,6 +1492,10 @@ def copy_array(
     ----------
     x
         array, input array containing elements to copy.
+    to_ivy_array
+        boolean, if True the returned array will be an ivy.Array object otherwise
+        returns an ivy.NativeArray object (i.e. a torch.tensor, np.array, etc.,
+        depending on the backend), defaults to True.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1343,7 +1580,7 @@ def copy_array(
     }
 
     """
-    return current_backend(x).copy_array(x, out=out)
+    return current_backend(x).copy_array(x, to_ivy_array=to_ivy_array, out=out)
 
 
 @handle_exceptions
@@ -1364,7 +1601,7 @@ def native_array(
     dtype
         datatype, optional. Datatype is inferred from the input data.
     device
-        device on which to place the created array. Default: None.
+        device on which to place the created array. Default: ``None``.
 
     Returns
     -------
@@ -1384,15 +1621,21 @@ def native_array(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
     /,
     *,
+    on_value: Optional[Number] = None,
+    off_value: Optional[Number] = None,
+    axis: Optional[int] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a one-hot array.
+    """Returns a one-hot array. The locations represented by indices in the parameter
+    indices take value on_value, while all other locations take value off_value.
 
     Parameters
     ----------
@@ -1400,6 +1643,16 @@ def one_hot(
         Indices for where the ones should be scattered *[batch_shape, dim]*
     depth
         Scalar defining the depth of the one-hot dimension.
+    on_value
+        Scalar defining the value to fill in output when indices[j] == i.
+        Default: ``1``.
+    off_value
+        Scalar defining the value to fill in output when indices[j] != i.
+        Default: ``0``.
+    axis
+        Axis to scatter on. The default is ``-1``, a new inner-most axis is created.
+    dtype
+        The data type of the output tensor.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
         None.
@@ -1412,9 +1665,67 @@ def one_hot(
     ret
         Tensor of zeros with the same shape and type as a, unless dtype provided which
         overrides.
+    
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
 
+    >>> x = ivy.array([3, 1])
+    >>> y = 5
+    >>> z = x.one_hot(5)
+    >>> print(z)
+    ivy.array([[0., 0., 0., 1., 0.],
+    ...    [0., 1., 0., 0., 0.]])
+
+    >>> x = ivy.array([0])
+    >>> y = 5
+    >>> ivy.one_hot(x, y)
+    ivy.array([[1., 0., 0., 0., 0.]])
+
+    >>> x = ivy.array([0])
+    >>> y = 5
+    >>> ivy.one_hot(x, 5, out=z)
+    ivy.array([[1., 0., 0., 0., 0.]])
+    >>> print(z)
+    ivy.array([[1., 0., 0., 0., 0.]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2]), \
+        b=ivy.array([3, 1]), c=ivy.array([2, 3]))
+    >>> y = 5
+    >>> z = x.one_hot(y)
+    >>> print(z)
+    {
+        a: ivy.array([[0., 1., 0., 0., 0.], 
+                    [0., 0., 1., 0., 0.]]),
+        b: ivy.array([[0., 0., 0., 1., 0.], 
+                    [0., 1., 0., 0., 0.]]),
+        c: ivy.array([[0., 0., 1., 0., 0.], 
+                    [0., 0., 0., 1., 0.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([2]), \
+        b=ivy.array([]), c=ivy.native_array([4]))
+    >>> y = 7
+    >>> z = x.one_hot(y)
+    >>> print(z)
+    {
+        a: ivy.array([[0., 0., 1., 0., 0., 0., 0.]]),
+        b: ivy.array([], shape=(0, 7)),
+        c: ivy.array([[0., 0., 0., 0., 1., 0., 0.]])
+    }
     """
-    return current_backend(indices).one_hot(indices, depth, device=device, out=out)
+    return current_backend(indices).one_hot(
+        indices,
+        depth,
+        on_value=on_value,
+        off_value=off_value,
+        axis=axis,
+        dtype=dtype,
+        device=device,
+        out=out,
+    )
 
 
 @to_native_arrays_and_back
@@ -1423,14 +1734,16 @@ def one_hot(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def logspace(
-    start: Union[ivy.Array, ivy.NativeArray, int],
-    stop: Union[ivy.Array, ivy.NativeArray, int],
+    start: Union[ivy.Array, ivy.NativeArray, float],
+    stop: Union[ivy.Array, ivy.NativeArray, float],
     /,
     num: int,
     *,
     base: float = 10.0,
-    axis: Optional[int] = None,
+    axis: Optional[int] = 0,
+    endpoint: bool = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
@@ -1438,37 +1751,91 @@ def logspace(
     """Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
 
-    See :math:`arange` that allows to specify the step size of evenly spaced values in
-    an interval.
-
     Parameters
     ----------
     start
-        First entry in the range.
+        First value in the range in log space. base ** start is the starting value in
+        the sequence. Can be an array or a float.
     stop
-        Final entry in the range.
+        Last value in the range in log space. base ** stop is the final value in the
+        sequence. Can be an array or a float.
     num
         Number of values to generate.
     base
         The base of the log space. Default is 10.0
     axis
-        Axis along which the operation is performed.
+        Axis along which the operation is performed. Relevant only if start or stop are
+        array-like. Default is 0.
+    endpoint
+        If True, stop is the last sample. Otherwise, it is not included. Default is
+        True.
+    dtype
+        The data type of the output tensor. If None, the dtype of on_value is used or if
+        that is None, the dtype of off_value is used, or if that is None, defaults to
+        float32. Default is None.
     device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Default is
+        None.
     out
         optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        inputs broadcast to. Default is None.
 
     Returns
     -------
     ret
-        Tensor of evenly-spaced values.
+        Tensor of evenly-spaced values in log space.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Functional Examples
+    -------------------
+    With float input:
+
+    >>> print(ivy.logspace(1, 2, 4))
+    ivy.array([ 10., 21.5443469, 46.41588834, 100.])
+
+    >>> print(ivy.logspace(1, 2, 4, endpoint=False))
+    ivy.array([10., 17.7827941, 31.6227766, 56.23413252])
+
+    >>> print(ivy.logspace(1, 2, 4, dtype = int))
+    ivy.array([10, 21, 46, 100])
+
+    >>> out = ivy.array([0,0,0,0])
+    >>> ivy.logspace(1, 2, 4, out = out)
+    >>> print(out)
+    ivy.array([ 10., 21.5443469, 46.41588834, 100.])
+
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([1, 2])
+    >>> y = ivy.array([4, 5])
+    >>> print(ivy.logspace(x, y, 4))
+    ivy.array([[1.e+01, 1.e+02],
+               [1.e+02, 1.e+03],
+               [1.e+03, 1.e+04],
+               [1.e+04, 1.e+05])
+
+    >>> print(ivy.logspace(x, y, 4, axis = 1))
+    ivy.array([[[1.e+01, 1.e+02, 1.e+03, 1.e+04],
+               [1.e+02, 1.e+03, 1.e+04, 1.e+05]]])
+
+    >>> x = ivy.array([1, 2])
+    >>> y = ivy.array([4])      # Broadcasting example
+    >>> print(ivy.logspace(x, y, 4))
+    ivy.array([[10., 100.]
+               [100., 464.15888336]
+               [1000., 2154.43469003]
+               [10000., 10000.]])
+
     """
-    return current_backend(start).logspace(
-        start, stop, num, base=base, axis=axis, dtype=dtype, device=device, out=out
+    return base ** linspace(
+        start,
+        stop,
+        num,
+        endpoint=endpoint,
+        axis=axis,
+        dtype=dtype,
+        device=device,
+        out=out,
     )

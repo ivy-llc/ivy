@@ -1,139 +1,119 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # all
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.all",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        min_value=0,
-        max_value=1,
-        allow_inf=False,
-        min_axis=0,
-        max_axis=0,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.all"
-    ),
 )
 def test_numpy_all(
+    *,
     dtype_x_axis,
     keepdims,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
+    axis = axis if axis is None or isinstance(axis, int) else axis[0]
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=[where[0][0]] if isinstance(where, list) else where,
+        where=where,
         input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="all",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         axis=axis,
         out=None,
         keepdims=keepdims,
         where=where,
-        test_values=False,
     )
 
 
 # any
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.any",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        min_value=0,
-        max_value=1,
-        allow_inf=False,
-        min_axis=0,
-        max_axis=0,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.any"
-    ),
 )
 def test_numpy_any(
+    *,
     dtype_x_axis,
     keepdims,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
+    axis = axis if axis is None or isinstance(axis, int) else axis[0]
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=[where[0][0]] if isinstance(where, list) else where,
+        where=where,
         input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="any",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         axis=axis,
         out=None,
         keepdims=keepdims,
         where=where,
-        test_values=False,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.isscalar",
     element=st.booleans() | st.floats() | st.integers(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.isscalar"
-    ),
+    test_with_out=st.just(False),
 )
-def test_numpy_isscalar(element, as_variable, native_array, num_positional_args, fw):
+def test_numpy_isscalar(
+    *,
+    element,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
     helpers.test_frontend_function(
         input_dtypes=ivy.all_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        native_array_flags=native_array,
-        num_positional_args=num_positional_args,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="isscalar",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         element=element,
     )

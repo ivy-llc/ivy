@@ -7,6 +7,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -19,6 +20,7 @@ from ivy.exceptions import handle_exceptions
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -50,7 +52,7 @@ def all(
         integer, the function must determine the axis along which to perform a reduction
         by counting backward from the last dimension (where ``-1`` refers to the last
         dimension). If provided an invalid ``axis``, the function must raise an
-        exception. Default  ``None``.
+        exception. Default ``None``.
     keepdims
         If ``True``, the reduced axes (dimensions) must be included in the result as
         singleton dimensions, and, accordingly, the result must be compatible with the
@@ -78,9 +80,8 @@ def all(
     y,but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
@@ -94,23 +95,15 @@ def all(
     >>> print(a)
     ivy.array([[False]])
 
-    >>> x=ivy.array(False)
-    >>> y=ivy.all(ivy.array([[0, 4],[1, 5]]), axis=(0,1), out=x, keepdims=False)
+    >>> x = ivy.array(False)
+    >>> y = ivy.all(ivy.array([[0, 4],[1, 5]]), axis=(0,1), out=x, keepdims=False)
     >>> print(y)
     ivy.array(False)
 
-    >>> x=ivy.array(False)
-    >>> y=ivy.all(ivy.array([[[0],[1]],[[1],[1]]]), \
-    axis=(0,1,2), out=x, keepdims=False)
+    >>> x = ivy.array(False)
+    >>> y = ivy.all(ivy.array([[[0],[1]],[[1],[1]]]),axis=(0,1,2), out=x, keepdims=False)
     >>> print(y)
     ivy.array(False)
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1, 2, 3])
-    >>> y = ivy.all(x)
-    >>> print(y)
-    ivy.array(True)
 
     With :class:`ivy.Container` input:
 
@@ -129,36 +122,6 @@ def all(
         a: ivy.array(False),
         b: ivy.array(True)
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = x.all()
-    >>> print(y)
-    ivy.array(True)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = x.all()
-    >>> print(y)
-    {
-        a: ivy.array(False),
-        b: ivy.array(True)
-    }
-
-    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = x.all()
-    >>> print(y)
-    {
-        a: ivy.array(False),
-        b: ivy.array(True)
-    }
-
-
     """
     return ivy.current_backend(x).all(x, axis=axis, keepdims=keepdims, out=out)
 
@@ -167,6 +130,7 @@ def all(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -226,9 +190,8 @@ def any(
     y,but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2, 3, 4])
@@ -248,15 +211,7 @@ def any(
     ivy.array(True)
 
     >>> x=ivy.array(False)
-    >>> y=ivy.any(ivy.array([[[0],[1]],[[1],[1]]]), \
-    axis=(0,1,2), out=x, keepdims=False)
-    >>> print(y)
-    ivy.array(True)
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([2, 3, 4])
-    >>> y = ivy.any(x)
+    >>> y=ivy.any(ivy.array([[[0],[1]],[[1],[1]]]),axis=(0,1,2), out=x, keepdims=False)
     >>> print(y)
     ivy.array(True)
 
@@ -269,45 +224,5 @@ def any(
         a: ivy.array(True),
         b: ivy.array(True)
     }
-
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = x.any()
-    >>> print(y)
-    {
-        a: ivy.array(True),
-        b: ivy.array(True)
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([2, 3, 4])
-    >>> y = x.any()
-    >>> print(y)
-    ivy.array(True)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = x.any()
-    >>> print(y)
-    {
-        a: ivy.array(True),
-        b: ivy.array(True)
-    }
-
-    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = x.any()
-    >>> print(y)
-    {
-        a: ivy.array(True),
-        b: ivy.array(True)
-    }
     """
     return ivy.current_backend(x).any(x, axis=axis, keepdims=keepdims, out=out)
-
-
-# Extra #
-# ------#
