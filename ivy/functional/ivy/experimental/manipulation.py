@@ -382,7 +382,12 @@ def flipud(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def vstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
+def vstack(
+    arrays: Sequence[ivy.Array],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
     """Stack arrays in sequence vertically (row wise).
 
     Parameters
@@ -414,13 +419,18 @@ def vstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
                [7, 8]])
 
     """
-    return ivy.current_backend(arrays[0]).vstack(arrays)
+    return ivy.current_backend(arrays[0]).vstack(arrays, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def hstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
+def hstack(
+    arrays: Sequence[ivy.Array],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
     """Stack arrays in sequence horizotally (column wise).
 
     Parameters
@@ -448,7 +458,7 @@ def hstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
     ivy.array([[5, 6, 7, 8]])
 
     """
-    return ivy.current_backend(arrays[0]).hstack(arrays)
+    return ivy.current_backend(arrays[0]).hstack(arrays, out=out)
 
 
 @to_native_arrays_and_back

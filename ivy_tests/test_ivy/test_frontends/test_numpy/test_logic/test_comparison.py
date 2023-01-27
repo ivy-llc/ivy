@@ -22,6 +22,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="equal"
+    ),
 )
 def test_numpy_equal(
     dtypes_values_casting,
@@ -98,6 +101,9 @@ def test_numpy_array_equal(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="greater"
+    ),
 )
 def test_numpy_greater(
     dtypes_values_casting,
@@ -144,6 +150,9 @@ def test_numpy_greater(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="greater_equal"
+    ),
 )
 def test_numpy_greater_equal(
     dtypes_values_casting,
@@ -190,6 +199,9 @@ def test_numpy_greater_equal(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="less"
+    ),
 )
 def test_numpy_less(
     dtypes_values_casting,
@@ -236,6 +248,9 @@ def test_numpy_less(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="less_equal"
+    ),
 )
 def test_numpy_less_equal(
     dtypes_values_casting,
@@ -282,6 +297,9 @@ def test_numpy_less_equal(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="not_equal"
+    ),
 )
 def test_numpy_not_equal(
     dtypes_values_casting,

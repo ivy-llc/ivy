@@ -135,7 +135,7 @@ sometrue = any
 # known issue in jnp's documentation of arguments
 # https://github.com/google/jax/issues/9119
 def logical_and(x1, x2, /):
-    if x1.dtype == 'complex128' or x2.dtype == 'complex128':
+    if x1.dtype == "complex128" or x2.dtype == "complex128":
         x1 = ivy.astype(x1, ivy.complex128)
         x2 = ivy.astype(x2, ivy.complex128)
     else:
