@@ -664,7 +664,7 @@ def test_tensorflow_matmul(
 ):
     input_dtype, x = dtype_and_x
     x1, x2 = x[0], x[1].T
-    as_variable=[True]
+    as_variable = [True]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
