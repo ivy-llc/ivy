@@ -8,6 +8,12 @@ test_configs = {
     "test-core-ivy": ["ivy_core", 1],
     "test-nn-ivy": ["ivy_nn", 2],
     "test-stateful-ivy": ["ivy_stateful", 3],
+    "test-frontend-tensorflow-push": ["tf_frontend", 4],
+    "test-frontend-numpy-push": ["numpy_frontend", 5],
+    "test-frontend-jax-push": ["jax_frontend", 6],
+    "test-frontend-torch-push": ["torch_frontend", 7],
+    "test-experimental-core-ivy": ["experimental_core", 8],
+    "test-experimental-nn-ivy": ["experimental_nn", 9],
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",
@@ -40,6 +46,7 @@ def update_test_results():
     collection.update_one(
         {"_id": test_configs[workflow][1]},
         {"$set": {backend + "." + submodule: res}},
+        upsert=True,
     )
     return
 

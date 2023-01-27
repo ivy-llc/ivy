@@ -1,34 +1,23 @@
 # local
 import ivy
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def is_tensor(obj):
     return ivy.is_array(obj)
 
 
-# def is_storage(obj):
-# 	return ivy.is_storage(obj)
+@to_ivy_arrays_and_back
+def numel(input):
+    return ivy.astype(ivy.array(input.size), ivy.int64)
 
-# def is_complex(obj):
-# 	return ivy.is_complex(obj)
 
-# def is_conj(obj):
-# 	return ivy.is_conj(obj)
+@to_ivy_arrays_and_back
+def is_floating_point(input):
+    return ivy.is_float_dtype(input)
 
-# def is_floating_point(obj):
-# 	return ivy.is_float_dtype(obj)
 
-# def is_nonzero(obj):
-# 	return ivy.is_nonzero(obj)
-
-# def numel(obj):
-# 	return ivy.numel(obj)
-
-# def set_flush_denormal(obj):
-# 	ivy.set_flush_denormal(obj)
-
-# def set_default_dtype(obj):
-# 	ivy.set_default_dtype(obj)
-
-# def set_default_tensor_type(obj):
-# 	ivy.set_default_tensor_type(obj)
+@to_ivy_arrays_and_back
+def is_nonzero(input):
+    return ivy.nonzero(input)[0].size != 0

@@ -78,8 +78,8 @@ def add_ivy_array_instance_methods(
     the activations module as instance methods to our toy `ArrayExample` class:
 
     >>> from ivy.functional.ivy import activations
-    >>> class ArrayExample: \
-            pass
+    >>> class ArrayExample:
+    ...     pass
     >>> ivy.add_ivy_array_instance_methods(ArrayExample, [activations])
     >>> print(hasattr(ArrayExample, "relu"), hasattr(ArrayExample, "softmax"))
     True True

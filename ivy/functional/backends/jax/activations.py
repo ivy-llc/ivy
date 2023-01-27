@@ -1,19 +1,25 @@
 """Collection of Jax activation functions, wrapped to fit Ivy syntax and signature."""
 
+
 # global
+
+
 import jax
 import jax.numpy as jnp
 from typing import Optional, Union
 
 # local
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 from ivy.functional.backends.jax import JaxArray
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def gelu(
     x: JaxArray,
     /,
     *,
-    approximate: bool = True,
+    approximate: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jax.nn.gelu(x, approximate)
@@ -64,8 +70,8 @@ def softplus(
             jnp.maximum(x_beta, 0).astype(x.dtype),
         )
     if threshold is not None:
-        return jnp.where(x_beta > threshold, x, res)
-    return res
+        return jnp.where(x_beta > threshold, x, res).astype(x.dtype)
+    return res.astype(x.dtype)
 
 
 def log_softmax(
@@ -74,3 +80,7 @@ def log_softmax(
     if axis is None:
         axis = -1
     return jax.nn.log_softmax(x, axis)
+
+
+def mish(x: JaxArray, /, *, out: Optional[JaxArray] = None):
+    return x * jnp.tanh(jax.nn.softplus(x))
