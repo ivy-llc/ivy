@@ -16,11 +16,13 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         valid_axis=True,
     ),
     keepdims=st.booleans(),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_argmax(
     *,
     dtype_and_x,
     keepdims,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -37,6 +39,7 @@ def test_jax_numpy_argmax(
         axis=axis,
         out=None,
         keepdims=keepdims,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -47,9 +50,11 @@ def test_jax_numpy_argmax(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_argwhere(
     dtype_and_x,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -65,6 +70,7 @@ def test_jax_numpy_argwhere(
         a=x[0],
         size=None,
         fill_value=None,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -79,10 +85,12 @@ def test_jax_numpy_argwhere(
         force_int_axis=True,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_argsort(
     *,
     dtype_x_axis,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -97,6 +105,7 @@ def test_jax_numpy_argsort(
         on_device=on_device,
         a=x[0],
         axis=axis,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -109,9 +118,11 @@ def test_jax_numpy_argsort(
         min_dim_size=2,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_msort(
     dtype_and_x,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -123,6 +134,7 @@ def test_jax_numpy_msort(
         test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -133,9 +145,11 @@ def test_jax_numpy_msort(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_nonzero(
     dtype_and_a,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -149,6 +163,7 @@ def test_jax_numpy_nonzero(
         fn_tree=fn_tree,
         on_device=on_device,
         a=a[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -164,9 +179,11 @@ def test_jax_numpy_nonzero(
     ),
     keep_dims=st.booleans(),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_nanargmax(
     dtype_x_axis,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -183,6 +200,7 @@ def test_jax_numpy_nanargmax(
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -198,9 +216,11 @@ def test_jax_numpy_nanargmax(
     ),
     keep_dims=st.booleans(),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_nanargmin(
     dtype_x_axis,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -217,4 +237,5 @@ def test_jax_numpy_nanargmin(
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
+        jax_enable_x64=jax_enable_x64,
     )

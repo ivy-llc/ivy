@@ -21,10 +21,12 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         available_dtypes=helpers.get_dtypes("signed_integer"),
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_absolute(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -38,6 +40,7 @@ def test_jax_numpy_absolute(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -49,10 +52,12 @@ def test_jax_numpy_absolute(
         num_arrays=2,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_add(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -67,6 +72,7 @@ def test_jax_numpy_add(
         on_device=on_device,
         x1=x[0],
         x2=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -74,10 +80,12 @@ def test_jax_numpy_add(
 @handle_frontend_test(
     fn_tree="jax.numpy.arctan",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_arctan(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -91,6 +99,7 @@ def test_jax_numpy_arctan(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -101,10 +110,12 @@ def test_jax_numpy_arctan(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
     ),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_arctan2(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -119,12 +130,14 @@ def test_jax_numpy_arctan2(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
 @handle_frontend_test(
     fn_tree="jax.numpy.cos",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_cos(
     *,
@@ -142,6 +155,7 @@ def test_jax_numpy_cos(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -150,10 +164,12 @@ def test_jax_numpy_cos(
     fn_tree="jax.numpy.cosh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_cosh(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -167,6 +183,7 @@ def test_jax_numpy_cosh(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -175,10 +192,12 @@ def test_jax_numpy_cosh(
     fn_tree="jax.numpy.tanh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_tanh(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -192,6 +211,7 @@ def test_jax_numpy_tanh(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -204,10 +224,12 @@ def test_jax_numpy_tanh(
         small_abs_safety_factor=4,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_sinh(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -221,6 +243,7 @@ def test_jax_numpy_sinh(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -228,10 +251,12 @@ def test_jax_numpy_sinh(
     fn_tree="jax.numpy.sin",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_sin(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -245,6 +270,7 @@ def test_jax_numpy_sin(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -253,10 +279,12 @@ def test_jax_numpy_sin(
     fn_tree="jax.numpy.floor",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_floor(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -270,6 +298,7 @@ def test_jax_numpy_floor(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -280,9 +309,11 @@ def test_jax_numpy_floor(
         helpers.get_dtypes(kind="numeric")
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_tensordot(
     dtype_values_and_axes,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -296,6 +327,7 @@ def test_jax_numpy_tensordot(
         a=a,
         b=b,
         axes=axes,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -312,10 +344,12 @@ def test_jax_numpy_tensordot(
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_divide(
     *,
     dtype_values,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -329,6 +363,7 @@ def test_jax_numpy_divide(
         fn_tree=fn_tree,
         a=x[0],
         b=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -337,9 +372,11 @@ def test_jax_numpy_divide(
     fn_tree="jax.numpy.exp",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_exp(
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -353,6 +390,7 @@ def test_jax_numpy_exp(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -390,10 +428,12 @@ def _get_dtype_input_and_vectors(draw):
     fn_tree="jax.numpy.dot",
     dtype_x_y=_get_dtype_input_and_vectors(),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_dot(
     *,
     dtype_x_y,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -411,6 +451,7 @@ def test_jax_numpy_dot(
         a=x,
         b=y,
         precision=None,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -422,10 +463,12 @@ def test_jax_numpy_dot(
         num_arrays=2,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_mod(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -441,6 +484,7 @@ def test_jax_numpy_mod(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -449,10 +493,12 @@ def test_jax_numpy_mod(
     fn_tree="jax.numpy.tan",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_tan(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -466,6 +512,7 @@ def test_jax_numpy_tan(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -474,10 +521,12 @@ def test_jax_numpy_tan(
     fn_tree="jax.numpy.arccos",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_arccos(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -491,6 +540,7 @@ def test_jax_numpy_arccos(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -499,10 +549,12 @@ def test_jax_numpy_arccos(
     fn_tree="jax.numpy.arccosh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_arccosh(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -516,6 +568,7 @@ def test_jax_numpy_arccosh(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -527,9 +580,11 @@ def test_jax_numpy_arccosh(
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_arcsin(
     dtype_and_x,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -546,6 +601,7 @@ def test_jax_numpy_arcsin(
         x=x[0],
         rtol=1e-2,
         atol=1e-2,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -557,9 +613,11 @@ def test_jax_numpy_arcsin(
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_log1p(
     dtype_and_x,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -574,6 +632,7 @@ def test_jax_numpy_log1p(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -586,10 +645,12 @@ def test_jax_numpy_log1p(
         small_abs_safety_factor=4,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_arcsinh(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -603,6 +664,7 @@ def test_jax_numpy_arcsinh(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -614,10 +676,12 @@ def test_jax_numpy_arcsinh(
         num_arrays=2,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_power(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -632,6 +696,7 @@ def test_jax_numpy_power(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -640,10 +705,12 @@ def test_jax_numpy_power(
     fn_tree="jax.numpy.trunc",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_trunc(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -657,6 +724,7 @@ def test_jax_numpy_trunc(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -665,10 +733,12 @@ def test_jax_numpy_trunc(
     fn_tree="jax.numpy.ceil",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_ceil(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -682,6 +752,7 @@ def test_jax_numpy_ceil(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -699,10 +770,12 @@ def test_jax_numpy_ceil(
         max_dim_size=3,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_float_power(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -717,6 +790,7 @@ def test_jax_numpy_float_power(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -727,10 +801,12 @@ def test_jax_numpy_float_power(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_deg2rad(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -744,6 +820,7 @@ def test_jax_numpy_deg2rad(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -754,10 +831,12 @@ def test_jax_numpy_deg2rad(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_radians(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -771,6 +850,7 @@ def test_jax_numpy_radians(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -787,10 +867,12 @@ def test_jax_numpy_radians(
         max_dim_size=3,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_exp2(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -806,6 +888,7 @@ def test_jax_numpy_exp2(
         x=x[0],
         rtol=1e-01,
         atol=1e-02,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -816,10 +899,12 @@ def test_jax_numpy_exp2(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_expm1(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -833,6 +918,7 @@ def test_jax_numpy_expm1(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -850,10 +936,12 @@ def test_jax_numpy_expm1(
         num_arrays=2,
     ).filter(lambda x: all([dtype != "uint64" for dtype in x[0]])),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_gcd(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -868,6 +956,7 @@ def test_jax_numpy_gcd(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -884,10 +973,12 @@ def test_jax_numpy_gcd(
         max_dim_size=3,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_i0(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -901,6 +992,7 @@ def test_jax_numpy_i0(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -916,10 +1008,12 @@ def test_jax_numpy_i0(
         num_arrays=2,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_kron(
     *,
     dtype_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -934,6 +1028,7 @@ def test_jax_numpy_kron(
         on_device=on_device,
         a=x[0],
         b=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -950,10 +1045,12 @@ def test_jax_numpy_kron(
         allow_nan=False,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_lcm(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -976,6 +1073,7 @@ def test_jax_numpy_lcm(
         x1=x[0],
         x2=x[1],
         test_values=value_test,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -993,10 +1091,12 @@ def test_jax_numpy_lcm(
         allow_nan=False,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_logaddexp2(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1013,6 +1113,7 @@ def test_jax_numpy_logaddexp2(
         atol=1e-02,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1081,9 +1182,11 @@ def dtypes_values_casting_dtype(
         arr_func=[_get_first_matrix_and_dtype, _get_second_matrix_and_dtype],
         get_dtypes_kind="numeric",
     ),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_matmul(
     dtypes_values_casting,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -1099,6 +1202,7 @@ def test_jax_numpy_matmul(
         a=x[0],
         b=x[1],
         precision=None,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1146,10 +1250,12 @@ def _either_x_dx(draw):
     fn_tree="jax.numpy.trapz",
     dtype_x_axis_rand_either=_either_x_dx(),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_trapz(
     *,
     dtype_x_axis_rand_either,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1176,6 +1282,7 @@ def test_jax_numpy_trapz(
         x=x,
         dx=dx,
         axis=axis,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1184,10 +1291,12 @@ def test_jax_numpy_trapz(
     fn_tree="jax.numpy.sqrt",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_sqrt(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1201,6 +1310,7 @@ def test_jax_numpy_sqrt(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1209,10 +1319,12 @@ def test_jax_numpy_sqrt(
     fn_tree="jax.numpy.square",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_square(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1226,6 +1338,7 @@ def test_jax_numpy_square(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1237,9 +1350,11 @@ def test_jax_numpy_square(
         min_num_dims=0,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_arctanh(
     dtype_and_x,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -1251,6 +1366,7 @@ def test_jax_numpy_arctanh(
         test_flags=test_flags,
         fn_tree=fn_tree,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1262,9 +1378,11 @@ def test_jax_numpy_arctanh(
         num_arrays=2,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_multiply(
     dtype_and_x,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -1277,6 +1395,7 @@ def test_jax_numpy_multiply(
         fn_tree=fn_tree,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1291,10 +1410,12 @@ def test_jax_numpy_multiply(
         max_value=100,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_log10(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1310,6 +1431,7 @@ def test_jax_numpy_log10(
         rtol=1e-01,
         atol=1e-02,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1326,10 +1448,12 @@ def test_jax_numpy_log10(
         allow_nan=False,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_logaddexp(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1346,6 +1470,7 @@ def test_jax_numpy_logaddexp(
         atol=1e-02,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1356,10 +1481,12 @@ def test_jax_numpy_logaddexp(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_degrees(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1373,6 +1500,7 @@ def test_jax_numpy_degrees(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1383,9 +1511,11 @@ def test_jax_numpy_degrees(
         available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_negative(
     dtype_and_x,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -1399,6 +1529,7 @@ def test_jax_numpy_negative(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1409,9 +1540,11 @@ def test_jax_numpy_negative(
         available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_rad2deg(
     dtype_and_x,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -1425,6 +1558,7 @@ def test_jax_numpy_rad2deg(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1438,10 +1572,12 @@ def test_jax_numpy_rad2deg(
         max_value=np.inf,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_fmax(
     *,
     dtype_and_inputs,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1456,6 +1592,7 @@ def test_jax_numpy_fmax(
         on_device=on_device,
         x1=inputs[0],
         x2=inputs[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1468,10 +1605,12 @@ def test_jax_numpy_fmax(
         min_value=-np.inf,
         max_value=np.inf,
     ),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_fmin(
     *,
     dtype_and_inputs,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1486,6 +1625,7 @@ def test_jax_numpy_fmin(
         on_device=on_device,
         x1=inputs[0],
         x2=inputs[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1498,10 +1638,12 @@ def test_jax_numpy_fmin(
         large_abs_safety_factor=2,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_fmod(
     *,
     dtype_and_inputs,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1517,6 +1659,7 @@ def test_jax_numpy_fmod(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1528,9 +1671,11 @@ def test_jax_numpy_fmod(
         num_arrays=2,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_maximum(
     dtype_and_x,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -1543,6 +1688,7 @@ def test_jax_numpy_maximum(
         fn_tree=fn_tree,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1554,9 +1700,11 @@ def test_jax_numpy_maximum(
         num_arrays=2,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_minimum(
     dtype_and_x,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -1569,6 +1717,7 @@ def test_jax_numpy_minimum(
         fn_tree=fn_tree,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1586,6 +1735,7 @@ def test_jax_numpy_minimum(
         num_arrays=2,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_heaviside(
     *,
@@ -1604,6 +1754,7 @@ def test_jax_numpy_heaviside(
         on_device=on_device,
         x1=x[0],
         x2=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1618,10 +1769,12 @@ def test_jax_numpy_heaviside(
         max_value=100,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_log(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1637,6 +1790,7 @@ def test_jax_numpy_log(
         rtol=1e-01,
         atol=1e-02,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1655,10 +1809,12 @@ def test_jax_numpy_log(
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_copysign(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1673,6 +1829,7 @@ def test_jax_numpy_copysign(
         on_device=on_device,
         x1=x[0],
         x2=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1686,10 +1843,12 @@ def test_jax_numpy_copysign(
         min_value=-100,
         max_value=100,
     ),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_sinc(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1705,6 +1864,7 @@ def test_jax_numpy_sinc(
         rtol=1e-01,
         atol=1e-02,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1723,10 +1883,12 @@ def test_jax_numpy_sinc(
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_nextafter(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1741,6 +1903,7 @@ def test_jax_numpy_nextafter(
         on_device=on_device,
         x1=x[0],
         x2=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1755,6 +1918,7 @@ def test_jax_numpy_nextafter(
         safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_remainder(
     *,
@@ -1778,6 +1942,7 @@ def test_jax_numpy_remainder(
         x2=x[1],
         rtol=1e-2,
         atol=1e-2,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1798,6 +1963,7 @@ def test_jax_numpy_remainder(
     axis1=st.integers(min_value=0, max_value=0),
     axis2=st.integers(min_value=1, max_value=1),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_trace(
     *,
@@ -1805,6 +1971,7 @@ def test_jax_numpy_trace(
     offset,
     axis1,
     axis2,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1823,6 +1990,7 @@ def test_jax_numpy_trace(
         offset=offset,
         axis1=axis1,
         axis2=axis2,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1833,10 +2001,12 @@ def test_jax_numpy_trace(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_log2(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1852,6 +2022,7 @@ def test_jax_numpy_log2(
         on_device=on_device,
         rtol=1e-2,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1863,10 +2034,12 @@ def test_jax_numpy_log2(
         num_arrays=2,
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_vdot(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1882,6 +2055,7 @@ def test_jax_numpy_vdot(
         test_values=False,
         a=x[0],
         b=x[1],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1892,10 +2066,12 @@ def test_jax_numpy_vdot(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_cbrt(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1911,6 +2087,7 @@ def test_jax_numpy_cbrt(
         rtol=1e-2,
         atol=1e-2,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1931,6 +2108,7 @@ def test_jax_numpy_cbrt(
     posinf=st.floats(min_value=5e100, max_value=5e100),
     neginf=st.floats(min_value=-5e100, max_value=-5e100),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_nan_to_num(
     *,
@@ -1939,6 +2117,7 @@ def test_jax_numpy_nan_to_num(
     nan,
     posinf,
     neginf,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1956,6 +2135,7 @@ def test_jax_numpy_nan_to_num(
         nan=nan,
         posinf=posinf,
         neginf=neginf,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -1969,10 +2149,12 @@ def test_jax_numpy_nan_to_num(
         min_dim_size=1,
         max_dim_size=3,
     ),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_fix(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -1987,6 +2169,7 @@ def test_jax_numpy_fix(
         on_device=on_device,
         test_values=False,
         x=x[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -2002,10 +2185,12 @@ def test_jax_numpy_fix(
         min_num_dims=1,
         max_num_dims=3,
     ),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_hypot(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -2021,4 +2206,5 @@ def test_jax_numpy_hypot(
         atol=1e-2,
         x1=x[0],
         x2=x[1],
+        jax_enable_x64=jax_enable_x64,
     )

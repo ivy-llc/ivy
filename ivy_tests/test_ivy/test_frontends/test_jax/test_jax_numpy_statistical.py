@@ -30,11 +30,13 @@ from ivy import inf
         ]
     ),
     dtype=helpers.get_dtypes("float", full=False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_einsum(
     *,
     eq_n_op,
     dtype,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -57,6 +59,7 @@ def test_jax_numpy_einsum(
         optimize="optimal",
         precision=None,
         _use_xeinsum=False,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -67,6 +70,7 @@ def test_jax_numpy_einsum(
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_helpers.where(),
     keepdims=st.booleans(),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_mean(
     *,
@@ -74,6 +78,7 @@ def test_jax_numpy_mean(
     dtype,
     keepdims,
     where,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -103,6 +108,7 @@ def test_jax_numpy_mean(
         out=None,
         keepdims=keepdims,
         where=where,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -117,6 +123,7 @@ def test_jax_numpy_mean(
     ),
     where=np_helpers.where(),
     keepdims=st.booleans(),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_var(
     *,
@@ -124,6 +131,7 @@ def test_jax_numpy_var(
     dtype,
     keepdims,
     where,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -154,6 +162,7 @@ def test_jax_numpy_var(
         where=where,
         atol=1e-3,
         rtol=1e-3,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -167,11 +176,13 @@ def test_jax_numpy_var(
         valid_axis=True,
     ),
     keepdims=st.booleans(),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_argmin(
     *,
     dtype_and_x,
     keepdims,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -188,6 +199,7 @@ def test_jax_numpy_argmin(
         axis=axis,
         out=None,
         keepdims=keepdims,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -207,10 +219,12 @@ def test_jax_numpy_argmin(
         ),
     ),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_bincount(
     *,
     dtype_and_x,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -227,6 +241,7 @@ def test_jax_numpy_bincount(
         weights=None,
         minlength=0,
         length=None,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -247,11 +262,13 @@ def test_jax_numpy_bincount(
     ),
     dtype=helpers.get_dtypes("float", none=True, full=False),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_cumprod(
     *,
     dtype_x_axis,
     dtype,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -268,6 +285,7 @@ def test_jax_numpy_cumprod(
         a=x[0],
         axis=axis,
         dtype=dtype[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -287,11 +305,13 @@ def test_jax_numpy_cumprod(
     ),
     dtype=helpers.get_dtypes("numeric", none=True, full=False),
     test_with_out=st.just(False),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_cumsum(
     *,
     dtype_x_axis,
     dtype,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -307,6 +327,7 @@ def test_jax_numpy_cumsum(
         a=x[0],
         axis=axis,
         dtype=dtype[0],
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -317,6 +338,7 @@ def test_jax_numpy_cumsum(
     initial=st.none() | st.floats(-10.0, 10.0),
     where=np_helpers.where(),
     keepdims=st.booleans(),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_sum(
     *,
@@ -324,6 +346,7 @@ def test_jax_numpy_sum(
     initial,
     where,
     keepdims,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -355,6 +378,7 @@ def test_jax_numpy_sum(
         keepdims=keepdims,
         initial=initial,
         where=where,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -365,12 +389,14 @@ def test_jax_numpy_sum(
     dtype_x_axis=statistical_dtype_values(function="min"),
     where=np_helpers.where(),
     keepdims=st.booleans(),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_min(
     *,
     dtype_x_axis,
     keepdims,
     where,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -397,6 +423,7 @@ def test_jax_numpy_min(
         out=None,
         keepdims=keepdims,
         where=where,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -407,12 +434,14 @@ def test_jax_numpy_min(
     dtype_x_axis=statistical_dtype_values(function="max"),
     where=np_helpers.where(),
     keepdims=st.booleans(),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_max(
     *,
     dtype_x_axis,
     keepdims,
     where,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -439,6 +468,7 @@ def test_jax_numpy_max(
         out=None,
         keepdims=keepdims,
         where=where,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -459,11 +489,13 @@ def test_jax_numpy_max(
         min_axes_size=1,
     ),
     returned=st.booleans(),
+    jax_enable_x64=st.booleans(),
 )
 def test_jax_numpy_average(
     *,
     dtype_x_axis,
     returned,
+    jax_enable_x64,
     on_device,
     fn_tree,
     frontend,
@@ -486,6 +518,7 @@ def test_jax_numpy_average(
         axis=axis,
         weights=x[1],
         returned=returned,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -506,9 +539,11 @@ def test_jax_numpy_average(
     initial=st.one_of(st.floats(min_value=-1000, max_value=1000), st.none()),
     keepdims=st.booleans(),
     where=np_helpers.where(),
+    jax_enable_x64=st.booleans(),
 )
 def test_numpy_nanmax(
     dtype_x_axis,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -539,6 +574,7 @@ def test_numpy_nanmax(
         keepdims=keepdims,
         initial=initial,
         where=where,
+        jax_enable_x64=jax_enable_x64,
     )
 
 
@@ -558,9 +594,11 @@ def test_numpy_nanmax(
     initial=st.one_of(st.floats(min_value=-1000, max_value=1000), st.none()),
     keepdims=st.booleans(),
     where=np_helpers.where(),
+    jax_enable_x64=st.booleans(),
 )
 def test_numpy_nanmin(
     dtype_x_axis,
+    jax_enable_x64,
     frontend,
     test_flags,
     fn_tree,
@@ -592,4 +630,5 @@ def test_numpy_nanmin(
         keepdims=keepdims,
         initial=initial,
         where=where,
+        jax_enable_x64=jax_enable_x64,
     )
