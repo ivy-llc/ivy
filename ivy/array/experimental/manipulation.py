@@ -185,7 +185,13 @@ class ArrayWithManipulationExperimental(abc.ABC):
         ivy.array([1, 2, 5, 6, 7, 8])
 
         """
-        return ivy.hstack(self.concat(arrays), out=out)
+        if not isinstance(arrays, (list, tuple)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data,) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.hstack(x, out=out)
 
     def rot90(
         self: ivy.Array,

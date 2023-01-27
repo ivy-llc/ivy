@@ -66,6 +66,8 @@ def hstack(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
     return torch.hstack(arrays, out=None)
 
 
