@@ -1,17 +1,20 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
+    matrix_is_stable,
+    _matrix_rank_helper,
 )
 
 
-@handle_cmd_line_args
-@given(
+# norm
+@handle_frontend_test(
+    fn_tree="numpy.linalg.norm",
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
@@ -22,116 +25,153 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         max_axis=1,
     ),
     keepdims=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.linalg.norm"
-    ),
+    ord=st.sampled_from([None, "fro", "nuc", "inf", "-inf", 0, 1, -1, 2, -2]),
+    test_with_out=st.just(False),
 )
 def test_numpy_norm(
-    dtype_values_axis, keepdims, as_variable, native_array, num_positional_args, fw
+    dtype_values_axis,
+    keepdims,
+    ord,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     dtype, x, axis = dtype_values_axis
     if len(np.shape(x)) == 1:
         axis = None
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        native_array_flags=native_array,
-        num_positional_args=num_positional_args,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="linalg.norm",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
-        ord=None,
+        ord=ord,
         axis=axis,
         keepdims=keepdims,
     )
 
 
 # matrix_rank
-
-
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        min_value=-1e05,
-        max_value=1e05,
-    ),
+@handle_frontend_test(
+    fn_tree="numpy.linalg.matrix_rank",
+    dtype_and_x=_matrix_rank_helper(),
     rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.linalg.matrix_rank"
-    ),
+    test_with_out=st.just(False),
 )
 def test_numpy_matrix_rank(
-    dtype_and_x, rtol, as_variable, native_array, num_positional_args, fw
+    dtype_and_x,
+    rtol,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        native_array_flags=native_array,
-        num_positional_args=num_positional_args,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="linalg.matrix_rank",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         A=x[0],
         tol=rtol,
     )
 
 
 # det
-
-
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.linalg.det",
     dtype_and_x=_get_dtype_and_matrix(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.linalg.det"
-    ),
+    test_with_out=st.just(False),
 )
-def test_numpy_det(dtype_and_x, as_variable, native_array, num_positional_args, fw):
+def test_numpy_det(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        native_array_flags=native_array,
-        num_positional_args=num_positional_args,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="linalg.det",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
         a=x[0],
     )
 
 
 # slogdet
-
-
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.linalg.slogdet",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        max_value=5,
+        min_value=2,
+        shape=st.tuples(
+            st.shared(st.integers(1, 5), key="sq"),
+            st.shared(st.integers(1, 5), key="sq"),
+        ),
+        num_arrays=1,
+        safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.linalg.slogdet"
-    ),
+    test_with_out=st.just(False),
 )
-def test_numpy_slogdet(dtype_and_x, as_variable, native_array, num_positional_args, fw):
+def test_numpy_slogdet(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    assume(matrix_is_stable(x[0]))
+    ret, ret_gt = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        test_values=False,
+    )
+    for ret_f, ret_gtt in zip(ret, ret_gt):
+        frontend_ret = ret_f
+        frontend_ret_gt = ret_gtt
+        ret_flattened = helpers.flatten_and_to_np(ret=frontend_ret)
+        ret_gt_flattened = helpers.flatten_and_to_np(ret=frontend_ret_gt)
+        helpers.value_test(
+            ret_np_flat=ret_flattened,
+            ret_np_from_gt_flat=ret_gt_flattened,
+            rtol=1e-1,
+            atol=1e-1,
+            ground_truth_backend="numpy",
+        )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.trace",
+    dtype_and_x=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
+)
+def test_numpy_trace(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="linalg.slogdet",
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
     )

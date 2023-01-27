@@ -5,32 +5,63 @@ import jax.numpy as jnp
 
 import ivy
 from ivy.functional.backends.jax import JaxArray
-
+from . import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
 
 # Array API Standard #
 # ------------------ #
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def argmax(
     x: JaxArray,
     /,
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.argmax(x, axis=axis, keepdims=keepdims)
+    if select_last_index:
+        x = jnp.flip(x, axis=axis)
+        ret = jnp.array(jnp.argmax(x, axis=axis, keepdims=keepdims))
+        if axis is not None:
+            ret = x.shape[axis] - ret - 1
+        else:
+            ret = x.size - ret - 1
+    else:
+        ret = jnp.argmax(x, axis=axis, keepdims=keepdims)
+    if dtype:
+        dtype = ivy.as_native_dtype(dtype)
+        return ret.astype(dtype)
+    return ret
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def argmin(
     x: JaxArray,
     /,
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    output_dtype: Optional[jnp.dtype] = None,
+    select_last_index: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.argmin(x, axis=axis, keepdims=keepdims)
+    if select_last_index:
+        x = jnp.flip(x, axis=axis)
+        ret = jnp.array(jnp.argmin(x, axis=axis, keepdims=keepdims))
+        if axis is not None:
+            ret = x.shape[axis] - ret - 1
+        else:
+            ret = x.size - ret - 1
+    else:
+        ret = jnp.argmin(x, axis=axis, keepdims=keepdims)
+    if output_dtype:
+        output_dtype = ivy.as_native_dtype(output_dtype)
+        return ret.astype(output_dtype)
+    return ret
 
 
 def nonzero(
@@ -58,7 +89,7 @@ def where(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.where(condition, x1, x2).astype(x1.dtype)
+    return ivy.astype(jnp.where(condition, x1, x2), x1.dtype, copy=False)
 
 
 # Extra #

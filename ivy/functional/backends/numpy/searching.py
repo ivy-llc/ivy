@@ -16,13 +16,23 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.argmax(x, axis=axis, keepdims=keepdims, out=out)
-    return np.array(ret)
-
-
-argmax.support_native_out = True
+    if select_last_index:
+        x = np.flip(x, axis=axis)
+        ret = np.argmax(x, axis=axis, keepdims=keepdims)
+        if axis is not None:
+            ret = np.array(x.shape[axis] - ret - 1)
+        else:
+            ret = np.array(x.size - ret - 1)
+    else:
+        ret = np.array(np.argmax(x, axis=axis, keepdims=keepdims))
+    if dtype:
+        dtype = ivy.as_native_dtype(dtype)
+        ret = ret.astype(dtype)
+    return ret
 
 
 def argmin(
@@ -31,13 +41,23 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    output_dtype: Optional[np.dtype] = None,
+    select_last_index: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.argmin(x, axis=axis, keepdims=keepdims, out=out)
-    return np.array(ret)
-
-
-argmin.support_native_out = True
+    if select_last_index:
+        x = np.flip(x, axis=axis)
+        ret = np.argmin(x, axis=axis, keepdims=keepdims)
+        if axis is not None:
+            ret = np.array(x.shape[axis] - ret - 1)
+        else:
+            ret = np.array(x.size - ret - 1)
+    else:
+        ret = np.array(np.argmin(x, axis=axis, keepdims=keepdims))
+    if output_dtype:
+        output_dtype = ivy.as_native_dtype(output_dtype)
+        return ret.astype(output_dtype)
+    return ret
 
 
 def nonzero(
@@ -74,7 +94,7 @@ def where(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.where(condition, x1, x2).astype(x1.dtype)
+    return ivy.astype(np.where(condition, x1, x2), x1.dtype, copy=False)
 
 
 # Extra #
