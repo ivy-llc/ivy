@@ -115,3 +115,29 @@ def poisson(
         _check_shapes_broadcastable(shape, lam.shape)
         lam = tf.broadcast_to(lam, tuple(shape))
         return tf.random.poisson((), lam, dtype=dtype, seed=seed)
+
+
+def bernoulli(
+    probs: Union[float, tf.Tensor, tf.Variable],
+    *,
+    logits: Union[float, tf.Tensor, tf.Variable] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: str,
+    dtype: DType,
+    seed: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    with tf.device(device):
+        if seed is not None:
+            tf.random.set_seed(seed)
+        if logits is not None:
+            logits = tf.cast(logits, dtype)
+            if not _check_shapes_broadcastable(shape, logits.shape):
+                shape = logits.shape
+        elif probs is not None:
+            probs = tf.cast(probs, dtype)
+            if not _check_shapes_broadcastable(shape, probs.shape):
+                shape = probs.shape
+        return tfp.distributions.Bernoulli(
+            logits=logits, probs=probs, dtype=dtype, allow_nan_stats=True
+        ).sample(shape, seed)
