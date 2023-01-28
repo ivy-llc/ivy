@@ -229,7 +229,7 @@ def test_tensorflow_Cos(  # NOQA
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_Rsqrt(  
+def test_tensorflow_Rsqrt(
     *,
     dtype_and_x,
     frontend,
