@@ -449,7 +449,7 @@ def handle_method(
     *,
     method_tree,
     ground_truth_backend: str = ground_truth,
-    test_gradients=False,
+    test_gradients=BuiltGradientStrategy,
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
@@ -514,7 +514,7 @@ def handle_method(
                 "class_name": st.just(class_name),
                 "init_flags": init_flags,
                 "method_flags": method_flags,
-                "test_gradients": st.just(test_gradients),
+                "test_gradients": test_gradients,
                 "method_name": st.just(method_name),
                 "ground_truth_backend": st.just(ground_truth_backend),
             }
