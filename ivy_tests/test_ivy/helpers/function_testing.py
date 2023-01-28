@@ -776,10 +776,10 @@ def gradient_test(
 
 def test_method(
     *,
-    init_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    init_all_as_kwargs_np: dict,
-    method_all_as_kwargs_np: dict,
+    init_input_dtypes: List[ivy.Dtype] = None,
+    method_input_dtypes: List[ivy.Dtype] = None,
+    init_all_as_kwargs_np: dict = None,
+    method_all_as_kwargs_np: dict = None,
     init_flags: pf.MethodTestFlags,
     method_flags: pf.MethodTestFlags,
     class_name: str,
@@ -871,11 +871,12 @@ def test_method(
         optional, return value from the Ground Truth function
     """
     _assert_dtypes_are_valid(method_input_dtypes)
-    # split the arguments into their positional and keyword components
+
+    init_input_dtypes = ivy.default(init_input_dtypes, [])
 
     # Constructor arguments #
-
     init_all_as_kwargs_np = ivy.default(init_all_as_kwargs_np, dict())
+    # split the arguments into their positional and keyword components
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=init_flags.num_positional_args,
         kwargs=init_all_as_kwargs_np,
@@ -925,6 +926,7 @@ def test_method(
     # end constructor #
 
     # method arguments #
+    method_input_dtypes = ivy.default(method_input_dtypes, [])
     args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
         num_positional_args=method_flags.num_positional_args,
         kwargs=method_all_as_kwargs_np,
