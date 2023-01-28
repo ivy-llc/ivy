@@ -476,7 +476,9 @@ def handle_method(
     is_hypothesis_test = len(_given_kwargs) != 0
 
     if is_hypothesis_test:
-        _, method_name, _, class_name, method_mod = _import_method(method_tree)
+        callable_method, method_name, _, class_name, method_mod = _import_method(
+            method_tree
+        )
 
         if init_num_positional_args is None:
             init_num_positional_args = num_positional_args(
@@ -484,8 +486,8 @@ def handle_method(
             )
 
         if method_num_positional_args is None:
-            method_num_positional_args = num_positional_args(
-                fn_name=f"{class_name}.{method_name}"
+            method_num_positional_args = num_positional_args_method(
+                method=callable_method
             )
 
     def test_wrapper(test_fn):
