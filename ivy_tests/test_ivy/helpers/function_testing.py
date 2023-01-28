@@ -780,8 +780,8 @@ def test_method(
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     init_all_as_kwargs_np: dict,
     method_all_as_kwargs_np: dict,
-    init_flags,
-    method_flags,
+    init_flags: pf.MethodTestFlags,
+    method_flags: pf.MethodTestFlags,
     class_name: str,
     method_name: str = "__call__",
     init_with_v: bool = False,
@@ -876,18 +876,6 @@ def test_method(
     # Constructor arguments #
 
     init_all_as_kwargs_np = ivy.default(init_all_as_kwargs_np, dict())
-    (
-        method_input_dtypes,
-        method_flags.variable_flags,
-        method_flags.array_flags,
-        method_flags.container_flags,
-    ) = as_lists(
-        method_input_dtypes,
-        method_flags.variable_flags,
-        method_flags.array_flags,
-        method_flags.container_flags,
-    )
-
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=init_flags.num_positional_args,
         kwargs=init_all_as_kwargs_np,
@@ -917,9 +905,9 @@ def test_method(
         ]
 
     # update variable flags to be compatible with float dtype
-    init_flags.variable_flags = [
+    init_flags.as_variable = [
         v if ivy.is_float_dtype(d) else False
-        for v, d in zip(init_flags.variable_flags, init_input_dtypes)
+        for v, d in zip(init_flags.as_variable, init_input_dtypes)
     ]
 
     # Create Args
