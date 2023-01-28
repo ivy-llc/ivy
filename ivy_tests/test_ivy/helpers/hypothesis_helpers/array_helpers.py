@@ -899,7 +899,9 @@ def array_and_broadcastable_shape(draw, dtype):
 
 
 @st.composite
-def arrays_for_pooling(draw, min_dims, max_dims, min_side, max_side):
+def arrays_for_pooling(
+    draw, min_dims, max_dims, min_side, max_side, allow_explicit_padding=False
+):
     in_shape = draw(
         nph.array_shapes(
             min_dims=min_dims, max_dims=max_dims, min_side=min_side, max_side=max_side
@@ -929,6 +931,29 @@ def arrays_for_pooling(draw, min_dims, max_dims, min_side, max_side):
         )
     if array_dim == 3:
         kernel = draw(st.tuples(st.integers(1, in_shape[1])))
-    padding = draw(st.sampled_from(["VALID", "SAME"]))
+    if allow_explicit_padding:
+        padding = []
+        for i in range(array_dim - 2):
+            max_pad = kernel[i] // 2
+            possible_pad_combos = [
+                (i, max_pad - i)
+                for i in range(0, max_pad)
+                if i + (max_pad - i) == max_pad
+            ]
+            if len(possible_pad_combos) == 0:
+                pad_selected_combo = (0, 0)
+            else:
+                pad_selected_combo = draw(st.sampled_from(possible_pad_combos))
+            padding.append(
+                draw(
+                    st.tuples(
+                        st.integers(0, pad_selected_combo[0]),
+                        st.integers(0, pad_selected_combo[1]),
+                    )
+                )
+            )
+        padding = draw(st.one_of(st.just(padding), st.sampled_from(["VALID", "SAME"])))
+    else:
+        padding = draw(st.sampled_from(["VALID", "SAME"]))
     strides = draw(st.tuples(st.integers(1, in_shape[1])))
     return dtype, x, kernel, strides, padding
