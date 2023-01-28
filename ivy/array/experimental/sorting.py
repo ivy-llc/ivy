@@ -25,7 +25,7 @@ class ArrayWithSortingExperimental(abc.ABC):
         self
             input array.
         out
-        optional output array, for writing the result to.
+            optional output array, for writing the result to.
 
         Returns
         -------
