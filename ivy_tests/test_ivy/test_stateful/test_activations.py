@@ -19,7 +19,7 @@ from ivy_tests.test_ivy.helpers import handle_method
     ),
     approximate=st.booleans(),
     method_num_positional_args=helpers.num_positional_args(fn_name="GELU._forward"),
-    test_gradients=True,
+    test_gradients=st.just(True),
 )
 def test_gelu(
     *,
@@ -60,7 +60,7 @@ def test_gelu(
         safety_factor_scale="log",
     ),
     method_num_positional_args=helpers.num_positional_args(fn_name="GEGLU._forward"),
-    test_gradients=True,
+    test_gradients=st.just(True),
 )
 def test_geglu(
     *,
