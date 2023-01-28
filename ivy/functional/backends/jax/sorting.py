@@ -73,3 +73,12 @@ def searchsorted(
     else:
         ret = jnp.searchsorted(x, v, side=side)
     return ret.astype(ret_dtype)
+
+
+def lexsort(
+    x: JaxArray,
+    /,
+    *,
+    axis: int = -1,
+) -> JaxArray:
+    return jnp.lexsort(x, axis)

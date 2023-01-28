@@ -103,3 +103,15 @@ def searchsorted(
 
 
 searchsorted.support_native_out = True
+
+
+def lexsort(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: int = -1,
+) -> torch.Tensor:
+    pass
+
+
+searchsorted.support_native_out = False

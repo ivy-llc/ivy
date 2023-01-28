@@ -92,3 +92,12 @@ def searchsorted(
     if is_supported_int_ret_dtype:
         return tf.searchsorted(x, v, side=side, out_type=ret_dtype)
     return tf.cast(tf.searchsorted(x, v, side=side), ret_dtype)
+
+
+def lexsort(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: int = -1,
+) -> Union[tf.Tensor, tf.Variable]:
+    pass
