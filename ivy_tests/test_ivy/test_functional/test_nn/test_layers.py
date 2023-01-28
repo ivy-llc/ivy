@@ -304,17 +304,19 @@ def x_and_filters(
 ):
     if not isinstance(dim, int):
         dim = draw(dim)
-    padding = draw(st.one_of(
-        st.lists(
-            st.tuples(
-                st.integers(min_value=0, max_value=3),
-                st.integers(min_value=0, max_value=3),
+    padding = draw(
+        st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=dim,
+                max_size=dim,
             ),
-            min_size=dim,
-            max_size=dim,
-        ),
-        st.sampled_from(["SAME", "VALID"])
-    ))
+            st.sampled_from(["SAME", "VALID"]),
+        )
+    )
     batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
@@ -446,7 +448,9 @@ def x_and_filters(
 
 
 def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
-    if backend_fw.current_backend_str() == "tensorflow":
+    if not isinstance(backend_fw, str):
+        backend_fw = backend_fw.current_backend_str()
+    if backend_fw == "tensorflow":
         assume(
             not (
                 on_device == "cpu" and (dilations > 1)
