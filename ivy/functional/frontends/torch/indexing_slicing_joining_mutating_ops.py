@@ -178,3 +178,8 @@ def take_along_dim(input, indices, dim, *, out=None):
 @to_ivy_arrays_and_back
 def vstack(tensors, *, out=None):
     return ivy.vstack(tensors, out=out)
+
+
+@to_ivy_arrays_and_back
+def row_stack(tensors, *, out=None):
+    return ivy.vstack(tensors, out=out)
