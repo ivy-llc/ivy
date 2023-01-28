@@ -5,6 +5,7 @@ import math
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
 
 
 # noinspection DuplicatedCode
@@ -62,6 +63,34 @@ def _array_idxes_n_dtype(draw, **kwargs):
         )
     )
     return x, idxes, dtype
+
+
+# adjoint
+@handle_frontend_test(
+    fn_tree="torch.adjoint",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
+        min_num_dims=2,
+        min_dim_size=2,
+    ),
+)
+def test_torch_adjoint(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+    )
 
 
 # cat
@@ -843,7 +872,6 @@ def test_torch_vstack(
         on_device=on_device,
         tensors=value,
     )
-
 
 
 @handle_frontend_test(

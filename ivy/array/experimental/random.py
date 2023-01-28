@@ -214,3 +214,58 @@ class ArrayWithRandomExperimental(abc.ABC):
             seed=seed,
             out=out,
         )
+
+    def bernoulli(
+        self: ivy.Array,
+        *,
+        logits: Optional[Union[float, ivy.Array, ivy.NativeArray]] = None,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ):
+        """
+
+        Parameters
+        ----------
+        self
+             An N-D Array representing the probability of a 1 event.
+             Each entry in the Array parameterizes an independent Bernoulli
+             distribution. Only one of logits or probs should be passed in
+        logits
+            An N-D Array representing the log-odds of a 1 event.
+            Each entry in the Array parameterizes an independent Bernoulli
+            distribution where the probability of an event is sigmoid
+            (logits). Only one of logits or probs should be passed in.
+
+        shape
+            If the given shape is, e.g '(m, n, k)', then 'm * n * k' samples are drawn.
+            (Default value = 'None', where 'ivy.shape(logits)' samples are drawn)
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            (Default value = None).
+
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output array data
+            type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Drawn samples from the Bernoulli distribution
+        """
+        return ivy.bernoulli(
+            self,
+            logits=logits,
+            shape=shape,
+            device=device,
+            dtype=dtype,
+            seed=seed,
+            out=out,
+        )

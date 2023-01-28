@@ -4,6 +4,11 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
+def adjoint(input):
+    return ivy.adjoint(input)
+
+
+@to_ivy_arrays_and_back
 def cat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, axis=dim, out=out)
 
