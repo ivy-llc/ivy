@@ -54,7 +54,6 @@ def msort(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def lexsort(
     keys: Union[ivy.Array, ivy.NativeArray],
     /,
