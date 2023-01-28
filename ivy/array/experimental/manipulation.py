@@ -132,11 +132,11 @@ class ArrayWithManipulationExperimental(abc.ABC):
 
     def vstack(
         self: ivy.Array,
-        /,
         arrays: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -154,15 +154,21 @@ class ArrayWithManipulationExperimental(abc.ABC):
                        [5, 6],
                        [7, 8]])
         """
-        return ivy.vstack(self.concat(arrays), out=out)
+        if not isinstance(arrays, (list, tuple)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.vstack(x, out=out)
 
     def hstack(
         self: ivy.Array,
-        /,
         arrays: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -179,7 +185,13 @@ class ArrayWithManipulationExperimental(abc.ABC):
         ivy.array([1, 2, 5, 6, 7, 8])
 
         """
-        return ivy.hstack(self.concat(arrays), out=out)
+        if not isinstance(arrays, (list, tuple)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data,) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.hstack(x, out=out)
 
     def rot90(
         self: ivy.Array,
@@ -612,11 +624,11 @@ class ArrayWithManipulationExperimental(abc.ABC):
 
     def dstack(
         self: ivy.Array,
-        /,
         arrays: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -634,7 +646,13 @@ class ArrayWithManipulationExperimental(abc.ABC):
                     [2, 3],
                     [3, 4]]])
         """
-        return ivy.dstack(self.concat(arrays), out=out)
+        if not isinstance(arrays, (list, tuple)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data,) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.dstack(x, out=out)
 
     def atleast_2d(self: ivy.Array, *arys: ivy.Array) -> List[ivy.Array]:
         """
@@ -789,3 +807,25 @@ class ArrayWithManipulationExperimental(abc.ABC):
                     [14., 15.]]))
         """
         return ivy.hsplit(self._data, indices_or_sections, out=out)
+
+    def expand(
+        self: ivy.Array,
+        shape: Union[ivy.Shape, ivy.NativeShape],
+        /,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+
+        Parameters
+        ----------
+        shape
+        device
+        out
+
+        Returns
+        -------
+
+        """
+        return ivy.expand(self._data, shape, device=device, out=out)

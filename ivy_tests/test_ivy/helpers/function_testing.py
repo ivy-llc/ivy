@@ -1,4 +1,5 @@
 # global
+import os
 import copy
 from typing import Union, List
 import numpy as np
@@ -32,11 +33,17 @@ from .assertions import (
     value_test,
     check_unsupported_dtype,
 )
+os.environ['IVY_ROOT'] = ".ivy"
 from ivy.compiler import compiler as ic
 
 
-def compiled_if_required(fn, *args, test_compile=False, **kwargs):
-    return ic.compile(fn, *args, *kwargs) if test_compile else fn
+def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
+    # print('backend', ivy.current_backend_str())
+    # print('args inside compile', args)
+    # print('kwargs inside compile', kwargs)
+    if test_compile:
+        return ic.compile(fn, args=args, kwargs=kwargs)
+    return fn
 
 
 available_frameworks = available_frameworkss()
@@ -868,8 +875,11 @@ def gradient_test(
 ):
     def grad_fn(all_args):
         args, kwargs, i = all_args
+        print("args inside grad_fn", args)
+        print("kwargs inside grad_fn", kwargs)
         call_fn = ivy.__dict__[fn] if isinstance(fn, str) else fn[i]
-        ret = compiled_if_required(call_fn, *args, test_compile=test_compile, **kwargs)(
+        print("call_fn", call_fn)
+        ret = compiled_if_required(call_fn, test_compile=test_compile, args=args, kwargs=kwargs)(
             *args, **kwargs
         )
         return ivy.nested_map(ret, ivy.mean, include_derived=True)
@@ -937,6 +947,8 @@ def gradient_test(
         len(grads_np_from_gt_flat),
     )
 
+    print('grads_np_flat', grads_np_flat)
+    print('grads_np_from_gt_flat', grads_np_from_gt_flat)
     for grad_np_flat, grad_np_from_gt_flat in zip(grads_np_flat, grads_np_from_gt_flat):
         value_test(
             ret_np_flat=grad_np_flat,
@@ -1797,7 +1809,7 @@ def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwar
     Runs func with args and kwargs, and returns the result along with its flattened
     version.
     """
-    fn = compiled_if_required(fn, *args, test_compile=test_compile, **kwargs)
+    fn = compiled_if_required(fn, test_compile=test_compile, args=args, kwargs=kwargs)
     ret = fn(*args, **kwargs)
 
     def map_fn(x):
