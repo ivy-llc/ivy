@@ -33,7 +33,8 @@ from .assertions import (
     value_test,
     check_unsupported_dtype,
 )
-os.environ['IVY_ROOT'] = ".ivy"
+
+os.environ["IVY_ROOT"] = ".ivy"
 from ivy.compiler import compiler as ic
 
 
@@ -879,9 +880,9 @@ def gradient_test(
         print("kwargs inside grad_fn", kwargs)
         call_fn = ivy.__dict__[fn] if isinstance(fn, str) else fn[i]
         print("call_fn", call_fn)
-        ret = compiled_if_required(call_fn, test_compile=test_compile, args=args, kwargs=kwargs)(
-            *args, **kwargs
-        )
+        ret = compiled_if_required(
+            call_fn, test_compile=test_compile, args=args, kwargs=kwargs
+        )(*args, **kwargs)
         return ivy.nested_map(ret, ivy.mean, include_derived=True)
 
     # extract all arrays from the arguments and keyword arguments
@@ -947,8 +948,8 @@ def gradient_test(
         len(grads_np_from_gt_flat),
     )
 
-    print('grads_np_flat', grads_np_flat)
-    print('grads_np_from_gt_flat', grads_np_from_gt_flat)
+    print("grads_np_flat", grads_np_flat)
+    print("grads_np_from_gt_flat", grads_np_from_gt_flat)
     for grad_np_flat, grad_np_from_gt_flat in zip(grads_np_flat, grads_np_from_gt_flat):
         value_test(
             ret_np_flat=grad_np_flat,
