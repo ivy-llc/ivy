@@ -114,10 +114,16 @@ def test_acos(
 
 
 import numpy as np
+
 # add
 @handle_test(
     fn_tree="functional.ivy.add",
-    dtype_and_x=st.just([['uint8', 'float32'], [np.array(2, dtype="uint8"), np.array(-2.5866387e15, dtype="float32")]]),
+    dtype_and_x=st.just(
+        [
+            ["uint8", "float32"],
+            [np.array(2, dtype="uint8"), np.array(-2.5866387e15, dtype="float32")],
+        ]
+    ),
     alpha=st.just(3),
     # dtype_and_x=helpers.dtype_and_values(
     #     available_dtypes=helpers.get_dtypes("numeric"),
@@ -138,7 +144,7 @@ def test_add(
     on_device,
     ground_truth_backend,
 ):
-    print('\n---------------------------------------------------------------\n')
+    print("\n---------------------------------------------------------------\n")
     input_dtype, x = dtype_and_x
     # print('% memory before ', psutil.virtual_memory().percent)
     # print('% processor before ', psutil.cpu_percent())
@@ -173,7 +179,7 @@ def test_add(
     )
     # print('% memory after ', psutil.virtual_memory().percent)
     # print('% processor after ', psutil.cpu_percent())
-    print('\n---------------------------------------------------------------\n')
+    print("\n---------------------------------------------------------------\n")
 
 
 # asin
