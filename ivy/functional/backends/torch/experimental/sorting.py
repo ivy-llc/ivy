@@ -11,3 +11,17 @@ def msort(
 
 
 msort_support_native_out = True
+
+
+# lexsort
+def lexsort(
+    keys: Union[torch.Tensor, list],
+    /,
+    *,
+    axis: int = -1,
+    out: Optional[torch.Tensor] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    pass  # TODO: implement lexsort for torch
+
+
+lexsort_support_native_out = False
