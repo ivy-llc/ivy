@@ -217,6 +217,24 @@ class Array(
         args, kwargs = args_to_native(*args, **kwargs)
         return func(*args, **kwargs)
 
+    def __array_function__(self, func, types, args, kwargs):
+        # Cannot handle items that have __array_function__ other than those of
+        # ivy arrays or native arrays.
+        for t in types:
+            if (
+                hasattr(t, "__array_function__")
+                and (t.__array_function__ is not ivy.Array.__array_function__)
+                or (
+                    hasattr(ivy.NativeArray, "__array_function__")
+                    and (t.__array_function__ is not ivy.NativeArray.__array_function__)
+                )
+            ):
+                return NotImplemented
+
+        # Arguments contain no overrides, so we can safely call the
+        # overloaded function again.
+        return func(*args, **kwargs)
+
     def __array__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
         return self._data.__array__(*args, **kwargs)

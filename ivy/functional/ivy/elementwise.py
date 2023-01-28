@@ -5,6 +5,7 @@ from typing import Optional, Union
 # local
 import ivy
 from ivy.func_wrapper import (
+    array_function_wrapper,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
@@ -23,6 +24,7 @@ from ivy.exceptions import handle_exceptions
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@array_function_wrapper
 def abs(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
