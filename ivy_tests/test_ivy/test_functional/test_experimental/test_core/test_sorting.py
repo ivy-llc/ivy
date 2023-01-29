@@ -54,7 +54,6 @@ def test_msort(
 )
 def test_lexsort(
     dtype_x_axis,
-    ground_truth_backend,
     test_flags,
     backend_fw,
     fn_name,
@@ -63,7 +62,7 @@ def test_lexsort(
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=input_dtype,
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="numpy",
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,

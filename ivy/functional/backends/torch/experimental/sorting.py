@@ -21,7 +21,9 @@ def lexsort(
     axis: int = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    pass  # TODO: implement lexsort for torch
+    for key in keys:
+
+    torch.argsort(keys, stable=True)
 
 
 lexsort_support_native_out = False

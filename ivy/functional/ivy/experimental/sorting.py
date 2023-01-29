@@ -52,7 +52,6 @@ def msort(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 @handle_exceptions
 def lexsort(
     keys: Union[ivy.Array, ivy.NativeArray],
@@ -61,7 +60,7 @@ def lexsort(
     axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Perform an indirect stable sort using a sequence of keys,
+    """Perform an indirect stable sort with an array of keys in ascending order,
     with the last key used as primary sort order, second-to-last for secondary,
     and so on. Each row of the key must have the same length, which will also
     be the length of the returned array of integer indices,
@@ -71,15 +70,17 @@ def lexsort(
     ----------
     keys
         array-like input of size (k, N).
+        N is the shape of each key, key can have multiple dimension.
     axis
-        axis to be indirectly sorted. By default, sort over the last axis.
+        axis of each key to be indirectly sorted.
+        By default, sort over the last axis of each key.
     out
         optional output array, for writing the result to.
 
     Returns
     -------
     ret
-        array of integer indices with shape (N,), that sort the keys.
+        array of integer indices with shape N, that sort the keys.
 
     Examples
     --------
