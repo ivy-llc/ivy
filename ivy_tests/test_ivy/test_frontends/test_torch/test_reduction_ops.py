@@ -733,8 +733,6 @@ def test_torch_unique(
         dim=None,
     )
 
-    ivy.set_backend(frontend)
-
     def _sort_inverse_indices(unique_values):
         _inverse_indices = ivy.zeros_like(x[0])
         for idx, val in enumerate(unique_values):
@@ -758,9 +756,10 @@ def test_torch_unique(
 
     assert len(ret) == len(ret_gt)
 
-    x[0] = ivy.array(x[0])
-    ret = [ivy.array(r) for r in ret]
-    ret_gt = [ivy.array(r) for r in ret_gt]
+    ret = [ivy.to_numpy(r) for r in ret]
+    ret_gt = [r.numpy() for r in ret_gt]
+
+    ivy.set_backend("numpy")
 
     if not sorted:
         # manually sort both tuples so to check their equality
