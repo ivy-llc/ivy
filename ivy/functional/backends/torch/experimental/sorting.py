@@ -20,7 +20,7 @@ def lexsort(
     *,
     axis: int = -1,
     out: Optional[torch.Tensor] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> torch.Tensor:
     pass  # TODO: implement lexsort for torch
 
 
