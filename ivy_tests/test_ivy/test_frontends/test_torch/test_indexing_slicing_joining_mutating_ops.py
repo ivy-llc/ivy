@@ -6,7 +6,6 @@ import math
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
-
 # noinspection DuplicatedCode
 @st.composite
 def _arrays_idx_n_dtypes(draw):
