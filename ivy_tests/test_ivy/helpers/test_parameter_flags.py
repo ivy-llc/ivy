@@ -187,3 +187,43 @@ def method_flags(
             container_flags=container_flags,
         )
     )
+
+
+class FrontendMethodTestFlags:
+    def __init__(
+        self,
+        num_positional_args,
+        as_variable,
+        native_arrays,
+    ):
+        self.num_positional_args = num_positional_args
+        self.native_arrays = native_arrays
+        self.as_variable = as_variable
+
+    def __str__(self):
+        return (
+            f"num_positional_args={self.num_positional_args}. "
+            f"native_arrays={self.native_arrays}. "
+            f"as_variable={self.as_variable}. "
+        )
+
+    def __repr__(self):
+        return self.__str__()
+
+
+@st.composite
+def frontend_method_flags(
+    draw,
+    *,
+    num_positional_args,
+    as_variable,
+    native_arrays,
+):
+    return draw(
+        st.builds(
+            FrontendMethodTestFlags,
+            num_positional_args=num_positional_args,
+            as_variable=as_variable,
+            native_arrays=native_arrays,
+        )
+    )
