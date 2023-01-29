@@ -7,7 +7,10 @@ import random
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_nn.test_layers import x_and_filters, _assume_tf_dilation_gt_1
+from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
+    x_and_filters,
+    _assume_tf_dilation_gt_1,
+)
 from ivy.functional.frontends.jax.numpy import can_cast
 from ivy.functional.ivy.layers import _get_x_data_format
 
@@ -1767,9 +1770,11 @@ def _conv_helper(draw, general=False, transpose=False):
     df = _get_x_data_format(dims, x_f_d_df[4]) if general else x_f_d_df[4]
     x_f_d_df = x_f_d_df[:4] + ((df, filter_df, df),) + x_f_d_df[5:]
     if filter_df[0] == "O":
-        x_f_d_df = x_f_d_df[:2] + \
-                   (ivy.permute_dims(x_f_d_df[2], axes=(dims+1, dims, *range(0, dims))),) + \
-                   x_f_d_df[3:]
+        x_f_d_df = (
+            x_f_d_df[:2]
+            + (ivy.permute_dims(x_f_d_df[2], axes=(dims + 1, dims, *range(0, dims))),)
+            + x_f_d_df[3:]
+        )
     strides = x_f_d_df[5]
     strides = [strides] * dims if isinstance(strides, int) else strides
     x_f_d_df = x_f_d_df[:5] + (strides,) + x_f_d_df[6:]
@@ -1777,7 +1782,9 @@ def _conv_helper(draw, general=False, transpose=False):
         dilations = x_f_d_df[3][0]
         x_dilations = x_f_d_df[3][1]
         dilations = [dilations] * dims if isinstance(dilations, int) else dilations
-        x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
+        x_dilations = (
+            [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
+        )
         x_f_d_df = x_f_d_df[:3] + ((dilations, x_dilations),) + x_f_d_df[4:]
     else:
         dilations = x_f_d_df[3]
@@ -1843,7 +1850,7 @@ def test_jax_lax_conv_transpose(
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, out_shape, fc, pref = x_f_d_other
     _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
-    if dim_num[1][-1] == 'O':
+    if dim_num[1][-1] == "O":
         filters = ivy.swapaxes(filters, -1, -2)
     else:
         filters = ivy.swapaxes(filters, 0, 1)
@@ -1881,7 +1888,9 @@ def test_jax_lax_conv_general_dilated(
 ):
     dtype, x, filters, dilations, dim_num, stride, pad, fc, pref = x_f_d_other
     _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations[0])
-    assume(not (isinstance(pad, str) and not len(dilations[1]) == dilations[1].count(1)))
+    assume(
+        not (isinstance(pad, str) and not len(dilations[1]) == dilations[1].count(1))
+    )
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,

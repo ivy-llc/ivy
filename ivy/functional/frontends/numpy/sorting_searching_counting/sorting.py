@@ -32,10 +32,5 @@ def sort_complex(a):
 
 # All backends need to be implemented for this function.
 @to_ivy_arrays_and_back
-def lexsort(
-    keys,
-    /,
-    *,
-    axis=-1
-):
+def lexsort(keys, /, *, axis=-1):
     return ivy.lexsort(keys, axis=axis)

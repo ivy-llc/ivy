@@ -2067,3 +2067,30 @@ def test_jax_numpy_floor_divide(
         x2=x[1],
         atol=1,
     )
+
+
+# real
+@handle_frontend_test(
+    fn_tree="jax.numpy.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
+    ),
+)
+def test_jax_numpy_real(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        val=x[0],
+    )

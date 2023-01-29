@@ -67,15 +67,6 @@ def flatten(
     ret
         the flattened array over the specified dimensions.
 
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -419,7 +410,7 @@ def vstack(
                [7, 8]])
 
     """
-    return ivy.current_backend(arrays[0]).vstack(arrays, out=out)
+    return ivy.current_backend().vstack(arrays, out=out)
 
 
 @to_native_arrays_and_back
@@ -458,7 +449,7 @@ def hstack(
     ivy.array([[5, 6, 7, 8]])
 
     """
-    return ivy.current_backend(arrays[0]).hstack(arrays, out=out)
+    return ivy.current_backend().hstack(arrays, out=out)
 
 
 @to_native_arrays_and_back
@@ -1376,7 +1367,7 @@ def dstack(
                [[2, 3]],
                [[3, 4]]])
     """
-    return ivy.current_backend(arrays[0]).dstack(arrays)
+    return ivy.current_backend().dstack(arrays)
 
 
 @to_native_arrays_and_back
@@ -1583,3 +1574,38 @@ def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     (3, 3)
     """
     return ivy.current_backend().broadcast_shapes(shapes)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_out_argument
+@handle_array_like_without_promotion
+def expand(
+    x: Union[ivy.Array, ivy.NativeArray],
+    shape: Union[ivy.Shape, ivy.NativeShape],
+    /,
+    *,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Broadcast the input Array following the given shape
+    and the broadcast rule.
+    Parameters
+    ----------
+    x
+        Array input.
+    shape
+        A 1-D Array indicates the shape you want to expand to,
+        following the broadcast rule
+    out
+        optional output array, for writing the result to.
+    Returns
+    -------
+    ret
+        Output Array
+    """
+    ones = ivy.ones(shape, dtype=x.dtype, device=device, out=out)
+    return x * ones

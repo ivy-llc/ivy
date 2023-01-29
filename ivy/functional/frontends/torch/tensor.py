@@ -62,6 +62,10 @@ class Tensor:
         return torch_frontend.reshape(self._ivy_array)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def reshape_as(self, other):
+        return torch_frontend.reshape(self, other.shape)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self._ivy_array, other, alpha=alpha)
 
@@ -376,6 +380,9 @@ class Tensor:
     def unsqueeze_(self, dim):
         self._ivy_array = self.unsqueeze(dim).ivy_array
         return self
+
+    def split(self, split_size, dim=0):
+        return torch_frontend.split(self, split_size, dim)
 
     def dim(self):
         return self._ivy_array.ndim
