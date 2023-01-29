@@ -126,11 +126,9 @@ def vsplit(
 
 def dsplit(
     ary: Union[tf.Tensor, tf.Variable],
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.dsplit(ary, indices_or_sections)
 
 
