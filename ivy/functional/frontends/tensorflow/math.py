@@ -427,3 +427,7 @@ def rsqrt(x, name=None):
 @to_ivy_arrays_and_back
 def nextafter(x1, x2, name=None):
     return ivy.nextafter(x1, x2)
+
+@to_ivy_arrays_and_back
+def log_softmax(logits, axis=None, name=None):
+    return ivy.log_softmax(logits, axis, name)
