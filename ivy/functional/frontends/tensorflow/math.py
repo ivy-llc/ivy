@@ -146,10 +146,9 @@ def is_non_decreasing(x, name="is_non_decreasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
     if ivy.array(x).size == 2:
-        return ivy.array([x[0] <= x[1]])
-    # results = ivy.less_equal(x, ivy.roll(x, -1))
-    # return ivy.all(results[:(ivy.array(results).size)-1])
-    return ivy.all(ivy.less_equal(x, ivy.roll(x, -1)))
+        return ivy.array(x[0] <= x[1])
+    results = ivy.less_equal(x, ivy.roll(x, -1))
+    return ivy.all(results[:len(results)-1])
 
 
 @to_ivy_arrays_and_back
