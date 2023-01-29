@@ -8,6 +8,7 @@ import numpy as np
 import torch
 import torch.nn
 
+print(globals())
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -103,3 +104,14 @@ def log_softmax(
 )
 def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.mish(x)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
+def threshold_relu(
+    x: torch.Tensor,
+    /,
+    *,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.threshold(x, threshold=threshold, value=0)

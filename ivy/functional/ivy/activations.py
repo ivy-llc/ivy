@@ -91,6 +91,7 @@ ACTIVATION_FUNCTIONS = [
     "sigmoid",
     "softmax",
     "softplus",
+    "threshold_relu",
 ]
 
 
@@ -584,3 +585,61 @@ def mish(
     }
     """
     return current_backend(x).mish(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def threshold_relu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    threshold: Optional[Union[int, float]] = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the rectified linear unit function with custom threshold.
+
+    Parameters
+    ----------
+    x
+        input array
+    threshold
+        threshold value above which the activation is linear. Default: ``0``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the rectified linear unit activation of each element in
+        ``x``. with custom ``threshold``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1., 0., 1.])
+    >>> y = ivy.threshold_relu(x, threshold=0.5)
+    >>> print(y)
+    ivy.array([0.,  0. ,  1.])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.threshold_relu(x, threshold=1, out = y)
+    >>> print(y)
+    ivy.array([ 1.5,  0., 0.])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.2, 0.6]))
+    >>> x = ivy.threshold_relu(x, threshold=0.5)
+    >>> print(x)
+    {
+        a: ivy.array([1., 0.]),
+        b: ivy.array([0., 0.6])
+    }
+    """
+    return current_backend(x).threshold_relu(x, threshold=threshold, out=out)
