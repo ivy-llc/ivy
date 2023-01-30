@@ -694,4 +694,4 @@ def test_jax_numpy_logical_not(
         on_device=on_device,
         x=x[0],
     )
-    
+
