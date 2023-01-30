@@ -632,7 +632,6 @@ def test_jax_numpy_isinf(
     )
 
 
-
 # isclose
 @handle_frontend_test(
     fn_tree="jax.numpy.isclose",
