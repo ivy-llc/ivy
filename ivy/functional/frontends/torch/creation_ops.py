@@ -252,11 +252,4 @@ def tensor(
 
 @to_ivy_arrays_and_back
 def as_strided(input, size, stride, storage_offset=None):
-    ind = ivy.array([0], dtype=ivy.int64)
-    for i, (size_i, stride_i) in enumerate(zip(size, stride)):
-        r_size = [1] * len(stride)
-        r_size[i] = -1
-        ind = ind + ivy.reshape(ivy.arange(size_i), r_size) * stride_i
-    if storage_offset:
-        ind = ind + storage_offset
-    return ivy.gather(ivy.flatten(input), ind)
+    return ivy.as_strided(input, size, stride, storage_offset)
