@@ -662,4 +662,3 @@ def test_jax_numpy_isclose(
         b=input[1],
         equal_nan=equal_nan,
     )
-    
