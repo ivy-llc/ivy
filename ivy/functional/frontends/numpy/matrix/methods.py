@@ -1,6 +1,5 @@
 # global
 import ivy
-import numpy as np
 
 # local
 from ivy.functional.frontends.numpy import (
@@ -8,6 +7,7 @@ from ivy.functional.frontends.numpy import (
     handle_numpy_out,
     argmax,
     any,
+    ndarray,
 )
 
 
@@ -18,7 +18,9 @@ class matrix:
     def _init_data(self, data, dtype):
         if isinstance(data, str):
             self._process_str_data(data, dtype)
-        elif isinstance(data, (list, np.ndarray)) or ivy.is_array(data):
+        elif isinstance(data, (list, ndarray)) or ivy.is_array(data):
+            if isinstance(data, ndarray):
+                data = data.ivy_array
             if ivy.is_array(data) and dtype is None:
                 dtype = data.dtype
             data = ivy.array(data, dtype=dtype)
@@ -32,13 +34,15 @@ class matrix:
         self._shape = ivy.shape(self._data)
 
     def _process_str_data(self, data, dtype):
-        is_float = "." in data
+        is_float = "." in data or "e" in data
+        data = data.replace(",", " ")
+        data = " ".join(data.split())
         data = data.split(";")
         for i, row in enumerate(data):
             row = row.strip().split(" ")
             data[i] = row
             for j, elem in enumerate(row):
-                data[i][j] = np.float64(elem) if is_float else np.int64(elem)
+                data[i][j] = float(elem) if is_float else int(elem)
         if dtype is None:
             dtype = ivy.float64 if is_float else ivy.int64
         self._data = ivy.array(data, dtype=dtype)
@@ -97,15 +101,7 @@ class matrix:
     # --------- #
 
     def __repr__(self):
-        sig_fig = ivy.array_significant_figures()
-        dec_vals = ivy.array_decimal_values()
-        rep = (
-            ivy.vec_sig_fig(ivy.to_numpy(self._data), sig_fig)
-            if self.size > 0
-            else ivy.to_numpy(self._data)
-        )
-        with np.printoptions(precision=dec_vals):
-            return "ivy.matrix(" + str(self._data.to_list()) + ")"
+        return "ivy.matrix(" + str(self._data.to_list()) + ")"
 
     # Instance Methods #
     # ---------------- #

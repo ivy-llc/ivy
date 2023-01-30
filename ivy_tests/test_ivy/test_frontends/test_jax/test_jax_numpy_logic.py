@@ -630,3 +630,36 @@ def test_jax_numpy_isinf(
         on_device=on_device,
         x=x[0],
     )
+
+
+# isclose
+@handle_frontend_test(
+    fn_tree="jax.numpy.isclose",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+    ),
+    equal_nan=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_isclose(
+    *,
+    dtype_and_input,
+    equal_nan,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=input[0],
+        b=input[1],
+        equal_nan=equal_nan,
+    )
+    
