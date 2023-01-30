@@ -1910,7 +1910,7 @@ class ContainerWithLayers(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(
-        ...     a=ivy.random_normal(shape=(5, 20, 3)), 
+        ...     a=ivy.random_normal(shape=(5, 20, 3)),
         ...     b=ivy.random_normal(shape=(5, 20, 3))
         ... )
         >>> h_i = ivy.random_normal(shape=(5, 6))
