@@ -77,12 +77,12 @@ def rint(
     out=None,
     *,
     where=True,
-    casting="same_king",
-    order="k",
+    casting="same_kind",
+    order="K",
     dtype=None,
     subok=True,
 ):
     ret = ivy.round(x, out=out)
     if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+        ret = ivy.where(where, ret, ivy.default(out, x), out=out)
     return ret
