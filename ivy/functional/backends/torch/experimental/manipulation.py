@@ -162,9 +162,11 @@ def dsplit(
     ary: torch.Tensor,
     indices_or_sections: Union[int, Tuple[int]],
     /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+) -> List[torch.Tensor]:
+    if len(ary.shape) < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
     return torch.dsplit(ary, indices_or_sections)
 
 
