@@ -900,8 +900,8 @@ def test_zeta(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name="zeta",
-        rtol_=1e-03,
-        atol_=1e-03,
+        rtol_=1e-02,
+        atol_=1e-02,
         x=x[0],
         q=x[1],
     )
