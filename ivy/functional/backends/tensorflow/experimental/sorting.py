@@ -15,10 +15,19 @@ def msort(
 
 # lexsort
 def lexsort(
-        keys: Union[tf.Tensor, tf.Variable, list],
+        keys: Union[tf.Tensor, tf.Variable],
         /,
         *,
         axis: int = -1,
         out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    pass  # TODO: implement lexsort for tensorflow
+    size = keys.shape.as_list()[0]
+    result = tf.argsort(keys[0], axis=axis, stable=True)
+    if size == 1:
+        return result
+    for i in range(1, size):
+        key = keys[i]
+        ind = key[result]
+        temp = tf.argsort(ind, axis=axis, stable=True)
+        result = result[temp]
+    return result
