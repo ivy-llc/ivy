@@ -385,3 +385,18 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
 @to_ivy_arrays_and_back
 def fix(x, out=None):
     return ivy.fix(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def real(val, /):
+    return ivy.real(val)
+
+
+@to_ivy_arrays_and_back
+def hypot(x1, x2, /):
+    return ivy.hypot(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def floor_divide(x1, x2, /, out=None):
+    return ivy.floor_divide(x1, x2, out=out)

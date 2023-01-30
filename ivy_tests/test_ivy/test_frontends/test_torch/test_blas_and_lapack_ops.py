@@ -466,6 +466,31 @@ def test_torch_ger(
     )
 
 
+# inner
+@handle_frontend_test(
+    fn_tree="torch.inner",
+    dtype_and_matrices=_get_dtype_input_and_matrices(with_input=True),
+)
+def test_torch_inner(
+    dtype_and_matrices,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, input_mat, mat1, mat2 = dtype_and_matrices
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input_mat,
+        other=mat2,
+        out=None,
+    )
+
+
 # logdet
 @handle_frontend_test(
     fn_tree="torch.logdet",

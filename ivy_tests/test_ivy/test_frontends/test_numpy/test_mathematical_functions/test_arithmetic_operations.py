@@ -497,14 +497,14 @@ def test_numpy_floor_divide(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
                 min_value=0,
                 exclude_min=True,
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -626,8 +626,11 @@ def test_numpy_fmod(
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
     assume(not np.any(np.isclose(xs[1], 0.0)))
+    assume(not np.any(np.isclose(xs[0], 0.0)))
     if dtype:
-        assume(not np.any(np.isclose(np.cast[dtype[0]](xs[1]), 0.0)))
+        assume(not np.any(np.isclose(xs[1].astype(dtype), 0.0)))
+        assume(not np.any(np.isclose(xs[0].astype(dtype), 0.0)))
+    assume("uint" not in input_dtypes[0] and "uint" not in input_dtypes[1])
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
