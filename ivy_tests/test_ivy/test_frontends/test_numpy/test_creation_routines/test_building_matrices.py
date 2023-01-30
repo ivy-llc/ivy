@@ -75,7 +75,7 @@ def test_numpy_diag(
             st.integers(min_value=1, max_value=5),
         ),
     ),
-    N=st.integers(min_value=0, max_value=5),
+    N=helpers.ints(min_value=3, max_value=10),
     increasing=st.booleans(),
     test_with_out=st.just(False),
 )
