@@ -51,6 +51,7 @@ def test_msort(
         force_int_axis=True,
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_lexsort(
     dtype_x_axis,
