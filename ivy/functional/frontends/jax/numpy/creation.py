@@ -99,3 +99,12 @@ def vander(x, N=None, increasing=False):
 @to_ivy_arrays_and_back
 def full_like(a, fill_value, dtype=None, shape=None):
     return ivy.full_like(a, fill_value, dtype=dtype)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def size(a, axis=None):
+    if axis is None:
+        return ivy.size(a)
+    else:
+        return ivy.shape[axis]
