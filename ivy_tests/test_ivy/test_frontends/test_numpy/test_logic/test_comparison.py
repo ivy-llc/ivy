@@ -35,12 +35,11 @@ def test_numpy_equal(
     test_flags,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+    where, input_dtypes, test_flags =\
         np_frontend_helpers.handle_where_and_array_bools(
             where=where,
             input_dtype=input_dtypes,
-            as_variable=test_flags.as_variable,
-            native_array=test_flags.native_arrays,
+            test_flags=test_flags,
         )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -115,12 +114,11 @@ def test_numpy_greater(
     test_flags,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+    where, input_dtypes, test_flags =\
         np_frontend_helpers.handle_where_and_array_bools(
             where=where,
             input_dtype=input_dtypes,
-            as_variable=test_flags.as_variable,
-            native_array=test_flags.native_arrays,
+            test_flags=test_flags,
         )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -165,12 +163,11 @@ def test_numpy_greater_equal(
     test_flags,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+    where, input_dtypes, test_flags =\
         np_frontend_helpers.handle_where_and_array_bools(
             where=where,
             input_dtype=input_dtypes,
-            as_variable=test_flags.as_variable,
-            native_array=test_flags.native_arrays,
+            test_flags=test_flags,
         )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -215,12 +212,11 @@ def test_numpy_less(
     test_flags,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+    where, input_dtypes, test_flags =\
         np_frontend_helpers.handle_where_and_array_bools(
             where=where,
             input_dtype=input_dtypes,
-            as_variable=test_flags.as_variable,
-            native_array=test_flags.native_arrays,
+            test_flags=test_flags,
         )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -265,13 +261,13 @@ def test_numpy_less_equal(
     test_flags,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+    where, input_dtypes, test_flags =\
         np_frontend_helpers.handle_where_and_array_bools(
             where=where,
             input_dtype=input_dtypes,
-            as_variable=test_flags.as_variable,
-            native_array=test_flags.native_arrays,
+            test_flags=test_flags,
         )
+
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -315,13 +311,13 @@ def test_numpy_not_equal(
     test_flags,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags.as_variable, test_flags.native_arrays =\
+    where, input_dtypes, test_flags =\
         np_frontend_helpers.handle_where_and_array_bools(
             where=where,
             input_dtype=input_dtypes,
-            as_variable=test_flags.as_variable,
-            native_array=test_flags.native_arrays,
+            test_flags=test_flags,
         )
+
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
