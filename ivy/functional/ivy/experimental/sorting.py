@@ -87,4 +87,4 @@ def lexsort(
     >>> ivy.lexsort([b, a]) # Sort by a, then by b
     array([2, 0, 4, 6, 5, 3, 1])
     """
-    return ivy.current_backend(x).lexsort(keys, axis=axis)
+    return ivy.current_backend().lexsort(keys, axis=axis)
