@@ -400,3 +400,8 @@ def hypot(x1, x2, /):
 @to_ivy_arrays_and_back
 def floor_divide(x1, x2, /, out=None):
     return ivy.floor_divide(x1, x2, out=out)
+
+
+@to_ivy_arrays_and_back
+def round(a, /, decimal=0, out=None):
+    return ivy.round(a, decimal=decimal, out=out)
