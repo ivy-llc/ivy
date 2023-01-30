@@ -19,7 +19,6 @@ def lexsort(
         /,
         *,
         axis: int = -1,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     size = keys.shape.as_list()[0]
     result = tf.argsort(keys[0], axis=axis, stable=True)

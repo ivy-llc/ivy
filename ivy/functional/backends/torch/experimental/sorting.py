@@ -19,7 +19,6 @@ def lexsort(
     /,
     *,
     axis: int = -1,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     size = keys.size(dim=0)
     result = torch.argsort(keys[0], dim=axis, stable=True)

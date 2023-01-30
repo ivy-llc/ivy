@@ -52,13 +52,13 @@ def msort(
 
 
 @to_native_arrays_and_back
+@handle_nestable
 @handle_exceptions
 def lexsort(
     keys: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: int = -1,
-    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Perform an indirect stable sort with an array of keys in ascending order,
     with the last key used as primary sort order, second-to-last for secondary,
@@ -74,8 +74,6 @@ def lexsort(
     axis
         axis of each key to be indirectly sorted.
         By default, sort over the last axis of each key.
-    out
-        optional output array, for writing the result to.
 
     Returns
     -------
@@ -89,4 +87,4 @@ def lexsort(
     >>> ivy.lexsort([b, a]) # Sort by a, then by b
     array([2, 0, 4, 6, 5, 3, 1])
     """
-    return ivy.current_backend(x).lexsort(keys, axis=axis, out=out)
+    return ivy.current_backend(x).lexsort(keys, axis=axis)

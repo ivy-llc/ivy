@@ -19,7 +19,6 @@ def lexsort(
     /,
     *,
     axis: int = -1,
-    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.lexsort(keys, axis)
 
