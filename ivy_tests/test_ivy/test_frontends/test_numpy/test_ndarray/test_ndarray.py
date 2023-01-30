@@ -384,11 +384,10 @@ def test_numpy_ndarray_any(
     frontend,
 ):
     input_dtypes, x, axis = dtype_x_axis
-    where, as_variable, native_arrays, input_dtypes = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtypes,
-        as_variable=as_variable,
-        native_array=native_array,
+        test_flags=test_flags,
     )
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
@@ -438,11 +437,10 @@ def test_numpy_ndarray_all(
     frontend,
 ):
     input_dtypes, x, axis = dtype_x_axis
-    where, as_variable, native_arrays, input_dtypes = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtypes,
-        as_variable=as_variable,
-        native_array=native_array,
+        test_flags=test_flags,
     )
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
@@ -1187,11 +1185,10 @@ def test_numpy_instance_std(
     frontend,
 ):
     input_dtypes, x, axis = dtype_x_axis
-    where, as_variable, native_arrays, input_dtypes = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtypes,
-        as_variable=as_variable,
-        native_array=native_array,
+        test_flags=test_flags,
     )
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
