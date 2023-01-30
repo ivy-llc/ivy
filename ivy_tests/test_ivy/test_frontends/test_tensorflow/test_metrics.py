@@ -273,9 +273,7 @@ def test_binary_crossentropy(
     from_logits,
     label_smoothing,
     frontend,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     fn_tree,
     on_device,
 ):
