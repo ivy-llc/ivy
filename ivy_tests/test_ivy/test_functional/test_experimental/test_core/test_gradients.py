@@ -12,13 +12,14 @@ import ivy_tests.test_ivy.helpers as helpers
     "x_", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
 )
 @pytest.mark.parametrize("dtype", ["float32", "float64"])
+@pytest.mark.parametrize("inter_func_", [lambda x: ivy.square(x), lambda x: ivy.cos(x)])
 @pytest.mark.parametrize(
-    "inter_func_", [lambda x: ivy.square(x), lambda x: ivy.cos(x)]
+    "custom_grad_fn",
+    [lambda *args: args[1] * args[0][0], lambda *args: args[1] * args[0][1]],
 )
-@pytest.mark.parametrize(
-    "custom_grad_fn", [lambda *args: args[1] * args[0][0], lambda *args: args[1] * args[0][1]]
-)
-def test_bind_custom_gradient_function(x_, dtype, inter_func_, custom_grad_fn, backend_fw):
+def test_bind_custom_gradient_function(
+    x_, dtype, inter_func_, custom_grad_fn, backend_fw
+):
     fw = backend_fw.current_backend_str()
     if fw == "numpy":
         return
