@@ -1345,7 +1345,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.dsplit. This method simply wraps
@@ -1364,8 +1363,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
-        out
-            optional output container, for writing the result to.
 
         Returns
         -------
@@ -1399,20 +1396,17 @@ class ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "dsplit",
             ary,
-            indices_or_sections=indices_or_sections,
+            indices_or_sections,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def dsplit(
         self: ivy.Container,
         indices_or_sections: Union[int, Tuple[int]],
         /,
-        *,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.dsplit. This method simply
         wraps the function, and so the docstring for ivy.dsplit also applies to this
@@ -1430,8 +1424,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
-        out
-            optional output container, for writing the result to.
 
         Returns
         -------
@@ -1463,9 +1455,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
-        return self.static_dsplit(
-            self, indices_or_sections=indices_or_sections, out=out
-        )
+        return self.static_dsplit(self, indices_or_sections)
 
     @staticmethod
     def static_atleast_1d(
