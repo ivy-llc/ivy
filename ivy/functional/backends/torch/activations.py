@@ -106,7 +106,7 @@ def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
-def threshold_relu(
+def thresholded_relu(
     x: torch.Tensor,
     /,
     *,

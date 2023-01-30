@@ -273,7 +273,7 @@ class ArrayWithActivations(abc.ABC):
         """
         return ivy.mish(self._data, out=out)
 
-    def threshold_relu(
+    def thresholded_relu(
         self: ivy.Array,
         /,
         *,
@@ -281,9 +281,9 @@ class ArrayWithActivations(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.threshold_relu.
+        ivy.Array instance method variant of ivy.thresholded_relu.
         This method simply wraps the function, and so the docstring
-        for ivy.threshold_relu also applies to this method with minimal changes.
+        for ivy.thresholded_relu also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -304,8 +304,8 @@ class ArrayWithActivations(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([-1., .2, 1.])
-        >>> y = x.threshold_relu(threshold=0.5)
+        >>> y = x.thresholded_relu(threshold=0.5)
         >>> print(y)
         ivy.array([0., 0., 1.])
         """
-        return ivy.threshold_relu(self._data, threshold=threshold, out=out)
+        return ivy.thresholded_relu(self._data, threshold=threshold, out=out)

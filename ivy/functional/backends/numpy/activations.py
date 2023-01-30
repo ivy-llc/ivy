@@ -118,7 +118,7 @@ mish.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def threshold_relu(
+def thresholded_relu(
     x: np.ndarray,
     /,
     *,
@@ -128,4 +128,4 @@ def threshold_relu(
     return np.where(x > threshold, x, 0).astype(x.dtype)
 
 
-threshold_relu.support_native_out = True
+thresholded_relu.support_native_out = True

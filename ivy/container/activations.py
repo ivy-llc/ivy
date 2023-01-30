@@ -1042,7 +1042,7 @@ class ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_threshold_relu(
+    def static_thresholded_relu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1054,9 +1054,9 @@ class ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.threshold_relu.
+        ivy.Container static method variant of ivy.thresholded_relu.
         This method simply wraps the function, and so the docstring
-        for ivy.threshold_relu also applies to this method with minimal changes.
+        for ivy.thresholded_relu also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1088,7 +1088,7 @@ class ContainerWithActivations(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-        >>> y = ivy.Container.static_threshold_relu(x, threshold=0.5)
+        >>> y = ivy.Container.static_thresholded_relu(x, threshold=0.5)
         >>> print(y)
         {
             a: ivy.array([1., 0.]),
@@ -1097,7 +1097,7 @@ class ContainerWithActivations(ContainerBase):
 
         """
         return ContainerBase.cont_multi_map_in_function(
-            "threshold_relu",
+            "thresholded_relu",
             x,
             threshold=threshold,
             key_chains=key_chains,
@@ -1107,7 +1107,7 @@ class ContainerWithActivations(ContainerBase):
             out=out,
         )
 
-    def threshold_relu(
+    def thresholded_relu(
         self: ivy.Container,
         /,
         *,
@@ -1119,9 +1119,9 @@ class ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.threshold_relu.
+        ivy.Container instance method variant of ivy.thresholded_relu.
         This method simply wraps the function, and so the docstring
-        for ivy.threshold_relu also applies to this method with minimal changes.
+        for ivy.thresholded_relu also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1153,7 +1153,7 @@ class ContainerWithActivations(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-        >>> y = x.threshold_relu(threshold=0.5)
+        >>> y = x.thresholded_relu(threshold=0.5)
         >>> print(y)
         {
             a: ivy.array([1., 0.]),
@@ -1161,7 +1161,7 @@ class ContainerWithActivations(ContainerBase):
         }
 
         """
-        return self.static_threshold_relu(
+        return self.static_thresholded_relu(
             self,
             threshold=threshold,
             key_chains=key_chains,

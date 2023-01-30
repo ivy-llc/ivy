@@ -91,7 +91,7 @@ ACTIVATION_FUNCTIONS = [
     "sigmoid",
     "softmax",
     "softplus",
-    "threshold_relu",
+    "thresholded_relu",
 ]
 
 
@@ -592,7 +592,7 @@ def mish(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
-def threshold_relu(
+def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
@@ -622,24 +622,24 @@ def threshold_relu(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1., 0., 1.])
-    >>> y = ivy.threshold_relu(x, threshold=0.5)
+    >>> y = ivy.thresholded_relu(x, threshold=0.5)
     >>> print(y)
     ivy.array([0.,  0. ,  1.])
 
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
-    >>> ivy.threshold_relu(x, threshold=1, out = y)
+    >>> ivy.thresholded_relu(x, threshold=1, out = y)
     >>> print(y)
     ivy.array([ 1.5,  0., 0.])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.2, 0.6]))
-    >>> x = ivy.threshold_relu(x, threshold=0.5)
+    >>> x = ivy.thresholded_relu(x, threshold=0.5)
     >>> print(x)
     {
         a: ivy.array([1., 0.]),
         b: ivy.array([0., 0.6])
     }
     """
-    return current_backend(x).threshold_relu(x, threshold=threshold, out=out)
+    return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)

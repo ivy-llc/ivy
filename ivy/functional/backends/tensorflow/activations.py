@@ -113,7 +113,7 @@ def mish(
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
-def threshold_relu(
+def thresholded_relu(
     x: Tensor,
     /,
     *,

@@ -86,7 +86,7 @@ def mish(x: JaxArray, /, *, out: Optional[JaxArray] = None):
     return x * jnp.tanh(jax.nn.softplus(x))
 
 
-def threshold_relu(
+def thresholded_relu(
     x: JaxArray,
     /,
     *,

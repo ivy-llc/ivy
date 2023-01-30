@@ -293,9 +293,9 @@ def test_mish(
     )
 
 
-# threshold_relu
+# thresholded_relu
 @handle_test(
-    fn_tree="functional.ivy.threshold_relu",
+    fn_tree="functional.ivy.thresholded_relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
@@ -304,7 +304,7 @@ def test_mish(
     ),
     threshold=st.floats(min_value=-0.10, max_value=10.0),
 )
-def test_threshold_relu(
+def test_thresholded_relu(
     *,
     dtype_and_x,
     threshold,
