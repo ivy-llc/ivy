@@ -129,9 +129,24 @@ def binary_accuracy(y_true, y_pred, threshold=0.5):
 def binary_crossentropy(
     y_true, y_pred, from_logits: bool = False, label_smoothing: float = 0.0
 ):
+    y_pred = ivy.asarray(y_pred)
+    y_true = ivy.asarray(y_true, dtype=y_pred.dtype)
+    label_smoothing = ivy.asarray(label_smoothing, dtype=y_pred.dtype)
+    y_true = y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
+
     if from_logits:
-        y_pred = ivy.softmax(y_pred)
-    return ivy.mean(ivy.binary_cross_entropy(y_true, y_pred, label_smoothing))
+        zeros = ivy.zeros_like(y_pred, dtype=y_pred.dtype)
+        cond = y_pred >= zeros
+        relu_logits = ivy.where(cond, y_pred, zeros)
+        neg_abs_logits = ivy.where(cond, -y_pred, y_pred)
+        bce = ivy.add(relu_logits - y_pred * y_true, ivy.log1p(ivy.exp(neg_abs_logits)))
+    else:
+        epsilon_ = 1e-7
+        y_pred = ivy.clip(y_pred, epsilon_, 1.0 - epsilon_)
+        bce = y_true * ivy.log(y_pred + epsilon_)
+        bce += (1 - y_true) * ivy.log(1 - y_pred + epsilon_)
+        bce = -bce
+    return ivy.mean(bce, axis=-1).astype(y_pred.dtype)
 
 
 @to_ivy_arrays_and_back
