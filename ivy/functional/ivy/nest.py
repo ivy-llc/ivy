@@ -208,7 +208,10 @@ def set_nest_at_index(
         _result[index[0]] = set_nest_at_index(
             nest[index[0]], index[1:], value, shallow, _result[index[0]]
         )
-    _result = nest_type(_result)
+    try:
+        _result = nest_type(_result)
+    except TypeError:
+        _result = nest_type(*_result)
     return _result
 
 
@@ -325,7 +328,10 @@ def map_nest_at_index(
         _result[index[0]] = map_nest_at_index(
             nest[index[0]], index[1:], fn, shallow, _result[index[0]]
         )
-    _result = nest_type(_result)
+    try:
+        _result = nest_type(_result)
+    except TypeError:
+        _result = nest_type(*_result)
     return _result
 
 
@@ -490,7 +496,10 @@ def set_nest_at_indices(
         values = [values] * len(indices)
     for index, value in zip(indices, values):
         result = set_nest_at_index(nest, index, value, _result=result, shallow=shallow)
-    result = nest_type(result)
+    try:
+        result = nest_type(result)
+    except TypeError:
+        result = nest_type(*result)
     return result
 
 
@@ -591,7 +600,10 @@ def map_nest_at_indices(
     result = list(result) if is_tuple else result
     for i, index in enumerate(indices):
         result = map_nest_at_index(nest, index, fn, _result=result, shallow=shallow)
-    result = nest_type(result)
+    try:
+        result = nest_type(result)
+    except TypeError:
+        result = nest_type(*result)
     return result
 
 
@@ -951,6 +963,7 @@ def nested_map(
     /,
     fn: Callable,
     include_derived: Optional[Union[Dict[type, bool], bool]] = None,
+    to_ignore: Union[type, Tuple[type]] = None,
     to_mutable: bool = False,
     max_depth: int = None,
     _depth: int = 0,
@@ -973,6 +986,8 @@ def nested_map(
     include_derived
         Whether to also recursive for classes derived from tuple, list and dict.
         Default is ``False``.
+    to_ignore
+        Types to ignore when deciding whether to go deeper into the nest or not
     to_mutable
         Whether to convert the nest to a mutable form, changing all tuples to lists.
         Default is ``False``.
@@ -1001,6 +1016,7 @@ def nested_map(
         nested.
 
     """
+    to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
         include_derived = {tuple: True, list: True, dict: True}
@@ -1030,12 +1046,13 @@ def nested_map(
         if include_derived[dict]
         else (lambda x_, t_: type(x_) is t_),
     )
-    if tuple_check_fn(x, tuple):
+    if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
         ret_list = [
             nested_map(
                 i,
                 fn,
                 include_derived,
+                to_ignore,
                 to_mutable,
                 max_depth,
                 _depth + 1,
@@ -1054,7 +1071,9 @@ def nested_map(
             return class_instance(**dict(zip(x._fields, ret_list)))
         else:
             return class_instance(ret_list)
-    elif list_check_fn(x, list) or isinstance(x, extra_nest_types):
+    elif (list_check_fn(x, list) or isinstance(x, extra_nest_types)) and not isinstance(
+        x, to_ignore
+    ):
         if isinstance(x, (ivy.Array, ivy.NativeArray)):
             ret = fn(x)
             if shallow:
@@ -1065,6 +1084,7 @@ def nested_map(
                 i,
                 fn,
                 include_derived,
+                to_ignore,
                 to_mutable,
                 max_depth,
                 _depth + 1,
@@ -1079,13 +1099,14 @@ def nested_map(
         if shallow:
             x[:] = ret_list[:]
         return class_instance(ret_list)
-    elif dict_check_fn(x, dict):
+    elif dict_check_fn(x, dict) and not isinstance(x, to_ignore):
         class_instance = type(x)
         ret = {
             k: nested_map(
                 v,
                 fn,
                 include_derived,
+                to_ignore,
                 to_mutable,
                 max_depth,
                 _depth + 1,

@@ -1,7 +1,7 @@
 from typing import Optional, Union, Tuple, Literal
 import ivy
 from ivy.func_wrapper import (
-    handle_array_like,
+    handle_array_like_without_promotion,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
@@ -515,7 +515,7 @@ def dct(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -578,9 +578,10 @@ def fft(
     return ivy.current_backend(x).fft(x, dim, norm=norm, n=n, out=out)
 
 
+@handle_nestable
 @handle_exceptions
 @to_native_arrays_and_back
-@handle_array_like
+@handle_array_like_without_promotion
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -615,6 +616,34 @@ def dropout1d(
     ret
         an array with some channels zero-ed and the rest of channels are
          scaled by (1/1-prob).
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 1, 1]).reshape([1, 1, 3])
+    >>> y = ivy.dropout1d(x, 0.5)
+    >>> print(y)
+    ivy.array([[[2., 0, 2.]]])
+
+    >>> x = ivy.array([1, 1, 1]).reshape([1, 1, 3])
+    >>> y = ivy.dropout1d(x, 1, training=False, data_format="NCW")
+    >>> print(y)
+    ivy.array([[[1, 1, 1]]])
+
+    With one :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([100, 200, 300]).reshape([1, 1, 3]),
+    ...                   b=ivy.array([400, 500, 600]).reshape([1, 1, 3]))
+    >>> y = ivy.dropout1d(x, 0.5)
+    >>> print(y)
+    {
+    a: ivy.array([[[200., 400., 0.]]]),
+    b: ivy.array([[[0., 0., 0.]]])
+    }
     """
     return ivy.current_backend(x).dropout1d(
         x, prob, training=training, data_format=data_format, out=out
@@ -625,7 +654,7 @@ def dropout1d(
 @handle_out_argument
 @handle_exceptions
 @handle_nestable
-@handle_array_like
+@handle_array_like_without_promotion
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -692,12 +721,12 @@ def ifft(
 @handle_exceptions
 @handle_nestable
 def embedding(
-        weights: Union[ivy.Array, ivy.NativeArray],
-        indices: Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        max_norm: Optional[int] = None,
-        out=None
+    weights: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out=None,
 ) -> ivy.Array:
     """Embeds a given tensor of indices using a given tensor of weights.
 
@@ -726,12 +755,11 @@ def embedding(
     ivy.array([[1., 2., 3.],
                 [7., 8., 9.]])
     """
-    ivy.assertions.check_equal(
-        len(weights.shape), 2, message="weights must be 2-d"
-    )
+    ivy.assertions.check_equal(len(weights.shape), 2, message="weights must be 2-d")
 
-    ret = ivy.empty(indices.shape + (weights.shape[1],),
-                    dtype=ivy.as_ivy_dtype(weights.dtype))
+    ret = ivy.empty(
+        indices.shape + (weights.shape[1],), dtype=ivy.as_ivy_dtype(weights.dtype)
+    )
     if not ivy.is_ivy_array(indices):
         indices = ivy.array(indices, dtype=ivy.int32)
 
@@ -742,3 +770,82 @@ def embedding(
         else:
             ret[i] = weights[x, :]
     return ret
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_exceptions
+@handle_nestable
+def dft(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = 1,
+    inverse: bool = False,
+    onesided: bool = False,
+    dft_length: Optional[Union[int, Tuple[int]]] = None,
+    norm: Optional[str] = "backward",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+        Computes the discrete Fourier transform of input.
+
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*,
+        where d_in indicates the dimension that needs FFT.
+    axis
+        The axis on which to perform the DFT. By default this
+        value is  set to 1, which corresponds to the first dimension
+        after the batch index.
+    inverse
+        Whether to perform the inverse discrete fourier transform.
+        By default this value is set to False.
+    onesided
+        If onesided is True, only values for w in [0, 1, 2, …, floor(n_fft/2) + 1]
+        are returned because the real-to-complex Fourier transform satisfies the
+        conjugate symmetry, i.e., X[m, w] = X[m,w]=X[m,n_fft-w]*. Note if the
+        input or window tensors are complex, then onesided output is not possible.
+        Enabling onesided with real inputs performs a Real-valued fast Fourier
+        transform (RFFT). When invoked with real or complex valued input, the
+        default value is False. Values can be True or False.
+    dft_length
+        The length of the signal.If greater than the axis dimension,
+        the signal will be zero-padded up to dft_length. If less than
+        the axis dimension, only the first dft_length values will be
+        used as the signal. It’s an optional value.
+    norm
+          Optional argument, "backward", "ortho" or "forward". Defaults to be
+          "backward".
+          "backward" indicates no normalization.
+          "ortho" indicates normalization by 1/sqrt(n).
+          "forward" indicates normalization by 1/n.
+    out
+        Optional output array, for writing the result to. It must
+        have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The Fourier Transform of the input vector.If onesided is False,
+        the following shape is expected: [batch_idx][signal_dim1][signal_dim2]
+        …[signal_dimN][2]. If axis=0 and onesided is True, the following shape
+        is expected: [batch_idx][floor(signal_dim1/2)+1][signal_dim2]…[signal_dimN][2].
+        If axis=1 and onesided is True, the following shape is expected:
+        [batch_idx][signal_dim1][floor(signal_dim2/2)+1]…[signal_dimN][2].
+        If axis=N-1 and onesided is True, the following shape is expected:
+        [batch_idx][signal_dim1][signal_dim2]…[floor(signal_dimN/2)+1][2].
+        The signal_dim at the specified axis is equal to the dft_length.
+
+    """
+    if inverse:
+        res = ifft(x, axis, norm=norm, n=dft_length, out=out)
+    else:
+        res = fft(x, axis, norm=norm, n=dft_length, out=out)
+
+    if onesided:
+        slices = [slice(0, a) for a in res.shape]
+        slices[axis] = slice(0, res.shape[axis] // 2 + 1)
+        res = res[tuple(slices)]
+    return res
