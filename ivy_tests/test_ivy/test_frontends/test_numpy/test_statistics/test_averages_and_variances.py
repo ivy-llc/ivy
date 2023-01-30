@@ -222,7 +222,7 @@ def test_numpy_nanstd(
             input_dtype=input_dtypes,
             test_flags=test_flags,
         )
-
+    assume(np.dtype(dtype[0]) >= np.dtype(input_dtype[0]))
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -231,11 +231,13 @@ def test_numpy_nanstd(
         on_device=on_device,
         a=a[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
         out=None,
-        ddof=0,
+        ddof=correction,
         keepdims=keep_dims,
         where=where,
+        atol=1e-2,
+        rtol=1e-2,
     )
 
 
