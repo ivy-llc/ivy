@@ -5,7 +5,6 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
-import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _array_and_index
 from ivy.functional.frontends.jax import DeviceArray
 
@@ -82,29 +81,23 @@ def test_jax_devicearray_property_at(x_y_index):
 )
 def test_jax_devicearray__pos_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -118,29 +111,23 @@ def test_jax_devicearray__pos_(
 )
 def test_jax_devicearray__neg_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -155,32 +142,26 @@ def test_jax_devicearray__neg_(
 )
 def test_jax_devicearray__eq_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -195,32 +176,26 @@ def test_jax_devicearray__eq_(
 )
 def test_jax_devicearray__ne_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -236,31 +211,25 @@ def test_jax_devicearray__ne_(
 )
 def test_jax_devicearray__lt_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -275,32 +244,26 @@ def test_jax_devicearray__lt_(
 )
 def test_jax_devicearray__le_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -315,32 +278,26 @@ def test_jax_devicearray__le_(
 )
 def test_jax_devicearray__gt_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -355,32 +312,26 @@ def test_jax_devicearray__gt_(
 )
 def test_jax_devicearray__ge_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -394,29 +345,23 @@ def test_jax_devicearray__ge_(
 )
 def test_jax_devicearray__abs_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -446,31 +391,25 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
 )
 def test_jax_devicearray__pow_(
     dtype_x_pow,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x, pow = dtype_x_pow
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": pow[0],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -482,31 +421,25 @@ def test_jax_devicearray__pow_(
 )
 def test_jax_devicearray__rpow_(
     dtype_x_pow,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x, pow = dtype_x_pow
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": pow[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[0],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -522,29 +455,23 @@ def test_jax_devicearray__rpow_(
 )
 def test_jax_devicearray__and_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -560,29 +487,23 @@ def test_jax_devicearray__and_(
 )
 def test_jax_devicearray__rand_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -598,29 +519,23 @@ def test_jax_devicearray__rand_(
 )
 def test_jax_devicearray__or_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -636,29 +551,23 @@ def test_jax_devicearray__or_(
 )
 def test_jax_devicearray__ror_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -674,29 +583,23 @@ def test_jax_devicearray__ror_(
 )
 def test_jax_devicearray__xor_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -712,29 +615,23 @@ def test_jax_devicearray__xor_(
 )
 def test_jax_devicearray__rxor_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -748,29 +645,23 @@ def test_jax_devicearray__rxor_(
 )
 def test_jax_devicearray__invert_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -797,29 +688,23 @@ def _get_dtype_x_and_int_shift(draw, dtype):
 )
 def test_jax_special_lshift(
     dtype_x_shift,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x, shift = dtype_x_shift
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x,
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": shift},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -831,29 +716,23 @@ def test_jax_special_lshift(
 )
 def test_jax_special_rlshift(
     dtype_x_shift,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x, shift = dtype_x_shift
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": shift,
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -865,29 +744,23 @@ def test_jax_special_rlshift(
 )
 def test_jax_special_rshift(
     dtype_x_shift,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x, shift = dtype_x_shift
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x,
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": shift},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -899,29 +772,23 @@ def test_jax_special_rshift(
 )
 def test_jax_special_rrshift(
     dtype_x_shift,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x, shift = dtype_x_shift
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": shift,
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -937,29 +804,23 @@ def test_jax_special_rrshift(
 )
 def test_jax_special_add(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -975,29 +836,23 @@ def test_jax_special_add(
 )
 def test_jax_special_radd(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1013,29 +868,23 @@ def test_jax_special_radd(
 )
 def test_jax_special_sub(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1051,29 +900,23 @@ def test_jax_special_sub(
 )
 def test_jax_special_rsub(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1089,29 +932,23 @@ def test_jax_special_rsub(
 )
 def test_jax_special_mul(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1127,29 +964,23 @@ def test_jax_special_mul(
 )
 def test_jax_special_rmul(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1165,30 +996,24 @@ def test_jax_special_rmul(
 )
 def test_jax_special_div(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1204,30 +1029,24 @@ def test_jax_special_div(
 )
 def test_jax_special_rdiv(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1243,30 +1062,24 @@ def test_jax_special_rdiv(
 )
 def test_jax_special_truediv(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1282,30 +1095,24 @@ def test_jax_special_truediv(
 )
 def test_jax_special_rtruediv(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1321,30 +1128,24 @@ def test_jax_special_rtruediv(
 )
 def test_jax_special_mod(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1360,30 +1161,24 @@ def test_jax_special_mod(
 )
 def test_jax_special_rmod(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1412,29 +1207,23 @@ def _get_dtype_input_and_vectors(draw):
 )
 def test_jax_special_matmul(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1446,29 +1235,23 @@ def test_jax_special_matmul(
 )
 def test_jax_special_rmatmul(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"other": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1480,27 +1263,21 @@ def test_jax_special_rmatmul(
 )
 def test_jax_special_getitem(
     dtype_x_index,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     dtypes, x = dtype_x_index
     helpers.test_frontend_method(
         init_input_dtypes=[dtypes[0]],
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=[dtypes[1]],
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"idx": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
