@@ -82,8 +82,7 @@ def to_numpy(
         else:
             return x
     elif torch.is_tensor(x):
-        if x.is_conj():
-            x = x.resolve_conj()
+        x = x.resolve_neg().resolve_conj()
         if copy:
             if x.dtype is torch.bfloat16:
                 default_dtype = ivy.default_float_dtype(as_native=True)

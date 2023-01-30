@@ -1365,7 +1365,7 @@ def dstack(
                [[2, 3]],
                [[3, 4]]])
     """
-    return ivy.current_backend(arrays[0]).dstack(arrays)
+    return ivy.current_backend().dstack(arrays)
 
 
 @to_native_arrays_and_back

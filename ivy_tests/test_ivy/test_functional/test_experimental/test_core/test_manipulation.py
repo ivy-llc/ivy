@@ -719,13 +719,11 @@ def test_atleast_1d(
 @handle_test(
     fn_tree="functional.ivy.experimental.dstack",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
+        available_dtypes=helpers.get_dtypes("valid"),
         shared_dtype=True,
-        num_arrays=2,
+        num_arrays=helpers.ints(min_value=1, max_value=10),
         shape=helpers.get_shape(
-            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+            min_num_dims=1,
         ),
     ),
     test_gradients=st.just(False),

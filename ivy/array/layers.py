@@ -755,7 +755,7 @@ class ArrayWithLayers(abc.ABC):
         (6, 20, 5)
         >>> result[1].shape
         (6, 5)
-        
+
         """
         return ivy.lstm_update(
             self._data,

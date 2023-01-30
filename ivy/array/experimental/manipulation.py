@@ -624,11 +624,11 @@ class ArrayWithManipulationExperimental(abc.ABC):
 
     def dstack(
         self: ivy.Array,
-        /,
         arrays: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -646,7 +646,13 @@ class ArrayWithManipulationExperimental(abc.ABC):
                     [2, 3],
                     [3, 4]]])
         """
-        return ivy.dstack(self.concat(arrays), out=out)
+        if not isinstance(arrays, (list, tuple)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data,) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.dstack(x, out=out)
 
     def atleast_2d(self: ivy.Array, *arys: ivy.Array) -> List[ivy.Array]:
         """
