@@ -10,8 +10,11 @@ from tensorflow.python.types.core import Tensor
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-from ivy.functional.ivy.layers import _deconv_length, _get_x_data_format, \
-    _handle_padding
+from ivy.functional.ivy.layers import (
+    _deconv_length,
+    _get_x_data_format,
+    _handle_padding,
+)
 
 
 def _pad_before_conv(x, filters, strides, padding, dims, dilations):
@@ -24,10 +27,12 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations):
             for i in range(dims)
         ]
         new_pad = [
-            _handle_padding(x.shape[1+i], strides[i], filter_shape[i], padding)
+            _handle_padding(x.shape[1 + i], strides[i], filter_shape[i], padding)
             for i in range(dims)
         ]
-        pad_list = [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)]
+        pad_list = [
+            (new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)
+        ]
     else:
         pad_list = padding
     return tf.pad(
@@ -41,7 +46,9 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations):
     )
 
 
-def _output_shape(x_shape, filter_shape, output_shape, strides, padding, dims, dilations):
+def _output_shape(
+    x_shape, filter_shape, output_shape, strides, padding, dims, dilations
+):
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     strides = [strides] * dims if isinstance(strides, int) else strides
     if output_shape is None:
@@ -283,7 +290,7 @@ def conv_general_dilated(
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
     for i in range(dims):
         if x_dilations[i] > 1:
-            h = x.shape[1+i]
+            h = x.shape[1 + i]
             new_height = h + (h - 1) * (x_dilations[i] - 1)
             h = tf.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
             x = tf.experimental.numpy.swapaxes(x, 1 + i, -1)
@@ -295,8 +302,7 @@ def conv_general_dilated(
     if dims == 3:
         strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
         dilations = (
-                [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) +
-                [1]
+            [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
         )
     if dims == 1:
         res = tf.concat(
