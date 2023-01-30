@@ -376,25 +376,36 @@ def test_torch_instance_new_zeros(
     shape=helpers.reshape_shapes(
         shape=st.shared(helpers.get_shape(), key="value_shape")
     ),
+    unpack_shape=st.booleans(),
 )
 def test_torch_instance_reshape(
     dtype_x,
     shape,
+    unpack_shape,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
 ):
     input_dtype, x = dtype_x
+    if unpack_shape:
+        method_flags.num_positional_args = len(shape) + 1
+        shape = {}
+        i = 0
+        for x_ in shape:
+            shape["x{}".format(i)] = x_
+            i += 1
+    else:
+        shape = {
+            "shape": shape,
+        }
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "shape": shape,
-        },
+        method_all_as_kwargs_np=shape,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -3335,6 +3346,7 @@ def _array_idxes_n_dtype(draw, **kwargs):
     dtype_values_axis=_array_idxes_n_dtype(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    unpack_dims=st.booleans(),
 )
 def test_torch_instance_permute(
     dtype_values_axis,
@@ -3344,15 +3356,25 @@ def test_torch_instance_permute(
     frontend,
 ):
     x, idxes, dtype = dtype_values_axis
+    unpack_dims = True
+    if unpack_dims:
+        method_flags.num_positional_args = len(idxes) + 1
+        dims = {}
+        i = 0
+        for x_ in idxes:
+            dims["x{}".format(i)] = x_
+            i += 1
+    else:
+        dims = {
+            "dims": tuple(idxes),
+        }
     helpers.test_frontend_method(
         init_input_dtypes=dtype,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=dtype,
-        method_all_as_kwargs_np={
-            "dims": tuple(idxes),
-        },
+        method_all_as_kwargs_np=dims,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
