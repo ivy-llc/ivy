@@ -276,6 +276,7 @@ def test_tril_indices(
     ),
     k=helpers.ints(min_value=-10, max_value=10),
     test_gradients=st.just(False),
+    number_positional_args=st.just(1),
 )
 def test_eye_like(
     *,
