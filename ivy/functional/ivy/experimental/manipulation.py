@@ -1246,12 +1246,11 @@ def vsplit(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_array_like_without_promotion
 def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[ivy.Array]:
     """Split an array into multiple sub-arrays along the 3rd axis.
@@ -1286,7 +1285,7 @@ def dsplit(
     [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
      ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
     """
-    return current_backend().dsplit(ary, indices_or_sections)
+    return ivy.current_backend(ary).dsplit(ary, indices_or_sections)
 
 
 @to_native_arrays_and_back
