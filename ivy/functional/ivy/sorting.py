@@ -246,11 +246,8 @@ def lexsort(
     axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    """
-    return ivy.current_backend(x).lexsort(
-        x, axis=axis
-    )
+    """ """
+    return ivy.current_backend(x).lexsort(x, axis=axis)
 
 
 # Extra #

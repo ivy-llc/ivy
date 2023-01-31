@@ -149,7 +149,7 @@ def conv_transpose(
     if preferred_element_type:
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
-    if dimension_numbers[1][-1] == 'O':
+    if dimension_numbers[1][-1] == "O":
         rhs = ivy.swapaxes(rhs, -1, -2)
     else:
         rhs = ivy.swapaxes(rhs, 0, 1)
@@ -158,7 +158,7 @@ def conv_transpose(
         _format_rhs(rhs, dimension_numbers),
         strides,
         padding,
-        dims=len(lhs.shape)-2,
+        dims=len(lhs.shape) - 2,
         data_format=_get_general_df(dimension_numbers[0]),
         dilations=1 if rhs_dilation is None else rhs_dilation,
     )
@@ -176,7 +176,7 @@ def conv_general_dilated(
     feature_group_count=1,
     batch_group_count=1,
     precision=None,
-    preferred_element_type=None
+    preferred_element_type=None,
 ):
     # TODO: add support for batch_group_count
     if preferred_element_type:
@@ -187,7 +187,7 @@ def conv_general_dilated(
         _format_rhs(rhs, dimension_numbers),
         window_strides,
         padding,
-        dims=len(lhs.shape)-2,
+        dims=len(lhs.shape) - 2,
         data_format=_get_general_df(dimension_numbers[0]),
         x_dilations=1 if lhs_dilation is None else lhs_dilation,
         dilations=1 if rhs_dilation is None else rhs_dilation,
