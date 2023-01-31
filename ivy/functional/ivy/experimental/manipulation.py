@@ -1252,7 +1252,7 @@ def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-) -> Sequence[ivy.Array]:
+) -> List[ivy.Array]:
     """Split an array into multiple sub-arrays along the 3rd axis.
 
     Parameters
