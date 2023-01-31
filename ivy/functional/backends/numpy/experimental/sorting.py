@@ -20,7 +20,7 @@ def lexsort(
     *,
     axis: int = -1,
 ) -> np.ndarray:
-    return np.lexsort(keys, axis)
+    return np.lexsort(keys, axis=axis)
 
 
 lexsort_support_native_out = False
