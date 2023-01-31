@@ -36,6 +36,23 @@ def eigvalsh(tensor, name=None):
 
 
 @to_ivy_arrays_and_back
+def matmul(
+    a,
+    b,
+    transpose_a=False,
+    transpose_b=False,
+    adjoint_a=False,
+    adjoint_b=False,
+    a_is_sparse=False,
+    b_is_sparse=False,
+    output_type=None,
+    name=None,
+):
+    # TODO : handle conjugate when ivy supports complex numbers
+    return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def solve(matrix, rhs):
     matrix, rhs = check_tensorflow_casting(matrix, rhs)

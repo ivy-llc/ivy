@@ -227,6 +227,10 @@ def dsplit(
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[np.ndarray]:
+    if ary.ndim < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
     return np.dsplit(ary, indices_or_sections)
 
 

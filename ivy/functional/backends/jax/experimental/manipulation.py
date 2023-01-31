@@ -231,6 +231,10 @@ def dsplit(
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[JaxArray]:
+    if len(ary.shape) < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
     return jnp.dsplit(ary, indices_or_sections)
 
 

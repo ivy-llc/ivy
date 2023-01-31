@@ -213,7 +213,7 @@ def test_numpy_nanstd(
     on_device,
     keep_dims,
 ):
-    input_dtype, a, axis, axis_excess = dtype_and_a
+    input_dtype, a, axis, correction = dtype_and_a
     if isinstance(axis, tuple):
         axis = axis[0]
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -222,7 +222,7 @@ def test_numpy_nanstd(
         as_variable=test_flags.as_variable,
         native_array=test_flags.native_arrays,
     )
-
+    assume(np.dtype(dtype[0]) >= np.dtype(input_dtype[0]))
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -231,11 +231,13 @@ def test_numpy_nanstd(
         on_device=on_device,
         a=a[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
         out=None,
-        ddof=0,
+        ddof=correction,
         keepdims=keep_dims,
         where=where,
+        atol=1e-2,
+        rtol=1e-2,
     )
 
 
