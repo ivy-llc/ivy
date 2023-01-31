@@ -881,9 +881,9 @@ def _pad_helper(draw):
     mode = draw(
         st.sampled_from(
             [
-                "constant",
-                "reflect",
-                "symmetric",
+                "CONSTANT",
+                "REFLECT",
+                "SYMMETRIC",
             ]
         )
     )
@@ -915,10 +915,12 @@ def _pad_helper(draw):
 # pad
 @handle_frontend_test(
     fn_tree="tensorflow.pad",
+    aliases=["tensorflow.compat.v1.pad"],
     dtype_and_values_and_other=_pad_helper(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_pad(
+    *,
     dtype_and_values_and_other,
     frontend,
     test_flags,
@@ -1048,6 +1050,38 @@ def test_tensorflow_strided_slice(
             ellipsis_mask=masks[2],
             new_axis_mask=masks[3],
             shrink_axis_mask=masks[4],
+        )
+    except Exception as e:
+        if hasattr(e, "message"):
+            if "only stride 1 allowed on non-range indexing" in e.message:
+                assume(False)
+
+
+# slice
+@handle_frontend_test(
+    fn_tree="tensorflow.slice",
+    dtype_x_params=_strided_slice_helper(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_slice(
+    *,
+    dtype_x_params,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, begin, end, strides, masks = dtype_x_params
+    try:
+        helpers.test_frontend_function(
+            input_dtypes=dtype + 3 * ["int64"],
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            input_=x[0],
+            begin=begin,
+            size=end-begin,
         )
     except Exception as e:
         if hasattr(e, "message"):

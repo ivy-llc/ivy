@@ -276,6 +276,11 @@ def strided_slice(
 
 
 @to_ivy_arrays_and_back
+def slice(input_, begin, size, name=None):
+    return strided_slice(input_, begin, begin + size, [1] * len(size))
+
+
+@to_ivy_arrays_and_back
 def linspace(start, stop, num, name=None, axis=0):
     return ivy.linspace(start, stop, num, axis=axis)
 
