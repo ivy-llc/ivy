@@ -2041,13 +2041,10 @@ def test_jax_numpy_hypot(
 def test_jax_numpy_floor_divide(
     *,
     dtype_values,
-    as_variable,
-    native_array,
-    num_positional_args,
     frontend,
     fn_tree,
     on_device,
-    with_out,
+    test_flags,
 ):
     input_dtype, x = dtype_values
     # Making sure division by zero doesn't occur
@@ -2056,11 +2053,8 @@ def test_jax_numpy_floor_divide(
     # due to flooring can cause absolute error of 1 due to precision
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
         on_device=on_device,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         x1=x[0],
