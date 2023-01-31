@@ -21,3 +21,8 @@ def is_floating_point(input):
 @to_ivy_arrays_and_back
 def is_nonzero(input):
     return ivy.nonzero(input)[0].size != 0
+
+
+@to_ivy_arrays_and_back
+def is_complex(input):
+    return ivy.is_complex_dtype(input)

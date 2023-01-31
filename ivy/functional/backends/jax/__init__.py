@@ -133,7 +133,7 @@ native_inplace_support = False
 supports_gradients = True
 
 
-def closest_valid_dtype(type):
+def closest_valid_dtype(type, /):
     if type is None:
         return ivy.default_dtype()
     type_str = as_ivy_dtype(type)  # noqa

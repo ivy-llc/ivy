@@ -56,7 +56,7 @@ def test_inputs_to_ivy_arrays(dtype_x_shape):
     input_frontend.ivy_array = input_ivy
     output = inputs_to_ivy_arrays(_fn)(input_frontend)
     assert isinstance(output, ivy.Array)
-    assert input_frontend.dtype == str(output.dtype)
+    assert input_frontend.ivy_array.dtype == str(output.dtype)
     assert ivy.all(input_frontend.ivy_array == output)
 
 
@@ -70,7 +70,7 @@ def test_outputs_to_numpy_arrays(dtype_and_x):
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
     output = outputs_to_numpy_arrays(_fn)(input_ivy, check_default=True)
     assert isinstance(output, ndarray)
-    assert input_ivy.dtype == output.dtype
+    assert input_ivy.dtype == output.ivy_array.dtype
     assert ivy.all(input_ivy == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
@@ -89,14 +89,14 @@ def test_to_ivy_arrays_and_back(dtype_x_shape):
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
     output = to_ivy_arrays_and_back(_fn)(input_ivy, check_default=True)
     assert isinstance(output, ndarray)
-    assert input_ivy.dtype == output.dtype
+    assert input_ivy.dtype == output.ivy_array.dtype
     assert ivy.all(input_ivy == output.ivy_array)
 
     # check for native array
     input_native = ivy.native_array(input_ivy)
     output = to_ivy_arrays_and_back(_fn)(input_native, check_default=True)
     assert isinstance(output, ndarray)
-    assert ivy.as_ivy_dtype(input_native.dtype) == output.dtype
+    assert ivy.as_ivy_dtype(input_native.dtype) == output.ivy_array.dtype
     assert ivy.all(input_native == output.ivy_array.data)
 
     # check for frontend array
@@ -104,7 +104,7 @@ def test_to_ivy_arrays_and_back(dtype_x_shape):
     input_frontend.ivy_array = input_ivy
     output = to_ivy_arrays_and_back(_fn)(input_frontend, check_default=True)
     assert isinstance(output, ndarray)
-    assert input_frontend.dtype == output.dtype
+    assert input_frontend.ivy_array.dtype == output.ivy_array.dtype
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []

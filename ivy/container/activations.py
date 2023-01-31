@@ -304,7 +304,6 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a =ivy.array([0.3, -0.1]))
         >>> y = ivy.Container.static_gelu(x)
         >>> print(y)

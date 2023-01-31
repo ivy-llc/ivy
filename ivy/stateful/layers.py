@@ -7,6 +7,9 @@ from ivy.stateful.initializers import Zeros, GlorotUniform
 from ivy.func_wrapper import handle_nestable
 
 
+# ToDo: update docstrings and typehints according to ivy\layers
+
+
 # Linear #
 # -------#
 

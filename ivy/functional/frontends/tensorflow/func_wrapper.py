@@ -12,8 +12,6 @@ import ivy.functional.frontends.tensorflow as frontend
 def to_ivy_dtype(dtype):
     if not dtype or isinstance(dtype, str):
         return dtype
-    if dtype in (int, float, bool) or ivy.is_native_dtype(dtype):
-        return ivy.as_ivy_dtype(dtype)
     return frontend.as_dtype(dtype).ivy_dtype
 
 
