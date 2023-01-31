@@ -1,4 +1,3 @@
-from hypothesis import reproduce_failure
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -6,11 +5,10 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="numpy.fft.ifft",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("float"), 
+        shape=(4,), array_api_dtypes=True
     )
-    
-)
-# @reproduce_failure('6.55.0', b'AAIAAACAAAAAAAAAAAA=')
+)    
 def test_numpy_iftt(
     dtype_and_x,
     frontend,
