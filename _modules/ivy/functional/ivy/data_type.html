@@ -233,7 +233,7 @@
                 <span class="k">if</span> <span class="p">(</span>
                     <span class="nb">hasattr</span><span class="p">(</span><span class="n">nodef</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
                     <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">nodef</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span>
-                    <span class="ow">and</span> <span class="n">nodef</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="s2">&quot;ivy&quot;</span>
+                    <span class="ow">and</span> <span class="n">nodef</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ivy&quot;</span><span class="p">,</span> <span class="s2">&quot;self&quot;</span><span class="p">]</span>
                 <span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="n">names</span><span class="p">[</span><span class="n">nodef</span><span class="o">.</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
