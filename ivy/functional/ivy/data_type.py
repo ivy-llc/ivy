@@ -97,7 +97,7 @@ def _get_function_list(func):
                 if (
                     hasattr(nodef, "value")
                     and hasattr(nodef.value, "id")
-                    and nodef.value.id != "ivy"
+                    and nodef.value.id not in ["ivy", "self"]
                 ):
                     continue
                 names[nodef.attr] = getattr(
