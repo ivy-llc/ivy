@@ -1055,6 +1055,38 @@ def test_tensorflow_strided_slice(
                 assume(False)
 
 
+# slice
+@handle_frontend_test(
+    fn_tree="tensorflow.slice",
+    dtype_x_params=_strided_slice_helper(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_slice(
+    *,
+    dtype_x_params,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, begin, end, strides, masks = dtype_x_params
+    try:
+        helpers.test_frontend_function(
+            input_dtypes=dtype + 3 * ["int64"],
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            input_=x[0],
+            begin=begin,
+            size=end-begin,
+        )
+    except Exception as e:
+        if hasattr(e, "message"):
+            if "only stride 1 allowed on non-range indexing" in e.message:
+                assume(False)
+
+
 @st.composite
 def _linspace_helper(draw):
     shape = draw(
