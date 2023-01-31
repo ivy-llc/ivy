@@ -341,6 +341,12 @@
 <span class="sd">    seed</span>
 <span class="sd">        Set a default seed for random number generating (for reproducibility). Default</span>
 <span class="sd">        is ``None``.</span>
+<span class="sd">    noise_shape</span>
+<span class="sd">        a sequence representing the shape of the binary dropout mask that will be</span>
+<span class="sd">        multiplied with the input. A shape dimension set to None means that a different</span>
+<span class="sd">        mask value will be applied to each element of the input across that dimension. A</span>
+<span class="sd">        dimension set to 1 means the same mask value will be applied to all elements of</span>
+<span class="sd">        the input across that dimension.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -447,16 +453,19 @@
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="n">noise_shape</span> <span class="o">=</span> <span class="n">noise_shape</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">noise_shape</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">noise_shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
-        <span class="o">&lt;</span> <span class="n">prob</span>
+    <span class="k">if</span> <span class="n">noise_shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noise_shape</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">noise_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">noise_shape</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">noise_shape</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">noise_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">noise_shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">prob</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">1</span>
     <span class="p">)</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-        <span class="n">mask</span><span class="p">,</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span>
-        <span class="n">x</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">mask</span>
     <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">prob</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span></div>

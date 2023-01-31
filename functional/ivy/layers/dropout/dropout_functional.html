@@ -181,6 +181,11 @@ must be inferred from x. Default is <code class="docutils literal notranslate"><
 <li><p><strong>training</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Turn on dropout if training, turn off otherwise. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
 <li><p><strong>seed</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Set a default seed for random number generating (for reproducibility). Default (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>noise_shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – a sequence representing the shape of the binary dropout mask that will be (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+multiplied with the input. A shape dimension set to None means that a different
+mask value will be applied to each element of the input across that dimension. A
+dimension set to 1 means the same mask value will be applied to all elements of
+the input across that dimension.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 inputs broadcast to.</p></li>
 </ul>
