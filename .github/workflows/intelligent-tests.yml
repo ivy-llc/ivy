@@ -1,17 +1,7 @@
 name: intelligent-tests
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version Based Testing :'
-        default: false
-        required: false
   push:
-    inputs:
-      version:
-        description: 'Version Based Testing :'
-        default: false
-        required: false
     branches:
       - 'master'
 permissions:
@@ -56,7 +46,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -103,7 +93,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -149,7 +139,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -196,7 +186,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -242,7 +232,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -288,7 +278,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -334,7 +324,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -380,7 +370,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -426,7 +416,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -472,7 +462,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -518,7 +508,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -564,7 +554,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -610,7 +600,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -656,7 +646,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -702,7 +692,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -748,7 +738,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -794,7 +784,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -840,7 +830,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -886,7 +876,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -932,7 +922,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -978,7 +968,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -1024,7 +1014,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -1070,7 +1060,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -1116,7 +1106,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -1162,7 +1152,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -1208,7 +1198,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -1254,7 +1244,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -1300,7 +1290,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -1346,7 +1336,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -1392,7 +1382,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -1438,7 +1428,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
@@ -1484,7 +1474,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ "false" }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
