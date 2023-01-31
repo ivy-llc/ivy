@@ -126,7 +126,7 @@ def vsplit(
 
 def dsplit(
     ary: Union[tf.Tensor, tf.Variable],
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(ary.shape) < 3:

@@ -224,7 +224,7 @@ def vsplit(
 
 def dsplit(
     ary: np.ndarray,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[np.ndarray]:
     if ary.ndim < 3:
