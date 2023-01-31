@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple, Union, List, Callable, Dict
+from typing import Optional, Tuple, Union, List, Callable, Dict, Sequence
 
 # local
 from ivy.container.base import ContainerBase
@@ -7,6 +7,8 @@ import ivy
 
 
 # ToDo: implement all methods here as public instance methods
+
+# ToDo: update docstrings and typehints according to ivy\layers
 
 
 # noinspection PyMissingConstructor
@@ -195,6 +197,7 @@ class ContainerWithLayers(ContainerBase):
         dtype: ivy.Dtype = None,
         training: bool = True,
         seed: int = None,
+        noise_shape: Sequence[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -222,6 +225,9 @@ class ContainerWithLayers(ContainerBase):
         seed
             Set a default seed for random number generating (for reproducibility).
             Default is ``None``.
+        noise_shape
+            a sequence representing the shape of the binary dropout mask that will be
+            multiplied with the input.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -263,6 +269,7 @@ class ContainerWithLayers(ContainerBase):
             dtype=dtype,
             training=training,
             seed=seed,
+            noise_shape=noise_shape,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -279,6 +286,7 @@ class ContainerWithLayers(ContainerBase):
         dtype: ivy.Dtype = None,
         training: bool = True,
         seed: int = None,
+        noise_shape: Sequence[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -306,6 +314,9 @@ class ContainerWithLayers(ContainerBase):
         seed
             Set a default seed for random number generating (for reproducibility).
             Default is ``None``.
+        noise_shape
+            a sequence representing the shape of the binary dropout mask that will be
+            multiplied with the input.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -345,6 +356,7 @@ class ContainerWithLayers(ContainerBase):
             dtype=dtype,
             training=training,
             seed=seed,
+            noise_shape=noise_shape,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -510,7 +522,7 @@ class ContainerWithLayers(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+    ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.scaled_dot_product_attention.
         This method simply wraps the function, and so the docstring for
@@ -519,7 +531,7 @@ class ContainerWithLayers(ContainerBase):
 
         Parameters
         ----------
-        self
+        q
             The queries input container. The shape of queries input array leaves should
             be in *[batch_shape,num_queries,feat_dim]*. The queries input array leaves
             should have the same size as keys and values.
@@ -592,7 +604,6 @@ class ContainerWithLayers(ContainerBase):
                         [4.4, 5.6],
                         [4.4, 5.6]]])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "scaled_dot_product_attention",
@@ -621,9 +632,9 @@ class ContainerWithLayers(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+    ) -> ivy.Container:
         """
-        ivy.Container method variant of ivy.scaled_dot_product_attention.
+        ivy.Container instance method variant of ivy.scaled_dot_product_attention.
         This method simply wraps the function, and so the docstring for
         ivy.scaled_dot_product_attention also applies to this method with minimal
         changes.
@@ -702,7 +713,6 @@ class ContainerWithLayers(ContainerBase):
                         [4.4, 5.6],
                         [4.4, 5.6]]])
         }
-
         """
         return self.static_scaled_dot_product_attention(
             self,
@@ -801,12 +811,12 @@ class ContainerWithLayers(ContainerBase):
     def static_conv1d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: int,
+        strides: Union[int, Tuple[int]],
         padding: str,
         /,
         *,
         data_format: str = "NWC",
-        dilations: int = 1,
+        dilations: Union[int, Tuple[int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -833,6 +843,17 @@ class ContainerWithLayers(ContainerBase):
             "NWC" or "NCW". Defaults to "NWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -873,13 +894,13 @@ class ContainerWithLayers(ContainerBase):
 
     def conv1d(
         self: ivy.Container,
-        filters: Union[ivy.Array, ivy.NativeArray],
-        strides: int,
+        filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        strides: Union[int, Tuple[int]],
         padding: str,
         /,
         *,
         data_format: str = "NWC",
-        dilations: int = 1,
+        dilations: Union[int, Tuple[int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -893,7 +914,7 @@ class ContainerWithLayers(ContainerBase):
 
         Parameters
         ----------
-        x
+        self
             Input image *[batch_size,w, d_in]*.
         filters
             Convolution filters *[fw,d_in, d_out]*. (d_in must be the same as d from x)
@@ -906,6 +927,17 @@ class ContainerWithLayers(ContainerBase):
             "NWC" or "NCW". Defaults to "NWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1859,6 +1891,50 @@ class ContainerWithLayers(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> Tuple[ivy.Container, ivy.Container]:
+        """
+        ivy.Container instance method variant of ivy.lstm_update. This method simply
+        wraps the function, and so the docstring for ivy.lstm_update also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        init_h
+            initial state tensor for the cell output *[batch_shape, out]*.
+        init_c
+            initial state tensor for the cell hidden state *[batch_shape, out]*.
+        kernel
+            weights for cell kernel *[in, 4 x out]*.
+        recurrent_kernel
+            weights for cell recurrent kernel *[out, 4 x out]*.
+        bias
+            bias for cell kernel *[4 x out]*. (Default value = None)
+        recurrent_bias
+            bias for cell recurrent kernel *[4 x out]*. (Default value = None)
+
+        Returns
+        -------
+        ret
+            hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
+            timestep *[batch_shape,out]*
+
+        Examples
+        --------
+        >>> x = ivy.Container(
+        ...     a=ivy.random_normal(shape=(5, 20, 3)),
+        ...     b=ivy.random_normal(shape=(5, 20, 3))
+        ... )
+        >>> h_i = ivy.random_normal(shape=(5, 6))
+        >>> c_i = ivy.random_normal(shape=(5, 6))
+
+        >>> kernel = ivy.random_normal(shape=(3, 4 * 6))
+        >>> rc = ivy.random_normal(shape=(6, 4 * 6))
+        >>> x.lstm_update(h_i, c_i, kernel, rc)
+        {
+            a: (tuple(2), <class ivy.array.array.Array>, shape=[5, 20, 6]),
+            b: (tuple(2), <class ivy.array.array.Array>, shape=[5, 20, 6])
+        }
+
+        """
         return self.static_lstm_update(
             self,
             init_h,

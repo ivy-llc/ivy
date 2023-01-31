@@ -2,6 +2,8 @@
 import sys
 import ivy
 from hypothesis import assume, strategies as st
+from ivy.functional.frontends.tensorflow.nn import _convolution_broadcast_helper
+from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_nn import _x_and_filters
 import numpy as np
 import math
 
@@ -201,6 +203,33 @@ def test_tensorflow_Concat(  # NOQA
     test_with_out=st.just(False),
 )
 def test_tensorflow_Cos(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# Rsqrt
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Rsqrt",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Rsqrt(
     *,
     dtype_and_x,
     frontend,
@@ -1176,6 +1205,33 @@ def test_tensorflow_Expm1(  # NOQA
     test_with_out=st.just(False),
 )
 def test_tensorflow_Log(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# Log1p
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Log1p",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Log1p(  # NOQA
     *,
     dtype_and_x,
     frontend,
@@ -2831,23 +2887,97 @@ def test_tensorflow_EuclideanNorm(
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.ConcatV2",
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
 )
 def test_tensorflow_ConcatV2(
     xs_n_input_dtypes_n_unique_idx,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=0,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         values=xs,
         axis=unique_idx,
+    )
+
+
+# Conv3D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Conv3D",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NDHWC"]),
+        padding=st.sampled_from(["SAME", "VALID"]),
+        type="3d",
+        # Tensorflow backprop doesn't support dilations more than 1 on CPU
+        dilation_min=1,
+        dilation_max=1,
+    ),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
+)
+def test_tensorflow_Conv3D(
+    *,
+    x_f_d_df,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+
+    # Broadcast stirdes and dilations to correct dims for the ground truth
+    # backend func to run correctly
+    stride = _convolution_broadcast_helper(
+        stride, num_spatial_dims=3, channel_index=4, name="strides"
+    )
+    dilation = _convolution_broadcast_helper(
+        dilation, num_spatial_dims=3, channel_index=4, name="dilations"
+    )
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filter=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Softmax",
+    dtype_values_axis=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Softmax(
+    dtype_values_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, values = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=values[0],
     )

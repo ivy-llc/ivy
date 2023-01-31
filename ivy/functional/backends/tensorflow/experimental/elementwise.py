@@ -2,6 +2,7 @@ import operator
 from typing import Union, Optional, Tuple, List
 from numbers import Number
 import tensorflow as tf
+from tensorflow.python.ops.numpy_ops import np_math_ops
 
 from ivy import promote_types_of_inputs
 from .. import backend_version
@@ -35,10 +36,7 @@ def lcm(
     return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
 
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "uint8", "uint16", "uint32", "uint64")},
-    backend_version,
-)
+@with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
 def fmod(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -156,6 +154,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    np_math_ops.enable_numpy_methods_on_tensor()
     return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
@@ -305,6 +304,7 @@ def diff(
     axis: Optional[int] = -1,
     prepend: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
     append: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if prepend is not None:
         x = tf.experimental.numpy.append(prepend, x, axis=axis)
@@ -603,12 +603,3 @@ def real(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.real(x)
-
-
-def isposinf(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.isposinf(x)

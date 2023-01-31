@@ -510,6 +510,9 @@ def test_lamb_update(
         decay_lambda,
     ) = beta1_n_beta2_n_epsilon_n_lambda
     max_trust_ratio, stop_gradients = mtr, stopgrad
+    # ToDo: enable gradient tests for jax once the issue with jacrev is resolved
+    if "jax" in backend_fw.__name__:
+        test_flags.test_gradients = False
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,

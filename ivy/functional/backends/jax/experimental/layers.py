@@ -9,6 +9,7 @@ import math
 import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
+from ivy.functional.ivy.layers import _handle_padding
 
 
 def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
@@ -34,7 +35,22 @@ def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
         is_single_input = True
 
     assert inputs.ndim == len(dims), f"len({inputs.shape}) != len({dims})"
-    y = jlax.reduce_window(inputs, init, reduce_fn, dims, strides, padding)
+
+    # doing manual padding instead of
+    if isinstance(padding, str):
+        pad_int = [
+            _handle_padding(
+                inputs.shape[i + 1], strides[i + 1], window_shape[i], padding
+            )
+            for i in range(len(dims) - 2)
+        ]
+        pad_list = [
+            (pad_int[i] // 2, pad_int[i] - pad_int[i] // 2) for i in range(len(pad_int))
+        ]
+        pad_list = [(0, 0)] + pad_list + [(0, 0)]
+    else:
+        pad_list = [(0, 0)] + padding + [(0, 0)]
+    y = jlax.reduce_window(inputs, init, reduce_fn, dims, strides, pad_list)
     if is_single_input:
         y = jnp.squeeze(y, axis=0)
     return y

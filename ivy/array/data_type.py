@@ -187,7 +187,7 @@ class ArrayWithDataTypes(abc.ABC):
         >>> print(y)
         int32
         """
-        return ivy.dtype(self._data, as_native)
+        return ivy.dtype(self._data, as_native=as_native)
 
     def finfo(self: ivy.Array, /) -> Finfo:
         """
