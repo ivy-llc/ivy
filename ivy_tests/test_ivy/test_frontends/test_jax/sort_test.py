@@ -15,26 +15,19 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def test_numpy_sort(
     *,
     dtype_x_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
     fn_tree,
     on_device,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x= dtype_x_axis
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
-        axis=axis,
     )
