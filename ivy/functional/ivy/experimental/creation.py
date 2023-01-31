@@ -517,13 +517,18 @@ def eye_like(
     Returns
     -------
     ret
-        an array having the same shape as ``x`` and filled with ``ones`` in diagonal ``k``
-        and ``zeros`` elsewhere.
+        an array having the same shape as ``x`` and filled with ``ones`` in
+        diagonal ``k`` and ``zeros`` elsewhere.
 
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.eye.html>`_ # noqa
-    in the standard.
+    Notes
+    -----
+    Generate a 2D tensor (matrix) with ones on the diagonal and zeros everywhere else.
+    Only 2D tensors are supported, i.e. input T1 must be of rank 2. The shape of the
+    output tensor is the same as the input tensor. The data type can be specified by
+    the 'dtype' argument. If 'dtype' is not specified, then the type of input tensor
+    is used. By default, the main diagonal is populated with ones, but attribute 'k'
+    can be used to populate upper or lower diagonals.
+
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this func;tion is *nestable*, and therefore also accepts :class:`ivy.Container`
