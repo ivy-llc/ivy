@@ -32,22 +32,17 @@ def _transpose_padding_helper(k, s, padding, dilation, diff=0):
 
 
 def _get_tranpose_padding(
-        x_shape, filter_shape, strides, padding, dims, dilations, output_shape
+    x_shape, filter_shape, strides, padding, dims, dilations, output_shape
 ):
     new_shape = [
-        _deconv_length(
-            x_shape[i], strides[i], filter_shape[i], padding, dilations[i]
-        )
+        _deconv_length(x_shape[i], strides[i], filter_shape[i], padding, dilations[i])
         for i in range(dims)
     ]
     if output_shape is None:
         output_shape = [x_shape[0], *new_shape, filter_shape[-1]]
     elif len(output_shape) == dims:
         output_shape = [x_shape[0]] + list(output_shape) + [filter_shape[-1]]
-    shape_diff = [
-        -(output_shape[1 + i] - new_shape[i])
-        for i in range(dims)
-    ]
+    shape_diff = [-(output_shape[1 + i] - new_shape[i]) for i in range(dims)]
     pad_list = [
         _transpose_padding_helper(
             filter_shape[i], strides[i], padding, dilations[i], shape_diff[i]
@@ -302,7 +297,9 @@ def conv_general_dilated(
                 new_pad[i] = _handle_padding(
                     x_shape[i], strides[i], filter_shape[i], padding
                 )
-            padding = [(new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)]
+            padding = [
+                (new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)
+            ]
     df = _get_x_data_format(dims, data_format)
     res = jlax.conv_general_dilated(
         x,
@@ -345,7 +342,7 @@ def conv_general_transpose(
     filter_df = _get_filter_dataformat(dims)
     if data_format == "channel_first":
         x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
-    x_shape = list(x.shape[1: dims + 1])
+    x_shape = list(x.shape[1 : dims + 1])
     padding = _get_tranpose_padding(
         x_shape, filters.shape, strides, padding, dims, dilations, output_shape
     )

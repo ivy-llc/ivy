@@ -224,11 +224,13 @@ def vsplit(
 
 def dsplit(
     ary: np.ndarray,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
+) -> List[np.ndarray]:
+    if ary.ndim < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
     return np.dsplit(ary, indices_or_sections)
 
 

@@ -62,6 +62,10 @@ class Tensor:
         return torch_frontend.reshape(self._ivy_array)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def reshape_as(self, other):
+        return torch_frontend.reshape(self, other.shape)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self._ivy_array, other, alpha=alpha)
 
@@ -377,6 +381,9 @@ class Tensor:
         self._ivy_array = self.unsqueeze(dim).ivy_array
         return self
 
+    def split(self, split_size, dim=0):
+        return torch_frontend.split(self, split_size, dim)
+
     def dim(self):
         return self._ivy_array.ndim
 
@@ -472,8 +479,18 @@ class Tensor:
     def min(self, dim=None, keepdim=False):
         return torch_frontend.min(self._ivy_array, dim=dim, keepdim=keepdim)
 
-    def permute(self, dims):
-        return torch_frontend.permute(self, dims)
+    def permute(self, *args, dims=None):
+        if args and dims:
+            raise TypeError("permute() got multiple values for argument 'dims'")
+        if dims is not None:
+            return torch_frontend.permute(self._ivy_array, dims)
+        if args:
+            if isinstance(args[0], tuple):
+                dims = args[0]
+                return torch_frontend.permute(self._ivy_array, dims)
+            else:
+                return torch_frontend.permute(self._ivy_array, args)
+        return torch_frontend.permute(self._ivy_array)
 
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self._ivy_array, dim=dim, keepdim=keepdim)
@@ -586,6 +603,10 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def numpy(self):
         return ivy.to_numpy(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def sigmoid(self):
+        return torch_frontend.sigmoid(self.ivy_array)
 
     # Special Methods #
     # -------------------#
