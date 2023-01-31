@@ -158,8 +158,8 @@ def dsplit(
     ary: torch.Tensor,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-) -> Tuple[torch.Tensor, ...]:
-    return torch.dsplit(ary, indices_or_sections)
+) -> List[torch.Tensor, ...]:
+    return list(torch.dsplit(ary, indices_or_sections))
 
 
 def atleast_1d(*arys: torch.Tensor) -> List[torch.Tensor]:
