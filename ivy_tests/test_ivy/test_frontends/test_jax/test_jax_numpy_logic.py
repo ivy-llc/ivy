@@ -664,7 +664,7 @@ def test_jax_numpy_isclose(
     )
 
 
-#logical_not
+# logical_not
 @handle_frontend_test(
     fn_tree="jax.numpy.logical_not",
     dtypes_values=helpers.dtype_and_values(
