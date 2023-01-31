@@ -1163,48 +1163,11 @@ def eye_like(
                [0., 1.]])
 
     >>> x1 = ivy.array([0, 1, 2],[3, 4, 5],[6, 7, 8])
-    >>> y1 = ivy.eye_like(x1)
-    >>> print(y1)
-    ivy.array([[1., 0., 0.],
-               [0., 1., 0.],
-               [0., 0., 1.]])
-
-    With :'k' input:
-
-    >>> x1 = ivy.array([0, 1, 2],[3, 4, 5],[6, 7, 8])
     >>> y1 = ivy.eye_like(x1, k=1)
     >>> print(y1)
     ivy.array([[0., 1., 0.],
                [0., 0., 1.],
                [0., 0., 0.]])
-
-    With :'out' input:
-
-    >>> x1 = ivy.array([[2, 3, 8],[1, 2, 1],[2, 3, 8],[1, 2, 1]])
-    >>> ivy.eye_like(x1, out=x1)
-    >>> print(x1)
-    ivy.array([[1., 0., 0.],
-               [0., 1., 0.],
-               [0., 0., 1.],
-               [0., 0., 0.]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
-    >>> y1 = ivy.eye_like(x1)
-    >>> print(y1)
-    ivy.array([[1., 0., 0.],
-               [0., 1., 0.]])
-
-
-    >>> x2 = ivy.native_array([3, 8],[0, 2], [8, 5]])
-    >>> y2 = ivy.eye_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
-    >>> print(y2)
-    ivy.array([[1., 0.],
-               [0., 1.],
-               [0., 0.]])
-
-    # Array ``y2`` is now stored on the CPU.
 
     With :class:`ivy.Container` input:
 
@@ -1216,27 +1179,6 @@ def eye_like(
                       [0., 1.]]),
         b: ivy.array([[1., 0.],
                       [0., 1.]])
-    }
-
-    Instance Method Examples
-    -------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([[2, 3, 8],[1, 2, 1]])
-    >>> y = x.eye_like()
-    >>> print(y)
-    ivy.array([[1., 0., 0.],
-               [0., 1., 0.]])
-
-    With :class:'ivy.Container' input:
-
-    >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
-    >>> y = x.eye_like()
-    >>> print(y)
-    {
-        a: ivy.array([1.]),
-        b: ivy.array([1.])
     }
 
     """

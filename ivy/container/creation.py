@@ -579,6 +579,18 @@ class ContainerWithCreation(ContainerBase):
         ret
             a container having the same shape as ``x`` and filled with ``ones``
             in diagonal ``k`` and ``zeros`` elsewhere.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+                              b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container.static_eye_like(x)
+        >>> print(y)
+        {
+            a: ivy.array([[1.]]),
+            b: ivy.array([[1.]])
+        }
+
         """
         return ContainerBase.cont_multi_map_in_function(
             "eye_like",
@@ -645,6 +657,17 @@ class ContainerWithCreation(ContainerBase):
         ret
             a container having the same shape as ``x`` and filled with ``ones``
             in diagonal ``k`` and ``zeros`` elsewhere.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
+        >>> y = x.eye_like()
+        >>> print(y)
+        {
+            a: ivy.array([[1.]]),
+            b: ivy.array([[1.]])
+        }
+
         """
         return self.static_eye_like(
             self,

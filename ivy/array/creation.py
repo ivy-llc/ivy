@@ -221,6 +221,14 @@ class ArrayWithCreation(abc.ABC):
         ret
             an array having the same shape as ``self`` and filled with ``ones``
             in diagonal ``k`` and ``zeros`` elsewhere.
+
+        Examples
+        --------
+        >>> x = ivy.array([[2, 3, 8],[1, 2, 1]])
+        >>> y = x.eye_like()
+        >>> print(y)
+        ivy.array([[1., 0., 0.],
+                    0., 1., 0.]])
         """
         return ivy.eye_like(self._data, k=k, dtype=dtype, device=device, out=out)
 
