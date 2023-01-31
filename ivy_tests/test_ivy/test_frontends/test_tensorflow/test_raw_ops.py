@@ -2801,7 +2801,7 @@ def test_tensorflow_Pack(  # NOQA
 
 
 @st.composite
-def _pad_helper(draw):
+def _pad_helper(draw, return_constant_values=False):
     dtype, input, shape = draw(
         helpers.dtype_and_values(
             min_num_dims=1,
@@ -2817,6 +2817,15 @@ def _pad_helper(draw):
             max_value=10,
         )
     )
+
+    if return_constant_values:
+        _, constant_values = draw(
+            helpers.dtype_and_values(
+                dtype=dtype,
+                shape=(1,),
+            )
+        )
+        return dtype, input[0], padding_dtype, paddings[0], constant_values[0][0]
 
     return dtype, input[0], padding_dtype, paddings[0]
 
@@ -2986,21 +2995,18 @@ def test_tensorflow_Softmax(
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.PadV2",
     dtype_x_paddings=_pad_helper(return_constant_values=True),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_PadV2(
     dtype_x_paddings,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
 ):
     dtype, x, padding_dtype, paddings, constant_values = dtype_x_paddings
     helpers.test_frontend_function(
         input_dtypes=dtype + padding_dtype + dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=0,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         input=x,
