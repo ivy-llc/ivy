@@ -1133,13 +1133,12 @@ def test_tensorflow_linspace(
         max_value=20,
         shared_dtype=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_realdiv(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -1148,10 +1147,7 @@ def test_tensorflow_realdiv(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,

@@ -1030,13 +1030,12 @@ def test_tensorflow_convolution(
         min_value=-20,
         max_value=20,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_relu(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -1044,10 +1043,7 @@ def test_tensorflow_relu(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1065,13 +1061,12 @@ def test_tensorflow_relu(
         force_int_axis=True,
         valid_axis=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_softmax(
     *,
     dtype_x_and_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -1079,10 +1074,7 @@ def test_tensorflow_softmax(
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
