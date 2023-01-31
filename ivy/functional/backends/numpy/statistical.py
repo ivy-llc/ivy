@@ -275,8 +275,6 @@ def nanmedian(
 
         if ivy.is_array(where):
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-
-
     else:
         a = [i for i in a if ivy.isnan(i) == False]
 
@@ -286,5 +284,4 @@ def nanmedian(
 
         if ivy.is_array(where):
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-
     return ret
