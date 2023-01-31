@@ -21,6 +21,8 @@ def lexsort(
     axis: int = -1,
 ) -> torch.Tensor:
     size = keys.size(dim=0)
+    if size == 0:
+        raise TypeError('need sequence of keys with len > 0 in lexsort')
     result = torch.argsort(keys[0], dim=axis, stable=True)
     if size == 1:
         return result

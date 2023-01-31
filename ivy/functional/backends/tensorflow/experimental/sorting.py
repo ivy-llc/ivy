@@ -21,6 +21,8 @@ def lexsort(
         axis: int = -1,
 ) -> Union[tf.Tensor, tf.Variable]:
     size = keys.shape.as_list()[0]
+    if size == 0:
+        raise TypeError('need sequence of keys with len > 0 in lexsort')
     result = tf.argsort(keys[0], axis=axis, stable=True)
     if size == 1:
         return result
