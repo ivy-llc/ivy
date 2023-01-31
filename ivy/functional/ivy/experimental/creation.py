@@ -531,7 +531,7 @@ def eye_like(
 
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this func;tion is *nestable*, and therefore also accepts :class:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances as a replacement to any of the arguments.
 
     Functional Examples
