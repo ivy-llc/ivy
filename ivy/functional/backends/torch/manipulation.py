@@ -256,7 +256,6 @@ def tile(
     return x.repeat(repeats)
 
 
-@with_unsupported_dtypes({"1.11.0": ("bfloat16",)}, backend_version)
 def constant_pad(
     x: torch.Tensor,
     /,
