@@ -1240,9 +1240,7 @@ def vsplit(
     >>> ivy.vsplit(ary, 2)
     [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
     """
-    return ivy.current_backend(ary).vsplit(
-        ary, indices_or_sections=indices_or_sections, out=out
-    )
+    return ivy.current_backend(ary).vsplit(ary, indices_or_sections, out=out)
 
 
 @to_native_arrays_and_back
@@ -1530,7 +1528,7 @@ def hsplit(
              [8.,  9., 10., 11.],
              [12., 13., 14., 15.]]
             )
-    >>> ivy.vsplit(ary, 2)
+    >>> ivy.hsplit(ary, 2)
     [ivy.array([[ 0.,  1.],
                     [ 4.,  5.],
                     [ 8.,  9.],

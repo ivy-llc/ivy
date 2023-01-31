@@ -544,7 +544,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
         >>> ary.vsplit(2)
         [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
         """
-        return ivy.vsplit(self._data, indices_or_sections=indices_or_sections, out=out)
+        return ivy.vsplit(self._data, indices_or_sections, out=out)
 
     def dsplit(
         self: ivy.Array,

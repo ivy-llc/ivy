@@ -1267,7 +1267,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "vsplit",
             ary,
-            indices_or_sections=indices_or_sections,
+            indices_or_sections,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1331,9 +1331,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
-        return self.static_vsplit(
-            self, indices_or_sections=indices_or_sections, out=out
-        )
+        return self.static_vsplit(self, indices_or_sections, out=out)
 
     @staticmethod
     def static_dsplit(
@@ -2107,7 +2105,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                      [12., 13., 14., 15.]])
                 )
             )
-        >>> ivy.Container.static_vsplit(ary, 2)
+        >>> ivy.Container.static_hsplit(ary, 2)
         {
             a: ivy.ivy.array(
                     [[[0.,  1.],
