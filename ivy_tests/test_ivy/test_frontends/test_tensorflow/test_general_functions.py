@@ -1243,8 +1243,8 @@ def test_tensorflow_one_hot(
         num_arrays=1,
         min_value=0,
         max_value=10,
-        min_num_dims=1
-    )
+        min_num_dims=1,
+    ),
 )
 def test_tensorflow_where_no_xy(
     *,
@@ -1261,7 +1261,7 @@ def test_tensorflow_where_no_xy(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        condition=condition
+        condition=condition,
     )
 
 
@@ -1273,10 +1273,10 @@ def test_tensorflow_where_no_xy(
         num_arrays=3,
         min_value=0,
         max_value=10,
-        min_num_dims=1
+        min_num_dims=1,
     ),
     dim_remove_from_x=st.integers(),
-    dim_remove_from_y=st.integers()
+    dim_remove_from_y=st.integers(),
 )
 def test_tensorflow_where_with_xy(
     *,
@@ -1289,7 +1289,7 @@ def test_tensorflow_where_with_xy(
     on_device,
 ):
     input_dtype, [condition, x, y] = dtype_and_input
-    if input_dtype != ['bool', 'bool', 'bool']:
+    if input_dtype != ["bool", "bool", "bool"]:
         return
     for _ in range(min(len(x.shape) - 1, dim_remove_from_x)):
         x = x[0]
@@ -1303,5 +1303,5 @@ def test_tensorflow_where_with_xy(
         on_device=on_device,
         condition=condition,
         x=x,
-        y=y
+        y=y,
     )

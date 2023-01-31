@@ -86,6 +86,7 @@ def einsum(equation, *inputs, **kwargs):
 
 @to_ivy_arrays_and_back
 def reshape(tensor, shape, name=None):
+    shape = shape.to_list() if ivy.is_array(shape) else shape
     return ivy.reshape(tensor, shape=shape)
 
 
@@ -305,12 +306,7 @@ def one_hot(
 
 
 @to_ivy_arrays_and_back
-def where(
-    condition: ivy.array,
-    x=None,
-    y=None,
-    name=None
-):
+def where(condition: ivy.array, x=None, y=None, name=None):
     if x is None and y is None:
         return ivy.argwhere(condition)
     else:
