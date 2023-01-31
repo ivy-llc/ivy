@@ -548,9 +548,9 @@ class ArrayWithManipulationExperimental(abc.ABC):
 
     def dsplit(
         self: ivy.Array,
-        indices_or_sections: Union[int, Tuple[int]],
+        indices_or_sections: Union[int, Tuple[int, ...]],
         /,
-    ) -> ivy.Array:
+    ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.dsplit. This method simply
         wraps the function, and so the docstring for ivy.dsplit also applies

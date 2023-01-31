@@ -228,7 +228,7 @@ def vsplit(
 
 def dsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[JaxArray]:
     if len(ary.shape) < 3:
