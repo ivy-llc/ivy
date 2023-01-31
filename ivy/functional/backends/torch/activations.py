@@ -103,14 +103,3 @@ def log_softmax(
 )
 def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.mish(x)
-
-
-@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
-def thresholded_relu(
-    x: torch.Tensor,
-    /,
-    *,
-    threshold: Optional[Union[int, float]] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.threshold(x, threshold=threshold, value=0)

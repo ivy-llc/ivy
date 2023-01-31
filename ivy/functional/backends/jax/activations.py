@@ -84,13 +84,3 @@ def log_softmax(
 
 def mish(x: JaxArray, /, *, out: Optional[JaxArray] = None):
     return x * jnp.tanh(jax.nn.softplus(x))
-
-
-def thresholded_relu(
-    x: JaxArray,
-    /,
-    *,
-    threshold: Optional[Union[int, float]] = 0,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.where(x > threshold, x, 0).astype(x.dtype)

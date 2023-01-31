@@ -115,17 +115,3 @@ def mish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 mish.support_native_out = True
-
-
-@_scalar_output_to_0d_array
-def thresholded_relu(
-    x: np.ndarray,
-    /,
-    *,
-    threshold: Optional[Union[int, float]] = 0,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.where(x > threshold, x, 0).astype(x.dtype)
-
-
-thresholded_relu.support_native_out = True

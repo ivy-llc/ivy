@@ -110,14 +110,3 @@ def mish(
     out: Optional[Tensor] = None,
 ) -> Tensor:
     return x * tf.math.tanh(tf.math.softplus(x))
-
-
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
-def thresholded_relu(
-    x: Tensor,
-    /,
-    *,
-    threshold: Optional[Union[int, float]] = 0,
-    out: Optional[Tensor] = None,
-) -> Tensor:
-    return tf.where(x > threshold, x, 0)
