@@ -160,12 +160,14 @@ def vsplit(
 
 def dsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.dsplit(ary, indices_or_sections)
+) -> List[torch.Tensor]:
+    if len(ary.shape) < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
+    return list(torch.dsplit(ary, indices_or_sections))
 
 
 def atleast_1d(*arys: torch.Tensor) -> List[torch.Tensor]:

@@ -302,3 +302,11 @@ def one_hot(
     out=None,
 ):
     return ivy.one_hot(indices, depth)
+
+
+@to_ivy_arrays_and_back
+def where(condition: ivy.array, x=None, y=None, name=None):
+    if x is None and y is None:
+        return ivy.argwhere(condition)
+    else:
+        return ivy.where(condition, x, y)
