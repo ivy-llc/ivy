@@ -132,19 +132,18 @@ ivy.tan()
         fn_tree,
         on_device,
     ):
-        input_dtype, x = dtype_and_x
+        input_dtypes, x = dtype_and_x
         dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
             dtypes=input_dtype,
             get_dtypes_kind="numeric",
         )
-        where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
             where=where,
-            input_dtype=input_dtype,
-            as_variable=as_variable,
-            native_array=native_array,
+            input_dtype=input_dtypes,
+            test_flags=test_flags
         )
         np_frontend_helpers.test_frontend_function(
-            input_dtypes=input_dtype,
+            input_dtypes=input_dtypes,
             as_variable_flags=as_variable,
             with_out=with_out,
             num_positional_args=num_positional_args,
