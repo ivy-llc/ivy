@@ -277,19 +277,18 @@ See the ‘Where to place a frontend function’ sub-section of the frontend API
     <span class="n">fn_tree</span><span class="p">,</span>
     <span class="n">on_device</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
+    <span class="n">input_dtypes</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
     <span class="n">dtype</span><span class="p">,</span> <span class="n">input_dtype</span><span class="p">,</span> <span class="n">casting</span> <span class="o">=</span> <span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">handle_dtype_and_casting</span><span class="p">(</span>
         <span class="n">dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
         <span class="n">get_dtypes_kind</span><span class="o">=</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">where</span><span class="p">,</span> <span class="n">as_variable</span><span class="p">,</span> <span class="n">native_array</span> <span class="o">=</span> <span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">handle_where_and_array_bools</span><span class="p">(</span>
+    <span class="n">where</span><span class="p">,</span> <span class="n">input_dtypes</span><span class="p">,</span> <span class="n">test_flags</span> <span class="o">=</span> <span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">handle_where_and_array_bools</span><span class="p">(</span>
         <span class="n">where</span><span class="o">=</span><span class="n">where</span><span class="p">,</span>
-        <span class="n">input_dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
-        <span class="n">as_variable</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
-        <span class="n">native_array</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">input_dtype</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">,</span>
+        <span class="n">test_flags</span><span class="o">=</span><span class="n">test_flags</span>
     <span class="p">)</span>
     <span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">,</span>
         <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
         <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
