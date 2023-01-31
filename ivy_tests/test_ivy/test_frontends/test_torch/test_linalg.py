@@ -777,3 +777,43 @@ def test_torch_tensorinv(
         input=x,
         ind=ind,
     )
+
+# cond
+@handle_frontend_test(
+    fn_tree="torch.linalg.cond",
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=1,
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_value=-1e20,
+        max_value=1e20,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
+    ),
+    p=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
+)
+def test_torch_cond(
+    *,
+    dtype_and_x,
+    p,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-04,
+        atol=1e-04,
+        x=x[0],
+        p=p,
+    )

@@ -172,6 +172,11 @@ def eig(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def cond(x,*,p=None , out=None):
+    return ivy.cond(x,p=p,out=out)
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def solve(input, other, *, out=None):
     return ivy.solve(input, other, out=out)
+
