@@ -46,7 +46,7 @@ def matmul(
     a_is_sparse=False,
     b_is_sparse=False,
     output_type=None,
-    name=None
+    name=None,
 ):
     # TODO : handle conjugate when ivy supports complex numbers
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
