@@ -55,6 +55,8 @@ def vstack(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
     return torch.vstack(arrays, out=None)
 
 
@@ -64,6 +66,8 @@ def hstack(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
     return torch.hstack(arrays, out=None)
 
 
@@ -148,20 +152,20 @@ def vsplit(
     ary: torch.Tensor,
     indices_or_sections: Union[int, Tuple[int]],
     /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+) -> List[torch.Tensor]:
     return torch.vsplit(ary, indices_or_sections)
 
 
 def dsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.dsplit(ary, indices_or_sections)
+) -> List[torch.Tensor]:
+    if len(ary.shape) < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
+    return list(torch.dsplit(ary, indices_or_sections))
 
 
 def atleast_1d(*arys: torch.Tensor) -> List[torch.Tensor]:
@@ -177,6 +181,8 @@ def dstack(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
     return torch.dstack(arrays, out=None)
 
 

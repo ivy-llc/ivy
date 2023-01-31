@@ -150,8 +150,8 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
 
 
 @to_ivy_arrays_and_back
-def dropout(x, prob, scale, dtype, name=None):
-    return ivy.dropout(x, prob, scale, dtype)
+def dropout(x, rate, noise_shape=None, seed=None, name=None):
+    return ivy.dropout(x, rate, noise_shape=noise_shape, seed=seed)
 
 
 @to_ivy_arrays_and_back
@@ -387,3 +387,18 @@ def convolution(
     )
 
     return output
+
+
+@to_ivy_arrays_and_back
+def embedding_lookup(params, ids, max_norm=None, name=None):
+    return ivy.embedding(params, ids, max_norm=max_norm)
+
+
+@to_ivy_arrays_and_back
+def relu(features, name=None):
+    return ivy.relu(features)
+
+
+@to_ivy_arrays_and_back
+def softmax(logits, axis=None, name=None):
+    return ivy.softmax(logits, axis=axis)

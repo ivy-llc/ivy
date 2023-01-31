@@ -59,7 +59,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         )
         # add the original out argument back to the keyword arguments
         if has_out:
-            new_kwargs["out"] = out
+            if hasattr(out, "ivy_array"):
+                new_kwargs["out"] = out.ivy_array
+            else:
+                new_kwargs["out"] = out
         return fn(*new_args, **new_kwargs)
 
     return new_fn

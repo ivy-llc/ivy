@@ -34,24 +34,18 @@ def _pop_size_num_samples_replace_n_probs(draw):
 def test_torch_multinomial(
     *,
     everything,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     prob_dtype, batch_size, num_samples, replace, probs = everything
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=prob_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
             frontend=frontend,
+            test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -82,6 +76,7 @@ def test_torch_manual_seed(
     seed,
     fn_tree,
     frontend,
+    test_flags,
 ):
     # just test calling the function
     frontend_fw = importlib.import_module(fn_tree[25 : fn_tree.rfind(".")])
@@ -104,28 +99,56 @@ def test_torch_manual_seed(
 def test_torch_poisson(
     *,
     dtype_and_lam,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     lam_dtype, lam = dtype_and_lam
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=lam_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
             frontend=frontend,
+            test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
             input=lam[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@handle_frontend_test(
+    fn_tree="torch.rand",
+    dtype=helpers.get_dtypes("float", full=False),
+    size=helpers.get_shape(
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=0,
+        max_dim_size=10,
+    ),
+)
+def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=dtype,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            size=size,
         )
 
     ret = call()

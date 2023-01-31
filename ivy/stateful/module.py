@@ -125,6 +125,11 @@ class Module(ModuleConverters, ModuleHelpers):
     # --------#
 
     def _fn_with_var_arg(self, fn, v_fn, /):
+        """
+        Use v_fn to extract the variables and use the extracted variables
+        as inputs to the call function fn of the module.
+        """
+
         def new_fn(*a, with_grads=None, **kw):
             with_grads = ivy.with_grads(with_grads=with_grads)
             if "v" in kw.keys():
@@ -186,18 +191,25 @@ class Module(ModuleConverters, ModuleHelpers):
     @staticmethod
     def _extract_v(v, keychain_mappings: dict, orig_key_chain, /):
         """
-
+        Extract the variables from the variables container v using the key
+        orig_key_chain and reinstantiate the duplicate variables that were removed by
+        _remove_duplicate_variables in their correct locations using
+        keychain_mappings.
 
         Parameters
         ----------
         v
+            The variables container
         keychain_mappings
+            The keychain mappings of duplicate vatriables
         orig_key_chain
+            keychain of the variables to be extracted
 
 
         Returns
         -------
         ret_cont
+            container with the extracted variables.
         """
         if v.cont_has_key_chain(orig_key_chain):
             ret_cont = v.cont_at_key_chain(orig_key_chain)
@@ -212,14 +224,16 @@ class Module(ModuleConverters, ModuleHelpers):
 
     def _wrap_call_methods(self, keychain_mappings, /, *, key="", obj=None):
         """
-        Wraps the call methods of the Module object
+        Wraps the call methods of the Module object by looping over all the items
+        within the module, wrapping the __call__ methods of all submodules using
+        _fn_with_var_arg.
 
         Parameters
         ----------
         keychain_mappings
             The keychain mappings of the object
         key
-
+            The keychain of the object obj, used for recursion.
         obj
             the object whose __call__ method is to be wrapped
 

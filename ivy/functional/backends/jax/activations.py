@@ -80,3 +80,7 @@ def log_softmax(
     if axis is None:
         axis = -1
     return jax.nn.log_softmax(x, axis)
+
+
+def mish(x: JaxArray, /, *, out: Optional[JaxArray] = None):
+    return x * jnp.tanh(jax.nn.softplus(x))

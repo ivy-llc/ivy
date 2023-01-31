@@ -1,5 +1,5 @@
 # global
-from typing import Union, Sequence, List
+from typing import Optional, Union, Sequence, List
 
 import torch
 
@@ -73,7 +73,12 @@ class Finfo:
 
 
 def astype(
-    x: torch.Tensor, dtype: torch.dtype, /, *, copy: bool = True
+    x: torch.Tensor,
+    dtype: torch.dtype,
+    /,
+    *,
+    copy: bool = True,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
@@ -89,7 +94,11 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     {"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def broadcast_to(
-    x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
+    x: torch.Tensor,
+    /,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if x.ndim > len(shape):
         return torch.broadcast_to(x.reshape(-1), shape)
@@ -97,14 +106,14 @@ def broadcast_to(
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[torch.dtype, str, torch.Tensor]) -> Finfo:
+def finfo(type: Union[torch.dtype, str, torch.Tensor], /) -> Finfo:
     if isinstance(type, torch.Tensor):
         type = type.dtype
     return Finfo(torch.finfo(ivy.as_native_dtype(type)))
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
+def iinfo(type: Union[torch.dtype, str, torch.Tensor], /) -> torch.iinfo:
     if isinstance(type, torch.Tensor):
         type = type.dtype
     return torch.iinfo(ivy.as_native_dtype(type))
@@ -129,7 +138,7 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dty
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> ivy.Dtype:
+def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float], /) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
     if dtype_in is float:
@@ -150,7 +159,9 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> ivy.Dty
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, backend_version)
-def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torch.dtype:
+def as_native_dtype(
+    dtype_in: Union[torch.dtype, str, bool, int, float], /
+) -> torch.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
@@ -170,13 +181,13 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torc
         )
 
 
-def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:
+def dtype(x: torch.tensor, *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.to_native(x).dtype
     return as_ivy_dtype(x.dtype)
 
 
-def dtype_bits(dtype_in: Union[torch.dtype, str]) -> int:
+def dtype_bits(dtype_in: Union[torch.dtype, str], /) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1

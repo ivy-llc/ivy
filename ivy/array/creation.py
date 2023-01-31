@@ -348,7 +348,12 @@ class ArrayWithCreation(abc.ABC):
     # Extra #
     # ----- #
 
-    def copy_array(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def copy_array(
+        self: ivy.Array,
+        *,
+        to_ivy_array: Optional[bool] = True,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.copy_array. This method simply wraps
         the function, and so the docstring for ivy.copy_array also applies to this
@@ -358,6 +363,10 @@ class ArrayWithCreation(abc.ABC):
         ----------
         self
             input array
+        to_ivy_array
+            boolean, if True the returned array will be an ivy.Array object otherwise
+            returns an ivy.NativeArray object (i.e. a torch.tensor, np.array, etc.,
+            depending on the backend), defaults to True.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -368,7 +377,7 @@ class ArrayWithCreation(abc.ABC):
             a copy of the input array ``x``.
 
         """
-        return ivy.copy_array(self, out=out)
+        return ivy.copy_array(self, to_ivy_array=to_ivy_array, out=out)
 
     def native_array(
         self: ivy.Array,
@@ -445,6 +454,28 @@ class ArrayWithCreation(abc.ABC):
             Tensor of zeros with the same shape and type as a, unless dtype provided
             which overrides.
 
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([3, 1])
+        >>> y = 5
+        >>> z = x.one_hot(5)
+        >>> print(z)
+        ivy.array([[0., 0., 0., 1., 0.],
+        ...    [0., 1., 0., 0., 0.]])
+
+        >>> x = ivy.array([0])
+        >>> y = 5
+        >>> ivy.one_hot(x, y)
+        ivy.array([[1., 0., 0., 0., 0.]])
+
+        >>> x = ivy.array([0])
+        >>> y = 5
+        >>> ivy.one_hot(x, 5, out=z)
+        ivy.array([[1., 0., 0., 0., 0.]])
+        >>> print(z)
+        ivy.array([[1., 0., 0., 0., 0.]])
         """
         return ivy.one_hot(
             self,

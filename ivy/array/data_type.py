@@ -111,7 +111,7 @@ class ArrayWithDataTypes(abc.ABC):
         return ivy.broadcast_arrays(self._data, *arrays)
 
     def broadcast_to(
-        self: ivy.Array, shape: Tuple[int, ...], out: Optional[ivy.Array] = None
+        self: ivy.Array, /, shape: Tuple[int, ...], *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         `ivy.Array` instance method variant of `ivy.broadcast_to`.
@@ -144,7 +144,7 @@ class ArrayWithDataTypes(abc.ABC):
                    [1, 2, 3],
                    [1, 2, 3]])
         """
-        return ivy.broadcast_to(x=self._data, shape=shape, out=out)
+        return ivy.broadcast_to(self._data, shape=shape, out=out)
 
     def can_cast(self: ivy.Array, to: ivy.Dtype) -> bool:
         """
@@ -187,9 +187,30 @@ class ArrayWithDataTypes(abc.ABC):
         >>> print(y)
         int32
         """
-        return ivy.dtype(self._data, as_native)
+        return ivy.dtype(self._data, as_native=as_native)
 
     def finfo(self: ivy.Array, /) -> Finfo:
+        """
+        Array instance method variant of `ivy.finfo`.
+
+        Parameters
+        ----------
+        self
+            input array.
+
+        Returns
+        -------
+        ret
+            An instance of the `Finfo` class, containing information
+            about the floating point data type of the input array.
+
+        Example
+        -------
+        >>> x = ivy.array([0.7,8.4,3.14], dtype=ivy.float32)
+        >>> print(x.finfo())
+        finfo(resolution=1e-06, min=-3.4028235e+38, max=3.4028235e+38, dtype=float32)
+
+        """
         return ivy.finfo(self._data)
 
     def iinfo(self: ivy.Array, /) -> Iinfo:

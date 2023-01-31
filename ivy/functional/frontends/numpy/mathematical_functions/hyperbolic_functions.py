@@ -5,14 +5,16 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_casting,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
 )
 
 
+@handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def sinh(
+def _sinh(
     x,
     /,
     out=None,
@@ -33,7 +35,7 @@ def sinh(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def cosh(
+def _cosh(
     x,
     /,
     out=None,
@@ -54,7 +56,7 @@ def cosh(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def tanh(
+def _tanh(
     x,
     /,
     out=None,
@@ -76,7 +78,7 @@ def tanh(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def arcsinh(
+def _arcsinh(
     x,
     /,
     out=None,
@@ -97,7 +99,7 @@ def arcsinh(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def arccosh(
+def _arccosh(
     x,
     /,
     out=None,
@@ -118,7 +120,7 @@ def arccosh(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def arctanh(
+def _arctanh(
     x,
     /,
     out=None,

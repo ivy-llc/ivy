@@ -1,3 +1,9 @@
+# global
+import tensorflow as tf
+
+backend_version = {"version": tf.__version__}
+
+
 # flake8: noqa
 from .activations import *
 from .creation import *
@@ -9,6 +15,7 @@ from .gradients import *
 from .layers import *
 from .linear_algebra import *
 from .manipulation import *
+from .norms import *
 from .random import *
 from .searching import *
 from .set import *
@@ -28,6 +35,7 @@ del (
     layers,
     linear_algebra,
     manipulation,
+    norms,
     random,
     searching,
     set,

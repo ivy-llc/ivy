@@ -1,4 +1,5 @@
 # global
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -26,22 +27,16 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 def test_numpy_outer(
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=xs[0],
@@ -59,24 +54,20 @@ def test_numpy_outer(
         num_arrays=2,
         shared_dtype=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_inner(
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=xs[0],
@@ -91,25 +82,22 @@ def test_numpy_inner(
         arr_func=[_get_first_matrix_and_dtype, _get_second_matrix_and_dtype],
         get_dtypes_kind="numeric",
     ),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="matmul"
+    ),
 )
 def test_numpy_matmul(
     dtypes_values_casting,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtypes, x, casting, dtype = dtypes_values_casting
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x1=x[0],
@@ -133,25 +121,21 @@ def test_numpy_matmul(
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ),
     n=helpers.ints(min_value=1, max_value=8),
+    test_with_out=st.just(False),
 )
 def test_numpy_matrix_power(
     dtype_and_x,
     n,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -165,23 +149,19 @@ def test_numpy_matrix_power(
     dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
         helpers.get_dtypes(kind="numeric")
     ),
+    test_with_out=st.just(False),
 )
 def test_numpy_tensordot(
     dtype_values_and_axes,
-    as_variable,
-    native_array,
-    num_positional_args,
     frontend,
+    test_flags,
     fn_tree,
 ):
     dtype, a, b, axes = dtype_values_and_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         a=a,
         b=b,

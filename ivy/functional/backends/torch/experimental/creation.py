@@ -95,14 +95,15 @@ vorbis_window.support_native_out = False
 
 
 def hann_window(
-    window_length: int,
+    size: int,
+    /,
+    *,
     periodic: Optional[bool] = True,
     dtype: Optional[torch.dtype] = None,
-    *,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     return torch.hann_window(
-        window_length,
+        size,
         periodic=periodic,
         dtype=dtype,
         layout=torch.strided,

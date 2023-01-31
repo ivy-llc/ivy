@@ -118,19 +118,19 @@ def vsplit(
     ary: Union[tf.Tensor, tf.Variable],
     indices_or_sections: Union[int, Tuple[int]],
     /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.vsplit(ary, indices_or_sections)
 
 
 def dsplit(
     ary: Union[tf.Tensor, tf.Variable],
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    if len(ary.shape) < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
     return tf.experimental.numpy.dsplit(ary, indices_or_sections)
 
 
