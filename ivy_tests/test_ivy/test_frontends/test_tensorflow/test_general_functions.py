@@ -881,9 +881,9 @@ def _pad_helper(draw):
     mode = draw(
         st.sampled_from(
             [
-                "constant",
-                "reflect",
-                "symmetric",
+                "CONSTANT",
+                "REFLECT",
+                "SYMMETRIC",
             ]
         )
     )
@@ -915,10 +915,12 @@ def _pad_helper(draw):
 # pad
 @handle_frontend_test(
     fn_tree="tensorflow.pad",
+    aliases=["tensorflow.compat.v1.pad"],
     dtype_and_values_and_other=_pad_helper(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_pad(
+    *,
     dtype_and_values_and_other,
     frontend,
     test_flags,
