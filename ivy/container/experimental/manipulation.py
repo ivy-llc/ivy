@@ -1213,7 +1213,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.vsplit. This method simply wraps
@@ -1232,8 +1231,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
-        out
-            optional output container, for writing the result to.
 
         Returns
         -------
@@ -1272,15 +1269,12 @@ class ContainerWithManipulationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def vsplit(
         self: ivy.Container,
         indices_or_sections: Union[int, Tuple[int]],
         /,
-        *,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.vsplit. This method simply
         wraps the function, and so the docstring for ivy.vsplit also applies to this
@@ -1297,9 +1291,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
             int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
-        out
-            optional output container, for writing the result to.
 
         Returns
         -------
@@ -1331,7 +1322,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
-        return self.static_vsplit(self, indices_or_sections, out=out)
+        return self.static_vsplit(self, indices_or_sections)
 
     @staticmethod
     def static_dsplit(

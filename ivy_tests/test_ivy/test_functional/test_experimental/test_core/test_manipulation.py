@@ -616,6 +616,7 @@ def test_pad(
         min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_vsplit(
     dtype_and_x,
