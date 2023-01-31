@@ -1349,7 +1349,6 @@
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container static method variant of ivy.vsplit. This method simply wraps</span>
@@ -1368,8 +1367,6 @@
 <span class="sd">            the rest will have size int(ary.size(0) / n).</span>
 <span class="sd">            If indices_or_sections is a tuple of ints, then input is split at each of</span>
 <span class="sd">            the indices in the tuple.</span>
-<span class="sd">        out</span>
-<span class="sd">            optional output container, for writing the result to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1403,20 +1400,17 @@
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_function</span><span class="p">(</span>
             <span class="s2">&quot;vsplit&quot;</span><span class="p">,</span>
             <span class="n">ary</span><span class="p">,</span>
-            <span class="n">indices_or_sections</span><span class="o">=</span><span class="n">indices_or_sections</span><span class="p">,</span>
+            <span class="n">indices_or_sections</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
-            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithManipulationExperimental.vsplit"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithManipulationExperimental.vsplit">[docs]</a>    <span class="k">def</span> <span class="nf">vsplit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">indices_or_sections</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
         <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;ivy.Container instance method variant of ivy.vsplit. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.vsplit also applies to this</span>
@@ -1433,9 +1427,6 @@
 <span class="sd">            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and</span>
 <span class="sd">            the rest will have size int(ary.size(0) / n).</span>
 <span class="sd">            If indices_or_sections is a tuple of ints, then input is split at each of</span>
-<span class="sd">            the indices in the tuple.</span>
-<span class="sd">        out</span>
-<span class="sd">            optional output container, for writing the result to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1467,9 +1458,7 @@
 <span class="sd">                ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_vsplit</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">indices_or_sections</span><span class="o">=</span><span class="n">indices_or_sections</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_vsplit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices_or_sections</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithManipulationExperimental.static_dsplit"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithManipulationExperimental.static_dsplit">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_dsplit</span><span class="p">(</span>
@@ -2243,7 +2232,7 @@
 <span class="sd">                     [12., 13., 14., 15.]])</span>
 <span class="sd">                )</span>
 <span class="sd">            )</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_vsplit(ary, 2)</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_hsplit(ary, 2)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.ivy.array(</span>
 <span class="sd">                    [[[0.,  1.],</span>
