@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ivy_tests.test_ivy.helpers.assertions &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nested_array/nested_array.html">Nested array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/testing_helpers.html">Testing helpers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>ivy_tests.test_ivy.helpers.assertions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ivy_tests.test_ivy.helpers.assertions</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">TOLERANCE_DICT</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;float16&quot;</span><span class="p">:</span> <span class="mf">1e-2</span><span class="p">,</span>
+    <span class="s2">&quot;bfloat16&quot;</span><span class="p">:</span> <span class="mf">1e-2</span><span class="p">,</span>
+    <span class="s2">&quot;float32&quot;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">,</span>
+    <span class="s2">&quot;float64&quot;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">,</span>
+    <span class="kc">None</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="assert_all_close"><a class="viewcode-back" href="../../../../testing/assertions/assert_all_close.html#ivy_tests.test_ivy.helpers.assertions.assert_all_close">[docs]</a><span class="k">def</span> <span class="nf">assert_all_close</span><span class="p">(</span>
+    <span class="n">ret_np</span><span class="p">,</span> <span class="n">ret_from_gt_np</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span> <span class="n">ground_truth_backend</span><span class="o">=</span><span class="s2">&quot;TensorFlow&quot;</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Matches the ret_np and ret_from_np inputs element-by-element to ensure that</span>
+<span class="sd">    they are the same.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ret_np</span>
+<span class="sd">        Return from the framework to test. Ivy Container or Numpy Array.</span>
+<span class="sd">    ret_from_gt_np</span>
+<span class="sd">        Return from the ground truth framework. Ivy Container or Numpy Array.</span>
+<span class="sd">    rtol</span>
+<span class="sd">        Relative Tolerance Value.</span>
+<span class="sd">    atol</span>
+<span class="sd">        Absolute Tolerance Value.</span>
+<span class="sd">    ground_truth_backend</span>
+<span class="sd">        Ground Truth Backend Framework.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None if the test passes, else marks the test as failed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ret_dtype</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">ret_from_gt_dtype</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret_from_gt_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;longlong&quot;</span><span class="p">,</span> <span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">ret_dtype</span> <span class="o">==</span> <span class="n">ret_from_gt_dtype</span><span class="p">,</span> <span class="p">(</span>
+        <span class="s2">&quot;the return with a </span><span class="si">{}</span><span class="s2"> backend produced data type of </span><span class="si">{}</span><span class="s2">, while the return with&quot;</span>
+        <span class="s2">&quot; a </span><span class="si">{}</span><span class="s2"> backend returned a data type of </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">ground_truth_backend</span><span class="p">,</span>
+            <span class="n">ret_from_gt_dtype</span><span class="p">,</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">(),</span>
+            <span class="n">ret_dtype</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">(</span><span class="n">ret_np</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">(</span><span class="n">ret_from_gt_np</span><span class="p">):</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_multi_map</span><span class="p">(</span><span class="n">assert_all_close</span><span class="p">,</span> <span class="p">[</span><span class="n">ret_np</span><span class="p">,</span> <span class="n">ret_from_gt_np</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ret_np</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;bfloat16&quot;</span> <span class="ow">or</span> <span class="n">ret_from_gt_np</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">:</span>
+            <span class="n">ret_np</span> <span class="o">=</span> <span class="n">ret_np</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+            <span class="n">ret_from_gt_np</span> <span class="o">=</span> <span class="n">ret_from_gt_np</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">ret_np</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">ret_from_gt_np</span><span class="p">),</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span>
+        <span class="p">),</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> != </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ret_np</span><span class="p">,</span> <span class="n">ret_from_gt_np</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_same_type_and_shape"><a class="viewcode-back" href="../../../../testing/assertions/assert_same_type_and_shape.html#ivy_tests.test_ivy.helpers.assertions.assert_same_type_and_shape">[docs]</a><span class="k">def</span> <span class="nf">assert_same_type_and_shape</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">values</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">x_dtype</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">y_dtype</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;longlong&quot;</span><span class="p">,</span> <span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;x.shape = </span><span class="si">{}</span><span class="s2">, y.shape = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">x_dtype</span> <span class="o">==</span> <span class="n">y_dtype</span><span class="p">,</span> <span class="s2">&quot;x.dtype = </span><span class="si">{}</span><span class="s2">, y.dtype = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x_dtype</span><span class="p">,</span> <span class="n">y_dtype</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="value_test"><a class="viewcode-back" href="../../../../testing/assertions/value_test.html#ivy_tests.test_ivy.helpers.assertions.value_test">[docs]</a><span class="k">def</span> <span class="nf">value_test</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">ret_np_flat</span><span class="p">,</span>
+    <span class="n">ret_np_from_gt_flat</span><span class="p">,</span>
+    <span class="n">rtol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
+    <span class="n">ground_truth_backend</span><span class="o">=</span><span class="s2">&quot;TensorFlow&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performs a value test for matching the arrays in ret_np_flat and</span>
+<span class="sd">    ret_from_np_flat.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ret_np_flat</span>
+<span class="sd">        A list (flattened) containing Numpy arrays. Return from the</span>
+<span class="sd">        framework to test.</span>
+<span class="sd">    ret_np_from_gt_flat</span>
+<span class="sd">        A list (flattened) containing Numpy arrays. Return from the ground</span>
+<span class="sd">        truth framework.</span>
+<span class="sd">    rtol</span>
+<span class="sd">        Relative Tolerance Value.</span>
+<span class="sd">    atol</span>
+<span class="sd">        Absolute Tolerance Value.</span>
+<span class="sd">    ground_truth_backend</span>
+<span class="sd">        Ground Truth Backend Framework.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None if the value test passes, else marks the test as failed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">assert_same_type_and_shape</span><span class="p">([</span><span class="n">ret_np_flat</span><span class="p">,</span> <span class="n">ret_np_from_gt_flat</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ret_np_flat</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">ret_np_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">ret_np_flat</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ret_np_from_gt_flat</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">ret_np_from_gt_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">ret_np_from_gt_flat</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret_np_flat</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret_np_from_gt_flat</span><span class="p">),</span> <span class="p">(</span>
+        <span class="s2">&quot;len(ret_np_flat) != len(ret_np_from_gt_flat):</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;ret_np_flat:</span><span class="se">\n\n</span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">ret_np_from_gt_flat:</span><span class="se">\n\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">ret_np_flat</span><span class="p">,</span> <span class="n">ret_np_from_gt_flat</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="c1"># value tests, iterating through each array in the flattened returns</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rtol</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ret_np</span><span class="p">,</span> <span class="n">ret_np_from_gt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ret_np_flat</span><span class="p">,</span> <span class="n">ret_np_from_gt_flat</span><span class="p">):</span>
+            <span class="n">rtol</span> <span class="o">=</span> <span class="n">TOLERANCE_DICT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ret_np_from_gt</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="mf">1e-03</span><span class="p">)</span>
+            <span class="n">assert_all_close</span><span class="p">(</span>
+                <span class="n">ret_np</span><span class="p">,</span>
+                <span class="n">ret_np_from_gt</span><span class="p">,</span>
+                <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span>
+                <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span>
+                <span class="n">ground_truth_backend</span><span class="o">=</span><span class="n">ground_truth_backend</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ret_np</span><span class="p">,</span> <span class="n">ret_np_from_gt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ret_np_flat</span><span class="p">,</span> <span class="n">ret_np_from_gt_flat</span><span class="p">):</span>
+            <span class="n">assert_all_close</span><span class="p">(</span>
+                <span class="n">ret_np</span><span class="p">,</span>
+                <span class="n">ret_np_from_gt</span><span class="p">,</span>
+                <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span>
+                <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span>
+                <span class="n">ground_truth_backend</span><span class="o">=</span><span class="n">ground_truth_backend</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_unsupported_dtype"><a class="viewcode-back" href="../../../../testing/assertions/check_unsupported_dtype.html#ivy_tests.test_ivy.helpers.assertions.check_unsupported_dtype">[docs]</a><span class="k">def</span> <span class="nf">check_unsupported_dtype</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">input_dtypes</span><span class="p">,</span> <span class="n">all_as_kwargs_np</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks whether a function does not support the input data types or the output</span>
+<span class="sd">    data type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fn</span>
+<span class="sd">        The function to check.</span>
+<span class="sd">    input_dtypes</span>
+<span class="sd">        data-types of the input arguments and keyword-arguments.</span>
+<span class="sd">    all_as_kwargs_np</span>
+<span class="sd">        All arguments in Numpy Format, to check for the presence of dtype argument.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    True if the function does not support the given input or output data types, False</span>
+<span class="sd">    otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">test_unsupported</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">unsupported_dtypes_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="n">supported_dtypes_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">unsupported_dtypes_fn</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">input_dtypes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">unsupported_dtypes_fn</span><span class="p">:</span>
+                <span class="n">test_unsupported</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="s2">&quot;dtype&quot;</span> <span class="ow">in</span> <span class="n">all_as_kwargs_np</span>
+            <span class="ow">and</span> <span class="n">all_as_kwargs_np</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">unsupported_dtypes_fn</span>
+        <span class="p">):</span>
+            <span class="n">test_unsupported</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">supported_dtypes_fn</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">test_unsupported</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">input_dtypes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_dtypes_fn</span><span class="p">:</span>
+                <span class="n">test_unsupported</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="s2">&quot;dtype&quot;</span> <span class="ow">in</span> <span class="n">all_as_kwargs_np</span>
+            <span class="ow">and</span> <span class="n">all_as_kwargs_np</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_dtypes_fn</span>
+        <span class="p">):</span>
+            <span class="n">test_unsupported</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">test_unsupported</span></div>
+
+
+<div class="viewcode-block" id="check_unsupported_device"><a class="viewcode-back" href="../../../../testing/assertions/check_unsupported_device.html#ivy_tests.test_ivy.helpers.assertions.check_unsupported_device">[docs]</a><span class="k">def</span> <span class="nf">check_unsupported_device</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">input_device</span><span class="p">,</span> <span class="n">all_as_kwargs_np</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks whether a function does not support a given device.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fn</span>
+<span class="sd">        The function to check.</span>
+<span class="sd">    input_device</span>
+<span class="sd">        The backend device.</span>
+<span class="sd">    all_as_kwargs_np</span>
+<span class="sd">        All arguments in Numpy Format, to check for the presence of dtype argument.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    True if the function does not support the given device, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">test_unsupported</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">unsupported_devices_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_unsupported_devices</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="n">supported_devices_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">unsupported_devices_fn</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">input_device</span> <span class="ow">in</span> <span class="n">unsupported_devices_fn</span><span class="p">:</span>
+            <span class="n">test_unsupported</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="s2">&quot;device&quot;</span> <span class="ow">in</span> <span class="n">all_as_kwargs_np</span>
+            <span class="ow">and</span> <span class="n">all_as_kwargs_np</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">unsupported_devices_fn</span>
+        <span class="p">):</span>
+            <span class="n">test_unsupported</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">supported_devices_fn</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">test_unsupported</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">input_device</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_devices_fn</span><span class="p">:</span>
+            <span class="n">test_unsupported</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="s2">&quot;device&quot;</span> <span class="ow">in</span> <span class="n">all_as_kwargs_np</span>
+            <span class="ow">and</span> <span class="n">all_as_kwargs_np</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_devices_fn</span>
+        <span class="p">):</span>
+            <span class="n">test_unsupported</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">test_unsupported</span></div>
+
+
+<div class="viewcode-block" id="check_unsupported_device_and_dtype"><a class="viewcode-back" href="../../../../testing/assertions/check_unsupported_device_and_dtype.html#ivy_tests.test_ivy.helpers.assertions.check_unsupported_device_and_dtype">[docs]</a><span class="k">def</span> <span class="nf">check_unsupported_device_and_dtype</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">input_dtypes</span><span class="p">,</span> <span class="n">all_as_kwargs_np</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks whether a function does not support a given device or data types.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fn</span>
+<span class="sd">        The function to check.</span>
+<span class="sd">    device</span>
+<span class="sd">        The backend device to check.</span>
+<span class="sd">    input_dtypes</span>
+<span class="sd">        data-types of the input arguments and keyword-arguments.</span>
+<span class="sd">    all_as_kwargs_np</span>
+<span class="sd">        All arguments in Numpy Format, to check for the presence of dtype argument.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    True if the function does not support both the device and any data type, False</span>
+<span class="sd">    otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">unsupported_devices_dtypes_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_unsupported_devices_and_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">unsupported_devices_dtypes_fn</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">input_dtypes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">unsupported_devices_dtypes_fn</span><span class="p">[</span><span class="n">device</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="s2">&quot;device&quot;</span> <span class="ow">in</span> <span class="n">all_as_kwargs_np</span> <span class="ow">and</span> <span class="s2">&quot;dtype&quot;</span> <span class="ow">in</span> <span class="n">all_as_kwargs_np</span><span class="p">:</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">all_as_kwargs_np</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">]</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">all_as_kwargs_np</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">unsupported_devices_dtypes_fn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="test_unsupported_function"><a class="viewcode-back" href="../../../../testing/assertions/test_unsupported_function.html#ivy_tests.test_ivy.helpers.assertions.test_unsupported_function">[docs]</a><span class="k">def</span> <span class="nf">test_unsupported_function</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tests a function with an unsupported datatype to raise an exception.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fn</span>
+<span class="sd">        callable function to test.</span>
+<span class="sd">    args</span>
+<span class="sd">        arguments to the function.</span>
+<span class="sd">    kwargs</span>
+<span class="sd">        keyword-arguments to the function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="kc">False</span>
+    <span class="k">except</span><span class="p">:</span>  <span class="c1"></span>
+        <span class="k">return</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2023, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

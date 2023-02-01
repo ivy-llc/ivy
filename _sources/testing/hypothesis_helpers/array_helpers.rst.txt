@@ -1,7 +1,7 @@
 Array helpers
 =============
 
-.. automodule:: tests.test_ivy.helpers.hypothesis_helpers.array_helpers
+.. automodule:: ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers
 	:members:
 	:special-members: __init__
 	:undoc-members:

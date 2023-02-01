@@ -169,6 +169,32 @@
              
   <section id="apply-safety-factor">
 <h1>apply_safety_factor<a class="headerlink" href="#apply-safety-factor" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.apply_safety_factor">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">apply_safety_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_smallest_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">small_abs_safety_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_abs_safety_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safety_factor_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#apply_safety_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.apply_safety_factor" title="Permalink to this definition"></a></dt>
+<dd><p>Applies safety factor scaling to numeric data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> – </p></li>
+<li><p><strong>min_value</strong> – </p></li>
+<li><p><strong>max_value</strong> – </p></li>
+<li><p><strong>abs_smallest_val</strong> – </p></li>
+<li><p><strong>large_abs_safety_factor</strong> – </p></li>
+<li><p><strong>small_abs_safety_factor</strong> – </p></li>
+<li><p><strong>safety_factor_scale</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>the result of applying safety scaling to minimum value, maximum value and</em></p></li>
+<li><p><em>absolute smallest representable value (only for float dtypes).</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

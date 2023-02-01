@@ -1,7 +1,7 @@
 Testing helpers
 ===============
 
-.. automodule:: tests.test_ivy.helpers.testing_helpers
+.. automodule:: ivy_tests.test_ivy.helpers.testing_helpers
 	:members:
 	:special-members: __init__
 	:undoc-members:

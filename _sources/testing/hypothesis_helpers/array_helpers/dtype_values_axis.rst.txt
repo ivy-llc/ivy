@@ -1,4 +1,4 @@
 dtype_values_axis
 =================
 
-.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.array_helpers.dtype_values_axis
+.. autofunction:: ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.dtype_values_axis

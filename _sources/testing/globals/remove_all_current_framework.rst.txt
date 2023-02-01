@@ -1,4 +1,4 @@
 remove_all_current_framework
 ============================
 
-.. autofunction:: tests.test_ivy.helpers.globals.remove_all_current_framework
+.. autofunction:: ivy_tests.test_ivy.helpers.globals.remove_all_current_framework

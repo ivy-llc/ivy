@@ -173,6 +173,32 @@
              
   <section id="create-args-kwargs">
 <h1>create_args_kwargs<a class="headerlink" href="#create-args-kwargs" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.create_args_kwargs">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">create_args_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwarg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_array_flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#create_args_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.create_args_kwargs" title="Permalink to this definition"></a></dt>
+<dd><p>Creates arguments and keyword-arguments for the function to test.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args_np</strong> – A dictionary of arguments in Numpy.</p></li>
+<li><p><strong>kwargs_np</strong> – A dictionary of keyword-arguments in Numpy.</p></li>
+<li><p><strong>input_dtypes</strong> – data-types of the input arguments and keyword-arguments.</p></li>
+<li><p><strong>as_variable_flags</strong> – A list of booleans. if True for a corresponding input argument, it is called
+as an variable.</p></li>
+<li><p><strong>native_array_flags</strong> – if not None, the corresponding argument is called as a Native Array.</p></li>
+<li><p><strong>container_flags</strong> – if not None, the corresponding argument is called as an Ivy Container.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Arguments, Keyword-arguments, number of arguments, and indexes on arguments and</em></p></li>
+<li><p><em>keyword-arguments.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

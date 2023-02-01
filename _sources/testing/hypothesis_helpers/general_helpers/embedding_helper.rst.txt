@@ -1,4 +1,4 @@
 embedding_helper
 ================
 
-.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.general_helpers.embedding_helper
+.. autofunction:: ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.embedding_helper

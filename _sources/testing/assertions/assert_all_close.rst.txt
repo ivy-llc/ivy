@@ -1,4 +1,4 @@
 assert_all_close
 ================
 
-.. autofunction:: tests.test_ivy.helpers.assertions.assert_all_close
+.. autofunction:: ivy_tests.test_ivy.helpers.assertions.assert_all_close

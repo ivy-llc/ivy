@@ -159,8 +159,128 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="number-helpers">
-<h1>Number helpers<a class="headerlink" href="#number-helpers" title="Permalink to this heading"></a></h1>
+  <section id="module-ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers">
+<span id="number-helpers"></span><h1>Number helpers<a class="headerlink" href="#module-ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.floats">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.</span></span><span class="sig-name descname"><span class="pre">floats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_smallest_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_subnormal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_abs_safety_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">small_abs_safety_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safety_factor_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/number_helpers.html#floats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.floats" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Draws an arbitrarily sized list of floats with a safety factor applied</dt><dd><p>to avoid values being generated at the edge of a dtype limit.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>min_value</strong> – minimum value of floats generated.</p></li>
+<li><p><strong>max_value</strong> – maximum value of floats generated.</p></li>
+<li><p><strong>allow_nan</strong> – if True, allow Nans in the list.</p></li>
+<li><p><strong>allow_inf</strong> – if True, allow inf in the list.</p></li>
+<li><p><strong>allow_subnormal</strong> – if True, allow subnormals in the list.</p></li>
+<li><p><strong>exclude_min</strong> – if True, exclude the minimum limit.</p></li>
+<li><p><strong>exclude_max</strong> – if True, exclude the maximum limit.</p></li>
+<li><p><strong>large_abs_safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,</p>
+<p>when a “linear” safety factor scaler is used,  a safety factor of 2 means
+that only 50% of the range is included, a safety factor of 3 means that
+only 33% of the range is included etc.</p>
+<p>when a “log” safety factor scaler is used, a data type with maximum
+value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.</p>
+</p></li>
+<li><p><strong>small_abs_safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,</p>
+<p>when a “linear” safety factor scaler is used, a data type with minimum
+representable number of 0.0001 and a safety factor of 2 transforms the
+minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.</p>
+<p>when a “log” safety factor scaler is used, a data type with minimum
+representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4</p>
+</p></li>
+<li><p><strong>safety_factor_scale</strong> – The operation to use for the safety factor scaling. Can be “linear” or “log”.
+Default value = “linear”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Float.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.ints">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.</span></span><span class="sig-name descname"><span class="pre">ints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safety_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safety_factor_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/number_helpers.html#ints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.ints" title="Permalink to this definition"></a></dt>
+<dd><p>Draws an arbitrarily sized list of integers with a safety factor
+applied to values if a safety scale is specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>min_value</strong> – minimum value of integers generated.</p></li>
+<li><p><strong>max_value</strong> – maximum value of integers generated.</p></li>
+<li><p><strong>safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,</p>
+<p>when a “linear” safety factor scaler is used,  a safety factor of 2 means
+that only 50% of the range is included, a safety factor of 3 means that
+only 33% of the range is included etc.</p>
+<p>when a “log” safety factor scaler is used, a data type with maximum
+value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.</p>
+</p></li>
+<li><p><strong>safety_factor_scale</strong> – The operation to use for the safety factor scaling. Can be “linear” or “log”.
+Default value = “linear”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Integer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.number">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.</span></span><span class="sig-name descname"><span class="pre">number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_abs_safety_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">small_abs_safety_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safety_factor_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/number_helpers.html#number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.number" title="Permalink to this definition"></a></dt>
+<dd><p>Draws integers or floats with a safety factor
+applied to values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>min_value</strong> – minimum value of integers generated.</p></li>
+<li><p><strong>max_value</strong> – maximum value of integers generated.</p></li>
+<li><p><strong>large_abs_safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,</p>
+<p>when a “linear” safety factor scaler is used,  a safety factor of 2 means
+that only 50% of the range is included, a safety factor of 3 means that
+only 33% of the range is included etc.</p>
+<p>when a “log” safety factor scaler is used, a data type with maximum
+value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.</p>
+</p></li>
+<li><p><strong>small_abs_safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,
+this has no effect on integer data types.</p>
+<p>when a “linear” safety factor scaler is used, a data type with minimum
+representable number of 0.0001 and a safety factor of 2 transforms the
+minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.</p>
+<p>when a “log” safety factor scaler is used, a data type with minimum
+representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4</p>
+</p></li>
+<li><p><strong>safety_factor_scale</strong> – The operation to use for the safety factor scaling. Can be “linear” or “log”.
+Default value = “linear”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – An integer or float.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
 </section>

@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/norms.html">Norms</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../nested_array/nested_array.html">Nested array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/testing_helpers.html">Testing helpers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">hypothesis.extra.numpy</span> <span class="k">as</span> <span class="nn">nph</span>
+<span class="kn">from</span> <span class="nn">hypothesis</span> <span class="kn">import</span> <span class="n">strategies</span> <span class="k">as</span> <span class="n">st</span>
+<span class="kn">from</span> <span class="nn">hypothesis.internal.floats</span> <span class="kn">import</span> <span class="n">float_of</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">mul</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers</span> <span class="kn">import</span> <span class="n">get_dtypes</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">general_helpers</span> <span class="k">as</span> <span class="n">gh</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">dtype_helpers</span><span class="p">,</span> <span class="n">number_helpers</span>
+
+
+<div class="viewcode-block" id="array_bools"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/array_bools.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_bools">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">array_bools</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">num_arrays</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span>
+        <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;num_arrays&quot;</span>
+    <span class="p">),</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws a boolean list of a given size.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    num_arrays</span>
+<span class="sd">        size of the list.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A strategy that draws a list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">num_arrays</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">draw</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="list_of_length"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/list_of_length.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.list_of_length">[docs]</a><span class="k">def</span> <span class="nf">list_of_length</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a random list of the given length from elements in x.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">length</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="lists"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/lists.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.lists">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">lists</span><span class="p">(</span><span class="n">draw</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws a list from the dataset arg.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    arg</span>
+<span class="sd">        dataset of elements.</span>
+<span class="sd">    min_size</span>
+<span class="sd">        least size of the list.</span>
+<span class="sd">    max_size</span>
+<span class="sd">        max size of the list.</span>
+<span class="sd">    size_bounds</span>
+<span class="sd">        if min_size or max_size is None, draw them randomly from the range</span>
+<span class="sd">        [size_bounds[0], size_bounds[1]].</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A strategy that draws a list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">integers</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="n">size_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">max_value</span><span class="o">=</span><span class="n">size_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">size_bounds</span>
+        <span class="k">else</span> <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">min_size</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">min_size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">integers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">min_size</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_size</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">max_size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">integers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">max_size</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="n">min_size</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">max_size</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="dtype_and_values"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/dtype_and_values.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.dtype_and_values">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">dtype_and_values</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
+    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">abs_smallest_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">large_abs_safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+    <span class="n">small_abs_safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+    <span class="n">safety_factor_scale</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+    <span class="n">allow_inf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">allow_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_min</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_max</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">ret_shape</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">array_api_dtypes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws a list of arrays with elements from the given corresponding data types.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    available_dtypes</span>
+<span class="sd">        if dtype is None, data types are drawn from this list randomly.</span>
+<span class="sd">    num_arrays</span>
+<span class="sd">        Number of arrays to be drawn.</span>
+<span class="sd">    abs_smallest_val</span>
+<span class="sd">        sets the absolute smallest value to be generated for float data types,</span>
+<span class="sd">        this has no effect on integer data types. If none, the default data type</span>
+<span class="sd">        absolute smallest value is used.</span>
+<span class="sd">    min_value</span>
+<span class="sd">        minimum value of elements in each array.</span>
+<span class="sd">    max_value</span>
+<span class="sd">        maximum value of elements in each array.</span>
+<span class="sd">    large_abs_safety_factor</span>
+<span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
+
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used,  a safety factor of 2 means</span>
+<span class="sd">        that only 50% of the range is included, a safety factor of 3 means that</span>
+<span class="sd">        only 33% of the range is included etc.</span>
+
+<span class="sd">        when a &quot;log&quot; safety factor scaler is used, a data type with maximum</span>
+<span class="sd">        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.</span>
+<span class="sd">    small_abs_safety_factor</span>
+<span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
+<span class="sd">        this has no effect on integer data types.</span>
+
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used, a data type with minimum</span>
+<span class="sd">        representable number of 0.0001 and a safety factor of 2 transforms the</span>
+<span class="sd">        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.</span>
+
+<span class="sd">        when a &quot;log&quot; safety factor scaler is used, a data type with minimum</span>
+<span class="sd">        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the</span>
+<span class="sd">        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4</span>
+<span class="sd">    safety_factor_scale</span>
+<span class="sd">        The operation to use for the safety factor scaling. Can be &quot;linear&quot; or &quot;log&quot;.</span>
+<span class="sd">        Default value = &quot;linear&quot;.</span>
+<span class="sd">    allow_inf</span>
+<span class="sd">        if True, allow inf in the arrays.</span>
+<span class="sd">    allow_nan</span>
+<span class="sd">        if True, allow Nans in the arrays.</span>
+<span class="sd">    exclude_min</span>
+<span class="sd">        if True, exclude the minimum limit.</span>
+<span class="sd">    exclude_max</span>
+<span class="sd">        if True, exclude the maximum limit.</span>
+<span class="sd">    min_num_dims</span>
+<span class="sd">        minimum size of the shape tuple.</span>
+<span class="sd">    max_num_dims</span>
+<span class="sd">        maximum size of the shape tuple.</span>
+<span class="sd">    min_dim_size</span>
+<span class="sd">        minimum value of each integer in the shape tuple.</span>
+<span class="sd">    max_dim_size</span>
+<span class="sd">        maximum value of each integer in the shape tuple.</span>
+<span class="sd">    shape</span>
+<span class="sd">        shape of the arrays in the list.</span>
+<span class="sd">    shared_dtype</span>
+<span class="sd">        if True, if dtype is None, a single shared dtype is drawn for all arrays.</span>
+<span class="sd">    ret_shape</span>
+<span class="sd">        if True, the shape of the arrays is also returned.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        A list of data types for the given arrays.</span>
+<span class="sd">    array_api_dtypes</span>
+<span class="sd">        if True, use data types that can be promoted with the array_api_promotion</span>
+<span class="sd">        table.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A strategy that draws a list of dtype and arrays (as lists).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">min_dim_size</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">_internal</span><span class="o">.</span><span class="n">SearchStrategy</span><span class="p">):</span>
+        <span class="n">min_dim_size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">min_dim_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_dim_size</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">_internal</span><span class="o">.</span><span class="n">SearchStrategy</span><span class="p">):</span>
+        <span class="n">max_dim_size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">max_dim_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">_internal</span><span class="o">.</span><span class="n">SearchStrategy</span><span class="p">):</span>
+        <span class="n">available_dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">num_arrays</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">dtype_helpers</span><span class="o">.</span><span class="n">array_dtypes</span><span class="p">(</span>
+                <span class="n">num_arrays</span><span class="o">=</span><span class="n">num_arrays</span><span class="p">,</span>
+                <span class="n">available_dtypes</span><span class="o">=</span><span class="n">available_dtypes</span><span class="p">,</span>
+                <span class="n">shared_dtype</span><span class="o">=</span><span class="n">shared_dtype</span><span class="p">,</span>
+                <span class="n">array_api_dtypes</span><span class="o">=</span><span class="n">array_api_dtypes</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span>
+                <span class="n">gh</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span>
+                    <span class="n">min_num_dims</span><span class="o">=</span><span class="n">min_num_dims</span><span class="p">,</span>
+                    <span class="n">max_num_dims</span><span class="o">=</span><span class="n">max_num_dims</span><span class="p">,</span>
+                    <span class="n">min_dim_size</span><span class="o">=</span><span class="n">min_dim_size</span><span class="p">,</span>
+                    <span class="n">max_dim_size</span><span class="o">=</span><span class="n">max_dim_size</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;shape&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">):</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">draw</span><span class="p">(</span>
+                <span class="n">array_values</span><span class="p">(</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
+                    <span class="n">abs_smallest_val</span><span class="o">=</span><span class="n">abs_smallest_val</span><span class="p">,</span>
+                    <span class="n">min_value</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
+                    <span class="n">max_value</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
+                    <span class="n">allow_inf</span><span class="o">=</span><span class="n">allow_inf</span><span class="p">,</span>
+                    <span class="n">allow_nan</span><span class="o">=</span><span class="n">allow_nan</span><span class="p">,</span>
+                    <span class="n">exclude_min</span><span class="o">=</span><span class="n">exclude_min</span><span class="p">,</span>
+                    <span class="n">exclude_max</span><span class="o">=</span><span class="n">exclude_max</span><span class="p">,</span>
+                    <span class="n">large_abs_safety_factor</span><span class="o">=</span><span class="n">large_abs_safety_factor</span><span class="p">,</span>
+                    <span class="n">small_abs_safety_factor</span><span class="o">=</span><span class="n">small_abs_safety_factor</span><span class="p">,</span>
+                    <span class="n">safety_factor_scale</span><span class="o">=</span><span class="n">safety_factor_scale</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">ret_shape</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">shape</span>
+    <span class="k">return</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">values</span></div>
+
+
+<div class="viewcode-block" id="dtype_values_axis"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/dtype_values_axis.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.dtype_values_axis">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">dtype_values_axis</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">available_dtypes</span><span class="p">,</span>
+    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">abs_smallest_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">large_abs_safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+    <span class="n">small_abs_safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+    <span class="n">safety_factor_scale</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+    <span class="n">allow_inf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">allow_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_min</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_max</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">min_axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">valid_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">allow_neg_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">min_axes_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">max_axes_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">force_int_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">force_tuple_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">ret_shape</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws a list of arrays with elements from the given data type,</span>
+<span class="sd">    and a random axis of the arrays.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    available_dtypes</span>
+<span class="sd">        if dtype is None, data type is drawn from this list randomly.</span>
+<span class="sd">    num_arrays</span>
+<span class="sd">        Number of arrays to be drawn.</span>
+<span class="sd">    abs_smallest_val</span>
+<span class="sd">        sets the absolute smallest value to be generated for float data types,</span>
+<span class="sd">        this has no effect on integer data types. If none, the default data type</span>
+<span class="sd">        absolute smallest value is used.</span>
+<span class="sd">    min_value</span>
+<span class="sd">        minimum value of elements in the array.</span>
+<span class="sd">    max_value</span>
+<span class="sd">        maximum value of elements in the array.</span>
+<span class="sd">    large_abs_safety_factor</span>
+<span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
+
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used,  a safety factor of 2 means</span>
+<span class="sd">        that only 50% of the range is included, a safety factor of 3 means that</span>
+<span class="sd">        only 33% of the range is included etc.</span>
+
+<span class="sd">        when a &quot;log&quot; safety factor scaler is used, a data type with maximum</span>
+<span class="sd">        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.</span>
+<span class="sd">    small_abs_safety_factor</span>
+<span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
+<span class="sd">        this has no effect on integer data types.</span>
+
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used, a data type with minimum</span>
+<span class="sd">        representable number of 0.0001 and a safety factor of 2 transforms the</span>
+<span class="sd">        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.</span>
+
+<span class="sd">        when a &quot;log&quot; safety factor scaler is used, a data type with minimum</span>
+<span class="sd">        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the</span>
+<span class="sd">        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4</span>
+<span class="sd">    safety_factor_scale</span>
+<span class="sd">        The operation to use when calculating the maximum value of the list. Can be</span>
+<span class="sd">        &quot;linear&quot; or &quot;log&quot;. Default value = &quot;linear&quot;.</span>
+<span class="sd">    allow_inf</span>
+<span class="sd">        if True, allow inf in the array.</span>
+<span class="sd">    allow_nan</span>
+<span class="sd">        if True, allow Nans in the arrays.</span>
+<span class="sd">    exclude_min</span>
+<span class="sd">        if True, exclude the minimum limit.</span>
+<span class="sd">    exclude_max</span>
+<span class="sd">        if True, exclude the maximum limit.</span>
+<span class="sd">    min_num_dims</span>
+<span class="sd">        minimum size of the shape tuple.</span>
+<span class="sd">    max_num_dims</span>
+<span class="sd">        maximum size of the shape tuple.</span>
+<span class="sd">    min_dim_size</span>
+<span class="sd">        minimum value of each integer in the shape tuple.</span>
+<span class="sd">    max_dim_size</span>
+<span class="sd">        maximum value of each integer in the shape tuple.</span>
+<span class="sd">    valid_axis</span>
+<span class="sd">        if True, a valid axis will be drawn from the array dimensions.</span>
+<span class="sd">    allow_neg_axes</span>
+<span class="sd">        if True, returned axes may include negative axes.</span>
+<span class="sd">    min_axes_size</span>
+<span class="sd">        minimum size of the axis tuple.</span>
+<span class="sd">    max_axes_size</span>
+<span class="sd">        maximum size of the axis tuple.</span>
+<span class="sd">    force_tuple_axis</span>
+<span class="sd">        if true, all axis will be returned as a tuple.</span>
+<span class="sd">    force_int_axis</span>
+<span class="sd">        if true and only one axis is drawn, the returned axis will be an int.</span>
+<span class="sd">    shape</span>
+<span class="sd">        shape of the array. if None, a random shape is drawn.</span>
+<span class="sd">    shared_dtype</span>
+<span class="sd">        if True, if dtype is None, a single shared dtype is drawn for all arrays.</span>
+<span class="sd">    min_axis</span>
+<span class="sd">        if shape is None, axis is drawn from the range [min_axis, max_axis].</span>
+<span class="sd">    max_axis</span>
+<span class="sd">        if shape is None, axis is drawn from the range [min_axis, max_axis].</span>
+<span class="sd">    ret_shape</span>
+<span class="sd">        if True, the shape of the arrays is also returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A strategy that draws a dtype, an array (as list), and an axis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">dtype_and_values</span><span class="p">(</span>
+            <span class="n">available_dtypes</span><span class="o">=</span><span class="n">available_dtypes</span><span class="p">,</span>
+            <span class="n">num_arrays</span><span class="o">=</span><span class="n">num_arrays</span><span class="p">,</span>
+            <span class="n">abs_smallest_val</span><span class="o">=</span><span class="n">abs_smallest_val</span><span class="p">,</span>
+            <span class="n">min_value</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
+            <span class="n">max_value</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
+            <span class="n">large_abs_safety_factor</span><span class="o">=</span><span class="n">large_abs_safety_factor</span><span class="p">,</span>
+            <span class="n">small_abs_safety_factor</span><span class="o">=</span><span class="n">small_abs_safety_factor</span><span class="p">,</span>
+            <span class="n">safety_factor_scale</span><span class="o">=</span><span class="n">safety_factor_scale</span><span class="p">,</span>
+            <span class="n">allow_inf</span><span class="o">=</span><span class="n">allow_inf</span><span class="p">,</span>
+            <span class="n">allow_nan</span><span class="o">=</span><span class="n">allow_nan</span><span class="p">,</span>
+            <span class="n">exclude_min</span><span class="o">=</span><span class="n">exclude_min</span><span class="p">,</span>
+            <span class="n">exclude_max</span><span class="o">=</span><span class="n">exclude_max</span><span class="p">,</span>
+            <span class="n">min_num_dims</span><span class="o">=</span><span class="n">min_num_dims</span><span class="p">,</span>
+            <span class="n">max_num_dims</span><span class="o">=</span><span class="n">max_num_dims</span><span class="p">,</span>
+            <span class="n">min_dim_size</span><span class="o">=</span><span class="n">min_dim_size</span><span class="p">,</span>
+            <span class="n">max_dim_size</span><span class="o">=</span><span class="n">max_dim_size</span><span class="p">,</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
+            <span class="n">shared_dtype</span><span class="o">=</span><span class="n">shared_dtype</span><span class="p">,</span>
+            <span class="n">ret_shape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">dtype</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">arr_shape</span> <span class="o">=</span> <span class="n">results</span>
+    <span class="k">if</span> <span class="n">valid_axis</span> <span class="ow">or</span> <span class="n">shape</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+                <span class="n">gh</span><span class="o">.</span><span class="n">get_axis</span><span class="p">(</span>
+                    <span class="n">shape</span><span class="o">=</span><span class="n">arr_shape</span><span class="p">,</span>
+                    <span class="n">min_size</span><span class="o">=</span><span class="n">min_axes_size</span><span class="p">,</span>
+                    <span class="n">max_size</span><span class="o">=</span><span class="n">max_axes_size</span><span class="p">,</span>
+                    <span class="n">allow_neg</span><span class="o">=</span><span class="n">allow_neg_axes</span><span class="p">,</span>
+                    <span class="n">force_int</span><span class="o">=</span><span class="n">force_int_axis</span><span class="p">,</span>
+                    <span class="n">force_tuple</span><span class="o">=</span><span class="n">force_tuple_axis</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="n">min_axis</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="n">max_axis</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ret_shape</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">arr_shape</span>
+    <span class="k">return</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">axis</span></div>
+
+
+<div class="viewcode-block" id="array_indices_axis"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/array_indices_axis.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_indices_axis">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">array_indices_axis</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">array_dtypes</span><span class="p">,</span>
+    <span class="n">indices_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
+    <span class="n">disable_random_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">axis_zero</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">allow_inf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">first_dimension_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">indices_same_dims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates two arrays x &amp; indices, the values in the indices array are indices</span>
+<span class="sd">    of the array x. Draws an integers randomly from the minimum and maximum number of</span>
+<span class="sd">    positional arguments a given function can take.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    array_dtypes</span>
+<span class="sd">        list of data type to draw the array dtype from.</span>
+<span class="sd">    indices_dtypes</span>
+<span class="sd">        list of data type to draw the indices dtype from.</span>
+<span class="sd">    disable_random_axis</span>
+<span class="sd">        axis is set to -1 when True. Randomly generated with hypothesis if False.</span>
+<span class="sd">    allow_inf</span>
+<span class="sd">        inf values are allowed to be generated in the values array when True.</span>
+<span class="sd">    min_num_dims</span>
+<span class="sd">        The minimum number of dimensions the arrays can have.</span>
+<span class="sd">    max_num_dims</span>
+<span class="sd">        The maximum number of dimensions the arrays can have.</span>
+<span class="sd">    min_dim_size</span>
+<span class="sd">        The minimum size of the dimensions of the arrays.</span>
+<span class="sd">    max_dim_size</span>
+<span class="sd">        The maximum size of the dimensions of the arrays.</span>
+<span class="sd">    indices_same_dims</span>
+<span class="sd">        Set x and indices dimensions to be the same</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A strategy that can be used in the @given hypothesis decorator</span>
+<span class="sd">    which generates arrays of values and indices.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    @given(</span>
+<span class="sd">        array_indices_axis=array_indices_axis(</span>
+<span class="sd">            array_dtypes=helpers.get_dtypes(&quot;valid&quot;),</span>
+<span class="sd">            indices_dtypes=helpers.get_dtypes(&quot;integer&quot;),</span>
+<span class="sd">            min_num_dims=1,</span>
+<span class="sd">            max_num_dims=5,</span>
+<span class="sd">            min_dim_size=1,</span>
+<span class="sd">            max_dim_size=10</span>
+<span class="sd">            )</span>
+<span class="sd">    )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">dtype_and_values</span><span class="p">(</span>
+            <span class="n">available_dtypes</span><span class="o">=</span><span class="n">array_dtypes</span><span class="p">,</span>
+            <span class="n">allow_inf</span><span class="o">=</span><span class="n">allow_inf</span><span class="p">,</span>
+            <span class="n">ret_shape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">min_num_dims</span><span class="o">=</span><span class="n">min_num_dims</span><span class="p">,</span>
+            <span class="n">max_num_dims</span><span class="o">=</span><span class="n">max_num_dims</span><span class="p">,</span>
+            <span class="n">min_dim_size</span><span class="o">=</span><span class="n">min_dim_size</span><span class="p">,</span>
+            <span class="n">max_dim_size</span><span class="o">=</span><span class="n">max_dim_size</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">x_dtype</span> <span class="o">=</span> <span class="n">x_dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">disable_random_axis</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">axis_zero</span><span class="p">:</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">batch_dims</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">batch_shape</span> <span class="o">=</span> <span class="n">x_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span>
+                <span class="n">min_value</span><span class="o">=-</span><span class="mi">1</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_shape</span><span class="p">),</span>
+                <span class="n">max_value</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">batch_dims</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span>
+                <span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">max_value</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">batch_shape</span> <span class="o">=</span> <span class="n">x_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">batch_dims</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">indices_same_dims</span><span class="p">:</span>
+        <span class="n">indices_shape</span> <span class="o">=</span> <span class="n">x_shape</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">shape_var</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">gh</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span>
+                <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">min_num_dims</span><span class="o">=</span><span class="n">min_num_dims</span><span class="p">,</span>
+                <span class="n">max_num_dims</span><span class="o">=</span><span class="n">max_num_dims</span> <span class="o">-</span> <span class="n">batch_dims</span><span class="p">,</span>
+                <span class="n">min_dim_size</span><span class="o">=</span><span class="n">min_dim_size</span><span class="p">,</span>
+                <span class="n">max_dim_size</span><span class="o">=</span><span class="n">max_dim_size</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">indices_shape</span> <span class="o">=</span> <span class="n">batch_shape</span> <span class="o">+</span> <span class="n">shape_var</span>
+    <span class="n">max_axis</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">first_dimension_only</span><span class="p">:</span>
+        <span class="n">max_axis</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">indices_dtype</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">dtype_and_values</span><span class="p">(</span>
+            <span class="n">available_dtypes</span><span class="o">=</span><span class="n">indices_dtypes</span><span class="p">,</span>
+            <span class="n">allow_inf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">max_value</span><span class="o">=</span><span class="n">max_axis</span><span class="p">,</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">indices_shape</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">indices_dtype</span> <span class="o">=</span> <span class="n">indices_dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">disable_random_axis</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x_dtype</span><span class="p">,</span> <span class="n">indices_dtype</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">indices</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">x_dtype</span><span class="p">,</span> <span class="n">indices_dtype</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">batch_dims</span></div>
+
+
+<div class="viewcode-block" id="arrays_and_axes"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/arrays_and_axes.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.arrays_and_axes">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">arrays_and_axes</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">),</span>
+    <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">returndtype</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">force_int_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">gh</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span>
+                <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">min_num_dims</span><span class="o">=</span><span class="n">min_num_dims</span><span class="p">,</span>
+                <span class="n">max_num_dims</span><span class="o">=</span><span class="n">max_num_dims</span><span class="p">,</span>
+                <span class="n">min_dim_size</span><span class="o">=</span><span class="n">min_dim_size</span><span class="p">,</span>
+                <span class="n">max_dim_size</span><span class="o">=</span><span class="n">max_dim_size</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">_internal</span><span class="o">.</span><span class="n">SearchStrategy</span><span class="p">):</span>
+        <span class="n">available_dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">)</span>
+
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">dtype_helpers</span><span class="o">.</span><span class="n">array_dtypes</span><span class="p">(</span><span class="n">num_arrays</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">available_dtypes</span><span class="o">=</span><span class="n">available_dtypes</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">arrays</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">:</span>
+        <span class="n">arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">draw</span><span class="p">(</span><span class="n">array_values</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">min_value</span><span class="o">=-</span><span class="mi">20</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">20</span><span class="p">))</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">force_int_axis</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">st</span><span class="o">.</span><span class="n">none</span><span class="p">()))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">all_axes_ranges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">all_axes_ranges</span><span class="p">:</span>
+                <span class="n">all_axes_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">all_axes_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">none</span><span class="p">(),</span> <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="p">)</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="n">all_axes_ranges</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">returndtype</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">arrays</span><span class="p">,</span> <span class="n">axes</span>
+    <span class="k">return</span> <span class="n">arrays</span><span class="p">,</span> <span class="n">axes</span></div>
+
+
+<span class="k">def</span> <span class="nf">_clamp_value</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype_info</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">dtype_info</span><span class="o">.</span><span class="n">max</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dtype_info</span><span class="o">.</span><span class="n">max</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">dtype_info</span><span class="o">.</span><span class="n">min</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dtype_info</span><span class="o">.</span><span class="n">min</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+
+<div class="viewcode-block" id="array_values"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/array_values.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_values">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">array_values</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">,</span>
+    <span class="n">shape</span><span class="p">,</span>
+    <span class="n">abs_smallest_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">allow_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">allow_subnormal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">allow_inf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_min</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">exclude_max</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">large_abs_safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+    <span class="n">small_abs_safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+    <span class="n">safety_factor_scale</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws a list (of lists) of a given shape containing values of a given data type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the elements of the list.</span>
+<span class="sd">    shape</span>
+<span class="sd">        shape of the required list.</span>
+<span class="sd">    abs_smallest_val</span>
+<span class="sd">        sets the absolute smallest value to be generated for float data types,</span>
+<span class="sd">        this has no effect on integer data types. If none, the default data type</span>
+<span class="sd">        absolute smallest value is used.</span>
+<span class="sd">    min_value</span>
+<span class="sd">        minimum value of elements in the list.</span>
+<span class="sd">    max_value</span>
+<span class="sd">        maximum value of elements in the list.</span>
+<span class="sd">    allow_nan</span>
+<span class="sd">        if True, allow Nans in the list.</span>
+<span class="sd">    allow_subnormal</span>
+<span class="sd">        if True, allow subnormals in the list.</span>
+<span class="sd">    allow_inf</span>
+<span class="sd">        if True, allow inf in the list.</span>
+<span class="sd">    exclude_min</span>
+<span class="sd">        if True, exclude the minimum limit.</span>
+<span class="sd">    exclude_max</span>
+<span class="sd">        if True, exclude the maximum limit.</span>
+<span class="sd">    large_abs_safety_factor</span>
+<span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
+
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used,  a safety factor of 2 means</span>
+<span class="sd">        that only 50% of the range is included, a safety factor of 3 means that</span>
+<span class="sd">        only 33% of the range is included etc.</span>
+
+<span class="sd">        when a &quot;log&quot; safety factor scaler is used, a data type with maximum</span>
+<span class="sd">        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.</span>
+<span class="sd">    small_abs_safety_factor</span>
+<span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
+<span class="sd">        this has no effect on integer data types.</span>
+
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used, a data type with minimum</span>
+<span class="sd">        representable number of 0.0001 and a safety factor of 2 transforms the</span>
+<span class="sd">        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.</span>
+
+<span class="sd">        when a &quot;log&quot; safety factor scaler is used, a data type with minimum</span>
+<span class="sd">        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the</span>
+<span class="sd">        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4</span>
+<span class="sd">    safety_factor_scale</span>
+<span class="sd">        The operation to use when calculating the maximum value of the list. Can be</span>
+<span class="sd">        &quot;linear&quot; or &quot;log&quot;. Default value = &quot;linear&quot;.</span>
+
+<span class="sd">    In the case of min_value or max_value is not in the valid range</span>
+<span class="sd">    the invalid value will be replaced by data type limit, the range</span>
+<span class="sd">    of the numbers in that case is not preserved.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        A strategy that draws a list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">small_abs_safety_factor</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;small_abs_safety_factor must be &gt;= 1&quot;</span>
+    <span class="k">assert</span> <span class="n">large_abs_safety_factor</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;large_value_safety_factor must be &gt;= 1&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">_internal</span><span class="o">.</span><span class="n">SearchStrategy</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">size</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">shape</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">*=</span> <span class="n">dim</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">_internal</span><span class="o">.</span><span class="n">SearchStrategy</span><span class="p">):</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">draw</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;float&quot;</span> <span class="ow">in</span> <span class="n">dtype</span> <span class="ow">or</span> <span class="s2">&quot;complex&quot;</span> <span class="ow">in</span> <span class="n">dtype</span><span class="p">:</span>
+        <span class="n">kind_dtype</span> <span class="o">=</span> <span class="s2">&quot;float&quot;</span>
+        <span class="n">dtype_info</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;int&quot;</span> <span class="ow">in</span> <span class="n">dtype</span><span class="p">:</span>
+        <span class="n">kind_dtype</span> <span class="o">=</span> <span class="s2">&quot;int&quot;</span>
+        <span class="n">dtype_info</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;bool&quot;</span> <span class="ow">in</span> <span class="n">dtype</span><span class="p">:</span>
+        <span class="n">kind_dtype</span> <span class="o">=</span> <span class="s2">&quot;bool&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2"> is not a valid data type that can be generated,&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; only integers, floats and booleans are allowed.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">kind_dtype</span> <span class="o">!=</span> <span class="s2">&quot;bool&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">min_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">min_value</span> <span class="o">=</span> <span class="n">_clamp_value</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">dtype_info</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">max_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">max_value</span> <span class="o">=</span> <span class="n">_clamp_value</span><span class="p">(</span><span class="n">max_value</span><span class="p">,</span> <span class="n">dtype_info</span><span class="p">)</span>
+
+        <span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">abs_smallest_val</span> <span class="o">=</span> <span class="n">gh</span><span class="o">.</span><span class="n">apply_safety_factor</span><span class="p">(</span>
+            <span class="n">dtype</span><span class="p">,</span>
+            <span class="n">min_value</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
+            <span class="n">max_value</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
+            <span class="n">abs_smallest_val</span><span class="o">=</span><span class="n">abs_smallest_val</span><span class="p">,</span>
+            <span class="n">small_abs_safety_factor</span><span class="o">=</span><span class="n">small_abs_safety_factor</span><span class="p">,</span>
+            <span class="n">large_abs_safety_factor</span><span class="o">=</span><span class="n">large_abs_safety_factor</span><span class="p">,</span>
+            <span class="n">safety_factor_scale</span><span class="o">=</span><span class="n">safety_factor_scale</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="n">max_value</span> <span class="o">&gt;=</span> <span class="n">min_value</span>
+
+        <span class="k">if</span> <span class="n">kind_dtype</span> <span class="o">==</span> <span class="s2">&quot;int&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">exclude_min</span><span class="p">:</span>
+                <span class="n">min_value</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">exclude_max</span><span class="p">:</span>
+                <span class="n">max_value</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+                <span class="n">list_of_length</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">),</span> <span class="n">length</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">kind_dtype</span> <span class="o">==</span> <span class="s2">&quot;float&quot;</span><span class="p">:</span>
+            <span class="n">floats_info</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;float16&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">},</span>
+                <span class="s2">&quot;bfloat16&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;float32&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">},</span>
+                <span class="s2">&quot;float32&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;float32&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">},</span>
+                <span class="s2">&quot;float64&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;float64&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">},</span>
+                <span class="s2">&quot;complex64&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;complex64&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">},</span>
+                <span class="s2">&quot;complex128&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;complex128&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">},</span>
+            <span class="p">}</span>
+            <span class="c1"># The smallest possible value is determined by one of the arguments</span>
+            <span class="k">if</span> <span class="n">min_value</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">abs_smallest_val</span> <span class="ow">or</span> <span class="n">max_value</span> <span class="o">&lt;</span> <span class="n">abs_smallest_val</span><span class="p">:</span>
+                <span class="n">float_strategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span>
+                    <span class="n">min_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]),</span>
+                    <span class="n">max_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span><span class="n">max_value</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]),</span>
+                    <span class="n">allow_nan</span><span class="o">=</span><span class="n">allow_nan</span><span class="p">,</span>
+                    <span class="n">allow_subnormal</span><span class="o">=</span><span class="n">allow_subnormal</span><span class="p">,</span>
+                    <span class="n">allow_infinity</span><span class="o">=</span><span class="n">allow_inf</span><span class="p">,</span>
+                    <span class="n">width</span><span class="o">=</span><span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">],</span>
+                    <span class="n">exclude_min</span><span class="o">=</span><span class="n">exclude_min</span><span class="p">,</span>
+                    <span class="n">exclude_max</span><span class="o">=</span><span class="n">exclude_max</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="c1"># kind of a hack to not use the calculated max and min values</span>
+            <span class="k">elif</span> <span class="n">allow_inf</span> <span class="ow">or</span> <span class="n">allow_nan</span><span class="p">:</span>
+                <span class="n">float_strategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span>
+                    <span class="n">allow_nan</span><span class="o">=</span><span class="n">allow_nan</span><span class="p">,</span>
+                    <span class="n">allow_subnormal</span><span class="o">=</span><span class="n">allow_subnormal</span><span class="p">,</span>
+                    <span class="n">allow_infinity</span><span class="o">=</span><span class="n">allow_inf</span><span class="p">,</span>
+                    <span class="n">width</span><span class="o">=</span><span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">float_strategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span>
+                        <span class="n">min_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]),</span>
+                        <span class="n">max_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span>
+                            <span class="o">-</span><span class="n">abs_smallest_val</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]</span>
+                        <span class="p">),</span>
+                        <span class="n">allow_nan</span><span class="o">=</span><span class="n">allow_nan</span><span class="p">,</span>
+                        <span class="n">allow_subnormal</span><span class="o">=</span><span class="n">allow_subnormal</span><span class="p">,</span>
+                        <span class="n">allow_infinity</span><span class="o">=</span><span class="n">allow_inf</span><span class="p">,</span>
+                        <span class="n">width</span><span class="o">=</span><span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">],</span>
+                        <span class="n">exclude_min</span><span class="o">=</span><span class="n">exclude_min</span><span class="p">,</span>
+                        <span class="n">exclude_max</span><span class="o">=</span><span class="n">exclude_max</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span>
+                        <span class="n">min_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span>
+                            <span class="n">abs_smallest_val</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]</span>
+                        <span class="p">),</span>
+                        <span class="n">max_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span><span class="n">max_value</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]),</span>
+                        <span class="n">allow_nan</span><span class="o">=</span><span class="n">allow_nan</span><span class="p">,</span>
+                        <span class="n">allow_subnormal</span><span class="o">=</span><span class="n">allow_subnormal</span><span class="p">,</span>
+                        <span class="n">allow_infinity</span><span class="o">=</span><span class="n">allow_inf</span><span class="p">,</span>
+                        <span class="n">width</span><span class="o">=</span><span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">],</span>
+                        <span class="n">exclude_min</span><span class="o">=</span><span class="n">exclude_min</span><span class="p">,</span>
+                        <span class="n">exclude_max</span><span class="o">=</span><span class="n">exclude_max</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;complex&quot;</span> <span class="ow">in</span> <span class="n">dtype</span><span class="p">:</span>
+                <span class="n">float_strategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="n">float_strategy</span><span class="p">,</span> <span class="n">float_strategy</span><span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+                <span class="n">list_of_length</span><span class="p">(</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">float_strategy</span><span class="p">,</span>
+                    <span class="n">length</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;complex&quot;</span> <span class="ow">in</span> <span class="n">dtype</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">complex</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">length</span><span class="o">=</span><span class="n">size</span><span class="p">))</span>
+
+    <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">array</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">array</span><span class="p">)</span></div>
+
+
+<span class="c1">#      From array-api repo     #</span>
+<span class="c1"># ---------------------------- #</span>
+
+
+<span class="k">def</span> <span class="nf">_broadcast_shapes</span><span class="p">(</span><span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Broadcasts `shape1` and `shape2`&quot;&quot;&quot;</span>
+    <span class="n">N1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape1</span><span class="p">)</span>
+    <span class="n">N2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape2</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">N1</span><span class="p">,</span> <span class="n">N2</span><span class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">n1</span> <span class="o">=</span> <span class="n">N1</span> <span class="o">-</span> <span class="n">N</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">N1</span> <span class="o">-</span> <span class="n">N</span> <span class="o">+</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">d1</span> <span class="o">=</span> <span class="n">shape1</span><span class="p">[</span><span class="n">n1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">d1</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">n2</span> <span class="o">=</span> <span class="n">N2</span> <span class="o">-</span> <span class="n">N</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">N2</span> <span class="o">-</span> <span class="n">N</span> <span class="o">+</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">d2</span> <span class="o">=</span> <span class="n">shape2</span><span class="p">[</span><span class="n">n2</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">d2</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">d1</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d2</span>
+        <span class="k">elif</span> <span class="n">d2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d1</span>
+        <span class="k">elif</span> <span class="n">d1</span> <span class="o">==</span> <span class="n">d2</span><span class="p">:</span>
+            <span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Broadcast error&quot;</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+
+<span class="c1"># from array-api repo</span>
+<div class="viewcode-block" id="broadcast_shapes"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/broadcast_shapes.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.broadcast_shapes">[docs]</a><span class="k">def</span> <span class="nf">broadcast_shapes</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;shapes=[] must be non-empty&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_broadcast_shapes</span><span class="p">(</span><span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shapes</span><span class="p">)):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_broadcast_shapes</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">shapes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<span class="c1"># np.prod and others have overflow and math.prod is Python 3.8+ only</span>
+<div class="viewcode-block" id="prod"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/prod.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.prod">[docs]</a><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<span class="c1"># from array-api repo</span>
+<div class="viewcode-block" id="mutually_broadcastable_shapes"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/mutually_broadcastable_shapes.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.mutually_broadcastable_shapes">[docs]</a><span class="k">def</span> <span class="nf">mutually_broadcastable_shapes</span><span class="p">(</span>
+    <span class="n">num_shapes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">base_shape</span><span class="o">=</span><span class="p">(),</span>
+    <span class="n">min_dims</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">max_dims</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="n">min_side</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">max_side</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="n">max_dims</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">max_dims</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">base_shape</span><span class="p">),</span> <span class="n">min_dims</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">max_side</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">max_side</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">base_shape</span><span class="p">[</span><span class="o">-</span><span class="n">max_dims</span><span class="p">:]</span> <span class="o">+</span> <span class="p">(</span><span class="n">min_side</span><span class="p">,))</span> <span class="o">+</span> <span class="mi">5</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">nph</span><span class="o">.</span><span class="n">mutually_broadcastable_shapes</span><span class="p">(</span>
+            <span class="n">num_shapes</span><span class="o">=</span><span class="n">num_shapes</span><span class="p">,</span>
+            <span class="n">base_shape</span><span class="o">=</span><span class="n">base_shape</span><span class="p">,</span>
+            <span class="n">min_dims</span><span class="o">=</span><span class="n">min_dims</span><span class="p">,</span>
+            <span class="n">max_dims</span><span class="o">=</span><span class="n">max_dims</span><span class="p">,</span>
+            <span class="n">min_side</span><span class="o">=</span><span class="n">min_side</span><span class="p">,</span>
+            <span class="n">max_side</span><span class="o">=</span><span class="n">max_side</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">BS</span><span class="p">:</span> <span class="n">BS</span><span class="o">.</span><span class="n">input_shapes</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">shapes</span><span class="p">:</span> <span class="nb">all</span><span class="p">(</span><span class="n">prod</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1000</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">))</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="array_and_broadcastable_shape"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/array_and_broadcastable_shape.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_and_broadcastable_shape">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">array_and_broadcastable_shape</span><span class="p">(</span><span class="n">draw</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an array and a shape that the array can be broadcast to&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">_internal</span><span class="o">.</span><span class="n">SearchStrategy</span><span class="p">):</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">draw</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">in_shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">nph</span><span class="o">.</span><span class="n">array_shapes</span><span class="p">(</span><span class="n">min_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_dims</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">array_values</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">in_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
+    <span class="n">to_shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">mutually_broadcastable_shapes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">base_shape</span><span class="o">=</span><span class="n">in_shape</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">S</span><span class="p">:</span> <span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">broadcast_shapes</span><span class="p">(</span><span class="n">in_shape</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="n">s</span><span class="p">),</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;shape&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">to_shape</span></div>
+
+
+<div class="viewcode-block" id="arrays_for_pooling"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/arrays_for_pooling.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.arrays_for_pooling">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">arrays_for_pooling</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span> <span class="n">min_dims</span><span class="p">,</span> <span class="n">max_dims</span><span class="p">,</span> <span class="n">min_side</span><span class="p">,</span> <span class="n">max_side</span><span class="p">,</span> <span class="n">allow_explicit_padding</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">):</span>
+    <span class="n">in_shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">nph</span><span class="o">.</span><span class="n">array_shapes</span><span class="p">(</span>
+            <span class="n">min_dims</span><span class="o">=</span><span class="n">min_dims</span><span class="p">,</span> <span class="n">max_dims</span><span class="o">=</span><span class="n">max_dims</span><span class="p">,</span> <span class="n">min_side</span><span class="o">=</span><span class="n">min_side</span><span class="p">,</span> <span class="n">max_side</span><span class="o">=</span><span class="n">max_side</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">dtype_and_values</span><span class="p">(</span>
+            <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">),</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">in_shape</span><span class="p">,</span>
+            <span class="n">num_arrays</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">max_value</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+            <span class="n">min_value</span><span class="o">=-</span><span class="mi">100</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">array_dim</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span>
+    <span class="k">if</span> <span class="n">array_dim</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">in_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">in_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">in_shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">array_dim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">in_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">in_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">array_dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">in_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+    <span class="k">if</span> <span class="n">allow_explicit_padding</span><span class="p">:</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">array_dim</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">max_pad</span> <span class="o">=</span> <span class="n">kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="n">possible_pad_combos</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">max_pad</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_pad</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="p">(</span><span class="n">max_pad</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span> <span class="o">==</span> <span class="n">max_pad</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">possible_pad_combos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">pad_selected_combo</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pad_selected_combo</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">possible_pad_combos</span><span class="p">))</span>
+            <span class="n">padding</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">draw</span><span class="p">(</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad_selected_combo</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad_selected_combo</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">padding</span><span class="p">),</span> <span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">([</span><span class="s2">&quot;VALID&quot;</span><span class="p">,</span> <span class="s2">&quot;SAME&quot;</span><span class="p">])))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">([</span><span class="s2">&quot;VALID&quot;</span><span class="p">,</span> <span class="s2">&quot;SAME&quot;</span><span class="p">]))</span>
+    <span class="n">strides</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">in_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+    <span class="k">return</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2023, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

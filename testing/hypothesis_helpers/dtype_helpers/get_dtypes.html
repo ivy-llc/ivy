@@ -162,6 +162,34 @@
              
   <section id="get-dtypes">
 <h1>get_dtypes<a class="headerlink" href="#get-dtypes" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_dtypes">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.</span></span><span class="sig-name descname"><span class="pre">get_dtypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.html#get_dtypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_dtypes" title="Permalink to this definition"></a></dt>
+<dd><p>Draws a valid dtypes for the test function. For frontend tests,
+it draws the data types from the intersection between backend
+framework data types and frontend framework dtypes, otherwise,
+draws it from backend framework data types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>kind</strong> – Supported types are integer, float, valid, numeric, signed_integer, complex,
+real_and_complex, float_and_complex, bool, and unsigned</p></li>
+<li><p><strong>index</strong> – list indexing incase a test needs to be skipped for a particular dtype(s)</p></li>
+<li><p><strong>full</strong> – returns the complete list of valid types</p></li>
+<li><p><strong>none</strong> – allow none in the list of valid types</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – dtype string</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

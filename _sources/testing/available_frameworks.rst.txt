@@ -1,7 +1,7 @@
 Available frameworks
 ====================
 
-.. automodule:: tests.test_ivy.helpers.available_frameworks
+.. automodule:: ivy_tests.test_ivy.helpers.available_frameworks
 	:members:
 	:special-members: __init__
 	:undoc-members:

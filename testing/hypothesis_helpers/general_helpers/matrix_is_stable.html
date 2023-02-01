@@ -169,6 +169,42 @@
              
   <section id="matrix-is-stable">
 <h1>matrix_is_stable<a class="headerlink" href="#matrix-is-stable" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.matrix_is_stable">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">matrix_is_stable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cond_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#matrix_is_stable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.matrix_is_stable" title="Permalink to this definition"></a></dt>
+<dd><p>Used to avoid numerical instabilities in further computationally heavy
+calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrix</strong> – The original matrix whose condition number is to be determined.</p></li>
+<li><p><strong>condition_index</strong> – <p>The greater the condition number, the more ill-conditioned the matrix
+will be, the more it will be prone to numerical instabilities.</p>
+<p>There is no rule of thumb for what the exact condition number
+should be to consider a matrix ill-conditioned(prone to numerical errors).
+But, if the condition number is “1”, the matrix is perfectly said to be a
+well-conditioned matrix which will not be prone to any type of numerical
+instabilities in further calculations, but that would probably be a
+very simple matrix.</p>
+<p>The cond_limit should start with “30”, gradually decreasing it according
+to our use, lower cond_limit would result in more numerically stable
+matrices but more simple matrices.</p>
+<p>The limit should always be in the range “1-30”, greater the number greater
+the computational instability. Should not increase 30, it leads to strong
+multicollinearity which leads to singularity.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>A bool, either True or False. Which tells whether the matrix is suitable for</em></p></li>
+<li><p><em>further numerical computations or not.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

@@ -1,7 +1,7 @@
 FrontendFunctionTestFlags
 =========================
 
-.. autoclass:: tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags
+.. autoclass:: ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags
 	:members:
 	:special-members: __init__
 	:undoc-members:

@@ -1,7 +1,7 @@
 Number helpers
 ==============
 
-.. automodule:: tests.test_ivy.helpers.hypothesis_helpers.number_helpers
+.. automodule:: ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers
 	:members:
 	:special-members: __init__
 	:undoc-members:

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ivy_tests.test_ivy.helpers.test_parameter_flags &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nested_array/nested_array.html">Nested array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/testing_helpers.html">Testing helpers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>ivy_tests.test_ivy.helpers.test_parameter_flags</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ivy_tests.test_ivy.helpers.test_parameter_flags</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">hypothesis</span> <span class="kn">import</span> <span class="n">strategies</span> <span class="k">as</span> <span class="n">st</span>  <span class="c1"># NOQA</span>
+
+
+<span class="n">BuiltNativeArrayStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">BuiltAsVariableStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">BuiltContainerStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">BuiltInstanceStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
+<span class="n">BuiltInplaceStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">BuiltGradientStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
+<span class="n">BuiltWithOutStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
+
+
+<span class="n">flags_mapping</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;native_array&quot;</span><span class="p">:</span> <span class="s2">&quot;BuiltNativeArrayStrategy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;as_variable&quot;</span><span class="p">:</span> <span class="s2">&quot;BuiltAsVariableStrategy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;container&quot;</span><span class="p">:</span> <span class="s2">&quot;BuiltContainerStrategy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;instance_method&quot;</span><span class="p">:</span> <span class="s2">&quot;BuiltInstanceStrategy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;test_gradients&quot;</span><span class="p">:</span> <span class="s2">&quot;BuiltGradientStrategy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;with_out&quot;</span><span class="p">:</span> <span class="s2">&quot;BuiltWithOutStrategy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;inplace&quot;</span><span class="p">:</span> <span class="s2">&quot;BuiltInplace&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="build_flag"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/build_flag.html#ivy_tests.test_ivy.helpers.test_parameter_flags.build_flag">[docs]</a><span class="k">def</span> <span class="nf">build_flag</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="c1"># Prevent silently passing if variables names were changed</span>
+    <span class="k">assert</span> <span class="n">flags_mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">flags_mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> is not &quot;</span> <span class="sa">f</span><span class="s2">&quot;a valid flag variable.&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">globals</span><span class="p">()[</span><span class="n">flags_mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+<span class="c1"># Strategy Helpers #</span>
+
+
+<div class="viewcode-block" id="FunctionTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags">[docs]</a><span class="k">class</span> <span class="nc">FunctionTestFlags</span><span class="p">:</span>
+<div class="viewcode-block" id="FunctionTestFlags.__init__"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="p">,</span>
+        <span class="n">instance_method</span><span class="p">,</span>
+        <span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">native_arrays</span><span class="p">,</span>
+        <span class="n">container</span><span class="p">,</span>
+        <span class="n">test_gradients</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">with_out</span> <span class="o">=</span> <span class="n">with_out</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">instance_method</span> <span class="o">=</span> <span class="n">instance_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span> <span class="o">=</span> <span class="n">native_arrays</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">container</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_gradients</span> <span class="o">=</span> <span class="n">test_gradients</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;num_positional_args=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;with_out=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">with_out</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;instance_method=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">instance_method</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;native_arrays=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;container=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;as_variable=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;test_gradients=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">test_gradients</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="function_flags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/function_flags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.function_flags">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">function_flags</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">instance_method</span><span class="p">,</span>
+    <span class="n">with_out</span><span class="p">,</span>
+    <span class="n">test_gradients</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">native_arrays</span><span class="p">,</span>
+    <span class="n">container_flags</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">builds</span><span class="p">(</span>
+            <span class="n">FunctionTestFlags</span><span class="p">,</span>
+            <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+            <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
+            <span class="n">instance_method</span><span class="o">=</span><span class="n">instance_method</span><span class="p">,</span>
+            <span class="n">test_gradients</span><span class="o">=</span><span class="n">test_gradients</span><span class="p">,</span>
+            <span class="n">as_variable</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+            <span class="n">native_arrays</span><span class="o">=</span><span class="n">native_arrays</span><span class="p">,</span>
+            <span class="n">container</span><span class="o">=</span><span class="n">container_flags</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FrontendFunctionTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendFunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags">[docs]</a><span class="k">class</span> <span class="nc">FrontendFunctionTestFlags</span><span class="p">:</span>
+<div class="viewcode-block" id="FrontendFunctionTestFlags.__init__"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendFunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="p">,</span>
+        <span class="n">inplace</span><span class="p">,</span>
+        <span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">native_arrays</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">with_out</span> <span class="o">=</span> <span class="n">with_out</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inplace</span> <span class="o">=</span> <span class="n">inplace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span> <span class="o">=</span> <span class="n">native_arrays</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;num_positional_args=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;with_out=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">with_out</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;inplace=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inplace</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;native_arrays=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;as_variable=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="si">}</span><span class="s2">. &quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="frontend_function_flags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/frontend_function_flags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.frontend_function_flags">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">frontend_function_flags</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">with_out</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">native_arrays</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">builds</span><span class="p">(</span>
+            <span class="n">FrontendFunctionTestFlags</span><span class="p">,</span>
+            <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+            <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span>
+            <span class="n">as_variable</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+            <span class="n">native_arrays</span><span class="o">=</span><span class="n">native_arrays</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MethodTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/MethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags">[docs]</a><span class="k">class</span> <span class="nc">MethodTestFlags</span><span class="p">:</span>
+<div class="viewcode-block" id="MethodTestFlags.__init__"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/MethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">native_arrays</span><span class="p">,</span>
+        <span class="n">container_flags</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span> <span class="o">=</span> <span class="n">native_arrays</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container_flags</span> <span class="o">=</span> <span class="n">container_flags</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;num_positional_args=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;native_arrays=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;as_variable=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;container_flags=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container_flags</span><span class="si">}</span><span class="s2">. &quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="method_flags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/method_flags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.method_flags">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">method_flags</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">native_arrays</span><span class="p">,</span>
+    <span class="n">container_flags</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">builds</span><span class="p">(</span>
+            <span class="n">MethodTestFlags</span><span class="p">,</span>
+            <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+            <span class="n">as_variable</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+            <span class="n">native_arrays</span><span class="o">=</span><span class="n">native_arrays</span><span class="p">,</span>
+            <span class="n">container_flags</span><span class="o">=</span><span class="n">container_flags</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FrontendMethodTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendMethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags">[docs]</a><span class="k">class</span> <span class="nc">FrontendMethodTestFlags</span><span class="p">:</span>
+<div class="viewcode-block" id="FrontendMethodTestFlags.__init__"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendMethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">native_arrays</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span> <span class="o">=</span> <span class="n">native_arrays</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;num_positional_args=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;native_arrays=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;as_variable=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="si">}</span><span class="s2">. &quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="frontend_method_flags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/frontend_method_flags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.frontend_method_flags">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">frontend_method_flags</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">native_arrays</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">builds</span><span class="p">(</span>
+            <span class="n">FrontendMethodTestFlags</span><span class="p">,</span>
+            <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+            <span class="n">as_variable</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+            <span class="n">native_arrays</span><span class="o">=</span><span class="n">native_arrays</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2023, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

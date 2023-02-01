@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/norms.html">Norms</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../nested_array/nested_array.html">Nested array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/testing_helpers.html">Testing helpers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">hypothesis</span> <span class="kn">import</span> <span class="n">strategies</span> <span class="k">as</span> <span class="n">st</span>
+<span class="kn">from</span> <span class="nn">hypothesis.internal.floats</span> <span class="kn">import</span> <span class="n">float_of</span>
+
+<span class="c1"># local</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">general_helpers</span> <span class="k">as</span> <span class="n">gh</span><span class="p">,</span> <span class="n">dtype_helpers</span>
+
+
+<span class="n">floats_info</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;float16&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">},</span>
+    <span class="s2">&quot;bfloat16&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;float32&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">},</span>
+    <span class="s2">&quot;float32&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;float32&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">},</span>
+    <span class="s2">&quot;float64&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;float64&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">},</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="floats"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/number_helpers/floats.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.floats">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">floats</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">abs_smallest_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">allow_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">allow_inf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">allow_subnormal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_min</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">exclude_max</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">large_abs_safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+    <span class="n">small_abs_safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+    <span class="n">safety_factor_scale</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws an arbitrarily sized list of floats with a safety factor applied</span>
+<span class="sd">        to avoid values being generated at the edge of a dtype limit.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    min_value</span>
+<span class="sd">        minimum value of floats generated.</span>
+<span class="sd">    max_value</span>
+<span class="sd">        maximum value of floats generated.</span>
+<span class="sd">    allow_nan</span>
+<span class="sd">        if True, allow Nans in the list.</span>
+<span class="sd">    allow_inf</span>
+<span class="sd">        if True, allow inf in the list.</span>
+<span class="sd">    allow_subnormal</span>
+<span class="sd">        if True, allow subnormals in the list.</span>
+<span class="sd">    exclude_min</span>
+<span class="sd">        if True, exclude the minimum limit.</span>
+<span class="sd">    exclude_max</span>
+<span class="sd">        if True, exclude the maximum limit.</span>
+<span class="sd">    large_abs_safety_factor</span>
+<span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
+
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used,  a safety factor of 2 means</span>
+<span class="sd">        that only 50% of the range is included, a safety factor of 3 means that</span>
+<span class="sd">        only 33% of the range is included etc.</span>
+
+<span class="sd">        when a &quot;log&quot; safety factor scaler is used, a data type with maximum</span>
+<span class="sd">        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.</span>
+<span class="sd">    small_abs_safety_factor</span>
+<span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
+
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used, a data type with minimum</span>
+<span class="sd">        representable number of 0.0001 and a safety factor of 2 transforms the</span>
+<span class="sd">        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.</span>
+
+<span class="sd">        when a &quot;log&quot; safety factor scaler is used, a data type with minimum</span>
+<span class="sd">        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the</span>
+<span class="sd">        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4</span>
+<span class="sd">    safety_factor_scale</span>
+<span class="sd">        The operation to use for the safety factor scaling. Can be &quot;linear&quot; or &quot;log&quot;.</span>
+<span class="sd">        Default value = &quot;linear&quot;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Float.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># ToDo assert that if min or max can be represented</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">dtype_helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">prune_function</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># ToDo add support for not applying safety factor</span>
+    <span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">abs_smallest_val</span> <span class="o">=</span> <span class="n">gh</span><span class="o">.</span><span class="n">apply_safety_factor</span><span class="p">(</span>
+        <span class="n">dtype</span><span class="p">,</span>
+        <span class="n">min_value</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
+        <span class="n">max_value</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
+        <span class="n">abs_smallest_val</span><span class="o">=</span><span class="n">abs_smallest_val</span><span class="p">,</span>
+        <span class="n">small_abs_safety_factor</span><span class="o">=</span><span class="n">small_abs_safety_factor</span><span class="p">,</span>
+        <span class="n">large_abs_safety_factor</span><span class="o">=</span><span class="n">large_abs_safety_factor</span><span class="p">,</span>
+        <span class="n">safety_factor_scale</span><span class="o">=</span><span class="n">safety_factor_scale</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># The smallest possible value is determined by one of the arguments</span>
+    <span class="k">if</span> <span class="n">min_value</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">abs_smallest_val</span> <span class="ow">or</span> <span class="n">max_value</span> <span class="o">&lt;</span> <span class="n">abs_smallest_val</span><span class="p">:</span>
+        <span class="n">float_strategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span>
+            <span class="n">min_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]),</span>
+            <span class="n">max_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span><span class="n">max_value</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]),</span>
+            <span class="n">allow_nan</span><span class="o">=</span><span class="n">allow_nan</span><span class="p">,</span>
+            <span class="n">allow_subnormal</span><span class="o">=</span><span class="n">allow_subnormal</span><span class="p">,</span>
+            <span class="n">allow_infinity</span><span class="o">=</span><span class="n">allow_inf</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">],</span>
+            <span class="n">exclude_min</span><span class="o">=</span><span class="n">exclude_min</span><span class="p">,</span>
+            <span class="n">exclude_max</span><span class="o">=</span><span class="n">exclude_max</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">float_strategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span>
+                <span class="n">min_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]),</span>
+                <span class="n">max_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span><span class="o">-</span><span class="n">abs_smallest_val</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]),</span>
+                <span class="n">allow_nan</span><span class="o">=</span><span class="n">allow_nan</span><span class="p">,</span>
+                <span class="n">allow_subnormal</span><span class="o">=</span><span class="n">allow_subnormal</span><span class="p">,</span>
+                <span class="n">allow_infinity</span><span class="o">=</span><span class="n">allow_inf</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">],</span>
+                <span class="n">exclude_min</span><span class="o">=</span><span class="n">exclude_min</span><span class="p">,</span>
+                <span class="n">exclude_max</span><span class="o">=</span><span class="n">exclude_max</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span>
+                <span class="n">min_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span><span class="n">abs_smallest_val</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]),</span>
+                <span class="n">max_value</span><span class="o">=</span><span class="n">float_of</span><span class="p">(</span><span class="n">max_value</span><span class="p">,</span> <span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]),</span>
+                <span class="n">allow_nan</span><span class="o">=</span><span class="n">allow_nan</span><span class="p">,</span>
+                <span class="n">allow_subnormal</span><span class="o">=</span><span class="n">allow_subnormal</span><span class="p">,</span>
+                <span class="n">allow_infinity</span><span class="o">=</span><span class="n">allow_inf</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="n">floats_info</span><span class="p">[</span><span class="n">dtype</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">],</span>
+                <span class="n">exclude_min</span><span class="o">=</span><span class="n">exclude_min</span><span class="p">,</span>
+                <span class="n">exclude_max</span><span class="o">=</span><span class="n">exclude_max</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">float_strategy</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">values</span></div>
+
+
+<div class="viewcode-block" id="ints"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/number_helpers/ints.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.ints">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">ints</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+    <span class="n">safety_factor_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws an arbitrarily sized list of integers with a safety factor</span>
+<span class="sd">    applied to values if a safety scale is specified.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    min_value</span>
+<span class="sd">        minimum value of integers generated.</span>
+<span class="sd">    max_value</span>
+<span class="sd">        maximum value of integers generated.</span>
+<span class="sd">    safety_factor</span>
+<span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
+
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used,  a safety factor of 2 means</span>
+<span class="sd">        that only 50% of the range is included, a safety factor of 3 means that</span>
+<span class="sd">        only 33% of the range is included etc.</span>
+
+<span class="sd">        when a &quot;log&quot; safety factor scaler is used, a data type with maximum</span>
+<span class="sd">        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.</span>
+<span class="sd">    safety_factor_scale</span>
+<span class="sd">        The operation to use for the safety factor scaling. Can be &quot;linear&quot; or &quot;log&quot;.</span>
+<span class="sd">        Default value = &quot;linear&quot;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Integer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">dtype_helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">prune_function</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">min_value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">safety_factor_scale</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span>
+    <span class="k">if</span> <span class="n">safety_factor_scale</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">gh</span><span class="o">.</span><span class="n">apply_safety_factor</span><span class="p">(</span>
+            <span class="n">dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">min_value</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
+            <span class="n">max_value</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
+            <span class="n">large_abs_safety_factor</span><span class="o">=</span><span class="n">safety_factor</span><span class="p">,</span>
+            <span class="n">safety_factor_scale</span><span class="o">=</span><span class="n">safety_factor_scale</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="number"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/number_helpers/number.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.number_helpers.number">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">number</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">large_abs_safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+    <span class="n">small_abs_safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+    <span class="n">safety_factor_scale</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws integers or floats with a safety factor</span>
+<span class="sd">    applied to values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    min_value</span>
+<span class="sd">        minimum value of integers generated.</span>
+<span class="sd">    max_value</span>
+<span class="sd">        maximum value of integers generated.</span>
+<span class="sd">    large_abs_safety_factor</span>
+<span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
+
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used,  a safety factor of 2 means</span>
+<span class="sd">        that only 50% of the range is included, a safety factor of 3 means that</span>
+<span class="sd">        only 33% of the range is included etc.</span>
+
+<span class="sd">        when a &quot;log&quot; safety factor scaler is used, a data type with maximum</span>
+<span class="sd">        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.</span>
+<span class="sd">    small_abs_safety_factor</span>
+<span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
+<span class="sd">        this has no effect on integer data types.</span>
+
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used, a data type with minimum</span>
+<span class="sd">        representable number of 0.0001 and a safety factor of 2 transforms the</span>
+<span class="sd">        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.</span>
+
+<span class="sd">        when a &quot;log&quot; safety factor scaler is used, a data type with minimum</span>
+<span class="sd">        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the</span>
+<span class="sd">        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4</span>
+<span class="sd">    safety_factor_scale</span>
+<span class="sd">        The operation to use for the safety factor scaling. Can be &quot;linear&quot; or &quot;log&quot;.</span>
+<span class="sd">        Default value = &quot;linear&quot;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        An integer or float.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">ints</span><span class="p">(</span>
+            <span class="n">min_value</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
+            <span class="n">max_value</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
+            <span class="n">safety_factor</span><span class="o">=</span><span class="n">large_abs_safety_factor</span><span class="p">,</span>
+            <span class="n">safety_factor_scale</span><span class="o">=</span><span class="n">safety_factor_scale</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">|</span> <span class="n">floats</span><span class="p">(</span>
+            <span class="n">min_value</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
+            <span class="n">max_value</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
+            <span class="n">small_abs_safety_factor</span><span class="o">=</span><span class="n">small_abs_safety_factor</span><span class="p">,</span>
+            <span class="n">large_abs_safety_factor</span><span class="o">=</span><span class="n">large_abs_safety_factor</span><span class="p">,</span>
+            <span class="n">safety_factor_scale</span><span class="o">=</span><span class="n">safety_factor_scale</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2023, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

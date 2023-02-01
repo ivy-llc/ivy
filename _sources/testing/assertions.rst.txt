@@ -1,7 +1,7 @@
 Assertions
 ==========
 
-.. automodule:: tests.test_ivy.helpers.assertions
+.. automodule:: ivy_tests.test_ivy.helpers.assertions
 	:members:
 	:special-members: __init__
 	:undoc-members:

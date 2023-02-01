@@ -1,4 +1,4 @@
 frontend_method_flags
 =====================
 
-.. autofunction:: tests.test_ivy.helpers.test_parameter_flags.frontend_method_flags
+.. autofunction:: ivy_tests.test_ivy.helpers.test_parameter_flags.frontend_method_flags

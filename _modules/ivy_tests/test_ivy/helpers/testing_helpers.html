@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ivy_tests.test_ivy.helpers.testing_helpers &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nested_array/nested_array.html">Nested array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/testing_helpers.html">Testing helpers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>ivy_tests.test_ivy.helpers.testing_helpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ivy_tests.test_ivy.helpers.testing_helpers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># general</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">hypothesis</span> <span class="kn">import</span> <span class="n">given</span><span class="p">,</span> <span class="n">strategies</span> <span class="k">as</span> <span class="n">st</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">ivy.functional.frontends.numpy</span> <span class="k">as</span> <span class="nn">np_frontend</span>
+<span class="kn">from</span> <span class="nn">.hypothesis_helpers</span> <span class="kn">import</span> <span class="n">number_helpers</span> <span class="k">as</span> <span class="n">nh</span>
+<span class="kn">from</span> <span class="nn">.globals</span> <span class="kn">import</span> <span class="n">TestData</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">test_parameter_flags</span> <span class="k">as</span> <span class="n">pf</span>
+<span class="kn">from</span> <span class="nn">ivy_tests.test_ivy.helpers.test_parameter_flags</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BuiltInstanceStrategy</span><span class="p">,</span>
+    <span class="n">BuiltAsVariableStrategy</span><span class="p">,</span>
+    <span class="n">BuiltNativeArrayStrategy</span><span class="p">,</span>
+    <span class="n">BuiltGradientStrategy</span><span class="p">,</span>
+    <span class="n">BuiltContainerStrategy</span><span class="p">,</span>
+    <span class="n">BuiltWithOutStrategy</span><span class="p">,</span>
+    <span class="n">BuiltInplaceStrategy</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ivy_tests.test_ivy.helpers.structs</span> <span class="kn">import</span> <span class="n">FrontendMethodData</span>
+<span class="kn">from</span> <span class="nn">ivy_tests.test_ivy.helpers.available_frameworks</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">available_frameworks</span><span class="p">,</span>
+    <span class="n">ground_truth</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">ground_truth</span> <span class="o">=</span> <span class="n">ground_truth</span><span class="p">()</span>
+
+
+<span class="n">cmd_line_args</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;with_out&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;instance_method&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;test_gradients&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">cmd_line_args_lists</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;as_variable&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;native_array&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;container&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="num_positional_args_method"><a class="viewcode-back" href="../../../../testing/testing_helpers/num_positional_args_method.html#ivy_tests.test_ivy.helpers.testing_helpers.num_positional_args_method">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">num_positional_args_method</span><span class="p">(</span><span class="n">draw</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws an integers randomly from the minimum and maximum number of positional</span>
+<span class="sd">    arguments a given method can take.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    method</span>
+<span class="sd">        callable method</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A strategy that can be used in the @given hypothesis decorator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total</span><span class="p">,</span> <span class="n">num_positional_only</span><span class="p">,</span> <span class="n">num_keyword_only</span><span class="p">,</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">method</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;self&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">param</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span><span class="p">:</span>
+            <span class="n">num_positional_only</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">param</span><span class="o">.</span><span class="n">KEYWORD_ONLY</span><span class="p">:</span>
+            <span class="n">num_keyword_only</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">param</span><span class="o">.</span><span class="n">VAR_KEYWORD</span><span class="p">:</span>
+            <span class="n">num_keyword_only</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">nh</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="n">num_positional_only</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="p">(</span><span class="n">total</span> <span class="o">-</span> <span class="n">num_keyword_only</span><span class="p">))</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="num_positional_args"><a class="viewcode-back" href="../../../../testing/testing_helpers/num_positional_args.html#ivy_tests.test_ivy.helpers.testing_helpers.num_positional_args">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">num_positional_args</span><span class="p">(</span><span class="n">draw</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws an integers randomly from the minimum and maximum number of positional</span>
+<span class="sd">    arguments a given function can take.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a</span>
+<span class="sd">        given data-set (ex. list).</span>
+<span class="sd">    fn_name</span>
+<span class="sd">        name of the function.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A strategy that can be used in the @given hypothesis decorator.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    @given(</span>
+<span class="sd">        num_positional_args=num_positional_args(fn_name=&quot;floor_divide&quot;)</span>
+<span class="sd">    )</span>
+<span class="sd">    @given(</span>
+<span class="sd">        num_positional_args=num_positional_args(fn_name=&quot;add&quot;)</span>
+<span class="sd">    )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_positional_only</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">num_keyword_only</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fn_name_key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fn_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name_key</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name_key</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;self&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">param</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span><span class="p">:</span>
+            <span class="n">num_positional_only</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">param</span><span class="o">.</span><span class="n">KEYWORD_ONLY</span><span class="p">:</span>
+            <span class="n">num_keyword_only</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">param</span><span class="o">.</span><span class="n">VAR_KEYWORD</span><span class="p">:</span>
+            <span class="n">num_keyword_only</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">nh</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="n">num_positional_only</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="p">(</span><span class="n">total</span> <span class="o">-</span> <span class="n">num_keyword_only</span><span class="p">))</span>
+    <span class="p">)</span></div>
+
+
+<span class="c1"># Decorators helpers</span>
+
+
+<span class="k">def</span> <span class="nf">_import_fn</span><span class="p">(</span><span class="n">fn_tree</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports a function from function tree string</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fn_tree</span>
+<span class="sd">        Full function tree without &quot;ivy&quot; root</span>
+<span class="sd">        example: &quot;functional.backends.jax.creation.arange&quot;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Returns fn_name, imported module, callable function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">split_index</span> <span class="o">=</span> <span class="n">fn_tree</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">fn_name</span> <span class="o">=</span> <span class="n">fn_tree</span><span class="p">[</span><span class="n">split_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+    <span class="n">module_to_import</span> <span class="o">=</span> <span class="n">fn_tree</span><span class="p">[:</span><span class="n">split_index</span><span class="p">]</span>
+    <span class="n">mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module_to_import</span><span class="p">)</span>
+    <span class="n">callable_fn</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">callable_fn</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">module_to_import</span>
+
+
+<span class="k">def</span> <span class="nf">_get_method_supported_devices_dtypes</span><span class="p">(</span>
+    <span class="n">method_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">class_module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get supported devices and data types for a method in Ivy API</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    method_name</span>
+<span class="sd">        Name of the method in the class</span>
+
+<span class="sd">    class_module</span>
+<span class="sd">        Name of the class module</span>
+
+<span class="sd">    class_name</span>
+<span class="sd">        Name of the class</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Returns a dictonary containing supported device types and its supported data types</span>
+<span class="sd">    for the method</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">supported_device_dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">backends</span> <span class="o">=</span> <span class="n">available_frameworks</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">backends</span><span class="p">:</span>  <span class="c1"># ToDo can optimize this ?</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">class_module</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">class_name</span><span class="p">],</span> <span class="n">method_name</span><span class="p">)</span>
+        <span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices_and_dtypes</span><span class="p">(</span><span class="n">_fn</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">supported_device_dtypes</span>
+
+
+<span class="k">def</span> <span class="nf">_get_supported_devices_dtypes</span><span class="p">(</span><span class="n">fn_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fn_module</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get supported devices and data types for a function in Ivy API</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fn_name</span>
+<span class="sd">        Name of the function</span>
+
+<span class="sd">    fn_module</span>
+<span class="sd">        Full import path of the function module</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Returns a dictonary containing supported device types and its supported data types</span>
+<span class="sd">    for the function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">supported_device_dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># This is for getting a private function from numpy frontend where we have</span>
+    <span class="c1"># a ufunc object as we can&#39;t refer to them as functions</span>
+    <span class="k">if</span> <span class="n">fn_module</span> <span class="o">==</span> <span class="s2">&quot;ivy.functional.frontends.numpy&quot;</span><span class="p">:</span>
+        <span class="n">fn_module_</span> <span class="o">=</span> <span class="n">np_frontend</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">fn_module_</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">),</span> <span class="n">fn_module_</span><span class="o">.</span><span class="n">ufunc</span><span class="p">):</span>
+            <span class="n">fn_name</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">fn_name</span>
+
+    <span class="n">backends</span> <span class="o">=</span> <span class="n">available_frameworks</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">backends</span><span class="p">:</span>  <span class="c1"># ToDo can optimize this ?</span>
+
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">_tmp_mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">fn_module</span><span class="p">)</span>
+        <span class="n">_fn</span> <span class="o">=</span> <span class="n">_tmp_mod</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">]</span>
+        <span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices_and_dtypes</span><span class="p">(</span><span class="n">_fn</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">supported_device_dtypes</span>
+
+
+<span class="c1"># Decorators</span>
+
+
+<div class="viewcode-block" id="handle_test"><a class="viewcode-back" href="../../../../testing/testing_helpers/handle_test.html#ivy_tests.test_ivy.helpers.testing_helpers.handle_test">[docs]</a><span class="k">def</span> <span class="nf">handle_test</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">fn_tree</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">ground_truth_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ground_truth</span><span class="p">,</span>
+    <span class="n">number_positional_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">test_instance_method</span><span class="o">=</span><span class="n">BuiltInstanceStrategy</span><span class="p">,</span>
+    <span class="n">test_with_out</span><span class="o">=</span><span class="n">BuiltWithOutStrategy</span><span class="p">,</span>
+    <span class="n">test_gradients</span><span class="o">=</span><span class="n">BuiltGradientStrategy</span><span class="p">,</span>
+    <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">BuiltAsVariableStrategy</span><span class="p">,</span>
+    <span class="n">native_array_flags</span><span class="o">=</span><span class="n">BuiltNativeArrayStrategy</span><span class="p">,</span>
+    <span class="n">container_flags</span><span class="o">=</span><span class="n">BuiltContainerStrategy</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">_given_kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A test wrapper for Ivy functions.</span>
+<span class="sd">    Sets the required test globals and creates test flags strategies.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fn_tree</span>
+<span class="sd">        Full function import path</span>
+
+<span class="sd">    ground_truth_backend</span>
+<span class="sd">        The framework to assert test results are equal to</span>
+
+<span class="sd">    number_positional_args</span>
+<span class="sd">        A search strategy for determining the number of positional arguments to be</span>
+<span class="sd">        passed to the function</span>
+
+<span class="sd">    test_instance_method</span>
+<span class="sd">        A search strategy that generates a boolean to test instance methods</span>
+
+<span class="sd">    test_with_out</span>
+<span class="sd">        A search strategy that generates a boolean to test the function with an `out`</span>
+<span class="sd">        parameter</span>
+
+<span class="sd">    test_gradients</span>
+<span class="sd">        A search strategy that generates a boolean to test the function with arrays as</span>
+<span class="sd">        gradients</span>
+
+<span class="sd">    as_variable_flags</span>
+<span class="sd">        A search strategy that generates a list of boolean flags for array inputs to be</span>
+<span class="sd">        passed as a Variable array</span>
+
+<span class="sd">    native_array_flags</span>
+<span class="sd">        A search strategy that generates a list of boolean flags for array inputs to be</span>
+<span class="sd">        passed as a native array</span>
+
+<span class="sd">    container_flags</span>
+<span class="sd">        A search strategy that generates a list of boolean flags for array inputs to be</span>
+<span class="sd">        passed as a Container</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fn_tree</span> <span class="o">=</span> <span class="s2">&quot;ivy.&quot;</span> <span class="o">+</span> <span class="n">fn_tree</span>
+    <span class="n">is_hypothesis_test</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_given_kwargs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
+        <span class="c1"># Use the default strategy</span>
+        <span class="k">if</span> <span class="n">number_positional_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">number_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span><span class="p">(</span><span class="n">fn_name</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">)</span>
+        <span class="c1"># Generate the test flags strategy</span>
+        <span class="n">test_flags</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">function_flags</span><span class="p">(</span>
+            <span class="n">num_positional_args</span><span class="o">=</span><span class="n">number_positional_args</span><span class="p">,</span>
+            <span class="n">instance_method</span><span class="o">=</span><span class="n">test_instance_method</span><span class="p">,</span>
+            <span class="n">with_out</span><span class="o">=</span><span class="n">test_with_out</span><span class="p">,</span>
+            <span class="n">test_gradients</span><span class="o">=</span><span class="n">test_gradients</span><span class="p">,</span>
+            <span class="n">as_variable</span><span class="o">=</span><span class="n">as_variable_flags</span><span class="p">,</span>
+            <span class="n">native_arrays</span><span class="o">=</span><span class="n">native_array_flags</span><span class="p">,</span>
+            <span class="n">container_flags</span><span class="o">=</span><span class="n">container_flags</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_wrapper</span><span class="p">(</span><span class="n">test_fn</span><span class="p">):</span>
+        <span class="n">callable_fn</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">fn_mod</span> <span class="o">=</span> <span class="n">_import_fn</span><span class="p">(</span><span class="n">fn_tree</span><span class="p">)</span>
+        <span class="n">supported_device_dtypes</span> <span class="o">=</span> <span class="n">_get_supported_devices_dtypes</span><span class="p">(</span><span class="n">fn_name</span><span class="p">,</span> <span class="n">fn_mod</span><span class="p">)</span>
+
+        <span class="c1"># If a test is not a Hypothesis test, we only set the test global data</span>
+        <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
+            <span class="n">param_names</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">test_fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="c1"># Check if these arguments are being asked for</span>
+            <span class="n">possible_arguments</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;test_flags&quot;</span><span class="p">:</span> <span class="n">test_flags</span><span class="p">,</span>
+                <span class="s2">&quot;fn_name&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">fn_name</span><span class="p">),</span>
+                <span class="s2">&quot;ground_truth_backend&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">),</span>
+            <span class="p">}</span>
+            <span class="n">filtered_args</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">possible_arguments</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">filtered_args</span><span class="p">:</span>
+                <span class="n">_given_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">possible_arguments</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="c1"># Wrap the test with the @given decorator</span>
+            <span class="n">wrapped_test</span> <span class="o">=</span> <span class="n">given</span><span class="p">(</span><span class="o">**</span><span class="n">_given_kwargs</span><span class="p">)(</span><span class="n">test_fn</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wrapped_test</span> <span class="o">=</span> <span class="n">test_fn</span>
+
+        <span class="c1"># Set the test data to be used by test helpers</span>
+        <span class="n">wrapped_test</span><span class="o">.</span><span class="n">test_data</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span>
+            <span class="n">test_fn</span><span class="o">=</span><span class="n">wrapped_test</span><span class="p">,</span>
+            <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
+            <span class="n">fn_name</span><span class="o">=</span><span class="n">fn_name</span><span class="p">,</span>
+            <span class="n">supported_device_dtypes</span><span class="o">=</span><span class="n">supported_device_dtypes</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">wrapped_test</span><span class="o">.</span><span class="n">ground_truth_backend</span> <span class="o">=</span> <span class="n">ground_truth_backend</span>
+
+        <span class="k">return</span> <span class="n">wrapped_test</span>
+
+    <span class="k">return</span> <span class="n">test_wrapper</span></div>
+
+
+<div class="viewcode-block" id="handle_frontend_test"><a class="viewcode-back" href="../../../../testing/testing_helpers/handle_frontend_test.html#ivy_tests.test_ivy.helpers.testing_helpers.handle_frontend_test">[docs]</a><span class="k">def</span> <span class="nf">handle_frontend_test</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">fn_tree</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">aliases</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">number_positional_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">test_with_out</span><span class="o">=</span><span class="n">BuiltWithOutStrategy</span><span class="p">,</span>
+    <span class="n">test_inplace</span><span class="o">=</span><span class="n">BuiltInplaceStrategy</span><span class="p">,</span>
+    <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">BuiltAsVariableStrategy</span><span class="p">,</span>
+    <span class="n">native_array_flags</span><span class="o">=</span><span class="n">BuiltNativeArrayStrategy</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">_given_kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A test wrapper for Ivy frontend functions.</span>
+<span class="sd">    Sets the required test globals and creates test flags strategies.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fn_tree</span>
+<span class="sd">        Full function import path</span>
+
+<span class="sd">    number_positional_args</span>
+<span class="sd">        A search strategy for determining the number of positional arguments to be</span>
+<span class="sd">        passed to the function</span>
+
+<span class="sd">    test_inplace</span>
+<span class="sd">        A search strategy that generates a boolean to test the method with `inplace`</span>
+<span class="sd">        update</span>
+
+<span class="sd">    test_with_out</span>
+<span class="sd">        A search strategy that generates a boolean to test the function with an `out`</span>
+<span class="sd">        parameter</span>
+
+<span class="sd">    as_variable_flags</span>
+<span class="sd">        A search strategy that generates a list of boolean flags for array inputs to be</span>
+<span class="sd">        passed as a Variable array</span>
+
+<span class="sd">    native_array_flags</span>
+<span class="sd">        A search strategy that generates a list of boolean flags for array inputs to be</span>
+<span class="sd">        passed as a native array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fn_tree</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.frontends.&quot;</span> <span class="o">+</span> <span class="n">fn_tree</span>
+    <span class="k">if</span> <span class="n">aliases</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">aliases</span><span class="p">)):</span>
+            <span class="n">aliases</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.frontends.&quot;</span> <span class="o">+</span> <span class="n">aliases</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">is_hypothesis_test</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_given_kwargs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
+        <span class="c1"># Use the default strategy</span>
+        <span class="k">if</span> <span class="n">number_positional_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">number_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span><span class="p">(</span><span class="n">fn_name</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">)</span>
+        <span class="c1"># Generate the test flags strategy</span>
+        <span class="n">test_flags</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">frontend_function_flags</span><span class="p">(</span>
+            <span class="n">num_positional_args</span><span class="o">=</span><span class="n">number_positional_args</span><span class="p">,</span>
+            <span class="n">with_out</span><span class="o">=</span><span class="n">test_with_out</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="n">test_inplace</span><span class="p">,</span>
+            <span class="n">as_variable</span><span class="o">=</span><span class="n">as_variable_flags</span><span class="p">,</span>
+            <span class="n">native_arrays</span><span class="o">=</span><span class="n">native_array_flags</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_wrapper</span><span class="p">(</span><span class="n">test_fn</span><span class="p">):</span>
+        <span class="n">callable_fn</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">fn_mod</span> <span class="o">=</span> <span class="n">_import_fn</span><span class="p">(</span><span class="n">fn_tree</span><span class="p">)</span>
+        <span class="n">supported_device_dtypes</span> <span class="o">=</span> <span class="n">_get_supported_devices_dtypes</span><span class="p">(</span><span class="n">fn_name</span><span class="p">,</span> <span class="n">fn_mod</span><span class="p">)</span>
+
+        <span class="c1"># If a test is not a Hypothesis test, we only set the test global data</span>
+        <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
+            <span class="n">param_names</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">test_fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="c1"># Check if these arguments are being asked for</span>
+            <span class="n">possible_arguments</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;test_flags&quot;</span><span class="p">:</span> <span class="n">test_flags</span><span class="p">,</span>
+                <span class="s2">&quot;fn_tree&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">([</span><span class="n">fn_tree</span><span class="p">]</span> <span class="o">+</span> <span class="n">aliases</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">aliases</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">fn_tree</span><span class="p">),</span>
+            <span class="p">}</span>
+            <span class="n">filtered_args</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">possible_arguments</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">filtered_args</span><span class="p">:</span>
+                <span class="c1"># extend Hypothesis given kwargs with our stratigies</span>
+                <span class="n">_given_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">possible_arguments</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="c1"># Wrap the test with the @given decorator</span>
+            <span class="n">wrapped_test</span> <span class="o">=</span> <span class="n">given</span><span class="p">(</span><span class="o">**</span><span class="n">_given_kwargs</span><span class="p">)(</span><span class="n">test_fn</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wrapped_test</span> <span class="o">=</span> <span class="n">test_fn</span>
+
+        <span class="n">wrapped_test</span><span class="o">.</span><span class="n">test_data</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span>
+            <span class="n">test_fn</span><span class="o">=</span><span class="n">wrapped_test</span><span class="p">,</span>
+            <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
+            <span class="n">fn_name</span><span class="o">=</span><span class="n">fn_name</span><span class="p">,</span>
+            <span class="n">supported_device_dtypes</span><span class="o">=</span><span class="n">supported_device_dtypes</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">wrapped_test</span>
+
+    <span class="k">return</span> <span class="n">test_wrapper</span></div>
+
+
+<span class="k">def</span> <span class="nf">_import_method</span><span class="p">(</span><span class="n">method_tree</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">split_index</span> <span class="o">=</span> <span class="n">method_tree</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">class_tree</span><span class="p">,</span> <span class="n">method_name</span> <span class="o">=</span> <span class="n">method_tree</span><span class="p">[:</span><span class="n">split_index</span><span class="p">],</span> <span class="n">method_tree</span><span class="p">[</span><span class="n">split_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+    <span class="n">split_index</span> <span class="o">=</span> <span class="n">class_tree</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">mod_to_import</span><span class="p">,</span> <span class="n">class_name</span> <span class="o">=</span> <span class="n">class_tree</span><span class="p">[:</span><span class="n">split_index</span><span class="p">],</span> <span class="n">class_tree</span><span class="p">[</span><span class="n">split_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+    <span class="n">_mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">mod_to_import</span><span class="p">)</span>
+    <span class="n">_class</span> <span class="o">=</span> <span class="n">_mod</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span>
+    <span class="n">_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_class</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_method</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">_class</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">_mod</span>
+
+
+<div class="viewcode-block" id="handle_method"><a class="viewcode-back" href="../../../../testing/testing_helpers/handle_method.html#ivy_tests.test_ivy.helpers.testing_helpers.handle_method">[docs]</a><span class="k">def</span> <span class="nf">handle_method</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">method_tree</span><span class="p">,</span>
+    <span class="n">ground_truth_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ground_truth</span><span class="p">,</span>
+    <span class="n">test_gradients</span><span class="o">=</span><span class="n">BuiltGradientStrategy</span><span class="p">,</span>
+    <span class="n">init_num_positional_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">init_native_arrays</span><span class="o">=</span><span class="n">BuiltNativeArrayStrategy</span><span class="p">,</span>
+    <span class="n">init_as_variable_flags</span><span class="o">=</span><span class="n">BuiltAsVariableStrategy</span><span class="p">,</span>
+    <span class="n">init_container_flags</span><span class="o">=</span><span class="n">BuiltContainerStrategy</span><span class="p">,</span>
+    <span class="n">method_num_positional_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">method_native_arrays</span><span class="o">=</span><span class="n">BuiltNativeArrayStrategy</span><span class="p">,</span>
+    <span class="n">method_as_variable_flags</span><span class="o">=</span><span class="n">BuiltAsVariableStrategy</span><span class="p">,</span>
+    <span class="n">method_container_flags</span><span class="o">=</span><span class="n">BuiltContainerStrategy</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">_given_kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A test wrapper for Ivy methods.</span>
+<span class="sd">    Sets the required test globals and creates test flags strategies.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    method_tree</span>
+<span class="sd">        Full method import path</span>
+
+<span class="sd">    ground_truth_backend</span>
+<span class="sd">        The framework to assert test results are equal to</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">method_tree</span> <span class="o">=</span> <span class="s2">&quot;ivy.&quot;</span> <span class="o">+</span> <span class="n">method_tree</span>
+    <span class="n">is_hypothesis_test</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_given_kwargs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
+        <span class="n">callable_method</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">method_mod</span> <span class="o">=</span> <span class="n">_import_method</span><span class="p">(</span>
+            <span class="n">method_tree</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">init_num_positional_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">init_num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span><span class="p">(</span>
+                <span class="n">fn_name</span><span class="o">=</span><span class="n">class_name</span> <span class="o">+</span> <span class="s2">&quot;.__init__&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">method_num_positional_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">method_num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args_method</span><span class="p">(</span>
+                <span class="n">method</span><span class="o">=</span><span class="n">callable_method</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_wrapper</span><span class="p">(</span><span class="n">test_fn</span><span class="p">):</span>
+        <span class="n">supported_device_dtypes</span> <span class="o">=</span> <span class="n">_get_method_supported_devices_dtypes</span><span class="p">(</span>
+            <span class="n">method_name</span><span class="p">,</span> <span class="n">method_mod</span><span class="p">,</span> <span class="n">class_name</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
+            <span class="n">param_names</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">test_fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+            <span class="n">init_flags</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">method_flags</span><span class="p">(</span>
+                <span class="n">num_positional_args</span><span class="o">=</span><span class="n">init_num_positional_args</span><span class="p">,</span>
+                <span class="n">as_variable</span><span class="o">=</span><span class="n">init_as_variable_flags</span><span class="p">,</span>
+                <span class="n">native_arrays</span><span class="o">=</span><span class="n">init_native_arrays</span><span class="p">,</span>
+                <span class="n">container_flags</span><span class="o">=</span><span class="n">init_container_flags</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">method_flags</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">method_flags</span><span class="p">(</span>
+                <span class="n">num_positional_args</span><span class="o">=</span><span class="n">method_num_positional_args</span><span class="p">,</span>
+                <span class="n">as_variable</span><span class="o">=</span><span class="n">method_as_variable_flags</span><span class="p">,</span>
+                <span class="n">native_arrays</span><span class="o">=</span><span class="n">method_native_arrays</span><span class="p">,</span>
+                <span class="n">container_flags</span><span class="o">=</span><span class="n">method_container_flags</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">possible_arguments</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;class_name&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">class_name</span><span class="p">),</span>
+                <span class="s2">&quot;init_flags&quot;</span><span class="p">:</span> <span class="n">init_flags</span><span class="p">,</span>
+                <span class="s2">&quot;method_flags&quot;</span><span class="p">:</span> <span class="n">method_flags</span><span class="p">,</span>
+                <span class="s2">&quot;test_gradients&quot;</span><span class="p">:</span> <span class="n">test_gradients</span><span class="p">,</span>
+                <span class="s2">&quot;method_name&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">method_name</span><span class="p">),</span>
+                <span class="s2">&quot;ground_truth_backend&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">),</span>
+            <span class="p">}</span>
+
+            <span class="n">filtered_args</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">possible_arguments</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">filtered_args</span><span class="p">:</span>
+                <span class="c1"># extend Hypothesis given kwargs with our strategies</span>
+                <span class="n">_given_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">possible_arguments</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+            <span class="n">wrapped_test</span> <span class="o">=</span> <span class="n">given</span><span class="p">(</span><span class="o">**</span><span class="n">_given_kwargs</span><span class="p">)(</span><span class="n">test_fn</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wrapped_test</span> <span class="o">=</span> <span class="n">test_fn</span>
+
+        <span class="n">wrapped_test</span><span class="o">.</span><span class="n">test_data</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span>
+            <span class="n">test_fn</span><span class="o">=</span><span class="n">wrapped_test</span><span class="p">,</span>
+            <span class="n">fn_tree</span><span class="o">=</span><span class="n">method_tree</span><span class="p">,</span>
+            <span class="n">fn_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
+            <span class="n">supported_device_dtypes</span><span class="o">=</span><span class="n">supported_device_dtypes</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">wrapped_test</span><span class="o">.</span><span class="n">ground_truth_backend</span> <span class="o">=</span> <span class="n">ground_truth_backend</span>
+
+        <span class="k">return</span> <span class="n">wrapped_test</span>
+
+    <span class="k">return</span> <span class="n">test_wrapper</span></div>
+
+
+<div class="viewcode-block" id="handle_frontend_method"><a class="viewcode-back" href="../../../../testing/testing_helpers/handle_frontend_method.html#ivy_tests.test_ivy.helpers.testing_helpers.handle_frontend_method">[docs]</a><span class="k">def</span> <span class="nf">handle_frontend_method</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">class_tree</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">init_tree</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">method_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">init_num_positional_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">init_native_arrays</span><span class="o">=</span><span class="n">BuiltNativeArrayStrategy</span><span class="p">,</span>
+    <span class="n">init_as_variable_flags</span><span class="o">=</span><span class="n">BuiltAsVariableStrategy</span><span class="p">,</span>
+    <span class="n">method_num_positional_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">method_native_arrays</span><span class="o">=</span><span class="n">BuiltNativeArrayStrategy</span><span class="p">,</span>
+    <span class="n">method_as_variable_flags</span><span class="o">=</span><span class="n">BuiltAsVariableStrategy</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">_given_kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A test wrapper for Ivy frontends methods.</span>
+<span class="sd">    Sets the required test globals and creates test flags strategies.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    class_tree</span>
+<span class="sd">        Full class import path</span>
+
+<span class="sd">    init_tree</span>
+<span class="sd">        Full import path for the function used to create the class</span>
+
+<span class="sd">    method_name</span>
+<span class="sd">        Name of the method</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">split_index</span> <span class="o">=</span> <span class="n">init_tree</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">framework_init_module</span> <span class="o">=</span> <span class="n">init_tree</span><span class="p">[:</span><span class="n">split_index</span><span class="p">]</span>
+    <span class="n">ivy_init_module</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ivy.functional.frontends.</span><span class="si">{</span><span class="n">init_tree</span><span class="p">[:</span><span class="n">split_index</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">init_name</span> <span class="o">=</span> <span class="n">init_tree</span><span class="p">[</span><span class="n">split_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+    <span class="n">init_tree</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ivy.functional.frontends.</span><span class="si">{</span><span class="n">init_tree</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">is_hypothesis_test</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_given_kwargs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+
+    <span class="n">split_index</span> <span class="o">=</span> <span class="n">class_tree</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">class_module_path</span><span class="p">,</span> <span class="n">class_name</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">class_tree</span><span class="p">[:</span><span class="n">split_index</span><span class="p">],</span>
+        <span class="n">class_tree</span><span class="p">[</span><span class="n">split_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:],</span>
+    <span class="p">)</span>
+    <span class="n">class_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">class_module_path</span><span class="p">)</span>
+    <span class="n">method_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">class_module</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
+        <span class="n">callable_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">method_class</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">init_num_positional_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">init_num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span><span class="p">(</span><span class="n">fn_name</span><span class="o">=</span><span class="n">init_tree</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+
+        <span class="k">if</span> <span class="n">method_num_positional_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">method_num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args_method</span><span class="p">(</span>
+                <span class="n">method</span><span class="o">=</span><span class="n">callable_method</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_wrapper</span><span class="p">(</span><span class="n">test_fn</span><span class="p">):</span>
+        <span class="n">supported_device_dtypes</span> <span class="o">=</span> <span class="n">_get_method_supported_devices_dtypes</span><span class="p">(</span>
+            <span class="n">method_name</span><span class="p">,</span> <span class="n">class_module</span><span class="p">,</span> <span class="n">class_name</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
+            <span class="n">param_names</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">test_fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="n">init_flags</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">frontend_method_flags</span><span class="p">(</span>
+                <span class="n">num_positional_args</span><span class="o">=</span><span class="n">init_num_positional_args</span><span class="p">,</span>
+                <span class="n">as_variable</span><span class="o">=</span><span class="n">init_as_variable_flags</span><span class="p">,</span>
+                <span class="n">native_arrays</span><span class="o">=</span><span class="n">init_native_arrays</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">method_flags</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">frontend_method_flags</span><span class="p">(</span>
+                <span class="n">num_positional_args</span><span class="o">=</span><span class="n">method_num_positional_args</span><span class="p">,</span>
+                <span class="n">as_variable</span><span class="o">=</span><span class="n">method_as_variable_flags</span><span class="p">,</span>
+                <span class="n">native_arrays</span><span class="o">=</span><span class="n">method_native_arrays</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">frontend_helper_data</span> <span class="o">=</span> <span class="n">FrontendMethodData</span><span class="p">(</span>
+                <span class="n">ivy_init_module</span><span class="o">=</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">ivy_init_module</span><span class="p">),</span>
+                <span class="n">framework_init_module</span><span class="o">=</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">framework_init_module</span><span class="p">),</span>
+                <span class="n">init_name</span><span class="o">=</span><span class="n">init_name</span><span class="p">,</span>
+                <span class="n">method_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">possible_arguments</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;init_flags&quot;</span><span class="p">:</span> <span class="n">init_flags</span><span class="p">,</span>
+                <span class="s2">&quot;method_flags&quot;</span><span class="p">:</span> <span class="n">method_flags</span><span class="p">,</span>
+                <span class="s2">&quot;frontend_method_data&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">frontend_helper_data</span><span class="p">),</span>
+            <span class="p">}</span>
+
+            <span class="n">filtered_args</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">possible_arguments</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">filtered_args</span><span class="p">:</span>
+                <span class="c1"># extend Hypothesis given kwargs with our strategies</span>
+                <span class="n">_given_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">possible_arguments</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">wrapped_test</span> <span class="o">=</span> <span class="n">given</span><span class="p">(</span><span class="o">**</span><span class="n">_given_kwargs</span><span class="p">)(</span><span class="n">test_fn</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wrapped_test</span> <span class="o">=</span> <span class="n">test_fn</span>
+
+        <span class="n">wrapped_test</span><span class="o">.</span><span class="n">test_data</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span>
+            <span class="n">test_fn</span><span class="o">=</span><span class="n">wrapped_test</span><span class="p">,</span>
+            <span class="n">fn_tree</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">init_tree</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">method_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">fn_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
+            <span class="n">supported_device_dtypes</span><span class="o">=</span><span class="n">supported_device_dtypes</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">wrapped_test</span>
+
+    <span class="k">return</span> <span class="n">test_wrapper</span></div>
+
+
+<div class="viewcode-block" id="seed"><a class="viewcode-back" href="../../../../testing/testing_helpers/seed.html#ivy_tests.test_ivy.helpers.testing_helpers.seed">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">seed</span><span class="p">(</span><span class="n">draw</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">8</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2023, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

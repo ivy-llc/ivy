@@ -156,8 +156,80 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="globals">
-<h1>Globals<a class="headerlink" href="#globals" title="Permalink to this heading"></a></h1>
+  <section id="module-ivy_tests.test_ivy.helpers.globals">
+<span id="globals"></span><h1>Globals<a class="headerlink" href="#module-ivy_tests.test_ivy.helpers.globals" title="Permalink to this heading"></a></h1>
+<p>A state holder for testing, this is only intended to hold and store
+testing data to be used by the test helpers to prune unsupported data.
+Should not be used inside any of the test functions.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.InterruptedTest">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.globals.</span></span><span class="sig-name descname"><span class="pre">InterruptedTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_interruped</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/globals.html#InterruptedTest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.InterruptedTest" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException</span></code></p>
+<p>Used to indicate that a test tried to write global attributes
+while a test is running.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.InterruptedTest.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_interruped</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/globals.html#InterruptedTest.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.InterruptedTest.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.TestData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.globals.</span></span><span class="sig-name descname"><span class="pre">TestData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn_tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supported_device_dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/globals.html#TestData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.TestData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.TestData.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn_tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supported_device_dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.TestData.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.TestData.fn_name">
+<span class="sig-name descname"><span class="pre">fn_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.TestData.fn_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.TestData.fn_tree">
+<span class="sig-name descname"><span class="pre">fn_tree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.TestData.fn_tree" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.TestData.supported_device_dtypes">
+<span class="sig-name descname"><span class="pre">supported_device_dtypes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.TestData.supported_device_dtypes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.TestData.test_fn">
+<span class="sig-name descname"><span class="pre">test_fn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">callable</span></em><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.TestData.test_fn" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.remove_all_current_framework">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.globals.</span></span><span class="sig-name descname"><span class="pre">remove_all_current_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">framework</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/globals.html#remove_all_current_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.remove_all_current_framework" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.setup_api_test">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.globals.</span></span><span class="sig-name descname"><span class="pre">setup_api_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_backend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/globals.html#setup_api_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.setup_api_test" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.setup_frontend_test">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.globals.</span></span><span class="sig-name descname"><span class="pre">setup_frontend_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frontend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/globals.html#setup_frontend_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.setup_frontend_test" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.teardown_api_test">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.globals.</span></span><span class="sig-name descname"><span class="pre">teardown_api_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/globals.html#teardown_api_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.teardown_api_test" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.globals.teardown_frontend_test">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.globals.</span></span><span class="sig-name descname"><span class="pre">teardown_frontend_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/globals.html#teardown_frontend_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.globals.teardown_frontend_test" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
 </section>

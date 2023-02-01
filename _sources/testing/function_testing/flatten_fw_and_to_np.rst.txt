@@ -1,4 +1,4 @@
 flatten_fw_and_to_np
 ====================
 
-.. autofunction:: tests.test_ivy.helpers.function_testing.flatten_fw_and_to_np
+.. autofunction:: ivy_tests.test_ivy.helpers.function_testing.flatten_fw_and_to_np

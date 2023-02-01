@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stateful/norms.html">Norms</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../nested_array/nested_array.html">Nested array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../testing/testing_helpers.html">Testing helpers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">hypothesis</span> <span class="kn">import</span> <span class="n">strategies</span> <span class="k">as</span> <span class="n">st</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">number_helpers</span> <span class="k">as</span> <span class="n">nh</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">array_helpers</span> <span class="k">as</span> <span class="n">ah</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="nb">globals</span> <span class="k">as</span> <span class="n">test_globals</span>
+
+
+<div class="viewcode-block" id="get_dtypes"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/dtype_helpers/get_dtypes.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_dtypes">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">get_dtypes</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prune_function</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws a valid dtypes for the test function. For frontend tests,</span>
+<span class="sd">    it draws the data types from the intersection between backend</span>
+<span class="sd">    framework data types and frontend framework dtypes, otherwise,</span>
+<span class="sd">    draws it from backend framework data types.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    kind</span>
+<span class="sd">        Supported types are integer, float, valid, numeric, signed_integer, complex,</span>
+<span class="sd">        real_and_complex, float_and_complex, bool, and unsigned</span>
+<span class="sd">    index</span>
+<span class="sd">        list indexing incase a test needs to be skipped for a particular dtype(s)</span>
+<span class="sd">    full</span>
+<span class="sd">        returns the complete list of valid types</span>
+<span class="sd">    none</span>
+<span class="sd">        allow none in the list of valid types</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        dtype string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_get_type_dict</span><span class="p">(</span><span class="n">framework</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;valid&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;numeric&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_numeric_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;float&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;integer&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_int_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;unsigned&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_uint_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;signed_integer&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_int_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_uint_dtypes</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;complex&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_complex_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;real_and_complex&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_numeric_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
+                    <span class="n">framework</span><span class="o">.</span><span class="n">valid_complex_dtypes</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;float_and_complex&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_complex_dtypes</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;bool&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_numeric_dtypes</span><span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="c1"># TODO refactor this so we run the interesection in a chained clean way</span>
+    <span class="n">backend_dtypes</span> <span class="o">=</span> <span class="n">_get_type_dict</span><span class="p">(</span><span class="n">ivy</span><span class="p">)[</span><span class="n">kind</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span><span class="p">:</span>  <span class="c1"># NOQA</span>
+        <span class="n">fw_dtypes</span> <span class="o">=</span> <span class="n">_get_type_dict</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span><span class="p">())[</span><span class="n">kind</span><span class="p">]</span>
+        <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fw_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">backend_dtypes</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="n">backend_dtypes</span>
+
+    <span class="n">ground_truth_is_set</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span>  <span class="c1"># NOQA</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">ground_truth_is_set</span><span class="p">:</span>
+        <span class="n">gtb_dtypes</span> <span class="o">=</span> <span class="n">_get_type_dict</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span><span class="p">())[</span><span class="n">kind</span><span class="p">]</span>
+        <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">gtb_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">))</span>
+
+    <span class="c1"># TODO, do this in a better way...</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">prune_function</span>
+        <span class="ow">and</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span>
+    <span class="p">):</span>  <span class="c1"># NOQA</span>
+        <span class="n">fn_dtypes</span> <span class="o">=</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span><span class="o">.</span><span class="n">supported_device_dtypes</span>
+        <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+            <span class="n">fn_dtypes</span><span class="p">[</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_BACKEND</span><span class="p">()</span><span class="o">.</span><span class="n">backend</span><span class="p">][</span><span class="s2">&quot;cpu&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">ground_truth_is_set</span><span class="p">:</span>
+            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="n">valid_dtypes</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+                    <span class="n">fn_dtypes</span><span class="p">[</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span><span class="p">()</span><span class="o">.</span><span class="n">backend</span><span class="p">][</span>
+                        <span class="s2">&quot;cpu&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">none</span><span class="p">:</span>
+        <span class="n">valid_dtypes</span> <span class="o">+=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span>
+    <span class="k">if</span> <span class="n">full</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">[</span><span class="n">index</span><span class="p">:])</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">[</span><span class="n">index</span><span class="p">:]))]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">[</span><span class="n">index</span><span class="p">:]),</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">))]</span></div>
+
+
+<div class="viewcode-block" id="array_dtypes"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/dtype_helpers/array_dtypes.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.array_dtypes">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">array_dtypes</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">num_arrays</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">nh</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;num_arrays&quot;</span><span class="p">),</span>
+    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
+    <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">array_api_dtypes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws a list of data types.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    num_arrays</span>
+<span class="sd">        number of data types to be drawn.</span>
+<span class="sd">    available_dtypes</span>
+<span class="sd">        universe of available data types.</span>
+<span class="sd">    shared_dtype</span>
+<span class="sd">        if True, all data types in the list are same.</span>
+<span class="sd">    array_api_dtypes</span>
+<span class="sd">        if True, use data types that can be promoted with the array_api_promotion</span>
+<span class="sd">        table.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A strategy that draws a list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">_internal</span><span class="o">.</span><span class="n">SearchStrategy</span><span class="p">):</span>
+        <span class="n">available_dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">num_arrays</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num_arrays</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">ah</span><span class="o">.</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">),</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">shared_dtype</span><span class="p">:</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">ah</span><span class="o">.</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">),</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">dtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">unwanted_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">all_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">array_api_dtypes</span><span class="p">:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_api_promotion_table</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promotion_table</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="c1"># added to avoid complex dtypes from being sampled if they are not available.</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="p">[</span><span class="n">pair</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span> <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">d</span> <span class="ow">in</span> <span class="n">available_dtypes</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">pair</span><span class="p">])]</span>
+        <span class="n">available_dtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pair</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">d</span> <span class="ow">in</span> <span class="n">pair</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">unwanted_types</span><span class="p">])</span>
+        <span class="p">]</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">num_arrays</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">dtypes</span> <span class="o">+=</span> <span class="p">[</span><span class="n">dtypes</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_arrays</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">dtypes</span></div>
+
+
+<div class="viewcode-block" id="get_castable_dtype"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/dtype_helpers/get_castable_dtype.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_castable_dtype">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">get_castable_dtype</span><span class="p">(</span><span class="n">draw</span><span class="p">,</span> <span class="n">available_dtypes</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws castable dtypes for the given dtype based on the current backend.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draw</span>
+<span class="sd">        Special function that draws data randomly (but is reproducible) from a given</span>
+<span class="sd">        data-set (ex. list).</span>
+<span class="sd">    available_dtypes</span>
+<span class="sd">        Castable data types are drawn from this list randomly.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        Data type from which to cast.</span>
+<span class="sd">    x</span>
+<span class="sd">        Optional list of values to cast.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        A tuple of inputs and castable dtype.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bound_dtype_bits</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_bits</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_complex_dtype</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_bits</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">cast_filter</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+            <span class="n">max_val</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
+        <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_complex_dtype</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+            <span class="n">max_val</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">max_val</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
+                <span class="n">max_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
+            <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_complex_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
+                <span class="n">max_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">max_x</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">max_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">max_x</span> <span class="o">&lt;=</span> <span class="n">max_val</span> <span class="ow">and</span> <span class="n">bound_dtype_bits</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">bound_dtype_bits</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="n">cast_dtype</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">cast_filter</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">cast_dtype</span>
+    <span class="k">if</span> <span class="s2">&quot;uint&quot;</span> <span class="ow">in</span> <span class="n">cast_dtype</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">cast_dtype</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2023, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

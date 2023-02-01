@@ -1,4 +1,4 @@
 get_dtypes
 ==========
 
-.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_dtypes
+.. autofunction:: ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_dtypes
