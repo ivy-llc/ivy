@@ -1,4 +1,5 @@
 # global
+from hypothesis import assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -31,12 +32,13 @@ def test_numpy_cos(
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    assume(not ("float16" in input_dtypes))
+    assume(not (dtype == "float16"))
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -78,12 +80,13 @@ def test_numpy_tan(
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    assume(not ("float16" in input_dtypes))
+    assume(not (dtype == "float16"))
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -125,12 +128,13 @@ def test_numpy_arcsin(
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    assume(not ("float16" in input_dtypes))
+    assume(not (dtype == "float16"))
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -174,12 +178,15 @@ def test_numpy_arccos(
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    # as ufuncs are objects we need to filter unsupported dtypes
+    #  ToDo we should do this in the decorator
+    assume(not ("float16" in input_dtypes))
+    assume(not (dtype == "float16"))
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -222,13 +229,14 @@ def test_numpy_arctan(
     fn_tree,
     on_device,
 ):
-    input_dtypes, x, casting, dtypes = dtypes_values_casting
-    where, input_dtypes, test_flags =\
-            np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    assume(not ("float16" in input_dtypes))
+    assume(not (dtype == "float16"))
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -270,12 +278,11 @@ def test_numpy_rad2deg(
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -319,12 +326,11 @@ def test_numpy_deg2rad(
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
