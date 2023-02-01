@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # nanmedian
 @handle_frontend_test(
     fn_tree="numpy.nanmedian",
-    dtype_and_a=statistical_dtype_values(function="median"),
+    dtype_and_a=statistical_dtype_values(function="nanmedian"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
@@ -31,11 +31,10 @@ def test_numpy_nanmedian(
     input_dtype, a, axis = dtype_and_a
     if isinstance(axis, tuple):
         axis = axis[0]
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
