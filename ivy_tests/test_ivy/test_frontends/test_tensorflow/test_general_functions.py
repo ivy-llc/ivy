@@ -1081,7 +1081,7 @@ def test_tensorflow_slice(
             on_device=on_device,
             input_=x[0],
             begin=begin,
-            size=end-begin,
+            size=end - begin,
         )
     except Exception as e:
         if hasattr(e, "message"):
