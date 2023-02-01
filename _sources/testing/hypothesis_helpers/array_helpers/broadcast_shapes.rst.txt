@@ -1,0 +1,4 @@
+broadcast_shapes
+================
+
+.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.array_helpers.broadcast_shapes

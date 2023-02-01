@@ -1,0 +1,4 @@
+ground_truth
+============
+
+.. autofunction:: tests.test_ivy.helpers.available_frameworks.ground_truth

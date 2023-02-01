@@ -1,0 +1,17 @@
+Dtype helpers
+=============
+
+.. automodule:: tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:
+
+.. toctree::
+	:hidden:
+	:maxdepth: -1
+	:caption: dtype_helpers
+
+	dtype_helpers/array_dtypes.rst
+	dtype_helpers/get_castable_dtype.rst
+	dtype_helpers/get_dtypes.rst

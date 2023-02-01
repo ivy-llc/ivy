@@ -1,0 +1,8 @@
+FrontendMethodData
+==================
+
+.. autoclass:: tests.test_ivy.helpers.structs.FrontendMethodData
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:

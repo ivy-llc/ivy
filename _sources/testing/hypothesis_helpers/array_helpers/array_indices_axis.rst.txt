@@ -1,0 +1,4 @@
+array_indices_axis
+==================
+
+.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_indices_axis

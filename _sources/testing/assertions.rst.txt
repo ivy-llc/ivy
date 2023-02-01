@@ -1,0 +1,21 @@
+Assertions
+==========
+
+.. automodule:: tests.test_ivy.helpers.assertions
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:
+
+.. toctree::
+	:hidden:
+	:maxdepth: -1
+	:caption: assertions
+
+	assertions/assert_all_close.rst
+	assertions/assert_same_type_and_shape.rst
+	assertions/check_unsupported_device.rst
+	assertions/check_unsupported_device_and_dtype.rst
+	assertions/check_unsupported_dtype.rst
+	assertions/test_unsupported_function.rst
+	assertions/value_test.rst

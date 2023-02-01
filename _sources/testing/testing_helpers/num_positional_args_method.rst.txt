@@ -1,0 +1,4 @@
+num_positional_args_method
+==========================
+
+.. autofunction:: tests.test_ivy.helpers.testing_helpers.num_positional_args_method

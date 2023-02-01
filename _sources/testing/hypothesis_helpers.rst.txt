@@ -1,0 +1,19 @@
+Hypothesis helpers
+==================
+
+.. automodule:: tests.test_ivy.helpers.hypothesis_helpers
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:
+
+
+.. toctree::
+	:hidden:
+	:maxdepth: -1
+	:caption: hypothesis_helpers
+
+	hypothesis_helpers/array_helpers.rst
+	hypothesis_helpers/dtype_helpers.rst
+	hypothesis_helpers/general_helpers.rst
+	hypothesis_helpers/number_helpers.rst

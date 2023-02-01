@@ -1,0 +1,4 @@
+gradient_unsupported_dtypes
+===========================
+
+.. autofunction:: tests.test_ivy.helpers.function_testing.gradient_unsupported_dtypes

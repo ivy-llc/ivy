@@ -1,0 +1,24 @@
+General helpers
+===============
+
+.. automodule:: tests.test_ivy.helpers.hypothesis_helpers.general_helpers
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:
+
+.. toctree::
+	:hidden:
+	:maxdepth: -1
+	:caption: general_helpers
+
+	general_helpers/apply_safety_factor.rst
+	general_helpers/embedding_helper.rst
+	general_helpers/get_axis.rst
+	general_helpers/get_bounds.rst
+	general_helpers/get_mean_std.rst
+	general_helpers/get_shape.rst
+	general_helpers/matrix_is_stable.rst
+	general_helpers/reshape_shapes.rst
+	general_helpers/subsets.rst
+	general_helpers/x_and_filters.rst

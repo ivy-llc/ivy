@@ -1,0 +1,4 @@
+gradient_incompatible_function
+==============================
+
+.. autofunction:: tests.test_ivy.helpers.function_testing.gradient_incompatible_function

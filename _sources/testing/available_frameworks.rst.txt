@@ -1,0 +1,16 @@
+Available frameworks
+====================
+
+.. automodule:: tests.test_ivy.helpers.available_frameworks
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:
+
+.. toctree::
+	:hidden:
+	:maxdepth: -1
+	:caption: available_frameworks
+
+	available_frameworks/available_frameworks.rst
+	available_frameworks/ground_truth.rst

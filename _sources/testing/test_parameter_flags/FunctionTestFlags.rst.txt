@@ -1,0 +1,8 @@
+FunctionTestFlags
+=================
+
+.. autoclass:: tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:

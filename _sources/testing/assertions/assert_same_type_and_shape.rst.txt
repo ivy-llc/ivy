@@ -1,0 +1,4 @@
+assert_same_type_and_shape
+==========================
+
+.. autofunction:: tests.test_ivy.helpers.assertions.assert_same_type_and_shape

@@ -1,0 +1,27 @@
+Array helpers
+=============
+
+.. automodule:: tests.test_ivy.helpers.hypothesis_helpers.array_helpers
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:
+
+.. toctree::
+	:hidden:
+	:maxdepth: -1
+	:caption: array_helpers
+
+	array_helpers/array_and_broadcastable_shape.rst
+	array_helpers/array_bools.rst
+	array_helpers/array_indices_axis.rst
+	array_helpers/array_values.rst
+	array_helpers/arrays_and_axes.rst
+	array_helpers/arrays_for_pooling.rst
+	array_helpers/broadcast_shapes.rst
+	array_helpers/dtype_and_values.rst
+	array_helpers/dtype_values_axis.rst
+	array_helpers/list_of_length.rst
+	array_helpers/lists.rst
+	array_helpers/mutually_broadcastable_shapes.rst
+	array_helpers/prod.rst

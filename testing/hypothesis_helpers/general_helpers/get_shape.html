@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>get_shape &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="matrix_is_stable" href="matrix_is_stable.html" />
+    <link rel="prev" title="get_mean_std" href="get_mean_std.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../nested_array/nested_array.html">Nested array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../globals.html">Globals</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../hypothesis_helpers.html">Hypothesis helpers</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../array_helpers.html">Array helpers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dtype_helpers.html">Dtype helpers</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../general_helpers.html">General helpers</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="apply_safety_factor.html">apply_safety_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="embedding_helper.html">embedding_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="get_axis.html">get_axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="get_bounds.html">get_bounds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="get_mean_std.html">get_mean_std</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">get_shape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="matrix_is_stable.html">matrix_is_stable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reshape_shapes.html">reshape_shapes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subsets.html">subsets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="x_and_filters.html">x_and_filters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../number_helpers.html">Number helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing_helpers.html">Testing helpers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../hypothesis_helpers.html">Hypothesis helpers</a> &raquo;</li>
+          <li><a href="../general_helpers.html">General helpers</a> &raquo;</li>
+      <li>get_shape</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/testing/hypothesis_helpers/general_helpers/get_shape.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="get-shape">
+<h1>get_shape<a class="headerlink" href="#get-shape" title="Permalink to this heading"></a></h1>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="get_mean_std.html" class="btn btn-neutral float-left" title="get_mean_std" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="matrix_is_stable.html" class="btn btn-neutral float-right" title="matrix_is_stable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2023, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

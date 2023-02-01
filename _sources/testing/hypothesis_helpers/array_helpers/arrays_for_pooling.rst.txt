@@ -1,0 +1,4 @@
+arrays_for_pooling
+==================
+
+.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.array_helpers.arrays_for_pooling

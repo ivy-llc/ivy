@@ -1,0 +1,4 @@
+get_frontend_ret
+================
+
+.. autofunction:: tests.test_ivy.helpers.function_testing.get_frontend_ret

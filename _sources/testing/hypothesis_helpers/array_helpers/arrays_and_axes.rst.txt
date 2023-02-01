@@ -1,0 +1,4 @@
+arrays_and_axes
+===============
+
+.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.array_helpers.arrays_and_axes

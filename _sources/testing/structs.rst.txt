@@ -1,0 +1,15 @@
+Structs
+=======
+
+.. automodule:: tests.test_ivy.helpers.structs
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:
+
+.. toctree::
+	:hidden:
+	:maxdepth: -1
+	:caption: structs
+
+	structs/FrontendMethodData.rst

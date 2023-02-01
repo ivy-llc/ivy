@@ -1,0 +1,4 @@
+test_unsupported_function
+=========================
+
+.. autofunction:: tests.test_ivy.helpers.assertions.test_unsupported_function

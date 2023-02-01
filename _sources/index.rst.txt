@@ -345,6 +345,21 @@ Citation
 .. toctree::
    :hidden:
    :maxdepth: -1
+   :caption: Testing
+
+   testing/assertions.rst
+   testing/available_frameworks.rst
+   testing/function_testing.rst
+   testing/globals.rst
+   testing/hypothesis_helpers.rst
+   testing/structs.rst
+   testing/test_parameter_flags.rst
+   testing/testing_helpers.rst
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
    :caption: Docs
 
    docs/ivy.rst

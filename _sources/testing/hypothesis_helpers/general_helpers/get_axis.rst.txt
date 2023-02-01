@@ -1,0 +1,4 @@
+get_axis
+========
+
+.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.general_helpers.get_axis

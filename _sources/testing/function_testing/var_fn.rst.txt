@@ -1,0 +1,4 @@
+var_fn
+======
+
+.. autofunction:: tests.test_ivy.helpers.function_testing.var_fn

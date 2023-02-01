@@ -1,0 +1,4 @@
+get_castable_dtype
+==================
+
+.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_castable_dtype

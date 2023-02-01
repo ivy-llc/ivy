@@ -1,0 +1,4 @@
+seed
+====
+
+.. autofunction:: tests.test_ivy.helpers.testing_helpers.seed

@@ -1,0 +1,21 @@
+Testing helpers
+===============
+
+.. automodule:: tests.test_ivy.helpers.testing_helpers
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:
+
+.. toctree::
+	:hidden:
+	:maxdepth: -1
+	:caption: testing_helpers
+
+	testing_helpers/handle_frontend_method.rst
+	testing_helpers/handle_frontend_test.rst
+	testing_helpers/handle_method.rst
+	testing_helpers/handle_test.rst
+	testing_helpers/num_positional_args.rst
+	testing_helpers/num_positional_args_method.rst
+	testing_helpers/seed.rst

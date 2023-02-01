@@ -1,0 +1,4 @@
+as_cont
+=======
+
+.. autofunction:: tests.test_ivy.helpers.function_testing.as_cont

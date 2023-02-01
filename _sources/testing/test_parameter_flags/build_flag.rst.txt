@@ -1,0 +1,4 @@
+build_flag
+==========
+
+.. autofunction:: tests.test_ivy.helpers.test_parameter_flags.build_flag

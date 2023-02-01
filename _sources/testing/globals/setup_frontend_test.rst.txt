@@ -1,0 +1,4 @@
+setup_frontend_test
+===================
+
+.. autofunction:: tests.test_ivy.helpers.globals.setup_frontend_test

@@ -1,0 +1,4 @@
+flatten
+=======
+
+.. autofunction:: tests.test_ivy.helpers.function_testing.flatten

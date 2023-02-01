@@ -1,0 +1,4 @@
+mutually_broadcastable_shapes
+=============================
+
+.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.array_helpers.mutually_broadcastable_shapes

@@ -1,0 +1,8 @@
+InterruptedTest
+===============
+
+.. autoclass:: tests.test_ivy.helpers.globals.InterruptedTest
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:

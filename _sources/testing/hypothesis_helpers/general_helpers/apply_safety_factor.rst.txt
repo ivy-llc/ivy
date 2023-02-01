@@ -1,0 +1,4 @@
+apply_safety_factor
+===================
+
+.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.general_helpers.apply_safety_factor

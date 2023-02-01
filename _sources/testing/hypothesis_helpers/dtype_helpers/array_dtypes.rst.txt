@@ -1,0 +1,4 @@
+array_dtypes
+============
+
+.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.array_dtypes

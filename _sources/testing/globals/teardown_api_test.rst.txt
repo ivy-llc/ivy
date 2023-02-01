@@ -1,0 +1,4 @@
+teardown_api_test
+=================
+
+.. autofunction:: tests.test_ivy.helpers.globals.teardown_api_test

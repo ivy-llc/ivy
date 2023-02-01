@@ -1,0 +1,17 @@
+Number helpers
+==============
+
+.. automodule:: tests.test_ivy.helpers.hypothesis_helpers.number_helpers
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:
+
+.. toctree::
+	:hidden:
+	:maxdepth: -1
+	:caption: number_helpers
+
+	number_helpers/floats.rst
+	number_helpers/ints.rst
+	number_helpers/number.rst

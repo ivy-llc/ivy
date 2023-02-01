@@ -1,0 +1,4 @@
+test_frontend_method
+====================
+
+.. autofunction:: tests.test_ivy.helpers.function_testing.test_frontend_method

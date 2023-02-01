@@ -1,0 +1,4 @@
+check_unsupported_device
+========================
+
+.. autofunction:: tests.test_ivy.helpers.assertions.check_unsupported_device

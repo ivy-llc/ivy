@@ -1,0 +1,23 @@
+Test parameter flags
+====================
+
+.. automodule:: tests.test_ivy.helpers.test_parameter_flags
+	:members:
+	:special-members: __init__
+	:undoc-members:
+	:show-inheritance:
+
+.. toctree::
+	:hidden:
+	:maxdepth: -1
+	:caption: test_parameter_flags
+
+	test_parameter_flags/build_flag.rst
+	test_parameter_flags/frontend_function_flags.rst
+	test_parameter_flags/frontend_method_flags.rst
+	test_parameter_flags/function_flags.rst
+	test_parameter_flags/method_flags.rst
+	test_parameter_flags/FrontendFunctionTestFlags.rst
+	test_parameter_flags/FrontendMethodTestFlags.rst
+	test_parameter_flags/FunctionTestFlags.rst
+	test_parameter_flags/MethodTestFlags.rst

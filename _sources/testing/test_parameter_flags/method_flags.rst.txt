@@ -1,0 +1,4 @@
+method_flags
+============
+
+.. autofunction:: tests.test_ivy.helpers.test_parameter_flags.method_flags

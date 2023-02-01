@@ -1,0 +1,4 @@
+gradient_test
+=============
+
+.. autofunction:: tests.test_ivy.helpers.function_testing.gradient_test

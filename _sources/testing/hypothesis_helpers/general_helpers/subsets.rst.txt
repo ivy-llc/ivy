@@ -1,0 +1,4 @@
+subsets
+=======
+
+.. autofunction:: tests.test_ivy.helpers.hypothesis_helpers.general_helpers.subsets
