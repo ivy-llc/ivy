@@ -10,37 +10,55 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_out,
 )
 
-
 def nanmedian(
     a,
     /,
-    *,
+     *,
     axis=None,
     keepdims=False,
     out=None,
-    dtype=None,
-    where=True,
+    overwrite_input=False
 ):
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
 
-    if not any(is_nan):
-        if dtype:
-            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-        ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out)
-
-        if ivy.is_array(where):
-            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    if not ivy.any(is_nan):
+        ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input)
     else:
-        a = [i for i in a if ivy.isnan(i) == False]
+        a = [i for i in a if ivy.isnan(i) is False]
+        ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input)
 
-        if dtype:
-            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-        ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out)
-
-        if ivy.is_array(where):
-            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+# def nanmedian(
+#     a,
+#     /,
+#     *,
+#     axis=None,
+#     keepdims=False,
+#     out=None,
+#     dtype=None,
+#     where=True,
+# ):
+#     is_nan = ivy.isnan(a)
+#     axis = tuple(axis) if isinstance(axis, list) else axis
+
+#     if not any(is_nan):
+#         if dtype:
+#             a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+#         ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out)
+
+#         if ivy.is_array(where):
+#             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+#     else:
+#         a = [i for i in a if ivy.isnan(i) == False]
+
+#         if dtype:
+#             a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+#         ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out)
+
+#         if ivy.is_array(where):
+#             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+#     return ret
 
 
 nanmedian.support_native_out = True
