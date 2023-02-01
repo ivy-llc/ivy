@@ -61,3 +61,19 @@ def multinomial(n, pvals, size=None):
     else:
         num_samples = len(pvals)
     return ivy.multinomial(n, num_samples, batch_size=batch_size, probs=pvals)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def permutation(x):
+    if isinstance(x, int):
+        new_array = ivy.arange(x)
+        ivy.random.shuffle(new_array)
+        return new_array
+    elif isinstance(x, str):
+        return "IndexError: x must be an integer " \
+               "or at least 1-dimensional"
+    else:
+        new_array = x
+        ivy.random.shuffle(new_array)
+        return new_array
