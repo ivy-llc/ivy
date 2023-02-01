@@ -34,7 +34,6 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     return ivy.clip(t, clip_value_min, clip_value_max)
 
 
-@handle_tf_dtype
 @to_ivy_arrays_and_back
 def clip_by_norm(t, clip_norm, axes=None):
     t = ivy.array(t)
