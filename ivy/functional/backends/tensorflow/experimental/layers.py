@@ -45,7 +45,7 @@ def max_pool2d(
     dilation = (
         (dilation[0],) * 2
         if isinstance(dilation, tuple) and len(dilation) == 1
-        else tuple(dilation)
+        else dilation
     )
     kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
     if not isinstance(padding, str):
