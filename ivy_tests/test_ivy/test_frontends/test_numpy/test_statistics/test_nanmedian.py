@@ -1,10 +1,30 @@
 # global
 import ivy
 
+# global
+from hypothesis import strategies as st
+import numpy as np
+
 # local
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
+# local
+import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    statistical_dtype_values,
+)
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+
+# nanmedian
+@handle_frontend_test(
+    fn_tree="numpy.nanmedian",
+    dtype_and_a=statistical_dtype_values(function="median"),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    where=np_frontend_helpers.where(),
+    keep_dims=st.booleans(),
+)
 def test_numpy_nanmedian(
     dtype_and_a,
     dtype,
