@@ -12,8 +12,8 @@ import ivy
 
 
 # nanmedian
-@given
 @handle_frontend_test(
+    fn_tree="numpy.nanmedian",
     dtype_and_a=statistical_dtype_values(function="median"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
