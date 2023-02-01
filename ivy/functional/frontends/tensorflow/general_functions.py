@@ -86,6 +86,7 @@ def einsum(equation, *inputs, **kwargs):
 
 @to_ivy_arrays_and_back
 def reshape(tensor, shape, name=None):
+    shape = shape.to_list() if ivy.is_array(shape) else shape
     return ivy.reshape(tensor, shape=shape)
 
 
@@ -272,6 +273,11 @@ def strided_slice(
                     end_i = int(end[i])
                 full_slice += (slice(begin_i, end_i, int(strides[i])),)
     return input_[full_slice]
+
+
+@to_ivy_arrays_and_back
+def slice(input_, begin, size, name=None):
+    return strided_slice(input_, begin, begin + size, [1] * len(size))
 
 
 @to_ivy_arrays_and_back
