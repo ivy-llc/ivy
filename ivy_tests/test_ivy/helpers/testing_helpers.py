@@ -210,7 +210,6 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         if isinstance(getattr(fn_module_, fn_name), fn_module_.ufunc):
             fn_name = "_" + fn_name
 
-
     backends = available_frameworks()
     for b in backends:  # ToDo can optimize this ?
 

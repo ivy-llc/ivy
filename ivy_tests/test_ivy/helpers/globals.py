@@ -111,7 +111,7 @@ def _get_ivy_jax(version=None):
     else:
         try:
             import ivy.functional.backends.jax
-        except ImportError as e:
+        except ImportError:
             return None
     return ivy.functional.backends.jax
 
