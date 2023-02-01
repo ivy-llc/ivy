@@ -10,6 +10,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_out,
 )
 
+
 def nanmedian(a, /, *, axis=None, keepdims=False, out=None, overwrite_input=False):
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis

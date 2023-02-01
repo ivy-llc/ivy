@@ -65,6 +65,7 @@ def test_numpy_nanmedian(
         test_values=False,
     )
 
+
 # mean
 @handle_frontend_test(
     fn_tree="numpy.mean",
