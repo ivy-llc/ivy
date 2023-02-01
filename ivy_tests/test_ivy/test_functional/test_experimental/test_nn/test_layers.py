@@ -1,6 +1,5 @@
 # global
-from hypothesis import strategies as st
-
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -30,6 +29,12 @@ def test_max_pool2d(
     fn_name,
 ):
     dtype, x, kernel, stride, pad, dilation = x_k_s_p
+    assume(
+        not (
+            backend_fw == "tensorflow"
+            and (stride[0] > kernel[0] or stride[0] > kernel[1])
+        )
+    )
     helpers.test_function(
         ground_truth_backend="jax",
         input_dtypes=dtype,

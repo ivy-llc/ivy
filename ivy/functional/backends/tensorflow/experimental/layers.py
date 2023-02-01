@@ -4,6 +4,7 @@ import tensorflow as tf
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
+from ivy.functional.ivy.layers import _handle_padding
 
 
 def max_pool1d(
@@ -47,10 +48,18 @@ def max_pool2d(
         if isinstance(dilation, tuple) and len(dilation) == 1
         else dilation
     )
-    kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
-    if not isinstance(padding, str):
-        padding = [(0, 0)] + padding + [(0, 0)]
-    res = tf.nn.max_pool2d(x, kernel, strides, padding)
+    strides = (
+        (strides[0],) * 2
+        if isinstance(strides, (list, tuple)) and len(strides) == 1
+        else strides
+    )
+    if isinstance(padding, str):
+        pad_h = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
+        pad_w = _handle_padding(x.shape[2], strides[1], kernel[1], padding)
+        padding = [(pad_h // 2, pad_h - pad_h // 2), (pad_w // 2, pad_w - pad_w // 2)]
+    padding = [(0, 0)] + padding + [(0, 0)]
+    x = tf.pad(x, padding, constant_values=-math.inf)
+    res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res
