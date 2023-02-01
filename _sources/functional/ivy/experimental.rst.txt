@@ -43,6 +43,7 @@ Experimental
    experimental/hsplit.rst
    experimental/broadcast_shapes.rst
    experimental/expand.rst
+   experimental/bind_custom_gradient_function.rst
    experimental/dirichlet.rst
    experimental/beta.rst
    experimental/gamma.rst
