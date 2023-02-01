@@ -34,6 +34,26 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     return ivy.clip(t, clip_value_min, clip_value_max)
 
 
+@to_ivy_arrays_and_back
+def clip_by_norm(t, clip_norm, axes=None):
+    ivy.assertions.check_all_or_any_fn(
+        clip_norm,
+        fn=ivy.exists,
+        type="all",
+        message="clip_value_min and clip_value_max must exist",
+    )
+    t = ivy.array(t)
+    l2sum = ivy.sum(t * t, axis=axes, keepdims=True)
+    pred = l2sum > 0
+
+    l2sum_safe = ivy.where(pred, l2sum, ivy.ones_like(l2sum))
+    l2norm = ivy.where(pred, ivy.sqrt(l2sum_safe), l2sum)
+    intermediate = t * clip_norm
+    assert t.shape == intermediate.shape, ("Dimensions %s and %s are not compatible" % (t.shape, intermediate.shape))
+    t_clip = intermediate / ivy.maximum(l2norm, clip_norm)
+    return t_clip
+
+
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
@@ -124,16 +144,16 @@ def concat(values, axis, name=None):
 
 @to_ivy_arrays_and_back
 def matmul(
-    a,
-    b,
-    transpose_a=False,
-    transpose_b=False,
-    adjoint_a=False,
-    adjoint_b=False,
-    a_is_sparse=False,
-    b_is_sparse=False,
-    output_type=None,
-    name=None,
+        a,
+        b,
+        transpose_a=False,
+        transpose_b=False,
+        adjoint_a=False,
+        adjoint_b=False,
+        a_is_sparse=False,
+        b_is_sparse=False,
+        output_type=None,
+        name=None,
 ):
     return ivy.matmul(a, b)
 
@@ -227,17 +247,17 @@ def transpose(a, perm=None, conjugate=False, name="transpose"):
 
 @to_ivy_arrays_and_back
 def strided_slice(
-    input_,
-    begin,
-    end,
-    strides=None,
-    begin_mask=0,
-    end_mask=0,
-    ellipsis_mask=0,
-    new_axis_mask=0,
-    shrink_axis_mask=0,
-    var=None,
-    name=None,
+        input_,
+        begin,
+        end,
+        strides=None,
+        begin_mask=0,
+        end_mask=0,
+        ellipsis_mask=0,
+        new_axis_mask=0,
+        shrink_axis_mask=0,
+        var=None,
+        name=None,
 ):
     def num_to_bit_list(number):
         return list(map(int, "{:0{size}b}".format(number, size=len(input_.shape))))
@@ -298,14 +318,14 @@ def tile(input, multiples, name=None):
 
 @to_ivy_arrays_and_back
 def one_hot(
-    indices: ivy.array,
-    depth: int,
-    on_value=None,
-    off_value=None,
-    axis=None,
-    dtype=None,
-    device=None,
-    out=None,
+        indices: ivy.array,
+        depth: int,
+        on_value=None,
+        off_value=None,
+        axis=None,
+        dtype=None,
+        device=None,
+        out=None,
 ):
     return ivy.one_hot(indices, depth)
 
