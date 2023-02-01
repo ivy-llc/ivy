@@ -35,6 +35,7 @@ def test_numpy_Generator_multinomial(
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
+            # ToDo: to fix this temporary placeholder for BitGenerator
             "bit_generator": np.random.PCG64(),
         },
         method_input_dtypes=dtype,
