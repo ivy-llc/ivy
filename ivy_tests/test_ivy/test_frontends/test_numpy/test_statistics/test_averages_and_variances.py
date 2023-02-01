@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, strategies as st, assume
+from hypothesis import strategies as st, assume
 import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -8,7 +8,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-import ivy
 
 
 # nanmedian
@@ -32,7 +31,7 @@ def test_numpy_nanmedian(
     input_dtype, a, axis = dtype_and_a
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=test_flags.as_variable,
