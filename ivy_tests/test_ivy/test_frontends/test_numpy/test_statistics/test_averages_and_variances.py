@@ -18,9 +18,6 @@ import ivy
     dtype_and_a=statistical_dtype_values(function="median"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    # num_positional_args=helpers.num_positional_args(
-    #     fn_name="ivy.functional.frontends.numpy.nanmedian"
-    # ),
     keep_dims=st.booleans(),
 )
 def test_numpy_nanmedian(
