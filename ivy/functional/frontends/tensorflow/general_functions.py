@@ -34,14 +34,9 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     return ivy.clip(t, clip_value_min, clip_value_max)
 
 
+@handle_tf_dtype
 @to_ivy_arrays_and_back
 def clip_by_norm(t, clip_norm, axes=None):
-    ivy.assertions.check_all_or_any_fn(
-        clip_norm,
-        fn=ivy.exists,
-        type="all",
-        message="clip_value_min and clip_value_max must exist",
-    )
     t = ivy.array(t)
     l2sum = ivy.sum(t * t, axis=axes, keepdims=True)
     pred = l2sum > 0
