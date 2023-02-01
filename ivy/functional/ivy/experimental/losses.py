@@ -1,14 +1,14 @@
 # local
 import ivy
 from typing import Optional, Union
-from ivy.func_wrapper import handle_nestable, handle_array_like
+from ivy.func_wrapper import handle_nestable, handle_array_like_without_promotion
 from ivy.exceptions import handle_exceptions
 from ivy.functional.ivy.losses import _reduce_loss
 
 
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def binary_cross_entropy_with_logits(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],

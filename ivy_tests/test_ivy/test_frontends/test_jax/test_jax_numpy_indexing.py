@@ -33,10 +33,7 @@ def test_jax_numpy_diagonal(
     *,
     dtype_and_values,
     dims_and_offset,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -52,10 +49,7 @@ def test_jax_numpy_diagonal(
         assume(axis1 != axis2 + num_of_dims)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -92,13 +86,12 @@ def _diag_helper(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.diag",
     dtype_x_k=_diag_helper(),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_diag(
     *,
     dtype_x_k,
-    num_positional_args,
-    as_variable,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -106,10 +99,7 @@ def test_jax_numpy_diag(
     dtype, x, k = dtype_x_k
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,

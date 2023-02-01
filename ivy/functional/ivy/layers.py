@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List, Callable
+from typing import Optional, Tuple, Union, Callable, Sequence
 
 # local
 import ivy
@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -25,7 +25,7 @@ from ivy.exceptions import handle_exceptions
 
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -168,17 +168,19 @@ def linear(
 # Dropout #
 
 
+@handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
     /,
     *,
     scale: bool = True,
-    dtype: ivy.Dtype = None,
-    training_mode: bool = True,
-    seed: int = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    training: bool = True,
+    seed: Optional[int] = None,
+    noise_shape: Sequence[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -194,10 +196,21 @@ def dropout(
     prob
         The probability of zeroing out each array element, float between 0 and 1.
     scale
-        Whether to scale the output by `1/(1-prob)`, default is ``True``.
+        Whether to scale the output by `1/(1-prob)`. Default is ``True``.
     dtype
         output array data type. If dtype is None, the output array data type
-        must be inferred from x. Default: ``None``.
+        must be inferred from x. Default is ``None``.
+    training
+        Turn on dropout if training, turn off otherwise. Default is ``True``.
+    seed
+        Set a default seed for random number generating (for reproducibility). Default
+        is ``None``.
+    noise_shape
+        a sequence representing the shape of the binary dropout mask that will be
+        multiplied with the input. A shape dimension set to None means that a different
+        mask value will be applied to each element of the input across that dimension. A
+        dimension set to 1 means the same mask value will be applied to all elements of
+        the input across that dimension.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -205,7 +218,11 @@ def dropout(
     Returns
     -------
     ret
-        Result array of the output after dropout is performed.
+        Result array after dropout is performed.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -236,7 +253,7 @@ def dropout(
     ...                [4., 5., 6.],
     ...                [7., 8., 9.],
     ...                [10., 11., 12.]])
-    >>> y = ivy.dropout(x,0.3,scale=Flase)
+    >>> y = ivy.dropout(x,0.3,scale=False)
     >>> print(y)
     ivy.array([[ 1.,  2., 3.],
                [ 4.,  5., 0.],
@@ -296,19 +313,24 @@ def dropout(
                       [7., 0., 0.]])
     }
     """
-    if prob == 0 or not training_mode:
+    if prob == 0 or not training:
         if dtype is not None:
             x = ivy.astype(x, dtype)
         return x if not ivy.exists(out) else ivy.inplace_update(out, x)
-    mask = (
-        ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype, seed=seed)
-        < prob
+    if noise_shape is None:
+        noise_shape = x.shape
+    else:
+        noise_shape = list(noise_shape)
+        for i, v in enumerate(noise_shape):
+            if v is None:
+                noise_shape[i] = x.shape[i]
+    mask = ivy.where(
+        ivy.random_uniform(shape=noise_shape, device=ivy.dev(x), dtype=dtype, seed=seed)
+        < prob,
+        0,
+        1,
     )
-    x = ivy.where(
-        mask,
-        ivy.zeros_like(x, dtype=dtype),
-        x,
-    )
+    x = x * mask
     if scale:
         x = ivy.multiply(x, 1 / (1 - prob), out=out)
     return x if not ivy.exists(out) else ivy.inplace_update(out, x)
@@ -318,7 +340,7 @@ def dropout(
 
 
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -522,7 +544,7 @@ def scaled_dot_product_attention(
 
 
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale: float,
@@ -757,16 +779,16 @@ def multi_head_attention(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: int,
-    padding: str,
+    strides: Union[int, Tuple[int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
-    dilations: int = 1,
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D convolution given 3-D input x and filters arrays.
@@ -780,8 +802,9 @@ def conv1d(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     data_format
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
@@ -796,6 +819,10 @@ def conv1d(
     -------
     ret
         The result of the convolution operation.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -845,17 +872,17 @@ def conv1d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: int,
-    padding: str,
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: str = "NWC",
-    dilations: int = 1,
+    data_format: Optional[str] = "NWC",
+    dilations: Optional[int] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
@@ -869,8 +896,9 @@ def conv1d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -904,16 +932,16 @@ def conv1d_transpose(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-@handle_array_like
+@handle_array_like_without_promotion
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    strides: Union[int, Tuple[int, int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D convolution given 4-D input x and filters arrays.
@@ -927,8 +955,9 @@ def conv2d(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     data_format
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
@@ -1031,17 +1060,17 @@ def conv2d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    strides: Union[int, Tuple[int, int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: str = "NHWC",
-    dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
@@ -1055,8 +1084,9 @@ def conv2d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1080,18 +1110,19 @@ def conv2d_transpose(
 
     Examples
     --------
-
     With :class:`ivy.Array` input:
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
     >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     (1, 56, 56, 6)
+
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 128, 64])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[1, 1, 64, 64])
     >>> ivy.conv2d_transpose(x, filters, 1, 'VALID', out=x)
     >>> print(x.shape)
     (1, 128, 128, 64)
+
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])
     >>> y = ivy.zeros_like(x)
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])
@@ -1147,16 +1178,16 @@ def conv2d_transpose(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: Union[str, List[int]],
+    strides: Union[int, Tuple[int, int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: str = "NHWC",
-    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1171,8 +1202,9 @@ def depthwise_conv2d(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     data_format
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
@@ -1283,15 +1315,15 @@ def depthwise_conv2d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv3d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     strides: Union[int, Tuple[int, int, int]],
-    padding: str,
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: str = "NDHWC",
+    data_format: Optional[str] = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1306,8 +1338,9 @@ def conv3d(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     data_format
         The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
         corresponds to inputs with shape (batch_size, depth, height, width, channels),
@@ -1397,16 +1430,16 @@ def conv3d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, List[int]],
+    strides: Union[int, Tuple[int, int, int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: str = "NDHWC",
+    data_format: Optional[str] = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1421,8 +1454,9 @@ def conv3d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1504,19 +1538,23 @@ def conv3d_transpose(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, List[int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: int = 2,
-    data_format: str = "channel_last",
-    feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dims: Optional[int] = 2,
+    data_format: Optional[str] = "channel_last",
+    feature_group_count: Optional[int] = 1,
+    x_dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1532,8 +1570,9 @@ def conv_general_dilated(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     dims
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     data_format
@@ -1577,19 +1616,21 @@ def conv_general_dilated(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, List[int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: int = 2,
+    dims: Optional[int] = 2,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: str = "channel_last",
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    feature_group_count: int = 1,
+    data_format: Optional[str] = "channel_last",
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    feature_group_count: Optional[int] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1605,16 +1646,21 @@ def conv_general_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     dims
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
+    output_shape
+        Shape of the output.
     data_format
         Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
         "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
         while "channel_last" corresponds to "NWC", "NHWC", "NDHWC" respectively.
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    feature_group_count
+         split input into groups, d_in should be divisible by the number of groups.
     bias
         Bias array of shape *[d_out]*.
     out
@@ -1643,21 +1689,25 @@ def conv_general_transpose(
 
 @handle_out_argument
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, List[int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    transpose: bool = False,
-    dims: int = 2,
+    transpose: Optional[bool] = False,
+    dims: Optional[int] = 2,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: str = "channel_last",
-    feature_group_count: int = 1,
-    x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
-    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    data_format: Optional[str] = "channel_last",
+    feature_group_count: Optional[int] = 1,
+    x_dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
+    dilations: Optional[
+        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+    ] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1673,8 +1723,9 @@ def conv(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
     transpose
         True for computing transpose convolution, and False for dilated convolution.
         When True, `x_dilations` must be 1 (the default).
@@ -1741,7 +1792,7 @@ def conv(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],
@@ -1849,10 +1900,10 @@ def _handle_padding(x, strides, filters, padding):
 
 def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
-    if padding == "VALID":
-        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == "SAME":
+    if padding == "SAME":
         dim_size = dim_size * stride_size
+    else:
+        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
     return dim_size
 
 

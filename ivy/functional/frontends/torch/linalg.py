@@ -19,6 +19,11 @@ def diagonal(A, *, offset=0, dim1=-2, dim2=-1):
 
 
 @to_ivy_arrays_and_back
+def divide(input, other, *, rounding_mode=None, out=None):
+    return ivy.divide(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
 def inv(input, *, out=None):
     return ivy.inv(input, out=out)
 
@@ -170,3 +175,9 @@ def eig(input, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def solve(input, other, *, out=None):
     return ivy.solve(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def tensorsolve(A, B, dims=None, *, out=None):
+    return ivy.tensorsolve(A, B, axes=dims, out=out)
