@@ -460,7 +460,7 @@ class ModuleConverters:
                             ]
                         )
                     ),
-                    dynamic_backend = False
+                    dynamic_backend=False
                 )
 
             @staticmethod

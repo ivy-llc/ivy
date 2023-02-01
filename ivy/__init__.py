@@ -1065,6 +1065,7 @@ def unset_nan_policy():
 
 # Dynamic Backend
 
+
 def get_dynamic_backend():
     """Returns the current dynamic backend setting, with the default being True"""
     global dynamic_backend_stack
@@ -1073,6 +1074,7 @@ def get_dynamic_backend():
     else:
         return dynamic_backend_stack[-1]
 
+
 def set_dynamic_backend(flag):
     """Sets the global dynamic backend setting to the provided flag (True or False)"""
     global dynamic_backend_stack
@@ -1080,15 +1082,19 @@ def set_dynamic_backend(flag):
         raise ValueError("dynamic_backend must be a boolean value (True or False)")
     dynamic_backend_stack.append(flag)
 
+
 def unset_dynamic_backend():
-    """Removes the current dynamic backend setting, restoring the previous setting (if any)"""
+    """
+    Removes the current dynamic backend setting,
+    restoring the previous setting (if any)
+    """
     global dynamic_backend_stack
     if dynamic_backend_stack:
         dynamic_backend_stack.pop()
 
 
-
 # Context Managers
+
 
 class DynamicBackendContext:
     def __init__(self, value):
@@ -1103,6 +1109,7 @@ class DynamicBackendContext:
         unset_dynamic_backend()
         if self.original is not None:
             set_dynamic_backend(self.original)
+
 
 def dynamic_backend_as(value):
     return DynamicBackendContext(value)

@@ -47,6 +47,8 @@ def _repr(x):
         return str(x)
 
 # noinspection PyMissingConstructor
+
+
 class ContainerBase(dict, abc.ABC):
     def __init__(
         self,
@@ -1577,7 +1579,7 @@ class ContainerBase(dict, abc.ABC):
         self._config = new_config
 
     def cont_inplace_update(
-        self, dict_in: Union[ivy.Container, dict],**config
+        self, dict_in: Union[ivy.Container, dict], **config
     ) -> ivy.Container:
         """Update the contents of this container inplace, using either a new dict or
         container.
@@ -4029,7 +4031,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
 
-        def _map_fn(fn,x):
+        def _map_fn(fn, x):
             x = x.data if isinstance(x, ivy.Array) else x
             return fn(x)
 
@@ -4041,7 +4043,7 @@ class ContainerBase(dict, abc.ABC):
             from ivy.functional.ivy.gradients import _variable
             from ivy.backend_handler import _determine_backend_from_args
 
-            if val == False:
+            if not val:
                 self._backend = _determine_backend_from_args(self)
             else:
                 is_variable = self._backend.is_variable
@@ -4052,11 +4054,11 @@ class ContainerBase(dict, abc.ABC):
                     x = x.data if isinstance(x, ivy.Array) else x
                     return is_variable(x)
 
-                is_var = self.cont_map(lambda x,kc: _is_var(x)).cont_all_true()
-                if is_var and \
-                        not (str(self._backend).__contains__("jax") or
-                             str(self._backend).__contains__("numpy")
-                        ):
+                is_var = self.cont_map(lambda x, kc: _is_var(x)).cont_all_true()
+                if is_var and not (
+                        str(self._backend).__contains__("jax")
+                        or str(self._backend).__contains__("numpy")
+                ):
                     self.cont_map(lambda x, kc: _map_fn(variable_data, x), inplace=True)
                     self.cont_map(lambda x, kc: _map_fn(to_numpy, x), inplace=True)
                     self.cont_map(lambda x, kc: _map_fn(ivy.array, x), inplace=True)
@@ -4195,4 +4197,3 @@ class ContainerBase(dict, abc.ABC):
     @dynamic_backend.setter
     def dynamic_backend(self, value):
         self._dynamic_backend = value
-

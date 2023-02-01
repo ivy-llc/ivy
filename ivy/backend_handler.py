@@ -31,7 +31,8 @@ _array_types["numpy"] = "ivy.functional.backends.numpy"
 _array_types["jax.interpreters.xla"] = "ivy.functional.backends.jax"
 _array_types["jaxlib.xla_extension"] = "ivy.functional.backends.jax"
 _array_types["tensorflow.python.framework.ops"] = "ivy.functional.backends.tensorflow"
-_array_types["tensorflow.python.ops.resource_variable_ops"] = "ivy.functional.backends.tensorflow"
+_array_types["tensorflow.python.ops.resource_variable_ops"] = \
+    "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
 _array_types["torch.nn.parameter"] = "ivy.functional.backends.torch"
 
@@ -52,11 +53,16 @@ _static_backend_dict = dict()
 # Backend Getting/Setting #
 # ----------------------- #
 
+
 def _load_static_backends():
-    _static_backend_dict["ivy.functional.backends.numpy"] = importlib.import_module("ivy.functional.backends.numpy")
-    _static_backend_dict["ivy.functional.backends.torch"] = importlib.import_module("ivy.functional.backends.torch")
-    _static_backend_dict["ivy.functional.backends.jax"] = importlib.import_module("ivy.functional.backends.jax")
-    _static_backend_dict["ivy.functional.backends.tensorflow"] = importlib.import_module("ivy.functional.backends.tensorflow")
+    _static_backend_dict["ivy.functional.backends.numpy"] = \
+        importlib.import_module("ivy.functional.backends.numpy")
+    _static_backend_dict["ivy.functional.backends.torch"] = \
+        importlib.import_module("ivy.functional.backends.torch")
+    _static_backend_dict["ivy.functional.backends.jax"] = \
+        importlib.import_module("ivy.functional.backends.jax")
+    _static_backend_dict["ivy.functional.backends.tensorflow"] = \
+        importlib.import_module("ivy.functional.backends.tensorflow")
 
 
 def _determine_backend_from_args(args):
@@ -107,6 +113,7 @@ def _determine_backend_from_args(args):
             if not _static_backend_dict:
                 return importlib.import_module(module_name)
             return _static_backend_dict[module_name]
+
 
 def fn_name_from_version_specific_fn_name(name, version):
     """
@@ -179,6 +186,7 @@ def set_backend_to_specific_version(backend):
                 backend.__dict__[orig_name] = backend.__dict__[key]
                 backend.__dict__[orig_name].__name__ = orig_name
 
+
 def current_backend(*args, **kwargs):
     """Returns the current backend. Priorities:
     global_backend > argument's backend.
@@ -229,21 +237,26 @@ def current_backend(*args, **kwargs):
         verbosity.cprint("Using backend from type: {}".format(f))
     return importlib.import_module(_backend_dict[implicit_backend])
 
+
 variable_ids = set()  # create an empty set to store variable object ids
-numpy_objs = []  # create an empty list to store numpy objects created during 1st conversion step
+numpy_objs = []  # create an empty list to store numpy objects
+# created during 1st conversion step
+
 
 def convert_from_source_backend_to_numpy():
 
     # Dynamic Backend
     from ivy.functional.ivy.gradients import _is_variable, _variable_data
     global variable_ids, numpy_objs
+
     def _is_var(obj):
 
         if isinstance(obj, ivy.Container):
             def _map_fn(x):
 
                 x = x.data if isinstance(x, ivy.Array) else x
-                if x.__class__.__module__ in ("numpy", "jax.interpreters.xla", "jaxlib.xla_extension"):
+                if x.__class__.__module__ in \
+                        ("numpy", "jax.interpreters.xla", "jaxlib.xla_extension"):
                     return False
 
                 return _is_variable(x)
@@ -252,23 +265,28 @@ def convert_from_source_backend_to_numpy():
 
         else:
             obj = obj.data if isinstance(obj, ivy.Array) else obj
-            if obj.__class__.__module__ in ("numpy", "jax.interpreters.xla", "jaxlib.xla_extension"):
+            if obj.__class__.__module__ in \
+                    ("numpy", "jax.interpreters.xla", "jaxlib.xla_extension"):
                 return False
             return _is_variable(obj)
 
     def _remove_intermediate_arrays(arr_list, cont_list):
         cont_list = [cont.cont_to_flat_list() for cont in cont_list]
 
-        cont_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item) for cont in cont_list for item in cont]
-        arr_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item) for item in arr_list]
+        cont_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item)
+                    for cont in cont_list for item in cont]
+        arr_ids = [id(item.data) if isinstance(item, ivy.Array) else id(item)
+                   for item in arr_list]
 
         new_objs = {k: v for k, v in zip(arr_ids, arr_list) if k not in cont_ids}
 
         return list(new_objs.values())
 
     # get all ivy array and container instances in the project scope
-    array_list, container_list = [[obj for obj in gc.get_objects() if isinstance(obj, obj_type)] for obj_type in
-                                  (ivy.Array, ivy.Container)]
+    array_list, container_list = [[obj for obj in gc.get_objects()
+                                   if isinstance(obj, obj_type)]
+                                  for obj_type in (ivy.Array, ivy.Container)
+                                  ]
 
     # filter uninitialized arrays
     array_list = [arr for arr in array_list if arr.__dict__]
@@ -277,7 +295,8 @@ def convert_from_source_backend_to_numpy():
     new_objs = _remove_intermediate_arrays(array_list, container_list)
     new_objs += container_list
 
-    # now convert all ivy.Array and ivy.Container instances to numpy using the current backend
+    # now convert all ivy.Array and ivy.Container instances
+    # to numpy using the current backend
     for obj in new_objs:
 
         if obj.dynamic_backend:
@@ -395,6 +414,7 @@ def set_backend(backend: str, dynamic: bool = False):
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
+
 
 def set_numpy_backend():
     """Sets NumPy to be the global backend. equivalent to `ivy.set_backend("numpy")`."""

@@ -19,16 +19,19 @@ import numpy as np
 
 
 backends = ["numpy", "torch", "tensorflow", "jax"]
-backend_combinations  = [(a,b) for a in backends  for b in backends if a != b]
+backend_combinations = [(a, b) for a in backends for b in backends if a != b]
+
 
 @pytest.mark.parametrize("middle_backend,end_backend", backend_combinations)
-def test_dynamic_backend_all_combos( middle_backend, end_backend):
+def test_dynamic_backend_all_combos(middle_backend, end_backend):
 
     # create an ivy array, container and native container
     a = ivy.array([1, 2, 3])
     b = ivy.array([4, 5, 6])
     ivy_cont = ivy.Container({"w": a, "b": b})
-    nativ_cont = ivy.Container({"w": tf.Variable([1, 2, 3]), "b": tf.Variable([4, 5, 6])})
+    nativ_cont = ivy.Container(
+        {"w": tf.Variable([1, 2, 3]), "b": tf.Variable([4, 5, 6])}
+    )
 
     # clear the backend stack after initialization of inputs
     ivy.clear_backend_stack()
@@ -51,7 +54,8 @@ def test_dynamic_backend_all_combos( middle_backend, end_backend):
     # set the final backend
     ivy.set_backend(end_backend, dynamic=True)
 
-    # add the necessary asserts to check if the data of the objects are in the correct format
+    # add the necessary asserts to check if the data
+    # of the objects are in the correct format
 
     if end_backend == "numpy":
         assert isinstance(a.data, np.ndarray)
@@ -62,7 +66,6 @@ def test_dynamic_backend_all_combos( middle_backend, end_backend):
     elif end_backend == "tensorflow":
         assert isinstance(a.data, tf.Tensor)
 
-
     if end_backend == "numpy":
         assert isinstance(ivy_cont['b'].data, np.ndarray)
     elif end_backend == "torch":
@@ -72,15 +75,16 @@ def test_dynamic_backend_all_combos( middle_backend, end_backend):
     elif end_backend == "tensorflow":
         assert isinstance(ivy_cont['b'].data, tf.Tensor)
 
-
     if end_backend == "numpy":
         assert isinstance(nativ_cont['b'].data, np.ndarray)
     elif end_backend == "jax":
         assert isinstance(nativ_cont['b'].data, jax.interpreters.xla.DeviceArray)
 
-    if middle_backend not in ("jax", "numpy"): # these frameworks don't support native variables
+    if middle_backend not in ("jax", "numpy"):
+        # these frameworks don't support native variables
         if end_backend == "torch":
-            assert isinstance(nativ_cont['b'].data, torch.Tensor) and nativ_cont['b'].data.requires_grad == True
+            assert isinstance(nativ_cont['b'].data, torch.Tensor) \
+                   and nativ_cont['b'].data.requires_grad is True
         if end_backend == "tensorflow":
             assert isinstance(nativ_cont['b'].data, tf.Variable)
 
@@ -93,7 +97,7 @@ def test_dynamic_backend_all_combos( middle_backend, end_backend):
 
 def test_dynamic_backend_setter():
 
-    a = ivy.array([1,2,3])
+    a = ivy.array([1, 2, 3])
     type_a = type(a.data)
     a.dynamic_backend = False
 
@@ -109,9 +113,10 @@ def test_dynamic_backend_setter():
     ivy.set_backend("torch", dynamic=True)
     assert isinstance(a.data, torch.Tensor)
 
+
 def test_variables():
 
-    #clear the backend stack
+    # clear the backend stack
     ivy.clear_backend_stack()
 
     ivy.set_backend("tensorflow", dynamic=True)
@@ -125,7 +130,7 @@ def test_variables():
 
     ivy.set_backend("torch", dynamic=True)
     assert isinstance(dyn_cont["w"].data, torch.Tensor) and \
-           dyn_cont["w"].data.requires_grad == True
+           dyn_cont["w"].data.requires_grad is True
 
     assert isinstance(stat_cont["w"], tf.Variable)
 
@@ -140,8 +145,7 @@ def test_dynamic_backend_context_manager():
         c = ivy.array([4., 5.])
         d = ivy.array([6., 7.])
 
-
-    assert a.dynamic_backend == True
-    assert b.dynamic_backend == True
-    assert c.dynamic_backend == False
-    assert d.dynamic_backend == False
+    assert a.dynamic_backend is True
+    assert b.dynamic_backend is True
+    assert c.dynamic_backend is False
+    assert d.dynamic_backend is False
