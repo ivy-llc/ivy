@@ -8,11 +8,10 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy
 
+
 # nanmedian
-@handle_cmd_line_args
 @given
 @handle_frontend_test(
     dtype_and_a=statistical_dtype_values(function="median"),

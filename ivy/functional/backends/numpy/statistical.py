@@ -270,5 +270,5 @@ def nanmedian(a, /, *, axis=None, keepdims=False, out=None, overwrite_input=Fals
         )
     return ret
 
-nanmedian.support_native_out = True
 
+nanmedian.support_native_out = True
