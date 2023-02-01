@@ -221,6 +221,33 @@ def test_tensorflow_Cos(  # NOQA
     )
 
 
+# Rsqrt
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Rsqrt",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Rsqrt(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # Cosh
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Cosh",
@@ -1178,6 +1205,33 @@ def test_tensorflow_Expm1(  # NOQA
     test_with_out=st.just(False),
 )
 def test_tensorflow_Log(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# Log1p
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Log1p",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Log1p(  # NOQA
     *,
     dtype_and_x,
     frontend,
@@ -2833,21 +2887,19 @@ def test_tensorflow_EuclideanNorm(
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.ConcatV2",
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
 )
 def test_tensorflow_ConcatV2(
     xs_n_input_dtypes_n_unique_idx,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=0,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         values=xs,
@@ -2867,12 +2919,13 @@ def test_tensorflow_ConcatV2(
         dilation_min=1,
         dilation_max=1,
     ),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
 )
 def test_tensorflow_Conv3D(
     *,
     x_f_d_df,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -2890,10 +2943,7 @@ def test_tensorflow_Conv3D(
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=0,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,

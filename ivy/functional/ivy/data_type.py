@@ -97,7 +97,7 @@ def _get_function_list(func):
                 if (
                     hasattr(nodef, "value")
                     and hasattr(nodef.value, "id")
-                    and nodef.value.id != "ivy"
+                    and nodef.value.id not in ["ivy", "self"]
                 ):
                     continue
                 names[nodef.attr] = getattr(
@@ -1540,7 +1540,7 @@ def dtype(
     >>> print(y)
     float32
     """
-    return current_backend(x).dtype(x, as_native)
+    return current_backend(x).dtype(x, as_native=as_native)
 
 
 @handle_nestable

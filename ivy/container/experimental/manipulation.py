@@ -1213,7 +1213,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.vsplit. This method simply wraps
@@ -1232,8 +1231,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
-        out
-            optional output container, for writing the result to.
 
         Returns
         -------
@@ -1267,20 +1264,17 @@ class ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "vsplit",
             ary,
-            indices_or_sections=indices_or_sections,
+            indices_or_sections,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def vsplit(
         self: ivy.Container,
         indices_or_sections: Union[int, Tuple[int]],
         /,
-        *,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.vsplit. This method simply
         wraps the function, and so the docstring for ivy.vsplit also applies to this
@@ -1297,9 +1291,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
             int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
-        out
-            optional output container, for writing the result to.
 
         Returns
         -------
@@ -1331,22 +1322,19 @@ class ContainerWithManipulationExperimental(ContainerBase):
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
-        return self.static_vsplit(
-            self, indices_or_sections=indices_or_sections, out=out
-        )
+        return self.static_vsplit(self, indices_or_sections)
 
     @staticmethod
     def static_dsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Tuple[int]],
+        indices_or_sections: Union[int, Tuple[int, ...]],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> List[ivy.Container]:
         """
         ivy.Container static method variant of ivy.dsplit. This method simply wraps
         the function, and so the docstring for ivy.dsplit also applies to this method
@@ -1364,56 +1352,64 @@ class ContainerWithManipulationExperimental(ContainerBase):
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
-        out
-            optional output container, for writing the result to.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
 
         Returns
         -------
         ret
-            container including input arrays split along the 3rd axis.
+            list of containers holding arrays split from the input at the 3rd axis
 
         Examples
         --------
         >>> ary = ivy.Container(
-            a = ivy.ivy.array(
+            a = ivy.array(
                     [[[0.,  1.],
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
                 ),
             b=ivy.array(
-                    [[ 0.,  1.,  2.,  3.],
-                     [ 4.,  5.,  6.,  7.],
-                     [ 8.,  9., 10., 11.],
-                     [12., 13., 14., 15.]])
+                    [[[ 0.,  1.,  2.,  3.],
+                      [ 4.,  5.,  6.,  7.],
+                      [ 8.,  9., 10., 11.],
+                      [12., 13., 14., 15.]]]
                 )
             )
         >>> ivy.Container.static_dsplit(ary, 2)
-        {
-            a: [ivy.array([[[0., 1.], [2., 3.]]]),
-                ivy.array([[[4., 5.], [6., 7.]]])],
-            b: [ivy.array([[0., 1., 2., 3.], [4., 5., 6., 7.]]),
-                ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
-        }
+        [{
+            a: ivy.array([[[0.], [2.]],
+                          [[4.], [6.]]]),
+            b: ivy.array([[[0., 1.], [4., 5.], [8., 9.], [12., 13.]]])
+        }, {
+            a: ivy.array([[[1.], [3.]],
+                          [[5.], [7.]]]),
+            b: ivy.array([[[2., 3.], [6., 7.], [10., 11.], [14., 15.]]])
+        }]
         """
         return ContainerBase.cont_multi_map_in_function(
             "dsplit",
             ary,
-            indices_or_sections=indices_or_sections,
+            indices_or_sections,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def dsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Tuple[int]],
+        indices_or_sections: Union[int, Tuple[int, ...]],
         /,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> List[ivy.Container]:
         """ivy.Container instance method variant of ivy.dsplit. This method simply
         wraps the function, and so the docstring for ivy.dsplit also applies to this
         method with minimal changes.
@@ -1430,42 +1426,40 @@ class ContainerWithManipulationExperimental(ContainerBase):
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
-        out
-            optional output container, for writing the result to.
 
         Returns
         -------
         ret
-            container including arrays with the modified Bessel
-            function evaluated at each of the elements of x.
+            list of containers holding arrays split from the input at the 3rd axis
 
         Examples
         --------
         >>> ary = ivy.Container(
-            a = ivy.ivy.array(
+            a = ivy.array(
                     [[[0.,  1.],
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
                 ),
             b=ivy.array(
-                    [[ 0.,  1.,  2.,  3.],
-                     [ 4.,  5.,  6.,  7.],
-                     [ 8.,  9., 10., 11.],
-                     [12., 13., 14., 15.]])
+                    [[[ 0.,  1.,  2.,  3.],
+                      [ 4.,  5.,  6.,  7.],
+                      [ 8.,  9., 10., 11.],
+                      [12., 13., 14., 15.]]]
                 )
             )
         >>> ary.dsplit(2)
-        {
-            a: [ivy.array([[[0., 1.], [2., 3.]]]),
-                ivy.array([[[4., 5.], [6., 7.]]])],
-            b: [ivy.array([[0., 1., 2., 3.], [4., 5., 6., 7.]]),
-                ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
-        }
+        [{
+            a: ivy.array([[[0.], [2.]],
+                          [[4.], [6.]]]),
+            b: ivy.array([[[0., 1.], [4., 5.], [8., 9.], [12., 13.]]])
+        }, {
+            a: ivy.array([[[1.], [3.]],
+                          [[5.], [7.]]]),
+            b: ivy.array([[[2., 3.], [6., 7.], [10., 11.], [14., 15.]]])
+        }]
         """
-        return self.static_dsplit(
-            self, indices_or_sections=indices_or_sections, out=out
-        )
+        return self.static_dsplit(self, indices_or_sections)
 
     @staticmethod
     def static_atleast_1d(
@@ -2102,7 +2096,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                      [12., 13., 14., 15.]])
                 )
             )
-        >>> ivy.Container.static_vsplit(ary, 2)
+        >>> ivy.Container.static_hsplit(ary, 2)
         {
             a: ivy.ivy.array(
                     [[[0.,  1.],
@@ -2289,3 +2283,67 @@ class ContainerWithManipulationExperimental(ContainerBase):
 
         """
         return self.static_broadcast_shapes(self, out=out)
+
+    @staticmethod
+    def static_expand(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape],
+        /,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        x
+        shape
+        device
+        out
+        key_chains
+        to_apply
+        prune_unapplied
+        map_sequences
+
+        Returns
+        -------
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "expand",
+            x,
+            shape,
+            device=device,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def expand(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape],
+        /,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        shape
+        device
+        out
+
+        Returns
+        -------
+
+        """
+        return self.static_expand(self, shape, device=device, out=out)

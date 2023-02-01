@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple, Union, List, Callable, Dict
+from typing import Optional, Tuple, Union, List, Callable, Dict, Sequence
 
 # local
 from ivy.container.base import ContainerBase
@@ -7,6 +7,8 @@ import ivy
 
 
 # ToDo: implement all methods here as public instance methods
+
+# ToDo: update docstrings and typehints according to ivy\layers
 
 
 # noinspection PyMissingConstructor
@@ -195,6 +197,7 @@ class ContainerWithLayers(ContainerBase):
         dtype: ivy.Dtype = None,
         training: bool = True,
         seed: int = None,
+        noise_shape: Sequence[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -222,6 +225,9 @@ class ContainerWithLayers(ContainerBase):
         seed
             Set a default seed for random number generating (for reproducibility).
             Default is ``None``.
+        noise_shape
+            a sequence representing the shape of the binary dropout mask that will be
+            multiplied with the input.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -263,6 +269,7 @@ class ContainerWithLayers(ContainerBase):
             dtype=dtype,
             training=training,
             seed=seed,
+            noise_shape=noise_shape,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -279,6 +286,7 @@ class ContainerWithLayers(ContainerBase):
         dtype: ivy.Dtype = None,
         training: bool = True,
         seed: int = None,
+        noise_shape: Sequence[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -306,6 +314,9 @@ class ContainerWithLayers(ContainerBase):
         seed
             Set a default seed for random number generating (for reproducibility).
             Default is ``None``.
+        noise_shape
+            a sequence representing the shape of the binary dropout mask that will be
+            multiplied with the input.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -345,6 +356,7 @@ class ContainerWithLayers(ContainerBase):
             dtype=dtype,
             training=training,
             seed=seed,
+            noise_shape=noise_shape,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1879,6 +1891,50 @@ class ContainerWithLayers(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> Tuple[ivy.Container, ivy.Container]:
+        """
+        ivy.Container instance method variant of ivy.lstm_update. This method simply
+        wraps the function, and so the docstring for ivy.lstm_update also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        init_h
+            initial state tensor for the cell output *[batch_shape, out]*.
+        init_c
+            initial state tensor for the cell hidden state *[batch_shape, out]*.
+        kernel
+            weights for cell kernel *[in, 4 x out]*.
+        recurrent_kernel
+            weights for cell recurrent kernel *[out, 4 x out]*.
+        bias
+            bias for cell kernel *[4 x out]*. (Default value = None)
+        recurrent_bias
+            bias for cell recurrent kernel *[4 x out]*. (Default value = None)
+
+        Returns
+        -------
+        ret
+            hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
+            timestep *[batch_shape,out]*
+
+        Examples
+        --------
+        >>> x = ivy.Container(
+        ...     a=ivy.random_normal(shape=(5, 20, 3)),
+        ...     b=ivy.random_normal(shape=(5, 20, 3))
+        ... )
+        >>> h_i = ivy.random_normal(shape=(5, 6))
+        >>> c_i = ivy.random_normal(shape=(5, 6))
+
+        >>> kernel = ivy.random_normal(shape=(3, 4 * 6))
+        >>> rc = ivy.random_normal(shape=(6, 4 * 6))
+        >>> x.lstm_update(h_i, c_i, kernel, rc)
+        {
+            a: (tuple(2), <class ivy.array.array.Array>, shape=[5, 20, 6]),
+            b: (tuple(2), <class ivy.array.array.Array>, shape=[5, 20, 6])
+        }
+
+        """
         return self.static_lstm_update(
             self,
             init_h,
