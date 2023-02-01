@@ -410,4 +410,10 @@ class ndarray:
         )
 
     def __setitem__(self, key, value):
+        if hasattr(value, "ivy_array"):
+            value = (
+                ivy.to_scalar(value.ivy_array)
+                if value.shape == ()
+                else ivy.to_list(value)
+            )
         self._ivy_array[key] = value
