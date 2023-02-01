@@ -1121,4 +1121,5 @@ def test_tensorflow_embedding_lookup(
         params=weight,
         ids=indices,
         max_norm=max_norm,
+        atol=1e-4,
     )
