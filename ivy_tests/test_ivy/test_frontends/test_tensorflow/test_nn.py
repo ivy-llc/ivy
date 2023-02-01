@@ -10,6 +10,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
 )
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _dropout_helper
+from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
+    _assume_tf_dilation_gt_1,
+)
 
 
 @st.composite
@@ -301,6 +304,7 @@ def test_tensorflow_atrous_conv2d_transpose(
         pad,
         output_shape,
     ) = x_f_d_df
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -383,6 +387,7 @@ def test_tensorflow_conv1d_transpose(
         pad,
         output_shape,
     ) = x_f_d_df
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -490,6 +495,7 @@ def test_tensorflow_conv2d_transpose(
         padding,
         output_shape,
     ) = x_f_d_df
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -573,6 +579,7 @@ def test_tensorflow_conv3d_transpose(
         padding,
         output_shape,
     ) = x_f_d_df
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
