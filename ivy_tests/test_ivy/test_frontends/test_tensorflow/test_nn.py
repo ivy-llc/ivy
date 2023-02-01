@@ -405,9 +405,10 @@ def test_tensorflow_conv1d_transpose(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.nn.conv2d",
+    fn_tree="tensorflow.nn.gelu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        max_value=1e04,
     ),
     approximate=st.booleans(),
     test_with_out=st.just(False),
