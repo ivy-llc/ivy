@@ -194,6 +194,99 @@
 <span class="sd">               [0.6, 0.8]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">l2_normalize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="instance_norm"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/norms/instance_norm.html#ivy.functional.ivy.experimental.instance_norm">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">instance_norm</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">bias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-05</span><span class="p">,</span>
+    <span class="n">momentum</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NCHW&quot;</span><span class="p">,</span>
+    <span class="n">running_mean</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">running_stddev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">affine</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">track_running_stats</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies Instance Normalization over a 4D input along C dimension.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array.</span>
+<span class="sd">    scale</span>
+<span class="sd">        Scale parameter for the normalization.</span>
+<span class="sd">    bias</span>
+<span class="sd">        Bias parameter for the normalization.</span>
+<span class="sd">    eps</span>
+<span class="sd">        Small constant to avoid division by zero.</span>
+<span class="sd">    momentum</span>
+<span class="sd">        Momentum parameter for running statistics</span>
+<span class="sd">    data_format</span>
+<span class="sd">        Format of the input data, either &#39;NCHW&#39; or &#39;NHWC&#39;.</span>
+<span class="sd">    running_mean</span>
+<span class="sd">        The running mean of the input array.</span>
+<span class="sd">    running_stddev</span>
+<span class="sd">        The running standard deviation of the input array.</span>
+<span class="sd">    affine</span>
+<span class="sd">        Whether to use affine transformation for the output.</span>
+<span class="sd">    track_running_stats</span>
+<span class="sd">        Whether to track the running statistics of the input array.</span>
+<span class="sd">    out</span>
+<span class="sd">        Optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The normalized array.</span>
+<span class="sd">        OR</span>
+<span class="sd">        The normalized array, Running mean, Running stddev</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`track_running_stats=False`:</span>
+<span class="sd">    ret : The normalized array.</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.eye(3, 3).reshape((1, 3, 3, 1))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format=&#39;NCHW&#39;,</span>
+<span class="sd">    ...                   affine=True, track_running_stats=False)</span>
+<span class="sd">    ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],</span>
+<span class="sd">            [[0.29290909],[2.41418171],[0.29290909]],</span>
+<span class="sd">            [[0.14645454],[0.14645454],[1.20709085]]]])</span>
+
+<span class="sd">    With :class:`track_running_stats=True`:</span>
+<span class="sd">    ret : The normalized array, Running mean, Running stddev.</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.eye(3, 3).reshape((1, 3, 3, 1))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format=&#39;NCHW&#39;,</span>
+<span class="sd">    ...                   affine=True, track_running_stats=False)</span>
+<span class="sd">    (ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],</span>
+<span class="sd">            [[0.29290909],[2.41418171],[0.29290909]],</span>
+<span class="sd">            [[0.14645454],[0.14645454],[1.20709085]]]]),</span>
+<span class="sd">         ivy.array([[[[0.30000001]],[[0.30000001]],[[0.30000001]]]]),</span>
+<span class="sd">         ivy.array([[[[0.52426404]],[[0.52426404]],[[0.52426404]]]]))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">instance_norm</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
+        <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span>
+        <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
+        <span class="n">momentum</span><span class="o">=</span><span class="n">momentum</span><span class="p">,</span>
+        <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+        <span class="n">running_mean</span><span class="o">=</span><span class="n">running_mean</span><span class="p">,</span>
+        <span class="n">running_stddev</span><span class="o">=</span><span class="n">running_stddev</span><span class="p">,</span>
+        <span class="n">affine</span><span class="o">=</span><span class="n">affine</span><span class="p">,</span>
+        <span class="n">track_running_stats</span><span class="o">=</span><span class="n">track_running_stats</span><span class="p">,</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+    <span class="p">)</span></div>
 </pre></div>
 
            </div>

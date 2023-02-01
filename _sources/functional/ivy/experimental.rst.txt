@@ -14,6 +14,7 @@ Experimental
    :caption: Experimental
 
    experimental/l2_normalize.rst
+   experimental/instance_norm.rst
    experimental/diagflat.rst
    experimental/kron.rst
    experimental/matrix_exp.rst
