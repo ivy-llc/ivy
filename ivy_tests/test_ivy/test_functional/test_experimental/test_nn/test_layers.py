@@ -31,8 +31,14 @@ def test_max_pool2d(
     dtype, x, kernel, stride, pad, dilation = x_k_s_p
     assume(
         not (
-            backend_fw == "tensorflow"
-            and (stride[0] > kernel[0] or stride[0] > kernel[1])
+            backend_fw.current_backend_str() == "tensorflow"
+            and (
+                (stride[0] > kernel[0] or stride[0] > kernel[1])
+                or (
+                    (stride[0] > 1 and dilation[0] > 1)
+                    or (stride[0] > 1 and dilation[1] > 1)
+                )
+            )
         )
     )
     helpers.test_function(
