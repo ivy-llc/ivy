@@ -97,6 +97,50 @@ def test_tensorflow_clip_by_value(
     )
 
 
+@st.composite
+def _get_norm_clip_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=shape,
+        )
+    )
+    norm = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=(1,), min_value=-50, max_value=5)
+    )
+    return x_dtype, x, norm
+
+
+# clip_by_norm
+@handle_frontend_test(
+    fn_tree="tensorflow.clip_by_norm",
+    input_and_norm=_get_norm_clip_inputs(),
+)
+def test_tensorflow_clip_by_norm(
+    *,
+    input_and_norm,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    x_dtype, x, norm = input_and_norm
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        t=x[0],
+        clip_norm=norm
+    )
+
+
 # eye
 @handle_frontend_test(
     fn_tree="tensorflow.eye",
