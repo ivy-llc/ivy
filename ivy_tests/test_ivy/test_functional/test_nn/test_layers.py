@@ -85,10 +85,12 @@ def test_linear(
 @st.composite
 def _dropout_helper(draw):
     shape = draw(helpers.get_shape(min_num_dims=1))
-    dtype_and_x = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=shape,
-    ))
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+        )
+    )
     noise_shape = list(shape)
     if draw(st.booleans()):
         noise_shape = None
