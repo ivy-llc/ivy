@@ -86,6 +86,7 @@ from .ragged import *
 from . import tensor
 from .tensor import EagerTensor, Tensor
 from . import keras
+from . import compat
 from . import linalg
 from . import math
 from .math import *

@@ -71,15 +71,33 @@ def remove_from_db(collection, id, submod, backend, test):
     return
 
 
+def run_multiversion_testing(failed):
+    with open("tests_to_run", "r") as f:
+        for line in f:
+            test, frontend, backend = line.split(",")
+        ret = os.system(
+            f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend={backend}'  # noqa
+        )
+        if ret != 0:
+            failed = True
+
+        if failed:
+            exit(1)
+
+
 if __name__ == "__main__":
     redis_url = sys.argv[1]
     redis_pass = sys.argv[2]
     mongo_key = sys.argv[3]
-    if len(sys.argv) > 3:
-        run_id = sys.argv[4]
+    version_flag = sys.argv[4]
+    if len(sys.argv) > 4:
+        run_id = sys.argv[5]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/"
     failed = False
+    # multiversion testing
+    if version_flag == "true":
+        run_multiversion_testing(failed)
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )

@@ -22,6 +22,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="add"
+    ),
 )
 def test_numpy_add(
     dtypes_values_casting,
@@ -32,11 +35,8 @@ def test_numpy_add(
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where, input_dtype=input_dtypes, test_flags=test_flags
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -69,6 +69,9 @@ def test_numpy_add(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="subtract"
+    ),
 )
 def test_numpy_subtract(
     dtypes_values_casting,
@@ -79,11 +82,10 @@ def test_numpy_subtract(
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -133,6 +135,7 @@ def test_numpy_vdot(
 # divide
 @handle_frontend_test(
     fn_tree="numpy.divide",
+    aliases=["numpy.true_divide"],
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
@@ -144,6 +147,9 @@ def test_numpy_vdot(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="divide"
+    ),
 )
 def test_numpy_divide(
     dtypes_values_casting,
@@ -155,11 +161,10 @@ def test_numpy_divide(
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
     assume(not np.any(np.isclose(xs[1], 0.0)))
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -192,6 +197,9 @@ def test_numpy_divide(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="multiply"
+    ),
 )
 def test_numpy_multiply(
     dtypes_values_casting,
@@ -202,11 +210,10 @@ def test_numpy_multiply(
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -241,6 +248,9 @@ def test_numpy_multiply(
         get_dtypes_kind="integer",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="power"
+    ),
 )
 def test_numpy_power(
     dtypes_values_casting,
@@ -251,11 +261,10 @@ def test_numpy_power(
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -288,6 +297,9 @@ def test_numpy_power(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="float_power"
+    ),
 )
 def test_numpy_float_power(
     dtypes_values_casting,
@@ -297,11 +309,10 @@ def test_numpy_float_power(
     fn_tree,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -331,6 +342,9 @@ def test_numpy_float_power(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="positive"
+    ),
 )
 def test_numpy_positive(
     dtypes_values_casting,
@@ -340,15 +354,14 @@ def test_numpy_positive(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -375,6 +388,9 @@ def test_numpy_positive(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="negative"
+    ),
 )
 def test_numpy_negative(
     dtypes_values_casting,
@@ -384,15 +400,14 @@ def test_numpy_negative(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -423,6 +438,9 @@ def test_numpy_negative(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="floor_divide"
+    ),
 )
 def test_numpy_floor_divide(
     dtypes_values_casting,
@@ -432,17 +450,15 @@ def test_numpy_floor_divide(
     fn_tree,
     on_device,
 ):
-
     input_dtypes, x, casting, dtype = dtypes_values_casting
     assume(not np.any(np.isclose(x[1], 0, rtol=1e-1, atol=1e-1)))
     assume(not np.any(np.isclose(x[0], 0, rtol=1e-1, atol=1e-1)))
     if dtype:
         assume(np.dtype(dtype) >= np.dtype(input_dtypes[0]))
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -469,16 +485,19 @@ def test_numpy_floor_divide(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
                 min_value=0,
                 exclude_min=True,
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="float",
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="mod"
+    ),
 )
 def test_numpy_mod(
     dtypes_values_casting,
@@ -489,11 +508,10 @@ def test_numpy_mod(
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -529,6 +547,9 @@ def test_numpy_mod(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="reciprocal"
+    ),
 )
 def test_numpy_reciprocal(
     dtypes_values_casting,
@@ -537,16 +558,15 @@ def test_numpy_reciprocal(
     test_flags,
     fn_tree,
 ):
-    input_dtype, x, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
     assume(not np.any(np.isclose(x[0], 0)))
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -578,6 +598,9 @@ def test_numpy_reciprocal(
         get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="fmod"
+    ),
 )
 def test_numpy_fmod(
     dtypes_values_casting,
@@ -589,13 +612,15 @@ def test_numpy_fmod(
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
     assume(not np.any(np.isclose(xs[1], 0.0)))
+    assume(not np.any(np.isclose(xs[0], 0.0)))
     if dtype:
-        assume(not np.any(np.isclose(np.cast[dtype[0]](xs[1]), 0.0)))
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        assume(not np.any(np.isclose(xs[1].astype(dtype), 0.0)))
+        assume(not np.any(np.isclose(xs[0].astype(dtype), 0.0)))
+    assume("uint" not in input_dtypes[0] and "uint" not in input_dtypes[1])
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,

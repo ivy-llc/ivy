@@ -135,7 +135,7 @@ sometrue = any
 # known issue in jnp's documentation of arguments
 # https://github.com/google/jax/issues/9119
 def logical_and(x1, x2, /):
-    if x1.dtype == 'complex128' or x2.dtype == 'complex128':
+    if x1.dtype == "complex128" or x2.dtype == "complex128":
         x1 = ivy.astype(x1, ivy.complex128)
         x2 = ivy.astype(x2, ivy.complex128)
     else:
@@ -151,3 +151,9 @@ def invert(x, /):
 @to_ivy_arrays_and_back
 def isinf(x, /):
     return ivy.isinf(x)
+
+
+@to_ivy_arrays_and_back
+def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
+    a, b = promote_jax_arrays(a, b)
+    return ivy.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)

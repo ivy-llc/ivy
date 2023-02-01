@@ -6,11 +6,17 @@ on:
         description: 'Test:'
         default: 'ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,tensorflow'
         required: true
+
+      version:
+        description: 'Version Based Testing :'
+        default: false
+        required: false
+
 permissions:
   actions: read
 jobs:
    run_tests:
-     runs-on: ubuntu-latest
+     runs-on: ubuntu-latest-16-cores
      steps:
        - name: Checkout Ivy 🛎
          uses: actions/checkout@v2
@@ -32,7 +38,7 @@ jobs:
            pip install pymongo
            cd ivy
            python setup_tests.py ${{ github.event.inputs.test }} 
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures

@@ -77,11 +77,11 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
 
                 if i < num_args:
                     if not ivy.is_array(arg):
-                        args[i] = ivy.native_array(arg)
+                        args[i] = ivy.array(arg)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
                     if not ivy.is_array(arg):
-                        kwargs[parameter] = ivy.native_array(kwarg)
+                        kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
 
