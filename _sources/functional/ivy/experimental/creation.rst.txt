@@ -20,4 +20,5 @@ Creation
    creation/kaiser_bessel_derived_window.rst
    creation/hamming_window.rst
    creation/tril_indices.rst
+   creation/eye_like.rst
 

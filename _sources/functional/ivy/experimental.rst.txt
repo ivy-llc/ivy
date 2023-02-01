@@ -59,6 +59,7 @@ Experimental
    experimental/kaiser_bessel_derived_window.rst
    experimental/hamming_window.rst
    experimental/tril_indices.rst
+   experimental/eye_like.rst
    experimental/max_pool1d.rst
    experimental/max_pool2d.rst
    experimental/max_pool3d.rst
