@@ -14,6 +14,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     infer_dtype,
+    handle_array_like_without_promotion,
 )
 
 
@@ -475,3 +476,102 @@ def tril_indices(
 
     """
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_dtype
+@infer_device
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def eye_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    k: int = 0,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns a array filled with ones on the k diagonal and zeros elsewhere. having
+    the same ``shape`` as an input array ``x``.
+
+
+    Parameters
+    ----------
+    x
+         input array from which to derive the output array shape.
+    k
+        index of the diagonal. A positive value refers to an upper diagonal, a negative
+        value to a lower diagonal, and 0 to the main diagonal. Default: ``0``.
+    dtype
+        output array data type. If dtype is None, the output array data type must be the
+        default floating-point data type. Default: ``None``.
+    device
+        the device on which to place the created array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array having the same shape as ``x`` and filled with ``ones`` in
+        diagonal ``k`` and ``zeros`` elsewhere.
+
+    Notes
+    -----
+    Generate a 2D tensor (matrix) with ones on the diagonal and zeros everywhere else.
+    Only 2D tensors are supported, i.e. input T1 must be of rank 2. The shape of the
+    output tensor is the same as the input tensor. The data type can be specified by
+    the 'dtype' argument. If 'dtype' is not specified, then the type of input tensor
+    is used. By default, the main diagonal is populated with ones, but attribute 'k'
+    can be used to populate upper or lower diagonals.
+
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances as a replacement to any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x1 = ivy.array([0, 1],[2, 3])
+    >>> y1 = ivy.eye_like(x1)
+    >>> print(y1)
+    ivy.array([[1., 0.],
+               [0., 1.]])
+
+    >>> x1 = ivy.array([0, 1, 2],[3, 4, 5],[6, 7, 8])
+    >>> y1 = ivy.eye_like(x1, k=1)
+    >>> print(y1)
+    ivy.array([[0., 1., 0.],
+               [0., 0., 1.],
+               [0., 0., 0.]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[3, 8],[0, 2]]), b=ivy.array([[0, 2], [8, 5]]))
+    >>> y = ivy.eye_like(x)
+    >>> print(y)
+    {
+        a: ivy.array([[1., 0.],
+                      [0., 1.]]),
+        b: ivy.array([[1., 0.],
+                      [0., 1.]])
+    }
+
+    """
+    cols = 1 if len(x.shape) == 1 else x.shape[-1]
+    rows = x.shape[0]
+    return ivy.eye(
+        rows,
+        cols,
+        k=k,
+        dtype=dtype,
+        device=device,
+        out=out,
+    )

@@ -182,7 +182,7 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
 def nanstd(
     a, /, *, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=True
 ):
-    a = a[~ivy.isnan(a)]
+    a = ivy.nan_to_num(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
 
     if dtype:

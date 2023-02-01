@@ -1897,12 +1897,12 @@ def test_container_from_flat_list(on_device):
     container = Container(dict_in)
     flat_list = [4, 5, 6]
     container = container.cont_from_flat_list(flat_list)
-    assert np.allclose(ivy.to_numpy(container["a"], copy=False), np.array([4]))
-    assert np.allclose(ivy.to_numpy(container.a, copy=False), np.array([4]))
-    assert np.allclose(ivy.to_numpy(container["b"]["c"], copy=False), np.array([5]))
-    assert np.allclose(ivy.to_numpy(container.b.c, copy=False), np.array([5]))
-    assert np.allclose(ivy.to_numpy(container["b"]["d"], copy=False), np.array([6]))
-    assert np.allclose(ivy.to_numpy(container.b.d, copy=False), np.array([6]))
+    assert np.allclose(ivy.to_numpy(container["a"]), np.array([4]))
+    assert np.allclose(ivy.to_numpy(container.a), np.array([4]))
+    assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([5]))
+    assert np.allclose(ivy.to_numpy(container.b.c), np.array([5]))
+    assert np.allclose(ivy.to_numpy(container["b"]["d"]), np.array([6]))
+    assert np.allclose(ivy.to_numpy(container.b.d), np.array([6]))
 
 
 @pytest.mark.parametrize("inplace", [True, False])
@@ -2122,10 +2122,10 @@ def test_container_multi_map(on_device):
     b = ivy.Container(a=2, d=3)
     container_mapped = ivy.Container.cont_multi_map(lambda xs, _: xs[0] / xs[1], [a, b])
 
-    assert np.allclose(ivy.to_numpy(container_mapped["a"].b, copy=False), 1)
-    assert np.allclose(ivy.to_numpy(container_mapped["a"]["c"], copy=False), 2)
-    assert np.allclose(ivy.to_numpy(container_mapped.d.e, copy=False), 2)
-    assert np.allclose(ivy.to_numpy(container_mapped["d"].f, copy=False), 3)
+    assert np.allclose(ivy.to_numpy(container_mapped["a"].b), 1)
+    assert np.allclose(ivy.to_numpy(container_mapped["a"]["c"]), 2)
+    assert np.allclose(ivy.to_numpy(container_mapped.d.e), 2)
+    assert np.allclose(ivy.to_numpy(container_mapped["d"].f), 3)
 
 
 def test_container_common_key_chains(on_device):

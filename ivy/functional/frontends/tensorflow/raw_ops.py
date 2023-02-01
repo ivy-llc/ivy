@@ -249,6 +249,11 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
 
 
 @to_ivy_arrays_and_back
+def Rsqrt(*, x, name="Rsqrt"):
+    return ivy.sqrt(ivy.reciprocal(x))
+
+
+@to_ivy_arrays_and_back
 def MatrixInverse(*, input, adjoint=False, name="MatrixInverse"):
     return ivy.inv(input, adjoint=adjoint)
 
@@ -329,6 +334,11 @@ def Pad(*, input, paddings, name="Pad"):
     return ivy.constant_pad(input, paddings.to_list())
 
 
+@to_ivy_arrays_and_back
+def PadV2(*, input, paddings, constant_values, name="PadV2"):
+    return ivy.constant_pad(input, paddings.to_list(), value=constant_values)
+
+
 Relu = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.keras.activations.relu,
@@ -343,9 +353,9 @@ def RealDiv(*, x, y, name="RealDiv"):
     return ivy.divide(x, y)
 
 
-@to_ivy_arrays_and_back
-def Reshape(*, tensor, shape, name="Reshape"):
-    return ivy.reshape(tensor, shape)
+Reshape = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.general_functions.reshape)
+)
 
 
 @to_ivy_arrays_and_back
