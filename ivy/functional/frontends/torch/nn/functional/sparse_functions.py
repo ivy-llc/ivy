@@ -1,5 +1,6 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -26,4 +27,5 @@ def embedding(
             ret[i] = ivy.clip_vector_norm(weight[x, :], max_norm, p=norm_type)
         else:
             ret[i] = weight[x, :]
-    return ret
+    ret_dtype = torch_frontend.promote_types_torch(input.dtype, weight.dtype)
+    return ivy.astype(ret, ret_dtype)
