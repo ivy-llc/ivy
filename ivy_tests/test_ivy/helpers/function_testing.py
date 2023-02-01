@@ -1144,6 +1144,12 @@ def test_method(
 
     # Run testing
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
+    # ToDo : remove this when the handle_method can properly compute unsupported dtypes
+    if any(
+        dtype in ivy.function_unsupported_dtypes(ins.__getattribute__(method_name))
+        for dtype in method_input_dtypes
+    ):
+        return
     v_np = None
     if isinstance(ins, ivy.Module):
         if init_with_v:
@@ -1185,6 +1191,12 @@ def test_method(
         container_flags=method_flags.container_flags,
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
+    # ToDo : remove this when the handle_method can properly compute unsupported dtypes
+    if any(
+        dtype in ivy.function_unsupported_dtypes(ins_gt.__getattribute__(method_name))
+        for dtype in method_input_dtypes
+    ):
+        return
     if isinstance(ins_gt, ivy.Module):
         v_gt = v_np.cont_map(
             lambda x, kc: ivy.asarray(x) if isinstance(x, np.ndarray) else x
