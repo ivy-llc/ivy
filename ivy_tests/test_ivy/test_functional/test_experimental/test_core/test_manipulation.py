@@ -606,9 +606,7 @@ def test_pad(
 @handle_test(
     fn_tree="functional.ivy.experimental.vsplit",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=2,
@@ -618,6 +616,7 @@ def test_pad(
         min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_vsplit(
     dtype_and_x,
@@ -646,17 +645,13 @@ def test_vsplit(
     fn_tree="functional.ivy.experimental.dsplit",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
-        min_num_dims=3,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=5,
+        shape=st.shared(helpers.get_shape(min_num_dims=3), key="dsplit_shape"),
     ),
     indices_or_sections=helpers.get_shape(
         min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_dsplit(
     dtype_and_x,

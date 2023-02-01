@@ -1204,9 +1204,7 @@ def vsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Tuple[int]],
     /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> List[ivy.Array]:
     """Split an array into multiple sub-arrays along the 3rd axis.
 
     Parameters
@@ -1221,8 +1219,6 @@ def vsplit(
         and the rest will have size int(ary.size(0) / n).
         If indices_or_sections is a tuple of ints, then input is split at each of
         the indices in the tuple.
-    out
-        optional output array, for writing the result to.
 
     Returns
     -------
@@ -1240,22 +1236,17 @@ def vsplit(
     >>> ivy.vsplit(ary, 2)
     [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
     """
-    return ivy.current_backend(ary).vsplit(
-        ary, indices_or_sections=indices_or_sections, out=out
-    )
+    return ivy.current_backend(ary).vsplit(ary, indices_or_sections)
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_array_like_without_promotion
 def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> List[ivy.Array]:
     """Split an array into multiple sub-arrays along the 3rd axis.
 
     Parameters
@@ -1270,8 +1261,6 @@ def dsplit(
         the rest will have size int(ary.size(0) / n).
         If indices_or_sections is a tuple of ints, then input is split at each of
         the indices in the tuple.
-    out
-        optional output array, for writing the result to.
 
     Returns
     -------
@@ -1290,9 +1279,7 @@ def dsplit(
     [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
      ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
     """
-    return ivy.current_backend(ary).dsplit(
-        ary, indices_or_sections=indices_or_sections, out=out
-    )
+    return ivy.current_backend(ary).dsplit(ary, indices_or_sections)
 
 
 @to_native_arrays_and_back
@@ -1537,7 +1524,7 @@ def hsplit(
              [8.,  9., 10., 11.],
              [12., 13., 14., 15.]]
             )
-    >>> ivy.vsplit(ary, 2)
+    >>> ivy.hsplit(ary, 2)
     [ivy.array([[ 0.,  1.],
                     [ 4.,  5.],
                     [ 8.,  9.],

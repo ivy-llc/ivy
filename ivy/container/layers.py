@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple, Union, List, Callable, Dict
+from typing import Optional, Tuple, Union, List, Callable, Dict, Sequence
 
 # local
 from ivy.container.base import ContainerBase
@@ -197,6 +197,7 @@ class ContainerWithLayers(ContainerBase):
         dtype: ivy.Dtype = None,
         training: bool = True,
         seed: int = None,
+        noise_shape: Sequence[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -224,6 +225,9 @@ class ContainerWithLayers(ContainerBase):
         seed
             Set a default seed for random number generating (for reproducibility).
             Default is ``None``.
+        noise_shape
+            a sequence representing the shape of the binary dropout mask that will be
+            multiplied with the input.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -265,6 +269,7 @@ class ContainerWithLayers(ContainerBase):
             dtype=dtype,
             training=training,
             seed=seed,
+            noise_shape=noise_shape,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -281,6 +286,7 @@ class ContainerWithLayers(ContainerBase):
         dtype: ivy.Dtype = None,
         training: bool = True,
         seed: int = None,
+        noise_shape: Sequence[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -308,6 +314,9 @@ class ContainerWithLayers(ContainerBase):
         seed
             Set a default seed for random number generating (for reproducibility).
             Default is ``None``.
+        noise_shape
+            a sequence representing the shape of the binary dropout mask that will be
+            multiplied with the input.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -347,6 +356,7 @@ class ContainerWithLayers(ContainerBase):
             dtype=dtype,
             training=training,
             seed=seed,
+            noise_shape=noise_shape,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1910,7 +1920,7 @@ class ContainerWithLayers(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(
-        ...     a=ivy.random_normal(shape=(5, 20, 3)), 
+        ...     a=ivy.random_normal(shape=(5, 20, 3)),
         ...     b=ivy.random_normal(shape=(5, 20, 3))
         ... )
         >>> h_i = ivy.random_normal(shape=(5, 6))

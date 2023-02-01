@@ -32,15 +32,15 @@ def test_numpy_isfinite(
     frontend,
     test_flags,
 ):
-    dtypes, x, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            test_flags=test_flags,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -80,15 +80,15 @@ def test_numpy_isinf(
     frontend,
     test_flags,
 ):
-    dtypes, x, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            test_flags=test_flags,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -129,15 +129,15 @@ def test_numpy_isnan(
     frontend,
     test_flags,
 ):
-    dtypes, x, casting, dtype = dtypes_values_casting
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=dtypes,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
-    )
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags =\
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            test_flags=test_flags,
+        )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
