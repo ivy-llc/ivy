@@ -945,7 +945,7 @@ def _get_split_locations(draw, min_num_dims, axis):
             ).map(sorted)
         )
 
-        return draw(get_list_split() | get_int_split())
+    return draw(get_list_split() | get_int_split())
 
 
 # dsplit
