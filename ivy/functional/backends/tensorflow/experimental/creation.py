@@ -123,7 +123,7 @@ def tril_indices(
 
 
 def sequence_empty(
-    shape: Union[ivy.NativeShape, Sequence[int]]
+    shape: Union[ivy.NativeShape, Sequence[int]],
     /,
     *,
     dtype: Optional[tf.DType] = tf.dtypes.float32,
