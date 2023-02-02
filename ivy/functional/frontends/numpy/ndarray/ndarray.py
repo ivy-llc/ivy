@@ -402,3 +402,6 @@ class ndarray:
 
     def __abs__(self):
         return np_frontend.absolute(self._ivy_array)
+
+    def __array__(self, dtype, /):
+        return ivy.array(ivy.reshape(self._ivy_array, -1), dtype)[0]
