@@ -307,6 +307,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_broadcast_to(
         x: ivy.Container,
+        /,
         shape: Tuple[int, ...],
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -365,6 +366,7 @@ class ContainerWithDataTypes(ContainerBase):
 
     def broadcast_to(
         self: ivy.Container,
+        /,
         shape: Tuple[int, ...],
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -539,6 +541,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_dtype(
         x: ivy.Container,
+        *,
         as_native: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -549,7 +552,7 @@ class ContainerWithDataTypes(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "dtype",
             x,
-            as_native,
+            as_native=as_native,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -559,6 +562,7 @@ class ContainerWithDataTypes(ContainerBase):
 
     def dtype(
         self: ivy.Container,
+        *,
         as_native: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -579,7 +583,7 @@ class ContainerWithDataTypes(ContainerBase):
         """
         return self.static_dtype(
             self,
-            as_native,
+            as_native=as_native,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -675,6 +679,35 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` static method variant of `ivy.finfo`.
+
+        Parameters
+        ----------
+        type
+            input container with leaves to inquire information about.
+
+        Returns
+        -------
+        ret
+            container of the same structure as `self`, with each element
+            as a finfo object for the corresponding dtype of
+            leave in`self`.
+
+        Examples
+        --------
+        >>> c = ivy.Container(x=ivy.array([-9.5,1.8,-8.9], dtype=ivy.float16),
+        ...                   y=ivy.array([7.6,8.1,1.6], dtype=ivy.float64))
+        >>> y = ivy.Container.static_finfo(c)
+        >>> print(y)
+        {
+            x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04,\
+                     dtype=float16),
+            y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
+               max=1.7976931348623157e+308, dtype=float64)
+        }
+
+        """
         return ContainerBase.cont_multi_map_in_function(
             "finfo",
             type,
@@ -693,6 +726,34 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` instance method variant of `ivy.finfo`.
+
+        Parameters
+        ----------
+        self
+            input container with leaves to inquire information about.
+
+        Returns
+        -------
+        ret
+            container of the same structure as `self`, with each element
+            as a finfo object for the corresponding dtype of
+            leave in`self`.
+
+        Examples
+        --------
+        >>> c = ivy.Container(x=ivy.array([-9.5,1.8,-8.9], dtype=ivy.float16),
+        ...                   y=ivy.array([7.6,8.1,1.6], dtype=ivy.float64))
+        >>> print(c.finfo())
+        {
+            x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04,\
+                     dtype=float16),
+            y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
+               max=1.7976931348623157e+308, dtype=float64)
+        }
+
+        """
         return self.static_finfo(
             self,
             key_chains=key_chains,

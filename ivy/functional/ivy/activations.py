@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     integer_arrays_to_float,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -99,7 +99,7 @@ ACTIVATION_FUNCTIONS = [
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -206,7 +206,7 @@ def get(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -270,7 +270,7 @@ def leaky_relu(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -340,7 +340,7 @@ def log_softmax(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def relu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -393,7 +393,7 @@ def relu(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -434,7 +434,7 @@ def sigmoid(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -482,7 +482,7 @@ def softmax(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -532,3 +532,55 @@ def softplus(
 
     """
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def mish(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Applies the rectified linear unit function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the rectified linear unit activation of each element in
+        ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1., 0., 1.])
+    >>> y = ivy.mish(x)
+    >>> print(y)
+    ivy.array([-0.30340147,  0.        ,  0.86509842])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.mish(x, out = y)
+    >>> print(y)
+    ivy.array([ 1.40337825,  0.56114835, -0.20788449])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.mish(x)
+    >>> print(x)
+    {
+        a: ivy.array([0.86509842, -0.30883577]),
+        b: ivy.array([0.28903052, -0.10714479])
+    }
+    """
+    return current_backend(x).mish(x, out=out)

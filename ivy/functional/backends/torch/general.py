@@ -82,6 +82,7 @@ def to_numpy(
         else:
             return x
     elif torch.is_tensor(x):
+        x = x.resolve_neg().resolve_conj()
         if copy:
             if x.dtype is torch.bfloat16:
                 default_dtype = ivy.default_float_dtype(as_native=True)
@@ -547,6 +548,7 @@ def shape(x: torch.Tensor, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy
         return ivy.Shape(x.shape)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,

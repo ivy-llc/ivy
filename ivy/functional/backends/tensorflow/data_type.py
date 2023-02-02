@@ -1,5 +1,5 @@
 # global
-from typing import Union, Sequence, List
+from typing import Optional, Union, Sequence, List
 
 import numpy as np
 import tensorflow as tf
@@ -101,6 +101,7 @@ def astype(
     /,
     *,
     copy: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
@@ -129,7 +130,10 @@ def broadcast_arrays(
 
 def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if tf.rank(x) > len(shape):
         return tf.broadcast_to(tf.reshape(x, -1), shape)
@@ -137,7 +141,7 @@ def broadcast_to(
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
+def finfo(type: Union[DType, str, tf.Tensor, tf.Variable], /) -> Finfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
     if ivy.as_native_dtype(type) == tf.bfloat16:
@@ -146,7 +150,7 @@ def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
+def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable], /) -> np.iinfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
@@ -171,7 +175,7 @@ def result_type(
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[tf.DType, str, bool, int, float]) -> ivy.Dtype:
+def as_ivy_dtype(dtype_in: Union[tf.DType, str, bool, int, float], /) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
     if dtype_in is float:
@@ -191,7 +195,7 @@ def as_ivy_dtype(dtype_in: Union[tf.DType, str, bool, int, float]) -> ivy.Dtype:
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-def as_native_dtype(dtype_in: Union[tf.DType, str, bool, int, float]) -> tf.DType:
+def as_native_dtype(dtype_in: Union[tf.DType, str, bool, int, float], /) -> tf.DType:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
@@ -211,13 +215,13 @@ def as_native_dtype(dtype_in: Union[tf.DType, str, bool, int, float]) -> tf.DTyp
         )
 
 
-def dtype(x: Union[tf.Tensor, tf.Variable], as_native: bool = False) -> ivy.Dtype:
+def dtype(x: Union[tf.Tensor, tf.Variable], *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.to_native(x).dtype
     return as_ivy_dtype(x.dtype)
 
 
-def dtype_bits(dtype_in: Union[tf.DType, str]) -> int:
+def dtype_bits(dtype_in: Union[tf.DType, str], /) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1

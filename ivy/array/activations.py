@@ -16,6 +16,19 @@ class ArrayWithActivations(abc.ABC):
         function, and so the docstring for ivy.relu also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the relu activation function applied element-wise.
+
         Examples
         --------
         >>> x = ivy.array([-1., 0., 1.])
@@ -36,6 +49,21 @@ class ArrayWithActivations(abc.ABC):
         ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps
         the function, and so the docstring for ivy.leaky_relu also applies to this
         method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        alpha
+            the slope of the negative section.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the leaky relu activation function applied element-wise.
 
         Examples
         --------
@@ -58,12 +86,27 @@ class ArrayWithActivations(abc.ABC):
         function, and so the docstring for ivy.gelu also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array.
+        approximate
+            whether to use the approximate version of the gelu function.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the gelu activation function applied element-wise.
+
         Examples
         --------
-        >>> x = ivy.array([0.3, -0.1])
+        >>> x = ivy.array([-1.2, -0.6, 1.5])
         >>> y = x.gelu()
         >>> print(y)
-        ivy.array([ 0.185, -0.046])
+        ivy.array([-0.138, -0.165, 1.4])
         """
         return ivy.gelu(self._data, approximate=approximate, out=out)
 
@@ -107,7 +150,7 @@ class ArrayWithActivations(abc.ABC):
         Returns
         -------
         ret
-            an array with the softmax unit function applied element-wise.
+            an array with the softmax activation function applied element-wise.
 
         Examples
         --------
@@ -130,6 +173,22 @@ class ArrayWithActivations(abc.ABC):
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
         function, and so the docstring for ivy.softplus also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        beta
+            the beta parameter of the softplus function.
+        threshold
+            the threshold parameter of the softplus function.
+        out
+            optional output array, for writing the result to. It must have a shape
+
+        Returns
+        -------
+        ret
+            an array with the softplus activation function applied element-wise.
 
         Examples
         --------
@@ -163,6 +222,21 @@ class ArrayWithActivations(abc.ABC):
         and so the docstring for ivy.log_softmax also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array.
+        axis
+            the axis or axes along which the log_softmax should be computed
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the log_softmax activation function applied element-wise.
+
         Examples
         --------
         >>> x = ivy.array([-1.0, -0.98, 2.3])
@@ -175,3 +249,26 @@ class ArrayWithActivations(abc.ABC):
         ivy.array([-1.62, -0.221, -7.82 ])
         """
         return ivy.log_softmax(self._data, axis=axis, out=out)
+
+    def mish(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.mish. This method simply wraps the
+        function, and so the docstring for ivy.mish also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.mish()
+        >>> print(y)
+        ivy.array([-0.30340147,  0.        ,  0.86509842])
+        """
+        return ivy.mish(self._data, out=out)

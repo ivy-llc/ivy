@@ -7,6 +7,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_dtype,
 )
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
+import ivy.functional.frontends.tensorflow as tf_frontend
 
 
 @to_ivy_arrays_and_back
@@ -68,11 +69,13 @@ def constant(value, dtype=None, shape=None, name=None):
 
 
 @handle_tf_dtype
-def convert_to_tensor(value, dtype, dtype_hint, name=None):
+def convert_to_tensor(value, dtype=None, dtype_hint=None, name=None):
     if dtype:
-        return EagerTensor(ivy.astype(value, dtype))
+        return tf_frontend.cast(value, dtype)
     elif dtype_hint:
-        return EagerTensor(ivy.astype(value, dtype_hint))
+        return tf_frontend.cast(value, dtype_hint)
+    if hasattr(value, "ivy_array"):
+        return EagerTensor(value.ivy_array)
     return EagerTensor(value)
 
 
@@ -83,6 +86,7 @@ def einsum(equation, *inputs, **kwargs):
 
 @to_ivy_arrays_and_back
 def reshape(tensor, shape, name=None):
+    shape = shape.to_list() if ivy.is_array(shape) else shape
     return ivy.reshape(tensor, shape=shape)
 
 
@@ -116,6 +120,22 @@ def squeeze(input, axis=None, name=None):
 @to_ivy_arrays_and_back
 def concat(values, axis, name=None):
     return ivy.concat(values, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def matmul(
+    a,
+    b,
+    transpose_a=False,
+    transpose_b=False,
+    adjoint_a=False,
+    adjoint_b=False,
+    a_is_sparse=False,
+    b_is_sparse=False,
+    output_type=None,
+    name=None,
+):
+    return ivy.matmul(a, b)
 
 
 @to_ivy_arrays_and_back
@@ -253,3 +273,46 @@ def strided_slice(
                     end_i = int(end[i])
                 full_slice += (slice(begin_i, end_i, int(strides[i])),)
     return input_[full_slice]
+
+
+@to_ivy_arrays_and_back
+def slice(input_, begin, size, name=None):
+    return strided_slice(input_, begin, begin + size, [1] * len(size))
+
+
+@to_ivy_arrays_and_back
+def linspace(start, stop, num, name=None, axis=0):
+    return ivy.linspace(start, stop, num, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def realdiv(x, y, name=None):
+    return ivy.divide(x, y)
+
+
+@with_unsupported_dtypes({"2.9.0 and below": ("uint16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def tile(input, multiples, name=None):
+    return ivy.tile(input, multiples)
+
+
+@to_ivy_arrays_and_back
+def one_hot(
+    indices: ivy.array,
+    depth: int,
+    on_value=None,
+    off_value=None,
+    axis=None,
+    dtype=None,
+    device=None,
+    out=None,
+):
+    return ivy.one_hot(indices, depth)
+
+
+@to_ivy_arrays_and_back
+def where(condition: ivy.array, x=None, y=None, name=None):
+    if x is None and y is None:
+        return ivy.argwhere(condition)
+    else:
+        return ivy.where(condition, x, y)

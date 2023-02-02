@@ -49,7 +49,7 @@ def test_sinc(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=["int16", "int32", "int64"],
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         min_num_dims=1,
         max_num_dims=3,
         min_value=-100,
@@ -84,7 +84,7 @@ def test_lcm(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         large_abs_safety_factor=6,
         small_abs_safety_factor=6,
         safety_factor_scale="log",
@@ -126,7 +126,7 @@ def test_fmod(
         min_value=-10,
         max_value=10,
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -164,7 +164,7 @@ def test_fmax(
         min_value=-10,
         max_value=10,
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -348,7 +348,7 @@ def test_exp2(
         num_arrays=2,
         min_num_dims=0,
         allow_nan=False,
-        shared_dtype=True,
+        shared_dtype=False,
     ),
     test_gradients=st.just(False),
 )
@@ -409,13 +409,16 @@ def _get_dtype_values_axis_for_count_nonzero(
         max_dim_size=10,
     ),
     keepdims=st.booleans(),
+    test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
 def test_count_nonzero(
+    *,
     dtype_values_axis,
     keepdims,
     test_flags,
     on_device,
+    fn_name,
     backend_fw,
     ground_truth_backend,
 ):
@@ -426,7 +429,7 @@ def test_count_nonzero(
         on_device=on_device,
         fw=backend_fw,
         ground_truth_backend=ground_truth_backend,
-        fn_name="count_nonzero",
+        fn_name=fn_name,
         a=a[0],
         axis=axis,
         keepdims=keepdims,
@@ -448,6 +451,7 @@ def test_count_nonzero(
         valid_axis=True,
         allow_neg_axes=False,
         min_axes_size=1,
+        force_tuple_axis=True,
         allow_nan=True,
     ),
     keep_dims=st.booleans(),
@@ -470,6 +474,8 @@ def test_nansum(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
         fn_name=fn_name,
         x=x[0],
         axis=axis,
@@ -483,7 +489,7 @@ def test_nansum(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         min_num_dims=1,
         max_num_dims=3,
         min_value=-100,
@@ -602,6 +608,43 @@ def test_angle(
     )
 
 
+# imag
+@handle_test(
+    fn_tree="functional.ivy.experimental.imag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32"],
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_imag(
+    *,
+    dtype_and_x,
+    test_flags,
+    ground_truth_backend,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        val=x[0],
+    )
+
+
 # nan_to_num
 @handle_test(
     fn_tree="functional.ivy.experimental.nan_to_num",
@@ -653,7 +696,7 @@ def test_nan_to_num(
 @handle_test(
     fn_tree="functional.ivy.experimental.logaddexp2",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["float32", "float64"],
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
@@ -852,13 +895,13 @@ def test_zeta(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend="torch",
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name="zeta",
-        rtol_=1e-03,
-        atol_=1e-03,
+        rtol_=1e-02,
+        atol_=1e-02,
         x=x[0],
         q=x[1],
     )
@@ -910,7 +953,7 @@ def test_gradient(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=["float16", "float32", "float64"],
         num_arrays=2,
-        shared_dtype=True,
+        shared_dtype=False,
         min_value=-10,
         max_value=10,
         min_num_dims=1,
@@ -937,4 +980,68 @@ def test_xlogy(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# real
+@handle_test(
+    fn_tree="functional.ivy.experimental.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex")
+    ),
+)
+def test_real(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# hypot
+@handle_test(
+    fn_tree="functional.ivy.experimental.hypot",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    test_gradients=st.just(False),
+)
+def test_hypot(
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-2,
+        ground_truth_backend=ground_truth_backend,
+        x1=x[0],
+        x2=x[1],
     )

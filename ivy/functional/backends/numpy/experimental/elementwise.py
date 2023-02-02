@@ -1,6 +1,9 @@
 from typing import Optional, Union, Tuple, List
 import numpy as np
 import numpy.typing as npt
+
+import ivy
+from ivy import promote_types_of_inputs
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -20,6 +23,7 @@ def lcm(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.abs(
         np.lcm(
             x1,
@@ -40,6 +44,7 @@ def fmod(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.fmod(
         x1,
         x2,
@@ -58,6 +63,7 @@ def fmax(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.fmax(
         x1,
         x2,
@@ -81,6 +87,7 @@ def fmin(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.fmin(
         x1,
         x2,
@@ -145,6 +152,10 @@ def copysign(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.astype(ivy.default_float_dtype(as_native=True))
+        x2 = x2.astype(ivy.default_float_dtype(as_native=True))
     return np.copysign(x1, x2, out=out)
 
 
@@ -153,30 +164,36 @@ copysign.support_native_out = True
 
 @_scalar_output_to_0d_array
 def count_nonzero(
-    x: np.ndarray,
+    a: np.ndarray,
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
     dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
-    ret = np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    ret = np.count_nonzero(a, axis=axis, keepdims=keepdims)
     if np.isscalar(ret):
         return np.array(ret, dtype=dtype)
     return ret.astype(dtype)
+
+
+count_nonzero.support_native_out = False
 
 
 def nansum(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[Tuple[int], int]] = None,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[np.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return np.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
@@ -190,6 +207,7 @@ def gcd(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.gcd(x1, x2, out=out)
 
 
@@ -229,6 +247,19 @@ def angle(
 angle.support_native_out = False
 
 
+def imag(
+    val: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    return np.imag(val)
+
+
+imag.support_native_out = False
+
+
 def nan_to_num(
     x: np.ndarray,
     /,
@@ -252,6 +283,10 @@ def logaddexp2(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.astype(ivy.default_float_dtype(as_native=True))
+        x2 = x2.astype(ivy.default_float_dtype(as_native=True))
     return np.logaddexp2(x1, x2, out=out)
 
 
@@ -268,6 +303,16 @@ def signbit(
 
 
 signbit.support_native_out = True
+
+
+def hypot(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.hypot(x1, x2)
 
 
 def diff(
@@ -337,8 +382,12 @@ def zeta(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    inf_indices = np.equal(x, 1)
-    temp = np.logical_and(np.not_equal(x, 1), np.less_equal(q, 0))
+    temp = np.logical_and(np.greater(x, 0), np.equal(np.remainder(x, 2), 0))
+    temp = np.logical_and(temp, np.less_equal(q, 0))
+    temp = np.logical_and(temp, np.equal(np.remainder(q, 1), 0))
+    inf_indices = np.logical_or(temp, np.equal(x, 1))
+    temp = np.logical_and(np.not_equal(np.remainder(x, 2), 0), np.greater(x, 1))
+    temp = np.logical_and(temp, np.less_equal(q, 0))
     nan_indices = np.logical_or(temp, np.less(x, 1))
     n, res = 1, 1 / q**x
     while n < 10000:
@@ -369,7 +418,12 @@ def gradient(
 def xlogy(
     x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    x, y = promote_types_of_inputs(x, y)
     if (x == 0).all():
         return 0.0
     else:
         return x * np.log(y)
+
+
+def real(x: Union[np.ndarray], /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.real(x)

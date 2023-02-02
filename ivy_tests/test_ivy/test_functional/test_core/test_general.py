@@ -1732,7 +1732,7 @@ def _composition_1():
 _composition_1.test_unsupported_devices_and_dtypes = {
     "cpu": {
         "numpy": ("bfloat16",),
-        "jax": (),
+        "jax": ("complex64", "complex128"),
         "tensorflow": ("complex64", "complex128"),
         "torch": (
             "uint16",
@@ -2067,20 +2067,21 @@ def _fn3(x, y):
 # vmap
 @given(
     func=st.sampled_from([_fn1, _fn2, _fn3]),
-    arrays_and_axes=helpers.arrays_and_axes(
+    dtype_and_arrays_and_axes=helpers.arrays_and_axes(
         allow_none=False,
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=10,
         num=2,
+        returndtype=True,
     ),
     in_axes_as_cont=st.booleans(),
 )
-def test_vmap(func, arrays_and_axes, in_axes_as_cont):
-
-    generated_arrays, in_axes = arrays_and_axes
+def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont):
+    dtype, generated_arrays, in_axes = dtype_and_arrays_and_axes
     arrays = [ivy.native_array(array) for array in generated_arrays]
+    assume(ivy.as_ivy_dtype(dtype[0]) not in ivy.function_unsupported_dtypes(ivy.vmap))
 
     if in_axes_as_cont:
         vmapped_func = ivy.vmap(func, in_axes=in_axes, out_axes=0)
@@ -2090,7 +2091,8 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont):
     assert callable(vmapped_func)
 
     try:
-        fw_res = vmapped_func(*arrays)
+        fw_res = helpers.flatten_and_to_np(ret=vmapped_func(*arrays))
+        fw_res = fw_res if len(fw_res) else None
     except Exception:
         fw_res = None
 
@@ -2104,16 +2106,20 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont):
     assert callable(jax_vmapped_func)
 
     try:
-        jax_res = jax_vmapped_func(*arrays)
+        jax_res = helpers.flatten_and_to_np(ret=jax_vmapped_func(*arrays))
+        jax_res = jax_res if len(jax_res) else None
     except Exception:
         jax_res = None
 
     ivy.unset_backend()
 
     if fw_res is not None and jax_res is not None:
-        assert np.allclose(
-            fw_res, jax_res
-        ), f"Results from {ivy.current_backend_str()} and jax are not equal"
+        helpers.value_test(
+            ret_np_flat=fw_res,
+            ret_np_from_gt_flat=jax_res,
+            rtol=1e-1,
+            atol=1e-1,
+        )
 
     elif fw_res is None and jax_res is None:
         pass

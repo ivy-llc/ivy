@@ -132,19 +132,18 @@ ivy.tan()
         fn_tree,
         on_device,
     ):
-        input_dtype, x = dtype_and_x
+        input_dtypes, x = dtype_and_x
         dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
             dtypes=input_dtype,
             get_dtypes_kind="numeric",
         )
-        where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
             where=where,
-            input_dtype=input_dtype,
-            as_variable=as_variable,
-            native_array=native_array,
+            input_dtype=input_dtypes,
+            test_flags=test_flags
         )
         np_frontend_helpers.test_frontend_function(
-            input_dtypes=input_dtype,
+            input_dtypes=input_dtypes,
             as_variable_flags=as_variable,
             with_out=with_out,
             num_positional_args=num_positional_args,
@@ -489,6 +488,80 @@ This function requires us to create extra functions for generating :code:`shape`
   This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
 * We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Torch.
 * :func:`torch.full` supports :code:`out` so we generate :code:`with_out`.
+
+Testing Without Using Tests Values
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+While even using hypothesis, there are some cases in which we set :code:`test_values=False` for example, we have a
+function add_noise() and we call it on x and we try to assert (we interally use assert np.all_close) that the result
+from torch backend matches tensorflow the test will always fail, because the function add_noise() depends on a random
+seed internally that we have no control over, what we change is only how we test for equality, in which in that case
+we can not and we have to reconstruct the output as shown in the example below.
+
+.. code-block:: python
+
+    # ivy_tests/test_ivy/test_frontends/test_torch/test_linalg.py
+    @handle_frontend_test(
+    fn_tree="torch.linalg.qr",
+    dtype_and_input=_get_dtype_and_matrix(),
+    )
+    def test_torch_qr(
+        *,
+        dtype_and_input,
+        num_positional_args,
+        as_variable,
+        native_array,
+        frontend,
+        fn_tree,
+        on_device,
+    ):
+        input_dtype, x = dtype_and_input
+        ret, frontend_ret = helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            native_array_flags=native_array,
+            as_variable_flags=as_variable,
+            with_out=False,
+            num_positional_args=num_positional_args,
+            frontend=frontend,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            input=x[0],
+            test_values=False,
+        )
+        ret = [ivy.to_numpy(x) for x in ret]
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+        q, r = ret
+        frontend_q, frontend_r = frontend_ret
+
+        assert_all_close(
+            ret_np=q @ r,
+            ret_from_gt_np=frontend_q @ frontend_r,
+            rtol=1e-2,
+            atol=1e-2,
+            ground_truth_backend=frontend,
+        )
+
+* The parameter :code:`test_values=False` is explicitly set to "False" as there can be multiple solutions for this and those multiple solutions can all be correct, so we have to test with reconstructing the output.
+
+What assert_all_close() actually does is, it checks for values and dtypes, if even one of them is not same it will cause
+an assertion, the examples given below will make it clearer.
+
+.. code-block:: python
+
+    >>> a = np.array([[1., 5.]], dtype='float32')
+    >>> b = np.array([[2., 4.]], dtype='float32')
+    >>> print(helpers.assert_all_close(a, b))
+    AssertionError: [[1. 5.]] != [[2. 4.]]
+
+
+.. code-block:: python
+
+    >>> a = np.array([[1., 5.]], dtype='float64')
+    >>> b = np.array([[2., 4.]], dtype='float32')
+    >>> print(helpers.assert_all_close(a, b))
+    AssertionError: the return with a TensorFlow backend produced data type of float32, while the return with a  backend returned a data type of float64.
+
 
 Alias functions
 ^^^^^^^^^^^^^^^

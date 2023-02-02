@@ -1,14 +1,12 @@
 # local
 import ivy
-
-
+from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_tf_dtype,
 )
 
-from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 import ivy.functional.frontends.tensorflow as tf_frontend
 
 
@@ -38,9 +36,26 @@ def eigvalsh(tensor, name=None):
 
 
 @to_ivy_arrays_and_back
+def matmul(
+    a,
+    b,
+    transpose_a=False,
+    transpose_b=False,
+    adjoint_a=False,
+    adjoint_b=False,
+    a_is_sparse=False,
+    b_is_sparse=False,
+    output_type=None,
+    name=None,
+):
+    # TODO : handle conjugate when ivy supports complex numbers
+    return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def solve(matrix, rhs):
-    matrix, rhs = promote_types_of_tensorflow_inputs(matrix, rhs)
+    matrix, rhs = check_tensorflow_casting(matrix, rhs)
     return ivy.solve(matrix, rhs)
 
 
@@ -61,7 +76,7 @@ def slogdet(input, name=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def cholesky_solve(chol, rhs, name=None):
-    chol, rhs = promote_types_of_tensorflow_inputs(chol, rhs)
+    chol, rhs = check_tensorflow_casting(chol, rhs)
     y = ivy.solve(chol, rhs)
     return ivy.solve(ivy.matrix_transpose(chol), y)
 
@@ -76,7 +91,7 @@ def pinv(a, rcond=None, validate_args=False, name=None):
     {"2.9.0 and below": ("float32", "float64", "int32")}, "tensorflow"
 )
 def tensordot(a, b, axes, name=None):
-    a, b = promote_types_of_tensorflow_inputs(a, b)
+    a, b = check_tensorflow_casting(a, b)
     return ivy.tensordot(a, b, axes=axes)
 
 

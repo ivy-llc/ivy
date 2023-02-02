@@ -1,3 +1,8 @@
+# global
+import torch as torch
+
+backend_version = {"version": torch.__version__.split("+")[0]}
+
 # flake8: noqa
 from .activations import *
 from .converters import *
@@ -10,6 +15,7 @@ from .gradients import *
 from .layers import *
 from .linear_algebra import *
 from .manipulation import *
+from .norms import *
 from .random import *
 from .searching import *
 from .set import *
@@ -30,6 +36,7 @@ del (
     layers,
     linear_algebra,
     manipulation,
+    norms,
     random,
     searching,
     set,

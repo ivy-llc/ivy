@@ -54,3 +54,23 @@ def multinomial(input, num_samples, replacement=False, *, generator=None, out=No
 @to_ivy_arrays_and_back
 def poisson(input, generator=None):
     return ivy.poisson(input, shape=None)
+
+
+@to_ivy_arrays_and_back
+def rand(
+    size,
+    *,
+    generator=None,
+    out=None,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    pin_memory=False
+):
+    return ivy.random_uniform(
+        shape=size,
+        out=out,
+        dtype=dtype,
+        device=device,
+    )

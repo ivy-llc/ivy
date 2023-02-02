@@ -265,6 +265,7 @@ def dtype_values_axis(
     min_axes_size=1,
     max_axes_size=None,
     force_int_axis=False,
+    force_tuple_axis=False,
     ret_shape=False,
 ):
     """Draws a list of arrays with elements from the given data type,
@@ -334,8 +335,10 @@ def dtype_values_axis(
         minimum size of the axis tuple.
     max_axes_size
         maximum size of the axis tuple.
+    force_tuple_axis
+        if true, all axis will be returned as a tuple.
     force_int_axis
-        if True, and only one axis is drawn, the returned axis will be an integer.
+        if true and only one axis is drawn, the returned axis will be an int.
     shape
         shape of the array. if None, a random shape is drawn.
     shared_dtype
@@ -386,6 +389,7 @@ def dtype_values_axis(
                     max_size=max_axes_size,
                     allow_neg=allow_neg_axes,
                     force_int=force_int_axis,
+                    force_tuple=force_tuple_axis,
                 )
             )
     else:
@@ -523,12 +527,15 @@ def array_indices_axis(
 @st.composite
 def arrays_and_axes(
     draw,
+    available_dtypes=get_dtypes("float"),
     allow_none=False,
-    min_num_dims=0,
+    min_num_dims=1,
     max_num_dims=5,
     min_dim_size=1,
     max_dim_size=10,
     num=2,
+    returndtype=False,
+    force_int_axis=False,
 ):
     shapes = list()
     for _ in range(num):
@@ -542,20 +549,34 @@ def arrays_and_axes(
             )
         )
         shapes.append(shape)
+    if isinstance(available_dtypes, st._internal.SearchStrategy):
+        available_dtypes = draw(available_dtypes)
+
+    dtype = draw(
+        dtype_helpers.array_dtypes(num_arrays=num, available_dtypes=available_dtypes)
+    )
     arrays = list()
     for shape in shapes:
         arrays.append(
-            draw(
-                array_values(dtype="int32", shape=shape, min_value=-200, max_value=200)
-            )
+            draw(array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20))
         )
-    all_axes_ranges = list()
-    for shape in shapes:
-        if None in all_axes_ranges:
-            all_axes_ranges.append(st.integers(0, len(shape) - 1))
+    if force_int_axis:
+        if len(shape) <= 2:
+            axes = draw(st.one_of(st.integers(0, len(shape) - 1), st.none()))
         else:
-            all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
-    axes = draw(st.tuples(*all_axes_ranges))
+            axes = draw(st.integers(0, len(shape) - 1))
+    else:
+        all_axes_ranges = list()
+        for shape in shapes:
+            if None in all_axes_ranges:
+                all_axes_ranges.append(st.integers(0, len(shape) - 1))
+            else:
+                all_axes_ranges.append(
+                    st.one_of(st.none(), st.integers(0, len(shape) - 1))
+                )
+        axes = draw(st.tuples(*all_axes_ranges))
+    if returndtype:
+        return dtype, arrays, axes
     return arrays, axes
 
 
@@ -878,7 +899,9 @@ def array_and_broadcastable_shape(draw, dtype):
 
 
 @st.composite
-def arrays_for_pooling(draw, min_dims, max_dims, min_side, max_side):
+def arrays_for_pooling(
+    draw, min_dims, max_dims, min_side, max_side, allow_explicit_padding=False
+):
     in_shape = draw(
         nph.array_shapes(
             min_dims=min_dims, max_dims=max_dims, min_side=min_side, max_side=max_side
@@ -908,6 +931,29 @@ def arrays_for_pooling(draw, min_dims, max_dims, min_side, max_side):
         )
     if array_dim == 3:
         kernel = draw(st.tuples(st.integers(1, in_shape[1])))
-    padding = draw(st.sampled_from(["VALID", "SAME"]))
+    if allow_explicit_padding:
+        padding = []
+        for i in range(array_dim - 2):
+            max_pad = kernel[i] // 2
+            possible_pad_combos = [
+                (i, max_pad - i)
+                for i in range(0, max_pad)
+                if i + (max_pad - i) == max_pad
+            ]
+            if len(possible_pad_combos) == 0:
+                pad_selected_combo = (0, 0)
+            else:
+                pad_selected_combo = draw(st.sampled_from(possible_pad_combos))
+            padding.append(
+                draw(
+                    st.tuples(
+                        st.integers(0, pad_selected_combo[0]),
+                        st.integers(0, pad_selected_combo[1]),
+                    )
+                )
+            )
+        padding = draw(st.one_of(st.just(padding), st.sampled_from(["VALID", "SAME"])))
+    else:
+        padding = draw(st.sampled_from(["VALID", "SAME"]))
     strides = draw(st.tuples(st.integers(1, in_shape[1])))
     return dtype, x, kernel, strides, padding
