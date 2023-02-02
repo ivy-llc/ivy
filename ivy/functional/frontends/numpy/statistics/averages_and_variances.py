@@ -11,18 +11,18 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
-def nanmedian(a, /, *, axis=None, keepdims=False, out=None, overwrite_input=False):
+def nanmedian(a, /, *, axis=None, keepdims=False, out=None):
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
 
     if not ivy.any(is_nan):
         ret = ivy.median(
-            a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
+            a, axis=axis, keepdims=keepdims, out=out
         )
     else:
         a = [i for i in a if ivy.isnan(i) is False]
         ret = ivy.median(
-            a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
+            a, axis=axis, keepdims=keepdims, out=out
         )
     return ret
 

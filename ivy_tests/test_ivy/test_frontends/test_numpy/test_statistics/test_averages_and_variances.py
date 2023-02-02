@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     fn_tree="numpy.nanmedian",
     dtype_and_a=statistical_dtype_values(function="nanmedian"),
     # dtype=helpers.get_dtypes("float", full=False, none=True),
-    overwrite_input=st.booleans(),
+    # overwrite_input=st.booleans(),
 )
 def test_numpy_nanmedian(
     dtype_and_a,
@@ -24,7 +24,6 @@ def test_numpy_nanmedian(
     test_flags,
     fn_tree,
     on_device,
-    overwrite_input,
 ):
     input_dtypes, a, axis = dtype_and_a
     if isinstance(axis, tuple):
@@ -41,7 +40,7 @@ def test_numpy_nanmedian(
         # dtype=dtype[0],
         out=None,
         keepdims=False,
-        overwrite_input=overwrite_input,
+        # overwrite_input=overwrite_input,
         # test_values=False,
     )
 

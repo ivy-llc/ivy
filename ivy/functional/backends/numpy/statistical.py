@@ -261,12 +261,12 @@ def nanmedian(a, /, *, axis=None, keepdims=False, out=None, overwrite_input=Fals
 
     if not ivy.any(is_nan):
         ret = ivy.median(
-            a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
+            a, axis=axis, keepdims=keepdims, out=out
         )
     else:
         a = [i for i in a if ivy.isnan(i) is False]
         ret = ivy.median(
-            a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
+            a, axis=axis, keepdims=keepdims, out=out
         )
     return ret
 
