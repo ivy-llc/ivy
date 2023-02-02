@@ -44,3 +44,24 @@ def tensorinv(a, ind=2):
     ia = ivy.inv(a)
     new_shape = tuple([*invshape])
     return ivy.reshape(ia, shape=new_shape)
+
+@to_ivy_arrays_and_back
+def lstsq(a, b, rcond='warn'):
+    solution = ivy.matmul(ivy.pinv(a), b)
+
+    svd = ivy.svd(a, compute_uv=False)
+    if a.ndim < 2:
+        rank = int(not all(a == 0))
+    else:
+        S = svd[0]
+        tol = S.max() * max(a.shape) * ivy.finfo(S.dtype).eps
+        rank = ivy.count_nonzero(S > tol, axis=-1).astype(ivy.int64)
+    residuals = ivy.sum((b - ivy.matmul(a, solution))**2)
+    print("*" * 10)
+    print([solution, residuals, rank, svd[0]])
+    print("-" * 10)
+    return [solution, residuals, rank, svd[0]]
+
+
+
+

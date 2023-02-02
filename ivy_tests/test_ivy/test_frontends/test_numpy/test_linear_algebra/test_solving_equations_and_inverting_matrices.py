@@ -167,3 +167,30 @@ def test_numpy_tensorinv(
         a=x,
         ind=ind,
     )
+
+# lstsq
+@handle_frontend_test(
+    fn_tree="numpy.linalg.lstsq",
+    x=_get_first_matrix(),
+    y=_get_second_matrix(),
+    test_with_out=st.just(False),
+)
+def test_numpy_lstsq(
+    x,
+    y,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype1, x1 = x
+    dtype2, x2 = y
+    helpers.test_frontend_function(
+        input_dtypes=[dtype1, dtype2],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x1,
+        b=x2,
+    )
