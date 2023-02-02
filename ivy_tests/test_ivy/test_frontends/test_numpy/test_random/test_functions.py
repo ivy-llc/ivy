@@ -1,5 +1,6 @@
 # global,
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -201,5 +202,36 @@ def test_numpy_geometric(
         on_device=on_device,
         test_values=False,
         p=p,
+        size=size,
+    )
+
+
+# multinomial
+@handle_frontend_test(
+    fn_tree="numpy.random.multinomial",
+    n=helpers.ints(min_value=2, max_value=10),
+    dtype=helpers.get_dtypes("float", full=False),
+    size=st.tuples(
+        st.integers(min_value=1, max_value=10), st.integers(min_value=2, max_value=2)
+    ),
+)
+def test_numpy_multinomial(
+    n,
+    dtype,
+    size,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        n=n,
+        pvals=np.array([1 / n] * n, dtype=dtype[0]),
         size=size,
     )

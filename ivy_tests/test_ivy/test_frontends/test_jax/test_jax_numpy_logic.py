@@ -533,12 +533,11 @@ def test_jax_numpy_any(
     input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, input_dtypes, test_flags =\
-        np_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,

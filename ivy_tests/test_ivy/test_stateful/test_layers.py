@@ -966,14 +966,13 @@ def test_lstm_layer(
     with_v=st.booleans(),
     seq_v=st.booleans(),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    method_as_variable_flags=st.booleans(),
 )
 def test_sequential_layer(
     bs_c_target,
     with_v,
     seq_v,
     dtype,
-    method_as_variable_flags,
+    method_flags,
     on_device,
     compile_graph,
     method_name,
@@ -982,7 +981,7 @@ def test_sequential_layer(
     # smoke test
     batch_shape, channels, target = bs_c_target
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if method_as_variable_flags:
+    if method_flags.as_variable[0]:
         x = _variable(
             ivy.asarray(
                 ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels),
