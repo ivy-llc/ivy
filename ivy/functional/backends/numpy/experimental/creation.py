@@ -94,7 +94,7 @@ kaiser_window.support_native_out = False
 
 
 def sequence_empty(
-    shape: Union[ivy.NativeShape, Sequence[int]]
+    shape: Union[ivy.NativeShape, Sequence[int]],
     /,
     *,
     dtype: Optional[np.dtype] = np.float32,
