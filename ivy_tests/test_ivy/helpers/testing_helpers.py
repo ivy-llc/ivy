@@ -7,6 +7,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy
+import ivy.functional.frontends.numpy as np_frontend
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
@@ -201,6 +202,14 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     for the function
     """
     supported_device_dtypes = {}
+
+    # This is for getting a private function from numpy frontend where we have
+    # a ufunc object as we can't refer to them as functions
+    if fn_module == "ivy.functional.frontends.numpy":
+        fn_module_ = np_frontend
+        if isinstance(getattr(fn_module_, fn_name), fn_module_.ufunc):
+            fn_name = "_" + fn_name
+
     backends = available_frameworks()
     for b in backends:  # ToDo can optimize this ?
 

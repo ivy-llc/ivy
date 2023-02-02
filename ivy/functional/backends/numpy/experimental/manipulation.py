@@ -216,15 +216,13 @@ def vsplit(
     ary: np.ndarray,
     indices_or_sections: Union[int, Tuple[int]],
     /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
+) -> List[np.ndarray]:
     return np.vsplit(ary, indices_or_sections)
 
 
 def dsplit(
     ary: np.ndarray,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[np.ndarray]:
     if ary.ndim < 3:

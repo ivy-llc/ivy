@@ -1,6 +1,13 @@
-import tensorflow as tf
-import ivy
 from typing import Optional, Union
+
+# global
+import tensorflow as tf
+from tensorflow.python.types.core import Tensor
+
+# local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def logit(
@@ -12,3 +19,14 @@ def logit(
     else:
         x = tf.clip_by_value(x, eps, 1 - eps)
     return tf.cast(tf.math.log(x / (1 - x)), x_dtype)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+def thresholded_relu(
+    x: Tensor,
+    /,
+    *,
+    threshold: Optional[Union[int, float]] = 0,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    return tf.where(x > threshold, x, 0)
