@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple
+from typing import Union, Optional, Tuple, Sequence
 import math
 import jax.numpy as jnp
 import jaxlib.xla_extension
@@ -85,3 +85,14 @@ def tril_indices(
         jnp.tril_indices(n=n_rows, k=k, m=n_cols),
         device=device,
     )
+
+
+def sequence_empty(
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    /,
+    *,
+    dtype: Optional[jnp.dtype] = jnp.float32,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return _to_device(jnp.empty(shape, dtype=dtype), device=device)
