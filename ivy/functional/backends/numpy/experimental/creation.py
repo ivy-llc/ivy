@@ -91,3 +91,14 @@ def kaiser_window(
 
 
 kaiser_window.support_native_out = False
+
+
+def sequence_empty(
+    shape: Union[ivy.NativeShape, Sequence[int]]
+    /,
+    *,
+    dtype: Optional[np.dtype] = np.float32,
+    device: str,
+    out: Optiona[np.ndarray] = None
+) -> np.ndarray:
+    return _to_device(np.empty(shape, dtype=dtype), device=device)
