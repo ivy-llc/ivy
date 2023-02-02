@@ -129,5 +129,7 @@ def sequence_empty(
     device: str,
     out: Optiona[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        return tf.experimental.numpy.empty(0, dtype=dtype)
+    if device is not None:
+        with tf.device(ivy.as_native_dev(device)):
+            return tf.experimental.numpy.empty((0,1), dtype=dtype)
+    return tf.experimental.numpy.empty((0,1), dtype=dtype)
