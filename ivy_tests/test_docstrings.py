@@ -131,7 +131,6 @@ def check_docstring_examples_run(
             executable_lines[-1] += line.split("...")[1][1:]
         if ">>> print(" in line:
             is_multiline_executable = False
-            continue
 
     # noinspection PyBroadException
     f = StringIO()
@@ -187,8 +186,6 @@ def check_docstring_examples_run(
     num_output = num_output.split(",")
     num_parsed_output = num_parsed_output.split(",")
     docstr_result = True
-    # print("N_OUTPUT", num_output)
-    # print("N_PUTPUT", num_parsed_output)
     for (doc_u, doc_v) in zip(num_output, num_parsed_output):
         try:
             docstr_result = np.allclose(
