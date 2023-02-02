@@ -14,28 +14,22 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="numpy.nanmedian",
     dtype_and_a=statistical_dtype_values(function="nanmedian"),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
-    where=np_frontend_helpers.where(),
-    keep_dims=st.booleans(),
+    # dtype=helpers.get_dtypes("float", full=False, none=True),
+    overwrite_input=st.booleans(),
 )
 def test_numpy_nanmedian(
     dtype_and_a,
-    dtype,
-    where,
+    # dtype,
     frontend,
     test_flags,
     fn_tree,
     on_device,
-    keep_dims,
+    overwrite_input,
 ):
     input_dtypes, a, axis = dtype_and_a
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
+
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -44,11 +38,11 @@ def test_numpy_nanmedian(
         on_device=on_device,
         a=a[0],
         axis=axis,
-        dtype=dtype[0],
+        # dtype=dtype[0],
         out=None,
-        keepdims=keep_dims,
-        where=where,
-        test_values=False,
+        keepdims=False,
+        overwrite_input=overwrite_input,
+        # test_values=False,
     )
 
 
