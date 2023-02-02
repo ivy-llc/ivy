@@ -131,4 +131,4 @@ def sequence_empty(
     out: Optiona[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(ivy.as_native_dev(device)):
-        return tf.Variable(tf.experimental.numpy.empty(shape, dtype=np.float32), collections=[])
+        return tf.Variable(tf.experimental.numpy.empty(shape, dtype=tf.dtypes.float32), collections=[])
