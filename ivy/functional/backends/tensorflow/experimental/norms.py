@@ -25,7 +25,7 @@ def instance_norm(
     affine: Optional[bool] = True,
     track_running_stats: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) :
+):
     if scale is not None:
         scale = tf.reshape(scale, shape=(1, 1, 1, -1))
     if bias is not None:
@@ -46,15 +46,11 @@ def instance_norm(
         bias = tf.zeros_like(mean)
 
     if affine:
-        normalized = tf.nn.batch_normalization(
-            x, mean, var, bias, scale, eps
-        )
+        normalized = tf.nn.batch_normalization(x, mean, var, bias, scale, eps)
     else:
         scale_ = tf.ones_like(var)
         bias_ = tf.zeros_like(mean)
-        normalized = tf.nn.batch_normalization(
-            x, mean, var, bias_, scale_, eps
-        )
+        normalized = tf.nn.batch_normalization(x, mean, var, bias_, scale_, eps)
     if track_running_stats:
         if running_mean is None:
             running_mean = tf.zeros_like(mean)
@@ -62,11 +58,11 @@ def instance_norm(
             running_stddev = tf.ones_like(var)
         running_mean = momentum * running_mean + (1 - momentum) * mean
         running_stddev = momentum * running_stddev + (1 - momentum) * tf.sqrt(var)
-        if data_format == 'NCHW':
+        if data_format == "NCHW":
             normalized = tf.transpose(normalized, (0, 3, 1, 2))
             running_mean = tf.transpose(running_mean, (0, 3, 1, 2))
             running_stddev = tf.transpose(running_stddev, (0, 3, 1, 2))
         return normalized, running_mean, running_stddev
-    if data_format == 'NCHW':
+    if data_format == "NCHW":
         normalized = tf.transpose(normalized, (0, 3, 1, 2))
     return normalized

@@ -34,9 +34,9 @@ def instance_norm(
         running_mean = np.expand_dims(running_mean, axis=(0, 2, 3))
     if running_stddev is not None:
         running_stddev = np.expand_dims(running_stddev, axis=(0, 2, 3))
-    if data_format == 'NHWC':
+    if data_format == "NHWC":
         x = np.transpose(x, (0, 3, 1, 2))
-    elif data_format != 'NCHW':
+    elif data_format != "NCHW":
         raise NotImplementedError
     mean = np.mean(x, axis=(0, 2, 3), keepdims=True)
     var = np.var(x, axis=(0, 2, 3), keepdims=True)
@@ -54,11 +54,11 @@ def instance_norm(
             running_stddev = np.ones_like(var)
         running_mean = momentum * running_mean + (1 - momentum) * mean
         running_stddev = momentum * running_stddev + (1 - momentum) * np.sqrt(var)
-        if data_format == 'NHWC':
+        if data_format == "NHWC":
             normalized = np.transpose(normalized, (0, 2, 3, 1))
             running_mean = np.transpose(running_mean, (0, 2, 3, 1))
             running_stddev = np.transpose(running_stddev, (0, 2, 3, 1))
         return normalized, running_mean, running_stddev
-    if data_format == 'NHWC':
+    if data_format == "NHWC":
         normalized = np.transpose(normalized, (0, 2, 3, 1))
     return normalized

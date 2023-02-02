@@ -576,7 +576,9 @@ def Elu(features, name=None):
     ones = ivy.ones_like(features, dtype=ivy.dtype(features))
     ret_val = ivy.where(
         # if x > 0 => x; else e^x - 1
-        features > zeros, features, ivy.subtract(ivy.exp(features), ones) 
+        features > zeros,
+        features,
+        ivy.subtract(ivy.exp(features), ones),
     )
     return ret_val
 
