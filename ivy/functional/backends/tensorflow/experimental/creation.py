@@ -121,14 +121,14 @@ def tril_indices(
 
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
-'''
+
 def sequence_empty(
+    shape: Union[ivy.NativeShape, Sequence[int]]
     /,
     *,
-    dtype: tf.DType,
+    dtype: Optional[tf.DType] = tf.dtypes.float32,
     device: str,
     out: Optiona[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(ivy.as_native_dev(device)):
-        return tf.experimental.numpy.empty((0,1), dtype=dtype)
-'''
+        return tf.Variable(tf.experimental.numpy.empty(shape, dtype=np.float32), collections=[])
