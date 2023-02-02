@@ -2,11 +2,13 @@
 import math
 
 import torch
-from typing import Optional
+from typing import Optional, Tuple
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
+
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 
 @with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, backend_version)
@@ -108,3 +110,45 @@ def kron(
 
 
 kron.support_native_out = True
+
+
+def matrix_exp(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.exp(x, out=out)
+
+
+matrix_exp.support_native_out = True
+
+
+def eig(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> Tuple[torch.Tensor]:
+    if not torch.is_complex(x):
+        x = x.to(torch.complex128)
+    return torch.linalg.eig(x)
+
+
+eig.support_native_out = False
+
+
+def eigvals(x: torch.Tensor, /) -> torch.Tensor:
+    if not torch.is_complex(x):
+        x = x.to(torch.complex128)
+    return torch.linalg.eigvals(x)
+
+
+eigvals.support_native_out = False
+
+
+def adjoint(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    _check_valid_dimension_size(x)
+    return torch.adjoint(x).resolve_conj()

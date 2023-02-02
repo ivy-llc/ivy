@@ -14,7 +14,8 @@ class ArrayWithSearching(abc.ABC):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
-        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        select_last_index: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -33,7 +34,7 @@ class ArrayWithSearching(abc.ABC):
             If this is set to True, the axes which are reduced are left in the result as
             dimensions with size one. With this option, the result will broadcast
             correctly against the array.
-        output_dtype
+        dtype
             Optional data type of the output array.
         out
             If provided, the result will be inserted into this array. It should be of
@@ -47,9 +48,38 @@ class ArrayWithSearching(abc.ABC):
             containing the indices of the maximum values. The returned array must have
             the default array index data type.
 
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.argmax()
+        >>> print(y)
+        ivy.array(2)
+
+        >>> x = ivy.array([[1., -0., -1.], [-2., 3., 2.]])
+        >>> y = x.argmax(axis=1)
+        >>> print(y)
+        ivy.array([0, 1])
+
+        >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
+        >>> y = x.argmax(axis=1, keepdims=True)
+        >>> print(y)
+        ivy.array([[0], [2]])
+
+        >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
+        >>> y = x.argmax(axis=1, dtype=ivy.int64)
+        >>> print(y, y.dtype)
+        ivy.array([0, 2]) int64
+
         """
         return ivy.argmax(
-            self._data, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            select_last_index=select_last_index,
+            out=out,
         )
 
     def argmin(
@@ -59,6 +89,7 @@ class ArrayWithSearching(abc.ABC):
         axis: Optional[int] = None,
         keepdims: bool = False,
         output_dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
+        select_last_index: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -92,9 +123,30 @@ class ArrayWithSearching(abc.ABC):
             Array containing the indices of the minimum values across the specified
             axis.
 
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 1., -1.])
+        >>> y = x.argmin()
+        >>> print(y)
+        ivy.array(2)
+
+        >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
+        >>> y= ivy.zeros((1,3), dtype=ivy.int64)
+        >>> x.argmin(axis=1, keepdims=True, out=y)
+        >>> print(y)
+        ivy.array([[2],
+                   [0],
+                   [1]])
         """
         return ivy.argmin(
-            self._data, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            output_dtype=output_dtype,
+            select_last_index=select_last_index,
+            out=out,
         )
 
     def nonzero(
@@ -168,6 +220,15 @@ class ArrayWithSearching(abc.ABC):
         ret
             An array with elements from self where condition is True, and elements from
             x2 otherwise.
+
+        Examples
+        --------
+        >>> condition = ivy.array([[True, False], [True, True]])
+        >>> x1 = ivy.array([[1, 2], [3, 4]])
+        >>> x2 = ivy.array([[5, 6], [7, 8]])
+        >>> res = x1.where(condition,x2)
+        >>> print(res)
+        ivy.array([[1, 6], [3, 4]])
 
         """
         return ivy.where(self._data, x1._data, x2._data, out=out)

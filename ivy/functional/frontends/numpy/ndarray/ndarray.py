@@ -6,7 +6,9 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 class ndarray:
-    def __init__(self, shape, dtype=np_frontend.float32, order=None):
+    def __init__(self, shape, dtype="float32", order=None):
+        if isinstance(dtype, np_frontend.dtype):
+            dtype = dtype.ivy_dtype
         self._ivy_array = ivy.empty(shape, dtype=dtype)
 
         ivy.assertions.check_elem_in_list(
@@ -20,7 +22,9 @@ class ndarray:
             self._f_contiguous = False
 
     def __repr__(self):
-        return "ivy.frontends.numpy.ndarray(" + str(ivy.to_list(self._ivy_array)) + ")"
+        return str(self._ivy_array.__repr__()).replace(
+            "ivy.array", "ivy.frontends.numpy.ndarray"
+        )
 
     # Properties #
     # ---------- #
@@ -39,7 +43,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return self._ivy_array.dtype
+        return np_frontend.dtype(self._ivy_array.dtype)
 
     # Setters #
     # --------#
@@ -52,6 +56,31 @@ class ndarray:
 
     # Instance Methods #
     # ---------------- #
+
+    def astype(self, dtype, order="K", casting="unsafe", subok=True, copy=True):
+        ivy.assertions.check_elem_in_list(
+            order,
+            ["C", "F", "A", "K"],
+            message="order must be one of 'C', 'F', or 'A'",
+        )
+        if copy and self._f_contiguous:
+            ret = np_frontend.array(self._ivy_array, order="F")
+        else:
+            ret = np_frontend.array(self._ivy_array) if copy else self
+
+        dtype = np_frontend.to_ivy_dtype(dtype)
+        if np_frontend.can_cast(ret._ivy_array, dtype, casting=casting):
+            ret._ivy_array = ret._ivy_array.astype(dtype)
+        else:
+            raise ivy.exceptions.IvyException(
+                f"Cannot cast array data from dtype('{ret._ivy_array.dtype}')"
+                f" to dtype('{dtype}') according to the rule '{casting}'"
+            )
+        if order == "F":
+            ret._f_contiguous = True
+        elif order == "C":
+            ret._f_contiguous = False
+        return ret
 
     def argmax(
         self,
@@ -79,7 +108,7 @@ class ndarray:
         else:
             return np_frontend.reshape(self._ivy_array, newshape, order="C")
 
-    def transpose(self, *axes):
+    def transpose(self, axes, /):
         if axes and isinstance(axes[0], tuple):
             axes = axes[0]
         return np_frontend.transpose(self._ivy_array, axes=axes)
@@ -94,7 +123,7 @@ class ndarray:
         return np_frontend.any(self._ivy_array, axis, out, keepdims, where=where)
 
     def argsort(self, *, axis=-1, kind=None, order=None):
-        return np_frontend.argsort(self._ivy_array, axis, kind, order)
+        return np_frontend.argsort(self._ivy_array, axis=axis, kind=kind, order=order)
 
     def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
         return np_frontend.mean(
@@ -144,21 +173,21 @@ class ndarray:
 
     def clip(
         self,
-        a_min,
-        a_max,
+        min,
+        max,
         /,
         out=None,
         *,
         where=True,
         casting="same_kind",
-        order="k",
+        order="K",
         dtype=None,
         subok=True,
     ):
         return np_frontend.clip(
             self._ivy_array,
-            a_min,
-            a_max,
+            min,
+            max,
             out=out,
             where=where,
             casting=casting,
@@ -181,6 +210,14 @@ class ndarray:
             axis=axis,
             dtype=dtype,
             out=out,
+        )
+
+    def diagonal(self, *, offset=0, axis1=0, axis2=1):
+        return np_frontend.diagonal(
+            self._ivyArray,
+            offset=offset,
+            axis1=axis1,
+            axis2=axis2,
         )
 
     def sort(self, *, axis=-1, kind=None, order=None):
@@ -241,6 +278,9 @@ class ndarray:
     def __add__(self, value, /):
         return np_frontend.add(self._ivy_array, value)
 
+    def __radd__(self, value, /):
+        return np_frontend.add(self._ivy_array, value)
+
     def __sub__(self, value, /):
         return np_frontend.subtract(self._ivy_array, value)
 
@@ -249,6 +289,12 @@ class ndarray:
 
     def __truediv__(self, value, /):
         return np_frontend.true_divide(self._ivy_array, value)
+
+    def __rtruediv__(self, value, /):
+        return np_frontend.true_divide(value, self._ivy_array)
+
+    def __pow__(self, value, /):
+        return np_frontend.power(self._ivy_array, value)
 
     def __and__(self, value, /):
         return np_frontend.logical_and(self._ivy_array, value)
@@ -296,6 +342,9 @@ class ndarray:
     def __ne__(self, value, /):
         return np_frontend.not_equal(self._ivy_array, value)
 
+    def __len__(self):
+        return len(self.ivy_array)
+
     def __eq__(self, value, /):
         return ivy.array(np_frontend.equal(self._ivy_array, value), dtype=ivy.bool)
 
@@ -333,6 +382,9 @@ class ndarray:
     def __imul__(self, value, /):
         return np_frontend.multiply(self._ivy_array, value)
 
+    def __itruediv__(self, value, /):
+        return np_frontend.true_divide(self._ivy_array, value)
+
     def __ipow__(self, value, /):
         return np_frontend.power(self._ivy_array, value)
 
@@ -350,3 +402,18 @@ class ndarray:
 
     def __abs__(self):
         return np_frontend.absolute(self._ivy_array)
+
+    def __getitem__(self, query):
+        ret = ivy.get_item(self._ivy_array, query)
+        return np_frontend.numpy_dtype_to_scalar[ivy.dtype(self._ivy_array)](
+            ivy.array(ret, dtype=ivy.dtype(ret), copy=False)
+        )
+
+    def __setitem__(self, key, value):
+        if hasattr(value, "ivy_array"):
+            value = (
+                ivy.to_scalar(value.ivy_array)
+                if value.shape == ()
+                else ivy.to_list(value)
+            )
+        self._ivy_array[key] = value

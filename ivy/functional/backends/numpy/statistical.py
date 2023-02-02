@@ -112,7 +112,7 @@ def sum(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if dtype is None:
+    if dtype is None and not ivy.is_bool_dtype(x):
         dtype = x.dtype
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(
@@ -219,8 +219,10 @@ def cumsum(
     if dtype is None:
         if x.dtype == "bool":
             dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
+        if ivy.is_int_dtype(x.dtype):
+            dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
+        dtype = _infer_dtype(x.dtype)
+
     if exclusive or reverse:
         if exclusive and reverse:
             x = np.cumsum(np.flip(x, axis=axis), axis=axis, dtype=dtype)

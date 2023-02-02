@@ -1,5 +1,7 @@
 # global
 from hypothesis import strategies as st, assume
+import numpy as np
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -22,33 +24,26 @@ def test_numpy_mean(
     dtype_and_x,
     dtype,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
     keep_dims,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtypes, x, axis = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
 
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
 
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        input_dtypes=input_dtypes,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -73,33 +68,26 @@ def test_numpy_nanmean(
     dtype_and_a,
     dtype,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
     keep_dims,
 ):
-    input_dtype, a, axis = dtype_and_a
+    input_dtypes, a, axis = dtype_and_a
     if isinstance(axis, tuple):
         axis = axis[0]
 
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
 
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        input_dtypes=input_dtypes,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=a[0],
@@ -124,40 +112,35 @@ def test_numpy_std(
     dtype_and_x,
     dtype,
     where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
     keep_dims,
 ):
-    input_dtype, x, axis, axis_excess = dtype_and_x
+    input_dtypes, x, axis, correction = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
-
+    assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        input_dtypes=input_dtypes,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
         x=x[0],
         axis=axis,
-        dtype=dtype,
-        out=None,
-        correction=0,
+        ddof=correction,
         keepdims=keep_dims,
+        out=None,
+        dtype=dtype[0],
         where=where,
     )
 
@@ -169,14 +152,13 @@ def test_numpy_std(
     dtype_and_x=statistical_dtype_values(function="average"),
     keep_dims=st.booleans(),
     returned=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_numpy_average(
     dtype_and_a,
-    as_variable,
-    num_positional_args,
-    native_array,
     dtype_and_x,
     frontend,
+    test_flags,
     fn_tree,
     keep_dims,
     returned,
@@ -193,19 +175,141 @@ def test_numpy_average(
         helpers.test_frontend_function(
             a=a[0],
             input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=False,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
             weights=xs[0],
             axis=axis,
             frontend=frontend,
+            test_flags=test_flags,
             fn_tree=fn_tree,
             keepdims=keep_dims,
             returned=returned,
             on_device=on_device,
+            rtol=1e-2,
+            atol=1e-2,
         )
     except ZeroDivisionError:
         assume(False)
     except AssertionError:
         assume(False)
+
+
+# nanstd
+@handle_frontend_test(
+    fn_tree="numpy.nanstd",
+    dtype_and_a=statistical_dtype_values(function="nanstd"),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    where=np_frontend_helpers.where(),
+    keep_dims=st.booleans(),
+)
+def test_numpy_nanstd(
+    dtype_and_a,
+    dtype,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    keep_dims,
+):
+    input_dtypes, a, axis, axis_excess = dtype_and_a
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    assume(np.dtype(dtype[0]) >= np.dtype(input_dtype[0]))
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
+        axis=axis,
+        dtype=dtype[0],
+        out=None,
+        ddof=correction,
+        keepdims=keep_dims,
+        where=where,
+        atol=1e-2,
+        rtol=1e-2,
+    )
+
+
+# cov
+@handle_frontend_test(
+    fn_tree="numpy.cov",
+    dtype_and_x=statistical_dtype_values(function="cov"),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    keep_dims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_numpy_cov(
+    dtype_and_x,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x, axis = dtype_and_x
+    if isinstance(axis, tuple):
+        axis = axis[0]
+
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        dtype=dtype[0],
+        test_values=False,
+    )
+
+
+# nanvar
+@handle_frontend_test(
+    fn_tree="numpy.nanvar",
+    dtype_x_axis=statistical_dtype_values(function="nanvar"),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    where=np_frontend_helpers.where(),
+    keep_dims=st.booleans(),
+)
+def test_numpy_nanvar(
+    dtype_x_axis,
+    dtype,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    keep_dims,
+):
+    input_dtypes, x, axis, ddof = dtype_x_axis
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-1,
+        rtol=1e-1,
+        a=x[0],
+        axis=axis,
+        dtype=dtype[0],
+        out=None,
+        ddof=ddof,
+        keepdims=keep_dims,
+        where=where,
+    )

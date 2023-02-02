@@ -4,7 +4,12 @@ import numpy as np
 
 # local
 import ivy
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
+from ivy.functional.ivy.random import (
+    _check_bounds_and_get_shape,
+    _check_shapes_broadcastable,
+)
 
 
 # dirichlet
@@ -59,3 +64,39 @@ def gamma(
     if seed is not None:
         np.random.seed(seed)
     return np.asarray(np.random.gamma(alpha, beta, shape), dtype=dtype)
+
+
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
+def poisson(
+    lam: Union[float, np.ndarray],
+    *,
+    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
+    device: str,
+    dtype: np.dtype,
+    seed: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    lam = np.array(lam)
+    _check_shapes_broadcastable(shape, lam.shape)
+    if seed:
+        np.random.seed(seed)
+    return np.asarray(np.random.poisson(lam, shape), dtype=dtype)
+
+
+def bernoulli(
+    probs: [float, np.ndarray],
+    *,
+    logits: [float, np.ndarray] = None,
+    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
+    device: str = None,
+    dtype: np.dtype = None,
+    seed: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if seed is not None:
+        np.random.seed(seed)
+    if logits is not None:
+        probs = np.asarray(ivy.softmax(logits), dtype=dtype)
+    if not _check_shapes_broadcastable(shape, probs.shape):
+        shape = probs.shape
+    return np.asarray(np.random.binomial(1, p=probs, size=shape), dtype=dtype)

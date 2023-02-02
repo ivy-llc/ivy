@@ -3,7 +3,7 @@
 # local
 import ivy
 from typing import Optional, Union
-from ivy.func_wrapper import handle_nestable, handle_array_like
+from ivy.func_wrapper import handle_nestable, handle_array_like_without_promotion
 from ivy.exceptions import handle_exceptions
 
 # Helpers #
@@ -12,9 +12,9 @@ from ivy.exceptions import handle_exceptions
 
 def _reduce_loss(red, loss, axis, out):
     if red == "sum":
-        return ivy.negative(ivy.sum(loss, axis=axis, out=out), out=out)
+        return ivy.negative(ivy.sum(loss, axis=axis), out=out)
     elif red == "mean":
-        return ivy.negative(ivy.mean(loss, axis=axis, out=out), out=out)
+        return ivy.negative(ivy.mean(loss, axis=axis), out=out)
     else:
         return ivy.negative(loss, out=out)
 
@@ -25,7 +25,7 @@ def _reduce_loss(red, loss, axis, out):
 
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -79,7 +79,7 @@ def cross_entropy(
 
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -177,7 +177,7 @@ def binary_cross_entropy(
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     return _reduce_loss(
         reduction,
-        ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out),
+        ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true)),
         None,
         out,
     )
@@ -185,7 +185,7 @@ def binary_cross_entropy(
 
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],

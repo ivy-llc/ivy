@@ -22,7 +22,7 @@ config.update("jax_enable_x64", True)
 
 register_pytree_node(
     ivy.Container,
-    lambda c: tree_flatten(c.to_dict()),
+    lambda c: tree_flatten(c.cont_to_dict()),
     lambda a, c: ivy.Container(tree_unflatten(a, c)),
 )
 
@@ -88,6 +88,8 @@ valid_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
+    ivy.complex64,
+    ivy.complex128,
     ivy.bool,
 )
 valid_numeric_dtypes = (
@@ -124,14 +126,14 @@ invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
-invalid_complex_dtypes = (ivy.complex256,)
+invalid_complex_dtypes = ()
 
 native_inplace_support = False
 
 supports_gradients = True
 
 
-def closest_valid_dtype(type):
+def closest_valid_dtype(type, /):
     if type is None:
         return ivy.default_dtype()
     type_str = as_ivy_dtype(type)  # noqa
@@ -148,10 +150,6 @@ backend = "jax"
 # local sub-modules
 from . import activations
 from .activations import *
-from . import compilation
-from .compilation import *
-from . import converters
-from .converters import *
 from . import creation
 from .creation import *
 from . import data_type
@@ -184,3 +182,5 @@ from . import utility
 from .utility import *
 from . import experimental
 from .experimental import *
+from . import control_flow_ops
+from .control_flow_ops import *

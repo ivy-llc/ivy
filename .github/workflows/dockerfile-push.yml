@@ -29,4 +29,3 @@ jobs:
       run: |
         docker build . --file docker/Dockerfile --tag unifyai/ivy:latest
         docker push unifyai/ivy:latest
-        

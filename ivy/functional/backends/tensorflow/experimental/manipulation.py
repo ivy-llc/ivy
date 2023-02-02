@@ -25,7 +25,6 @@ def heaviside(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    tf.experimental.numpy.experimental_enable_numpy_behavior()
     return tf.cast(tf.experimental.numpy.heaviside(x1, x2), x1.dtype)
 
 
@@ -119,19 +118,19 @@ def vsplit(
     ary: Union[tf.Tensor, tf.Variable],
     indices_or_sections: Union[int, Tuple[int]],
     /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.vsplit(ary, indices_or_sections)
 
 
 def dsplit(
     ary: Union[tf.Tensor, tf.Variable],
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    if len(ary.shape) < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
     return tf.experimental.numpy.dsplit(ary, indices_or_sections)
 
 
@@ -187,3 +186,16 @@ def hsplit(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.hsplit(ary, indices_or_sections)
+
+
+def broadcast_shapes(
+    shapes: Union[List[int], List[Tuple]],
+) -> Tuple[int, ...]:
+    if len(shapes) > 1:
+        desired_shape = tf.broadcast_dynamic_shape(shapes[0], shapes[1])
+        if len(shapes) > 2:
+            for i in range(2, len(shapes)):
+                desired_shape = tf.broadcast_dynamic_shape(desired_shape, shapes[i])
+    else:
+        return [shapes[0]]
+    return tuple(desired_shape.numpy().tolist())

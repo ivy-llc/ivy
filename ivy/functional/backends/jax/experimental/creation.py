@@ -48,14 +48,15 @@ def vorbis_window(
 
 
 def hann_window(
-    window_length: int,
+    size: int,
+    /,
+    *,
     periodic: Optional[bool] = True,
     dtype: Optional[jnp.dtype] = None,
-    *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    window_length = window_length + 1 if periodic is True else window_length
-    return jnp.array(jnp.hanning(window_length), dtype=dtype)
+    size = size + 1 if periodic is True else size
+    return jnp.array(jnp.hanning(size), dtype=dtype)
 
 
 def kaiser_window(
@@ -70,3 +71,17 @@ def kaiser_window(
         return jnp.array(jnp.kaiser(M=window_length, beta=beta), dtype=dtype)
     else:
         return jnp.array(jnp.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
+
+
+def tril_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: Optional[int] = 0,
+    /,
+    *,
+    device: jaxlib.xla_extension.Device,
+) -> Tuple[JaxArray, ...]:
+    return _to_device(
+        jnp.tril_indices(n=n_rows, k=k, m=n_cols),
+        device=device,
+    )

@@ -16,6 +16,7 @@ from . import backend_version
 # -------------------#
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def min(
     x: torch.Tensor,
     /,
@@ -37,6 +38,7 @@ def min(
 min.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def max(
     x: torch.Tensor,
     /,
@@ -100,6 +102,7 @@ def prod(
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
@@ -164,13 +167,13 @@ def sum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
+    if dtype is None and not ivy.is_bool_dtype(x):
         dtype = x.dtype
     if axis == ():
         return x.type(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
-        return torch.sum(input=x, dtype=dtype)
+        return torch.sum(input=x, dim=(), dtype=dtype, keepdim=keepdims)
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
@@ -257,7 +260,7 @@ cumprod.support_native_out = True
 # the function to break the upcasting rule defined in the Array API Standard
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()},
+    {"1.11.0 and below": ("uint8", "bfloat16", "float16")},
     backend_version,
 )
 def cumsum(
@@ -271,6 +274,8 @@ def cumsum(
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
+        if ivy.is_int_dtype(x.dtype):
+            dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
         dtype = _infer_dtype(x.dtype)
     if exclusive or reverse:
         if exclusive and reverse:

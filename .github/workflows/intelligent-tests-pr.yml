@@ -1,0 +1,840 @@
+name: intelligent-tests-pr
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [labeled, opened, synchronize, reopened, review_requested]
+
+permissions:
+  actions: read
+jobs:
+   run_tests_1:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master1 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py extra
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_2:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master2 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_3:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master3 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_4:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master4 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_5:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master5 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_6:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master6 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_7:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master7 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_8:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master8 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_9:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master9 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_10:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master10 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_11:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master11 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_12:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master12 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_13:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master13 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_14:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master14 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_15:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master15 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_16:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master16 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_17:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master17 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_18:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master18 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_19:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master19 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_20:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master20 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_21:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master21 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_22:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master22 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_23:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master23 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_24:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master24 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_25:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master25 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_26:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master26 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_27:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master27 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_28:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master28 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_29:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master29 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_30:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master30 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_31:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master31 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+   run_tests_32:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master32 https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1

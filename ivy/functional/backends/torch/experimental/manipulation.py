@@ -55,6 +55,8 @@ def vstack(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
     return torch.vstack(arrays, out=None)
 
 
@@ -64,6 +66,8 @@ def hstack(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
     return torch.hstack(arrays, out=None)
 
 
@@ -92,11 +96,11 @@ def top_k(
     )
     if not largest:
         indices = torch.argsort(x, dim=axis)
-        indices = torch.gather(indices, axis, torch.arange(k).expand_as(indices))
+        indices = torch.index_select(indices, axis, torch.arange(k))
     else:
         x = -x
         indices = torch.argsort(x, dim=axis)
-        indices = torch.gather(indices, axis, torch.arange(k).expand_as(indices))
+        indices = torch.index_select(indices, axis, torch.arange(k))
         x = -x
     val = torch.gather(x, axis, indices)
     return topk_res(val, indices)
@@ -148,20 +152,20 @@ def vsplit(
     ary: torch.Tensor,
     indices_or_sections: Union[int, Tuple[int]],
     /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+) -> List[torch.Tensor]:
     return torch.vsplit(ary, indices_or_sections)
 
 
 def dsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.dsplit(ary, indices_or_sections)
+) -> List[torch.Tensor]:
+    if len(ary.shape) < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
+    return list(torch.dsplit(ary, indices_or_sections))
 
 
 def atleast_1d(*arys: torch.Tensor) -> List[torch.Tensor]:
@@ -177,6 +181,8 @@ def dstack(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
     return torch.dstack(arrays, out=None)
 
 
@@ -223,3 +229,7 @@ def hsplit(
 
 
 take_along_axis.support_native_out = True
+
+
+def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+    return tuple(torch.broadcast_shapes(*shapes))

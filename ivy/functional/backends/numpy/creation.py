@@ -61,10 +61,6 @@ def asarray(
         return _to_device(ret, device=device)
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
         dtype = ivy.default_dtype(item=obj, as_native=True)
-        if copy is True:
-            return _to_device(np.copy(np.asarray(obj, dtype=dtype)), device=device)
-        else:
-            return _to_device(np.asarray(obj, dtype=dtype), device=device)
     else:
         dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
     if copy is True:
@@ -135,7 +131,7 @@ def full(
 def full_like(
     x: np.ndarray,
     /,
-    fill_value: float,
+    fill_value: Number,
     *,
     dtype: np.dtype,
     device: str,
@@ -171,7 +167,9 @@ def linspace(
 
 
 def meshgrid(
-    *arrays: np.ndarray, sparse: bool = False, indexing: str = "xy"
+    *arrays: np.ndarray,
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[np.ndarray]:
     return np.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
@@ -214,6 +212,9 @@ def zeros(
     return _to_device(np.zeros(shape, dtype), device=device)
 
 
+zeros.support_native_out = True
+
+
 def zeros_like(
     x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -227,28 +228,15 @@ def zeros_like(
 array = asarray
 
 
-def copy_array(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return x.copy()
-
-
-def logspace(
-    start: Union[np.ndarray, int],
-    stop: Union[np.ndarray, int],
-    /,
-    num: int,
+def copy_array(
+    x: np.ndarray,
     *,
-    base: float = 10.0,
-    axis: Optional[int] = None,
-    dtype: np.dtype,
-    device: str,
+    to_ivy_array: Optional[bool] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if axis is None:
-        axis = -1
-    return _to_device(
-        np.logspace(start, stop, num=num, base=base, dtype=dtype, axis=axis),
-        device=device,
-    )
+    if to_ivy_array:
+        return ivy.to_ivy(x.copy())
+    return x.copy()
 
 
 def one_hot(

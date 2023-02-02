@@ -6,7 +6,9 @@ import numpy as np
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from . import backend_version
 
 
 @_scalar_output_to_0d_array
@@ -23,12 +25,13 @@ def leaky_relu(
     return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 @_scalar_output_to_0d_array
 def gelu(
-    x, /, *, approximate: bool = False, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, approximate: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if approximate:
-        ret = 0.5 * x * (1 + np.tanh(x * 0.7978845608 * (1 + 0.044715 * x * x)))
+        ret = 0.5 * x * (1 + np.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))
     else:
         ret = 0.5 * x * (1 + ivy.erf(x / np.sqrt(2)))
     return ivy.astype(ret, x.dtype, copy=False)
@@ -104,3 +107,11 @@ def log_softmax(
 
 
 log_softmax.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def mish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return x * np.tanh(np.log1p(np.exp(x)))
+
+
+mish.support_native_out = True

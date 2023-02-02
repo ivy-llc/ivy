@@ -10,7 +10,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 
 
@@ -22,14 +22,15 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
@@ -47,8 +48,11 @@ def argmax(
         If this is set to True, the axes which are reduced are left in the result as
         dimensions with size one. With this option, the result will broadcast correctly
         against the array.
-    output_dtype
+    dtype
         Optional data type of the output array.
+    select_last_index
+        If this is set to True, the index corresponding to the
+        last occurrence of the maximum value will be returned
     out
         If provided, the result will be inserted into this array. It should be of the
         appropriate shape and dtype.
@@ -71,9 +75,8 @@ def argmax(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
+    Examples
     --------
-
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-0., 1., -1.])
@@ -82,51 +85,39 @@ def argmax(
     ivy.array([1])
 
     >>> x = ivy.array([-0., 1., -1.])
-    >>> ivy.argmax(x,out=x)
+    >>> ivy.argmax(x, out=x)
     >>> print(x)
     ivy.array([1])
 
-    >>> x=ivy.array([[1., -0., -1.], [-2., 3., 2.]])
-    >>> y = ivy.argmax(x, axis= 1)
+    >>> x = ivy.array([[1., -0., -1.], [-2., 3., 2.]])
+    >>> y = ivy.argmax(x, axis=1)
     >>> print(y)
     ivy.array([0, 1])
 
-    >>> x=ivy.array([[4., 0., -1.], [2., -3., 6]])
-    >>> y = ivy.argmax(x, axis= 1, keepdims= True)
+    >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
+    >>> y = ivy.argmax(x, axis=1, keepdims=True)
     >>> print(y)
     ivy.array([[0], [2]])
 
-    >>> x=ivy.array([[4., 0., -1.], [2., -3., 6]])
-    >>> y = ivy.argmax(x, axis= 1, output_dtype= ivy.int64)
+    >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
+    >>> y = ivy.argmax(x, axis=1, dtype=ivy.int64)
     >>> print(y, y.dtype)
     ivy.array([0, 2]) int64
 
-    >>> x=ivy.array([[4., 0., -1.],[2., -3., 6], [2., -3., 6]])
-    >>> z= ivy.zeros((1,3), dtype=ivy.int64)
-    >>> y = ivy.argmax(x, axis= 1, keepdims= True, out= z)
+    >>> x = ivy.array([[4., 0., -1.],[2., -3., 6], [2., -3., 6]])
+    >>> z = ivy.zeros((1,3), dtype=ivy.int64)
+    >>> y = ivy.argmax(x, axis=1, keepdims=True, out=z)
     >>> print(z)
     ivy.array([[0],[2],[2]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-0., 1., -1.])
-    >>> y = ivy.argmax(x)
-    >>> print(y)
-    ivy.array([1])
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.argmax()
-    >>> print(y)
-    ivy.array(2)
-
     """
     return current_backend(x).argmax(
-        x, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        x,
+        axis=axis,
+        keepdims=keepdims,
+        dtype=dtype,
+        select_last_index=select_last_index,
+        out=out,
     )
 
 
@@ -134,7 +125,7 @@ def argmax(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -142,6 +133,7 @@ def argmin(
     axis: Optional[int] = None,
     keepdims: bool = False,
     output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
@@ -183,9 +175,8 @@ def argmin(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
+    Examples
     --------
-
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., -1.])
@@ -194,68 +185,50 @@ def argmin(
     ivy.array(2)
 
 
-    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.]])
-    >>> y = ivy.argmin(x, axis= 1)
+    >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.]])
+    >>> y = ivy.argmin(x, axis=1)
     >>> print(y)
     ivy.array([2, 0])
 
-    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.]])
-    >>> y = ivy.argmin(x, axis= 1, keepdims= True)
+    >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.]])
+    >>> y = ivy.argmin(x, axis=1, keepdims=True)
     >>> print(y)
     ivy.array([[2],
               [0]])
 
-    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
+    >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
     >>> y= ivy.zeros((1,3), dtype=ivy.int64)
-    >>> ivy.argmin(x, axis= 1, keepdims= True, out= y)
+    >>> ivy.argmin(x, axis=1, keepdims=True, out=y)
     >>> print(y)
     ivy.array([[2],
                [0],
                [1]])
-
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., -1.])
-    >>> y = ivy.argmin(x)
-    >>> print(y)
-    ivy.array(2)
-
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.argmin(x)
     >>> print(y)
-    {a:ivy.array(1),b:ivy.array(0)}
+    {
+        a:ivy.array(1),
+        b:ivy.array(0)
+    }
 
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., -1.])
-    >>> y = x.argmin()
-    >>> print(y)
-    ivy.array(2)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.argmin()
-    >>> print(y)
-    {a:ivy.array(1),b:ivy.array(0)}
     """
     return current_backend(x).argmin(
-        x, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
+        x,
+        axis=axis,
+        keepdims=keepdims,
+        output_dtype=output_dtype,
+        select_last_index=select_last_index,
+        out=out,
     )
 
 
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -392,7 +365,7 @@ def nonzero(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -431,9 +404,8 @@ def where(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> condition = ivy.array([[True, False], [True, True]])
@@ -443,19 +415,8 @@ def where(
     >>> print(res)
     ivy.array([[1,6],[3,4]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> condition = ivy.array([[True, False], [False, True]])
-    >>> x1 = ivy.native_array([[1, 2], [3, 4]])
-    >>> x2 = ivy.native_array([[5, 6], [7, 8]])
-    >>> res = ivy.where(condition, x1, x2)
-    >>> print(res)
-    array([[1, 6], [7, 4]])
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
-
     >>> x1 = ivy.array([[6, 13, 22, 7, 12], [7, 11, 16, 32, 9]])
-    >>> x2 = ivy.native_array([[44, 20, 8, 35, 9], [98, 23, 43, 6, 13]])
+    >>> x2 = ivy.array([[44, 20, 8, 35, 9], [98, 23, 43, 6, 13]])
     >>> res = ivy.where(((x1 % 2 == 0) & (x2 % 2 == 1)), x1, x2)
     >>> print(res)
     ivy.array([[ 44, 20, 8, 35, 12], [98, 23, 16, 6, 13]])
@@ -481,30 +442,6 @@ def where(
         a: ivy.array([0, 2, -3.6]),
         b: ivy.array([3, 4, 3.1])
     }
-
-    Instance Method Examples
-    -------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> condition = ivy.array([[True, False], [True, True]])
-    >>> x1 = ivy.array([[1, 2], [3, 4]])
-    >>> x2 = ivy.array([[5, 6], [7, 8]])
-    >>> res = x1.where(condition,x2)
-    >>> print(res)
-    ivy.array([[1, 6], [3, 4]])
-
-    With :class:`ivy.Container` input:
-
-    >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
-    >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
-    >>> res = x1.where((x1.a > x2.a), x2)
-    >>> print(res)
-    {
-        a: ivy.array([3, 7, 5]),
-        b: ivy.array([2, 8, 6])
-    }
-
     """
     return current_backend(x1).where(condition, x1, x2, out=out)
 
@@ -517,7 +454,7 @@ def where(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

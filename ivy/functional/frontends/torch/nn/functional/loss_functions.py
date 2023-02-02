@@ -109,6 +109,25 @@ def binary_cross_entropy(
 
 
 @to_ivy_arrays_and_back
+def binary_cross_entropy_with_logits(
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+    pos_weight=None,
+):
+    reduction = _get_reduction(reduction, size_average, reduce)
+    result = ivy.binary_cross_entropy_with_logits(target, input, pos_weight=pos_weight)
+
+    if weight is not None:
+        result = ivy.multiply(weight, result)
+    result = reduction(result).astype(target.dtype)
+    return result
+
+
+@to_ivy_arrays_and_back
 def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.square(input - target)
@@ -197,7 +216,6 @@ def nll_loss(
     reduce=None,
     reduction="mean",
 ):
-
     out = ivy.zeros_like(target)
 
     if len(input.shape) == 1:
@@ -214,3 +232,69 @@ def nll_loss(
     ret = reduct(loss)
 
     return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def soft_margin_loss(
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = ivy.log1p(ivy.exp(-input * target))
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+    return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def kl_div(
+    input, target, size_average=None, reduce=None, reduction="mean", log_target=False
+):
+    size = ivy.shape(input)
+
+    if len(size) < 1:
+        size = [1]
+
+    def loss_fn():
+        if log_target:
+            return ivy.exp(target) * (target - input)
+        return target * (ivy.log(target) - input)
+
+    def batchmean(x):
+        if not reduce:
+            return x / size[0]
+
+        if size_average:
+            return ivy.mean(x) / size[0]
+
+        return ivy.sum(x) / size[0]
+
+    loss = ivy.nan_to_num(loss_fn())
+
+    if reduction == "batchmean":
+        reduction = batchmean
+    else:
+        reduction = _get_reduction(reduction, size_average, reduce)
+
+    return reduction(loss)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def margin_ranking_loss(
+    input1,
+    input2,
+    target,
+    margin=0.0,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = -1 * target * (input1 - input2) + margin
+    loss = ivy.where(loss < 0, 0, loss)
+    reduction = _get_reduction(reduction, size_average, reduce)
+    return reduction(loss)

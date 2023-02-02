@@ -1,11 +1,13 @@
 # local
 import ivy
-
-
+from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_tf_dtype,
+)
 
-from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
+import ivy.functional.frontends.tensorflow as tf_frontend
 
 
 @to_ivy_arrays_and_back
@@ -19,6 +21,11 @@ def det(input, name=None):
 
 
 @to_ivy_arrays_and_back
+def eig(tensor, name=None):
+    return ivy.eig(tensor)
+
+
+@to_ivy_arrays_and_back
 def eigh(tensor, name=None):
     return ivy.eigh(tensor)
 
@@ -29,9 +36,26 @@ def eigvalsh(tensor, name=None):
 
 
 @to_ivy_arrays_and_back
+def matmul(
+    a,
+    b,
+    transpose_a=False,
+    transpose_b=False,
+    adjoint_a=False,
+    adjoint_b=False,
+    a_is_sparse=False,
+    b_is_sparse=False,
+    output_type=None,
+    name=None,
+):
+    # TODO : handle conjugate when ivy supports complex numbers
+    return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def solve(matrix, rhs):
-    matrix, rhs = promote_types_of_tensorflow_inputs(matrix, rhs)
+    matrix, rhs = check_tensorflow_casting(matrix, rhs)
     return ivy.solve(matrix, rhs)
 
 
@@ -52,7 +76,7 @@ def slogdet(input, name=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def cholesky_solve(chol, rhs, name=None):
-    chol, rhs = promote_types_of_tensorflow_inputs(chol, rhs)
+    chol, rhs = check_tensorflow_casting(chol, rhs)
     y = ivy.solve(chol, rhs)
     return ivy.solve(ivy.matrix_transpose(chol), y)
 
@@ -67,10 +91,33 @@ def pinv(a, rcond=None, validate_args=False, name=None):
     {"2.9.0 and below": ("float32", "float64", "int32")}, "tensorflow"
 )
 def tensordot(a, b, axes, name=None):
-    a, b = promote_types_of_tensorflow_inputs(a, b)
+    a, b = check_tensorflow_casting(a, b)
     return ivy.tensordot(a, b, axes=axes)
 
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    "tensorflow",
+)
+def tensorsolve(a, b, axes):
+    return ivy.tensorsolve(a, b, axes=axes)
+
+
+@handle_tf_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
@@ -96,17 +143,14 @@ norm.supported_dtypes = (
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.9.0 and below": ("float32", "float64")}, "tensorflow")
 def normalize(tensor, ord="euclidean", axis=None, name=None):
+    tensor = tf_frontend.convert_to_tensor(
+        tensor, dtype=ivy.dtype(tensor), dtype_hint="Any"
+    )
     _norm = norm(tensor, ord=ord, axis=axis, keepdims=True)
-    _norm = ivy.astype(_norm, ivy.dtype(tensor))
-    normalized = ivy.divide(tensor, _norm)
+    normalized = tf_frontend.math.divide(tensor, _norm)
     return normalized, _norm
-
-
-normalize.supported_dtypes = (
-    "float32",
-    "float64",
-)
 
 
 @to_ivy_arrays_and_back
@@ -141,3 +185,14 @@ global_norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
+
+@to_ivy_arrays_and_back
+def cholesky(input, name=None):
+    def symmetrize(input):
+        # TODO : Take Hermitian transpose after complex numbers added
+        return (input + ivy.swapaxes(input, -1, -2)) / 2
+
+    input = symmetrize(input)
+
+    return ivy.cholesky(input)

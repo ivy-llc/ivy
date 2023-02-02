@@ -1,17 +1,28 @@
 # global
 import ivy
-from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy import with_supported_dtypes
+from ivy.functional.frontends.tensorflow import check_tensorflow_casting
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_tf_dtype,
+    to_ivy_dtype,
+)
+
+
+@to_ivy_arrays_and_back
+def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
+    return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
 
 
 @to_ivy_arrays_and_back
 def add(x, y, name=None):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.add(x, y)
 
 
 @to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
+    output_type = to_ivy_dtype(output_type)
     if output_type in ["uint16", "int16", "int32", "int64"]:
         return ivy.astype(ivy.argmax(input, axis=axis), output_type)
     else:
@@ -23,6 +34,7 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
+@handle_tf_dtype
 @to_ivy_arrays_and_back
 def confusion_matrix(
     labels, predictions, num_classes=None, weights=None, dtype=ivy.int32, name=None
@@ -73,6 +85,7 @@ def confusion_matrix(
     return ivy.scatter_nd(indices, values, shape=shape)
 
 
+@handle_tf_dtype
 @to_ivy_arrays_and_back
 def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     x = ivy.array(input)
@@ -104,13 +117,13 @@ def cumsum(x, axis, exclusive=False, reverse=False, name=None):
 
 @to_ivy_arrays_and_back
 def divide(x, y, name=None):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
 
 
 @to_ivy_arrays_and_back
 def divide_no_nan(x, y, name="divide_no_nan"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.where(
         y == 0,
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
@@ -133,7 +146,7 @@ def is_non_decreasing(x, name="is_non_decreasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
     if ivy.array(x).size == 2:
-        return ivy.array(x[0] <= x[1])
+        return ivy.array([x[0] <= x[1]])
     return ivy.all(ivy.less_equal(x, ivy.roll(x, -1)))
 
 
@@ -163,13 +176,13 @@ def logical_xor(x, y, name="LogicalXor"):
 
 @to_ivy_arrays_and_back
 def multiply(x, y, name=None):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.multiply(x, y)
 
 
 @to_ivy_arrays_and_back
 def multiply_no_nan(x, y, name="multiply_no_nan"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.where(
         y == 0,
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
@@ -201,7 +214,7 @@ def pow(x, y, name="pow"):
         x = x.data
     if not (isinstance(y, int) or isinstance(y, float) or (y is None)):
         y = y.data
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.pow(x, y)
 
 
@@ -290,13 +303,13 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 
 @to_ivy_arrays_and_back
 def scalar_mul(scalar, x, name="scalar_mul"):
-    scalar, x = promote_types_of_tensorflow_inputs(scalar, x)
+    scalar, x = check_tensorflow_casting(scalar, x)
     return ivy.multiply(x, scalar).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
 def subtract(x, y, name=None):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     return ivy.subtract(x, y)
 
 
@@ -346,6 +359,7 @@ def zero_fraction(value, name="zero_fraction"):
 
 @to_ivy_arrays_and_back
 def argmin(input, axis=None, output_type="int64", name=None):
+    output_type = to_ivy_dtype(output_type)
     if output_type in ["int32", "int64"]:
         return ivy.astype(ivy.argmin(input, axis=axis), output_type)
     else:
@@ -354,10 +368,62 @@ def argmin(input, axis=None, output_type="int64", name=None):
 
 @to_ivy_arrays_and_back
 def truediv(x, y, name="truediv"):
-    x, y = promote_types_of_tensorflow_inputs(x, y)
+    x, y = check_tensorflow_casting(x, y)
     x_dtype = ivy.dtype(x)
-    if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
-        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
-    elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
-        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+
+    if ivy.current_backend_str() == "torch":
+        if x_dtype in [ivy.int8, ivy.int16]:
+            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+        elif x_dtype in [ivy.int32, ivy.int64]:
+            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    else:
+        if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
+            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+        elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
+            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.equal(x, y)
+
+
+@to_ivy_arrays_and_back
+def floor(x, name=None):
+    return ivy.floor(x)
+
+
+@to_ivy_arrays_and_back
+def ceil(x, name=None):
+    return ivy.ceil(x)
+
+
+@to_ivy_arrays_and_back
+def minimum(x, y, name=None):
+    return ivy.minimum(x, y)
+
+
+@to_ivy_arrays_and_back
+def sigmoid(x, name=None):
+    return ivy.sigmoid(x)
+
+
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def tanh(x, name=None):
+    return ivy.tanh(x)
+
+
+@to_ivy_arrays_and_back
+def rsqrt(x, name=None):
+    return ivy.reciprocal(ivy.sqrt(x))
+
+
+@to_ivy_arrays_and_back
+def nextafter(x1, x2, name=None):
+    return ivy.nextafter(x1, x2)

@@ -220,19 +220,19 @@ def vsplit(
     ary: JaxArray,
     indices_or_sections: Union[int, Tuple[int]],
     /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
+) -> List[JaxArray]:
     return jnp.vsplit(ary, indices_or_sections)
 
 
 def dsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
+) -> List[JaxArray]:
+    if len(ary.shape) < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
     return jnp.dsplit(ary, indices_or_sections)
 
 
@@ -282,3 +282,7 @@ def hsplit(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.hsplit(ary, indices_or_sections)
+
+
+def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+    return jnp.broadcast_shapes(*shapes)

@@ -11,7 +11,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
 )
-import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy.functional.frontends.tensorflow import EagerTensor
 
 
@@ -21,7 +20,24 @@ CLASS_TREE = "ivy.functional.frontends.tensorflow.EagerTensor"
 @given(
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
-def test_array_property_device(
+def test_tensorflow_tensor_property_ivy_array(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = EagerTensor(data[0])
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
+    ret_gt = helpers.flatten_and_to_np(ret=data[0])
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="tensorflow",
+    )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_tensorflow_tensor_property_device(
     dtype_x,
 ):
     _, data = dtype_x
@@ -35,7 +51,7 @@ def test_array_property_device(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_ndarray_property_dtype(
+def test_tensorflow_tensor_property_dtype(
     dtype_x,
 ):
     dtype, data = dtype_x
@@ -49,7 +65,7 @@ def test_numpy_ndarray_property_dtype(
         ret_shape=True,
     ),
 )
-def test_numpy_ndarray_property_shape(
+def test_tensorflow_tensor_property_shape(
     dtype_x,
 ):
     dtype, data, shape = dtype_x
@@ -70,31 +86,25 @@ def test_numpy_ndarray_property_shape(
 )
 def test_tensorflow_instance_add(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -110,31 +120,25 @@ def test_tensorflow_instance_add(
 )
 def test_tensorflow_instance_div(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -150,29 +154,23 @@ def test_tensorflow_instance_div(
 )
 def test_tensorflow_instance_get_shape(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=[],
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -187,31 +185,25 @@ def test_tensorflow_instance_get_shape(
 )
 def test_tensorflow_instance_eq(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -228,31 +220,25 @@ def test_tensorflow_instance_eq(
 )
 def test_tensorflow_instance_floordiv(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -268,31 +254,25 @@ def test_tensorflow_instance_floordiv(
 )
 def test_tensorflow_instance_ge(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -308,31 +288,25 @@ def test_tensorflow_instance_ge(
 )
 def test_tensorflow_instance_gt(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -348,31 +322,25 @@ def test_tensorflow_instance_gt(
 )
 def test_tensorflow_instance_le(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -388,31 +356,25 @@ def test_tensorflow_instance_le(
 )
 def test_tensorflow_instance_lt(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -428,31 +390,25 @@ def test_tensorflow_instance_lt(
 )
 def test_tensorflow_instance_mul(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -469,31 +425,25 @@ def test_tensorflow_instance_mul(
 )
 def test_tensorflow_instance_mod(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -512,31 +462,25 @@ def test_tensorflow_instance_mod(
 )
 def test_tensorflow_instance_sub(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -553,31 +497,25 @@ def test_tensorflow_instance_sub(
 )
 def test_tensorflow_instance_ne(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -594,31 +532,25 @@ def test_tensorflow_instance_ne(
 )
 def test_tensorflow_instance_radd(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -635,31 +567,25 @@ def test_tensorflow_instance_radd(
 )
 def test_tensorflow_instance_rfloordiv(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -676,31 +602,25 @@ def test_tensorflow_instance_rfloordiv(
 )
 def test_tensorflow_instance_rsub(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -717,31 +637,25 @@ def test_tensorflow_instance_rsub(
 )
 def test_tensorflow_instance_and(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -758,31 +672,25 @@ def test_tensorflow_instance_and(
 )
 def test_tensorflow_instance_rand(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -799,31 +707,25 @@ def test_tensorflow_instance_rand(
 )
 def test_tensorflow_instance_or(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -840,31 +742,25 @@ def test_tensorflow_instance_or(
 )
 def test_tensorflow_instance_ror(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -881,31 +777,25 @@ def test_tensorflow_instance_ror(
 )
 def test_tensorflow_instance_truediv(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -922,31 +812,25 @@ def test_tensorflow_instance_truediv(
 )
 def test_tensorflow_instance_rtruediv(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -962,29 +846,23 @@ def test_tensorflow_instance_rtruediv(
 )
 def test_tensorflow_instance_bool(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=[],
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1000,29 +878,23 @@ def test_tensorflow_instance_bool(
 )
 def test_tensorflow_instance_nonzero(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=[],
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1044,29 +916,23 @@ def test_tensorflow_instance_nonzero(
 )
 def test_tensorflow_instance_neg(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=[],
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1083,31 +949,25 @@ def test_tensorflow_instance_neg(
 )
 def test_tensorflow_instance_rxor(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1124,31 +984,25 @@ def test_tensorflow_instance_rxor(
 )
 def test_tensorflow_instance_xor(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1172,31 +1026,25 @@ def test_tensorflow_instance_xor(
 )
 def test_tensorflow_instance_matmul(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1220,31 +1068,25 @@ def test_tensorflow_instance_matmul(
 )
 def test_tensorflow_instance_rmatmul(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1256,32 +1098,30 @@ def test_tensorflow_instance_rmatmul(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_tensorflow_instance_array(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
+    dtype,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=[],
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=[],
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={
+            "dtype": dtype[0],
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1296,29 +1136,23 @@ def test_tensorflow_instance_array(
 )
 def test_tensorflow_instance_invert(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=[],
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1337,31 +1171,25 @@ def test_tensorflow_instance_invert(
 )
 def test_tensorflow_instance_rmul(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1374,31 +1202,25 @@ def test_tensorflow_instance_rmul(
 )
 def test_tensorflow_instance_rpow(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1421,12 +1243,10 @@ def test_tensorflow_instance_rpow(
 )
 def test_tensorflow_instance_pow(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     if x[1].dtype == "int32" or x[1].dtype == "int64":
@@ -1438,21 +1258,17 @@ def test_tensorflow_instance_pow(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "y": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1520,29 +1336,23 @@ def _array_and_index(
 )
 def test_tensorflow_instance_getitem(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     data = x[0]
     index = x[1]
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={"value": data},
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"slice_spec": index},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1601,27 +1411,21 @@ def _array_and_shape(
 )
 def test_tensorflow_instance_set_shape(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={"value": x[0]},
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={"shape": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
 
 
@@ -1637,27 +1441,21 @@ def test_tensorflow_instance_set_shape(
 )
 def test_tensorflow_instance_len(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
     frontend_method_data,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=[],
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
     )
