@@ -937,7 +937,7 @@ def test_numpy_instance_repeat(
     input_dtypes, x = dtype_and_x
 
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypess,
+        init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": x[0],
         },
@@ -1226,31 +1226,25 @@ def test_numpy_instance_mul__(
 )
 def test_numpy_instance_floordiv__(
     dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     frontend_method_data,
+    init_flags,
+    method_flags,
     frontend,
 ):
-    input_dtype, xs = dtype_and_x
+    input_dtypes, xs = dtype_and_x
     assume(not np.any(np.isclose(xs[0], 0)))
 
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
+        init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
-        method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
+        method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
             "value": xs[1],
         },
+        init_flags=init_flags,
+        method_flags=method_flags,
         frontend_method_data=frontend_method_data,
         frontend=frontend,
     )
