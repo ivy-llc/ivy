@@ -120,3 +120,14 @@ def tril_indices(
             return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
+
+
+def sequence_empty(
+    /,
+    *,
+    dtype: tf.DType,
+    device: str,
+    out: Optiona[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    with tf.device(device):
+        return tf.experimental.numpy.empty(0, dtype=dtype)
