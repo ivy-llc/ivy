@@ -186,5 +186,27 @@ def vstack(tensors, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def split(tensor, split_size_or_sections, dim=0):
+    if isinstance(split_size_or_sections, int):
+        split_size = split_size_or_sections
+        split_size_or_sections = [split_size] * (tensor.shape[dim] // split_size)
+        if tensor.shape[dim] % split_size:
+            split_size_or_sections.append(tensor.shape[dim] % split_size)
+    return tuple(
+        ivy.split(
+            tensor,
+            num_or_size_splits=split_size_or_sections,
+            axis=dim,
+            with_remainder=True,
+        )
+    )
+
+
+@to_ivy_arrays_and_back
+def dsplit(input, indices_or_sections):
+    return tuple(ivy.dsplit(input, indices_or_sections))
+
+
+@to_ivy_arrays_and_back
 def row_stack(tensors, *, out=None):
     return ivy.vstack(tensors, out=out)
