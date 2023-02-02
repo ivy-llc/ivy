@@ -31,7 +31,7 @@ def instance_norm(
     affine: Optional[bool] = True,
     track_running_stats: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
-) :
+):
     if scale is not None:
         scale = torch.reshape(scale, shape=(1, -1, 1, 1))
     if bias is not None:
@@ -40,9 +40,9 @@ def instance_norm(
         running_mean = torch.reshape(running_mean, shape=(1, -1, 1, 1))
     if running_stddev is not None:
         running_stddev = torch.reshape(running_stddev, shape=(1, -1, 1, 1))
-    if data_format == 'NHWC':
+    if data_format == "NHWC":
         x = torch.permute(x, (0, 3, 1, 2))
-    elif data_format != 'NCHW':
+    elif data_format != "NCHW":
         raise NotImplementedError
     mean = torch.mean(x, dim=(0, 2, 3), keepdim=True)
     var = torch.var(x, dim=(0, 2, 3), keepdim=True, unbiased=False)
@@ -64,12 +64,12 @@ def instance_norm(
             running_stddev = torch.ones_like(var)
         running_mean = momentum * running_mean + (1 - momentum) * mean
         running_stddev = momentum * running_stddev + (1 - momentum) * torch.sqrt(var)
-        if data_format == 'NHWC':
+        if data_format == "NHWC":
             normalized = torch.permute(normalized, (0, 2, 3, 1))
             running_mean = torch.permute(running_mean, (0, 2, 3, 1))
             running_stddev = torch.permute(running_stddev, (0, 2, 3, 1))
         return normalized, running_mean, running_stddev
-    if data_format == 'NHWC':
+    if data_format == "NHWC":
         normalized = torch.permute(normalized, (0, 2, 3, 1))
     return normalized
 

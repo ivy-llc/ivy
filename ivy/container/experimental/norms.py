@@ -135,17 +135,17 @@ class ContainerWithNormsExperimental(ContainerBase):
 
     @staticmethod
     def static_instance_norm(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            scale: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-            bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-            eps: float = 1e-05,
-            momentum: Optional[float] = 0.1,
-            data_format: str = "NCHW",
-            running_mean: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-            running_stddev: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-            affine: Optional[bool] = True,
-            track_running_stats: Optional[bool] = False,
-            out: Optional[ivy.Array] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        scale: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        eps: float = 1e-05,
+        momentum: Optional[float] = 0.1,
+        data_format: str = "NCHW",
+        running_mean: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        running_stddev: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        affine: Optional[bool] = True,
+        track_running_stats: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
     ):
         """ivy.Container static method variant of ivy.instance_norm.
         This method simply wraps the function, and so the
@@ -274,8 +274,9 @@ class ContainerWithNormsExperimental(ContainerBase):
         momentum: Optional[float] = 0.1,
         data_format: str = "NCHW",
         running_mean: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
-        running_stddev: Optional[Union[ivy.Container, ivy.Array,
-                                       ivy.NativeArray]] = None,
+        running_stddev: Optional[
+            Union[ivy.Container, ivy.Array, ivy.NativeArray]
+        ] = None,
         affine: Optional[bool] = True,
         track_running_stats: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
