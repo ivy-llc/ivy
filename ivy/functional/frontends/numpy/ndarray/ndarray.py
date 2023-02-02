@@ -402,3 +402,18 @@ class ndarray:
 
     def __abs__(self):
         return np_frontend.absolute(self._ivy_array)
+
+    def __getitem__(self, query):
+        ret = ivy.get_item(self._ivy_array, query)
+        return np_frontend.numpy_dtype_to_scalar[ivy.dtype(self._ivy_array)](
+            ivy.array(ret, dtype=ivy.dtype(ret), copy=False)
+        )
+
+    def __setitem__(self, key, value):
+        if hasattr(value, "ivy_array"):
+            value = (
+                ivy.to_scalar(value.ivy_array)
+                if value.shape == ()
+                else ivy.to_list(value)
+            )
+        self._ivy_array[key] = value

@@ -288,6 +288,15 @@ def fmin(x1, x2):
     return ret
 
 
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("uint16",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def fabs(x):
+    return ivy.abs(x)
+
+
 @to_ivy_arrays_and_back
 def fmod(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)

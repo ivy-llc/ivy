@@ -202,6 +202,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     for the function
     """
     supported_device_dtypes = {}
+
     # This is for getting a private function from numpy frontend where we have
     # a ufunc object as we can't refer to them as functions
     if fn_module == "ivy.functional.frontends.numpy":
@@ -211,6 +212,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
     backends = available_frameworks()
     for b in backends:  # ToDo can optimize this ?
+
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
