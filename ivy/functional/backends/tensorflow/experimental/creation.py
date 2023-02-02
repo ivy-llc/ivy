@@ -121,7 +121,7 @@ def tril_indices(
 
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
-
+'''
 def sequence_empty(
     /,
     *,
@@ -129,7 +129,6 @@ def sequence_empty(
     device: str,
     out: Optiona[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    if device is not None:
-        with tf.device(ivy.as_native_dev(device)):
-            return tf.experimental.numpy.empty((0,1), dtype=dtype)
-    return tf.experimental.numpy.empty((0,1), dtype=dtype)
+    with tf.device(ivy.as_native_dev(device)):
+        return tf.experimental.numpy.empty((0,1), dtype=dtype)
+'''
