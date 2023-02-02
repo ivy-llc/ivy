@@ -99,6 +99,6 @@ def sequence_empty(
     *,
     dtype: Optional[np.dtype] = np.float32,
     device: str,
-    out: Optiona[np.ndarray] = None
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return _to_device(np.empty(shape, dtype=dtype), device=device)
