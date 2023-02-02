@@ -3017,6 +3017,7 @@ def test_tensorflow_PadV2(
         constant_values=constant_values,
     )
 
+
 # Elu
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Elu",
@@ -3034,7 +3035,7 @@ def test_tensorflow_PadV2(
     number_positional_args=st.just(0),
 )
 def test_tensorflow_Elu(
-    *, 
+    *,
     dtype_and_x,
     name,
     frontend,
