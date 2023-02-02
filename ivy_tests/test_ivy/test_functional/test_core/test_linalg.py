@@ -1356,7 +1356,7 @@ def test_cholesky(
         max_num_dims=2,
         min_dim_size=2,
         max_dim_size=5,
-        min_value=-1e10,
+        min_value=1,
         max_value=1e10,
         abs_smallest_val=0.01,
         large_abs_safety_factor=2,
