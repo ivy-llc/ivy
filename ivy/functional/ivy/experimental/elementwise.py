@@ -1361,7 +1361,7 @@ def conj(
     >>> x = ivy.array([4.2-0j, 3j, 7+5j])
     >>> z = ivy.conj(x)
     >>> print(z)
-    ivy.array([4.2+0j, -3j., 7+5j])
+    ivy.array([4.2+0j, -3j, 7+5j])
 
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
