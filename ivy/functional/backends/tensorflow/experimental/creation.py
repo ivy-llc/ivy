@@ -1,6 +1,6 @@
 # global
 
-from typing import Union, Optional, Tuple
+from typing import Union, Optional, Tuple, Sequence
 
 import tensorflow as tf
 
