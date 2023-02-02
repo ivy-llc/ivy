@@ -7,6 +7,10 @@ listing:
     - id: temp-demos
       template: assets/ejs/gallery.ejs
       contents: temp_demos
+    
+    - id: compilation-of-various-models
+      template: assets/ejs/gallery.ejs
+      contents: compilation_of_various_models
 ---
 
 # Tutorials and Demos
@@ -15,6 +19,10 @@ listing:
 
 ### Unify Existing Code 
 :::{#unify-existing-code}
+:::
+
+### Compilation of Various Models
+:::{#compilation-of-various-models}
 :::
 
 ### Temp Demos 

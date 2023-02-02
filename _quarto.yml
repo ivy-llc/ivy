@@ -9,6 +9,7 @@ website:
     collapse-level: 1
     contents: 
       - auto: "*unify_existing_code/"
+      - auto: "*compilation_of_various_models/"
       - auto: "*temp_demos/"
 
 format:
