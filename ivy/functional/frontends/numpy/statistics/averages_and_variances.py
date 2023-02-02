@@ -24,7 +24,7 @@ def nanmedian(a, /, *, axis=None, keepdims=False, out=None):
         ret = ivy.median(
             a, axis=axis, keepdims=keepdims, out=out
         )
-    return ret
+    return ret[0]
 
 
 nanmedian.support_native_out = True
