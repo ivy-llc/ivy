@@ -568,3 +568,42 @@ def Conv3D(
         dilations=dilations,
         name=name,
     )
+
+
+@to_ivy_arrays_and_back
+def Elu(features, name=None):
+    zeros = ivy.zeros_like(features, dtype=ivy.dtype(features))
+    ones = ivy.ones_like(features, dtype=ivy.dtype(features))
+    ret_val = ivy.where(
+        # if x > 0 => x; else e^x - 1
+        features > zeros,
+        features,
+        ivy.subtract(ivy.exp(features), ones),
+    )
+    return ret_val
+
+
+Elu.supported_dtypes = {
+    "numpy": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "tensorflow": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": (
+        "bfloat16",
+        "float32",
+        "float64",
+    ),
+    "jax": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+}
