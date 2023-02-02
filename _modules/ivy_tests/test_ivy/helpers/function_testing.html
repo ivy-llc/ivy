@@ -153,6 +153,7 @@
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
+
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">jsonpickle</span>
 <span class="k">except</span><span class="p">:</span>
@@ -878,7 +879,6 @@
                         <span class="n">frontend_ret</span><span class="p">,</span> <span class="n">frontend_ret_idxs</span>
                     <span class="p">)</span>
                     <span class="n">frontend_ret_np_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frontend_ret_flat</span><span class="p">]</span>
-
 
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
