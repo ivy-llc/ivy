@@ -511,7 +511,7 @@ def _heaviside_helper(draw):
                 max_num_dims=1,
                 min_dim_size=1,
                 max_dim_size=1,
-            )
+            ),
         )
     )
     return input_dtype, data, values

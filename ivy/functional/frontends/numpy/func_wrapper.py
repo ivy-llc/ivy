@@ -169,7 +169,6 @@ def _ivy_to_numpy(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
         a = ndarray(0)  # TODO Find better initialisation workaround
         a.ivy_array = x
-        a.dtype = ivy.dtype(x)
         return a
     else:
         return x
@@ -179,7 +178,6 @@ def _ivy_to_numpy_order_F(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
         a = ndarray(0, order="F")  # TODO Find better initialisation workaround
         a.ivy_array = x
-        a.dtype = ivy.dtype(x)
         return a
     else:
         return x

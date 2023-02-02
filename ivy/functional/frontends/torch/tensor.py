@@ -35,7 +35,7 @@ class Tensor:
 
     @property
     def shape(self):
-        return "torch.Size(" + str(list(self._ivy_array.shape)) + ")"
+        return self._ivy_array.shape
 
     # Setters #
     # --------#
@@ -60,6 +60,10 @@ class Tensor:
             else:
                 return torch_frontend.reshape(self._ivy_array, args)
         return torch_frontend.reshape(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def reshape_as(self, other):
+        return torch_frontend.reshape(self, other.shape)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add(self, other, *, alpha=1):
@@ -279,28 +283,33 @@ class Tensor:
                     return self
                 else:
                     cast_tensor = self.clone()
-                    cast_tensor.ivy.array = ivy.asarray(self._ivy_array, dtype=args[0])
+                    cast_tensor.ivy_array = ivy.asarray(self._ivy_array, dtype=args[0])
                     return cast_tensor
             else:
                 if self.dtype == args[0].dtype and self.device == args[0].device:
                     return self
                 else:
                     cast_tensor = self.clone()
-                    cast_tensor.ivy.array = ivy.asarray(
+                    cast_tensor.ivy_array = ivy.asarray(
                         self._ivy_array,
                         dtype=args[0].dtype,
                         device=args[0].device,
                     )
                     return cast_tensor
         else:
-            if self.dtype == kwargs["dtype"] and self.device == kwargs["device"]:
+            if (
+                "dtype" in kwargs
+                and "device" in kwargs
+                and self.dtype == kwargs["dtype"]
+                and self.device == kwargs["device"]
+            ):
                 return self
             else:
                 cast_tensor = self.clone()
-                cast_tensor.ivy.array = ivy.asarray(
+                cast_tensor.ivy_array = ivy.asarray(
                     self._ivy_array,
-                    device=kwargs["device"],
-                    dtype=kwargs["dtype"],
+                    device=kwargs["device"] if "device" in kwargs else self.device,
+                    dtype=kwargs["dtype"] if "dtype" in kwargs else self.dtype,
                 )
                 return cast_tensor
 
@@ -350,7 +359,15 @@ class Tensor:
         return self.view(other.shape)
 
     def expand(self, *sizes):
-        return torch_frontend.tensor(ivy.broadcast_to(self._ivy_array, shape=sizes))
+
+        sizes = list(sizes)
+        for i, dim in enumerate(sizes):
+            if dim < 0:
+                sizes[i] = self.shape[i]
+
+        return torch_frontend.tensor(
+            ivy.broadcast_to(self._ivy_array, shape=tuple(sizes))
+        )
 
     def detach(self):
         return torch_frontend.tensor(
@@ -363,6 +380,9 @@ class Tensor:
     def unsqueeze_(self, dim):
         self._ivy_array = self.unsqueeze(dim).ivy_array
         return self
+
+    def split(self, split_size, dim=0):
+        return torch_frontend.split(self, split_size, dim)
 
     def dim(self):
         return self._ivy_array.ndim
@@ -459,8 +479,18 @@ class Tensor:
     def min(self, dim=None, keepdim=False):
         return torch_frontend.min(self._ivy_array, dim=dim, keepdim=keepdim)
 
-    def permute(self, dims):
-        return torch_frontend.permute(self, dims)
+    def permute(self, *args, dims=None):
+        if args and dims:
+            raise TypeError("permute() got multiple values for argument 'dims'")
+        if dims is not None:
+            return torch_frontend.permute(self._ivy_array, dims)
+        if args:
+            if isinstance(args[0], tuple):
+                dims = args[0]
+                return torch_frontend.permute(self._ivy_array, dims)
+            else:
+                return torch_frontend.permute(self._ivy_array, args)
+        return torch_frontend.permute(self._ivy_array)
 
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self._ivy_array, dim=dim, keepdim=keepdim)
@@ -574,6 +604,10 @@ class Tensor:
     def numpy(self):
         return ivy.to_numpy(self._ivy_array)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def sigmoid(self):
+        return torch_frontend.sigmoid(self.ivy_array)
+
     # Special Methods #
     # -------------------#
 
@@ -591,6 +625,15 @@ class Tensor:
     def __getitem__(self, query):
         ret = ivy.get_item(self._ivy_array, query)
         return torch_frontend.tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+
+    def __setitem__(self, key, value):
+        if hasattr(value, "ivy_array"):
+            value = (
+                ivy.to_scalar(value.ivy_array)
+                if value.shape == ()
+                else ivy.to_list(value)
+            )
+        self._ivy_array[key] = value
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __radd__(self, other):

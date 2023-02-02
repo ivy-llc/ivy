@@ -1489,6 +1489,32 @@ def test_jax_numpy_fmin(
     )
 
 
+# fabs
+@handle_frontend_test(
+    fn_tree="jax.numpy.fabs",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_jax_numpy_fabs(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # fmod
 @handle_frontend_test(
     fn_tree="jax.numpy.fmod",
@@ -1987,4 +2013,104 @@ def test_jax_numpy_fix(
         on_device=on_device,
         test_values=False,
         x=x[0],
+    )
+
+
+# hypot
+@handle_frontend_test(
+    fn_tree="jax.numpy.hypot",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+)
+def test_jax_numpy_hypot(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-2,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# floor_divide
+@handle_frontend_test(
+    fn_tree="jax.numpy.floor_divide",
+    dtype_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-10.0,
+        max_value=10.0,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
+    ),
+)
+def test_jax_numpy_floor_divide(
+    *,
+    dtype_values,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    input_dtype, x = dtype_values
+    # Making sure division by zero doesn't occur
+    assume(not np.any(np.isclose(x[1], 0)))
+    # Absolute tolerance is 1,
+    # due to flooring can cause absolute error of 1 due to precision
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        x1=x[0],
+        x2=x[1],
+        atol=1,
+    )
+
+
+# real
+@handle_frontend_test(
+    fn_tree="jax.numpy.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
+    ),
+)
+def test_jax_numpy_real(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        val=x[0],
     )

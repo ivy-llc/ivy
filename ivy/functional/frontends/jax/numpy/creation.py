@@ -94,3 +94,13 @@ def vander(x, N=None, increasing=False):
         return ivy.array([], dtype=x.dtype)
     else:
         return ivy.vander(x, N=N, increasing=increasing, out=None)
+
+
+@to_ivy_arrays_and_back
+def full_like(a, fill_value, dtype=None, shape=None):
+    return ivy.full_like(a, fill_value, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def ndim(a):
+    return ivy.astype(ivy.array(a.ndim), ivy.int64)

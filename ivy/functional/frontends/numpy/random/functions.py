@@ -39,3 +39,25 @@ def geometric(p, size=None):
 @from_zero_dim_arrays_to_scalar
 def normal(loc=0.0, scale=1.0, size=None):
     return ivy.random_normal(mean=loc, std=scale, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def poisson(lam=1.0, size=None):
+    return ivy.poisson(lam=lam, shape=size)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def multinomial(n, pvals, size=None):
+    assert not ivy.exists(size) or (len(size) > 0 and len(size) < 3)
+    batch_size = 1
+    if ivy.exists(size):
+        if len(size) == 2:
+            batch_size = size[0]
+            num_samples = size[1]
+        else:
+            num_samples = size[0]
+    else:
+        num_samples = len(pvals)
+    return ivy.multinomial(n, num_samples, batch_size=batch_size, probs=pvals)

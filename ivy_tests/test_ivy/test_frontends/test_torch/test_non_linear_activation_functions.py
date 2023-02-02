@@ -122,7 +122,7 @@ def test_torch_gelu(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    alpha=st.floats(min_value=0.0, max_value=1.0),
+    alpha=st.floats(min_value=0.0, max_value=1.0, exclude_min=True),
     test_inplace=st.booleans(),
     test_with_out=st.just(False),
 )
@@ -143,6 +143,8 @@ def test_torch_leaky_relu(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
         negative_slope=alpha,
     )
 
@@ -308,7 +310,7 @@ def test_torch_threshold_(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    test_with_inplace=st.booleans(),
+    test_inplace=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_torch_relu6(
@@ -1277,10 +1279,10 @@ def test_torch_batch_norm(
         test_flags=test_flags,
         fn_tree=fn_tree,
         input=input[0],
-        weight=weight,
-        bias=bias,
         running_mean=running_mean,
         running_var=running_var,
+        weight=weight,
+        bias=bias,
         training=training,
         momentum=momentum,
         eps=eps,

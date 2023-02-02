@@ -121,6 +121,8 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return jnp.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
@@ -215,6 +217,7 @@ def diff(
     axis: Optional[int] = -1,
     prepend: Optional[Union[JaxArray, int, float, list, tuple]] = None,
     append: Optional[Union[JaxArray, int, float, list, tuple]] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
@@ -508,12 +511,3 @@ def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> Jax
 
 def real(x: Union[JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.real(x)
-
-
-def isposinf(
-    x: Union[JaxArray],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.isposinf(x)

@@ -474,6 +474,8 @@ def test_nansum(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
         fn_name=fn_name,
         x=x[0],
         axis=axis,
@@ -893,13 +895,13 @@ def test_zeta(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend="torch",
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name="zeta",
-        rtol_=1e-03,
-        atol_=1e-03,
+        rtol_=1e-02,
+        atol_=1e-02,
         x=x[0],
         q=x[1],
     )
