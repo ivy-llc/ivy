@@ -143,14 +143,14 @@ def _get_inv_square_matrices(draw):
 
 
 @handle_frontend_test(
-    fn_tree="numpy.linalg.tensorinv", params=_get_inv_square_matrices()
+    fn_tree="numpy.linalg.tensorinv",
+    params=_get_inv_square_matrices(),
+    test_with_out=st.just(False),
 )
 def test_numpy_tensorinv(
     *,
     params,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -158,10 +158,7 @@ def test_numpy_tensorinv(
     dtype, x, ind = params
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,

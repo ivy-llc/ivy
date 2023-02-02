@@ -6,7 +6,6 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers import handle_method
 from ivy_tests.test_ivy.test_functional.test_core.test_gradients import (
     get_gradient_arguments_with_lr,
@@ -24,37 +23,32 @@ from ivy_tests.test_ivy.test_functional.test_core.test_gradients import (
     ),
     inplace=st.booleans(),
     stop_gradients=st.booleans(),
+    test_gradients=st.just(True),
 )
 def test_sgd_optimizer(
     dtype_x_lr,
     inplace,
     stop_gradients,
-    num_positional_args_init: pf.NumPositionalArg,
-    num_positional_args_method: pf.NumPositionalArg,
-    method_as_variable_flags: pf.AsVariableFlags,
-    method_native_array_flags: pf.NativeArrayFlags,
-    method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
     ground_truth_backend,
+    init_flags,
+    method_flags,
+    test_gradients,
 ):
     input_dtype, x, lr = dtype_x_lr
-    xs_grad_idxs = [[0, 0]] if num_positional_args_method else [[1, "v"]]
+    xs_grad_idxs = [[0, 0]] if method_flags.num_positional_args else [[1, "v"]]
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
-        init_num_positional_args=num_positional_args_init,
+        init_flags=init_flags,
+        method_flags=method_flags,
         init_all_as_kwargs_np={
             "lr": lr,
             "inplace": inplace,
             "stop_gradients": stop_gradients,
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=method_as_variable_flags,
-        method_num_positional_args=num_positional_args_method,
-        method_native_array_flags=method_native_array_flags,
-        method_container_flags=method_container_flags,
         method_all_as_kwargs_np={
             "v": x[0],
             "grads": x[1],
@@ -76,30 +70,29 @@ def test_sgd_optimizer(
     inplace=st.booleans(),
     decay_lambda=helpers.floats(min_value=1e-2, max_value=1.0),
     stop_gradients=st.booleans(),
+    test_gradients=st.just(True),
 )
 def test_lars_optimizer(
     dtype_x_lr,
     decay_lambda,
     inplace,
     stop_gradients,
-    num_positional_args_init: pf.NumPositionalArg,
-    num_positional_args_method: pf.NumPositionalArg,
-    method_as_variable_flags: pf.AsVariableFlags,
-    method_native_array_flags: pf.NativeArrayFlags,
-    method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     on_device,
     class_name,
     method_name,
     ground_truth_backend,
+    init_flags,
+    method_flags,
+    test_gradients,
 ):
     input_dtype, x, lr = dtype_x_lr
     if "bfloat16" in input_dtype:
         test_gradients = False
-    xs_grad_idxs = [[0, 0]] if num_positional_args_method else [[1, "v"]]
+    xs_grad_idxs = [[0, 0]] if method_flags.num_positional_args else [[1, "v"]]
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
-        init_num_positional_args=num_positional_args_init,
+        init_flags=init_flags,
+        method_flags=method_flags,
         init_all_as_kwargs_np={
             "lr": lr,
             "decay_lambda": decay_lambda,
@@ -107,10 +100,6 @@ def test_lars_optimizer(
             "stop_gradients": stop_gradients,
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=method_as_variable_flags,
-        method_num_positional_args=num_positional_args_method,
-        method_native_array_flags=method_native_array_flags,
-        method_container_flags=method_container_flags,
         method_all_as_kwargs_np={
             "v": x[0],
             "grads": x[1],
@@ -143,7 +132,7 @@ def test_lars_optimizer(
     ),
     inplace=st.booleans(),
     stop_gradients=st.booleans(),
-    num_positional_args_method=helpers.num_positional_args(fn_name="Adam._step"),
+    test_gradients=st.just(True),
 )
 def test_adam_optimizer(
     dtype_x_lr,
@@ -151,22 +140,20 @@ def test_adam_optimizer(
     inplace,
     stop_gradients,
     on_device,
-    num_positional_args_init: pf.NumPositionalArg,
-    num_positional_args_method: pf.NumPositionalArg,
-    method_as_variable_flags: pf.AsVariableFlags,
-    method_native_array_flags: pf.NativeArrayFlags,
-    method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     class_name,
     method_name,
     ground_truth_backend,
+    test_gradients,
+    init_flags,
+    method_flags,
 ):
     input_dtype, x, lr = dtype_x_lr
     beta1, beta2, epsilon = beta1_n_beta2_n_epsilon
-    xs_grad_idxs = [[0, 0]] if num_positional_args_method else [[1, "v"]]
+    xs_grad_idxs = [[0, 0]] if method_flags.num_positional_args else [[1, "v"]]
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
-        init_num_positional_args=num_positional_args_init,
+        init_flags=init_flags,
+        method_flags=method_flags,
         init_all_as_kwargs_np={
             "lr": lr,
             "beta1": beta1,
@@ -176,10 +163,6 @@ def test_adam_optimizer(
             "stop_gradients": stop_gradients,
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=method_as_variable_flags,
-        method_num_positional_args=num_positional_args_method,
-        method_native_array_flags=method_native_array_flags,
-        method_container_flags=method_container_flags,
         method_all_as_kwargs_np={
             "v": x[0],
             "grads": x[1],
@@ -217,6 +200,7 @@ def test_adam_optimizer(
     ),
     inplace=st.booleans(),
     stop_gradients=st.booleans(),
+    test_gradients=st.just(True),
 )
 def test_lamb_optimizer(
     dtype_x_lr,
@@ -225,22 +209,20 @@ def test_lamb_optimizer(
     inplace,
     stop_gradients,
     on_device,
-    num_positional_args_init: pf.NumPositionalArg,
-    num_positional_args_method: pf.NumPositionalArg,
-    method_as_variable_flags: pf.AsVariableFlags,
-    method_native_array_flags: pf.NativeArrayFlags,
-    method_container_flags: pf.ContainerFlags,
-    test_gradients: pf.BuiltGradientStrategy,
     class_name,
     method_name,
     ground_truth_backend,
+    init_flags,
+    method_flags,
+    test_gradients,
 ):
     input_dtype, x, lr = dtype_x_lr
     beta1, beta2, epsilon, decay_lambda = beta1_n_beta2_n_epsilon_n_lambda
-    xs_grad_idxs = [[0, 0]] if num_positional_args_method else [[1, "v"]]
+    xs_grad_idxs = [[0, 0]] if method_flags.num_positional_args else [[1, "v"]]
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
-        init_num_positional_args=num_positional_args_init,
+        init_flags=init_flags,
+        method_flags=method_flags,
         init_all_as_kwargs_np={
             "lr": lr,
             "beta1": beta1,
@@ -252,10 +234,6 @@ def test_lamb_optimizer(
             "stop_gradients": stop_gradients,
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=method_as_variable_flags,
-        method_num_positional_args=num_positional_args_method,
-        method_native_array_flags=method_native_array_flags,
-        method_container_flags=method_container_flags,
         method_all_as_kwargs_np={
             "v": x[0],
             "grads": x[1],

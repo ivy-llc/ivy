@@ -806,33 +806,31 @@ def test_jax_numpy_tensorinv(
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.cond",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=1, allow_nan=True
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_nan=True,
+        min_num_dims=2,
     ).filter(lambda x: "float16" not in x[0] and "bfloat16" not in x[0]),
     p=st.sampled_from([None, "fro", np.inf, -np.inf, 1, -1, 2, -2]),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_cond(
     *,
     dtype_and_x,
     p,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=dtype[0],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        input_dtypes=dtype,
+        test_flags=test_flags,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        x=x[0],
         p=p,
     )
