@@ -19,7 +19,7 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "complex")}, backend_version)
 def cholesky(
     x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -90,7 +90,7 @@ def inner(
     return np.inner(x1, x2)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16", "complex")}, backend_version)
 def inv(
     x: np.ndarray,
     /,
@@ -110,6 +110,7 @@ def inv(
             return ret
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def matmul(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -159,6 +160,7 @@ def matrix_power(
         "1.23.0 and below": (
             "float16",
             "bfloat16",
+            "complex"
         )
     },
     backend_version,
@@ -401,6 +403,7 @@ def diag(
     return np.diag(x, k=k)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("complex")}, backend_version)
 def vander(
     x: np.ndarray,
     /,
@@ -412,6 +415,7 @@ def vander(
     return np.vander(x, N=N, increasing=increasing).astype(x.dtype)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("complex")}, backend_version)
 def vector_to_skew_symmetric_matrix(
     vector: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:

@@ -17,7 +17,7 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16", "complex")}, backend_version)
 def cholesky(
     x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -39,7 +39,7 @@ def cholesky(
 cholesky.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
 def cross(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -153,6 +153,7 @@ def inv(
 inv.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def matmul(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -190,6 +191,8 @@ def matrix_norm(
 matrix_norm.support_native_out = True
 
 
+"complex"
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_power(
     x: torch.Tensor, n: int, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -456,6 +459,7 @@ def vander(
     )
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex")}, backend_version)
 def vector_to_skew_symmetric_matrix(
     vector: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
