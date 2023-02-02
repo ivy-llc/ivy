@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple
+from typing import Union, Optional, Tuple, Sequence
 
 import numpy as np
 import math
