@@ -53,16 +53,18 @@ def max_pool2d(
         if isinstance(strides, (list, tuple)) and len(strides) == 1
         else strides
     )
+    new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
     if isinstance(padding, str):
-        pad_h = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
-        pad_w = _handle_padding(x.shape[2], strides[1], kernel[1], padding)
+        pad_h = _handle_padding(x.shape[1], strides[0], new_kernel[0], padding)
+        pad_w = _handle_padding(x.shape[2], strides[1], new_kernel[1], padding)
         padding = [(pad_h // 2, pad_h - pad_h // 2), (pad_w // 2, pad_w - pad_w // 2)]
 
     x_shape = x.shape[1:-1]
+
     if ceil_mode:
         for i in range(2):
             padding[i] = ivy.padding_ceil_mode(
-                x_shape[i], kernel[i], padding[i], strides[i]
+                x_shape[i], new_kernel[i], padding[i], strides[i]
             )
 
     padding = [(0, 0)] + padding + [(0, 0)]

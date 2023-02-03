@@ -21,6 +21,11 @@ def general_pool(
     elif len(strides) == 1:
         strides = (strides[0],) * len(window_shape)
 
+    if isinstance(dilation, int):
+        dilation = (dilation,) * len(window_shape)
+    elif len(dilation) == 1:
+        dilation = (dilation[0],) * len(window_shape)
+
     assert len(window_shape) == len(
         strides
     ), f"len({window_shape}) must equal len({strides})"
@@ -28,6 +33,7 @@ def general_pool(
     window_shape = tuple(window_shape)
     strides = (1,) + strides + (1,)
     dims = (1,) + window_shape + (1,)
+    dilation = (1,) + tuple(dilation) + (1,)
 
     is_single_input = False
     if inputs.ndim == len(dims) - 1:
@@ -38,11 +44,18 @@ def general_pool(
 
     assert inputs.ndim == len(dims), f"len({inputs.shape}) != len({dims})"
 
-    # doing manual padding instead of
+    # shape of window after dilation
+    new_window_shape = tuple(
+        [
+            window_shape[i - 1] + (dilation[i] - 1) * (window_shape[i - 1] - 1)
+            for i in range(1, len(dims) - 1)
+        ]
+    )
+    # manual padding
     if isinstance(padding, str):
         pad_int = [
             _handle_padding(
-                inputs.shape[i + 1], strides[i + 1], window_shape[i], padding
+                inputs.shape[i + 1], strides[i + 1], new_window_shape[i], padding
             )
             for i in range(len(dims) - 2)
         ]
@@ -52,18 +65,7 @@ def general_pool(
         pad_list = [(0, 0)] + pad_list + [(0, 0)]
     else:
         pad_list = [(0, 0)] + padding + [(0, 0)]
-    if isinstance(dilation, int) or (
-        isinstance(dilation, tuple) and len(dilation) == 1
-    ):
-        dilation = (1, dilation, dilation, 1)
-    else:
-        dilation = (1,) + tuple(dilation) + (1,)
-    new_window_shape = tuple(
-        [
-            window_shape[i - 1] + (dilation[i] - 1) * (window_shape[i - 1] - 1)
-            for i in range(1, len(dims) - 1)
-        ]
-    )
+
     if ceil_mode:
         for i in range(len(dims) - 2):
             pad_list[i + 1] = ivy.padding_ceil_mode(

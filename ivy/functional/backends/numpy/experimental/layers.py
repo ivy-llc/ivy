@@ -7,6 +7,7 @@ from typing import Optional, Union, Tuple, Literal
 # local
 import ivy
 from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.backends.numpy.layers import _add_dilations
 
 
 def max_pool1d(
@@ -97,7 +98,11 @@ def max_pool2d(
         x = np.transpose(x, (0, 2, 3, 1))
 
     x_shape = list(x.shape[1:3])
-    kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
+    filters = np.ones((list(kernel)), dtype=x.dtype)
+    for j in range(2):
+        if dilation[j] > 1:
+            filters = _add_dilations(filters, dilation[j], axis=j, values=0)
+    kernel = list(filters.shape)
     pad_list = padding
     if isinstance(padding, str):
         pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
@@ -127,8 +132,8 @@ def max_pool2d(
     new_shape = [x_shape[0], new_h, new_w] + list(kernel) + [x_shape[-1]]
     new_strides = (
         x.strides[0],
-        x.strides[1] * strides[1],
-        x.strides[2] * strides[0],
+        x.strides[1] * strides[0],
+        x.strides[2] * strides[1],
         x.strides[1],
         x.strides[2],
         x.strides[3],
@@ -136,6 +141,11 @@ def max_pool2d(
     # B x OH x OW x KH x KW x I
     sub_matrices = np.lib.stride_tricks.as_strided(
         x, new_shape, new_strides, writeable=False
+    )
+
+    # B x OH x OW x KH x KW x I
+    sub_matrices = np.where(
+        filters.reshape([1] * 3 + list(kernel) + [1]), sub_matrices, -math.inf
     )
 
     # B x OH x OW x O
