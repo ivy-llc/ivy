@@ -131,6 +131,50 @@ def test_matrix_rank(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.matmul",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        ],
+        shape=(3, 3),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+    transpose_a=st.booleans(),
+    transpose_b=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_matmul(
+    *,
+    dtype_x,
+    transpose_a,
+    transpose_b,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        b=x[1],
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
+    )
+
+
 @st.composite
 def _solve_get_dtype_and_data(draw):
     batch = draw(st.integers(min_value=1, max_value=5))
@@ -542,10 +586,12 @@ def test_tensorflow_trace(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
     ),
+    conjugate=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_matrix_transpose(
     dtype_and_input,
+    conjugate,
     frontend,
     test_flags,
     fn_tree,
@@ -557,6 +603,7 @@ def test_tensorflow_matrix_transpose(
         test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
+        conjugate=conjugate,
     )
 
 
