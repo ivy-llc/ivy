@@ -575,3 +575,49 @@ def eye_like(
         device=device,
         out=out,
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_dtype
+@infer_device
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def sequence_empty(
+    shape: Union[ivy.Shape, ivy.NativeShape],
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = ivy.float32,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """ ONNX function that returns an uninitialized array with the same shape as inputted.
+    
+    Parameters
+    ----------
+    x
+        input array from which to derive the output array shape.
+    dtype
+        output array data type. If dtype is None, the output array data type must be
+        inferred from x. Deafult: ``None``.
+    device
+        device on which to place the created array. If device is None, the output array
+        device must be inferred from x. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+    
+    Returns
+    -------
+    ret
+        an array having the same shape as x and containing uninitialized data.
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty_like.html>`_ # noqa
+    in the standard.
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+    """
+    return current_backend(x).empty_like(shape, dtype=dtype, device=device, out=out)
