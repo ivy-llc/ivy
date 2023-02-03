@@ -86,9 +86,8 @@ def choose(a, choices, out=None, mode='raise'):
         c[I]= _choices[int(a[I])][I]
 
     if out is not None:
-        print(out)
         if out.shape == c.shape:
-            out = c
+            ivy.copy_array(c, out=out)
         else:
             raise ValueError("Invalid shape for output array")
     else:
