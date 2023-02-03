@@ -403,7 +403,7 @@ def floor_divide(x1, x2, /, out=None):
 
 
 @to_ivy_arrays_and_back
-def round(a, /, decimal=0, out=None):
+def round(a, decimal=0, out=None):
     return ivy.round(a, decimal=decimal, out=out)
 
 @to_ivy_arrays_and_back
