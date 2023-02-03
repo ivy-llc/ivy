@@ -69,6 +69,7 @@ def cross(
 def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.det(x)
 
+
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def diagonal(
     x: JaxArray,
