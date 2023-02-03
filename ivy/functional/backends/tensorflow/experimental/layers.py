@@ -70,6 +70,9 @@ def max_pool2d(
     padding = [(0, 0)] + padding + [(0, 0)]
     x = tf.pad(x, padding, constant_values=-math.inf)
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
+
+    # converting minimum value to -inf because tensorflow clips -inf to minimum value
+    res = tf.where(res <= ivy.finfo(res.dtype).min, -math.inf, res)
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res
