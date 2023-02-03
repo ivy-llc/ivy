@@ -64,31 +64,39 @@ def numpy_style_broadcast(a1, a2):
 def choose(a, choices, out=None, mode='raise'):
     _choices = list(choices)
     n = len(_choices)
-    # broadcast as necessary
-    shapes_checked = False
-    while not shapes_checked:
-        shapes_checked = True
+    # broadcast and promote types as necessary
+    choices_checked = False
+    while not choices_checked:
+        choices_checked = True
         for i, choice in enumerate(_choices):
             if a.shape != choice.shape:
                 a, _choices[i] = numpy_style_broadcast(a, choice)
-                shapes_checked = False
+                choices_checked = False
+            if _choices[0].dtype != choice.dtype:
+                _choices[0], _choices[i] = ivy.promote_types_of_inputs(_choices[0], _choices[i])
+                choices_checked = False
     # create composite array
-    c = ivy.empty_like(a)
+    c = ivy.empty_like(_choices[0])
     if mode == 'raise':
-        assert ivy.max(a) < n and ivy.min(a) >= 0, "Invalid entry in index array"
+        assert ivy.max(a) < n and ivy.min(a) >= 0, "choose: Invalid entry in index array"
     elif mode == 'clip':
         a = a.clip(0, n-1)
     elif mode == 'wrap':
+        print("before wrapping")
         a = ivy.abs(ivy.fmod(a, n))
+        print("after wrapping")
     else:
         raise ValueError("Invalid mode")
+    print("starting choices.")
     for I in ivy.ndindex(a.shape):
         c[I]= _choices[int(a[I])][I]
 
+    print("choices phase ended.")
     if out is not None:
         if out.shape == c.shape:
-            ivy.copy_array(c, out=out)
+            out[:] = c
+            #ivy.inplace_update(out, c)
         else:
-            raise ValueError("Invalid shape for output array")
+            raise ValueError(f"choose: output array shape should be {c.shape}")
     else:
         return c
