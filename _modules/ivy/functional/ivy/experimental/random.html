@@ -405,7 +405,7 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Draws samples from Bernoulli distrubution paramterized by</span>
-<span class="sd">    probs or logits(but not both)</span>
+<span class="sd">    probs or logits (but not both)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -414,7 +414,6 @@
 <span class="sd">        Each entry in the Array parameterizes an independent Bernoulli</span>
 <span class="sd">        distribution where the probability of an event is sigmoid</span>
 <span class="sd">        (logits). Only one of logits or probs should be passed in.</span>
-
 <span class="sd">    probs</span>
 <span class="sd">        An N-D Array representing the probability of a 1 event.</span>
 <span class="sd">        Each entry in the Array parameterizes an independent Bernoulli</span>
@@ -425,20 +424,18 @@
 <span class="sd">    device</span>
 <span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        (Default value = None).</span>
-
 <span class="sd">    dtype</span>
 <span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data</span>
 <span class="sd">        type will be the default floating-point data type. Default ``None``</span>
 <span class="sd">    seed</span>
 <span class="sd">        A python integer. Used to create a random seed distribution</span>
-
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        Drawn samples from the Bernoulli distribution</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span><span class="o">.</span><span class="n">bernoulli</span><span class="p">(</span>

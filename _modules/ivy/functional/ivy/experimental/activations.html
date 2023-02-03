@@ -220,7 +220,7 @@
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;ivy.Array&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    PRelu takes input data (Array) and slope array as input,</span>
+<span class="sd">    Prelu takes input data (Array) and slope array as input,</span>
 <span class="sd">    and produces one output data (array) where the function</span>
 <span class="sd">    f(x) = slope * x for x &lt; 0, f(x) = x for x &gt;= 0., is applied</span>
 <span class="sd">    to the data array elementwise. This operator supports unidirectional</span>
@@ -236,7 +236,6 @@
 <span class="sd">        if so, its shape must be unidirectional broadcastable to X.</span>
 <span class="sd">    out</span>
 <span class="sd">        Optional output array.</span>
-
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
