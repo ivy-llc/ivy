@@ -984,6 +984,7 @@ def test_torch_dsplit(
     fn_tree="torch.row_stack",
     dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=st.integers(1, 5),
     ),
 )
 def test_torch_row_stack(
