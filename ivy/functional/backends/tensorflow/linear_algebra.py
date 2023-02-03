@@ -735,8 +735,7 @@ def vector_norm(
         tn_normalized_vector = tf.reduce_sum(tf.cast(x != 0, x.dtype), axis, keepdims)
     else:
         tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
-                1.0 / ord
-        )
+            1.0 / ord)
     return tn_normalized_vector
 
 

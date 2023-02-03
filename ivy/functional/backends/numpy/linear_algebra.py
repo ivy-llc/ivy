@@ -246,7 +246,12 @@ def matrix_rank(
     return ret.astype(x.dtype)
 
 
-def matrix_transpose(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def matrix_transpose(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.swapaxes(x, -1, -2)
 
 

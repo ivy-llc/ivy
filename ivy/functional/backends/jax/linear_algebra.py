@@ -533,6 +533,7 @@ def vector_norm(
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     out: Optional[JaxArray] = None,
+    dtype: Optional[jnp.dtype] = None,
 ) -> JaxArray:
     if dtype and x.dtype != dtype:
         x = x.astype(dtype)
