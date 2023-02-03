@@ -1222,9 +1222,6 @@ def test_numpy_instance_mul__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=4,
-        shared_dtype=True,
-        safety_factor_scale="linear",
     ),
 )
 def test_numpy_instance_floordiv__(
@@ -1235,8 +1232,8 @@ def test_numpy_instance_floordiv__(
     frontend,
 ):
     input_dtypes, xs = dtype_and_x
-    assume(not np.any(np.isclose(xs[1], 0.0)))
-    assume(not np.any(np.isclose(xs[0], 0.0)))
+    assume(not np.any(np.isclose(xs[0], 0)))
+    assume(not np.any(np.isclose(xs[1], 0)))
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
