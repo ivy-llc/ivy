@@ -6,6 +6,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy
 
+
 # cross_entropy
 @handle_frontend_test(
     fn_tree="torch.nn.functional.cross_entropy",
@@ -240,6 +241,7 @@ def test_torch_binary_cross_entropy_with_logits(
         reduction=reduction,
         pos_weight=pos_weight[0],
     )
+
 
 # cosine_embedding_loss
 @handle_frontend_test(

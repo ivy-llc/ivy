@@ -1,6 +1,5 @@
 # global
 import ivy
-import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 
@@ -127,6 +126,7 @@ def binary_cross_entropy_with_logits(
     result = reduction(result).astype(target.dtype)
     return result
 
+
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def cosine_embedding_loss(
@@ -162,6 +162,7 @@ def cosine_embedding_loss(
     reduction = _get_reduction(reduction, size_average, reduce)
     loss = reduction(loss)
     return loss
+
 
 @to_ivy_arrays_and_back
 def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
