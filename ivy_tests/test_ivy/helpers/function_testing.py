@@ -1,11 +1,18 @@
 # global
+# flake8: noqa
 import copy
 from typing import Union, List
 import numpy as np
 import types
 import importlib
 import inspect
-from ... import config
+
+try:
+    import jsonpickle
+except:
+    pass
+import subprocess
+
 
 try:
     import tensorflow as tf
@@ -614,6 +621,7 @@ def test_frontend_function(
     if "/" in frontend:
         # multiversion zone, changes made in non-multiversion zone should
         # be applied here too
+
         if (
             frontend.split("/")[1]
             != importlib.import_module(frontend.split("/")[0]).__version__
@@ -659,21 +667,58 @@ def test_frontend_function(
                 # compute the return via the frontend framework
                 module_name = fn_tree[25 : fn_tree.rfind(".")]
                 # frontend_fw = importlib.import_module(module_name)
-                globally_done = (
-                    frontend.split("/")[0]
-                    + "/"
-                    + importlib.import_module(frontend.split("/")[0]).__version__
+
+                # temp=dict()
+                # if frontend.split("/")[0]=='jax':
+                #     # we prepare for jaxlib
+                #     pass
+
+                pickle_dict = {"a": args_np, "b": kwargs_np}
+
+                frontend_ret = subprocess.run(
+                    [
+                        "/opt/miniconda/envs/multienv/bin/python",
+                        "test.py",
+                        jsonpickle.dumps(pickle_dict),
+                        fn_name,
+                        module_name,
+                        "numpy" + "/" + np.__version__,
+                        frontend,
+                    ],
+                    capture_output=True,
+                    text=True,
                 )
-                frontend_fw = config.custom_import(
-                    frontend.split("/")[0] + "/" + frontend.split("/")[1],
-                    globally_done=globally_done,
-                )
-                frontend_ret = frontend_fw.__dict__[fn_name](
-                    *args_frontend, **kwargs_frontend
-                )
-                frontend_ret = np.asarray(
-                    frontend_ret
-                )  # we do this because frontend_ret comes from a module in another file
+
+                if frontend_ret.stdout:
+                    frontend_ret = jsonpickle.loads(frontend_ret.stdout)
+                else:
+                    print(frontend_ret.stderr)
+                    raise Exception
+                ivy.set_backend("numpy")
+                frontend_ret = ivy.to_native(frontend_ret)
+
+                # globally_done = (
+                #     frontend.split("/")[0]
+                #     + "/"
+                #     + importlib.import_module(frontend.split("/")[0]).__version__
+                # )
+                # try:
+                #     frontend_fw = config.custom_import(
+                #         frontend.split("/")[0] + "/" + frontend.split("/")[1],
+                #         module_name,
+                #         globally_done=globally_done,
+                #     )
+                # except Exception as e:
+                #     raise e
+                #
+                # print(frontend_fw.__version__)
+                # frontend_ret = frontend_fw.__dict__[fn_name](
+                #     *args_frontend, **kwargs_frontend
+                # )
+                # frontend_ret = np.asarray(
+                #     frontend_ret
+                # )  # we do this because frontend_ret comes from a module in another file
+
                 if ivy.isscalar(frontend_ret):
                     frontend_ret_np_flat = [np.asarray(frontend_ret)]
                 else:
@@ -746,7 +791,7 @@ def test_frontend_function(
                     frontend_ret_idxs = ivy.nested_argwhere(
                         frontend_ret, ivy.is_native_array
                     )
-                    print(frontend_ret_idxs, frontend_ret)
+
                     frontend_ret_flat = ivy.multi_index_nest(
                         frontend_ret, frontend_ret_idxs
                     )
@@ -756,8 +801,10 @@ def test_frontend_function(
                 raise e
 
     else:
+
         # non-multiversion zone, changes made here should be
         # applied to multiversion zone too
+
         try:
             # create frontend framework args
             args_frontend = ivy.nested_map(
@@ -1144,6 +1191,12 @@ def test_method(
 
     # Run testing
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
+    # ToDo : remove this when the handle_method can properly compute unsupported dtypes
+    if any(
+        dtype in ivy.function_unsupported_dtypes(ins.__getattribute__(method_name))
+        for dtype in method_input_dtypes
+    ):
+        return
     v_np = None
     if isinstance(ins, ivy.Module):
         if init_with_v:
@@ -1185,6 +1238,12 @@ def test_method(
         container_flags=method_flags.container_flags,
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
+    # ToDo : remove this when the handle_method can properly compute unsupported dtypes
+    if any(
+        dtype in ivy.function_unsupported_dtypes(ins_gt.__getattribute__(method_name))
+        for dtype in method_input_dtypes
+    ):
+        return
     if isinstance(ins_gt, ivy.Module):
         v_gt = v_np.cont_map(
             lambda x, kc: ivy.asarray(x) if isinstance(x, np.ndarray) else x

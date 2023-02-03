@@ -351,7 +351,11 @@ def test_numpy_ndarray_any(
     frontend,
 ):
     input_dtypes, x, axis = dtype_x_axis
-    where, input_dtypes, method_flags = np_frontend_helpers.handle_where_and_array_bools(
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtypes,
         test_flags=method_flags,
@@ -400,7 +404,11 @@ def test_numpy_ndarray_all(
 ):
 
     input_dtypes, x, axis = dtype_x_axis
-    where, input_dtypes, method_flags = np_frontend_helpers.handle_where_and_array_bools(
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtypes,
         test_flags=method_flags,
@@ -412,7 +420,6 @@ def test_numpy_ndarray_all(
             "object": x[0],
         },
         method_input_dtypes=input_dtypes,
-
         method_all_as_kwargs_np={
             "axis": axis,
             "out": None,
@@ -930,7 +937,7 @@ def test_numpy_instance_repeat(
     input_dtypes, x = dtype_and_x
 
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypess,
+        init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": x[0],
         },
@@ -1046,7 +1053,11 @@ def test_numpy_instance_std(
     frontend,
 ):
     input_dtypes, x, axis = dtype_x_axis
-    where, input_dtypes, method_flags = np_frontend_helpers.handle_where_and_array_bools(
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtypes,
         test_flags=method_flags,

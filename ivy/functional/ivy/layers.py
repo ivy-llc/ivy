@@ -325,9 +325,10 @@ def dropout(
             if v is None:
                 noise_shape[i] = x.shape[i]
     mask = ivy.where(
-        ivy.random_uniform(shape=noise_shape, device=ivy.dev(x), dtype=dtype, seed=seed) < prob,
+        ivy.random_uniform(shape=noise_shape, device=ivy.dev(x), dtype=dtype, seed=seed)
+        < prob,
         0,
-        1
+        1,
     )
     x = x * mask
     if scale:

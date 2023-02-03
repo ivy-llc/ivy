@@ -626,6 +626,15 @@ class Tensor:
         ret = ivy.get_item(self._ivy_array, query)
         return torch_frontend.tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
+    def __setitem__(self, key, value):
+        if hasattr(value, "ivy_array"):
+            value = (
+                ivy.to_scalar(value.ivy_array)
+                if value.shape == ()
+                else ivy.to_list(value)
+            )
+        self._ivy_array[key] = value
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __radd__(self, other):
         return torch_frontend.add(other, self._ivy_array)

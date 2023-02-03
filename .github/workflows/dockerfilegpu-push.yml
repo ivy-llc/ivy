@@ -1,6 +1,7 @@
 name: DockerfileGPU Push
 
 on:
+  workflow_dispatch:
   schedule:
     # Runs at 00:00 UTC every day
     - cron:  '0 0 * * *'
@@ -26,7 +27,5 @@ jobs:
 
     - name: Build and push DockerfileGPU
       run: |
-        cd docker
-        docker build . --file DockerfileGPU --tag unifyai/ivy:latest-gpu
+        docker build . --file docker/DockerfileGPU --tag unifyai/ivy:latest-gpu
         docker push unifyai/ivy:latest-gpu
-        
