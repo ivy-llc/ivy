@@ -814,3 +814,54 @@ class ContainerWithCreationExperimental(ContainerBase):
             dtype=dtype,
             device=device,
         )
+    
+    
+    @staticmethod
+    def static_sequence_empty(
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "sequence_empty",
+            shape,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            dtype=dtype,
+            device=device,
+            out
+        )
+    
+    
+    def sequence_empty(
+        self: ivy.Container,
+        /,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+        return self.static_empty_like(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            dtype=dtype,
+            device=device,
+            out=out
+        )
+    
