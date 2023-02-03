@@ -100,6 +100,7 @@ def execute_with_gradients(
     # Deleting the tape if not retaining gradients
     if not retain_grads:
         del tape
+
     # Stop further gradient propagation if not retaining gradients
     return _process_func_ret_and_grads(func_ret, grads, retain_grads)
 
