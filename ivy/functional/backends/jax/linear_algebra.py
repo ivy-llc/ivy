@@ -70,6 +70,15 @@ def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.det(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def eig(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> Tuple[JaxArray]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
+    )
+    eigenvalues, eigenvectors = jnp.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def diagonal(
     x: JaxArray,
@@ -81,15 +90,29 @@ def diagonal(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not x.dtype == bool and not jnp.issubdtype(x.dtype, jnp.integer):
-        ret = jnp.diagonal(x, offset, axis1, axis2)
+        ret = jnp.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
         ret_edited = jnp.diagonal(
-            x.at[1 / x == -jnp.inf].set(-jnp.inf), offset, axis1, axis2
+            x.at[1 / x == -jnp.inf].set(-jnp.inf),
+            offset=offset,
+            axis1=axis1,
+            axis2=axis2,
         )
         ret_edited = ret_edited.at[ret_edited == -jnp.inf].set(-0.0)
         ret = ret.at[ret == ret_edited].set(ret_edited[ret == ret_edited])
     else:
-        ret = jnp.diagonal(x, offset, axis1, axis2)
+        ret = jnp.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
     return ret
+
+
+def tensorsolve(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.linalg.tensorsolve(x1, x2, axes)
 
 
 @with_unsupported_dtypes(
@@ -511,16 +534,20 @@ def vector_norm(
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if dtype and x.dtype != dtype:
+        x = x.astype(dtype)
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if axis is None:
         jnp_normalized_vector = jnp.linalg.norm(jnp.ravel(x), ord, axis, keepdims)
     else:
-        jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
-
-    if jnp_normalized_vector.shape == ():
-        ret = jnp.expand_dims(jnp_normalized_vector, 0)
-    else:
-        ret = jnp_normalized_vector
-    return ret
+        if isinstance(ord, (int, float)) and ord != 0:
+            jnp_normalized_vector = jnp.sum(
+                jnp.abs(x) ** ord, axis=axis, keepdims=keepdims
+            ) ** (1.0 / ord)
+        else:
+            jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
+    return jnp_normalized_vector
 
 
 # Extra #

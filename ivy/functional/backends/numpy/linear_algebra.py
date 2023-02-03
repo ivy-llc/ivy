@@ -84,7 +84,7 @@ def eigvalsh(
 
 @_scalar_output_to_0d_array
 def inner(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.inner(x1, x2)
@@ -246,12 +246,12 @@ def matrix_rank(
     return ret.astype(x.dtype)
 
 
-def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def matrix_transpose(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.swapaxes(x, -1, -2)
 
 
 def outer(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.outer(x1, x2, out=out)
@@ -276,7 +276,11 @@ def pinv(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def qr(
-    x: np.ndarray, /, *, mode: str = "reduced", out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    mode: str = "reduced",
+    out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
 ) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
@@ -300,7 +304,7 @@ def slogdet(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def solve(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     expanded_last = False
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -331,8 +335,19 @@ def svd(
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
-def svdvals(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def svdvals(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.svd(x, compute_uv=False)
+
+
+def tensorsolve(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.linalg.tensorsolve(x1, x2, axes=axes)
 
 
 def tensordot(
@@ -376,26 +391,42 @@ def vecdot(
     return np.tensordot(x1, x2, axes=(axis, axis))
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+def eig(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> Tuple[np.ndarray]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
+    )
+    eigenvalues, eigenvectors = np.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
 def vector_norm(
     x: np.ndarray,
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    keepdims: Optional[bool] = False,
+    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if dtype and x.dtype != dtype:
+        x = x.astype(dtype)
+    if isinstance(axis, list):
+        axis = tuple(axis)
     if axis is None:
         np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
-
     else:
-        np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)
-
-    if np_normalized_vector.shape == tuple():
-        ret = np.expand_dims(np_normalized_vector, 0)
-    else:
-        ret = np_normalized_vector
-    return ret
+        if isinstance(ord, (int, float)) and ord != 0:
+            np_normalized_vector = np.sum(
+                np.abs(x) ** ord, axis=axis, keepdims=keepdims
+            ) ** (1.0 / ord)
+        else:
+            np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)
+    if np_normalized_vector.shape == ():
+        np_normalized_vector = np.expand_dims(np_normalized_vector, 0)
+    np_normalized_vector = np_normalized_vector.astype(x.dtype)
+    return np_normalized_vector
 
 
 # Extra #
@@ -426,7 +457,7 @@ def vander(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("complex")}, backend_version)
 def vector_to_skew_symmetric_matrix(
-    vector: np.ndarray, *, out: Optional[np.ndarray] = None
+    vector: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
