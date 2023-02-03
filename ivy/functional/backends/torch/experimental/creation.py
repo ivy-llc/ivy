@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple
+from typing import Union, Optional, Tuple, Sequence
 import math
 import torch
 
@@ -134,3 +134,14 @@ def tril_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
+
+
+def sequence_empty(
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    /,
+    *,
+    dtype: Optional[torch.dtype] = torch.float32,
+    device: torch.device,
+    out: Optional[torch.tensor] = None
+) -> torch.tensor:
+    return torch.empty(shape, dtype=dtype, device=device)
