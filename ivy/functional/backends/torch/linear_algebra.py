@@ -17,7 +17,7 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16", "complex")}, backend_version)
 def cholesky(
     x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -39,7 +39,7 @@ def cholesky(
 cholesky.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
 def cross(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -89,20 +89,6 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
-def eig(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
-) -> Tuple[torch.Tensor]:
-    result_tuple = NamedTuple(
-        "eig", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
-    )
-    eigenvalues, eigenvectors = torch.linalg.eig(x, out=out)
-    return result_tuple(eigenvalues, eigenvectors)
-
-
-eig.support_native_out = True
-
-
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
 ) -> Tuple[torch.Tensor]:
@@ -127,16 +113,13 @@ eigvalsh.support_native_out = True
 
 
 def inner(
-    x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret_dtype = x1.dtype
     if ivy.is_int_dtype(x1):
         x1 = x1.long()
         x2 = x2.long()
-    if ivy.exists(out):
-        if out.dtype != x1.dtype:
-            return ivy.inplace_update(out, torch.inner(x1, x2).type(out.dtype))
     return torch.inner(x1, x2, out=out).type(ret_dtype)
 
 
@@ -170,6 +153,7 @@ def inv(
 inv.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def matmul(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -207,6 +191,8 @@ def matrix_norm(
 matrix_norm.support_native_out = True
 
 
+"complex"
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_power(
     x: torch.Tensor, n: int, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -242,7 +228,7 @@ def matrix_transpose(
 
 
 def outer(
-    x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.outer(x1, x2, out=out)
@@ -269,11 +255,7 @@ pinv.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def qr(
-    x: torch.Tensor,
-    /,
-    *,
-    mode: str = "reduced",
-    out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
+    x: torch.Tensor, /, *, mode: str = "reduced", out: Optional[torch.Tensor] = None
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
@@ -308,7 +290,6 @@ slogdet.support_native_out = True
 def solve(
     x1: torch.Tensor,
     x2: torch.Tensor,
-    /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -356,7 +337,7 @@ def svd(
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
-def svdvals(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def svdvals(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.svdvals(x, out=out)
 
 
@@ -388,17 +369,6 @@ def tensordot(
     return ret
 
 
-def tensorsolve(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    axes: Union[int, Tuple[List[int], List[int]]] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.linalg.tensorsolve(x1, x2, dims=axes)
-
-
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: torch.Tensor,
@@ -427,35 +397,27 @@ def vecdot(
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     if dtype != "float64":
         x1, x2 = x1.to(dtype=torch.float32), x2.to(dtype=torch.float32)
-    if ivy.exists(out):
-        if ivy.as_ivy_dtype(out.dtype) == ivy.as_ivy_dtype(x1.dtype):
-            return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
-        return ivy.inplace_update(
-            out, torch.tensordot(x1, x2, dims=([axis], [axis])).to(out.dtype)
-        )
-    return torch.tensordot(x1, x2, dims=([axis], [axis])).to(dtype)
+    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).to(dtype=dtype)
 
 
 vecdot.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("integer",)}, backend_version)
 def vector_norm(
     x: torch.Tensor,
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
-    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
-    dtype: Optional[torch.dtype] = None,
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    # TODO: remove the as_native_dtype call once there are wrappers that handle dtype
-    #  conversion automatically in the backends
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype and x.dtype != dtype:
-        x = x.type(dtype)
-    return torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
+    py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
+    if py_normalized_vector.shape == ():
+        ret = torch.unsqueeze(py_normalized_vector, 0)
+    else:
+        ret = py_normalized_vector
+    return ret
 
 
 vector_norm.support_native_out = True
@@ -497,8 +459,9 @@ def vander(
     )
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex")}, backend_version)
 def vector_to_skew_symmetric_matrix(
-    vector: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    vector: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
