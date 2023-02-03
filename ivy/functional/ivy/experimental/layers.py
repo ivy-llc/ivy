@@ -84,6 +84,7 @@ def max_pool2d(
     *,
     data_format: str = "NHWC",
     dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D max pool given 4-D input x.
@@ -140,7 +141,14 @@ def max_pool2d(
             [[46, 47]]]])
     """
     return ivy.current_backend(x).max_pool2d(
-        x, kernel, strides, padding, data_format=data_format, dilation=dilation, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=out,
     )
 
 

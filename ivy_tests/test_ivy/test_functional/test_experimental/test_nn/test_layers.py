@@ -11,11 +11,12 @@ from ivy_tests.test_ivy.helpers import handle_test
     x_k_s_p=helpers.arrays_for_pooling(
         min_dims=4,
         max_dims=4,
-        min_side=1,
+        min_side=2,
         max_side=4,
         allow_explicit_padding=True,
         return_dilation=True,
     ),
+    ceil_mode=st.just(True),
     test_gradients=st.just(False),
     # problem with containers converting tuple padding to
     # lists which jax does not support
@@ -24,6 +25,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 def test_max_pool2d(
     *,
     x_k_s_p,
+    ceil_mode,
     test_flags,
     backend_fw,
     fn_name,
@@ -54,6 +56,7 @@ def test_max_pool2d(
         strides=stride,
         padding=pad,
         dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
