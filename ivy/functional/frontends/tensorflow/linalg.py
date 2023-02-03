@@ -168,8 +168,8 @@ def trace(x, name=None):
 
 @to_ivy_arrays_and_back
 def matrix_transpose(a, name="matrix_transpose", conjugate=False):
-    # Conjugate is ignored - Should be added as an argument
-    # if complex numbers become supported
+    if conjugate:
+        return ivy.adjoint(a)
     return ivy.matrix_transpose(a)
 
 
