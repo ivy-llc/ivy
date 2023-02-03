@@ -54,3 +54,38 @@ class ArrayWithCreationExperimental(abc.ABC):
                     0., 1., 0.]])
         """
         return ivy.eye_like(self._data, k=k, dtype=dtype, device=device, out=out)
+    
+    
+    def sequence_empty(
+        self: ivy.Array,
+        /,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.sequence_empty. This method simply wraps
+        the function, and so the docstring for ivy.sequence_empty also applies to this
+        method with minimal changes.
+        
+        Parameters
+        ----------
+        self
+            input array from which to derive the output array shape.
+        dtype
+            output array data type. Default is float32.
+        device
+            device on which to place the created array. If device is None, the output
+            array device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+            
+        Returns
+        -------
+        ret
+            an array having the same shape as ``self`` and containing uninitialized
+            data.
+        """
+        return ivy.sequence_empty(self._data, dtype=dtype, device=device, out=out)
