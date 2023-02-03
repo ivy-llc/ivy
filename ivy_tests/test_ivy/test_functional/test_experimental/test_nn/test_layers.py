@@ -446,3 +446,43 @@ def test_embedding(
         indices=indices,
         max_norm=max_norm,
     )
+
+
+@handle_test(
+    fn_tree="dft",
+    d_xfft_axis_n_length=x_and_fft(helpers.get_dtypes("complex")),
+    d_xifft_axis_n_length=x_and_ifft(),
+    inverse=st.booleans(),
+    onesided=st.booleans(),
+)
+def test_dft(
+    *,
+    d_xfft_axis_n_length,
+    d_xifft_axis_n_length,
+    inverse,
+    onesided,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    if inverse:
+        dtype, x, axis, norm, dft_length = d_xifft_axis_n_length
+    else:
+        dtype, x, axis, norm, dft_length = d_xfft_axis_n_length
+
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x,
+        axis=axis,
+        inverse=inverse,
+        onesided=onesided,
+        dft_length=dft_length,
+        norm=norm,
+        rtol_=1e-2,
+        atol_=1e-2,
+    )

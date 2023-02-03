@@ -205,6 +205,12 @@ def dropout(
     seed
         Set a default seed for random number generating (for reproducibility). Default
         is ``None``.
+    noise_shape
+        a sequence representing the shape of the binary dropout mask that will be
+        multiplied with the input. A shape dimension set to None means that a different
+        mask value will be applied to each element of the input across that dimension. A
+        dimension set to 1 means the same mask value will be applied to all elements of
+        the input across that dimension.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -311,16 +317,20 @@ def dropout(
         if dtype is not None:
             x = ivy.astype(x, dtype)
         return x if not ivy.exists(out) else ivy.inplace_update(out, x)
-    noise_shape = noise_shape if ivy.exists(noise_shape) else x.shape
-    mask = (
+    if noise_shape is None:
+        noise_shape = x.shape
+    else:
+        noise_shape = list(noise_shape)
+        for i, v in enumerate(noise_shape):
+            if v is None:
+                noise_shape[i] = x.shape[i]
+    mask = ivy.where(
         ivy.random_uniform(shape=noise_shape, device=ivy.dev(x), dtype=dtype, seed=seed)
-        < prob
+        < prob,
+        0,
+        1,
     )
-    x = ivy.where(
-        mask,
-        ivy.zeros_like(x, dtype=dtype),
-        x,
-    )
+    x = x * mask
     if scale:
         x = ivy.multiply(x, 1 / (1 - prob), out=out)
     return x if not ivy.exists(out) else ivy.inplace_update(out, x)

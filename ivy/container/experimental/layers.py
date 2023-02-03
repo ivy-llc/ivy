@@ -1266,3 +1266,96 @@ class ContainerWithLayersExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_dft(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: int = 1,
+        inverse: bool = False,
+        onesided: bool = False,
+        dft_length: Optional[Union[int, Tuple[int]]] = None,
+        norm: Optional[str] = "backward",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        x
+        axis
+        inverse
+        onesided
+        dft_length
+        norm
+        key_chains
+        to_apply
+        prune_unapplied
+        map_sequences
+        out
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "dft",
+            x,
+            axis=axis,
+            inverse=inverse,
+            onesided=onesided,
+            dft_length=dft_length,
+            norm=norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def dft(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: int = 1,
+        inverse: bool = False,
+        onesided: bool = False,
+        dft_length: Optional[Union[int, Tuple[int]]] = None,
+        norm: Optional[str] = "backward",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        axis
+        inverse
+        onesided
+        dft_length
+        norm
+        key_chains
+        to_apply
+        prune_unapplied
+        map_sequences
+        out
+
+        """
+        return self.static_dft(
+            self,
+            axis=axis,
+            inverse=inverse,
+            onesided=onesided,
+            dft_length=dft_length,
+            norm=norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
