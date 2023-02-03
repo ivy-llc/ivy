@@ -109,7 +109,7 @@ def test_numpy_prod(
 
 
 @st.composite
-def _get_castable_dtypes_values(draw):
+def _get_castable_dtypes_values(draw, *, allow_nan=False):
     available_dtypes = helpers.get_dtypes("numeric")
     shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
     dtype, values = draw(
@@ -120,6 +120,7 @@ def _get_castable_dtypes_values(draw):
             small_abs_safety_factor=24,
             safety_factor_scale="log",
             shape=shape,
+            allow_nan=allow_nan,
         )
     )
     axis = draw(helpers.get_axis(shape=shape, force_int=True))
@@ -190,23 +191,16 @@ def test_numpy_cumprod(
 # nancumprod
 @handle_frontend_test(
     fn_tree="numpy.nancumprod",
-    dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype_and_x_axis_dtype=_get_castable_dtypes_values(allow_nan=True),
 )
 def test_numpy_nancumprod(
-    dtype_and_x,
-    dtype,
+    dtype_and_x_axis_dtype,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_and_x
+    input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -215,30 +209,23 @@ def test_numpy_nancumprod(
         on_device=on_device,
         x=x[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
 # nancumsum
 @handle_frontend_test(
     fn_tree="numpy.nancumsum",
-    dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype_and_x_axis_dtype=_get_castable_dtypes_values(allow_nan=True),
 )
 def test_numpy_nancumsum(
-    dtype_and_x,
-    dtype,
+    dtype_and_x_axis_dtype,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_and_x
+    input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -247,7 +234,7 @@ def test_numpy_nancumsum(
         on_device=on_device,
         x=x[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
