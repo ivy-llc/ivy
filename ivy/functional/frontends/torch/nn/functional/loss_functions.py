@@ -1,5 +1,6 @@
 # global
 import ivy
+import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 
@@ -126,6 +127,41 @@ def binary_cross_entropy_with_logits(
     result = reduction(result).astype(target.dtype)
     return result
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def cosine_embedding_loss(
+    input1,
+    input2,
+    target,
+    margin=0.0,
+    size_average=None,
+    reduce=None,
+    reduction="mean"
+):
+    def norm(input, axis):
+        return ivy.sqrt(ivy.sum(ivy.square(input), axis=axis))
+
+    def cosine_similarity():
+        axis = None
+        if len(input1.shape) == len(input2.shape) and len(input2.shape) >= 2:
+            axis = 1
+        input1_norm = norm(input1, axis=axis)
+        input2_norm = norm(input2, axis=axis)
+        norm_mm = input1_norm * input2_norm
+        return ivy.sum(input1 * input2, axis=axis) / ivy.maximum(norm_mm, 1e-08)
+
+    cosine_similarity = cosine_similarity()
+
+    if ivy.all(target == 1.0):
+        loss = 1.0 - cosine_similarity
+    elif ivy.all(target == -1.0):
+        loss = ivy.maximum(ivy.array(0.0), cosine_similarity - ivy.array(margin))
+    else:
+        return None
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+    loss = reduction(loss)
+    return loss
 
 @to_ivy_arrays_and_back
 def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
