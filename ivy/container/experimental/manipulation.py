@@ -2342,8 +2342,5 @@ class ContainerWithManipulationExperimental(ContainerBase):
         device
         out
 
-        Returns
-        -------
-
         """
         return self.static_expand(self, shape, device=device, out=out)
