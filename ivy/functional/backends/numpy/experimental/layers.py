@@ -74,6 +74,7 @@ def max_pool2d(
     *,
     data_format: str = "NHWC",
     dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 

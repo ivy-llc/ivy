@@ -92,15 +92,16 @@ def general_pool(
                     sum(pad_list[i + 1]),
                     strides[i + 1],
                 )
+                # calculating new padding with ceil_output_shape
                 new_pad = (
                     (output_shape - 1) * strides[i + 1]
                     + new_window_shape[i]
                     - inputs.shape[i + 1]
                 )
-                new_right_pad = new_pad - sum(pad_list[i + 1])
+                # updating pad_list with new padding by adding it to the end
                 pad_list[i + 1] = (
                     pad_list[i + 1][0],
-                    pad_list[i + 1][1] + new_right_pad,
+                    pad_list[i + 1][1] + new_pad - sum(pad_list[i + 1]),
                 )
 
     y = jlax.reduce_window(
