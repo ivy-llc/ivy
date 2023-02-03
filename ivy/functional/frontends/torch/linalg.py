@@ -181,3 +181,7 @@ def solve(input, other, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def tensorsolve(A, B, dims=None, *, out=None):
     return ivy.tensorsolve(A, B, axes=dims, out=out)
+
+
+def multi_dot(input, *, out=None ):
+    return ivy.multi_dot(input, *, out=None)
