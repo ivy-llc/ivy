@@ -586,10 +586,12 @@ def test_tensorflow_trace(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
     ),
+    conjugate=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_matrix_transpose(
     dtype_and_input,
+    conjugate,
     frontend,
     test_flags,
     fn_tree,
@@ -601,6 +603,7 @@ def test_tensorflow_matrix_transpose(
         test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
+        conjugate=conjugate,
     )
 
 
