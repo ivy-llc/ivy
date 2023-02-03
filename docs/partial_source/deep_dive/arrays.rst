@@ -24,7 +24,8 @@ Arrays
 .. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
 .. _`arrays forum`: https://discord.com/channels/799879767196958751/1028296936203235359
 .. _`wrapped logic`: https://github.com/unifyai/ivy/blob/6a729004c5e0db966412b00aa2fce174482da7dd/ivy/func_wrapper.py#L95
-
+.. _`NumPy's`: https://numpy.org/doc/stable/user/basics.dispatch.html#basics-dispatch
+.. _`PyTorch's`: https://pytorch.org/docs/stable/notes/extending.html#extending-torch
 There are two types of array in Ivy, there is the :class:`ivy.NativeArray` and also the :class:`ivy.Array`.
 
 Native Array
@@ -104,6 +105,68 @@ If the first line of code in a compositional function performs operations on the
 For the reasons explained above, this would be a problem.
 
 Therefore, all compositional functions have a separate piece of `wrapped logic`_ to ensure that all :class:`ivy.NativeArray` instances are converted to :class:`ivy.Array` instances before entering into the compositional function.
+
+Integrating custom classes with Ivy
+-----------------------------------
+
+Ivy's functional API and its functions can easily be integrated with non-Ivy classes. Whether these classes are ones that inherit from Ivy or completely standalone custom classes, using Ivy's :code:`__array_function__`, Ivy's functions can handle inputs of those types.
+
+To make use of that feature, the class must contain an implementation for these functions and it must contain an implementation for the function :code:`__array_function__`. If a non-Ivy class is passed to an Ivy function, a call to this class's :code:`__array_function__` is made which directs Ivy's function to handle that input type correctly. This allows users to define custome implementations for any of the functions that can be found in Ivy's functional API which would further make it easy to integrate those classes with other Ivy projects.
+
+**Note**
+This functionality is inspired by `NumPy's`_ :code:`__array_function__` and `PyTorch's`_ :code:`__torch_function__`. 
+
+As an example, consider the following class :code:`MyArray` with the following definition:
+
+.. code-block:: python
+>>> class MyArray:
+>>>	def __init__(self, data=None):
+>>>		self.data = data
+
+Running any of Ivy’s functions using a :code:`MyArray` as input will throw an :code:`IvyBackendException` since Ivy’s functions do not support this class type as input. This is where :code:`__array_function__` comes into play. Let’s add the method to our :code:`MyArray` class to see how it works.
+
+There are different ways to do so. One way is to use a global dict :code:`HANDLED_FUNCTIONS`  which will map Ivy’s functions to the custom variant functions:
+
+.. code-block:: python
+>>> HANDLED_FUNCTIONS = {}
+>>> class MyArray:
+>>>	def __init__(self, data=None):
+>>>		self.data = data
+>>>	def __array_function__(self, func, types, args, kwargs):
+>>>		if func not in HANDLED_FUNCTIONS:
+>>>			return NotImplemented
+>>>		if not all((t, (MyArray, ivy.Array, ivy.NativeArray)) for t in types):
+>>>			return NotImplemented
+>>>		return HANDLED_FUNCTIONS[func](*args, **kwargs)		
+
+:code:`__array_function__` accepts four parameters: :code:`func` representing a reference to the array API function being 
+overridden, :code:`types` a list of the types of objects implementing :code:`__array_function__`, :code:`args` a tuple of arguments supplied to the function, and :code:`kwargs` being a dictionary of keyword arguments passed to the function.
+While this class contains an implementation for :code:`__array_function__`, it is still not enough as it is necessary to implement any needed Ivy functions with the new :code:`MyArray` class as input(s) for the code to run successfully.
+We will define a decorator function :code:`implements` that can be used to add functions to :code:`HANDLED_FUNCTIONS`: 
+
+.. code-block:: python
+>>> def implements(ivy_function):
+>>> 	def decorator(func):
+>>>		HANDLED_FUNCTIONS[ivy_function] = func
+>>>		return func
+>>>	return decorator		
+
+Lastly, we need to apply that decorator to the override function. Let’s consider for example a function that overrides :code:`ivy.abs`:
+
+.. code-block:: python
+>>> @implements(ivy.abs)
+>>> def my_abs(my_array, ivy_array):
+>>> 	my_array.data = abs(my_array.data)
+
+Now that we have added the function to :code:`HANDLED_FUNCTIONS`, we can now use :code:`ivy.abs` with :code:`MyArray` objects:
+.. code-block:: python
+
+>>>	X = MyArray(-3)
+>>>	X = ivy.abs(X)
+
+Of course :code:`ivy.abs` is an example of a function that is easy to override since it only requires one operand. The same approach can be used to override functions with multiple operands, including arrays or array-like objects that define :code:`__array_function__`. 
+
+It is relevant to mention again that any function not stored inside the dict :code:`HANDLED_FUNCTIONS` will not work and it is also important to notice that the operands passed to the function must match that of the function stored in the dict. For instance :code:`my_abs` takes only one parameter which is a :code:`MyArray` object. So, passing any other operands to the function will result in an exception :code:`IvyBackendException` being thrown. Lastly, for a custom class to be covered completely with Ivy's functional API, it is necessary to create an implementation for all the relevant functions within the API that will be used by this custom class. That can be all the functions in the API or only a subset of them.
 
 **Round Up**
 
