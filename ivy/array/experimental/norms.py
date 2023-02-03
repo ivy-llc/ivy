@@ -34,19 +34,19 @@ class ArrayWithNormsExperimental(abc.ABC):
         return ivy.l2_normalize(self, axis=axis, out=out)
 
     def instance_norm(
-            self,
-            /,
-            *,
-            scale=None,
-            bias=None,
-            eps=1e-05,
-            momentum=0.1,
-            data_format="NCHW",
-            running_mean=None,
-            running_stddev=None,
-            affine=True,
-            track_running_stats=False,
-            out=None,
+        self,
+        /,
+        *,
+        scale=None,
+        bias=None,
+        eps=1e-05,
+        momentum=0.1,
+        data_format="NCHW",
+        running_mean=None,
+        running_stddev=None,
+        affine=True,
+        track_running_stats=False,
+        out=None,
     ):
         """Applies Instance Normalization over a 4D input along C dimension.
 
