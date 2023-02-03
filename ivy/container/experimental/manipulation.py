@@ -2310,9 +2310,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
         prune_unapplied
         map_sequences
 
-        Returns
-        -------
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "expand",
@@ -2341,9 +2338,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
         shape
         device
         out
-
-        Returns
-        -------
 
         """
         return self.static_expand(self, shape, device=device, out=out)
