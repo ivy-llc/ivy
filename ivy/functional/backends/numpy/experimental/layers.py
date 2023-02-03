@@ -9,10 +9,6 @@ import ivy
 from ivy.functional.ivy.layers import _handle_padding
 
 
-def _output_ceil_shape(w, f, p, s):
-    return math.ceil((w - f + p) / s) + 1
-
-
 def max_pool1d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -110,30 +106,9 @@ def max_pool2d(
 
     if ceil_mode:
         for i in range(2):
-            remaining_pixels = (x_shape[i] - kernel[i] + sum(pad_list[i])) % strides[i]
-            if strides[i] > 1 and remaining_pixels != 0 and kernel[i] > 1:
-                input_size = x_shape[i] + sum(pad_list[i])
-                # making sure that the remaining pixels are supposed
-                # to be covered by the window
-                # they won't be covered if stride is big enough to skip them
-                if (
-                    input_size - remaining_pixels - (kernel[i] - 1) + strides[i]
-                    > input_size
-                ):
-                    continue
-                output_shape = _output_ceil_shape(
-                    x_shape[i],
-                    kernel[i],
-                    sum(pad_list[i]),
-                    strides[i],
-                )
-                # calculating new padding with ceil_output_shape
-                new_pad = (output_shape - 1) * strides[i] + kernel[i] - x_shape[i]
-                # updating pad_list with new padding by adding it to the end
-                pad_list[i] = (
-                    pad_list[i][0],
-                    pad_list[i][1] + new_pad - sum(pad_list[i]),
-                )
+            pad_list[i] = ivy.padding_ceil_mode(
+                x_shape[i], kernel[i], pad_list[i], strides[i]
+            )
 
     x = np.pad(
         x,

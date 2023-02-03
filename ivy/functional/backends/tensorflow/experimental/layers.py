@@ -36,12 +36,12 @@ def max_pool2d(
     *,
     data_format: str = "NHWC",
     dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
-    # add dilation to the kernel
-    # if isinstance(dilation, int):
+
     dilation = (dilation,) * 2 if isinstance(dilation, int) else tuple(dilation)
     dilation = (
         (dilation[0],) * 2
@@ -57,6 +57,14 @@ def max_pool2d(
         pad_h = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
         pad_w = _handle_padding(x.shape[2], strides[1], kernel[1], padding)
         padding = [(pad_h // 2, pad_h - pad_h // 2), (pad_w // 2, pad_w - pad_w // 2)]
+
+    x_shape = x.shape[1:-1]
+    if ceil_mode:
+        for i in range(2):
+            padding[i] = ivy.padding_ceil_mode(
+                x_shape[i], kernel[i], padding[i], strides[i]
+            )
+
     padding = [(0, 0)] + padding + [(0, 0)]
     x = tf.pad(x, padding, constant_values=-math.inf)
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)

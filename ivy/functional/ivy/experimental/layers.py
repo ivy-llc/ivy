@@ -1,4 +1,9 @@
+# global
+import math
 from typing import Optional, Union, Tuple, Literal
+
+
+# local
 import ivy
 from ivy.func_wrapper import (
     handle_array_like_without_promotion,
@@ -781,3 +786,35 @@ def embedding(
         else:
             ret[i] = weights[x, :]
     return ret
+
+
+# helpers #
+
+
+def _output_ceil_shape(w, f, p, s):
+    return math.ceil((w - f + p) / s) + 1
+
+
+def padding_ceil_mode(w, f, p, s):
+    remaining_pixels = (w - f + sum(p)) % s
+    if s > 1 and remaining_pixels != 0 and f > 1:
+        input_size = w + sum(p)
+        # making sure that the remaining pixels are supposed
+        # to be covered by the window
+        # they won't be covered if stride is big enough to skip them
+        if input_size - remaining_pixels - (f - 1) + s > input_size:
+            return p
+        output_shape = _output_ceil_shape(
+            w,
+            f,
+            sum(p),
+            s,
+        )
+        # calculating new padding with ceil_output_shape
+        new_pad = (output_shape - 1) * s + f - w
+        # updating pad_list with new padding by adding it to the end
+        p = (
+            p[0],
+            p[1] + new_pad - sum(p),
+        )
+    return p
