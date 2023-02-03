@@ -90,7 +90,16 @@ def inner(
     return np.inner(x1, x2)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "1.23.0 and below": (
+            "bfloat16",
+            "float16",
+            "complex"
+        )
+    },
+    backend_version,
+)
 def inv(
     x: np.ndarray,
     /,
