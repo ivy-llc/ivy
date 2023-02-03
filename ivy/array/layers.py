@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Tuple, Union, List, Callable
+from typing import Optional, Tuple, Union, List, Callable, Sequence
 
 # local
 import ivy
@@ -76,6 +76,7 @@ class ArrayWithLayers(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         training: bool = True,
         seed: Optional[int] = None,
+        noise_shape: Sequence[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -99,6 +100,9 @@ class ArrayWithLayers(abc.ABC):
         seed
             Set a default seed for random number generating (for
             reproducibility).Default is ``None``.
+        noise_shape
+            a sequence representing the shape of the binary dropout mask that will be
+            multiplied with the input.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -141,6 +145,7 @@ class ArrayWithLayers(abc.ABC):
             dtype=dtype,
             training=training,
             seed=seed,
+            noise_shape=noise_shape,
             out=out,
         )
 
@@ -755,7 +760,7 @@ class ArrayWithLayers(abc.ABC):
         (6, 20, 5)
         >>> result[1].shape
         (6, 5)
-        
+
         """
         return ivy.lstm_update(
             self._data,

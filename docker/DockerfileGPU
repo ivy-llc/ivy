@@ -113,38 +113,34 @@ RUN apt-get install -y libopenblas-dev
 # CUDA-specific Installations #
 # ----------------------------#
 
-RUN pip3 install pytest
 RUN apt-get install -y git
 RUN apt-get install -y python-opengl
 
 RUN pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_releases.html
 # ToDo: work out why most recent jaxlib installs are not working
 RUN pip3 install --upgrade "jaxlib[cuda]" -f https://storage.googleapis.com/jax-releases/jax_releases.html
-RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.10.0+cu111.html
+RUN pip install torch==1.11.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
+RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.11.0+cu113.html
 
 # Ivy #
 # ----#
 
 # Install Ivy Upstream
-RUN git clone https://github.com/unifyai/ivy && \
+RUN git clone --recurse-submodules https://github.com/unifyai/ivy && \
     cd ivy && \
-    cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    cat requirements/optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    python3 -m pip install --user -e .
+    python3 -m pip install --user -e . && \
+    cd ivy_tests/test_array_api && \
+    pip3 install --no-cache-dir -r requirements.txt
 
 # Install local requirements
-RUN cd .. && \
 COPY requirements/requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install local optional
-RUN cd .. && \
 COPY requirements/optional.txt .
 RUN pip3 install --no-cache-dir -r optional.txt
-RUN pip3 install torch==1.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 
-RUN cd .. && \
-COPY run_tests_CLI/test_dependencies.py /
+COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
     rm -rf requirements.txt && \
     rm -rf optional.txt
