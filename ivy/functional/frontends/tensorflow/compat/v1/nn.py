@@ -2,13 +2,12 @@
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes
-from ivy.functional.frontends import tensorflow as tf_frontend
 
 
 # should have float16 as well but sqrt doesn't support it
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.9.0 and below": ("float32", "bfloat16")}, "tensorflow"
+    {"2.9.0 and below": ("float32",)}, "tensorflow"
 )
 def fused_batch_norm(
     x,
@@ -16,7 +15,7 @@ def fused_batch_norm(
     offset,
     mean=None,
     variance=None,
-    epsilon=0.001,
+    epsilon=1e-3,
     data_format='NHWC',
     is_training=True,
     name=None,
@@ -32,31 +31,42 @@ def fused_batch_norm(
             raise ivy.exceptions.IvyException(
                 "input tensor must be of 4 or 5 dimensions, got {}".format(dims)
             )
+
+    scale = scale.astype(ivy.float32)
+    offset = offset.astype(ivy.float32)
+    old_mean = mean.astype(ivy.float32)
+    old_var = variance.astype(ivy.float32)
+    x = x.astype(ivy.float32)
+
     if is_training:
-        dims_to_avg = tuple(range(0, len(x.shape))[:-1])
-        x_mean = ivy.mean(x, axis=dims_to_avg)
-        x_var = ivy.var(x, axis=dims_to_avg)
-        # x_norm = scale * (x - x_mean) / ivy.sqrt(x_var + epsilon) + offset
-        x_norm = tf_frontend.nn.batch_normalization(x, x_mean, x_var, offset, scale, epsilon)
+        depth = x.shape[-1]
+        rest_size = ivy.prod(x.shape) // depth
+        x_rest_by_depth = ivy.reshape(x, [rest_size, depth])
+        mean = ivy.mean(x_rest_by_depth, axis=0, keepdims=True)
+        variance = ivy.var(x_rest_by_depth, axis=0, keepdims=True)
+        y = ivy.reshape(
+            scale * (x_rest_by_depth - mean) / ivy.sqrt(variance + epsilon) + offset,
+            x.shape
+        )
+        mean = ivy.reshape(
+            mean * exponential_avg_factor + old_mean * (1 - exponential_avg_factor),
+            old_mean.shape
+        )
+        variance = ivy.reshape(
+            variance * exponential_avg_factor + old_var * (1 - exponential_avg_factor),
+            old_var.shape
+        )
     else:
-        # x_norm = scale * (x - mean) / ivy.sqrt(variance + epsilon) + offset
-        x_norm = tf_frontend.nn.batch_normalization(x, mean, variance, offset, scale, epsilon)
-    x_norm = ivy.array(x_norm, dtype=x.dtype)
+        y = scale * (x - old_mean) / ivy.sqrt(old_var + epsilon) + offset
+
+    # permute dimensions back
     if data_format[1] == "C":
         if dims == 4:
-            x_norm = ivy.permute_dims(x_norm, axes=(0, 3, 1, 2))
+            y = ivy.permute_dims(y, axes=(0, 3, 1, 2))
         elif dims == 5:
-            x_norm = ivy.permute_dims(x_norm, axes=(0, 4, 1, 2, 3))
+            y = ivy.permute_dims(y, axes=(0, 4, 1, 2, 3))
+
     if is_training:
-        if exponential_avg_factor == 1.0:
-            moving_mean = x_mean
-            moving_var = x_var
-        else:
-            # torch does this
-            # x_mean = x_mean / x.size
-            # x_var = x_var / x.size - x_mean**2
-            moving_mean = x_mean * exponential_avg_factor + mean * (1 - exponential_avg_factor)
-            moving_var = x_var * exponential_avg_factor + variance * (1 - exponential_avg_factor)
-        return x_norm, ivy.astype(moving_mean, 'float32'), ivy.astype(moving_var, 'float32')
+        return y, mean, variance
     else:
-        return x_norm, mean, variance
+        return y, old_mean, old_var
