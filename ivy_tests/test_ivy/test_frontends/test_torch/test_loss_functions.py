@@ -259,10 +259,12 @@ def test_torch_binary_cross_entropy_with_logits(
         small_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
-    margin=st.floats(
+    margin=helpers.floats(
         min_value=-1.0,
         max_value=1.0,
-        width=32,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     size_average=st.booleans(),
     reduce=st.booleans(),
