@@ -228,6 +228,7 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     ret = ivy.where(nan_where, nan, x)
     ret = ivy.where(pos_where, posinf, ret)
     ret = ivy.where(neg_where, neginf, ret)
+    ret = ret.astype(x.dtype, copy=False)
     if not copy:
         return ivy.inplace_update(x, ret)
     return ret

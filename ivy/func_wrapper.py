@@ -119,9 +119,7 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
             del kwargs["out"]
             has_out = True
         # convert all arrays in the inputs to ivy.NativeArray instances
-        new_args, new_kwargs = ivy.args_to_native(
-            *args, **kwargs, include_derived={tuple: True}
-        )
+        new_args, new_kwargs = ivy.args_to_native(*args, **kwargs)
         # add the original out argument back to the keyword arguments
         if has_out:
             new_kwargs["out"] = out
