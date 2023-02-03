@@ -42,15 +42,12 @@ from .assertions import (
 )
 
 os.environ["IVY_ROOT"] = ".ivy"
-from ivy.compiler import compiler as ic
+from ivy.compiler.compiler import compile as ic
 
 
 def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
-    # print('backend', ivy.current_backend_str())
-    # print('args inside compile', args)
-    # print('kwargs inside compile', kwargs)
     if test_compile:
-        return ic.compile(fn, args=args, kwargs=kwargs)
+        return ic(fn, args=args, kwargs=kwargs)
     return fn
 
 
@@ -923,10 +920,7 @@ def gradient_test(
 ):
     def grad_fn(all_args):
         args, kwargs, i = all_args
-        print("args inside grad_fn", args)
-        print("kwargs inside grad_fn", kwargs)
         call_fn = ivy.__dict__[fn] if isinstance(fn, str) else fn[i]
-        print("call_fn", call_fn)
         ret = compiled_if_required(
             call_fn, test_compile=test_compile, args=args, kwargs=kwargs
         )(*args, **kwargs)
@@ -995,8 +989,6 @@ def gradient_test(
         len(grads_np_from_gt_flat),
     )
 
-    print("grads_np_flat", grads_np_flat)
-    print("grads_np_from_gt_flat", grads_np_from_gt_flat)
     for grad_np_flat, grad_np_from_gt_flat in zip(grads_np_flat, grads_np_from_gt_flat):
         value_test(
             ret_np_flat=grad_np_flat,

@@ -62,7 +62,6 @@ def _grad_func(y, xs, xs_required, tape):
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
-    print()
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_required, required_duplicate_index_chains, _ = _get_required_float_variables(
         xs, xs_grad_idxs
@@ -101,7 +100,6 @@ def execute_with_gradients(
     # Deleting the tape if not retaining gradients
     if not retain_grads:
         del tape
-    print()
     # Stop further gradient propagation if not retaining gradients
     return _process_func_ret_and_grads(func_ret, grads, retain_grads)
 
