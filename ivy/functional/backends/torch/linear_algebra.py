@@ -17,7 +17,16 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "bfloat16",
+            "float16",
+            "complex"
+        )
+    },
+    backend_version,
+)
 def cholesky(
     x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
