@@ -91,13 +91,7 @@ def inner(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.23.0 and below": (
-            "bfloat16",
-            "float16",
-            "complex"
-        )
-    },
+    {"1.23.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def inv(
@@ -165,13 +159,7 @@ def matrix_power(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.23.0 and below": (
-            "float16",
-            "bfloat16",
-            "complex"
-        )
-    },
+    {"1.23.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 @_scalar_output_to_0d_array
@@ -247,10 +235,7 @@ def matrix_rank(
 
 
 def matrix_transpose(
-    x: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.swapaxes(x, -1, -2)
 
