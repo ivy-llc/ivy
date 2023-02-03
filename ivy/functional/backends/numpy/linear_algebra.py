@@ -19,7 +19,7 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "complex")}, backend_version)
 def cholesky(
     x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -65,15 +65,6 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
-def eig(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> Tuple[np.ndarray]:
-    result_tuple = NamedTuple(
-        "eig", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
-    )
-    eigenvalues, eigenvectors = np.linalg.eig(x)
-    return result_tuple(eigenvalues, eigenvectors)
-
-
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
 ) -> Tuple[np.ndarray]:
@@ -99,7 +90,16 @@ def inner(
     return np.inner(x1, x2)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "1.23.0 and below": (
+            "bfloat16",
+            "float16",
+            "complex"
+        )
+    },
+    backend_version,
+)
 def inv(
     x: np.ndarray,
     /,
@@ -119,6 +119,7 @@ def inv(
             return ret
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def matmul(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -168,6 +169,7 @@ def matrix_power(
         "1.23.0 and below": (
             "float16",
             "bfloat16",
+            "complex"
         )
     },
     backend_version,
@@ -245,7 +247,10 @@ def matrix_rank(
 
 
 def matrix_transpose(
-    x: np.ndarray, /, *, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.swapaxes(x, -1, -2)
 
@@ -339,6 +344,17 @@ def svdvals(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
     return np.linalg.svd(x, compute_uv=False)
 
 
+def tensorsolve(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.linalg.tensorsolve(x1, x2, axes=axes)
+
+
 def tensordot(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -349,17 +365,6 @@ def tensordot(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=axes)
-
-
-def tensorsolve(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    /,
-    *,
-    axes: Union[int, Tuple[List[int], List[int]]] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.linalg.tensorsolve(x1, x2, axes=axes)
 
 
 @_scalar_output_to_0d_array
@@ -389,6 +394,15 @@ def vecdot(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=(axis, axis))
+
+
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+def eig(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> Tuple[np.ndarray]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
+    )
+    eigenvalues, eigenvectors = np.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 def vector_norm(
@@ -434,7 +448,7 @@ def diag(
     return np.diag(x, k=k)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("complex")}, backend_version)
 def vander(
     x: np.ndarray,
     /,
@@ -446,6 +460,7 @@ def vander(
     return np.vander(x, N=N, increasing=increasing).astype(x.dtype)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("complex")}, backend_version)
 def vector_to_skew_symmetric_matrix(
     vector: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
