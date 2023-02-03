@@ -854,7 +854,7 @@ class ContainerWithCreationExperimental(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
-        return self.static_empty_like(
+        return self.static_sequence_empty(
             self,
             key_chains,
             to_apply,
