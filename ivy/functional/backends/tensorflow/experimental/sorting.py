@@ -20,11 +20,13 @@ def lexsort(
         *,
         axis: int = -1,
 ) -> Union[tf.Tensor, tf.Variable]:
-    size = keys.shape.as_list()[0]
-    if size == 0:
+    shape = keys.shape.as_list()
+    if shape[0] == 0:
         raise TypeError('need sequence of keys with len > 0 in lexsort')
+    if len(shape) == 2 and shape[1] == 1:
+        return tf.convert_to_tensor([0])
     result = tf.argsort(keys[0], axis=axis, stable=True)
-    if size == 1:
+    if shape[0] == 1:
         return result
     for i in range(1, size):
         key = keys[i]
