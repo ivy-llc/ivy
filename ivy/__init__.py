@@ -212,9 +212,10 @@ class Shape(tuple):
             shape_tup = (shape_tup,)
         elif isinstance(shape_tup, list):
             shape_tup = tuple(shape_tup)
-        assert builtins.all(
-            isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup
-        ), "shape must take integers only"
+        ivy.assertions.check_all(
+            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup],
+            "shape must take integers only",
+        )
         if ivy.shape_array_mode():
             return ivy.array(shape_tup)
         return tuple.__new__(cls, shape_tup)
