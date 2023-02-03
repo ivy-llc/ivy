@@ -1489,6 +1489,32 @@ def test_jax_numpy_fmin(
     )
 
 
+# fabs
+@handle_frontend_test(
+    fn_tree="jax.numpy.fabs",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_jax_numpy_fabs(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # fmod
 @handle_frontend_test(
     fn_tree="jax.numpy.fmod",
@@ -2041,13 +2067,10 @@ def test_jax_numpy_hypot(
 def test_jax_numpy_floor_divide(
     *,
     dtype_values,
-    as_variable,
-    native_array,
-    num_positional_args,
     frontend,
     fn_tree,
     on_device,
-    with_out,
+    test_flags,
 ):
     input_dtype, x = dtype_values
     # Making sure division by zero doesn't occur
@@ -2056,14 +2079,38 @@ def test_jax_numpy_floor_divide(
     # due to flooring can cause absolute error of 1 due to precision
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
         on_device=on_device,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         x1=x[0],
         x2=x[1],
         atol=1,
+    )
+
+
+# real
+@handle_frontend_test(
+    fn_tree="jax.numpy.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
+    ),
+)
+def test_jax_numpy_real(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        val=x[0],
     )

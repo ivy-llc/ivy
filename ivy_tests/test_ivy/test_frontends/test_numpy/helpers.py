@@ -171,12 +171,14 @@ def test_frontend_function(*args, where=None, **kwargs):
 
 
 # noinspection PyShadowingNames
-def handle_where_and_array_bools(where, input_dtype, as_variable, native_array):
+def handle_where_and_array_bools(where, input_dtype, test_flags):
     if isinstance(where, list) or isinstance(where, tuple):
-        input_dtype = list(input_dtype) + ["bool"]
         where = where[0]
-        return where, as_variable + [False], native_array + [False]
-    return where, as_variable, native_array
+        test_flags.as_variable += [False]
+        test_flags.native_arrays += [False]
+        input_dtype += ["bool"]
+        return where, input_dtype, test_flags
+    return where, input_dtype, test_flags
 
 
 def handle_dtype_and_casting(

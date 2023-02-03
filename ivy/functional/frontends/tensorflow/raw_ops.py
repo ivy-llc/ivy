@@ -13,7 +13,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 @to_ivy_arrays_and_back
 def AddN(*, inputs, name="AddN"):
-    return ivy.sum(inputs, dtype=inputs.dtype)
+    return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
 
 
 @to_ivy_arrays_and_back
@@ -257,6 +257,11 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
 
 
 @to_ivy_arrays_and_back
+def Rsqrt(*, x, name="Rsqrt"):
+    return ivy.sqrt(ivy.reciprocal(x))
+
+
+@to_ivy_arrays_and_back
 def MatrixInverse(*, input, adjoint=False, name="MatrixInverse"):
     return ivy.inv(input, adjoint=adjoint)
 
@@ -337,6 +342,11 @@ def Pad(*, input, paddings, name="Pad"):
     return ivy.constant_pad(input, paddings.to_list())
 
 
+@to_ivy_arrays_and_back
+def PadV2(*, input, paddings, constant_values, name="PadV2"):
+    return ivy.constant_pad(input, paddings.to_list(), value=constant_values)
+
+
 Relu = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.keras.activations.relu,
@@ -351,9 +361,9 @@ def RealDiv(*, x, y, name="RealDiv"):
     return ivy.divide(x, y)
 
 
-@to_ivy_arrays_and_back
-def Reshape(*, tensor, shape, name="Reshape"):
-    return ivy.reshape(tensor, shape)
+Reshape = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.general_functions.reshape)
+)
 
 
 @to_ivy_arrays_and_back
@@ -566,3 +576,42 @@ def Conv3D(
         dilations=dilations,
         name=name,
     )
+
+
+@to_ivy_arrays_and_back
+def Elu(features, name=None):
+    zeros = ivy.zeros_like(features, dtype=ivy.dtype(features))
+    ones = ivy.ones_like(features, dtype=ivy.dtype(features))
+    ret_val = ivy.where(
+        # if x > 0 => x; else e^x - 1
+        features > zeros,
+        features,
+        ivy.subtract(ivy.exp(features), ones),
+    )
+    return ret_val
+
+
+Elu.supported_dtypes = {
+    "numpy": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "tensorflow": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": (
+        "bfloat16",
+        "float32",
+        "float64",
+    ),
+    "jax": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+}

@@ -48,7 +48,7 @@ def test_tensorflow_uniform(
         seed=seed,
     )
 
-    
+
 # random_normal
 @handle_frontend_test(
     fn_tree="tensorflow.random.normal",
