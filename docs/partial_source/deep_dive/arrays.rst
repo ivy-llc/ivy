@@ -123,7 +123,7 @@ As an example, consider the following class :code:`MyArray` with the following d
 >>>	def __init__(self, data=None):
 >>>		self.data = data
 
-Running any of Ivy’s functions using a :code:`MyArray` as input will throw an :code:`IvyBackendException` since Ivy’s functions do not support this class type as input. This is where :code:`__array_function__` comes into play. Let’s add the method to our :code:`MyArray` class to see how it works.
+Running any of Ivy’s functions using a :code:`MyArray` object as input will throw an :code:`IvyBackendException` since Ivy’s functions do not support this class type as input. This is where :code:`__array_function__` comes into play. Let’s add the method to our :code:`MyArray` class to see how it works.
 
 There are different ways to do so. One way is to use a global dict :code:`HANDLED_FUNCTIONS`  which will map Ivy’s functions to the custom variant functions:
 
