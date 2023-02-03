@@ -63,7 +63,7 @@ def test_lexsort(
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=input_dtype,
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="numpy",
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
