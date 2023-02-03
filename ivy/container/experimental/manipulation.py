@@ -2310,9 +2310,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
         prune_unapplied
         map_sequences
 
-        Returns
-        -------
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "expand",
