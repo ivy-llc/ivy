@@ -9,7 +9,6 @@ import ivy
 available_frameworks = available_frameworks()
 
 
-# @pytest.mark.parametrize("backend", available_frameworks)
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
 @pytest.mark.parametrize("show_func_wrapper", [True, False])
 def test_trace_modes(backend_fw, trace_mode, show_func_wrapper):
