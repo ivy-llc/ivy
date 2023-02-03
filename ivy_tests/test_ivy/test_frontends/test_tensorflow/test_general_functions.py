@@ -1335,3 +1335,32 @@ def test_tensorflow_where_with_xy(
         x=x,
         y=y,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.reverse",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    axis=helpers.ints(min_value=1, max_value=10)
+)
+def test_tensorflow_reverse(
+    *,
+    frontend,
+    dtype_and_x,
+    axis,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        axis=axis,
+        tensor=x[0],
+    )
