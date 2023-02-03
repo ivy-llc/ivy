@@ -44,10 +44,10 @@ def numpy_style_broadcast(a1, a2):
     assert check_shapes_numpy_broadcastable(a1.shape, a2.shape), \
         f"Could not broadcast shapes {a1.shape} and {a2.shape}"
     if a1.ndim > a2.ndim:
-        a2_ext_shape = (a1.ndim - a2.ndim)*(1,) + a2.shape
+        a2_ext_shape = (a1.ndim - a2.ndim) * (1,) + a2.shape
         a1_ext_shape = a1.shape
     elif a2.ndim > a1.ndim:
-        a1_ext_shape = (a2.ndim - a1.ndim)*(1,) + a1.shape
+        a1_ext_shape = (a2.ndim - a1.ndim) * (1,) + a1.shape
         a2_ext_shape = a2.shape
     else:
         a1_ext_shape = a1.shape
@@ -73,29 +73,26 @@ def choose(a, choices, out=None, mode='raise'):
                 a, _choices[i] = numpy_style_broadcast(a, choice)
                 choices_checked = False
             if _choices[0].dtype != choice.dtype:
-                _choices[0], _choices[i] = ivy.promote_types_of_inputs(_choices[0], _choices[i])
+                _choices[0], _choices[i] = ivy.promote_types_of_inputs(_choices[0],
+                                                                       _choices[i])
                 choices_checked = False
     # create composite array
     c = ivy.empty_like(_choices[0])
     if mode == 'raise':
-        assert ivy.max(a) < n and ivy.min(a) >= 0, "choose: Invalid entry in index array"
+        assert ivy.max(a) < n and ivy.min(a) >= 0, "choose:Invalid entry in index array"
     elif mode == 'clip':
-        a = a.clip(0, n-1)
+        a = a.clip(0, n - 1)
     elif mode == 'wrap':
-        print("before wrapping")
         a = ivy.abs(ivy.fmod(a, n))
-        print("after wrapping")
     else:
         raise ValueError("Invalid mode")
-    print("starting choices.")
-    for I in ivy.ndindex(a.shape):
-        c[I]= _choices[int(a[I])][I]
+    for index in ivy.ndindex(a.shape):
+        c[index]= _choices[int(a[index])][index]
 
-    print("choices phase ended.")
     if out is not None:
         if out.shape == c.shape:
             out[:] = c
-            #ivy.inplace_update(out, c)
+            # ivy.inplace_update(out, c)
         else:
             raise ValueError(f"choose: output array shape should be {c.shape}")
     else:
