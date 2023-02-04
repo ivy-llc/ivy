@@ -2,6 +2,8 @@
 from hypothesis import strategies as st, assume
 import math
 
+import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -1001,6 +1003,15 @@ def test_torch_hsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
+    # TODO: remove the assumption when these bugfixes are merged and version-pinned
+    # https://github.com/tensorflow/tensorflow/pull/59523
+    # https://github.com/google/jax/pull/14275
+    assume(
+        not (
+            len(value[0].shape) == 1
+            and ivy.current_backend_str() in ("tensorflow", "jax")
+        )
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
