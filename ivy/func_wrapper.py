@@ -81,8 +81,10 @@ def _get_first_array(*args, **kwargs):
 
 
 def array_function_wrapper(func):
-    """Wrap a function to extract the relevant argument types to be passed to
-    array_function method."""
+    """
+    Wrap a function to extract the relevant argument types to be passed to
+    array_function method.
+    """
 
     @functools.wraps(func)
     def new_func(*args, **kwargs):
