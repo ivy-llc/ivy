@@ -590,7 +590,7 @@ def sequence_empty(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = ivy.float32,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """ ONNX function that returns an uninitialized array with the same shape as inputted.
     
