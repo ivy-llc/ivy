@@ -292,7 +292,7 @@ def test_torch_cosine_embedding_loss(
         tar = ivy.ones(input1.shape[0])
 
     helpers.test_frontend_function(
-        input_dtypes=[input1_dtype, input2_dtype, tar.dtype],
+        input_dtypes=[input1_dtype, input2_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
