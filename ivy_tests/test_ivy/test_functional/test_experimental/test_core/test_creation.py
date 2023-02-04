@@ -339,3 +339,11 @@ def test_sequence_empty(
         test_values=False,
         ground_truth_backend=ground_truth_backend
     )
+    if not ivy.exists(ret):
+        return
+    res, res_np = ret
+    ivy.set_backend("tensorflow")
+    assert res.shape == res_np.shape
+    assert res.dtype == res_np.dtype
+    ivy.unset_backend()
+    
