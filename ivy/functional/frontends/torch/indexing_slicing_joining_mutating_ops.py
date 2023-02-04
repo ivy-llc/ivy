@@ -205,3 +205,8 @@ def split(tensor, split_size_or_sections, dim=0):
 @to_ivy_arrays_and_back
 def dsplit(input, indices_or_sections):
     return tuple(ivy.dsplit(input, indices_or_sections))
+
+
+@to_ivy_arrays_and_back
+def row_stack(tensors, *, out=None):
+    return ivy.vstack(tensors, out=out)
