@@ -815,30 +815,30 @@ class ContainerWithCreationExperimental(ContainerBase):
             device=device,
         )
     
-'''
+
     @staticmethod
     def static_sequence_empty(
-        shape: Union[ivy.NativeShape, Sequence[int], ivy.Container],
+        shape: Union[int, Sequence[int], ivy.Container],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = ivy.float32,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[ivy.Container] = None
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "sequence_empty",
             shape,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
             dtype=dtype,
-            device=device,
-            out
+            device=device
         )
     
     
@@ -850,18 +850,18 @@ class ContainerWithCreationExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = ivy.float32,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[ivy.Container] = None
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
     ) -> ivy.Container:
         return self.static_sequence_empty(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
             dtype=dtype,
-            device=device,
-            out=out
+            device=device
         )
-'''
+
