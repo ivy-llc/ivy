@@ -977,3 +977,30 @@ def test_torch_dsplit(
         input=value[0],
         indices_or_sections=indices_or_sections,
     )
+
+
+# row_stack
+@handle_frontend_test(
+    fn_tree="torch.row_stack",
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=st.integers(1, 5),
+    ),
+)
+def test_torch_row_stack(
+    *,
+    dtype_value_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=value,
+    )
