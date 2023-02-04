@@ -1232,8 +1232,9 @@ def test_numpy_instance_floordiv__(
     frontend,
 ):
     input_dtypes, xs = dtype_and_x
-    assume(not np.any(np.isclose(xs[0], 0)))
     assume(not np.any(np.isclose(xs[1], 0)))
+    assume(not np.any(np.isclose(xs[0], 0)))
+
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
