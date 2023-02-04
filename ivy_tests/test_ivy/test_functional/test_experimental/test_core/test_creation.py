@@ -313,7 +313,7 @@ def test_eye_like(
         max_dim_size=10,
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    # container_flags=st.just([False]),
+    container_flags=st.just([False]),
     test_gradients=st.just(False)
 )
 def test_sequence_empty(
