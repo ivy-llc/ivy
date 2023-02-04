@@ -1017,6 +1017,7 @@ def test_method(
     test_gradients: bool = False,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
+    test_compile: bool = False,
     ground_truth_backend: str,
     device_: str = "cpu",
     return_flat_np_arrays: bool = False,
@@ -1080,6 +1081,8 @@ def test_method(
     ret_grad_idxs
         Indices of the returned arrays for which to return computed gradients. If None,
         gradients are returned for all returned arrays. (Default value = None)
+    test_compile
+        If True, test for the correctness of compilation.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     device_
@@ -1222,7 +1225,14 @@ def test_method(
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
-        ins.__getattribute__(method_name), *args_method, **kwargs_method
+        compiled_if_required(
+            ins.__getattribute__(method_name),
+            test_compile=test_compile,
+            args=args_method,
+            kwargs=kwargs_method,
+        ),
+        *args_method,
+        **kwargs_method,
     )
 
     # Compute the return with a Ground Truth backend
@@ -1263,7 +1273,14 @@ def test_method(
         )
         kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
     ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-        ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
+        compiled_if_required(
+            ins_gt.__getattribute__(method_name),
+            test_compile=test_compile,
+            args=args_gt_method,
+            kwargs=kwargs_gt_method,
+        ),
+        *args_gt_method,
+        **kwargs_gt_method,
     )
     fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
     fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
