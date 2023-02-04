@@ -264,7 +264,7 @@ def test_torch_binary_cross_entropy_with_logits(
         max_value=1.0,
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
-        safety_factor_scale="log",
+        safety_factor_scale="linear",
     ),
     size_average=st.booleans(),
     reduce=st.booleans(),
