@@ -332,7 +332,7 @@ def test_sequence_empty(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        shape,
+        shape=shape,
         dtype=dtype[0],
         device=on_device,
         ground_truth_backend=ground_truth_backend
