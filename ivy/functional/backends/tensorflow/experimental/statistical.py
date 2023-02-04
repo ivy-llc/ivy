@@ -35,7 +35,7 @@ def histogram(
 ) -> Tuple[tf.Tensor]:
     if range:
         if type(bins) == int:
-            bins = tf.linspace(start=range[0], stop=range[1], num=bins + 1)
+            bins = tf.cast(tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype)
     ret = tfp.stats.histogram(
         x=a,
         edges=bins,
