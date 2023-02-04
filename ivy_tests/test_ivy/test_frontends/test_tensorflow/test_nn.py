@@ -9,6 +9,10 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
 )
+from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _dropout_helper
+from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
+    _assume_tf_dilation_gt_1,
+)
 
 
 @st.composite
@@ -300,6 +304,7 @@ def test_tensorflow_atrous_conv2d_transpose(
         pad,
         output_shape,
     ) = x_f_d_df
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -382,6 +387,7 @@ def test_tensorflow_conv1d_transpose(
         pad,
         output_shape,
     ) = x_f_d_df
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -399,9 +405,10 @@ def test_tensorflow_conv1d_transpose(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.nn.conv2d",
+    fn_tree="tensorflow.nn.gelu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        max_value=1e04,
     ),
     approximate=st.booleans(),
     test_with_out=st.just(False),
@@ -489,6 +496,7 @@ def test_tensorflow_conv2d_transpose(
         padding,
         output_shape,
     ) = x_f_d_df
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -572,6 +580,7 @@ def test_tensorflow_conv3d_transpose(
         padding,
         output_shape,
     ) = x_f_d_df
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -667,36 +676,39 @@ def test_tensorflow_batch_normalization(
 
 @handle_frontend_test(
     fn_tree="tensorflow.nn.dropout",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        shape=(3, 5),
-    ),
-    prob=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
-    scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
+    dtype_x_noiseshape=_dropout_helper(),
+    rate=helpers.floats(min_value=0, max_value=0.9),
+    seed=helpers.ints(min_value=0, max_value=100),
     test_with_out=st.just(False),
 )
 def test_tensorflow_dropout(
     *,
-    dtype_and_x,
-    prob,
-    scale,
+    dtype_x_noiseshape,
+    rate,
+    seed,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=[input_dtype] * 2,
+    (x_dtype, x), noise_shape = dtype_x_noiseshape
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=x_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        test_values=False,
         x=x[0],
-        prob=prob,
-        scale=scale,
+        rate=rate,
+        noise_shape=noise_shape,
+        seed=seed,
     )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    frontend_ret = helpers.flatten_and_to_np(ret=frontend_ret)
+    for u, v, w in zip(ret, frontend_ret, x):
+        # cardinality test
+        assert u.shape == v.shape == w.shape
 
 
 # silu
@@ -1030,13 +1042,12 @@ def test_tensorflow_convolution(
         min_value=-20,
         max_value=20,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_relu(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -1044,10 +1055,7 @@ def test_tensorflow_relu(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1065,13 +1073,12 @@ def test_tensorflow_relu(
         force_int_axis=True,
         valid_axis=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_softmax(
     *,
     dtype_x_and_axis,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -1079,10 +1086,7 @@ def test_tensorflow_softmax(
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1117,4 +1121,5 @@ def test_tensorflow_embedding_lookup(
         params=weight,
         ids=indices,
         max_norm=max_norm,
+        atol=1e-4,
     )

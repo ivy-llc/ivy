@@ -1,5 +1,8 @@
 # global
 import abc
+from typing import Optional, Union
+
+# local
 import ivy
 
 
@@ -40,3 +43,40 @@ class ArrayWithActivationsExperimental(abc.ABC):
 
         """
         return ivy.logit(self, eps=eps, out=out)
+
+    def thresholded_relu(
+        self: ivy.Array,
+        /,
+        *,
+        threshold: Optional[Union[int, float]] = 0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.thresholded_relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.thresholded_relu also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        threshold
+            threshold value above which the activation is linear. Default: ``0``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the relu activation function applied element-wise
+            with custom threshold.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., .2, 1.])
+        >>> y = x.thresholded_relu(threshold=0.5)
+        >>> print(y)
+        ivy.array([0., 0., 1.])
+        """
+        return ivy.thresholded_relu(self._data, threshold=threshold, out=out)

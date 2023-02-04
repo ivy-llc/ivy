@@ -79,18 +79,17 @@ def test_jax_numpy_mean(
     frontend,
     test_flags,
 ):
-    x_dtype, x, axis = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=x_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
 
     np_helpers.test_frontend_function(
-        input_dtypes=x_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -129,18 +128,17 @@ def test_jax_numpy_var(
     frontend,
     test_flags,
 ):
-    x_dtype, x, axis, ddof = dtype_x_axis
+    input_dtypes, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=x_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
 
     np_helpers.test_frontend_function(
-        input_dtypes=x_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -329,19 +327,18 @@ def test_jax_numpy_sum(
     frontend,
     test_flags,
 ):
-    x_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+    input_dtypes, x, axis, castable_dtype = dtype_x_axis_castable
 
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=x_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
 
     np_helpers.test_frontend_function(
-        input_dtypes=[x_dtype],
+        input_dtypes=[input_dtypes],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -376,18 +373,17 @@ def test_jax_numpy_min(
     frontend,
     test_flags,
 ):
-    x_dtype, x, axis = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=x_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
 
     np_helpers.test_frontend_function(
-        input_dtypes=x_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -418,18 +414,17 @@ def test_jax_numpy_max(
     frontend,
     test_flags,
 ):
-    x_dtype, x, axis = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=x_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
 
     np_helpers.test_frontend_function(
-        input_dtypes=x_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -520,15 +515,14 @@ def test_numpy_nanmax(
     if initial is None and np.all(where) is not True:
         assume(initial is -inf)
 
-    input_dtype, x, axis = dtype_x_axis
-    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+    input_dtypes, x, axis = dtype_x_axis
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
     np_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -572,15 +566,14 @@ def test_numpy_nanmin(
     if initial is None and np.all(where) is not True:
         assume(initial is inf)
 
-    input_dtype, x, axis = dtype_x_axis
-    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+    input_dtypes, x, axis = dtype_x_axis
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
     np_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         all_aliases=["numpy.nanmin"],
         frontend=frontend,
         test_flags=test_flags,
