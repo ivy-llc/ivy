@@ -159,7 +159,7 @@ def cosine_embedding_loss(
                 )
         raise RuntimeError(error)
 
-    if target.ndim > 2:
+    if target.ndim > 1:
         raise RuntimeError(
             "0D or 1D target tensor expected, multi-target not supported")
 
