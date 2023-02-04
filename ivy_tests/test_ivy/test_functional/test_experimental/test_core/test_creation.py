@@ -307,6 +307,10 @@ def test_eye_like(
     fn_tree="functional.ivy.sequence_empty",
     shape=helpers.get_shape(
         allow_none=False
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
     ),
     dtype=helpers.get_dtypes("float", full=False),
     container_flags=st.just([False]),
