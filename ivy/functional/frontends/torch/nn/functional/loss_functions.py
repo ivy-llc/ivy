@@ -1,5 +1,6 @@
 # global
 import ivy
+import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 
@@ -157,7 +158,8 @@ def cosine_embedding_loss(
     elif ivy.all(target == -1.0):
         loss = ivy.maximum(ivy.array(0.0), cosine_similarity - ivy.array(margin))
     else:
-        return None
+        _, zero = torch_frontend.promote_types_of_torch_inputs(input1, ivy.array(0.0))
+        return zero
 
     reduction = _get_reduction(reduction, size_average, reduce)
     loss = reduction(loss)

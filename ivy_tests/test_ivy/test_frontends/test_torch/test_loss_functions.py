@@ -321,6 +321,21 @@ def test_torch_cosine_embedding_loss(
         reduction=reduction,
     )
 
+    helpers.test_frontend_function(
+        input_dtypes=[input1_dtype, input2_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input1=input1,
+        input2=input2,
+        target=tar * 0.5,
+        margin=margin,
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction,
+    )
+
 
 # mse_loss
 @handle_frontend_test(
