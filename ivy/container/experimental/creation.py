@@ -815,17 +815,17 @@ class ContainerWithCreationExperimental(ContainerBase):
             device=device,
         )
     
-'''    
+
     @staticmethod
     def static_sequence_empty(
-        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape, ivy.Container],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = ivy.float32,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
@@ -850,7 +850,7 @@ class ContainerWithCreationExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = ivy.float32,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
@@ -864,4 +864,3 @@ class ContainerWithCreationExperimental(ContainerBase):
             device=device,
             out=out
         )
-'''
