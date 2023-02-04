@@ -38,6 +38,7 @@ def to_device(
     /,
     *,
     stream: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if device is None:
         return x

@@ -102,7 +102,12 @@ def matrix_exp(
     return np.exp(x)
 
 
-def eig(x: np.ndarray, /) -> Tuple[np.ndarray]:
+def eig(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> Tuple[np.ndarray]:
     if ivy.dtype(x) == ivy.float16:
         x = x.astype(np.float32)
     e, v = np.linalg.eig(x)
@@ -129,6 +134,6 @@ def adjoint(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     _check_valid_dimension_size(x)
-    axes = [x for x in range(len(x.shape))]
+    axes = list(range(len(x.shape)))
     axes[-1], axes[-2] = axes[-2], axes[-1]
     return np.conjugate(np.transpose(x, axes=axes))

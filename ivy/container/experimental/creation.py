@@ -663,3 +663,154 @@ class ContainerWithCreationExperimental(ContainerBase):
             map_sequences,
             device=device,
         )
+
+    @staticmethod
+    def static_eye_like(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        k: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.eye_like. This method simply
+        wraps the function, and so the docstring for ivy.eye_like also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array or container from which to derive the output container shape.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output container
+            data type must be inferred from ``self``. Default  ``None``.
+        device
+            device on which to place the created array. If device is ``None``, the
+            output container device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container having the same shape as ``x`` and filled with ``ones``
+            in diagonal ``k`` and ``zeros`` elsewhere.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
+                              b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container.static_eye_like(x)
+        >>> print(y)
+        {
+            a: ivy.array([[1.]]),
+            b: ivy.array([[1.]])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "eye_like",
+            x,
+            k=k,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            dtype=dtype,
+            device=device,
+        )
+
+    def eye_like(
+        self: ivy.Container,
+        /,
+        k: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.eye_like. This method simply
+        wraps the function, and so the docstring for ivy.eye_like also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container from which to derive the output container shape.
+        k
+            index of the diagonal. A positive value refers to an upper diagonal,
+            a negative value to a lower diagonal, and 0 to the main diagonal.
+            Default: ``0``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output container
+            data type must be inferred from ``self``. Default: ``None``.
+        device
+            device on which to place the created array. If device is ``None``, the
+            output container device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container having the same shape as ``x`` and filled with ``ones``
+            in diagonal ``k`` and ``zeros`` elsewhere.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
+        >>> y = x.eye_like()
+        >>> print(y)
+        {
+            a: ivy.array([[1.]]),
+            b: ivy.array([[1.]])
+        }
+
+        """
+        return self.static_eye_like(
+            self,
+            k,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
+            dtype=dtype,
+            device=device,
+        )

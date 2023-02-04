@@ -91,12 +91,19 @@ def concatenate(operands, dimension):
 
 
 def _format_rhs(rhs, dims):
+    if not isinstance(dims, int):
+        dim_nums = dims
+        dims = len(dim_nums[0]) - 2
+        if dim_nums[1][-1] == "O":
+            dims = -1
     if dims == 1:
         return ivy.permute_dims(rhs, axes=(2, 1, 0))
     elif dims == 2:
         return ivy.permute_dims(rhs, axes=(2, 3, 1, 0))
     elif dims == 3:
         return ivy.permute_dims(rhs, axes=(2, 3, 4, 1, 0))
+    else:
+        return rhs
 
 
 @to_ivy_arrays_and_back
@@ -118,6 +125,15 @@ def conv(
     )
 
 
+def _get_general_df(data_format):
+    if data_format is None:
+        return "channel_first"
+    if data_format[1] == "C":
+        return "channel_first"
+    if data_format[-1] == "C":
+        return "channel_last"
+
+
 @to_ivy_arrays_and_back
 def conv_transpose(
     lhs,
@@ -131,9 +147,52 @@ def conv_transpose(
     preferred_element_type=None,
 ):
     if preferred_element_type:
-        lhs = ivy.astype(lhs, dtype=preferred_element_type)
-        rhs = ivy.astype(rhs, dtype=preferred_element_type)
-    return ivy.conv2d_transpose(lhs, rhs, strides, padding)
+        lhs = ivy.astype(lhs, preferred_element_type)
+        rhs = ivy.astype(rhs, preferred_element_type)
+    if dimension_numbers[1][-1] == "O":
+        rhs = ivy.swapaxes(rhs, -1, -2)
+    else:
+        rhs = ivy.swapaxes(rhs, 0, 1)
+    return ivy.conv_general_transpose(
+        lhs,
+        _format_rhs(rhs, dimension_numbers),
+        strides,
+        padding,
+        dims=len(lhs.shape) - 2,
+        data_format=_get_general_df(dimension_numbers[0]),
+        dilations=1 if rhs_dilation is None else rhs_dilation,
+    )
+
+
+@to_ivy_arrays_and_back
+def conv_general_dilated(
+    lhs,
+    rhs,
+    window_strides,
+    padding,
+    lhs_dilation=None,
+    rhs_dilation=None,
+    dimension_numbers=None,
+    feature_group_count=1,
+    batch_group_count=1,
+    precision=None,
+    preferred_element_type=None,
+):
+    # TODO: add support for batch_group_count
+    if preferred_element_type:
+        lhs = ivy.astype(lhs, preferred_element_type)
+        rhs = ivy.astype(rhs, preferred_element_type)
+    return ivy.conv_general_dilated(
+        lhs,
+        _format_rhs(rhs, dimension_numbers),
+        window_strides,
+        padding,
+        dims=len(lhs.shape) - 2,
+        data_format=_get_general_df(dimension_numbers[0]),
+        x_dilations=1 if lhs_dilation is None else lhs_dilation,
+        dilations=1 if rhs_dilation is None else rhs_dilation,
+        feature_group_count=feature_group_count,
+    )
 
 
 @to_ivy_arrays_and_back
