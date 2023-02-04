@@ -3,8 +3,10 @@
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
+
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
+
 
 # local
 import ivy
@@ -33,7 +35,15 @@ def cholesky(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "complex",
+            "float16",
+        )
+    },
+    backend_version,
+)
 def cross(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -70,6 +80,7 @@ def det(
     return tf.linalg.det(x)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def diagonal(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -79,7 +90,7 @@ def diagonal(
     axis2: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+    return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
@@ -157,6 +168,7 @@ def eigvalsh(
             "uint16",
             "uint32",
             "uint64",
+            "complex",
         )
     },
     backend_version,
@@ -193,6 +205,7 @@ def inv(
             return ret
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def matmul(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -274,7 +287,6 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     _expand_dims = False
     if len(tuple(x.shape)) == 2:  # ndim doesn't work for tf.Variable
         x = tf.expand_dims(x, axis=0)
@@ -300,7 +312,6 @@ def matrix_norm(
             ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
     else:
         ret = tf.linalg.norm(x, ord, axis, keepdims)
-
     if keepdims:
         ret = tf.reshape(ret, x.shape[:-2] + (1, 1))
     else:
@@ -342,7 +353,10 @@ def matrix_power(
     return result
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 # noinspection PyPep8Naming
 def matrix_rank(
     x: Union[tf.Tensor, tf.Variable],
@@ -455,6 +469,7 @@ def matrix_transpose(
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def outer(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -466,7 +481,10 @@ def outer(
     return tf.experimental.numpy.outer(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def pinv(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -517,11 +535,13 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def solve(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
-    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -558,7 +578,10 @@ def solve(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def svd(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -596,6 +619,7 @@ def svdvals(
     return ret
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def tensordot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -614,7 +638,10 @@ def tensordot(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def trace(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -630,7 +657,10 @@ def trace(
     return tf.experimental.numpy.trace(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def vecdot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -686,6 +716,7 @@ def vector_norm(
 # ----- #
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def diag(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -696,7 +727,10 @@ def diag(
     return tf.experimental.numpy.diag(x, k=k)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def vander(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -721,6 +755,7 @@ def vander(
             "uint64",
             "float16",
             "float64",
+            "complex",
         )
     },
     backend_version,

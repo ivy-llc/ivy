@@ -12,7 +12,7 @@ import ivy.functional.backends.numpy
 # ------#
 
 # training
-def test_training_demo(device):
+def test_training_demo(on_device):
 
     if ivy.current_backend_str() == "numpy":
         # numpy does not support gradients
@@ -43,17 +43,17 @@ def test_training_demo(device):
 
 
 # functional api
-def test_array(device):
+def test_array(on_device):
     ivy.unset_backend()
     import jax.numpy as jnp
 
-    assert ivy.concat((jnp.ones((1,)), jnp.ones((1,))), -1).shape == (2,)
+    assert ivy.concat((jnp.ones((1,)), jnp.ones((1,))), axis=-1).shape == (2,)
     import tensorflow as tf
 
-    assert ivy.concat((tf.ones((1,)), tf.ones((1,))), -1).shape == (2,)
+    assert ivy.concat((tf.ones((1,)), tf.ones((1,))), axis=-1).shape == (2,)
     import numpy as np
 
-    assert ivy.concat((np.ones((1,)), np.ones((1,))), -1).shape == (2,)
+    assert ivy.concat((np.ones((1,)), np.ones((1,))), axis=-1).shape == (2,)
     import torch
 
-    assert ivy.concat((torch.ones((1,)), torch.ones((1,))), -1).shape == (2,)
+    assert ivy.concat((torch.ones((1,)), torch.ones((1,))), axis=-1).shape == (2,)

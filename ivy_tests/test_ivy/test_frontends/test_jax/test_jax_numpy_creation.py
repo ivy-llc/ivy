@@ -1,4 +1,7 @@
 from hypothesis import strategies as st
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
+    _input_fill_and_dtype,
+)
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -414,4 +417,53 @@ def test_jax_numpy_vander(
         x=x[0],
         N=N,
         increasing=increasing,
+    )
+
+
+# full_like
+@handle_frontend_test(
+    fn_tree="jax.numpy.full_like",
+    input_fill_dtype=_input_fill_and_dtype(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_full_like(
+    input_fill_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, fill_value, dtype = input_fill_dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        fill_value=fill_value,
+        dtype=dtype,
+    )
+
+
+# ndim
+@handle_frontend_test(
+    fn_tree="jax.numpy.ndim",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_jax_numpy_ndim(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
     )

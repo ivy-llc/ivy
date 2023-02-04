@@ -50,14 +50,15 @@ def _dilate_pad_conv(x, filters, strides, padding, dims, dilations):
     return x, filters
 
 
-def _dilate_pad_conv_tranpose(x, filters, strides, padding, dims, dilations, output_shape):
+def _dilate_pad_conv_tranpose(
+    x, filters, strides, padding, dims, dilations, output_shape
+):
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     if output_shape is None:
         new_shape = [
             _deconv_length(
-                x.shape[i + 1], strides[i], filters.shape[i], padding,
-                dilations[i]
+                x.shape[i + 1], strides[i], filters.shape[i], padding, dilations[i]
             )
             for i in range(dims)
         ]
@@ -66,7 +67,7 @@ def _dilate_pad_conv_tranpose(x, filters, strides, padding, dims, dilations, out
         output_shape = [x.shape[0]] + list(output_shape) + [filters.shape[-1]]
     for i in reversed(range(dims)):
         if strides[i] > 1:
-            x = _add_dilations(x, strides[i], axis=i+1)
+            x = _add_dilations(x, strides[i], axis=i + 1)
         if dilations[i] > 1:
             filters = _add_dilations(filters, dilations[i], axis=i)
     pad_specific = [
@@ -81,18 +82,12 @@ def _dilate_pad_conv_tranpose(x, filters, strides, padding, dims, dilations, out
         )
         for i in range(dims)
     ]
-    pad_top = [
-        filters.shape[i] - 1 - (pad_specific[i] // 2)
-        for i in range(dims)
-    ]
+    pad_top = [filters.shape[i] - 1 - (pad_specific[i] // 2) for i in range(dims)]
     pad_bot = [
         filters.shape[i] - 1 - (pad_specific[i] - pad_specific[i] // 2)
         for i in range(dims)
     ]
-    pad_list = [
-        (pad_top[i], pad_bot[i] + extra_pad[i])
-        for i in range(dims)
-    ]
+    pad_list = [(pad_top[i], pad_bot[i] + extra_pad[i]) for i in range(dims)]
     x = np.pad(
         x,
         [
@@ -169,11 +164,13 @@ def conv1d_transpose(
 ) -> np.ndarray:
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
-    x, filters = _dilate_pad_conv_tranpose(x, filters, strides, padding, 1, dilations, output_shape)
-    x = np.flip(x, (1, ))
+    x, filters = _dilate_pad_conv_tranpose(
+        x, filters, strides, padding, 1, dilations, output_shape
+    )
+    x = np.flip(x, (1,))
     res = np.flip(
         conv1d(x, filters, 1, "VALID", data_format="NWC", dilations=1),
-        (1, ),
+        (1,),
     )
     if data_format == "NCW":
         res = np.transpose(res, (0, 2, 1))
@@ -191,8 +188,8 @@ def conv2d(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    strides = [strides]*2 if isinstance(strides, int) else strides
-    dilations = [dilations]*2 if isinstance(dilations, int) else dilations
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
 
@@ -247,7 +244,9 @@ def conv2d_transpose(
 ):
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
-    x, filters = _dilate_pad_conv_tranpose(x, filters, strides, padding, 2, dilations, output_shape)
+    x, filters = _dilate_pad_conv_tranpose(
+        x, filters, strides, padding, 2, dilations, output_shape
+    )
     x = np.flip(x, (1, 2))
     res = np.flip(
         conv2d(x, filters, 1, "VALID", data_format="NHWC", dilations=1),
@@ -288,8 +287,14 @@ def depthwise_conv2d(
             out_height = np.ceil(float(x.shape[2]) / float(strides[0]))
             out_width = np.ceil(float(x.shape[3]) / float(strides[1]))
     else:
-        out_height = np.ceil(float(x.shape[2] - filter_h + padding[0][0] + padding[0][1] + 1) / float(strides[0]))
-        out_width = np.ceil(float(x.shape[3] - filter_w + padding[1][0] + padding[1][1] + 1) / float(strides[1]))
+        out_height = np.ceil(
+            float(x.shape[2] - filter_h + padding[0][0] + padding[0][1] + 1)
+            / float(strides[0])
+        )
+        out_width = np.ceil(
+            float(x.shape[3] - filter_w + padding[1][0] + padding[1][1] + 1)
+            / float(strides[1])
+        )
     if data_format == "NHWC":
         outputs = np.empty([x.shape[1], int(out_height), int(out_width), 0], x.dtype)
     else:
@@ -317,8 +322,8 @@ def conv3d(
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    strides = [strides]*3 if isinstance(strides, int) else strides
-    dilations = [dilations]*3 if isinstance(dilations, int) else dilations
+    strides = [strides] * 3 if isinstance(strides, int) else strides
+    dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
     if data_format == "NCDHW":
         x = np.transpose(x, (0, 2, 3, 4, 1))
 
@@ -376,7 +381,9 @@ def conv3d_transpose(
 ):
     if data_format == "NCDHW":
         x = np.transpose(x, (0, 2, 3, 4, 1))
-    x, filters = _dilate_pad_conv_tranpose(x, filters, strides, padding, 3, dilations, output_shape)
+    x, filters = _dilate_pad_conv_tranpose(
+        x, filters, strides, padding, 3, dilations, output_shape
+    )
     x = np.flip(x, (1, 2, 3))
     res = np.flip(
         conv3d(x, filters, 1, "VALID", data_format="NDHWC", dilations=1),
@@ -484,7 +491,9 @@ def conv_general_transpose(
     if data_format == "channel_first":
         x = np.transpose(x, (0, *range(2, dims + 2), 1))
 
-    x, filters = _dilate_pad_conv_tranpose(x, filters, strides, padding, dims, dilations, output_shape)
+    x, filters = _dilate_pad_conv_tranpose(
+        x, filters, strides, padding, dims, dilations, output_shape
+    )
 
     x = np.flip(x, (*range(1, dims + 1),))
     res = np.concatenate(

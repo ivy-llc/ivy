@@ -7,6 +7,8 @@
 	"context": "..",
 
 	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
+	// Swap in commented line below if using GPU codespace.
+	// "dockerFile": "../docker/DockerfileGPU",
 	"dockerFile": "../docker/Dockerfile",
 
 	// An array of extensions that should be installed into the container.
