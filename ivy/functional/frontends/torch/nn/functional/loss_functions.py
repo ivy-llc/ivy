@@ -155,12 +155,13 @@ def cosine_embedding_loss(
     if target.ndim + 1 != input1.ndim or target.ndim + 1 != input2.ndim:
         error = "{}D target tensor expects {}D input tensors, " \
                 "but found inputs with sizes {} and {}.".format(
-            target.ndim, target.ndim + 1, list(input1.shape), list(input2.shape)
-        )
+                    target.ndim, target.ndim + 1, list(input1.shape), list(input2.shape)
+                )
         raise RuntimeError(error)
 
     if target.ndim > 2:
-        raise RuntimeError("0D or 1D target tensor expected, multi-target not supported")
+        raise RuntimeError(
+            "0D or 1D target tensor expected, multi-target not supported")
 
     cosine_similarity = cosine_similarity()
 
