@@ -22,5 +22,6 @@ def lexsort(
     /,
     *,
     axis: int = -1,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.asarray(jnp.lexsort(keys, axis=axis))

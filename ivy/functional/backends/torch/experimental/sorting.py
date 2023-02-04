@@ -19,6 +19,7 @@ def lexsort(
     /,
     *,
     axis: int = -1,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     shape = keys.size()
     if shape[0] == 0:

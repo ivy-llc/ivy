@@ -77,4 +77,4 @@ class ArrayWithSortingExperimental(abc.ABC):
         >>> keys.lexsort() # Sort by a, then by b
         array([2, 0, 4, 6, 5, 3, 1])
         """
-        return ivy.lexsort(self._data, axis=axis)
+        return ivy.lexsort(self._data, axis=axis, out=out)
