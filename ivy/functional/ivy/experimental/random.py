@@ -258,7 +258,7 @@ def bernoulli(
 ) -> ivy.Array:
     """
     Draws samples from Bernoulli distrubution paramterized by
-    probs or logits(but not both)
+    probs or logits (but not both)
 
     Parameters
     ----------
@@ -267,7 +267,6 @@ def bernoulli(
         Each entry in the Array parameterizes an independent Bernoulli
         distribution where the probability of an event is sigmoid
         (logits). Only one of logits or probs should be passed in.
-
     probs
         An N-D Array representing the probability of a 1 event.
         Each entry in the Array parameterizes an independent Bernoulli
@@ -278,20 +277,18 @@ def bernoulli(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None).
-
     dtype
         output array data type. If ``dtype`` is ``None``, the output array data
         type will be the default floating-point data type. Default ``None``
     seed
         A python integer. Used to create a random seed distribution
-
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
     -------
-        ret
+    ret
         Drawn samples from the Bernoulli distribution
     """
     return ivy.current_backend(probs).bernoulli(
