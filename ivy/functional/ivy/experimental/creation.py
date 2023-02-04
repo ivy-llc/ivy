@@ -1,7 +1,7 @@
 # global
 from __future__ import annotations
 from math import sqrt, pi, cos
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, Optional, Sequence
 
 # local
 import ivy
@@ -585,7 +585,7 @@ def eye_like(
 @handle_exceptions
 @handle_array_like_without_promotion
 def sequence_empty(
-    shape: Union[ivy.Shape, ivy.NativeShape],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = ivy.float32,
