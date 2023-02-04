@@ -19,13 +19,15 @@ from ivy_tests.test_ivy.helpers import handle_method
     ),
     approximate=st.booleans(),
     method_num_positional_args=helpers.num_positional_args(fn_name="GELU._forward"),
-    test_gradients=st.just(True),
+    test_gradients=st.booleans(),
+    test_compile=st.booleans(),
 )
 def test_gelu(
     *,
     dtype_and_x,
     approximate,
     test_gradients,
+    test_compile,
     method_name,
     class_name,
     ground_truth_backend,
@@ -46,6 +48,7 @@ def test_gelu(
         atol_=1e-2,
         rtol_=1e-2,
         test_gradients=test_gradients,
+        test_compile=test_compile,
     )
 
 
