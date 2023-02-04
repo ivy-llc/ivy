@@ -36,6 +36,10 @@ class DeviceArray:
         return dtype(self._ivy_array.dtype)
 
     @property
+    def shape(self):
+        return self._ivy_array.shape
+
+    @property
     def at(self):
         return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self._ivy_array)
 

@@ -28,11 +28,13 @@ def test_torch_embedding(
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtypes, indices, weight, padding_idx = dtypes_indices_weights
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=indices,

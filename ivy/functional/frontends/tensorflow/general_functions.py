@@ -123,22 +123,6 @@ def concat(values, axis, name=None):
 
 
 @to_ivy_arrays_and_back
-def matmul(
-    a,
-    b,
-    transpose_a=False,
-    transpose_b=False,
-    adjoint_a=False,
-    adjoint_b=False,
-    a_is_sparse=False,
-    b_is_sparse=False,
-    output_type=None,
-    name=None,
-):
-    return ivy.matmul(a, b)
-
-
-@to_ivy_arrays_and_back
 def shape(input, out_type=ivy.int32, name=None):
     out_type = to_ivy_dtype(out_type)
     if out_type in ["int32", "int64"]:

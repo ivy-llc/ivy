@@ -6,8 +6,8 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 @to_ivy_arrays_and_back
 def empty(
-    size,
-    *,
+    *args,
+    size=None,
     out=None,
     dtype=None,
     layout=None,
@@ -16,8 +16,12 @@ def empty(
     pin_memory=False,
     memory_format=None,
 ):
-    ret = ivy.empty(shape=size, dtype=dtype, device=device, out=out)
-    return ret
+    if args and size:
+        raise TypeError("empty() got multiple values for argument 'shape'")
+    if size is not None:
+        return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
+    size = args[0] if isinstance(args[0], tuple) else args
+    return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -38,9 +42,13 @@ def full(
 
 
 @to_ivy_arrays_and_back
-def ones(size, *, out=None, dtype=None, device=None, requires_grad=False):
-    ret = ivy.ones(shape=size, dtype=dtype, device=device, out=out)
-    return ret
+def ones(*args, size=None, out=None, dtype=None, device=None, requires_grad=False):
+    if args and size:
+        raise TypeError("ones() got multiple values for argument 'shape'")
+    if size is not None:
+        return ivy.ones(shape=size, dtype=dtype, device=device, out=out)
+    size = args[0] if isinstance(args[0], tuple) else args
+    return ivy.ones(shape=size, dtype=dtype, device=device, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -68,9 +76,13 @@ def ones_like_v_0p4p0_and_above(
 
 
 @to_ivy_arrays_and_back
-def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
-    ret = ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
-    return ret
+def zeros(*args, size=None, out=None, dtype=None, device=None, requires_grad=False):
+    if args and size:
+        raise TypeError("zeros() got multiple values for argument 'shape'")
+    if size is not None:
+        return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
+    size = args[0] if isinstance(args[0], tuple) else args
+    return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
 
 
 @to_ivy_arrays_and_back

@@ -1572,6 +1572,7 @@ def expand(
     """
     Broadcast the input Array following the given shape
     and the broadcast rule.
+
     Parameters
     ----------
     x
@@ -1581,6 +1582,7 @@ def expand(
         following the broadcast rule
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
