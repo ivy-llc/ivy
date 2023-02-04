@@ -220,15 +220,13 @@ def vsplit(
     ary: JaxArray,
     indices_or_sections: Union[int, Tuple[int]],
     /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
+) -> List[JaxArray]:
     return jnp.vsplit(ary, indices_or_sections)
 
 
 def dsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[JaxArray]:
     if len(ary.shape) < 3:

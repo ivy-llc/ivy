@@ -134,6 +134,6 @@ def adjoint(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     _check_valid_dimension_size(x)
-    axes = [x for x in range(len(x.shape))]
+    axes = list(range(len(x.shape)))
     axes[-1], axes[-2] = axes[-2], axes[-1]
     return np.conjugate(np.transpose(x, axes=axes))

@@ -15,7 +15,7 @@ import ivy.functional.frontends.numpy as np_frontend
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def concatenate(arrays, /, axis=0, out=None, *, dtype=None, casting="same_kind"):
+def concatenate(arrays, /, *, axis=0, out=None, dtype=None, casting="same_kind"):
     if dtype is not None:
         out_dtype = ivy.as_ivy_dtype(dtype)
     else:
