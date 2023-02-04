@@ -4,7 +4,6 @@
 import math
 import numpy as np
 from hypothesis import assume, strategies as st
-import psutil
 
 # local
 import ivy
@@ -113,26 +112,17 @@ def test_acos(
     )
 
 
-import numpy as np
-
 # add
 @handle_test(
     fn_tree="functional.ivy.add",
-    dtype_and_x=st.just(
-        [
-            ["uint8", "float32"],
-            [np.array(2, dtype="uint8"), np.array(-2.5866387e15, dtype="float32")],
-        ]
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
-    alpha=st.just(3),
-    # dtype_and_x=helpers.dtype_and_values(
-    #     available_dtypes=helpers.get_dtypes("numeric"),
-    #     num_arrays=2,
-    #     large_abs_safety_factor=2.5,
-    #     small_abs_safety_factor=2.5,
-    #     safety_factor_scale="log",
-    # ),
-    # alpha=st.integers(min_value=1, max_value=5),
+    alpha=st.integers(min_value=1, max_value=5),
 )
 def test_add(
     *,
@@ -144,31 +134,13 @@ def test_add(
     on_device,
     ground_truth_backend,
 ):
-    print("\n---------------------------------------------------------------\n")
     input_dtype, x = dtype_and_x
-    # print('% memory before ', psutil.virtual_memory().percent)
-    # print('% processor before ', psutil.cpu_percent())
-    # assume(not (test_flags.instance_method and test_flags.test_compile))
-    assume(not (test_flags.container[0] and test_flags.test_compile))
-    # assume(not test_flags.with_out)
-    assume(not (test_flags.native_arrays[0] and test_flags.test_compile))
-    # assume(not (test_flags.as_variable[0] and test_flags.test_compile))
-    # print('ground_truth_backend', ground_truth_backend)
-    # print('input_dtype', input_dtype)
-    # print('test_flags', test_flags)
-    # print('backend_fw', backend_fw)
-    # print('fn_name', fn_name)
-    # print('rtol_', 1e-1)
-    # print('atol_', 1e-1)
-    # print('on_device', on_device)
-    # print('x1', x[0])
-    # print('x2', x[1])
-    # print('alpha', alpha)
+
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=ivy.functional.backends.jax,
+        fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-1,
         atol_=1e-1,
@@ -177,9 +149,6 @@ def test_add(
         x2=x[1],
         alpha=alpha,
     )
-    # print('% memory after ', psutil.virtual_memory().percent)
-    # print('% processor after ', psutil.cpu_percent())
-    print("\n---------------------------------------------------------------\n")
 
 
 # asin
