@@ -41,7 +41,7 @@ def msort(
 
     Examples
     --------
-    >>> a = ivy.randint(10, size=(2,3))
+    >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
     >>> ivy.msort(a)
     ivy.array(
         [[6, 2, 6],
