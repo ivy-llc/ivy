@@ -255,16 +255,11 @@ def test_torch_binary_cross_entropy_with_logits(
         min_dim_size=2,
         shared_dtype=True,
         num_arrays=2,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
     ),
-    margin=helpers.floats(
+    margin=st.floats(
         min_value=-1.0,
         max_value=1.0,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="linear",
+        width=16,
     ),
     size_average=st.booleans(),
     reduce=st.booleans(),

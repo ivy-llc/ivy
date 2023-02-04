@@ -144,12 +144,23 @@ def cosine_embedding_loss(
 
     def cosine_similarity():
         axis = None
-        if len(input1.shape) == len(input2.shape) and len(input2.shape) >= 2:
+        if len(input1.shape) == len(input2.shape) and len(input2.shape) == 2:
             axis = 1
         input1_norm = norm(input1, axis=axis)
         input2_norm = norm(input2, axis=axis)
         norm_mm = input1_norm * input2_norm
-        return ivy.sum(input1 * input2, axis=axis) / ivy.maximum(norm_mm, 1e-08)
+        norm_mm, eps = torch_frontend.promote_types_of_torch_inputs(norm_mm, 1e-08)
+        return ivy.sum(input1 * input2, axis=axis) / ivy.maximum(norm_mm, eps)
+
+    if target.ndim + 1 != input1.ndim or target.ndim + 1 != input2.ndim:
+        error = "{}D target tensor expects {}D input tensors, " \
+                "but found inputs with sizes {} and {}.".format(
+            target.ndim, target.ndim + 1, list(input1.shape), list(input2.shape)
+        )
+        raise RuntimeError(error)
+
+    if target.ndim > 2:
+        raise RuntimeError("0D or 1D target tensor expected, multi-target not supported")
 
     cosine_similarity = cosine_similarity()
 
