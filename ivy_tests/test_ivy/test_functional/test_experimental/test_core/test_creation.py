@@ -308,7 +308,7 @@ def test_eye_like(
     shape=helpers.get_shape(
         allow_none=False
     ),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes("numeric", full=False),
     container_flags=st.just([False]),
     test_gradients=st.just(False)
 )
