@@ -94,6 +94,7 @@ def sort_complex(a):
     sorted_complex = a[sorted_indices]
     return sorted_complex
 
+
 def extract(condition, arr):
     if condition.dtype is not bool:
         condition = condition != 0
