@@ -146,7 +146,7 @@ def is_non_decreasing(x, name="is_non_decreasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
     if ivy.array(x).size == 2:
-        return ivy.array(x[0] <= x[1])
+        return ivy.array([x[0] <= x[1]])
     return ivy.all(ivy.less_equal(x, ivy.roll(x, -1)))
 
 
@@ -210,10 +210,6 @@ def polyval(coeffs, x, name=None):
 
 @to_ivy_arrays_and_back
 def pow(x, y, name="pow"):
-    if not (isinstance(x, int) or isinstance(x, float) or (x is None)):
-        x = x.data
-    if not (isinstance(y, int) or isinstance(y, float) or (y is None)):
-        y = y.data
     x, y = check_tensorflow_casting(x, y)
     return ivy.pow(x, y)
 

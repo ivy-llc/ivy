@@ -407,3 +407,134 @@ class ContainerWithRandomExperimental(ContainerBase):
             seed=seed,
             out=out,
         )
+
+    @staticmethod
+    def static_bernoulli(
+        probs: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        logits: Optional[Union[float, ivy.Array, ivy.NativeArray]] = None,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        probs
+             An N-D Array representing the probability of a 1 event.
+             Each entry in the Array parameterizes an independent Bernoulli
+             distribution. Only one of logits or probs should be passed in
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        logits
+            An N-D Array representing the log-odds of a 1 event.
+            Each entry in the Array parameterizes an independent Bernoulli
+            distribution where the probability of an event is sigmoid
+            (logits). Only one of logits or probs should be passed in.
+        shape
+            If the given shape is, e.g '(m, n, k)', then 'm * n * k' samples are drawn.
+            (Default value = 'None', where 'ivy.shape(logits)' samples are drawn)
+        device
+            The device to place the output array on. Default is ``None``.
+        dtype
+            The data type of the output array. Default is ``None``.
+        seed
+            A python integer. Used to create a random seed distribution
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Drawn samples from the Bernoulli distribution
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "bernoulli",
+            probs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            logits=logits,
+            shape=shape,
+            device=device,
+            dtype=dtype,
+            out=out,
+        )
+
+    def bernoulli(
+        self: ivy.Container,
+        /,
+        *,
+        logits: Optional[Union[float, ivy.Array, ivy.NativeArray]] = None,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        self
+             An N-D Array representing the probability of a 1 event.
+             Each entry in the Array parameterizes an independent
+             Bernoulli distribution. Only one of logits or probs should
+             be passed in.
+        logits
+            An N-D Array representing the log-odds of a 1 event.
+            Each entry in the Array parameterizes an independent Bernoulli
+            distribution where the probability of an event is
+            sigmoid(logits). Only one of logits or probs should be passed in.
+
+        shape
+            If the given shape is, e.g '(m, n, k)', then 'm * n * k' samples are drawn.
+            (Default value = 'None', where 'ivy.shape(logits)' samples are drawn)
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            (Default value = None).
+
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output array data
+            type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
+
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Drawn samples from the Bernoulli distribution
+
+        """
+        return self.static_bernoulli(
+            self,
+            logits=logits,
+            shape=shape,
+            device=device,
+            dtype=dtype,
+            seed=seed,
+            out=out,
+        )

@@ -125,8 +125,8 @@ def test_clear_backend_stack():
 def test_current_backend(backend, array_type):
     # test backend inference from arguments when stack clear
     ivy.clear_backend_stack()
-    ivy.assertions.check_equal(
-        ivy.current_backend(array_type), importlib.import_module(_backend_dict[backend])
+    assert ivy.current_backend(array_type) is importlib.import_module(
+        _backend_dict[backend]
     )
 
     # global_backend > argument's backend.

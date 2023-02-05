@@ -216,6 +216,7 @@ def mish(input, inplace=False):
     return ret
 
 
+@to_ivy_arrays_and_back
 def relu(input, inplace=False):
     ret = ivy.relu(input)
     if inplace:

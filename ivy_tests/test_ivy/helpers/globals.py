@@ -96,16 +96,23 @@ def _get_ivy_numpy(version=None):
 def _get_ivy_jax(version=None):
     """Import JAX module from ivy"""
     if version:
-        config.allow_global_framework_imports(
-            fw=[version.split("/")[0] + "/" + version.split("/")[1]]
-        )
-        config.allow_global_framework_imports(
-            fw=[version.split("/")[2] + "/" + version.split("/")[3]]
-        )
-    try:
-        import ivy.functional.backends.jax
-    except ImportError:
-        return None
+        las = [
+            version.split("/")[0] + "/" + version.split("/")[1],
+            version.split("/")[2] + "/" + version.split("/")[3],
+        ]
+        config.allow_global_framework_imports(fw=las)
+        try:
+            config.reset_sys_modules_to_base()
+            import ivy.functional.backends.jax
+
+            return ivy.functional.backends.jax
+        except ImportError as e:
+            raise e
+    else:
+        try:
+            import ivy.functional.backends.jax
+        except ImportError:
+            return None
     return ivy.functional.backends.jax
 
 

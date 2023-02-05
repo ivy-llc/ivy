@@ -239,7 +239,6 @@ def _dtype_indices_classes_axis(draw):
 @handle_frontend_test(
     fn_tree="jax.nn.one_hot",
     dtype_indices_classes_axis=_dtype_indices_classes_axis(),
-    num_classes=st.integers(min_value=4, max_value=6),
     dtype=helpers.get_dtypes("float", full=False),
     test_with_out=st.just(False),
 )
@@ -247,7 +246,6 @@ def test_jax_nn_one_hot(
     *,
     dtype_indices_classes_axis,
     dtype,
-    num_classes,
     test_flags,
     on_device,
     fn_tree,
