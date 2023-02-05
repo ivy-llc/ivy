@@ -575,3 +575,42 @@ def eye_like(
         device=device,
         out=out,
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@infer_dtype
+@handle_exceptions
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: Optional[bool] = True,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Generate a Blackman window. The Blackman window
+    is a taper formed by using a weighted cosine.
+
+    Parameters
+    ----------
+    size
+        the size of the returned window.
+    periodic
+        If True, returns a window to be used as periodic function.
+        If False, return a symmetric window.
+    dtype
+        The data type to produce. Must be a floating point type.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The array containing the window.
+
+    """
+    return ivy.current_backend().blackman_window(
+        size, periodic=periodic, dtype=dtype, out=out
+    )

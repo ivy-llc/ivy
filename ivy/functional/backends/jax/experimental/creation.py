@@ -85,3 +85,15 @@ def tril_indices(
         jnp.tril_indices(n=n_rows, k=k, m=n_cols),
         device=device,
     )
+
+
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: Optional[bool] = True,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    size = size + 1 if periodic is True else size
+    return jnp.array(jnp.blackman(size), dtype=dtype)

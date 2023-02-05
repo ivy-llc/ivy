@@ -301,3 +301,41 @@ def test_eye_like(
         device=on_device,
         ground_truth_backend=ground_truth_backend,
     )
+
+
+# blackman_window
+@handle_test(
+    fn_tree="functional.ivy.experimental.blackman_window",
+    size=helpers.ints(min_value=1, max_value=10),
+    input_dtype=helpers.get_dtypes("integer"),
+    periodic=st.booleans(),
+    dtype=helpers.get_dtypes("float", full=False),
+    container_flags=st.just([False]),
+    as_variable_flags=st.just([False]),
+    native_array_flags=st.just([False]),
+    test_instance_method=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_blackman_window(
+    *,
+    size,
+    input_dtype,
+    periodic,
+    dtype,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        size=size,
+        periodic=periodic,
+        dtype=dtype[0],
+    )

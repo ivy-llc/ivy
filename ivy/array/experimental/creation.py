@@ -54,3 +54,41 @@ class ArrayWithCreationExperimental(abc.ABC):
                     0., 1., 0.]])
         """
         return ivy.eye_like(self._data, k=k, dtype=dtype, device=device, out=out)
+
+    def blackman_window(
+        self: ivy.Array,
+        /,
+        *,
+        window_length: Union[int, ivy.Array],
+        periodic: Optional[bool] = True,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.blackman_window. This method simply wraps
+        the function, and so the docstring for ivy.blackman_window also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array from which to derive the output array shape.
+        window_length
+            container including multiple window sizes.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        dtype
+            The data type to produce. Must be a floating point type.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array having the same shape as ``self`` and filled with ``ones``
+            in diagonal ``k`` and ``zeros`` elsewhere.
+
+        """
+        return ivy.blackman_window(self._data, size=window_length, periodic=periodic, dtype=dtype, out=out)

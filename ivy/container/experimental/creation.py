@@ -814,3 +814,92 @@ class ContainerWithCreationExperimental(ContainerBase):
             dtype=dtype,
             device=device,
         )
+
+    @staticmethod
+    def static_blackman_window(
+            window_length: Union[int, ivy.Container],
+            periodic: Optional[bool] = True,
+            dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.blackman_window. This method simply wraps
+        the function, and so the docstring for ivy.blackman_window also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        window_length
+            container including multiple window sizes.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        dtype
+            The data type to produce. Must be a floating point type.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container that contains the Blackman windows.
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "blackman_window",
+            window_length,
+            periodic,
+            dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def blackman_window(
+            self: ivy.Container,
+            periodic: Optional[bool] = True,
+            dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.blackman_window. This method simply
+        wraps the function, and so the docstring for ivy.blackman_window also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container with window sizes.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        dtype
+            The data type to produce. Must be a floating point type.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container containing the Blackman windows.
+
+        """
+        return self.blackman_window(self, periodic, dtype, out=out)

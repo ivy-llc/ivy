@@ -91,3 +91,18 @@ def kaiser_window(
 
 
 kaiser_window.support_native_out = False
+
+
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: Optional[bool] = True,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    size = size + 1 if periodic is True else size
+    return np.array(np.blackman(size), dtype=dtype)
+
+
+blackman_window.support_native_out = False

@@ -134,3 +134,24 @@ def tril_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
+
+
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: Optional[bool] = True,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.blackman_window(
+        size,
+        periodic=periodic,
+        dtype=dtype,
+        layout=torch.strided,
+        device=None,
+        requires_grad=None,
+    )
+
+
+blackman_window.support_native_out = False
