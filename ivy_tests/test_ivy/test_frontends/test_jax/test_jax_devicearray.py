@@ -40,6 +40,20 @@ def test_jax_devicearray_property_dtype(
     assert x.dtype.ivy_dtype == dtype[0]
 
 
+@given(
+    dtype_x_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+    ),
+)
+def test_jax_devicearray_property_shape(
+    dtype_x_shape,
+):
+    _, data, shape = dtype_x_shape
+    x = DeviceArray(data[0])
+    assert x.shape == shape
+
+
 @st.composite
 def _at_helper(draw):
     _, data, shape = draw(

@@ -266,6 +266,8 @@ class Array(
 
     def __setitem__(self, query, val):
         try:
+            if ivy.current_backend_str() == "torch":
+                self._data = self._data.detach()
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
             self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
