@@ -127,7 +127,6 @@ def any(a, axis=None, out=None, keepdims=False, *, where=None):
 
 alltrue = all
 
-
 sometrue = any
 
 
@@ -157,7 +156,6 @@ def isinf(x, /):
 def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     a, b = promote_jax_arrays(a, b)
     return ivy.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-
 
 
 def logical_or(x1, x2, /):
