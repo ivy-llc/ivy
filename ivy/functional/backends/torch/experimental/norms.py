@@ -75,3 +75,9 @@ def instance_norm(
 
 
 instance_norm.support_native_out = False
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+def lp_normalize(x: torch.Tensor, p: float, axis: int = None, out: torch.Tensor = None) -> torch.Tensor:
+    return torch.norm(x, p=p, dim=axis, keepdim=False, out=out)
+
+lp_normalize.support_native_out = True
