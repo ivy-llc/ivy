@@ -107,7 +107,7 @@ def _get_norm_clip_inputs(draw):
     print(shape)
     x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("float"),
             shape=shape,
         )
     )

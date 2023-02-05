@@ -34,6 +34,8 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     return ivy.clip(t, clip_value_min, clip_value_max)
 
 
+@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@handle_tf_dtype
 @to_ivy_arrays_and_back
 def clip_by_norm(t, clip_norm, axes=None):
     t = ivy.array(t)
