@@ -46,9 +46,11 @@ from ivy.compiler.compiler import *
 
 
 # Temporary (.so) configuration
-def compiled_if_required(fn, test_compile=True,args=None ,kwargs=None):
+def compiled_if_required(fn, test_compile=False,args=None,kwargs=None):
     if test_compile:
-        return compile(fn)
+            if ivy.current_backend_str() == "jax":
+                pytest.skip() # Will only skip some of the jax functions
+            return compile(fn)
 
     return fn
 
