@@ -234,7 +234,6 @@ def unique_inverse(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_exceptions
 @handle_array_like
