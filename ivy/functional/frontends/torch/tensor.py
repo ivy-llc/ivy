@@ -322,6 +322,10 @@ class Tensor:
         self._ivy_array = self.arctan().ivy_array
         return self
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def arctan2(self, other):
+        return torch_frontend.arctan2(self._ivy_array, other)
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acos(self):
         return torch_frontend.acos(self._ivy_array)
