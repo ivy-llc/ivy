@@ -48,9 +48,7 @@ from ivy.compiler.compiler import *
 # Temporary (.so) configuration
 def compiled_if_required(fn, test_compile=True,args=None ,kwargs=None):
     if test_compile:
-        if ivy.current_backend_str() is "jax":
-            return fn #Skip jax for testing temp
-        return compile(fn,args=args,kwargs=kwargs)
+        return compile(fn)
 
     return fn
 
