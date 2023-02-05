@@ -80,7 +80,7 @@ def _get_first_array(*args, **kwargs):
 # ---------------#
 
 
-def array_function_wrapper(func):
+def handle_array_function(func):
     """Wrap a function to extract the relevant argument types to be passed to
     array_function method."""
 
@@ -90,7 +90,7 @@ def array_function_wrapper(func):
         overloaded_args = []
 
         for arg in args + tuple(kwargs.values()):
-            if ivy.exists(arg) and hasattr(arg, "__array_function__"):
+            if ivy.exists(arg) and (not isinstance(arg,ivy.Container) and hasattr(arg, "__array_function__")):
                 if type(arg) not in overloaded_types:
                     overloaded_types.append(type(arg))
                     if (
@@ -103,6 +103,22 @@ def array_function_wrapper(func):
                                 index = i
                                 break
                         overloaded_args.insert(index, arg)
+            if ivy.exists(arg) and isinstance(arg, ivy.Container):
+                indices = ivy.nested_argwhere(arg, lambda x: hasattr(x, "__array_function__"))
+                for a in indices:
+                    if type(arg.a) not in overloaded_types:
+                        overloaded_types.append(type(arg.a))
+                        if (
+                            arg.a.__array_function__ is not ivy.Array.__array_function__
+                            and not isinstance(arg.a, (ivy.Array, ivy.NativeArray))
+                        ):
+                            index = len(overloaded_args)
+                            for i, old_arg in enumerate(overloaded_args):
+                                if issubclass(type(arg.a), type(old_arg)):
+                                    index = i
+                                    break
+                            overloaded_args.insert(index, arg)
+
         success, value = try_array_function_override(
             ivy.__dict__[func.__name__], overloaded_args, overloaded_types, args, kwargs
         )
