@@ -202,9 +202,13 @@ def boolean_mask(tensor, mask, axis=None, name=None):
         k = ivy.get_num_dims(mask)
         if axis < 0:
             axis = n + axis
-        ivy.assertions.check_less(k + axis, n, allow_equal=True,
-                                  message="Value of axis must be \
-                                           such that axis + dim(mask) <= dim(tensor)")
+        ivy.assertions.check_less(
+            k + axis,
+            n,
+            allow_equal=True,
+            message="Value of axis must be \
+                                           such that axis + dim(mask) <= dim(tensor)",
+        )
         tensor_shape = ivy.shape(tensor)
         for i in range(axis - 1, -1, -1):
             mask = ivy.expand_dims(mask, axis=0)

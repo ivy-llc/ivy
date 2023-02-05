@@ -1282,17 +1282,10 @@ def _boolean_mask_helper(draw):
     # Param: tensor
     tensor = draw(
         helpers.array_values(
-            dtype=dtype,
-            shape=tensor_shape,
-            min_value=-5.0,
-            max_value=5.0),
+            dtype=dtype, shape=tensor_shape, min_value=-5.0, max_value=5.0
+        ),
     )
-    mask_dim = draw(
-        helpers.number(
-            min_value=1,
-            max_value=len(tensor_shape)
-        )
-    )
+    mask_dim = draw(helpers.number(min_value=1, max_value=len(tensor_shape)))
     mask_shape = tensor_shape[:mask_dim]
 
     # Param:stop
