@@ -305,19 +305,22 @@ def test_eye_like(
 
 @handle_test(
     fn_tree="functional.ivy.sequence_empty",
-    dtype_and_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+    shape=helpers.get_shape(
+        allow_none=False,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
+    dtype=helpers.get_dtypes("numeric", full=False),
     container_flags=st.just([False]),
+    test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_sequence_empty(
     *,
-    dtype_and_shape,
+    shape,
+    dtype,
     test_flags,
     backend_fw,
     fn_name,
@@ -331,10 +334,10 @@ def test_sequence_empty(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        shape=shape[0],
+        shape=shape,
         dtype=dtype[0],
         device=on_device,
         test_values=False,
         ground_truth_backend=ground_truth_backend,
     )   
-
+    
