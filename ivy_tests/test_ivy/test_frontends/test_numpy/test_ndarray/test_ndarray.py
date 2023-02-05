@@ -1247,7 +1247,6 @@ def test_numpy_instance_floordiv__(
         method_flags=method_flags,
         frontend_method_data=frontend_method_data,
         frontend=frontend,
-        atol_=1,
     )
 
 
