@@ -816,8 +816,5 @@ class ArrayWithManipulationExperimental(abc.ABC):
         device
         out
 
-        Returns
-        -------
-
         """
         return ivy.expand(self._data, shape, device=device, out=out)

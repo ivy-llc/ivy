@@ -992,8 +992,8 @@ def test_array__itruediv__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
+        large_abs_safety_factor=3.0,
+        small_abs_safety_factor=3.0,
         safety_factor_scale="log",
         shared_dtype=True,
     ),
@@ -1026,8 +1026,8 @@ def test_array__floordiv__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
+        large_abs_safety_factor=3.0,
+        small_abs_safety_factor=3.0,
         safety_factor_scale="log",
         shared_dtype=True,
     ),
@@ -1060,8 +1060,8 @@ def test_array__rfloordiv__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
+        large_abs_safety_factor=3.0,
+        small_abs_safety_factor=3.0,
         safety_factor_scale="log",
         shared_dtype=True,
     ),

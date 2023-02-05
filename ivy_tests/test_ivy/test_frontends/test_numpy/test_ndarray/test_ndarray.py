@@ -937,7 +937,7 @@ def test_numpy_instance_repeat(
     input_dtypes, x = dtype_and_x
 
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypess,
+        init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": x[0],
         },

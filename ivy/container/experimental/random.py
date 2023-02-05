@@ -529,7 +529,6 @@ class ContainerWithRandomExperimental(ContainerBase):
             Drawn samples from the Bernoulli distribution
 
         """
-
         return self.static_bernoulli(
             self,
             logits=logits,
