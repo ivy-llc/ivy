@@ -22,6 +22,8 @@ def lexsort(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     shape = keys.shape.as_list()
+    if len(shape) == 1:
+        return tf.argsort(keys, axis=axis, stable=True)
     if shape[0] == 0:
         raise TypeError('need sequence of keys with len > 0 in lexsort')
     if len(shape) == 2 and shape[1] == 1:

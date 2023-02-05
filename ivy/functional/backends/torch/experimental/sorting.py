@@ -22,6 +22,9 @@ def lexsort(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     shape = keys.size()
+    if len(shape) == 1:
+        _, result = torch.sort(keys, dim=axis, stable=True)
+        return result
     if shape[0] == 0:
         raise TypeError('need sequence of keys with len > 0 in lexsort')
     if len(shape) == 2 and shape[1] == 1:

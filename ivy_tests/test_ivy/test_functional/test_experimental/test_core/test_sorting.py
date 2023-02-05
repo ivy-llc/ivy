@@ -44,7 +44,7 @@ def test_msort(
 @handle_test(
     fn_tree="functional.ivy.experimental.lexsort",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
