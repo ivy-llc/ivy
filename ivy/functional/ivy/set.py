@@ -239,11 +239,8 @@ def unique_inverse(
 @handle_exceptions
 @handle_array_like
 def unique_values(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+    x: Union[ivy.Array, ivy.NativeArray]
+) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
     """Returns the unique elements of an input array ``x``.
 
     .. admonition:: Data-dependent output shape

@@ -78,7 +78,10 @@ def unique_inverse(
     return Results(values, inverse_indices)
 
 
-def unique_values(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def unique_values(
+    x: JaxArray,
+    /,
+) -> Tuple[JaxArray]:
     nan_count = jnp.count_nonzero(jnp.isnan(x))
     if nan_count > 1:
         unique = jnp.append(
@@ -86,4 +89,4 @@ def unique_values(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray
         ).astype(x.dtype)
     else:
         unique = jnp.unique(x.flatten()).astype(x.dtype)
-    return unique 
+    return unique

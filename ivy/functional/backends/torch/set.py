@@ -93,7 +93,5 @@ def unique_inverse(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
     },
     backend_version,
 )
-def unique_values(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    return torch.unique(x) 
+def unique_values(x: torch.Tensor, /) -> Tuple[torch.Tensor]:
+    return torch.unique(x)
