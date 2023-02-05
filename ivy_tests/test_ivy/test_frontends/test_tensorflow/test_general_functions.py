@@ -99,22 +99,22 @@ def test_tensorflow_clip_by_value(
 
 @st.composite
 def _get_norm_clip_inputs(draw):
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
-        )
-    )
-    print(shape)
-    x_dtype, x = draw(
+    x_dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            shape=shape,
+            available_dtypes=helpers.get_dtypes("numeric"),
+            ret_shape=True,
+            min_num_dims=1,
+            min_value=-100,
+            max_value=100,
         )
     )
-    print(x_dtype, x)
-    norm = draw(
-        helpers.array_values(dtype=x_dtype[0], shape=1, min_value=0, max_value=10)
+    norm_dtype, norm = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=1
+        )
     )
+    print(x_dtype, x, shape, norm_dtype, norm)
     return x_dtype, x, norm
 
 
@@ -140,7 +140,7 @@ def test_tensorflow_clip_by_norm(
         fn_tree=fn_tree,
         on_device=on_device,
         t=x[0],
-        clip_norm=norm[0]
+        clip_norm=norm
     )
 
 
