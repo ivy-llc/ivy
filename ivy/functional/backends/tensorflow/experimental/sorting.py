@@ -29,7 +29,7 @@ def lexsort(
     result = tf.argsort(keys[0], axis=axis, stable=True)
     if shape[0] == 1:
         return result
-    for i in range(1, size):
+    for i in range(1, shape[0]):
         key = keys[i]
         ind = key[result]
         temp = tf.argsort(ind, axis=axis, stable=True)

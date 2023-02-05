@@ -43,13 +43,13 @@ class ArrayWithSortingExperimental(abc.ABC):
         """
         return ivy.msort(self._data, out=out)
 
-
     # lexsort
     def lexsort(
         self: ivy.Array,
         /,
         *,
         axis: int = -1,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.lexsort. This method simply wraps the
@@ -63,6 +63,8 @@ class ArrayWithSortingExperimental(abc.ABC):
         axis
             axis of each key to be indirectly sorted.
             By default, sort over the last axis of each key.
+        out
+            optional output array, for writing the result to.
 
         Returns
         -------

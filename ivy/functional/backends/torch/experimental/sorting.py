@@ -31,7 +31,7 @@ def lexsort(
     # only valid for torch > 1.12.0
     if shape[0] == 1:
         return result
-    for i in range(1, size):
+    for i in range(1, shape[0]):
         key = keys[i]
         ind = key[result]
         _, temp = torch.sort(ind, dim=axis, stable=True)
