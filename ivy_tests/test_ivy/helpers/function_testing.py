@@ -42,12 +42,16 @@ from .assertions import (
 )
 
 os.environ["IVY_ROOT"] = ".ivy"
-from ivy.compiler.compiler import compile as ic
+import ivy.compiler.compiler as ic
 
 
+# Temporary (.so) configuration
 def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
     if test_compile:
-        return ic(fn, args=args, kwargs=kwargs)
+        if ivy.current_backend_str() == "jax":
+            return ic.compile(fn, args=args, kwargs=kwargs)
+        return ic.compile(fn, args=args, kwargs=kwargs, array_caching=False)
+
     return fn
 
 
@@ -814,7 +818,6 @@ def test_frontend_function(
                 raise e
 
     else:
-
         # non-multiversion zone, changes made here should be
         # applied to multiversion zone too
 
