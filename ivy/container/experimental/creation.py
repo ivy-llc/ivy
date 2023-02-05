@@ -9,17 +9,17 @@ from ivy.container.base import ContainerBase
 class ContainerWithCreationExperimental(ContainerBase):
     @staticmethod
     def static_triu_indices(
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: Optional[int] = 0,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[Tuple[ivy.Array]] = None,
+            n_rows: int,
+            n_cols: Optional[int] = None,
+            k: Optional[int] = 0,
+            /,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+            out: Optional[Tuple[ivy.Array]] = None,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "triu_indices",
@@ -35,18 +35,18 @@ class ContainerWithCreationExperimental(ContainerBase):
         )
 
     def triu_indices(
-        self: ivy.Container,
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: Optional[int] = 0,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[Tuple[ivy.Array]] = None,
+            self: ivy.Container,
+            n_rows: int,
+            n_cols: Optional[int] = None,
+            k: Optional[int] = 0,
+            /,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+            out: Optional[Tuple[ivy.Array]] = None,
     ) -> ivy.Container:
         return self.static_triu_indices(
             self,
@@ -63,15 +63,15 @@ class ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_hann_window(
-        window_length: Union[int, ivy.Container],
-        periodic: Optional[bool] = True,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
+            window_length: Union[int, ivy.Container],
+            periodic: Optional[bool] = True,
+            dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.hann_window. This method simply wraps
@@ -119,11 +119,11 @@ class ContainerWithCreationExperimental(ContainerBase):
         )
 
     def hann_window(
-        self: ivy.Container,
-        periodic: Optional[bool] = True,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        *,
-        out: Optional[ivy.Container] = None,
+            self: ivy.Container,
+            periodic: Optional[bool] = True,
+            dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+            *,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.hann_window. This method simply
         wraps the function, and so the docstring for ivy.hann_window also applies to
@@ -161,16 +161,16 @@ class ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_kaiser_window(
-        window_length: Union[int, ivy.Container],
-        periodic: bool = True,
-        beta: float = 12.0,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        out: Optional[ivy.Container] = None,
+            window_length: Union[int, ivy.Container],
+            periodic: bool = True,
+            beta: float = 12.0,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.kaiser_window. This method
@@ -219,16 +219,16 @@ class ContainerWithCreationExperimental(ContainerBase):
         )
 
     def kaiser_window(
-        self: ivy.Container,
-        periodic: bool = True,
-        beta: float = 12.0,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        out: Optional[ivy.Container] = None,
+            self: ivy.Container,
+            periodic: bool = True,
+            beta: float = 12.0,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.kaiser_window. This method
@@ -277,16 +277,16 @@ class ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_kaiser_bessel_derived_window(
-        x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
-        periodic: bool = True,
-        beta: float = 12.0,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        out: Optional[ivy.Container] = None,
+            x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+            periodic: bool = True,
+            beta: float = 12.0,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.kaiser_bessel_derived_window.
@@ -336,16 +336,16 @@ class ContainerWithCreationExperimental(ContainerBase):
         )
 
     def kaiser_bessel_derived_window(
-        self: ivy.Container,
-        periodic: bool = True,
-        beta: float = 12.0,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        out: Optional[ivy.Container] = None,
+            self: ivy.Container,
+            periodic: bool = True,
+            beta: float = 12.0,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.kaiser_bessel_derived_window.
         This method simply wraps the function, and so the docstring for
@@ -394,18 +394,18 @@ class ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_hamming_window(
-        x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        periodic: Optional[bool] = True,
-        alpha: Optional[float] = 0.54,
-        beta: Optional[float] = 0.46,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        out: Optional[ivy.Container] = None,
+            x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+            /,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            periodic: Optional[bool] = True,
+            alpha: Optional[float] = 0.54,
+            beta: Optional[float] = 0.46,
+            dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.hamming_window.
@@ -458,17 +458,17 @@ class ContainerWithCreationExperimental(ContainerBase):
         )
 
     def hamming_window(
-        self: ivy.Container,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        periodic: Optional[bool] = True,
-        alpha: Optional[float] = 0.54,
-        beta: Optional[float] = 0.46,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        out: Optional[ivy.Container] = None,
+            self: ivy.Container,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            periodic: Optional[bool] = True,
+            alpha: Optional[float] = 0.54,
+            beta: Optional[float] = 0.46,
+            dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.hamming_window.
         This method simply wraps the function, and so the docstring for
@@ -511,15 +511,15 @@ class ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_vorbis_window(
-        x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        out: Optional[ivy.Container] = None,
+            x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+            /,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.vorbis_window.
@@ -565,14 +565,14 @@ class ContainerWithCreationExperimental(ContainerBase):
         )
 
     def vorbis_window(
-        self: ivy.Container,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        out: Optional[ivy.Container] = None,
+            self: ivy.Container,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.vorbis_window.
         This method simply wraps the function, and so the docstring for
@@ -616,16 +616,16 @@ class ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_tril_indices(
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: Optional[int] = 0,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+            n_rows: int,
+            n_cols: Optional[int] = None,
+            k: Optional[int] = 0,
+            /,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "tril_indices",
@@ -640,17 +640,17 @@ class ContainerWithCreationExperimental(ContainerBase):
         )
 
     def tril_indices(
-        self: ivy.Container,
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: Optional[int] = 0,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+            self: ivy.Container,
+            n_rows: int,
+            n_cols: Optional[int] = None,
+            k: Optional[int] = 0,
+            /,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
         return self.static_tril_indices(
             self,
@@ -666,17 +666,17 @@ class ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_eye_like(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        /,
-        k: int = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            /,
+            k: int = 0,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+            dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+            device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.eye_like. This method simply
@@ -740,17 +740,17 @@ class ContainerWithCreationExperimental(ContainerBase):
         )
 
     def eye_like(
-        self: ivy.Container,
-        /,
-        k: int = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+            self: ivy.Container,
+            /,
+            k: int = 0,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+            dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+            device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.eye_like. This method simply
@@ -828,9 +828,10 @@ class ContainerWithCreationExperimental(ContainerBase):
             out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.blackman_window. This method simply wraps
-        the function, and so the docstring for ivy.blackman_window also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.blackman_window.
+        This method simply wraps the function, and so the docstring
+        for ivy.blackman_window also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -880,9 +881,10 @@ class ContainerWithCreationExperimental(ContainerBase):
             *,
             out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.blackman_window. This method simply
-        wraps the function, and so the docstring for ivy.blackman_window also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.blackman_window.
+        This method simply wraps the function, and so the docstring
+        for ivy.blackman_window also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -902,4 +904,7 @@ class ContainerWithCreationExperimental(ContainerBase):
             The container containing the Blackman windows.
 
         """
-        return self.blackman_window(self, periodic, dtype, out=out)
+        return self.static_blackman_window(self,
+                                           periodic=periodic,
+                                           dtype=dtype,
+                                           out=out)

@@ -65,9 +65,10 @@ class ArrayWithCreationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.blackman_window. This method simply wraps
-        the function, and so the docstring for ivy.blackman_window also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.blackman_window.
+        This method simply wraps the function, and so the docstring
+        for ivy.blackman_window also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -81,14 +82,17 @@ class ArrayWithCreationExperimental(abc.ABC):
         dtype
             The data type to produce. Must be a floating point type.
         out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array having the same shape as ``self`` and filled with ``ones``
-            in diagonal ``k`` and ``zeros`` elsewhere.
+            The array containing the window.
 
         """
-        return ivy.blackman_window(self._data, size=window_length, periodic=periodic, dtype=dtype, out=out)
+        return ivy.blackman_window(self._data,
+                                   size=window_length,
+                                   periodic=periodic,
+                                   dtype=dtype,
+                                   out=out)
