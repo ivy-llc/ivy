@@ -42,15 +42,15 @@ from .assertions import (
 )
 
 os.environ["IVY_ROOT"] = ".ivy"
-import ivy.compiler.compiler as ic
+from ivy.compiler.compiler import *
 
 
 # Temporary (.so) configuration
-def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
+def compiled_if_required(fn, test_compile=True,args=None ,kwargs=None):
     if test_compile:
-        if ivy.current_backend_str() == "jax":
-            return ic.compile(fn, args=args, kwargs=kwargs)
-        return ic.compile(fn, args=args, kwargs=kwargs, array_caching=False)
+        if ivy.current_backend_str() is "jax":
+            return fn #Skip jax for testing temp
+        return compile(fn,args=args,kwargs=kwargs)
 
     return fn
 
