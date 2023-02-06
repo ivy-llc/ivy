@@ -98,6 +98,7 @@ def float_power(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.float_power(x1, x2)
 
 
