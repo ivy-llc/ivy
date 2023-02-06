@@ -42,14 +42,10 @@ from .assertions import (
 available_frameworks = available_frameworkss()
 
 
-def multiversion_native_array_check(fw):
-    dic = {"torch": "Tensor", "tensorflow": "Tensor", "numpy": "ndarray"}
-    param = dic[fw.__name__]
-
-    def func(val):
-        return isinstance(val, getattr(fw, param, None))
-
-    return func
+def make_json_pickable(s):
+    s=s.replace('builtins.bfloat16','ivy.bfloat16')
+    s=s.replace('jax._src.device_array.reconstruct_device_array','jax.numpy.array')
+    return s
 
 
 def empty_func(*args, **kwargs):
@@ -539,8 +535,8 @@ def test_frontend_function(
 
         convs["jax"] = convjax
 
-    if frontend.split("/")[0] in convs:
-        conv = convs[frontend.split("/")[0]]
+    if list(frontend)[0].split("/")[0] in convs:
+        conv = convs[frontend[0].split("/")[0]]
         args = ivy.nested_map(args, fn=conv, include_derived=True)
         kwargs = ivy.nested_map(kwargs, fn=conv, include_derived=True)
 
@@ -550,7 +546,7 @@ def test_frontend_function(
     copy_args = copy.deepcopy(args)
     # strip the decorator to get an Ivy array
     # ToDo, fix testing for jax frontend for x32
-    if frontend.split("/")[0] == "jax":
+    if list(frontend)[0].split("/")[0] == "jax":
         importlib.import_module("ivy.functional.frontends.jax").config.update(
             "jax_enable_x64", True
         )
@@ -616,14 +612,14 @@ def test_frontend_function(
     )
 
     # temporarily set frontend framework as backend
-    ivy.set_backend(frontend.split("/")[0])
-    if "/" in frontend:
+    ivy.set_backend(list(frontend)[0].split("/")[0])
+    if "/" in list(frontend)[0]:
         # multiversion zone, changes made in non-multiversion zone should
         # be applied here too
 
         if (
-            frontend.split("/")[1]
-            != importlib.import_module(frontend.split("/")[0]).__version__
+            frontend[0].split("/")[1]
+            != importlib.import_module(frontend[0].split("/")[0]).__version__
         ):
             try:
                 # create frontend framework args
@@ -665,58 +661,28 @@ def test_frontend_function(
 
                 # compute the return via the frontend framework
                 module_name = fn_tree[25 : fn_tree.rfind(".")]
-                # frontend_fw = importlib.import_module(module_name)
-
-                # temp=dict()
-                # if frontend.split("/")[0]=='jax':
-                #     # we prepare for jaxlib
-                #     pass
 
                 pickle_dict = {"a": args_np, "b": kwargs_np}
+                process=frontend[1]
 
-                frontend_ret = subprocess.run(
-                    [
-                        "/opt/miniconda/envs/multienv/bin/python",
-                        "test.py",
-                        jsonpickle.dumps(pickle_dict),
-                        fn_name,
-                        module_name,
-                        "numpy" + "/" + np.__version__,
-                        frontend,
-                    ],
-                    capture_output=True,
-                    text=True,
-                )
+                z=make_json_pickable(jsonpickle.dumps(pickle_dict))
+                try:
+                    # process.stdin.write('1' + '\n')
+                    process.stdin.write( z+ '\n')
+                    process.stdin.write( module_name+ '\n')
+                    process.stdin.write(fn_name + '\n')
+                    process.stdin.flush()
+                except Exception as e:
+                    print("Something bad happened to the subprocess, here are the logs:\n\n")
+                    print(process.stdout.readlines())
+                    raise e
+                frontend_ret = process.stdout.readline()
 
-                if frontend_ret.stdout:
-                    frontend_ret = jsonpickle.loads(frontend_ret.stdout)
+                if frontend_ret:
+                    frontend_ret = jsonpickle.loads(make_json_pickable(frontend_ret))
                 else:
-                    print(frontend_ret.stderr)
+                    print(process.stderr.readlines())
                     raise Exception
-                ivy.set_backend("numpy")
-                frontend_ret = ivy.to_native(frontend_ret)
-
-                # globally_done = (
-                #     frontend.split("/")[0]
-                #     + "/"
-                #     + importlib.import_module(frontend.split("/")[0]).__version__
-                # )
-                # try:
-                #     frontend_fw = config.custom_import(
-                #         frontend.split("/")[0] + "/" + frontend.split("/")[1],
-                #         module_name,
-                #         globally_done=globally_done,
-                #     )
-                # except Exception as e:
-                #     raise e
-                #
-                # print(frontend_fw.__version__)
-                # frontend_ret = frontend_fw.__dict__[fn_name](
-                #     *args_frontend, **kwargs_frontend
-                # )
-                # frontend_ret = np.asarray(
-                #     frontend_ret
-                # )  # we do this because frontend_ret comes from a module in another file
 
                 if ivy.isscalar(frontend_ret):
                     frontend_ret_np_flat = [np.asarray(frontend_ret)]
@@ -725,7 +691,7 @@ def test_frontend_function(
                     if not isinstance(frontend_ret, tuple):
                         frontend_ret = (frontend_ret,)
                     frontend_ret_idxs = ivy.nested_argwhere(
-                        frontend_ret, ivy.is_native_array
+                        frontend_ret, lambda x: ivy.is_native_array(x)  or ivy.is_ivy_array(x)
                     )
                     frontend_ret_flat = ivy.multi_index_nest(
                         frontend_ret, frontend_ret_idxs
@@ -1525,7 +1491,7 @@ def test_frontend_method(
     )
 
     # Compute the return with the native frontend framework
-    ivy.set_backend(frontend.split("/")[0])
+    ivy.set_backend(list(frontend)[0].split("/")[0])
     args_constructor_frontend = ivy.nested_map(
         args_constructor_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
@@ -1573,7 +1539,7 @@ def test_frontend_method(
     frontend_ret = ins_gt.__getattribute__(frontend_method_data.method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
-    if frontend.split("/")[0] == "tensorflow" and isinstance(
+    if list(frontend)[0].split("/")[0] == "tensorflow" and isinstance(
         frontend_ret, tf.TensorShape
     ):
         frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
@@ -1603,7 +1569,7 @@ def test_frontend_method(
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol_,
         atol=atol_,
-        ground_truth_backend=frontend,
+        ground_truth_backend=list(frontend)[0],
     )
 
 
