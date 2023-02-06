@@ -1237,11 +1237,7 @@ def test_numpy_instance_floordiv__(
     frontend,
 ):
     input_dtypes, xs = dtype_and_x
-    # Make sure it's not dividing value too close to zero
     assume(not np.any(np.isclose(xs[1], 0)))
-    # Absolute tolerance is 1,
-    # due to flooring can cause absolute error of 1 due to precision
-    # made atol_=1
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
