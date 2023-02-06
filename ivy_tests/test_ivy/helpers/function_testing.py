@@ -43,16 +43,16 @@ from .assertions import (
 )
 
 os.environ["IVY_ROOT"] = ".ivy"
-from ivy.compiler.compiler import *
+# os.environ["IVY_DEBUG_SOURCE"] = "True"
+from ivy.compiler.compiler import compile
 
 
 # Temporary (.so) configuration
-def compiled_if_required(fn, test_compile=False,args=None,kwargs=None):
+def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
     if test_compile:
-            if ivy.current_backend_str() == "jax":
-                pytest.skip() # Will only skip some of the jax functions
-            return compile(fn)
-
+        if ivy.current_backend_str() == "jax":
+            pytest.skip()  # Will only skip some of the jax functions
+        return compile(fn, args=args, kwargs=kwargs)
     return fn
 
 
@@ -295,11 +295,14 @@ def test_function(
             kwargs = ivy.copy_nest(kwargs, to_mutable=False)
             ivy.prune_nest_at_index(kwargs, instance_idx)
         ret, ret_np_flat = get_ret_and_flattened_np_array(
-            instance.__getattribute__(fn_name), *args, **kwargs
+            instance.__getattribute__(fn_name),
+            *args,
+            test_compile=test_flags.test_compile,
+            **kwargs,
         )
     else:
         ret, ret_np_flat = get_ret_and_flattened_np_array(
-            ivy.__dict__[fn_name], *args, **kwargs
+            ivy.__dict__[fn_name], *args, test_compile=test_flags.test_compile, **kwargs
         )
     # assert idx of return if the idx of the out array provided
     if test_flags.with_out:
@@ -313,11 +316,19 @@ def test_function(
         )
         if instance_method:
             ret, ret_np_flat = get_ret_and_flattened_np_array(
-                instance.__getattribute__(fn_name), *args, **kwargs, out=out
+                instance.__getattribute__(fn_name),
+                *args,
+                test_compile=test_flags.test_compile,
+                **kwargs,
+                out=out,
             )
         else:
             ret, ret_np_flat = get_ret_and_flattened_np_array(
-                ivy.__dict__[fn_name], *args, **kwargs, out=out
+                ivy.__dict__[fn_name],
+                *args,
+                test_compile=test_flags.test_compile,
+                **kwargs,
+                out=out,
             )
         test_ret = (
             ret[getattr(ivy.__dict__[fn_name], "out_index")]
@@ -353,7 +364,7 @@ def test_function(
             container_flags=container_flags,
         )
         ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-            ivy.__dict__[fn_name], *args, **kwargs
+            ivy.__dict__[fn_name], *args, test_compile=test_flags.test_compile, **kwargs
         )
         if test_flags.with_out:
             test_ret_from_gt = (
@@ -365,7 +376,11 @@ def test_function(
                 test_ret_from_gt, ivy.zeros_like, to_mutable=True, include_derived=True
             )
             ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-                ivy.__dict__[fn_name], *args, **kwargs, out=out_from_gt
+                ivy.__dict__[fn_name],
+                *args,
+                test_compile=test_flags.test_compile,
+                **kwargs,
+                out=out_from_gt,
             )
     except Exception as e:
         ivy.unset_backend()
@@ -1229,13 +1244,9 @@ def test_method(
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
-        compiled_if_required(
-            ins.__getattribute__(method_name),
-            test_compile=test_compile,
-            args=args_method,
-            kwargs=kwargs_method,
-        ),
+        ins.__getattribute__(method_name),
         *args_method,
+        test_compile=test_compile,
         **kwargs_method,
     )
 
@@ -1277,13 +1288,9 @@ def test_method(
         )
         kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
     ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-        compiled_if_required(
-            ins_gt.__getattribute__(method_name),
-            test_compile=test_compile,
-            args=args_gt_method,
-            kwargs=kwargs_gt_method,
-        ),
+        ins_gt.__getattribute__(method_name),
         *args_gt_method,
+        test_compile=test_compile,
         **kwargs_gt_method,
     )
     fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
