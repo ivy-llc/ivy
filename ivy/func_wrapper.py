@@ -81,8 +81,10 @@ def _get_first_array(*args, **kwargs):
 
 
 def handle_array_function(func):
-    """Wrap a function to extract the relevant argument types to be passed to
-    array_function method."""
+    """
+    Wrap a function to extract the relevant argument types to be passed to
+    array_function method.
+    """
 
     @functools.wraps(func)
     def new_func(*args, **kwargs):
@@ -90,7 +92,10 @@ def handle_array_function(func):
         overloaded_args = []
 
         for arg in args + tuple(kwargs.values()):
-            if ivy.exists(arg) and (not isinstance(arg,ivy.Container) and hasattr(arg, "__array_function__")):
+            if ivy.exists(arg) and (
+                not isinstance(arg, ivy.Container)
+                and hasattr(arg, "__array_function__")
+            ):
                 if type(arg) not in overloaded_types:
                     overloaded_types.append(type(arg))
                     if (
@@ -104,7 +109,9 @@ def handle_array_function(func):
                                 break
                         overloaded_args.insert(index, arg)
             if ivy.exists(arg) and isinstance(arg, ivy.Container):
-                indices = ivy.nested_argwhere(arg, lambda x: hasattr(x, "__array_function__"))
+                indices = ivy.nested_argwhere(
+                    arg, lambda x: hasattr(x, "__array_function__")
+                )
                 for a in indices:
                     if type(arg.a) not in overloaded_types:
                         overloaded_types.append(type(arg.a))
