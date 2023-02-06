@@ -28,7 +28,7 @@ from ivy.backend_handler import _backend_dict
 
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
-available_frameworks_with_none = available_frameworks[:]
+available_frameworks_with_none = available_frameworks()[:]
 available_frameworks_with_none.append(None)
 
 available_array_types_class = [
@@ -39,20 +39,20 @@ available_array_types_input = [
     ("numpy", np.array(3.0)),
 ]
 
-if "tensorflow" in available_frameworks:
+if "tensorflow" in available_frameworks():
     available_array_types_input.append(("tensorflow", tf.constant([3.0])))
     available_array_types_class.append(
         ("tensorflow", "<class 'tensorflow.python.framework.ops.EagerTensor'>")
     )
 
-if "jax" in available_frameworks:
+if "jax" in available_frameworks():
     available_array_types_input.append(("jax", jnp.array(3.0)))
     available_array_types_class.append(
         ("jax", "<class 'jaxlib.xla_extension.DeviceArray'>")
     )
 
 
-if "torch" in available_frameworks:
+if "torch" in available_frameworks():
     available_array_types_input.append(("torch", torch.tensor([3.0])))
     available_array_types_class.append(("torch", "<class 'torch.Tensor'>"))
 
@@ -83,7 +83,7 @@ def test_set_backend(backend, array_type):
     ivy.assertions.check_equal(str(type(ivy.to_native(x))), array_type)
 
 
-@pytest.mark.parametrize(("backend"), available_frameworks)
+@pytest.mark.parametrize(("backend"), available_frameworks())
 def test_unset_backend(backend):
 
     if not ivy.backend_stack:
@@ -111,7 +111,7 @@ def test_unset_backend(backend):
 
 
 def test_clear_backend_stack():
-    for backend_str in available_frameworks:
+    for backend_str in available_frameworks():
         ivy.set_backend(backend_str)
 
     ivy.clear_backend_stack()
@@ -125,12 +125,12 @@ def test_clear_backend_stack():
 def test_current_backend(backend, array_type):
     # test backend inference from arguments when stack clear
     ivy.clear_backend_stack()
-    ivy.assertions.check_equal(
-        ivy.current_backend(array_type), importlib.import_module(_backend_dict[backend])
+    assert ivy.current_backend(array_type) is importlib.import_module(
+        _backend_dict[backend]
     )
 
     # global_backend > argument's backend.
-    if "torch" in available_frameworks:
+    if "torch" in available_frameworks():
         ivy.set_backend("torch")
         ivy.assertions.check_equal(
             ivy.current_backend(array_type),
@@ -155,7 +155,7 @@ def test_choose_random_backend(excluded):
         assert backend in backends_list
 
 
-@pytest.mark.parametrize("backend", available_frameworks)
+@pytest.mark.parametrize("backend", available_frameworks())
 def test_get_backend(backend):
     imported_backend = importlib.import_module(_backend_dict[backend])
 

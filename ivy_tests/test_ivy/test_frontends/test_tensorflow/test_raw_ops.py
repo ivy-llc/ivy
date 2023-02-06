@@ -221,6 +221,33 @@ def test_tensorflow_Cos(  # NOQA
     )
 
 
+# Rsqrt
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Rsqrt",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Rsqrt(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # Cosh
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Cosh",
@@ -1196,6 +1223,33 @@ def test_tensorflow_Log(  # NOQA
     )
 
 
+# Log1p
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Log1p",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Log1p(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # Sinh
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Sinh",
@@ -1434,6 +1488,11 @@ def test_tensorflow_ShapeN(  # NOQA
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+        min_value=-1e04,
+        max_value=1e04,
     ),
     test_with_out=st.just(False),
 )
@@ -1452,7 +1511,7 @@ def test_tensorflow_AddN(  # NOQA
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        inputs=x,
+        inputs=x[0],
     )
 
 
@@ -2747,7 +2806,7 @@ def test_tensorflow_Pack(  # NOQA
 
 
 @st.composite
-def _pad_helper(draw):
+def _pad_helper(draw, return_constant_values=False):
     dtype, input, shape = draw(
         helpers.dtype_and_values(
             min_num_dims=1,
@@ -2763,6 +2822,15 @@ def _pad_helper(draw):
             max_value=10,
         )
     )
+
+    if return_constant_values:
+        _, constant_values = draw(
+            helpers.dtype_and_values(
+                dtype=dtype,
+                shape=(1,),
+            )
+        )
+        return dtype, input[0], padding_dtype, paddings[0], constant_values[0][0]
 
     return dtype, input[0], padding_dtype, paddings[0]
 
@@ -2833,21 +2901,19 @@ def test_tensorflow_EuclideanNorm(
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.ConcatV2",
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
 )
 def test_tensorflow_ConcatV2(
     xs_n_input_dtypes_n_unique_idx,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=0,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         values=xs,
@@ -2867,12 +2933,13 @@ def test_tensorflow_ConcatV2(
         dilation_min=1,
         dilation_max=1,
     ),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
 )
 def test_tensorflow_Conv3D(
     *,
     x_f_d_df,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -2890,10 +2957,7 @@ def test_tensorflow_Conv3D(
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=0,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -2903,4 +2967,94 @@ def test_tensorflow_Conv3D(
         padding=padding,
         data_format=data_format,
         dilations=dilation,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Softmax",
+    dtype_values_axis=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Softmax(
+    dtype_values_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, values = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=values[0],
+    )
+
+
+# TODO: Fails with torch backend
+# ivy.exceptions.IvyBackendException: torch: constant_pad: constant_pad_nd(): argument
+# 'value' (position 3) must be Number, not bfloat16
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.PadV2",
+    dtype_x_paddings=_pad_helper(return_constant_values=True),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_PadV2(
+    dtype_x_paddings,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    dtype, x, padding_dtype, paddings, constant_values = dtype_x_paddings
+    helpers.test_frontend_function(
+        input_dtypes=dtype + padding_dtype + dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=x,
+        paddings=paddings,
+        constant_values=constant_values,
+    )
+
+
+# Elu
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Elu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-3,
+        max_value=3,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    name=st.just(None),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
+)
+def test_tensorflow_Elu(
+    *,
+    dtype_and_x,
+    name,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+        name=name,
     )
