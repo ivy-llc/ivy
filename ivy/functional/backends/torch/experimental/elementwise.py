@@ -113,6 +113,7 @@ def float_power(
 ) -> torch.Tensor:
     # Native out is supported but with restrictions leading
     # to failures hence letting ivy handle it.
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return torch.float_power(x1, x2).to(x1.dtype)
 
 
@@ -297,6 +298,7 @@ def diff(
     axis: Optional[int] = -1,
     prepend: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = x if type(x) == torch.Tensor else torch.Tensor(x)
     prepend = (
@@ -385,10 +387,15 @@ def zeta(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.special.zeta(x, q, out=out)
+    temp = torch.logical_and(torch.ne(torch.remainder(x, 2), 0), torch.gt(x, 1))
+    temp = torch.logical_and(temp, torch.le(q, 0))
+    nan_indices = torch.logical_or(temp, torch.lt(x, 1))
+    result = torch.special.zeta(x, q)
+    result.masked_fill_(nan_indices, float("nan"))
+    return result
 
 
-zeta.support_native_out = True
+zeta.support_native_out = False
 
 
 def gradient(
@@ -419,16 +426,5 @@ def xlogy(
     return torch.xlogy(x, y, out=out)
 
 
-def real(
-    x: Union[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.real(x)
-
-
-def isposinf(
-    x: Union[torch.Tensor],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.isposinf(x)

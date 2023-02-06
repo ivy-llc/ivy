@@ -86,6 +86,7 @@ def einsum(equation, *inputs, **kwargs):
 
 @to_ivy_arrays_and_back
 def reshape(tensor, shape, name=None):
+    shape = shape.to_list() if ivy.is_array(shape) else shape
     return ivy.reshape(tensor, shape=shape)
 
 
@@ -193,6 +194,28 @@ def gather_nd(params, indices, batch_dims=0, name=None):
 
 
 @to_ivy_arrays_and_back
+def boolean_mask(tensor, mask, axis=None, name=None):
+    if axis is None or axis == 0:
+        return ivy.get_item(tensor, mask)
+    else:
+        n = ivy.get_num_dims(tensor)
+        k = ivy.get_num_dims(mask)
+        if axis < 0:
+            axis = n + axis
+        ivy.assertions.check_less(
+            k + axis,
+            n,
+            allow_equal=True,
+            message="Value of axis must be \
+                                           such that axis + dim(mask) <= dim(tensor)",
+        )
+        tensor_shape = ivy.shape(tensor)
+        for i in range(axis - 1, -1, -1):
+            mask = ivy.expand_dims(mask, axis=0)
+            mask = ivy.repeat(mask, tensor_shape[i], axis=0)
+        return ivy.get_item(tensor, mask)
+
+
 def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
     paddings = paddings.to_list() if ivy.is_array(paddings) else paddings
     return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
@@ -259,6 +282,11 @@ def strided_slice(
 
 
 @to_ivy_arrays_and_back
+def slice(input_, begin, size, name=None):
+    return strided_slice(input_, begin, begin + size, [1] * len(size))
+
+
+@to_ivy_arrays_and_back
 def linspace(start, stop, num, name=None, axis=0):
     return ivy.linspace(start, stop, num, axis=axis)
 
@@ -266,3 +294,31 @@ def linspace(start, stop, num, name=None, axis=0):
 @to_ivy_arrays_and_back
 def realdiv(x, y, name=None):
     return ivy.divide(x, y)
+
+
+@with_unsupported_dtypes({"2.9.0 and below": ("uint16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def tile(input, multiples, name=None):
+    return ivy.tile(input, multiples)
+
+
+@to_ivy_arrays_and_back
+def one_hot(
+    indices: ivy.array,
+    depth: int,
+    on_value=None,
+    off_value=None,
+    axis=None,
+    dtype=None,
+    device=None,
+    out=None,
+):
+    return ivy.one_hot(indices, depth)
+
+
+@to_ivy_arrays_and_back
+def where(condition: ivy.array, x=None, y=None, name=None):
+    if x is None and y is None:
+        return ivy.argwhere(condition)
+    else:
+        return ivy.where(condition, x, y)

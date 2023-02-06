@@ -61,10 +61,6 @@ def asarray(
         return _to_device(ret, device=device)
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
         dtype = ivy.default_dtype(item=obj, as_native=True)
-        if copy is True:
-            return _to_device(np.copy(np.asarray(obj, dtype=dtype)), device=device)
-        else:
-            return _to_device(np.asarray(obj, dtype=dtype), device=device)
     else:
         dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
     if copy is True:
