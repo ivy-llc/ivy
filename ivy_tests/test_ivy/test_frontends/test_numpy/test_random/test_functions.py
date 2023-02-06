@@ -242,6 +242,7 @@ def test_numpy_multinomial(
     fn_tree="numpy.random.permutation",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1
     ),
 )
 def test_numpy_permutation(
