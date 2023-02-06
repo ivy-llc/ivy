@@ -2249,8 +2249,7 @@ def test_torch_instance_new_empty(
 def _expand_helper(draw):
     dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            ret_shape=True
+            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
         )
     )
     # randomly expand singleton dimensions
@@ -4254,6 +4253,35 @@ def _get_clamp_inputs(draw):
     dtype_and_x_min_max=_get_clamp_inputs(),
 )
 def test_torch_instance_clamp(
+    dtype_and_x_min_max,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, min, max = dtype_and_x_min_max
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"min": min, "max": max},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# clamp_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="clamp_",
+    dtype_and_x_min_max=_get_clamp_inputs(),
+)
+def test_torch_instance_clamp_(
     dtype_and_x_min_max,
     frontend,
     frontend_method_data,
