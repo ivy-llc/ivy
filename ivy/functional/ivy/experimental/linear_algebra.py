@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple
+from typing import Union, Optional, Tuple, List, NamedTuple
 
 # local
 import ivy
@@ -18,6 +18,64 @@ from ivy.exceptions import handle_exceptions
 
 def _check_valid_dimension_size(std):
     ivy.assertions.check_dimensions(std)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def eigh_tridiagonal(
+    alpha: Union[ivy.Array, ivy.NativeArray],
+    beta: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    eigvals_only: bool = True,
+    select: str = 'a',
+    select_range: Optional[Union[Tuple[int], List[int], ivy.Array, ivy.NativeArray]] = None,
+    tol: Optional[float] = None,
+) -> Union[ivy.Array, Tuple[ivy.Array]]:
+    """
+    """
+    if ivy.current_backend(alpha).backend == "tensorflow":
+        return ivy.current_backend(alpha).eigh_tridiagonal(
+            alpha,
+            beta,
+            eigvals_only=eigvals_only,
+            select=select,
+            select_range=select_range,
+            tol=tol
+        )
+    x = ivy.diag(alpha)
+    y = ivy.diag(beta, k=1)
+    z = ivy.diag(beta, k=-1)
+    w = x+y+z
+
+    eigh_out = ivy.linalg.eigh(w)
+    eigenvalues = eigh_out.eigenvalues
+    eigenvectors = eigh_out.eigenvectors
+
+    if select == 'i':
+        eigenvalues = eigenvalues[select_range[0]:select_range[1]+1]
+        eigenvectors = eigenvectors[:,select_range[0]:select_range[1]+1]
+    elif select == 'v':
+        condition = ivy.logical_and(
+            eigenvalues.greater(select_range[0]),
+            eigenvalues.less_equal(select_range[1])
+        )
+        eigenvalues = eigenvalues[condition]
+        eigenvectors = eigenvectors[:,condition]
+
+    if eigvals_only:
+        return eigenvalues
+
+    result_tuple = NamedTuple(
+        "eigh",
+        [
+            ("eigenvalues", ivy.NativeArray),
+            ("eigenvectors", ivy.NativeArray),
+        ],
+    )
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 @to_native_arrays_and_back
