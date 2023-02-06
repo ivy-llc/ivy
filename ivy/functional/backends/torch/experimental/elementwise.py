@@ -113,6 +113,7 @@ def float_power(
 ) -> torch.Tensor:
     # Native out is supported but with restrictions leading
     # to failures hence letting ivy handle it.
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return torch.float_power(x1, x2).to(x1.dtype)
 
 
@@ -425,7 +426,5 @@ def xlogy(
     return torch.xlogy(x, y, out=out)
 
 
-def real(
-    x: Union[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.real(x)
