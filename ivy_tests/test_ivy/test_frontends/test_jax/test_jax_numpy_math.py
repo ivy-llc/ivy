@@ -69,27 +69,25 @@ def test_jax_numpy_add(
         x2=x[0],
     )
 
+
 # diff
 @st.composite
 def _get_dtype_input_and_vector(draw):
     size1 = draw(helpers.ints(min_value=1, max_value=5))
     size2 = draw(helpers.ints(min_value=1, max_value=5))
     dtype = draw(helpers.get_dtypes("integer"))
-    vec1 = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(size1, size2)
-        )
-    )
+    vec1 = draw(helpers.array_values(dtype=dtype[0], shape=(size1, size2)))
     return dtype, vec1
+
 
 @handle_frontend_test(
     fn_tree="jax.numpy.diff",
-    dtype_and_x = _get_dtype_input_and_vector(),
-    n = helpers.ints(
+    dtype_and_x=_get_dtype_input_and_vector(),
+    n=helpers.ints(
         min_value=0,
         max_value=10,
     ),
-    axis = helpers.ints(
+    axis=helpers.ints(
         min_value=-1,
         max_value=10,
     ),
@@ -105,7 +103,7 @@ def test_jax_numpy_diff(
     axis,
 ):
     input_dtype, x = dtype_and_x
-    if(axis > (x[0].ndim - 1)):
+    if axis > (x[0].ndim - 1):
         axis = x[0].ndim - 1
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
