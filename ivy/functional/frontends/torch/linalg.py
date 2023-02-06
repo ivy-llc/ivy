@@ -181,3 +181,17 @@ def solve(input, other, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def tensorsolve(A, B, dims=None, *, out=None):
     return ivy.tensorsolve(A, B, axes=dims, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def lu_factor(A, *, pivot=True, out=None):
+    return ivy.lu_factor(A, pivot=pivot, out=out)
+
+
+"""
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def lu_solve(LU, pivots, B, *, left=True, adjoint=False, out=None):
+    return ivy.lu_solve(LU, pivots=pivots, B, left=left, adjoint=adjoint, out=out)
+"""

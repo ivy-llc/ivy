@@ -847,3 +847,26 @@ def test_torch_tensorsolve(
         A=A,
         B=B,
     )
+
+
+# lu_factor
+@handle_frontend_test(
+    fn_tree="torch.linalg.lu_factor", dtype_and_a=_get_dtype_and_matrix()
+)
+def test_torch_lu_factor(
+    *,
+    dtype_and_a,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        A=a,
+    )
