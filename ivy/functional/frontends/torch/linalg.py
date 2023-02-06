@@ -80,6 +80,11 @@ def matrix_power(input, n, *, out=None):
     return ivy.matrix_power(input, n, out=out)
 
 
+@to_ivy_arrays_and_back
+def matrix_exp(input, *, out=None):
+    return torch_frontend.matrix_power(input, out=out)
+
+
 @with_supported_dtypes(
     {"1.11.0 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
 )
