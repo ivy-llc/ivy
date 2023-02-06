@@ -211,17 +211,17 @@ def transpose(a, perm=None, conjugate=False, name="transpose"):
 
 @to_ivy_arrays_and_back
 def strided_slice(
-        input_,
-        begin,
-        end,
-        strides=None,
-        begin_mask=0,
-        end_mask=0,
-        ellipsis_mask=0,
-        new_axis_mask=0,
-        shrink_axis_mask=0,
-        var=None,
-        name=None,
+    input_,
+    begin,
+    end,
+    strides=None,
+    begin_mask=0,
+    end_mask=0,
+    ellipsis_mask=0,
+    new_axis_mask=0,
+    shrink_axis_mask=0,
+    var=None,
+    name=None,
 ):
     def num_to_bit_list(number):
         return list(map(int, "{:0{size}b}".format(number, size=len(input_.shape))))
@@ -282,14 +282,14 @@ def tile(input, multiples, name=None):
 
 @to_ivy_arrays_and_back
 def one_hot(
-        indices: ivy.array,
-        depth: int,
-        on_value=None,
-        off_value=None,
-        axis=None,
-        dtype=None,
-        device=None,
-        out=None,
+    indices: ivy.array,
+    depth: int,
+    on_value=None,
+    off_value=None,
+    axis=None,
+    dtype=None,
+    device=None,
+    out=None,
 ):
     return ivy.one_hot(indices, depth)
 
@@ -305,3 +305,6 @@ def where(condition: ivy.array, x=None, y=None, name=None):
 @to_ivy_arrays_and_back
 def reverse(tensor, axis, name=None):
     return ivy.flip(tensor, axis)
+
+
+
