@@ -92,59 +92,36 @@ RUN python3 -m pip --no-cache-dir install --upgrade \
 # Some TF tools expect a "python" binary
 RUN ln -s $(which python3) /usr/local/bin/python
 
-# For MXNet #
-# ----------#
-# TODO: MXNet is not supported, should modify this without breaking the docker build
-
-# Install NCCL
-RUN apt-get install -y wget
-
-# leave below commented for now
-# RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin
-# RUN mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
-# RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
-# RUN add-apt-repository "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /"
-
-RUN apt-get install libnccl2=2.8.4-1+cuda11.0 libnccl-dev=2.8.4-1+cuda11.0
-
-# OpenBLAS
-RUN apt-get install -y libopenblas-dev
-
-# CUDA-specific Installations #
-# ----------------------------#
-
-RUN pip3 install pytest
 RUN apt-get install -y git
 RUN apt-get install -y python-opengl
-
-RUN pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_releases.html
-# ToDo: work out why most recent jaxlib installs are not working
-RUN pip3 install --upgrade "jaxlib[cuda]" -f https://storage.googleapis.com/jax-releases/jax_releases.html
-RUN pip install torch==1.11.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
-RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.11.0+cu113.html
 
 # Ivy #
 # ----#
 
+# Make sure torch installed before torch-scatter (in optional.txt)
+RUN pip install torch==1.11.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
+
 # Install Ivy Upstream
-RUN git clone https://github.com/unifyai/ivy && \
+RUN git clone --recurse-submodules https://github.com/unifyai/ivy && \
     cd ivy && \
     cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     cat requirements/optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    python3 -m pip install --user -e .
+    python3 -m pip install --user -e . && \
+    cd ivy_tests/test_array_api && \
+    pip3 install --no-cache-dir -r requirements.txt
 
 # Install local requirements
-RUN cd .. && \
 COPY requirements/requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install local optional
-RUN cd .. && \
 COPY requirements/optional.txt .
 RUN pip3 install --no-cache-dir -r optional.txt
 
-RUN cd .. && \
-COPY run_tests_CLI/test_dependencies.py /
+# Install jax cuda after optional.txt, otherwise cpu version will override
+RUN pip install jaxlib==0.3.14+cuda11.cudnn82 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
+COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
     rm -rf requirements.txt && \
     rm -rf optional.txt

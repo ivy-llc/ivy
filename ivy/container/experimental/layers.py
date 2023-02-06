@@ -1291,11 +1291,7 @@ class ContainerWithLayersExperimental(ContainerBase):
         map_sequences
         out
 
-        Returns
-        -------
-
         """
-
         return ContainerBase.cont_multi_map_in_function(
             "dft",
             x,
@@ -1340,9 +1336,6 @@ class ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied
         map_sequences
         out
-
-        Returns
-        -------
 
         """
         return self.static_dft(
