@@ -35,3 +35,4 @@ def test_tensorflow_image_resize(
         structure=x[0] if use_array else x[0].tolist(),
         expand_composites=expand_composite,
     )
+    
