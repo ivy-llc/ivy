@@ -1341,8 +1341,11 @@ def test_tensorflow_where_with_xy(
     fn_tree="tensorflow.reverse",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=8,
     ),
     axis=helpers.ints(min_value=1, max_value=10)
+
 )
 def test_tensorflow_reverse(
     *,
@@ -1360,6 +1363,7 @@ def test_tensorflow_reverse(
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
+        with_out=False,
         on_device=on_device,
         axis=axis,
         tensor=x[0],
