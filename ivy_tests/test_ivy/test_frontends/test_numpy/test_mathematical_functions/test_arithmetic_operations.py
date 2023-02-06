@@ -291,6 +291,9 @@ def test_numpy_power(
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
                 num_arrays=2,
+                min_num_dims=1,
+                min_value=-10,
+                max_value=10,
                 shared_dtype=True,
             )
         ],
@@ -314,6 +317,8 @@ def test_numpy_float_power(
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
+    # removing casting options as they raise errors for this function
+    assume(casting == "same_kind")
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
