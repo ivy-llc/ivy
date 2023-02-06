@@ -241,7 +241,7 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
     elif end_backend == "jax":
         assert isinstance(
             nativ_cont['b'].data,
-            jax.interpreters.xla
+            jax.interpreters.xla.DeviceArray
         )
 
     if middle_backend not in ("jax", "numpy"):
