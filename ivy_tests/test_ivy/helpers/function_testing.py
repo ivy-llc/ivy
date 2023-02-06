@@ -6,6 +6,7 @@ import numpy as np
 import types
 import importlib
 import inspect
+
 try:
     import jsonpickle
 except:
@@ -661,6 +662,7 @@ def test_frontend_function(
 
                 # compute the return via the frontend framework
                 module_name = fn_tree[25 : fn_tree.rfind(".")]
+
 
                 pickle_dict = {"a": args_np, "b": kwargs_np}
                 process=frontend[1]
