@@ -2291,7 +2291,7 @@ def test_torch_instance_expand(
     )
 
 
-# epxand_as
+# expand_as
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
