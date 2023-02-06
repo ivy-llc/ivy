@@ -2170,7 +2170,7 @@ def _fill_value_and_size(
             key="shape",
         )
     )
-    fill_value = draw(helpers.ints())
+    fill_value = draw(helpers.ints()) if "int" in dtype[0] else draw(helpers.floats())
 
     return dtype, [array, size, fill_value]
 
