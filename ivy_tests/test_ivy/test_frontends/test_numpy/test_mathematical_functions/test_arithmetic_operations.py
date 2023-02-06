@@ -285,12 +285,15 @@ def test_numpy_power(
 
 # float_power
 @handle_frontend_test(
-    fn_tree="numpy.float_power",
+    fn_tree="numpy.floor_divide",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
                 num_arrays=2,
+                min_num_dims=1,
+                min_value=-10,
+                max_value=10,
                 shared_dtype=True,
             )
         ],
