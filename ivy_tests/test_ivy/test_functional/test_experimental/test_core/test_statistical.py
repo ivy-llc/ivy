@@ -20,10 +20,16 @@ def statistical_dtype_values(draw, *, function):
     n = 1
     min_value = None
     max_value = None
+    force_int_axis = False
+    shape = None
+    shared_dtype = False
     if function == "histogram":
         n = 2
         min_value = -20
         max_value = 20
+        force_int_axis = True
+        shape = draw(helpers.get_shape(min_num_dims=1))
+        shared_dtype = True
     available_dtypes = draw(helpers.get_dtypes("float"))
     if "bfloat16" in available_dtypes:
         available_dtypes.remove("bfloat16")
@@ -43,6 +49,9 @@ def statistical_dtype_values(draw, *, function):
             allow_neg_axes=False,
             min_axes_size=1,
             num_arrays=n,
+            force_int_axis=force_int_axis,
+            shape=shape,
+            shared_dtype=shared_dtype,
         )
     )
     shape = values[0].shape
@@ -92,8 +101,8 @@ def statistical_dtype_values(draw, *, function):
         )
         bins = draw(
             helpers.array_values(
-                min_value=min_value,
-                max_value=max_value,
+                min_value=1,
+                max_value=100,
                 dtype=dtype,
                 large_abs_safety_factor=large_abs_safety_factor,
                 small_abs_safety_factor=small_abs_safety_factor,
@@ -106,7 +115,7 @@ def statistical_dtype_values(draw, *, function):
         )
         bins = sorted(set(bins))
         if len(bins) == 1:
-            bins = int(abs(bins[0]))
+            bins = int(bins[0])
             range = (-10, 10)
         else:
             range = None

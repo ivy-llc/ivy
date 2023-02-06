@@ -32,6 +32,7 @@ def histogram(
     range: Optional[Tuple[float]] = None,
     weights: Optional[tf.Tensor] = None,
     density: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor]:
     if range:
         if type(bins) == int:
