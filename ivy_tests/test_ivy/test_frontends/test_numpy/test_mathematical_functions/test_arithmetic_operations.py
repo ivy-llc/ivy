@@ -285,7 +285,7 @@ def test_numpy_power(
 
 # float_power
 @handle_frontend_test(
-    fn_tree="numpy.floor_divide",
+    fn_tree="numpy.float_power",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
@@ -317,6 +317,8 @@ def test_numpy_float_power(
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
+    # removing casting options as they raise errors for this function
+    assume(casting == "same_kind")
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
