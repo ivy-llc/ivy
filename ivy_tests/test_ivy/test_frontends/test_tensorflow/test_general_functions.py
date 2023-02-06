@@ -1363,7 +1363,6 @@ def test_tensorflow_reverse(
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
-        with_out=False,
         on_device=on_device,
         axis=axis,
         tensor=x[0],
