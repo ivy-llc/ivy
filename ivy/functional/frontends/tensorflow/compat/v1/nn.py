@@ -21,6 +21,9 @@ def fused_batch_norm(
     name=None,
     exponential_avg_factor=1.0,
 ):
+    min_epsilon = 1.001e-5
+    epsilon = epsilon if epsilon > min_epsilon else min_epsilon
+
     dims = len(x.shape)
     if data_format[1] == "C":
         if dims == 4:
