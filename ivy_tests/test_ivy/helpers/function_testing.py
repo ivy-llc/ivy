@@ -498,6 +498,8 @@ def test_frontend_function(
 
     # frontend function
     # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
+    if isinstance(frontend,list):
+        frontend,frontend_proc=frontend
     split_index = fn_tree.rfind(".")
     frontend_submods, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
     function_module = importlib.import_module(frontend_submods)
@@ -536,8 +538,8 @@ def test_frontend_function(
 
         convs["jax"] = convjax
 
-    if list(frontend)[0].split("/")[0] in convs:
-        conv = convs[frontend[0].split("/")[0]]
+    if frontend.split("/")[0] in convs:
+        conv = convs[frontend.split("/")[0]]
         args = ivy.nested_map(args, fn=conv, include_derived=True)
         kwargs = ivy.nested_map(kwargs, fn=conv, include_derived=True)
 
@@ -547,7 +549,7 @@ def test_frontend_function(
     copy_args = copy.deepcopy(args)
     # strip the decorator to get an Ivy array
     # ToDo, fix testing for jax frontend for x32
-    if list(frontend)[0].split("/")[0] == "jax":
+    if frontend.split("/")[0] == "jax":
         importlib.import_module("ivy.functional.frontends.jax").config.update(
             "jax_enable_x64", True
         )
@@ -613,14 +615,14 @@ def test_frontend_function(
     )
 
     # temporarily set frontend framework as backend
-    ivy.set_backend(list(frontend)[0].split("/")[0])
-    if "/" in list(frontend)[0]:
+    ivy.set_backend(frontend.split("/")[0])
+    if "/" in frontend:
         # multiversion zone, changes made in non-multiversion zone should
         # be applied here too
 
         if (
-            frontend[0].split("/")[1]
-            != importlib.import_module(frontend[0].split("/")[0]).__version__
+            frontend.split("/")[1]
+            != importlib.import_module(frontend.split("/")[0]).__version__
         ):
             try:
                 # create frontend framework args
@@ -665,8 +667,7 @@ def test_frontend_function(
 
 
                 pickle_dict = {"a": args_np, "b": kwargs_np}
-                process=frontend[1]
-
+                process=frontend_proc
                 z=make_json_pickable(jsonpickle.dumps(pickle_dict))
                 try:
                     # process.stdin.write('1' + '\n')
@@ -685,7 +686,6 @@ def test_frontend_function(
                 else:
                     print(process.stderr.readlines())
                     raise Exception
-
                 if ivy.isscalar(frontend_ret):
                     frontend_ret_np_flat = [np.asarray(frontend_ret)]
                 else:
