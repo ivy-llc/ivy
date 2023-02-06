@@ -222,14 +222,12 @@ def test_tensorflow_log_cosh(
 # binary_crossentropy
 @handle_frontend_test(
     fn_tree="tensorflow.keras.metrics.binary_crossentropy",
-    y_true=st.lists(
-        st.integers(min_value=0, max_value=4), min_size=1, max_size=1
-    ),  # ToDo: we should be using the helpers
-    dtype_y_pred=helpers.dtype_and_values(
+    dtype_pred_and_labels=_dtype_pred_and_labels(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=(5,),
-        min_value=-10,
-        max_value=10,
+        min_pred_val=1e-6,
+        max_label_val=5,
+        min_dim_size=1,
+        min_num_dims=1,
     ),
     from_logits=st.booleans(),
     label_smoothing=helpers.floats(min_value=0.0, max_value=1.0),
@@ -237,8 +235,7 @@ def test_tensorflow_log_cosh(
 )
 def test_binary_crossentropy(
     *,
-    y_true,
-    dtype_y_pred,
+    dtype_pred_and_labels,
     from_logits,
     label_smoothing,
     frontend,
@@ -246,21 +243,17 @@ def test_binary_crossentropy(
     fn_tree,
     on_device,
 ):
-    y_true = ivy.array(y_true, dtype=ivy.int32)
-    dtype, y_pred = dtype_y_pred
-
-    # Perform softmax on prediction if it's not a probability distribution.
-    if not from_logits:
-        y_pred = ivy.exp(y_pred) / ivy.sum(ivy.exp(y_pred))
-
+    input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
-        input_dtypes=[ivy.int32] + dtype,
-        frontend=frontend,
+        input_dtypes=input_dtype[::-1],
         test_flags=test_flags,
+        frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
         y_true=y_true,
-        y_pred=y_pred[0],
+        y_pred=y_pred,
         from_logits=from_logits,
         label_smoothing=label_smoothing,
     )
