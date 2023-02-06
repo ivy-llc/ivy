@@ -18,8 +18,12 @@ def statistical_dtype_values(draw, *, function):
         large_abs_safety_factor = 24
         small_abs_safety_factor = 24
     n = 1
+    min_value = None
+    max_value = None
     if function == "histogram":
         n = 2
+        min_value = -20
+        max_value = 20
     available_dtypes = draw(helpers.get_dtypes("float"))
     if "bfloat16" in available_dtypes:
         available_dtypes.remove("bfloat16")
@@ -33,6 +37,8 @@ def statistical_dtype_values(draw, *, function):
             max_num_dims=5,
             min_dim_size=2,
             max_dim_size=5,
+            min_value=min_value,
+            max_value=max_value,
             valid_axis=True,
             allow_neg_axes=False,
             min_axes_size=1,
@@ -86,6 +92,8 @@ def statistical_dtype_values(draw, *, function):
         )
         bins = draw(
             helpers.array_values(
+                min_value=min_value,
+                max_value=max_value,
                 dtype=dtype,
                 large_abs_safety_factor=large_abs_safety_factor,
                 small_abs_safety_factor=small_abs_safety_factor,
@@ -99,7 +107,7 @@ def statistical_dtype_values(draw, *, function):
         bins = sorted(set(bins))
         if len(bins) == 1:
             bins = int(abs(bins[0]))
-            range = (0.0, 10.0)
+            range = (-10, 10)
         else:
             range = None
         return dtype, values, axis, dtype_out, bins, range

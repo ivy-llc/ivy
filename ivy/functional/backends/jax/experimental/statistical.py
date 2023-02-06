@@ -27,23 +27,22 @@ def histogram(
     range: Optional[Tuple[float]] = None,
     weights: Optional[jnp.ndarray] = None,
     density: Optional[bool] = False,
+    out: Optional[jnp.ndarray] = None,
 ) -> Tuple[jnp.ndarray]:
     if range:
-        bins = jnp.linspace(start=range[0], stop=range[1], num=bins + 1)
-        bin_edges = bins.copy()
+        bins = jnp.linspace(start=range[0], stop=range[1], num=bins + 1, dtype=type(a)).astype(a.dtype)
         range = None
-    else:
-        bin_edges = bins.copy()
+    bins_out = bins.copy()
     if extend_lower_interval:
-        bin_edges = bin_edges.at[0].set(-jnp.inf)
+        bins = bins.at[0].set(-jnp.inf)
     if extend_upper_interval:
-        bin_edges = bin_edges.at[-1].set(jnp.inf)
+        bins = bins.at[-1].set(jnp.inf)
     if axis is not None:
         histogram_values = jnp.apply_along_axis(
             lambda x:
             jnp.histogram(
                 a=x,
-                bins=bin_edges,
+                bins=bins,
                 range=range,
                 weights=weights,
             )[0],
@@ -52,11 +51,12 @@ def histogram(
         )
         if dtype:
             histogram_values = histogram_values.astype(dtype)
-        return histogram_values, bins
+            bins_out = bins_out.astype(dtype)
+        return histogram_values, bins_out
     else:
         ret = jnp.histogram(
             a=a,
-            bins=bin_edges,
+            bins=bins,
             range=range,
             weights=weights,
             density=density
@@ -64,7 +64,8 @@ def histogram(
         histogram_values = ret[0]
         if dtype:
             histogram_values = histogram_values.astype(dtype)
-        return histogram_values, bins
+            bins_out = bins_out.astype(dtype)
+        return histogram_values, bins_out
 
 
 def median(
