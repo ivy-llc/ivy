@@ -1,9 +1,34 @@
 # global
+from types import SimpleNamespace
 import warnings
 
 import ivy
 from ivy._version import __version__ as __version__
 import builtins
+import numpy as np
+
+try:
+    import torch
+except ImportError:
+    torch = SimpleNamespace()
+    torch.Size = SimpleNamespace()
+    torch.Tensor = SimpleNamespace()
+
+try:
+    import tensorflow as tf
+except ImportError:
+    tf = SimpleNamespace()
+    tf.TensorShape = SimpleNamespace()
+    tf.Tensor = SimpleNamespace()
+
+try:
+    import jax
+    import jaxlib
+except ImportError:
+    jax = SimpleNamespace()
+    jax.interpreters.xla._DeviceArray = SimpleNamespace()
+    jaxlib.xla_extension.DeviceArray = SimpleNamespace()
+    jax.Buffer = SimpleNamespace()
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
@@ -174,6 +199,16 @@ class Shape(tuple):
         valid_types = (int, list, tuple, ivy.Array)
         if len(backend_stack) != 0:
             valid_types += (ivy.NativeShape, ivy.NativeArray)
+        else:
+            valid_types += (
+                tf.TensorShape,
+                torch.Size,
+                jax.interpreters.xla._DeviceArray,
+                jaxlib.xla_extension.DeviceArray,
+                jax.Buffer,
+                np.ndarray,
+                tf.Tensor,
+            )
         ivy.assertions.check_isinstance(shape_tup, valid_types)
         if isinstance(shape_tup, int):
             shape_tup = (shape_tup,)

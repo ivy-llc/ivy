@@ -881,9 +881,9 @@ def _pad_helper(draw):
     mode = draw(
         st.sampled_from(
             [
-                "constant",
-                "reflect",
-                "symmetric",
+                "CONSTANT",
+                "REFLECT",
+                "SYMMETRIC",
             ]
         )
     )
@@ -915,10 +915,12 @@ def _pad_helper(draw):
 # pad
 @handle_frontend_test(
     fn_tree="tensorflow.pad",
+    aliases=["tensorflow.compat.v1.pad"],
     dtype_and_values_and_other=_pad_helper(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_pad(
+    *,
     dtype_and_values_and_other,
     frontend,
     test_flags,
@@ -1055,6 +1057,38 @@ def test_tensorflow_strided_slice(
                 assume(False)
 
 
+# slice
+@handle_frontend_test(
+    fn_tree="tensorflow.slice",
+    dtype_x_params=_strided_slice_helper(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_slice(
+    *,
+    dtype_x_params,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, begin, end, strides, masks = dtype_x_params
+    try:
+        helpers.test_frontend_function(
+            input_dtypes=dtype + 3 * ["int64"],
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            input_=x[0],
+            begin=begin,
+            size=end - begin,
+        )
+    except Exception as e:
+        if hasattr(e, "message"):
+            if "only stride 1 allowed on non-range indexing" in e.message:
+                assume(False)
+
+
 @st.composite
 def _linspace_helper(draw):
     shape = draw(
@@ -1133,13 +1167,12 @@ def test_tensorflow_linspace(
         max_value=20,
         shared_dtype=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_realdiv(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -1148,10 +1181,7 @@ def test_tensorflow_realdiv(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1159,15 +1189,15 @@ def test_tensorflow_realdiv(
         y=x[1],
     )
 
-    
+
 # tile
 @st.composite
 def _multiple_shape_helper(draw):
     input_dtype, input_array, input_shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            ret_shape=True
-        ))
+            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
+        )
+    )
     input_dims = len(input_shape)
 
     dt_n_multiples = draw(
@@ -1175,26 +1205,21 @@ def _multiple_shape_helper(draw):
             available_dtypes=["int32", "int64"],
             min_value=0,
             max_value=10,
-            shape=draw(helpers.get_shape(min_num_dims=1, max_num_dims=1,
-                                         min_dim_size=input_dims,
-                                         max_dim_size=input_dims)),
+            shape=draw(
+                helpers.get_shape(
+                    min_num_dims=1,
+                    max_num_dims=1,
+                    min_dim_size=input_dims,
+                    max_dim_size=input_dims,
+                )
+            ),
         )
     )
     return input_dtype, input_array, dt_n_multiples
 
 
-@handle_frontend_test(
-    fn_tree="tensorflow.tile",
-    all_arguments=_multiple_shape_helper()
-)
-def test_tensorflow_tile(
-    *,
-    all_arguments,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device
-):
+@handle_frontend_test(fn_tree="tensorflow.tile", all_arguments=_multiple_shape_helper())
+def test_tensorflow_tile(*, all_arguments, test_flags, frontend, fn_tree, on_device):
     input_dtype, input_matrix, dt_and_multiples = all_arguments
     dt_mul, multiples = dt_and_multiples
     helpers.test_frontend_function(
@@ -1206,7 +1231,7 @@ def test_tensorflow_tile(
         fn_tree=fn_tree,
         on_device=on_device,
     )
-    
+
 
 # one_hot
 @handle_frontend_test(
@@ -1237,4 +1262,141 @@ def test_tensorflow_one_hot(
         on_device=on_device,
         indices=x[0],
         depth=depth,
+    )
+
+
+@st.composite
+def _boolean_mask_helper(draw):
+    tensor_shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=3,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
+    )
+
+    dtype = draw(st.sampled_from(["float32", "float64"]))
+
+    # Param: tensor
+    tensor = draw(
+        helpers.array_values(
+            dtype=dtype, shape=tensor_shape, min_value=-5.0, max_value=5.0
+        ),
+    )
+    mask_dim = draw(helpers.number(min_value=1, max_value=len(tensor_shape)))
+    mask_shape = tensor_shape[:mask_dim]
+
+    # Param:stop
+    mask = draw(
+        helpers.array_values(
+            allow_none=False,
+            dtype="bool",
+            shape=mask_shape,
+        ),
+    )
+
+    return [dtype, "bool"], tensor, mask
+
+
+# boolean_mask
+@handle_frontend_test(
+    fn_tree="tensorflow.boolean_mask",
+    dtype_and_values=_boolean_mask_helper,
+)
+def test_tensorflow_boolean_mask(
+    *,
+    dtype_and_values,
+    as_variable,
+    native_array,
+    num_positional_args,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, tensor, mask = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=tensor,
+        mask=mask,
+    )
+
+
+# where
+@handle_frontend_test(
+    fn_tree="tensorflow.where",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=1,
+        min_value=0,
+        max_value=10,
+        min_num_dims=1,
+    ),
+)
+def test_tensorflow_where_no_xy(
+    *,
+    dtype_and_input,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    input_dtype, [condition] = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=condition,
+    )
+
+
+# where
+@handle_frontend_test(
+    fn_tree="tensorflow.where",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=3,
+        min_value=0,
+        max_value=10,
+        min_num_dims=1,
+    ),
+    dim_remove_from_x=st.integers(),
+    dim_remove_from_y=st.integers(),
+)
+def test_tensorflow_where_with_xy(
+    *,
+    dtype_and_input,
+    dim_remove_from_x,
+    dim_remove_from_y,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    input_dtype, [condition, x, y] = dtype_and_input
+    if input_dtype != ["bool", "bool", "bool"]:
+        return
+    for _ in range(min(len(x.shape) - 1, dim_remove_from_x)):
+        x = x[0]
+    for _ in range(min(len(y.shape) - 1, dim_remove_from_y)):
+        y = y[0]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=condition,
+        x=x,
+        y=y,
     )

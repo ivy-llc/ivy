@@ -81,41 +81,57 @@ def test_linear(
 # Dropout #
 # --------#
 
+
+@st.composite
+def _dropout_helper(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+        )
+    )
+    noise_shape = list(shape)
+    if draw(st.booleans()):
+        noise_shape = None
+    else:
+        for i, _ in enumerate(noise_shape):
+            if draw(st.booleans()):
+                noise_shape[i] = 1
+            elif draw(st.booleans()):
+                noise_shape[i] = None
+    return dtype_and_x, noise_shape
+
+
 # dropout
 @handle_test(
     fn_tree="functional.ivy.dropout",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-    ),
+    dtype_x_noiseshape=_dropout_helper(),
     prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
     training=st.booleans(),
     seed=helpers.ints(min_value=0, max_value=100),
+    dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
 )
 def test_dropout(
     *,
-    dtype_and_x,
+    dtype_x_noiseshape,
     prob,
     scale,
     training,
     seed,
+    dtype,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
-    ret = helpers.test_function(
+    (x_dtype, x), noise_shape = dtype_x_noiseshape
+    ret, gt_ret = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
+        input_dtypes=x_dtype,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -124,14 +140,16 @@ def test_dropout(
         x=x[0],
         prob=prob,
         scale=scale,
+        noise_shape=noise_shape,
         dtype=dtype[0],
         training=training,
         seed=seed,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
-    for u in ret:
+    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
-        assert u.shape == x[0].shape
+        assert u.shape == v.shape == w.shape
 
 
 # Attention #
@@ -304,7 +322,19 @@ def x_and_filters(
 ):
     if not isinstance(dim, int):
         dim = draw(dim)
-    padding = draw(st.sampled_from(["SAME", "VALID"]))
+    padding = draw(
+        st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=dim,
+                max_size=dim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
+        )
+    )
     batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
@@ -344,22 +374,25 @@ def x_and_filters(
     full_strides = [strides] * dim if isinstance(strides, int) else strides
     full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if transpose:
-        output_shape = []
         x_dim = draw(
             helpers.get_shape(
                 min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
             )
         )
-        for i in range(dim):
-            output_shape.append(
-                _deconv_length(
-                    x_dim[i],
-                    full_strides[i],
-                    filter_shape[i],
-                    padding,
-                    full_dilations[i],
+        if draw(st.booleans()):
+            output_shape = []
+            for i in range(dim):
+                output_shape.append(
+                    _deconv_length(
+                        x_dim[i],
+                        full_strides[i],
+                        filter_shape[i],
+                        padding,
+                        full_dilations[i],
+                    )
                 )
-            )
+        else:
+            output_shape = None
     else:
         x_dim = []
         for i in range(dim):
@@ -433,7 +466,9 @@ def x_and_filters(
 
 
 def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
-    if backend_fw.current_backend_str() == "tensorflow":
+    if not isinstance(backend_fw, str):
+        backend_fw = backend_fw.current_backend_str()
+    if backend_fw == "tensorflow":
         assume(
             not (
                 on_device == "cpu" and (dilations > 1)
@@ -673,6 +708,45 @@ def test_conv3d(
     )
 
 
+# conv3d_transpose
+@handle_test(
+    fn_tree="functional.ivy.conv3d_transpose",
+    x_f_d_df=x_and_filters(
+        dim=3,
+        transpose=True,
+    ),
+    ground_truth_backend="jax",
+)
+def test_conv3d_transpose(
+    *,
+    x_f_d_df,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x,
+        filters=filters,
+        strides=stride,
+        padding=pad,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
 @handle_test(
     fn_tree="functional.ivy.conv_general_dilated",
     dims=st.shared(st.integers(1, 3), key="dims"),
@@ -768,45 +842,6 @@ def test_conv_general_transpose(
         dilations=dilations,
         feature_group_count=fc,
         bias=bias,
-    )
-
-
-# conv3d_transpose
-@handle_test(
-    fn_tree="functional.ivy.conv3d_transpose",
-    x_f_d_df=x_and_filters(
-        dim=3,
-        transpose=True,
-    ),
-    ground_truth_backend="jax",
-)
-def test_conv3d_transpose(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        x=x,
-        filters=filters,
-        strides=stride,
-        padding=pad,
-        output_shape=output_shape,
-        data_format=data_format,
-        dilations=dilations,
     )
 
 
