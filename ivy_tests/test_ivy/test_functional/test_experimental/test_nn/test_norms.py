@@ -193,6 +193,7 @@ def test_lp_normalize(
     fn_name,
     on_device,
     ground_truth_backend,
+    
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_function(

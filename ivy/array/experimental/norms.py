@@ -123,7 +123,7 @@ class ArrayWithNormsExperimental(abc.ABC):
             out=out,
         )
 
-    def lp_normalize(self, p, axis=None, out=None):
+    def lp_normalize(self, /, *, p, axis=None, out=None):
         """Normalizes the array to have Lp norm.
 
         Parameters
@@ -144,7 +144,7 @@ class ArrayWithNormsExperimental(abc.ABC):
         ret
             The normalized array.
         """
-        return ivy.lp_normalize(self, p, axis=axis, out=out)
+        return ivy.lp_normalize( self, p=p, axis=axis, out=out)
 
 
 
