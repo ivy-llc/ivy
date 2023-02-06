@@ -167,7 +167,7 @@ class Array(
                 native_data = variable_data(self.data)
                 np_data = to_numpy(native_data)
                 new_arr = ivy.array(np_data)
-                self._data = _variable(new_arr.data)
+                self._data = _variable(new_arr).data
 
             else:
                 np_data = to_numpy(self.data)
