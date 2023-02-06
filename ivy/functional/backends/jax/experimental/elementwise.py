@@ -70,6 +70,7 @@ def float_power(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.float_power(x1, x2)
 
 
@@ -509,5 +510,5 @@ def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> Jax
     return js.special.xlogy(x, y)
 
 
-def real(x: Union[JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.real(x)
