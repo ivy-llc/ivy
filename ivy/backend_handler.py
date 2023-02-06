@@ -49,8 +49,6 @@ _backend_reverse_dict["ivy.functional.backends.jax"] = "jax"
 _backend_reverse_dict["ivy.functional.backends.tensorflow"] = "tensorflow"
 _backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
 
-
-_static_backend_dict = dict()
 # Backend Getting/Setting #
 # ----------------------- #
 
