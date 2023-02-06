@@ -52,6 +52,41 @@ def _assert_args_and_fn(args, kwargs, dtype, fn):
     )
 
 
+def _assert_no_scalar(args, dtype):
+    if args:
+        first_arg = args[0]
+        ivy.assertions.check_all_or_any_fn(
+            *args,
+            fn=lambda x: type(x) == type(first_arg),
+            type="all",
+            message="type of input is incompatible with dtype {}".format(dtype),
+        )
+        if ivy.exists(dtype):
+            if ivy.is_int_dtype(dtype):
+                check_dtype = int
+            elif ivy.is_float_dtype(dtype):
+                check_dtype = float
+            elif ivy.is_bool_dtype(dtype):
+                check_dtype = bool
+        ivy.assertions.check_equal(
+            type(args[0]),
+            check_dtype,
+            message="type of input is incompatible with dtype {}".format(dtype),
+        )
+
+
+def _assert_no_array(args, dtype):
+    if args:
+        first_arg = args[0]
+        fn_func = ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
+        ivy.assertions.check_all_or_any_fn(
+            *args,
+            fn=lambda x: ivy.dtype(x) == fn_func,
+            type="all",
+            message="type of input is incompatible with dtype: {}".format(dtype),
+        )
+
+
 def handle_numpy_casting(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, casting="same_kind", dtype=None, **kwargs):
@@ -83,27 +118,16 @@ def handle_numpy_casting(fn: Callable) -> Callable:
             args, lambda x: isinstance(x, (int, float, bool))
         )
         args_scalar_to_check = ivy.multi_index_nest(args, args_scalar_idxs)
-        if args_scalar_to_check:
-            ivy.map_nest_at_indices(args, args_scalar_idxs, lambda x: ivy.array(x))
-
         args_idxs = ivy.nested_argwhere(args, ivy.is_array)
         args_to_check = ivy.multi_index_nest(args, args_idxs)
         kwargs_idxs = ivy.nested_argwhere(kwargs, ivy.is_array)
         kwargs_idxs.remove(["out"]) if ["out"] in kwargs_idxs else kwargs_idxs
         kwargs_to_check = ivy.multi_index_nest(kwargs, kwargs_idxs)
-        if (args_to_check or kwargs_to_check) and (
-            casting == "no" or casting == "equiv"
-        ):
-            first_arg = args_to_check[0] if args_to_check else kwargs_to_check[0]
-            fn_func = (
-                ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
-            )
-            _assert_args_and_fn(
-                args_to_check,
-                kwargs_to_check,
-                dtype,
-                fn=lambda x: ivy.dtype(x) == fn_func,
-            )
+
+        if casting in ["no", "equiv"]:
+            _assert_no_scalar(args_scalar_to_check, dtype)
+            _assert_no_array(args_to_check, dtype)
+            # Todo: cross type check, kwargs check
         elif ivy.exists(dtype):
             assert_fn = None
             if casting == "safe":
