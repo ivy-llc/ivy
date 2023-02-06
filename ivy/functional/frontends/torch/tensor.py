@@ -364,7 +364,7 @@ class Tensor:
 
     def expand(self, *args, size=None):
         if args and size:
-            raise TypeError("reshape() got multiple values for argument 'size'")
+            raise TypeError("expand() got multiple values for argument 'size'")
         if args:
             if isinstance(args[0], (tuple, list)):
                 size = args[0]
