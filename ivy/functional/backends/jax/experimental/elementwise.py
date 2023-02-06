@@ -210,15 +210,20 @@ def allclose(
 
 
 def diff(
-    x: Union[JaxArray, int, float, list, tuple],
+    x: JaxArray,
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[JaxArray, int, float, list, tuple]] = None,
     append: Optional[Union[JaxArray, int, float, list, tuple]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x = jnp.asarray(x)
+    if isinstance(prepend, (list, tuple)):
+        prepend = jnp.asarray(prepend)
+    if isinstance(append, (list, tuple)):
+        append = jnp.asarray(append)
     return jnp.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 

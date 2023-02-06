@@ -316,11 +316,11 @@ def hypot(
 
 
 def diff(
-    x: Union[np.ndarray, int, float, list, tuple],
+    x: Union[np.ndarray, list, tuple],
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
     append: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
     out: Optional[np.ndarray] = None,

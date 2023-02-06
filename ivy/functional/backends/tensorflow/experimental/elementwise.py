@@ -297,15 +297,17 @@ def nextafter(
     {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def diff(
-    x: Union[tf.Tensor, tf.Variable, int, float, list, tuple],
+    x: Union[tf.Tensor, tf.Variable, list, tuple],
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
     append: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if n == 0:
+        return x
     if prepend is not None:
         x = tf.experimental.numpy.append(prepend, x, axis=axis)
     if append is not None:

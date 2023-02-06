@@ -840,28 +840,40 @@ def test_nextafter(
 # diff
 @handle_test(
     fn_tree="functional.ivy.experimental.diff",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=2,
-        shared_dtype=True,
+    dtype_n_x_n_axis=helpers.dtype_values_axis(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
         min_num_dims=1,
-        max_num_dims=3,
-        min_value=-100,
-        max_value=100,
-        allow_nan=False,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    n=st.integers(min_value=0, max_value=5),
+    dtype_prepend=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    dtype_append=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
     ),
     test_gradients=st.just(False),
 )
 def test_diff(
     *,
-    dtype_and_x,
+    dtype_n_x_n_axis,
+    n,
+    dtype_prepend,
+    dtype_append,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_n_x_n_axis
+    _, prepend = dtype_prepend
+    _, append = dtype_append
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -870,6 +882,10 @@ def test_diff(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        n=n,
+        axis=axis,
+        prepend=prepend[0],
+        append=append[0],
     )
 
 

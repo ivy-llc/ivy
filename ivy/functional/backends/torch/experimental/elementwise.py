@@ -290,11 +290,11 @@ logaddexp2.support_native_out = True
 
 
 def diff(
-    x: Union[torch.Tensor, int, float, list, tuple],
+    x: Union[torch.Tensor, list, tuple],
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     out: Optional[torch.Tensor] = None,
