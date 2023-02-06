@@ -33,7 +33,7 @@ def lexsort(
         return result
     for i in range(1, shape[0]):
         key = keys[i]
-        ind = key[result]
+        ind = tf.gather(key, result)
         temp = tf.argsort(ind, axis=axis, stable=True)
-        result = result[temp]
+        result = tf.gather(result, temp)
     return result

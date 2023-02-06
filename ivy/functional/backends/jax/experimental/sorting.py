@@ -17,6 +17,7 @@ def msort(
 
 
 # lexsort
+@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def lexsort(
     keys: JaxArray,
     /,
