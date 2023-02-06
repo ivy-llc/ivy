@@ -217,6 +217,15 @@ def matrix_power(
 
 matrix_power.support_native_out = True
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+def matrix_exp(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.linalg.matrix_exp(x, out=out)
+
+
+matrix_exp.support_native_out = True
+
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_rank(
