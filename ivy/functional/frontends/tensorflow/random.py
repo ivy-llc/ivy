@@ -26,6 +26,6 @@ def normal(shape, mean=0.0, stddev=1.0, dtype=ivy.float32, seed=None, name=None)
     {"2.9.0 and below": ("int8", "int16", "in32", "int64", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
-def normal(value, seed=None, name=None):
+def shuffle(value, seed=None, name=None):
     return ivy.shuffle(x=value, seed=seed, name=name)
 
