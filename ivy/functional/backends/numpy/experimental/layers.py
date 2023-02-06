@@ -90,14 +90,17 @@ def max_pool2d(
         x = np.transpose(x, (0, 2, 3, 1))
 
     x_shape = list(x.shape[1:3])
-    pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_list = padding
+    if isinstance(padding, str):
+        pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+        pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+        pad_list = [(pad_h // 2, pad_h - pad_h // 2), (pad_w // 2, pad_w - pad_w // 2)]
+
     x = np.pad(
         x,
         [
             (0, 0),
-            (pad_h // 2, pad_h - pad_h // 2),
-            (pad_w // 2, pad_w - pad_w // 2),
+            *pad_list,
             (0, 0),
         ],
         "edge",
