@@ -156,7 +156,7 @@ def _float_power(
     ret = ivy.float_power(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype
+    return ret
 
 
 @to_ivy_arrays_and_back
