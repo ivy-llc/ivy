@@ -147,6 +147,9 @@ def logical_and(x1, x2, /):
 def invert(x, /):
     return ivy.bitwise_invert(x)
 
+@to_ivy_arrays_and_back
+def isfinite(x, /):
+    return ivy.isfinite(x)
 
 @to_ivy_arrays_and_back
 def isinf(x, /):
