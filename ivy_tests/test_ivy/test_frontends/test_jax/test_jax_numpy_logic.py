@@ -603,6 +603,7 @@ def test_jax_numpy_invert(
         x=x[0],
     )
 
+
 # isfinite
 @handle_frontend_test(
     fn_tree="jax.numpy.isfinite",
@@ -628,6 +629,7 @@ def test_jax_numpy_isfinite(
         on_device=on_device,
         x=x[0],
     )
+
 
 # isinf
 @handle_frontend_test(
