@@ -64,7 +64,7 @@ def test_torch_sigmoid(
         force_int_axis=True,
         valid_axis=True,
     ),
-    dtypes=helpers.get_dtypes("float", none=True, full=False),
+    dtypes=helpers.get_dtypes("float", full=False),
 )
 def test_torch_softmax(
     *,
@@ -212,7 +212,7 @@ def test_torch_logsigmoid(
         force_int_axis=True,
         valid_axis=True,
     ),
-    dtypes=helpers.get_dtypes("float", none=True, full=False),
+    dtypes=helpers.get_dtypes("float", full=False),
 )
 def test_torch_softmin(
     *,
