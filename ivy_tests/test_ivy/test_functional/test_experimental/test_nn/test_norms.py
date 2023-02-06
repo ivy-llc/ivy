@@ -142,6 +142,7 @@ def test_instance_norm(
         track_running_stats=track_running_stats,
     )
 
+
 @handle_test(
     fn_tree="functional.ivy.experimental.l2_normalize",
     dtype_and_x=helpers.arrays_and_axes(
@@ -175,6 +176,7 @@ def test_l2_normalize(
         axis=axis,
     )
 
+#lp_normalize
 @handle_test(
     fn_tree="functional.ivy.experimental.lp_normalize",
     dtype_and_x=helpers.arrays_and_axes(

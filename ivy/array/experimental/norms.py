@@ -144,8 +144,4 @@ class ArrayWithNormsExperimental(abc.ABC):
         ret
             The normalized array.
         """
-        return ivy.lp_normalize( self, p=p, axis=axis, out=out)
-
-
-
-
+        return ivy.lp_normalize(self, p=p, axis=axis, out=out)

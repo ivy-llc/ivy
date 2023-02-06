@@ -63,7 +63,9 @@ def instance_norm(
         normalized = np.transpose(normalized, (0, 2, 3, 1))
     return normalized
 
-def lp_normalize(x: np.ndarray,  /, *, p: float = 2, axis: int = None, out=None) -> np.ndarray:
+
+def lp_normalize(x: np.ndarray, /, *, p: float = 2,
+    axis: int = None, out=None) -> np.ndarray:
     denorm = np.linalg.norm(x, axis=axis, ord=p, keepdims=True)
     denorm = np.maximum(denorm, 1e-12)
     if out is None:
@@ -71,5 +73,3 @@ def lp_normalize(x: np.ndarray,  /, *, p: float = 2, axis: int = None, out=None)
     else:
         out[:] = x / denorm
         return out
-
-

@@ -141,6 +141,7 @@ def instance_norm(
         out=out,
     )
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -180,4 +181,3 @@ def lp_normalize(
                [0.75, 1.]])
     """
     return current_backend(x).lp_normalize(x, p=p, axis=axis, out=out)
-

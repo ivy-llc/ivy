@@ -472,7 +472,7 @@ class ContainerWithNormsExperimental(ContainerBase):
     def lp_normalize(
         self,
         p: int,
-        axis: int =None,
+        axis: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
