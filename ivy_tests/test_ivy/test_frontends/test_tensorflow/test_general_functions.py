@@ -1344,7 +1344,7 @@ def test_tensorflow_where_with_xy(
         min_num_dims=1,
         max_num_dims=8,
     ),
-    axis=helpers.ints(min_value=1, max_value=10)
+    axis=helpers.ints(max_value=8)
 
 )
 def test_tensorflow_reverse(
