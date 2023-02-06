@@ -1348,7 +1348,6 @@ def test_tensorflow_where_with_xy(
         available_dtypes=helpers.get_dtypes('integer'),
         min_num_dims=1,
         max_num_dims=1,
-        dtype=["int32", "int64"],
     )
 
 )
