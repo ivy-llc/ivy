@@ -48,6 +48,7 @@ def fused_batch_norm(
             scale * (x_rest_by_depth - mean) / ivy.sqrt(variance + epsilon) + offset,
             x.shape
         )
+        variance = variance * rest_size / (rest_size - 1) if rest_size > 1 else variance
         mean = ivy.reshape(
             mean * exponential_avg_factor + old_mean * (1 - exponential_avg_factor),
             old_mean.shape
