@@ -1,31 +1,87 @@
 import ast
 import os
 import sys
+import traceback
 from ast import parse
-from importlib.util import resolve_name, module_from_spec
-from importlib.abc import SourceLoader
-from importlib.machinery import FileFinder
+from importlib.util import resolve_name, module_from_spec, spec_from_file_location
+from importlib.abc import Loader, MetaPathFinder
 
 
-class MyLoader(SourceLoader):
-    def __init__(self, fullname, path):
-        self.fullname = fullname
-        self.path = path
+def _retrive_local_modules():
+    ret = []
+    wd = sys.path[0]
+    for entry in os.scandir(wd):
+        if entry.is_file():
+            if entry.name.endswith(".py"):
+                ret.append(entry.name[:-3])
+                continue
+        if entry.is_dir():
+            if "__init__.py" in os.listdir(wd + "/" + entry.name):
+                ret.append(entry.name)
+    return ret
 
-    def get_filename(self, fullname):
-        return self.path
 
-    def get_data(self, filename):
-        with open(filename) as f:
+local_modules = _retrive_local_modules()
+
+
+class MyMetaFinder(MetaPathFinder):
+    def find_spec(self, fullname, path, target=None):
+        if fullname.partition(".")[0] not in _retrive_local_modules():
+            # print("Global", fullname, "falling back to sys import")
+            return None
+        # We're local
+        if path is None or path == "":
+            path = [sys.path[0]]  # top level import --
+        if "." in fullname:
+            *parents, name = fullname.split(".")
+        else:
+            name = fullname
+        for entry in path:
+            if os.path.isdir(os.path.join(entry, name)):
+                # this module has child modules
+                filename = os.path.join(entry, name, "__init__.py")
+                submodule_locations = [os.path.join(entry, name)]
+            else:
+                filename = os.path.join(entry, name + ".py")
+                submodule_locations = None
+            if not os.path.exists(filename):
+                continue
+            # print("Found Local", fullname)
+            return spec_from_file_location(
+                fullname,
+                filename,
+                loader=MyLoader(filename),
+                submodule_search_locations=submodule_locations,
+            )
+        # print("Couldn't find Local", fullname)
+        return None
+
+
+class MyLoader(Loader):
+    def __init__(self, filename):
+        self.filename = filename
+
+    def create_module(self, spec):
+        return None  # use default module creation semantics
+
+    def exec_module(self, module):
+        with open(self.filename) as f:
             data = f.read()
 
+        # manipulate data some way...
+        # print("Calling custom loader on ", module)
         ast_tree = parse(data)
         transformer = ImportTransformer()
         transformer.visit_ImportFrom(ast_tree)
         transformer.visit_Import(ast_tree)
         transformer.impersonate_import(ast_tree)
         ast.fix_missing_locations(ast_tree)
-        return ast.unparse(ast_tree)
+        try:
+            exec(ast.unparse(ast_tree), module.__dict__)
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+            raise e
 
 
 IMPORT_CACHE = {}
@@ -103,14 +159,11 @@ def _ivy_import_module(name, package=None):
         parent_name, _, child_name = absolute_name.rpartition(".")
         parent_module = _ivy_import_module(parent_name)
         path = parent_module.__spec__.submodule_search_locations
-    # TODO We can override this to use our meta path without overriding sys.meta
-    for finder in sys.meta_path:
-        spec = finder.find_spec(absolute_name, path)
-        if spec is not None:
-            break
-    else:
+    spec = my_finder.find_spec(absolute_name, path)
+    if spec is None:
         msg = f"No module named {absolute_name!r}"
         raise ModuleNotFoundError(msg, name=absolute_name)
+    # print(spec, name)
     module = module_from_spec(spec)
     IMPORT_CACHE[absolute_name] = module
     spec.loader.exec_module(module)
@@ -118,24 +171,6 @@ def _ivy_import_module(name, package=None):
         # Set reference to self in parent, if exist
         setattr(parent_module, child_name, module)
     return module
-
-
-def _retrive_local_modules():
-    ret = []
-    wd = os.getcwd()
-    for entry in os.scandir(wd):
-        if entry.is_file():
-            if entry.name.endswith(".py"):
-                ret.append(entry.name[:-3])
-                continue
-
-        if entry.is_dir():
-            if "__init__.py" in os.listdir(wd + "/" + entry.name):
-                ret.append(entry.name)
-    return ret
-
-
-local_modules = _retrive_local_modules()
 
 
 def parse_absolute_fromimport(node: ast.ImportFrom):
@@ -298,12 +333,12 @@ class ImportTransformer(ast.NodeTransformer):
         return tree
 
 
-def compile_backend(backend: str):
-    loader_details = (MyLoader, [".py"])
-    finder = FileFinder.path_hook(loader_details)
-    sys.path_hooks.insert(0, finder)
-    sys.path_importer_cache.clear()
+my_finder = MyMetaFinder()
+
+
+def with_backend(backend: str):
+    sys.meta_path.insert(0, my_finder)
     ivy_pack = _ivy_import_module("ivy")
     ivy_pack.set_backend(backend)
-    sys.path_hooks.remove(finder)
+    # TODO remove access to global stuff
     return ivy_pack
