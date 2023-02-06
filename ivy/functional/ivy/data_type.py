@@ -97,7 +97,7 @@ def _get_function_list(func):
                 if (
                     hasattr(nodef, "value")
                     and hasattr(nodef.value, "id")
-                    and nodef.value.id != "ivy"
+                    and nodef.value.id not in ["ivy", "self"]
                 ):
                     continue
                 names[nodef.attr] = getattr(
@@ -1895,7 +1895,9 @@ def is_uint_dtype(
         return isinstance(dtype_in, np.unsignedinteger)
     elif isinstance(dtype_in, (list, tuple, dict)):
         return ivy.nested_argwhere(
-            dtype_in, lambda x: isinstance(x, np.unsignedinteger)
+            dtype_in,
+            lambda x: isinstance(x, np.unsignedinteger)
+            or (ivy.is_array(x) and "uint" in ivy.dtype(x)),
         )
     return "uint" in as_ivy_dtype(dtype_in)
 
@@ -1938,7 +1940,9 @@ def is_complex_dtype(
         return isinstance(dtype_in, (complex, np.complexfloating))
     elif isinstance(dtype_in, (list, tuple, dict)):
         return ivy.nested_argwhere(
-            dtype_in, lambda x: isinstance(x, (complex, np.complexfloating))
+            dtype_in,
+            lambda x: isinstance(x, (complex, np.complexfloating))
+            or (ivy.is_array(x) and "complex" in ivy.dtype(x)),
         )
     return "complex" in as_ivy_dtype(dtype_in)
 

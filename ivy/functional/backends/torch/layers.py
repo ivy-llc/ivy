@@ -21,7 +21,7 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations):
             for i in range(dims)
         ]
         pad_specific = [
-            _handle_padding(x.shape[2+i], strides[i], filter_shape[i], padding)
+            _handle_padding(x.shape[2 + i], strides[i], filter_shape[i], padding)
             for i in range(dims - 1, -1, -1)
         ]
         pad_list_top = [pad_specific[i] // 2 for i in range(dims)]
@@ -34,7 +34,9 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations):
     return torch.nn.functional.pad(x, pad_list)
 
 
-def _pad_before_conv_tranpose(x, filters, strides, padding, dims, dilations, output_shape, filter_shape):
+def _pad_before_conv_tranpose(
+    x, filters, strides, padding, dims, dilations, output_shape, filter_shape
+):
     if output_shape is None:
         out_shape = [
             _deconv_length(
@@ -63,7 +65,10 @@ def _pad_before_conv_tranpose(x, filters, strides, padding, dims, dilations, out
                 not_valid_pad[i] = True
         padding_list = [pad_specific[i] // 2 for i in range(dims)]
     out_shape = [
-        (x.shape[i + 2] - 1) * strides[i] - 2 * padding_list[i] + dilations[i] * (filters.shape[i + 2] - 1) + 1
+        (x.shape[i + 2] - 1) * strides[i]
+        - 2 * padding_list[i]
+        + dilations[i] * (filters.shape[i + 2] - 1)
+        + 1
         for i in range(dims)
     ]
     output_padding = [max(output_shape[i + 1] - out_shape[i], 0) for i in range(dims)]
@@ -361,7 +366,7 @@ def conv_general_dilated(
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
     for i in range(dims):
         if x_dilations[i] > 1:
-            h = x.shape[2+i]
+            h = x.shape[2 + i]
             new_height = h + (h - 1) * (x_dilations[i] - 1)
             h = torch.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
             x = torch.swapaxes(x, 2 + i, -1)

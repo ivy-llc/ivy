@@ -587,3 +587,50 @@ def test_torch_kl_div(
         reduction=reduction,
         log_target=log_target,
     )
+
+
+# margin ranking loss
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.margin_ranking_loss",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+    margin=st.floats(),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
+    test_with_out=st.just(False),
+)
+def test_torch_margin_ranking_loss(
+    *,
+    dtype_and_inputs,
+    margin,
+    size_average,
+    reduce,
+    reduction,
+    test_flags,
+    fn_tree,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_inputs
+    input1_dtype, input1 = input_dtype[0], x[0]
+    input2_dtype, input2 = input_dtype[1], x[1]
+    tar_dtype, tar = input_dtype[2], x[2]
+    helpers.test_frontend_function(
+        input_dtypes=[input1_dtype, input2_dtype, tar_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input1=input1,
+        input2=input2,
+        target=tar,
+        margin=margin,
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction,
+    )

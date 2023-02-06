@@ -132,11 +132,11 @@ class ArrayWithManipulationExperimental(abc.ABC):
 
     def vstack(
         self: ivy.Array,
-        /,
         arrays: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -154,15 +154,21 @@ class ArrayWithManipulationExperimental(abc.ABC):
                        [5, 6],
                        [7, 8]])
         """
-        return ivy.vstack(self.concat(arrays), out=out)
+        if not isinstance(arrays, (list, tuple)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.vstack(x, out=out)
 
     def hstack(
         self: ivy.Array,
-        /,
         arrays: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -179,7 +185,13 @@ class ArrayWithManipulationExperimental(abc.ABC):
         ivy.array([1, 2, 5, 6, 7, 8])
 
         """
-        return ivy.hstack(self.concat(arrays), out=out)
+        if not isinstance(arrays, (list, tuple)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data,) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.hstack(x, out=out)
 
     def rot90(
         self: ivy.Array,
@@ -493,9 +505,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         indices_or_sections: Union[int, Tuple[int]],
         /,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+    ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.vsplit. This method simply
         wraps the function, and so the docstring for ivy.vsplit also applies
@@ -513,8 +523,6 @@ class ArrayWithManipulationExperimental(abc.ABC):
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
-        out
-            Optional output, for writing the result to.
 
         Returns
         -------
@@ -532,15 +540,13 @@ class ArrayWithManipulationExperimental(abc.ABC):
         >>> ary.vsplit(2)
         [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
         """
-        return ivy.vsplit(self._data, indices_or_sections=indices_or_sections, out=out)
+        return ivy.vsplit(self._data, indices_or_sections)
 
     def dsplit(
         self: ivy.Array,
-        indices_or_sections: Union[int, Tuple[int]],
+        indices_or_sections: Union[int, Tuple[int, ...]],
         /,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+    ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.dsplit. This method simply
         wraps the function, and so the docstring for ivy.dsplit also applies
@@ -558,8 +564,6 @@ class ArrayWithManipulationExperimental(abc.ABC):
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
-        out
-            Optional output, for writing the result to.
 
         Returns
         -------
@@ -578,7 +582,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
         [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
         ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
         """
-        return ivy.dsplit(self._data, indices_or_sections=indices_or_sections, out=out)
+        return ivy.dsplit(self._data, indices_or_sections)
 
     def atleast_1d(
         self: ivy.Array, *arys: Union[ivy.Array, bool, Number]
@@ -612,11 +616,11 @@ class ArrayWithManipulationExperimental(abc.ABC):
 
     def dstack(
         self: ivy.Array,
-        /,
         arrays: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -634,7 +638,13 @@ class ArrayWithManipulationExperimental(abc.ABC):
                     [2, 3],
                     [3, 4]]])
         """
-        return ivy.dstack(self.concat(arrays), out=out)
+        if not isinstance(arrays, (list, tuple)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data,) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.dstack(x, out=out)
 
     def atleast_2d(self: ivy.Array, *arys: ivy.Array) -> List[ivy.Array]:
         """
@@ -740,11 +750,9 @@ class ArrayWithManipulationExperimental(abc.ABC):
 
     def hsplit(
         self: ivy.Array,
-        indices_or_sections: Union[int, Tuple[int]],
+        indices_or_sections: Union[int, Tuple[int, ...]],
         /,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+    ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.hsplit. This method simply
         wraps the function, and so the docstring for ivy.hsplit also applies
@@ -755,20 +763,15 @@ class ArrayWithManipulationExperimental(abc.ABC):
         self
             Input array.
         indices_or_sections
-            If indices_or_sections is an integer n, the array is split into n sections.
-            If the array is divisible by n horizontally, each section will be of
-            equal size. If input is not divisible by n, the sizes of the first
-            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
-            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is an integer n, the array is split into n
+            equal sections, provided that n must be a divisor of the split axis.
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
-        out
-            Optional output, for writing the result to.
 
         Returns
         -------
         ret
-            input array split horizontally.
+            list of arrays split horizontally from input array.
 
         Examples
         --------
@@ -788,4 +791,23 @@ class ArrayWithManipulationExperimental(abc.ABC):
                     [10., 11.],
                     [14., 15.]]))
         """
-        return ivy.hsplit(self._data, indices_or_sections, out=out)
+        return ivy.hsplit(self._data, indices_or_sections)
+
+    def expand(
+        self: ivy.Array,
+        shape: Union[ivy.Shape, ivy.NativeShape],
+        /,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+
+        Parameters
+        ----------
+        shape
+        device
+        out
+
+        """
+        return ivy.expand(self._data, shape, device=device, out=out)
