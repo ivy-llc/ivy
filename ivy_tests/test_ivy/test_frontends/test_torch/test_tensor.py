@@ -4,7 +4,6 @@ import pytest
 import ivy
 import torch
 from hypothesis import strategies as st, given
-import hypothesis.extra.numpy as hnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -2248,15 +2247,18 @@ def test_torch_instance_new_empty(
 
 @st.composite
 def _expand_helper(draw):
-    shape, _ = draw(hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=2))
-    shape1, shape2 = shape
-    dtype_x = draw(
+    dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid", full=True), shape=shape1
+            available_dtypes=helpers.get_dtypes("valid"),
+            ret_shape=True
         )
     )
-    dtype, x = dtype_x
-    return dtype, x, shape1
+    # randomly expand singleton dimensions
+    new_shape = list(shape)
+    for i, v in enumerate(new_shape):
+        if v == 1 and st.booleans():
+            new_shape[i] = draw(st.integers(min_value=2, max_value=10))
+    return dtype, x, new_shape
 
 
 @handle_frontend_method(
