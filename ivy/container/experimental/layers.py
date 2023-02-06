@@ -1351,3 +1351,58 @@ class ContainerWithLayersExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_adagrad(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        x
+        
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "adagrad",
+            x,
+          
+        )
+
+    def adagrad(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: int = 1,
+        inverse: bool = False,
+        onesided: bool = False,
+        dft_length: Optional[Union[int, Tuple[int]]] = None,
+        norm: Optional[str] = "backward",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        axis
+        inverse
+        onesided
+        dft_length
+        norm
+        key_chains
+        to_apply
+        prune_unapplied
+        map_sequences
+        out
+
+        """
+        return self.static_adagrad(
+            
+        )

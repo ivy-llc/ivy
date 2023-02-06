@@ -435,20 +435,9 @@ def test_embedding(
 )
 def test_dft(
     *,
-    d_xfft_axis_n_length,
-    d_xifft_axis_n_length,
-    inverse,
-    onesided,
-    test_flags,
-    backend_fw,
-    fn_name,
-    ground_truth_backend,
+   
 ):
-    if inverse:
-        dtype, x, axis, norm, dft_length = d_xifft_axis_n_length
-    else:
-        dtype, x, axis, norm, dft_length = d_xfft_axis_n_length
-
+   
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -463,4 +452,17 @@ def test_dft(
         norm=norm,
         rtol_=1e-2,
         atol_=1e-2,
+    )
+
+@handle_test(
+    fn_tree="adagrad",
+    
+)
+def test_adagrad(
+    *,
+   
+):
+   
+    helpers.test_function(
+       
     )
