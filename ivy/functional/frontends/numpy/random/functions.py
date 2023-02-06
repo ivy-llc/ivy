@@ -71,9 +71,10 @@ def permutation(x):
         ivy.random.shuffle(new_array)
         return new_array
     elif isinstance(x, str):
-        return "IndexError: x must be an integer " \
-               "or at least 1-dimensional"
-    else:
+        raise ValueError("x must be an integer or at least 1-dimensional")
+    elif x.ndim > 0:
         new_array = x
         ivy.random.shuffle(new_array)
         return new_array
+    else:
+        raise ValueError("x must be an integer or at least 1-dimensional")
