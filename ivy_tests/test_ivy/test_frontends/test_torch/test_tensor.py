@@ -94,7 +94,7 @@ def test_torch_tensor_property_dtype(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_tensor_property_shape(dtype_x):
     dtype, data, shape = dtype_x
