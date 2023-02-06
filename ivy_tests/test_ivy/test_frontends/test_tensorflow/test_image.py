@@ -4,7 +4,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.image.resize", 
+    fn_tree="tensorflow.image.resize",   
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ), 
