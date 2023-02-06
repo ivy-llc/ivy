@@ -65,11 +65,11 @@ def instance_norm(
 
 
 def lp_normalize(x: np.ndarray, /, *, p: float = 2,
-    axis: int = None, out=None) -> np.ndarray:
-    denorm = np.linalg.norm(x, axis=axis, ord=p, keepdims=True)
-    denorm = np.maximum(denorm, 1e-12)
-    if out is None:
-        return x / denorm
-    else:
-        out[:] = x / denorm
-        return out
+        axis: int = None, out=None) -> np.ndarray:
+        denorm = np.linalg.norm(x, axis=axis, ord=p, keepdims=True)
+        denorm = np.maximum(denorm, 1e-12)
+        if out is None:
+            return x / denorm
+        else:
+            out[:] = x / denorm
+            return out
