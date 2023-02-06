@@ -42,8 +42,8 @@ def histogram(
         edges=bins,
         axis=axis,
         weights=weights,
-        extend_upper_interval=extend_upper_interval,
         extend_lower_interval=extend_lower_interval,
+        extend_upper_interval=extend_upper_interval,
         dtype=dtype,
         name="histogram",
     )

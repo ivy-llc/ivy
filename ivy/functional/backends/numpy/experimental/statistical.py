@@ -39,17 +39,36 @@ def histogram(
         bins[0] = -np.inf
     if extend_upper_interval:
         bins[-1] = np.inf
-    if axis is not None:
-        histogram_values = np.apply_along_axis(
-            lambda x: np.histogram(
-                a=x,
-                bins=bins,
-                range=range,
-                weights=weights,
-            )[0],
-            axis,
-            a,
-        )
+    if axis is None:
+        axis = 0
+    if a.ndim > 0:
+        if weights is not None:
+            a_is, a_ks = a.shape[:axis], a.shape[axis + 1:]
+            weights_is, weights_ks = weights.shape[:axis], weights.shape[axis + 1:]
+            out_shape = list(a.shape)
+            out_shape[axis] = np.array(bins).size - 1
+            histogram_values = np.zeros(shape=out_shape)
+            for a_i, weights_i in zip(np.ndindex(a_is), np.ndindex(weights_is)):
+                for a_k, weights_k in zip(np.ndindex(a_ks), np.ndindex(weights_ks)):
+                    f = np.histogram(
+                        a[a_i + np.s_[:, ] + a_k],
+                        bins=bins,
+                        range=range,
+                        weights=weights[weights_i + np.s_[:, ] + weights_k],
+                    )[0]
+                    f_js = f.shape
+                    for f_j in np.ndindex(f_js):
+                        histogram_values[a_i + f_j + a_k] = f[f_j]
+        else:
+            histogram_values = np.apply_along_axis(
+                lambda x: np.histogram(
+                    a=x,
+                    bins=bins,
+                    range=range,
+                )[0],
+                axis,
+                a,
+            )
         if dtype:
             histogram_values = histogram_values.astype(dtype)
             bins_out = np.array(bins_out).astype(dtype)
