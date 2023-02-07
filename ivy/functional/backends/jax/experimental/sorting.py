@@ -3,7 +3,6 @@ import jax.numpy as jnp
 from typing import Optional, Union
 
 # local
-import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
 from . import backend_version
@@ -20,7 +19,7 @@ def msort(
 
 
 # lexsort
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16", "float16",)}, backend_version)
+@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def lexsort(
     keys: JaxArray,
     /,
