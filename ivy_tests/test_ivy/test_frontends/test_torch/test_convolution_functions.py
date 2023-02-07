@@ -42,13 +42,6 @@ def x_and_filters(
                 st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
             )
         )
-    if transpose:
-        output_padding = draw(
-            st.one_of(
-                st.integers(min_value=1, max_value=3),
-                st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
-            )
-        )
     batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
@@ -145,6 +138,15 @@ def x_and_filters(
             )
         )
         if transpose:
+            output_padding = draw(st.lists(
+                st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim)
+            )
+            for i, p in enumerate(output_padding):
+                m = min(full_strides[i], full_dilations[i])
+                if p >= m:
+                    output_padding[i] = m - 1
+            if draw(st.booleans()):
+                output_padding = min(output_padding)
             return dtype, vals, filters, bias, dilations, strides, padding, output_padding, fc
         else:
             return dtype, vals, filters, bias, dilations, strides, padding, fc
@@ -241,16 +243,38 @@ def test_torch_conv3d(
     )
 
 
-@st.composite
-def _int_or_tuple(draw, min_val, max_val):
-    val = draw(
-        st.one_of(
-            st.integers(min_val, max_val),
-            st.tuples(
-                st.integers(min_val, max_val),
-                st.integers(min_val, max_val),
-            ),
-        )
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.conv_transpose1d",
+    dtype_vals=x_and_filters(dim=1, transpose=True),
+)
+def test_torch_conv_tranpose1d(
+    *,
+    dtype_vals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
+    # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=vals,
+        weight=weight,
+        bias=bias,
+        stride=1,
+        # stride=strides,
+        padding=0,
+        # padding=padding,
+        output_padding=0,
+        # output_padding=output_pad,
+        groups=fc,
+        dilation=dilations,
     )
     return val
 

@@ -192,12 +192,46 @@ def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
 @with_unsupported_dtypes(
     {
         "1.11.0 and below": (
-            "uint8",
-            "integer",
+            "float16",
+            "bfloat16",
         )
     },
     "torch",
 )
+@to_ivy_arrays_and_back
+def conv_transpose1d(input, weight, bias=None, stride=1, padding=0, output_padding=0, groups=1, dilation=1):
+    _valid_shapes(input, weight, bias, stride, padding, groups, transpose=True)
+
+    if type(padding) == str:
+        padding = padding.upper()
+    else:
+        _pad_w = padding if isinstance(padding, int) else padding[0]
+        padding = [(_pad_w, _pad_w)]
+
+    weight = ivy.permute_dims(weight, axes=(2, 0, 1))
+
+    ret = ivy.conv_general_transpose(
+        input,
+        weight,
+        stride,
+        padding,
+        dims=1,
+        data_format="channel_first",
+        dilations=dilation,
+        feature_group_count=groups,
+    )
+
+    if bias is not None:
+        ret = ivy.add(ret, ivy.expand_dims(bias, axis=(0, 2)))
+
+    _out_pad_w = output_padding if isinstance(output_padding, int) else output_padding[0]
+    ret = ivy.zero_pad(
+        ret,
+        pad_width=[(0, 0), (0, 0), (_out_pad_w,) * 2],
+    )
+    return ret
+
+
 @to_ivy_arrays_and_back
 def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
     if input.ndim != 4:
