@@ -847,6 +847,8 @@ def test_torch_tensorsolve(
         A=A,
         B=B,
     )
+    
+    
 @handle_frontend_test(
     fn_tree="torch.linalg.matmul",
     dtype_x=helpers.dtype_and_values(
@@ -856,7 +858,6 @@ def test_torch_tensorsolve(
         shared_dtype=True) ,
     test_with_out = st.just(False),
 )
-
 def test_torch_matmul(
     *,
     dtype_x,
@@ -872,4 +873,5 @@ def test_torch_matmul(
         on_device=on_device,
         test_flags=test_flags,
         input=x[0],
-        other=x[1])
+        other=x[1],
+    )
