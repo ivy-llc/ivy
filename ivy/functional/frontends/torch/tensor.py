@@ -492,6 +492,11 @@ class Tensor:
     def ceil(self):
         return torch_frontend.ceil(self._ivy_array)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def ceil_(self):
+        self._ivy_array = self.ceil().ivy_array
+        return self
+
     def min(self, dim=None, keepdim=False):
         return torch_frontend.min(self._ivy_array, dim=dim, keepdim=keepdim)
 

@@ -2249,8 +2249,7 @@ def test_torch_instance_new_empty(
 def _expand_helper(draw):
     dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            ret_shape=True
+            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
         )
     )
     # randomly expand singleton dimensions
@@ -3217,6 +3216,37 @@ def test_torch_instance_argsort(
     ),
 )
 def test_torch_instance_ceil(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# ceil_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="ceil_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_ceil_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
