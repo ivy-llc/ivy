@@ -127,7 +127,7 @@ if __name__ == "__main__":
             )
 
             frontend_ret = frontend_fw.__dict__[func](*args_frontend, **kwargs_frontend)
-            frontend_ret = ivy.to_ivy(frontend_ret)
+            frontend_ret = ivy.to_numpy(frontend_ret)
             frontend_ret = jsonpickle.dumps(frontend_ret)
             print(frontend_ret)
         except EOFError:

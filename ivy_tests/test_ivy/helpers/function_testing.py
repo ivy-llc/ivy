@@ -11,7 +11,26 @@ try:
     import jsonpickle
 except:
     pass
-import subprocess
+
+
+def framework_comparator(frontend):
+    if frontend.split("/")[0] == "jax":
+        fw = frontend.split("/")[1] + frontend.split("/")[3]
+        backend_fw = (
+            importlib.import_module("jax").__version__
+            + importlib.import_module("jaxlib").__version__
+        )
+        return backend_fw == fw
+    elif frontend.split("/")[0] == "torch":
+        return (
+            frontend.split("/")[1]
+            == importlib.import_module(frontend.split("/")[1]).__version__.split("+")[0]
+        )
+    else:
+        return (
+            frontend.split("/")[1]
+            == importlib.import_module(frontend.split("/")[1]).__version__
+        )
 
 
 try:
@@ -44,8 +63,8 @@ available_frameworks = available_frameworkss()
 
 
 def make_json_pickable(s):
-    s=s.replace('builtins.bfloat16','ivy.bfloat16')
-    s=s.replace('jax._src.device_array.reconstruct_device_array','jax.numpy.array')
+    s = s.replace("builtins.bfloat16", "ivy.bfloat16")
+    s = s.replace("jax._src.device_array.reconstruct_device_array", "jax.numpy.array")
     return s
 
 
@@ -498,8 +517,8 @@ def test_frontend_function(
 
     # frontend function
     # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
-    if isinstance(frontend,list):
-        frontend,frontend_proc=frontend
+    if isinstance(frontend, list):
+        frontend, frontend_proc = frontend
     split_index = fn_tree.rfind(".")
     frontend_submods, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
     function_module = importlib.import_module(frontend_submods)
@@ -620,67 +639,28 @@ def test_frontend_function(
         # multiversion zone, changes made in non-multiversion zone should
         # be applied here too
 
-        if (
-            frontend.split("/")[1]
-            != importlib.import_module(frontend.split("/")[0]).__version__
-        ):
+        if not framework_comparator(frontend):
             try:
-                # create frontend framework args
-                args_frontend = ivy.nested_map(
-                    args_np,
-                    lambda x: ivy.native_array(x)
-                    if isinstance(x, np.ndarray)
-                    else ivy.as_native_dtype(x)
-                    if isinstance(x, ivy.Dtype)
-                    else x,
-                    shallow=False,
-                )
-                kwargs_frontend = ivy.nested_map(
-                    kwargs_np,
-                    lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
-                    shallow=False,
-                )
-
-                # change ivy dtypes to native dtypes
-                if "dtype" in kwargs_frontend:
-                    kwargs_frontend["dtype"] = ivy.as_native_dtype(
-                        kwargs_frontend["dtype"]
-                    )
-
-                # change ivy device to native devices
-                if "device" in kwargs_frontend:
-                    kwargs_frontend["device"] = ivy.as_native_dev(
-                        kwargs_frontend["device"]
-                    )
-
-                # check and replace the NativeClass objects in arguments
-                # with true counterparts
-                args_frontend = ivy.nested_map(
-                    args_frontend, fn=convtrue, include_derived=True, max_depth=10
-                )
-                kwargs_frontend = ivy.nested_map(
-                    kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
-                )
 
                 # compute the return via the frontend framework
                 module_name = fn_tree[25 : fn_tree.rfind(".")]
 
-
                 pickle_dict = {"a": args_np, "b": kwargs_np}
-                process=frontend_proc
-                z=make_json_pickable(jsonpickle.dumps(pickle_dict))
+                process = frontend_proc
+                z = make_json_pickable(jsonpickle.dumps(pickle_dict))
                 try:
                     # process.stdin.write('1' + '\n')
-                    process.stdin.write( z+ '\n')
-                    process.stdin.write( module_name+ '\n')
-                    process.stdin.write(fn_name + '\n')
+                    process.stdin.write(z + "\n")
+                    process.stdin.write(module_name + "\n")
+                    process.stdin.write(fn_name + "\n")
                     process.stdin.flush()
                 except Exception as e:
-                    print("Something bad happened to the subprocess, here are the logs:\n\n")
+                    print(
+                        "Something bad happened to the subprocess, here are the logs:\n\n"
+                    )
                     print(process.stdout.readlines())
                     raise e
                 frontend_ret = process.stdout.readline()
-
                 if frontend_ret:
                     frontend_ret = jsonpickle.loads(make_json_pickable(frontend_ret))
                 else:
@@ -689,17 +669,18 @@ def test_frontend_function(
                 if ivy.isscalar(frontend_ret):
                     frontend_ret_np_flat = [np.asarray(frontend_ret)]
                 else:
+                    frontend_ret = ivy.to_ivy(frontend_ret)
+                    print(type(frontend_ret))
                     # tuplify the frontend return
                     if not isinstance(frontend_ret, tuple):
                         frontend_ret = (frontend_ret,)
                     frontend_ret_idxs = ivy.nested_argwhere(
-                        frontend_ret, lambda x: ivy.is_native_array(x)  or ivy.is_ivy_array(x)
+                        frontend_ret, lambda x: isinstance(x, np.ndarray)
                     )
                     frontend_ret_flat = ivy.multi_index_nest(
                         frontend_ret, frontend_ret_idxs
                     )
                     frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
-
 
             except Exception as e:
                 ivy.unset_backend()
