@@ -13,6 +13,8 @@ Func wrapper
    :maxdepth: -1
    :caption: Func wrapper
 
+   func_wrapper/try_array_function_override.rst
+   func_wrapper/handle_array_function.rst
    func_wrapper/handle_array_like_without_promotion.rst
    func_wrapper/inputs_to_native_arrays.rst
    func_wrapper/inputs_to_ivy_arrays.rst

@@ -56,6 +56,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#native-array">Native Array</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-array">Ivy Array</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#array-handling">Array Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integrating-custom-classes-with-ivy">Integrating custom classes with Ivy</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
@@ -236,6 +237,70 @@ This is further explained in the <a class="reference internal" href="inplace_upd
 If the first line of code in a compositional function performs operations on the input array, then this will call the special methods on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> and not on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
 For the reasons explained above, this would be a problem.</p>
 <p>Therefore, all compositional functions have a separate piece of <a class="reference external" href="https://github.com/unifyai/ivy/blob/6a729004c5e0db966412b00aa2fce174482da7dd/ivy/func_wrapper.py#L95">wrapped logic</a> to ensure that all <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are converted to <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances before entering into the compositional function.</p>
+</section>
+<section id="integrating-custom-classes-with-ivy">
+<h2>Integrating custom classes with Ivy<a class="headerlink" href="#integrating-custom-classes-with-ivy" title="Permalink to this heading"></a></h2>
+<p>Ivy’s functional API and its functions can easily be integrated with non-Ivy classes. Whether these classes are ones that inherit from Ivy or completely standalone custom classes, using Ivy’s <code class="code docutils literal notranslate"><span class="pre">__array_function__</span></code>, Ivy’s functions can handle inputs of those types.</p>
+<p>To make use of that feature, the class must contain an implementation for these functions and it must contain an implementation for the function <code class="code docutils literal notranslate"><span class="pre">__array_function__</span></code>. If a non-Ivy class is passed to an Ivy function, a call to this class’s <code class="code docutils literal notranslate"><span class="pre">__array_function__</span></code> is made which directs Ivy’s function to handle that input type correctly. This allows users to define custome implementations for any of the functions that can be found in Ivy’s functional API which would further make it easy to integrate those classes with other Ivy projects.</p>
+<p><strong>Note</strong>
+This functionality is inspired by <a class="reference external" href="https://numpy.org/doc/stable/user/basics.dispatch.html#basics-dispatch">NumPy’s</a> <code class="code docutils literal notranslate"><span class="pre">__array_function__</span></code> and <a class="reference external" href="https://pytorch.org/docs/stable/notes/extending.html#extending-torch">PyTorch’s</a> <code class="code docutils literal notranslate"><span class="pre">__torch_function__</span></code>.</p>
+<p>As an example, consider the following class <code class="code docutils literal notranslate"><span class="pre">MyArray</span></code> with the following definition:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyArray</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+</pre></div>
+</div>
+<p>Running any of Ivy’s functions using a <code class="code docutils literal notranslate"><span class="pre">MyArray</span></code> object as input will throw an <code class="code docutils literal notranslate"><span class="pre">IvyBackendException</span></code> since Ivy’s functions do not support this class type as input. This is where <code class="code docutils literal notranslate"><span class="pre">__array_function__</span></code> comes into play. Let’s add the method to our <code class="code docutils literal notranslate"><span class="pre">MyArray</span></code> class to see how it works.</p>
+<p>There are different ways to do so. One way is to use a global dict <code class="code docutils literal notranslate"><span class="pre">HANDLED_FUNCTIONS</span></code>  which will map Ivy’s functions to the custom variant functions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">HANDLED_FUNCTIONS</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyArray</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">def</span> <span class="nf">__array_function__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="k">if</span> <span class="n">func</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">HANDLED_FUNCTIONS</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>                    <span class="k">return</span> <span class="bp">NotImplemented</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="n">MyArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">types</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>                    <span class="k">return</span> <span class="bp">NotImplemented</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="k">return</span> <span class="n">HANDLED_FUNCTIONS</span><span class="p">[</span><span class="n">func</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="code docutils literal notranslate"><span class="pre">__array_function__</span></code> accepts four parameters: <code class="code docutils literal notranslate"><span class="pre">func</span></code> representing a reference to the array API function being
+overridden, <code class="code docutils literal notranslate"><span class="pre">types</span></code> a list of the types of objects implementing <code class="code docutils literal notranslate"><span class="pre">__array_function__</span></code>, <code class="code docutils literal notranslate"><span class="pre">args</span></code> a tuple of arguments supplied to the function, and <code class="code docutils literal notranslate"><span class="pre">kwargs</span></code> being a dictionary of keyword arguments passed to the function.
+While this class contains an implementation for <code class="code docutils literal notranslate"><span class="pre">__array_function__</span></code>, it is still not enough as it is necessary to implement any needed Ivy functions with the new <code class="code docutils literal notranslate"><span class="pre">MyArray</span></code> class as input(s) for the code to run successfully.
+We will define a decorator function <code class="code docutils literal notranslate"><span class="pre">implements</span></code> that can be used to add functions to <code class="code docutils literal notranslate"><span class="pre">HANDLED_FUNCTIONS</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">implements</span><span class="p">(</span><span class="n">ivy_function</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">HANDLED_FUNCTIONS</span><span class="p">[</span><span class="n">ivy_function</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="k">return</span> <span class="n">func</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">decorator</span>
+</pre></div>
+</div>
+<p>Lastly, we need to apply that decorator to the override function. Let’s consider for example a function that overrides <code class="code docutils literal notranslate"><span class="pre">ivy.abs</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@implements</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">abs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">my_abs</span><span class="p">(</span><span class="n">my_array</span><span class="p">,</span> <span class="n">ivy_array</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">my_array</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">my_array</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now that we have added the function to <code class="code docutils literal notranslate"><span class="pre">HANDLED_FUNCTIONS</span></code>, we can now use <code class="code docutils literal notranslate"><span class="pre">ivy.abs</span></code> with <code class="code docutils literal notranslate"><span class="pre">MyArray</span></code> objects:
+.. code-block:: python</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span>    <span class="n">X</span> <span class="o">=</span> <span class="n">MyArray</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">X</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Of course <code class="code docutils literal notranslate"><span class="pre">ivy.abs</span></code> is an example of a function that is easy to override since it only requires one operand. The same approach can be used to override functions with multiple operands, including arrays or array-like objects that define <code class="code docutils literal notranslate"><span class="pre">__array_function__</span></code>.</p>
+<p>It is relevant to mention again that any function not stored inside the dict <code class="code docutils literal notranslate"><span class="pre">HANDLED_FUNCTIONS</span></code> will not work and it is also important to notice that the operands passed to the function must match that of the function stored in the dict. For instance <code class="code docutils literal notranslate"><span class="pre">my_abs</span></code> takes only one parameter which is a <code class="code docutils literal notranslate"><span class="pre">MyArray</span></code> object. So, passing any other operands to the function will result in an exception <code class="code docutils literal notranslate"><span class="pre">IvyBackendException</span></code> being thrown. Lastly, for a custom class to be covered completely with Ivy’s functional API, it is necessary to create an implementation for all the relevant functions within the API that will be used by this custom class. That can be all the functions in the API or only a subset of them.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for the different types of arrays, and how these are handled in Ivy.</p>
 <p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/933380487353872454">arrays channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028296936203235359">arrays forum</a>!</p>

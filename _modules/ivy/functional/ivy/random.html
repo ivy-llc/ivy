@@ -153,6 +153,7 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">handle_array_function</span><span class="p">,</span>
     <span class="n">infer_dtype</span><span class="p">,</span>
     <span class="n">infer_device</span><span class="p">,</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
@@ -242,6 +243,7 @@
 <span class="nd">@infer_dtype</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">random_uniform</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">low</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
@@ -355,6 +357,7 @@
 <span class="nd">@infer_dtype</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">random_normal</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">mean</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
@@ -464,6 +467,7 @@
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">multinomial</span><span class="p">(</span>
     <span class="n">population_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -572,6 +576,7 @@
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">randint</span><span class="p">(</span>
     <span class="n">low</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span>
     <span class="n">high</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span>
@@ -667,6 +672,7 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>

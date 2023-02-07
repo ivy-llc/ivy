@@ -157,6 +157,7 @@
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
 
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">handle_array_function</span><span class="p">,</span>
     <span class="n">inputs_to_ivy_arrays</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
@@ -468,6 +469,7 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/with_grads.html#ivy.functional.ivy.gradients.with_grads">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">with_grads</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">with_grads</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enter a nested code space where gradients are computed. This method</span>
@@ -518,6 +520,7 @@
 
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="set_with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/set_with_grads.html#ivy.functional.ivy.gradients.set_with_grads">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">set_with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enter a nested code space where gradients are computed. This method</span>
@@ -563,6 +566,7 @@
 
 
 <div class="viewcode-block" id="unset_with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/unset_with_grads.html#ivy.functional.ivy.gradients.unset_with_grads">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">unset_with_grads</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enter a nested code space where gradients are computed. This method</span>
@@ -599,6 +603,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
@@ -674,6 +679,7 @@
 
 <div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../functional/ivy/gradients/execute_with_gradients.html#ivy.functional.ivy.gradients.execute_with_gradients">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span>
     <span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">xs_grad_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_grad_idxs</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
@@ -718,6 +724,7 @@
 
 <div class="viewcode-block" id="value_and_grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/value_and_grad.html#ivy.functional.ivy.gradients.value_and_grad">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">value_and_grad</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a function that evaluates both func and the gradient of func.</span>
@@ -753,6 +760,7 @@
 
 <div class="viewcode-block" id="jac"><a class="viewcode-back" href="../../../../functional/ivy/gradients/jac.html#ivy.functional.ivy.gradients.jac">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s Jacobian partial derivatives.</span>
 
@@ -788,6 +796,7 @@
 
 <div class="viewcode-block" id="grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/grad.html#ivy.functional.ivy.gradients.grad">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s gradients.</span>
 
@@ -825,6 +834,7 @@
 <div class="viewcode-block" id="adam_step"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_step/adam_step_functional.html#ivy.functional.ivy.gradients.adam_step">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -978,6 +988,7 @@
 <div class="viewcode-block" id="optimizer_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/optimizer_update/optimizer_update_functional.html#ivy.functional.ivy.gradients.optimizer_update">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">optimizer_update</span><span class="p">(</span>
     <span class="n">w</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">effective_grad</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1100,6 +1111,7 @@
 <div class="viewcode-block" id="gradient_descent_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/gradient_descent_update/gradient_descent_update_functional.html#ivy.functional.ivy.gradients.gradient_descent_update">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span>
     <span class="n">w</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1192,6 +1204,7 @@
 <div class="viewcode-block" id="lars_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/lars_update/lars_update_functional.html#ivy.functional.ivy.gradients.lars_update">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">lars_update</span><span class="p">(</span>
     <span class="n">w</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1242,6 +1255,7 @@
 <div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_update/adam_update_functional.html#ivy.functional.ivy.gradients.adam_update">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span>
     <span class="n">w</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1406,6 +1420,7 @@
 <div class="viewcode-block" id="lamb_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/lamb_update/lamb_update_functional.html#ivy.functional.ivy.gradients.lamb_update">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">lamb_update</span><span class="p">(</span>
     <span class="n">w</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>

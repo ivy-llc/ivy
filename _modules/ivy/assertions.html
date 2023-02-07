@@ -394,6 +394,20 @@
             <span class="s2">&quot;input must have greater than one dimension; &quot;</span>
             <span class="o">+</span> <span class="s2">&quot; </span><span class="si">{}</span><span class="s2"> has </span><span class="si">{}</span><span class="s2"> dimensions&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_kernel_padding_size"><a class="viewcode-back" href="../../assertions/check_kernel_padding_size.html#ivy.assertions.check_kernel_padding_size">[docs]</a><span class="k">def</span> <span class="nf">check_kernel_padding_size</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">padding_size</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">padding_size</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">kernel_size</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="ow">or</span> <span class="n">padding_size</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">kernel_size</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Padding size should be less than or equal to half of the kernel size. &quot;</span>
+                <span class="s2">&quot;Got kernel_size: </span><span class="si">{}</span><span class="s2"> and padding_size: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">kernel_size</span><span class="p">,</span> <span class="n">padding_size</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
 </pre></div>
 
            </div>

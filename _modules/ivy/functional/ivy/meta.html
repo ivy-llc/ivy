@@ -147,6 +147,7 @@
   <h1>Source code for ivy.functional.ivy.meta</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">handle_array_function</span>
 <span class="kn">from</span> <span class="nn">ivy.functional.ivy.gradients</span> <span class="kn">import</span> <span class="n">gradient_descent_update</span>
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
@@ -546,6 +547,7 @@
 
 
 <div class="viewcode-block" id="fomaml_step"><a class="viewcode-back" href="../../../../functional/ivy/meta/fomaml_step.html#ivy.functional.ivy.meta.fomaml_step">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">fomaml_step</span><span class="p">(</span>
     <span class="n">batch</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">inner_cost_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
@@ -666,6 +668,7 @@
 
 
 <div class="viewcode-block" id="reptile_step"><a class="viewcode-back" href="../../../../functional/ivy/meta/reptile_step.html#ivy.functional.ivy.meta.reptile_step">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">reptile_step</span><span class="p">(</span>
     <span class="n">batch</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">cost_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
@@ -757,6 +760,7 @@
 
 
 <div class="viewcode-block" id="maml_step"><a class="viewcode-back" href="../../../../functional/ivy/meta/maml_step.html#ivy.functional.ivy.meta.maml_step">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">maml_step</span><span class="p">(</span>
     <span class="n">batch</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">inner_cost_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>

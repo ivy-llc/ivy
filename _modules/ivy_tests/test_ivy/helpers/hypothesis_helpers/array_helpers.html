@@ -1100,20 +1100,11 @@
         <span class="n">padding</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">array_dim</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
             <span class="n">max_pad</span> <span class="o">=</span> <span class="n">new_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
-            <span class="n">possible_pad_combos</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">max_pad</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_pad</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="p">(</span><span class="n">max_pad</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span> <span class="o">==</span> <span class="n">max_pad</span>
-            <span class="p">]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">possible_pad_combos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">pad_selected_combo</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">pad_selected_combo</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">possible_pad_combos</span><span class="p">))</span>
             <span class="n">padding</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">draw</span><span class="p">(</span>
                     <span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span>
-                        <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad_selected_combo</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-                        <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad_selected_combo</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_pad</span><span class="p">),</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_pad</span><span class="p">),</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">)</span>

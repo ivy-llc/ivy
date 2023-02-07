@@ -33,4 +33,5 @@ Assertions
    assertions/check_inplace_sizes_valid.rst
    assertions/check_shapes_broadcastable.rst
    assertions/check_dimensions.rst
+   assertions/check_kernel_padding_size.rst
 

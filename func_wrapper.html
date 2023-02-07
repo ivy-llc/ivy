@@ -148,6 +148,13 @@
   <section id="module-ivy.func_wrapper">
 <span id="func-wrapper"></span><h1>Func wrapper<a class="headerlink" href="#module-ivy.func_wrapper" title="Permalink to this heading"></a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.func_wrapper.handle_array_function">
+<span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">handle_array_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#handle_array_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.handle_array_function" title="Permalink to this definition"></a></dt>
+<dd><p>Wrap a function to extract the relevant argument types to be passed to
+array_function method.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.func_wrapper.handle_array_like_without_promotion">
 <span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">handle_array_like_without_promotion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#handle_array_like_without_promotion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.handle_array_like_without_promotion" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -291,6 +298,11 @@ and return arrays are all converted to <cite>ivy.Array</cite> instances.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.func_wrapper.try_array_function_override">
+<span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">try_array_function_override</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overloaded_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#try_array_function_override"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.try_array_function_override" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.func_wrapper.with_supported_device_and_dtypes">

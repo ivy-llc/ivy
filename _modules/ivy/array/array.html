@@ -364,6 +364,24 @@
         <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">__array_function__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Cannot handle items that have __array_function__ other than those of</span>
+        <span class="c1"># ivy arrays or native arrays.</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">types</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">hasattr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;__array_function__&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">__array_function__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="o">.</span><span class="n">__array_function__</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span>
+                    <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="s2">&quot;__array_function__&quot;</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">__array_function__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="o">.</span><span class="n">__array_function__</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="bp">NotImplemented</span>
+
+        <span class="c1"># Arguments contain no overrides, so we can safely call the</span>
+        <span class="c1"># overloaded function again.</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__array__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">__array__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
