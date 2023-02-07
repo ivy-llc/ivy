@@ -84,7 +84,7 @@ def random_normal(
         _setRNG(RNG_)
     return (
         to_device(
-            jax.random.shuffle(rng_input, shape),
+            jax.random.normal(rng_input, shape, dtype=dtype),
             device,
         )
         * std

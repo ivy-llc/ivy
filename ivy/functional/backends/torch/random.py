@@ -53,8 +53,8 @@ def random_normal(
     if seed:
         torch.manual_seed(seed)
     if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
-        return torch.shuffle(mean, std, shape).type(dtype).to(device)
-    return torch.shuffle(mean, std).type(dtype).to(device)
+        return torch.normal(mean, std, shape, out=out).type(dtype).to(device)
+    return torch.normal(mean, std, out=out).type(dtype).to(device)
 
 
 random_normal.support_native_out = True
