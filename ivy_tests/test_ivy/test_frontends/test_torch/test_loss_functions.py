@@ -604,12 +604,12 @@ def test_torch_kl_div(
     reduction=st.sampled_from(["none", "mean", "sum"]),
     test_with_out=st.just(False),
 )
-def test_torch_ctc_loss(
+def test_torch_margin_ranking_loss(
     *,
     dtype_and_inputs,
-    input_lengths,
-    target_lengths,
-    blank,
+    margin,
+    size_average,
+    reduce,
     reduction,
     test_flags,
     fn_tree,
@@ -635,52 +635,55 @@ def test_torch_ctc_loss(
         reduction=reduction,
     )
 
+
 # ctc loss
 @handle_frontend_test(
     fn_tree="torch.nn.functional.ctc_loss",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("double"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
     ),
     dtype_and_inputs_2=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("long"),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
     ),
-    input_lengths=st.integers,
-    target_lengths=st.integers,
-    blank=st.integers,
+    blank=st.integers(),
     reduction=st.sampled_from(["none", "mean", "sum"]),
     test_with_out=st.just(False),
 )
 def test_torch_ctc_loss(
-        *,
-        dtype_and_inputs,
-        input_lenghts,
-        target_lengths,
-        blank,
-        reduction,
-        test_flags,
-        fn_tree,
-        frontend,
-        on_device,
+    *,
+    dtype_and_inputs,
+    dtype_and_inputs_2,
+    blank,
+    reduction,
+    test_flags,
+    fn_tree,
+    frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_inputs
     input1_dtype, log_probs = input_dtype[0], x[0]
     input2_dtype, targets = input_dtype[1], x[1]
+
+    input_dtype, x = dtype_and_inputs_2
+    input3_dtype, input_lengths = input_dtype[0], x[0]
+    input4_dtype, target_lengths = input_dtype[1], x[1]
+
     helpers.test_frontend_function(
-        input_dtypes=[input1_dtype, input2_dtype],
+        input_dtypes=[input1_dtype, input2_dtype, input3_dtype, input4_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         log_probs=log_probs,
         targets=targets,
-        input_lenghts=input_lenghts,
+        input_lenghts=input_lengths,
         target_lengths=target_lengths,
         blank=blank,
-        reduction=reduction
+        reduction=reduction,
     )
