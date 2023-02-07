@@ -1,4 +1,9 @@
+# global
+import math
 from typing import Optional, Union, Tuple, Literal
+
+
+# local
 import ivy
 from ivy.func_wrapper import (
     handle_array_like_without_promotion,
@@ -79,10 +84,12 @@ def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, Tuple[int], Tuple[int, int]],
     /,
     *,
     data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D max pool given 4-D input x.
@@ -98,7 +105,7 @@ def max_pool2d(
         The stride of the sliding window for each dimension of input.
     padding
         SAME" or "VALID" indicating the algorithm, or list
-        indicating the per-dimensio paddings.
+        indicating the per-dimension paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
     out
@@ -138,7 +145,16 @@ def max_pool2d(
 
             [[46, 47]]]])
     """
-    return ivy.current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)
+    return ivy.current_backend(x).max_pool2d(
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=out,
+    )
 
 
 @to_native_arrays_and_back
@@ -849,3 +865,36 @@ def dft(
         slices[axis] = slice(0, res.shape[axis] // 2 + 1)
         res = res[tuple(slices)]
     return res
+
+
+# helpers #
+
+
+def _output_ceil_shape(w, f, p, s):
+    return math.ceil((w - f + p) / s) + 1
+
+
+def padding_ceil_mode(w, f, p, s):
+    remaining_pixels = (w - f + sum(p)) % s
+    if s > 1 and remaining_pixels != 0 and f > 1:
+        input_size = w + sum(p)
+        # making sure that the remaining pixels are supposed
+        # to be covered by the window
+        # they won't be covered if stride is big enough to skip them
+        if input_size - remaining_pixels - (f - 1) + s > input_size:
+            return p
+        output_shape = _output_ceil_shape(
+            w,
+            f,
+            sum(p),
+            s,
+        )
+        # calculating new padding with ceil_output_shape
+        new_pad = (output_shape - 1) * s + f - w
+        # updating pad_list with new padding by adding it to the end
+        p = (
+            p[0],
+            p[1] + new_pad - sum(p),
+        )
+    return p
+    

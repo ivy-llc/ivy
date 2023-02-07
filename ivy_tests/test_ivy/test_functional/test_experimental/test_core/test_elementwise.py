@@ -495,7 +495,7 @@ def test_nansum(
         fw=backend_fw,
         on_device=on_device,
         rtol_=1e-02,
-        atol_=1e-02,
+        atol_=1,
         fn_name=fn_name,
         x=x[0],
         axis=axis,

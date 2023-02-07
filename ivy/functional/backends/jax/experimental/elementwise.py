@@ -2,8 +2,16 @@ import operator
 from typing import Optional, Union, Tuple, List
 from numbers import Number
 
-from ivy import promote_types_of_inputs, default_float_dtype, is_float_dtype
+from ivy import (
+    promote_types_of_inputs,
+    default_float_dtype,
+    is_float_dtype,
+    with_unsupported_dtypes,
+    backend_version,
+)
 from ivy.functional.backends.jax import JaxArray
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 import jax.numpy as jnp
 import jax.scipy as js
 
@@ -19,6 +27,7 @@ def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def fmod(
     x1: JaxArray,
     x2: JaxArray,
