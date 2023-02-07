@@ -12,12 +12,19 @@ from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 
 
-def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
+def general_pool(
+    inputs, init, reduce_fn, window_shape, strides, padding, dilation, ceil_mode
+):
 
     if isinstance(strides, int):
         strides = (strides,) * len(window_shape)
     elif len(strides) == 1:
         strides = (strides[0],) * len(window_shape)
+
+    if isinstance(dilation, int):
+        dilation = (dilation,) * len(window_shape)
+    elif len(dilation) == 1:
+        dilation = (dilation[0],) * len(window_shape)
 
     assert len(window_shape) == len(
         strides
@@ -26,6 +33,7 @@ def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
     window_shape = tuple(window_shape)
     strides = (1,) + strides + (1,)
     dims = (1,) + window_shape + (1,)
+    dilation = (1,) + tuple(dilation) + (1,)
 
     is_single_input = False
     if inputs.ndim == len(dims) - 1:
@@ -36,11 +44,18 @@ def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
 
     assert inputs.ndim == len(dims), f"len({inputs.shape}) != len({dims})"
 
-    # doing manual padding instead of
+    # shape of window after dilation
+    new_window_shape = tuple(
+        [
+            window_shape[i - 1] + (dilation[i] - 1) * (window_shape[i - 1] - 1)
+            for i in range(1, len(dims) - 1)
+        ]
+    )
+    # manual padding
     if isinstance(padding, str):
         pad_int = [
             _handle_padding(
-                inputs.shape[i + 1], strides[i + 1], window_shape[i], padding
+                inputs.shape[i + 1], strides[i + 1], new_window_shape[i], padding
             )
             for i in range(len(dims) - 2)
         ]
@@ -50,7 +65,19 @@ def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
         pad_list = [(0, 0)] + pad_list + [(0, 0)]
     else:
         pad_list = [(0, 0)] + padding + [(0, 0)]
-    y = jlax.reduce_window(inputs, init, reduce_fn, dims, strides, pad_list)
+
+    if ceil_mode:
+        for i in range(len(dims) - 2):
+            pad_list[i + 1] = ivy.padding_ceil_mode(
+                inputs.shape[i + 1],
+                new_window_shape[i],
+                pad_list[i + 1],
+                strides[i + 1],
+            )
+
+    y = jlax.reduce_window(
+        inputs, init, reduce_fn, dims, strides, pad_list, window_dilation=dilation
+    )
     if is_single_input:
         y = jnp.squeeze(y, axis=0)
     return y
@@ -90,16 +117,20 @@ def max_pool2d(
     x: JaxArray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, Tuple[int], Tuple[int, int]],
     /,
     *,
     data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
-    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+    res = general_pool(
+        x, -jnp.inf, jlax.max, kernel, strides, padding, dilation, ceil_mode
+    )
 
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
