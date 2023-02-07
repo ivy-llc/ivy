@@ -348,4 +348,5 @@ def with_backend(backend: str):
     ivy_pack = _ivy_import_module("ivy")
     ivy_pack.set_backend(backend)
     # TODO remove access to global stuff
+    sys.meta_path.remove(my_finder)
     return ivy_pack
