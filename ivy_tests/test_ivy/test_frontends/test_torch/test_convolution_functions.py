@@ -276,7 +276,6 @@ def test_torch_conv_tranpose1d(
         groups=fc,
         dilation=dilations,
     )
-    return val
 
 
 @handle_frontend_test(
