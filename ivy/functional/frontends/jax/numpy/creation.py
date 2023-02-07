@@ -108,7 +108,9 @@ def ndim(a):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-def empty_like(prototype, dtype=None, shape=None):
+def empty_like(a, dtype=None, shape=None):
+    # XLA cannot create uninitialized arrays
+    # jax.numpy.empty_like returns an array initialized with zeros.
     if shape:
-        return DeviceArray(ivy.empty(shape, dtype=dtype))
-    return DeviceArray(ivy.empty_like(prototype, dtype=dtype))
+        return ivy.zeros(shape, dtype=dtype)
+    return ivy.zeros_like(a, dtype=dtype)
