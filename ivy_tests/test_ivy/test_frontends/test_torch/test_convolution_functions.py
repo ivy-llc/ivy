@@ -20,13 +20,28 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
             st.integers(min_value=1, max_value=3),
         )
     )
-    padding = draw(
-        st.one_of(
-            st.sampled_from(["same", "valid"]) if strides == 1 else st.just("valid"),
-            st.integers(min_value=1, max_value=3),
-            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+    if not transpose:
+        paddings = draw(
+            st.one_of(
+                st.sampled_from(["same", "valid"]) if strides == 1 else st.just("valid"),
+                st.integers(min_value=1, max_value=3),
+                st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+            )
         )
-    )
+    else:
+        padding = draw(
+            st.one_of(
+                st.integers(min_value=1, max_value=3),
+                st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+            )
+        )
+        output_padding = draw(
+            st.one_of(
+                st.integers(min_value=1, max_value=3),
+                st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+            )
+        )
+        paddings = (padding, output_padding)
     batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
@@ -42,9 +57,12 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
     fc = draw(st.sampled_from(group_list))
-    dilations = draw(st.integers(1, 3))
-
-    x_dim = []
+    dilations = draw(
+        st.one_of(
+            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=3),
+        )
+    )
     if transpose:
         x_dim = draw(
             helpers.get_shape(
@@ -52,8 +70,10 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
             )
         )
     else:
+        x_dim = []
+        full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
         for i in range(dim):
-            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
+            min_x = filter_shape[i] + (filter_shape[i] - 1) * (full_dilations[i] - 1)
             x_dim.append(draw(st.integers(min_x, 15)))
         x_dim = tuple(x_dim)
     if not transpose:
@@ -61,7 +81,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
         filter_shape = (output_channels, input_channels // fc) + filter_shape
     else:
         input_channels = input_channels * fc
-        filter_shape = filter_shape + (input_channels, output_channels // fc)
+        filter_shape = (input_channels, output_channels // fc) + filter_shape
     x_shape = (batch_size, input_channels) + x_dim
     vals = draw(
         helpers.array_values(
@@ -87,7 +107,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
             max_value=1.0,
         )
     )
-    return dtype, vals, filters, bias, dilations, strides, padding, fc
+    return dtype, vals, filters, bias, dilations, strides, paddings, fc
 
 
 @handle_frontend_test(
