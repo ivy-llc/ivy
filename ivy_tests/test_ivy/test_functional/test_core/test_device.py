@@ -184,7 +184,7 @@ def test_default_device():
 @handle_test(
     fn_tree="functional.ivy.to_device",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("complex"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     stream=helpers.ints(min_value=0, max_value=50),
 )
