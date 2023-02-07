@@ -30,6 +30,46 @@ def _getitem_setitem(draw, available_dtypes=None):
     return index, x
 
 
+def test_array_function():
+    HANDLED_FUNCTIONS = {}
+
+    class MyArray:
+        def __init__(self, data=None):
+            self.data = data
+
+        def __array_function__(self, func, types, args, kwargs):
+            if func not in HANDLED_FUNCTIONS:
+                return NotImplemented
+            if not all(
+                issubclass(t, (MyArray, ivy.Array, ivy.NativeArray)) for t in types
+            ):
+                return NotImplemented
+            return HANDLED_FUNCTIONS[func](*args, **kwargs)
+
+    def implements(ivy_function):
+        """Register an __array_function__ implementation for MyArray objects."""
+
+        def decorator(func):
+            HANDLED_FUNCTIONS[ivy_function] = func
+            return func
+
+        return decorator
+
+    @implements(ivy.abs)
+    def _(my_array, ivy_array):
+        my_array.data = abs(my_array.data)
+        ivy_array = ivy.abs(ivy_array)
+        return (my_array, ivy_array)
+
+    x = MyArray(-3)
+    y = ivy.array([1, -1])
+    xy = ivy.abs(x, ivy_array=y)  # works
+    x1 = xy[0]
+    y1 = xy[1]
+    assert x1.data == 3
+    assert all(y1 == ivy.array([1, 1]))
+
+
 # TODO do not use dummy fn_tree
 @handle_test(
     fn_tree="functional.ivy.native_array",  # dummy fn_tree
