@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -103,6 +104,7 @@ def extract(condition, arr):
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
