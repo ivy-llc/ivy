@@ -721,8 +721,8 @@ def test_jax_numpy_atleast_1d(
         on_device=on_device,
         **arys,
     )
-    
-    
+
+
 @st.composite
 def _squeeze_helper(draw):
     shape = draw(st.shared(helpers.get_shape(), key="shape"))
@@ -738,16 +738,16 @@ def _squeeze_helper(draw):
         shape=st.shared(helpers.get_shape(), key="shape"),
     ),
     axis=_squeeze_helper(),
-    test_with_out=st.just(False)
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_squeeze(
-        *,
-        dtype_and_values,
-        axis,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_values,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, values = dtype_and_values
     helpers.test_frontend_function(
