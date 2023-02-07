@@ -77,14 +77,14 @@ def _apply_reduction(reduction, size_average, reduce, to_reduce):
 
 @to_ivy_arrays_and_back
 def cross_entropy(
-        input,
-        target,
-        weight=None,
-        size_average=None,
-        ignore_index=-100,
-        reduce=None,
-        reduction="mean",
-        label_smoothing=0.0,
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    ignore_index=-100,
+    reduce=None,
+    reduction="mean",
+    label_smoothing=0.0,
 ):
     input = ivy.softmax(input)
     ret = ivy.cross_entropy(target, input, epsilon=label_smoothing)
@@ -97,7 +97,7 @@ def cross_entropy(
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def binary_cross_entropy(
-        input, target, weight=None, size_average=None, reduce=None, reduction="mean"
+    input, target, weight=None, size_average=None, reduce=None, reduction="mean"
 ):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.binary_cross_entropy(target, input, epsilon=0.0)
@@ -110,13 +110,13 @@ def binary_cross_entropy(
 
 @to_ivy_arrays_and_back
 def binary_cross_entropy_with_logits(
-        input,
-        target,
-        weight=None,
-        size_average=None,
-        reduce=None,
-        reduction="mean",
-        pos_weight=None,
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+    pos_weight=None,
 ):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.binary_cross_entropy_with_logits(target, input, pos_weight=pos_weight)
@@ -138,12 +138,12 @@ def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def smooth_l1_loss(
-        input,
-        target,
-        size_average=None,
-        reduce=None,
-        reduction="mean",
-        beta=1.0,
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+    beta=1.0,
 ):
     beta = ivy.array(beta, device=input.device)
     reduction = _get_reduction(reduction, size_average, reduce)
@@ -161,7 +161,7 @@ def smooth_l1_loss(
 
         loss = ivy.where(
             _diff_abs < beta,
-            0.5 * _diff_abs ** 2 / beta,
+            0.5 * _diff_abs**2 / beta,
             _diff_abs - 0.5 * beta,
         )
 
@@ -172,17 +172,17 @@ def smooth_l1_loss(
 
 @to_ivy_arrays_and_back
 def huber_loss(
-        input,
-        target,
-        reduction="mean",
-        delta=1.0,
+    input,
+    target,
+    reduction="mean",
+    delta=1.0,
 ):
     delta = ivy.array(delta)
     _diff_abs = ivy.abs(ivy.subtract(input, target))
 
     loss = ivy.where(
         _diff_abs < delta,  # If |xᵢ - yᵢ| < δ
-        0.5 * _diff_abs ** 2,  # lᵢ = 0.5(xᵢ - yᵢ)²
+        0.5 * _diff_abs**2,  # lᵢ = 0.5(xᵢ - yᵢ)²
         delta * (_diff_abs - 0.5 * delta),
     )  # lᵢ = δ(|xᵢ - yᵢ| - 0.5 * δ)
 
@@ -194,11 +194,11 @@ def huber_loss(
 
 @to_ivy_arrays_and_back
 def l1_loss(
-        input,
-        target,
-        size_average=None,
-        reduce=None,
-        reduction="mean",
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
 ):
     loss = ivy.abs(input - target)
     reduction = _get_reduction(reduction, size_average, reduce)
@@ -208,13 +208,13 @@ def l1_loss(
 
 @to_ivy_arrays_and_back
 def nll_loss(
-        input,
-        target,
-        weight=None,
-        size_average=None,
-        ignore_index=-100,
-        reduce=None,
-        reduction="mean",
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    ignore_index=-100,
+    reduce=None,
+    reduction="mean",
 ):
     out = ivy.zeros_like(target)
 
@@ -237,11 +237,11 @@ def nll_loss(
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def soft_margin_loss(
-        input,
-        target,
-        size_average=None,
-        reduce=None,
-        reduction="mean",
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
 ):
     loss = ivy.log1p(ivy.exp(-input * target))
     reduction = _get_reduction(reduction, size_average, reduce)
@@ -252,7 +252,7 @@ def soft_margin_loss(
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def kl_div(
-        input, target, size_average=None, reduce=None, reduction="mean", log_target=False
+    input, target, size_average=None, reduce=None, reduction="mean", log_target=False
 ):
     size = ivy.shape(input)
 
@@ -286,13 +286,13 @@ def kl_div(
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def margin_ranking_loss(
-        input1,
-        input2,
-        target,
-        margin=0.0,
-        size_average=None,
-        reduce=None,
-        reduction="mean",
+    input1,
+    input2,
+    target,
+    margin=0.0,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
 ):
     loss = -1 * target * (input1 - input2) + margin
     loss = ivy.where(loss < 0, 0, loss)
@@ -302,12 +302,7 @@ def margin_ranking_loss(
 
 @to_ivy_arrays_and_back
 def ctc_loss(
-        log_probs,
-        targets,
-        input_lengths,
-        target_lengths,
-        blank=0,
-        reduction='mean'
+    log_probs, targets, input_lengths, target_lengths, blank=0, reduction="mean"
 ):
     ivy.set_backend("torch")
     input_lengths = ivy.asarray(input_lengths)
@@ -325,12 +320,14 @@ def ctc_loss(
         if targets.dim() == 2:
             targets_prime[1::2] = targets[i, :target_length]
         else:
-            targets_prime[1::2] = targets[cum_target_length - target_length:cum_target_length]
+            targets_prime[1::2] = targets[
+                cum_target_length - target_length : cum_target_length
+            ]
         probs = log_probs[:input_length, i].exp()
         alpha = log_probs.new_zeros((target_length * 2 + 1,))
         alpha[0] = probs[0, blank]
         alpha[1] = probs[0, targets_prime[1]]
-        mask_third = (targets_prime[:-2] != targets_prime[2:])
+        mask_third = targets_prime[:-2] != targets_prime[2:]
         for t in range(1, input_length):
             alpha_next = alpha.clone()
             alpha_next[1:] += alpha[:-1]
@@ -338,11 +335,10 @@ def ctc_loss(
             alpha = probs[t, targets_prime] * alpha_next
         # ==========================================================================================================
         losses.append(-alpha[-2:].sum().log()[None])
-
     output = ivy.frontends.torch.cat(losses, 0)
-    if reduction == 'mean':
+    if reduction == "mean":
         return (output / target_lengths).mean()
-    elif reduction == 'sum':
+    elif reduction == "sum":
         return output.sum()
     output = output.to(dt)
     return output
