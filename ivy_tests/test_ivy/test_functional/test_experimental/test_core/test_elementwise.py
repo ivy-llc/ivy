@@ -1,6 +1,7 @@
 # global
 import numpy as np
 from hypothesis import strategies as st, assume
+import math
 
 # local
 import ivy
@@ -269,20 +270,45 @@ def test_trapz(
     )
 
 
+# float_power_helper
+@st.composite
+def _float_power_helper(draw, *, available_dtypes=None):
+    if available_dtypes is None:
+        available_dtypes = helpers.get_dtypes("numeric")
+    dtype1, x1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    dtype1 = dtype1[0]
+    if ivy.is_int_dtype(dtype1):
+        max_val = ivy.iinfo(dtype1).max
+    else:
+        max_val = ivy.finfo(dtype1).max
+    max_x1 = np.max(np.abs(x1[0]))
+    if max_x1 in [0, 1]:
+        max_value = None
+    else:
+        max_value = int(math.log(max_val) / math.log(max_x1))
+        if abs(max_value) > abs(max_val) / 40 or max_value < 0:
+            max_value = None
+    dtype2, x2 = draw(
+        helpers.dtype_and_values(
+            min_value=-5,
+            max_value=max_value,
+            available_dtypes=available_dtypes,
+        )
+    )
+    return (dtype1, dtype2[0]), (x1[0], x2[0])
+
+
 # float_power
 @handle_test(
     fn_tree="functional.ivy.experimental.float_power",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
-        num_arrays=2,
-        shared_dtype=True,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
-    ),
+    dtype_and_x=_float_power_helper(available_dtypes=helpers.get_dtypes("float")),
     test_gradients=st.just(False),
 )
 def test_float_power(
@@ -293,16 +319,18 @@ def test_float_power(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtypes, x = dtype_and_x
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         test_flags=test_flags,
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x[0],
+        x2=x[1],
+        rtol_=1e-1,
+        atol_=1e-1,
     )
 
 

@@ -113,7 +113,11 @@ def float_power(
 ) -> torch.Tensor:
     # Native out is supported but with restrictions leading
     # to failures hence letting ivy handle it.
-    return torch.float_power(x1, x2)
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return torch.float_power(x1, x2, out=out)
+
+
+float_power.support_native_out = True
 
 
 def exp2(
