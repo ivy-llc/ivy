@@ -670,7 +670,6 @@ def test_frontend_function(
                     frontend_ret_np_flat = [np.asarray(frontend_ret)]
                 else:
                     frontend_ret = ivy.to_ivy(frontend_ret)
-                    print(type(frontend_ret))
                     # tuplify the frontend return
                     if not isinstance(frontend_ret, tuple):
                         frontend_ret = (frontend_ret,)

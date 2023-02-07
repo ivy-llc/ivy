@@ -2,9 +2,6 @@ from ivy_tests import config
 import sys
 import jsonpickle
 import importlib
-import codecs
-import io
-import os
 
 
 def available_frameworks():
@@ -65,17 +62,14 @@ if __name__ == "__main__":
 
     arg_lis = sys.argv
     fw_lis = []
-    jaxlib_flag = 0
     for i in arg_lis[1:]:
         if i.split("/")[0] == "jax":
             fw_lis.append(i.split("/")[0] + "/" + i.split("/")[1])
             fw_lis.append(i.split("/")[2] + "/" + i.split("/")[3])
-            jaxlib_flag = 1
         else:
             fw_lis.append(i)
     config.allow_global_framework_imports(fw=fw_lis)
-    if jaxlib_flag:
-        import jaxlib
+
     j = 1
     import ivy
 
