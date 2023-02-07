@@ -10,13 +10,15 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @st.composite
 def _batch_norm_helper(draw):
     num_dims = draw(st.integers(min_value=4, max_value=5))
-    dtype, x = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=num_dims,
-        max_num_dims=num_dims,
-        min_value=-1e02,
-        max_value=1e02,
-    ))
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=num_dims,
+            max_num_dims=num_dims,
+            min_value=-1e02,
+            max_value=1e02,
+        )
+    )
     epsilon = draw(st.floats(min_value=1e-07, max_value=1e-04))
     factor = draw(st.floats(min_value=0.5, max_value=1))
     training = draw(st.booleans())
@@ -25,13 +27,15 @@ def _batch_norm_helper(draw):
     else:
         data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
     num_channels = x[0].shape[data_format.rfind("C")]
-    dtypes, vectors = draw(helpers.dtype_and_values(
-        available_dtypes=["float32"],
-        shape=(num_channels,),
-        num_arrays=4,
-        min_value=-1e02,
-        max_value=1e02,
-    ))
+    dtypes, vectors = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32"],
+            shape=(num_channels,),
+            num_arrays=4,
+            min_value=-1e02,
+            max_value=1e02,
+        )
+    )
     vectors[3] = np.abs(vectors[3])  # non-negative variance
     return dtype + dtypes, x, epsilon, factor, training, data_format, vectors
 
