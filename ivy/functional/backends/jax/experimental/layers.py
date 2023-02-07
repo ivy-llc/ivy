@@ -12,12 +12,21 @@ from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 
 
-def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
-
+def general_pool(
+    inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation, ceil_mode
+):
+    if isinstance(window_shape, int):
+        window_shape = (window_shape,) * dim
+    elif len(window_shape) == 1:
+        window_shape = (window_shape[0],) * dim
     if isinstance(strides, int):
-        strides = (strides,) * len(window_shape)
+        strides = (strides,) * dim
     elif len(strides) == 1:
-        strides = (strides[0],) * len(window_shape)
+        strides = (strides[0],) * dim
+    if isinstance(dilation, int):
+        dilation = (dilation,) * dim
+    elif len(dilation) == 1:
+        dilation = (dilation[0],) * dim
 
     assert len(window_shape) == len(
         strides
@@ -26,6 +35,7 @@ def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
     window_shape = tuple(window_shape)
     strides = (1,) + strides + (1,)
     dims = (1,) + window_shape + (1,)
+    dilation = (1,) + tuple(dilation) + (1,)
 
     is_single_input = False
     if inputs.ndim == len(dims) - 1:
@@ -36,11 +46,18 @@ def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
 
     assert inputs.ndim == len(dims), f"len({inputs.shape}) != len({dims})"
 
-    # doing manual padding instead of
+    # shape of window after dilation
+    new_window_shape = tuple(
+        [
+            window_shape[i - 1] + (dilation[i] - 1) * (window_shape[i - 1] - 1)
+            for i in range(1, len(dims) - 1)
+        ]
+    )
+    # manual padding
     if isinstance(padding, str):
         pad_int = [
             _handle_padding(
-                inputs.shape[i + 1], strides[i + 1], window_shape[i], padding
+                inputs.shape[i + 1], strides[i + 1], new_window_shape[i], padding
             )
             for i in range(len(dims) - 2)
         ]
@@ -50,7 +67,19 @@ def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
         pad_list = [(0, 0)] + pad_list + [(0, 0)]
     else:
         pad_list = [(0, 0)] + padding + [(0, 0)]
-    y = jlax.reduce_window(inputs, init, reduce_fn, dims, strides, pad_list)
+
+    if ceil_mode:
+        for i in range(len(dims) - 2):
+            pad_list[i + 1] = ivy.padding_ceil_mode(
+                inputs.shape[i + 1],
+                new_window_shape[i],
+                pad_list[i + 1],
+                strides[i + 1],
+            )
+
+    y = jlax.reduce_window(
+        inputs, init, reduce_fn, dims, strides, pad_list, window_dilation=dilation
+    )
     if is_single_input:
         y = jnp.squeeze(y, axis=0)
     return y
@@ -79,7 +108,7 @@ def max_pool1d(
     elif len(kernel) == 1:
         kernel = (kernel[0],)
 
-    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding, 1)
 
     if data_format == "NCW":
         res = jnp.transpose(x, (0, 2, 1))
@@ -90,16 +119,20 @@ def max_pool2d(
     x: JaxArray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, Tuple[int], Tuple[int, int]],
     /,
     *,
     data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
-    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+    res = general_pool(
+        x, -jnp.inf, jlax.max, kernel, strides, padding, 2, dilation, ceil_mode
+    )
 
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
@@ -121,7 +154,7 @@ def max_pool3d(
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
     if isinstance(kernel, int):
         kernel = (kernel,) * 3
-    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding, 3)
 
     if data_format == "NCDHW":
         res = jnp.transpose(x, (0, 2, 3, 4, 1))
@@ -153,7 +186,7 @@ def avg_pool1d(
     elif len(strides) == 1:
         strides = (strides[0],)
 
-    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
+    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 1)
     div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
@@ -189,7 +222,7 @@ def avg_pool2d(
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
-    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
+    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 2)
     div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
@@ -225,7 +258,7 @@ def avg_pool3d(
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
 
-    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
+    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 3)
 
     res = res / general_pool(
         jnp.ones_like(x, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
