@@ -10,6 +10,8 @@ from ivy import (
     backend_version,
 )
 from ivy.functional.backends.jax import JaxArray
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 import jax.numpy as jnp
 import jax.scipy as js
 
