@@ -2,8 +2,12 @@
 from hypothesis import strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
+    _assume_tf_dilation_gt_1,
+)
 
 
 @st.composite
@@ -99,6 +103,8 @@ def test_torch_conv1d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
+    # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -128,6 +134,7 @@ def test_torch_conv2d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -157,6 +164,7 @@ def test_torch_conv3d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
