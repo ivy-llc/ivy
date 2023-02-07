@@ -228,6 +228,14 @@ def negative(
 
 
 @to_ivy_arrays_and_back
+def positive(
+    x,
+    /,
+):
+    return ivy.positive(x)
+
+
+@to_ivy_arrays_and_back
 def rad2deg(
     x,
     /,
