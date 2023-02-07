@@ -70,6 +70,55 @@ def test_jax_numpy_add(
     )
 
 
+# diff
+@st.composite
+def _get_dtype_input_and_vector(draw):
+    size1 = draw(helpers.ints(min_value=1, max_value=5))
+    size2 = draw(helpers.ints(min_value=1, max_value=5))
+    dtype = draw(helpers.get_dtypes("integer"))
+    vec1 = draw(helpers.array_values(dtype=dtype[0], shape=(size1, size2)))
+    return dtype, vec1
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.diff",
+    dtype_and_x=_get_dtype_input_and_vector(),
+    n=helpers.ints(
+        min_value=0,
+        max_value=10,
+    ),
+    axis=helpers.ints(
+        min_value=-1,
+        max_value=10,
+    ),
+)
+def test_jax_numpy_diff(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+    n,
+    axis,
+):
+    input_dtype, x = dtype_and_x
+    if axis > (x[0].ndim - 1):
+        axis = x[0].ndim - 1
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        n=n,
+        axis=axis,
+        prepend=None,
+        append=None,
+    )
+
+
 # arctan
 @handle_frontend_test(
     fn_tree="jax.numpy.arctan",
@@ -1385,6 +1434,32 @@ def test_jax_numpy_degrees(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_negative(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# positive
+@handle_frontend_test(
+    fn_tree="jax.numpy.positive",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_positive(
     dtype_and_x,
     frontend,
     test_flags,
