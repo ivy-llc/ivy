@@ -62,15 +62,13 @@ from .assertions import (
 )
 
 os.environ["IVY_ROOT"] = ".ivy"
-from ivy.compiler.compiler import compile
+import ivy.compiler.compiler as ic
 
 
 # Temporary (.so) configuration
 def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
     if test_compile:
-        if ivy.current_backend_str() == "jax":
-            pytest.skip()  # Will only skip some of the jax functions
-        return compile(fn, args=args, kwargs=kwargs)
+        return ic.compile(fn, args=args, kwargs=kwargs)
     return fn
 
 
