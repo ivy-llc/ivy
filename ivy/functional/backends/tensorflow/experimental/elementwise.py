@@ -91,6 +91,9 @@ def trapz(
     return tfp.math.trapz(y, x=x, dx=dx, axis=axis, name=None)
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
 def float_power(
     x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
     x2: Union[tf.Tensor, tf.Variable, float, list, tuple],

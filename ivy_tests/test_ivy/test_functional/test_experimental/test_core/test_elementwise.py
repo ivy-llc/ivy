@@ -273,7 +273,7 @@ def test_trapz(
 @st.composite
 def _float_power_helper(draw, *, available_dtypes=None):
     if available_dtypes is None:
-        available_dtypes = helpers.get_dtypes("float_and_complex")
+        available_dtypes = helpers.get_dtypes("numeric")
     dtype1, x1 = draw(
         helpers.dtype_and_values(
             available_dtypes=available_dtypes,
@@ -282,11 +282,16 @@ def _float_power_helper(draw, *, available_dtypes=None):
             safety_factor_scale="log",
         )
     )
+    dtype2 = draw(helpers.get_dtypes("numeric"))
+    if ivy.is_int_dtype(dtype2[0]):
+        min_value = 0
+    else:
+        min_value = -5
     dtype2, x2 = draw(
         helpers.dtype_and_values(
-            min_value=-5,
+            min_value=min_value,
             max_value=5,
-            available_dtypes=available_dtypes,
+            dtype=dtype2,
         )
     )
     return (dtype1[0], dtype2[0]), (x1[0], x2[0])
