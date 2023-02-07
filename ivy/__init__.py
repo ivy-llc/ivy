@@ -1,8 +1,6 @@
 # global
 from types import SimpleNamespace
 import warnings
-
-import ivy
 from ivy._version import __version__ as __version__
 import builtins
 import numpy as np
