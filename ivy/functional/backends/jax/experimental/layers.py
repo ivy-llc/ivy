@@ -31,6 +31,9 @@ def general_pool(
     elif isinstance(padding, tuple) and len(padding) == 1:
         padding = [(padding[0],) * 2] * dim
 
+    if isinstance(padding, tuple):
+        ivy.assertions.check_kernel_padding_size(window_shape, padding)
+
     assert len(window_shape) == len(
         strides
     ), f"len({window_shape}) must equal len({strides})"
