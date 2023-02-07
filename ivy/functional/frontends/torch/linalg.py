@@ -183,5 +183,5 @@ def tensorsolve(A, B, dims=None, *, out=None):
     return ivy.tensorsolve(A, B, axes=dims, out=out)
 
 @to_ivy_arrays_and_back
-def matmul(input , other , * , out=None):
-     return ivy.matmul(input , other , out=out)
+def matmul(input, other, *, out=None):
+     return ivy.matmul(input, other, out=out)
