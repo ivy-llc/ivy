@@ -2179,20 +2179,15 @@ def test_jax_numpy_real(
 def test_jax_numpy_inner(
     *,
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
 ):
-    input_dtypes, xs = dtype_and_x,
+    input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
