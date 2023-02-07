@@ -83,3 +83,10 @@ def nanargmin(a, /, *, axis=None, out=None, keepdims=None):
     a = ivy.where(nan_mask, ivy.inf, a)
     res = ivy.argmin(a, axis=axis, keepdims=keepdims)
     return ivy.where(ivy.all(nan_mask, axis=axis, keepdims=keepdims), -1, res)
+
+
+@to_ivy_arrays_and_back
+def extract(condition, arr):
+    if condition.dtype is not bool:
+        condition = condition != 0
+    return arr[condition]

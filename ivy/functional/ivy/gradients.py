@@ -258,13 +258,14 @@ def _variable(x):
     return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
-def _is_variable(x, exclusive=False) -> bool:
+def _is_variable(x, exclusive=False, to_ignore=None) -> bool:
     x = ivy.to_native(x, nested=True)
     return ivy.nested_map(
         x,
         lambda x: current_backend(x).is_variable(x, exclusive=exclusive),
         include_derived=True,
         shallow=False,
+        to_ignore=to_ignore,
     )
 
 

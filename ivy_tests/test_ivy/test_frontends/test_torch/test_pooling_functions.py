@@ -1,9 +1,9 @@
 # global
-import ivy
+from hypothesis import strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
-
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
@@ -16,13 +16,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_side=1,
         max_side=4,
     ),
+    test_with_out=st.just(False),
 )
 def test_torch_avg_pool2d(
     dtype_x_k_s,
     *,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -45,10 +44,7 @@ def test_torch_avg_pool2d(
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,

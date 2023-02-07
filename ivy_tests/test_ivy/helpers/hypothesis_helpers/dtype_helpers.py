@@ -26,7 +26,8 @@ def get_dtypes(
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
     kind
-        Supported types are integer, float, valid, numeric, and unsigned
+        Supported types are integer, float, valid, numeric, signed_integer, complex,
+        real_and_complex, float_and_complex, bool, and unsigned
     index
         list indexing incase a test needs to be skipped for a particular dtype(s)
     full

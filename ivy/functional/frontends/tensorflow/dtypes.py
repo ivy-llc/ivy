@@ -125,6 +125,10 @@ def as_dtype(type_value):
         return DType(type_value)
     if type_value in tf_frontend.tensorflow_type_to_enum:
         return DType(tf_frontend.tensorflow_type_to_enum[type_value])
+    if type_value is float:
+        return DType(1)
+    if type_value is bool:
+        return DType(10)
     if isinstance(type_value, np_frontend.dtype):
         return DType(tf_frontend.tensorflow_type_to_enum[type_value.ivy_dtype])
     if issubclass(type_value, np_frontend.generic):

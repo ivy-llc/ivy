@@ -78,18 +78,22 @@ def max_pool2d(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
-    pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+
+    if isinstance(padding, str):
+        pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+        pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+        pad_list = [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2]
+    else:
+        # torch pad takes width padding first, then height padding
+        padding = (padding[1], padding[0])
+        pad_list = [item for sublist in padding for item in sublist]
+
     x = torch.nn.functional.pad(
         x,
-        [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2],
+        pad_list,
         value=float("-inf"),
     )
-    if padding != "VALID" and padding != "SAME":
-        raise ivy.exceptions.IvyException(
-            "Invalid padding arg {}\n"
-            'Must be one of: "VALID" or "SAME"'.format(padding)
-        )
+
     res = torch.nn.functional.max_pool2d(x, kernel, strides, 0)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)

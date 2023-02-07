@@ -290,18 +290,17 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.exists(out) and not isinstance(updates, Number):
+    if ivy.exists(out) and not isinstance(updates, (Number, list, tuple)):
         out = (
             tf.cast(out, dtype=updates.dtype)
             if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(out.dtype)
             else out
         )
     # handle numeric updates
-    updates = tf.constant(
-        # keep below commented out, asarray API tests working without it
-        # [updates] if isinstance(updates, Number) else
+    updates = tf.constant(updates)
+    updates = tf.cast(
         updates,
-        dtype=ivy.dtype(out, as_native=True)
+        ivy.dtype(out, as_native=True)
         if ivy.exists(out)
         else ivy.default_dtype(item=updates),
     )
