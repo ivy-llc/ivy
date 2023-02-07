@@ -286,11 +286,11 @@ def _float_power_helper(draw, *, available_dtypes=None):
     if ivy.is_int_dtype(dtype2[0]):
         min_value = 0
     else:
-        min_value = -5
+        min_value = -10
     dtype2, x2 = draw(
         helpers.dtype_and_values(
             min_value=min_value,
-            max_value=5,
+            max_value=10,
             dtype=dtype2,
         )
     )
