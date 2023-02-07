@@ -145,7 +145,12 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.functional.ivy.experimental.layers</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span>
+<span></span><span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span>
+
+
+<span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">handle_array_like_without_promotion</span><span class="p">,</span>
@@ -226,10 +231,12 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
     <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
-    <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">padding</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
+    <span class="n">dilation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">ceil_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes a 2-D max pool given 4-D input x.</span>
@@ -245,7 +252,7 @@
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
 <span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list</span>
-<span class="sd">        indicating the per-dimensio paddings.</span>
+<span class="sd">        indicating the per-dimension paddings.</span>
 <span class="sd">    data_format</span>
 <span class="sd">        NHWC&quot; or &quot;NCHW&quot;. Defaults to &quot;NHWC&quot;.</span>
 <span class="sd">    out</span>
@@ -285,7 +292,16 @@
 
 <span class="sd">            [[46, 47]]]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">kernel</span><span class="p">,</span>
+        <span class="n">strides</span><span class="p">,</span>
+        <span class="n">padding</span><span class="p">,</span>
+        <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+        <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">,</span>
+        <span class="n">ceil_mode</span><span class="o">=</span><span class="n">ceil_mode</span><span class="p">,</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="max_pool3d"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/max_pool3d/max_pool3d_functional.html#ivy.functional.ivy.experimental.max_pool3d">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -996,6 +1012,39 @@
         <span class="n">slices</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">slices</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">res</span></div>
+
+
+<span class="c1"># helpers #</span>
+
+
+<span class="k">def</span> <span class="nf">_output_ceil_shape</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">w</span> <span class="o">-</span> <span class="n">f</span> <span class="o">+</span> <span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="padding_ceil_mode"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/padding_ceil_mode.html#ivy.functional.ivy.experimental.padding_ceil_mode">[docs]</a><span class="k">def</span> <span class="nf">padding_ceil_mode</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="n">remaining_pixels</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="n">f</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">%</span> <span class="n">s</span>
+    <span class="k">if</span> <span class="n">s</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">remaining_pixels</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">f</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">input_size</span> <span class="o">=</span> <span class="n">w</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="c1"># making sure that the remaining pixels are supposed</span>
+        <span class="c1"># to be covered by the window</span>
+        <span class="c1"># they won&#39;t be covered if stride is big enough to skip them</span>
+        <span class="k">if</span> <span class="n">input_size</span> <span class="o">-</span> <span class="n">remaining_pixels</span> <span class="o">-</span> <span class="p">(</span><span class="n">f</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">&gt;</span> <span class="n">input_size</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">p</span>
+        <span class="n">output_shape</span> <span class="o">=</span> <span class="n">_output_ceil_shape</span><span class="p">(</span>
+            <span class="n">w</span><span class="p">,</span>
+            <span class="n">f</span><span class="p">,</span>
+            <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">),</span>
+            <span class="n">s</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># calculating new padding with ceil_output_shape</span>
+        <span class="n">new_pad</span> <span class="o">=</span> <span class="p">(</span><span class="n">output_shape</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">s</span> <span class="o">+</span> <span class="n">f</span> <span class="o">-</span> <span class="n">w</span>
+        <span class="c1"># updating pad_list with new padding by adding it to the end</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">new_pad</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span></div>
+    
 </pre></div>
 
            </div>

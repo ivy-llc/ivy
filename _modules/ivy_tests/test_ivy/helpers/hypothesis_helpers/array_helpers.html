@@ -1047,7 +1047,13 @@
 
 <div class="viewcode-block" id="arrays_for_pooling"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/arrays_for_pooling.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.arrays_for_pooling">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
 <span class="k">def</span> <span class="nf">arrays_for_pooling</span><span class="p">(</span>
-    <span class="n">draw</span><span class="p">,</span> <span class="n">min_dims</span><span class="p">,</span> <span class="n">max_dims</span><span class="p">,</span> <span class="n">min_side</span><span class="p">,</span> <span class="n">max_side</span><span class="p">,</span> <span class="n">allow_explicit_padding</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="n">min_dims</span><span class="p">,</span>
+    <span class="n">max_dims</span><span class="p">,</span>
+    <span class="n">min_side</span><span class="p">,</span>
+    <span class="n">max_side</span><span class="p">,</span>
+    <span class="n">allow_explicit_padding</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">return_dilation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">in_shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
         <span class="n">nph</span><span class="o">.</span><span class="n">array_shapes</span><span class="p">(</span>
@@ -1078,10 +1084,22 @@
         <span class="p">)</span>
     <span class="k">if</span> <span class="n">array_dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">kernel</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">in_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+    <span class="n">new_kernel</span> <span class="o">=</span> <span class="n">kernel</span>
+    <span class="k">if</span> <span class="n">return_dilation</span><span class="p">:</span>
+        <span class="n">new_kernel</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dilations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kernel</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">max_dilation</span> <span class="o">=</span> <span class="p">(</span><span class="n">in_shape</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">kernel</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">//</span> <span class="p">(</span><span class="n">kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">dilations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_dilation</span><span class="p">)))</span>
+                <span class="n">new_kernel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dilations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dilations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">new_kernel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kernel</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">allow_explicit_padding</span><span class="p">:</span>
         <span class="n">padding</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">array_dim</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
-            <span class="n">max_pad</span> <span class="o">=</span> <span class="n">kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="n">max_pad</span> <span class="o">=</span> <span class="n">new_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
             <span class="n">possible_pad_combos</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">max_pad</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_pad</span><span class="p">)</span>
@@ -1103,6 +1121,8 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">padding</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">([</span><span class="s2">&quot;VALID&quot;</span><span class="p">,</span> <span class="s2">&quot;SAME&quot;</span><span class="p">]))</span>
     <span class="n">strides</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">in_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+    <span class="k">if</span> <span class="n">return_dilation</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">dilations</span>
     <span class="k">return</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span></div>
 </pre></div>
 
