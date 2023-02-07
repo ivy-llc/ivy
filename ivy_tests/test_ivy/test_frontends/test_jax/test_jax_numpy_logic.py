@@ -530,17 +530,16 @@ def test_jax_numpy_any(
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
     np_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -661,4 +660,30 @@ def test_jax_numpy_isclose(
         a=input[0],
         b=input[1],
         equal_nan=equal_nan,
+    )
+
+
+# logical_not
+@handle_frontend_test(
+    fn_tree="jax.numpy.logical_not",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=1,
+    ),
+)
+def test_jax_numpy_logical_not(
+    dtypes_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtypes, x = dtypes_values
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )

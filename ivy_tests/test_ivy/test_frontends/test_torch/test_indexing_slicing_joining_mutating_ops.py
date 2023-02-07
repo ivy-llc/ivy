@@ -2,7 +2,9 @@
 from hypothesis import strategies as st, assume
 import math
 
+
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
@@ -910,4 +912,140 @@ def test_torch_split(
         tensor=value[0],
         split_size_or_sections=split_size_or_sections,
         dim=dim,
+    )
+
+
+@st.composite
+def _get_split_locations(draw, min_num_dims, axis):
+    """
+    Generate valid splits, either by generating an integer that evenly divides the axis
+    or a list of split locations.
+    """
+    shape = draw(
+        st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
+    )
+    if len(shape) == 1:
+        axis = draw(st.just(0))
+    else:
+        axis = draw(st.just(axis))
+
+    @st.composite
+    def get_int_split(draw):
+        if shape[axis] == 0:
+            return 0
+        factors = []
+        for i in range(1, shape[axis] + 1):
+            if shape[axis] % i == 0:
+                factors.append(i)
+        return draw(st.sampled_from(factors))
+
+    @st.composite
+    def get_list_split(draw):
+        return draw(
+            st.lists(
+                st.integers(min_value=0, max_value=shape[axis]),
+                min_size=0,
+                max_size=shape[axis],
+                unique=True,
+            ).map(sorted)
+        )
+
+    return draw(get_list_split() | get_int_split())
+
+
+# dsplit
+@handle_frontend_test(
+    fn_tree="torch.dsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
+    number_positional_args=st.just(2),
+)
+def test_torch_dsplit(
+    *,
+    dtype_value,
+    indices_or_sections,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        indices_or_sections=indices_or_sections,
+    )
+
+
+# hsplit
+@handle_frontend_test(
+    fn_tree="torch.hsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
+    number_positional_args=st.just(2),
+)
+def test_torch_hsplit(
+    *,
+    dtype_value,
+    indices_or_sections,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    # TODO: remove the assumption when these bugfixes are merged and version-pinned
+    # https://github.com/tensorflow/tensorflow/pull/59523
+    # https://github.com/google/jax/pull/14275
+    assume(
+        not (
+            len(value[0].shape) == 1
+            and ivy.current_backend_str() in ("tensorflow", "jax")
+        )
+    )
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        indices_or_sections=indices_or_sections,
+    )
+
+
+# row_stack
+@handle_frontend_test(
+    fn_tree="torch.row_stack",
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=st.integers(1, 5),
+    ),
+)
+def test_torch_row_stack(
+    *,
+    dtype_value_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=value,
     )

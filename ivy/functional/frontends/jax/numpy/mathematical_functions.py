@@ -22,6 +22,11 @@ def add(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def diff(a, n=1, axis=-1, prepend=None, append=None):
+    return ivy.diff(a, n=n, axis=axis, prepend=prepend, append=append, out=None)
+
+
+@to_ivy_arrays_and_back
 def arctan(x):
     ret = ivy.atan(x)
     return ret
@@ -286,6 +291,15 @@ def fmin(x1, x2):
     )
     print("jax-frontend", ret)
     return ret
+
+
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("uint16",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def fabs(x):
+    return ivy.abs(x)
 
 
 @to_ivy_arrays_and_back

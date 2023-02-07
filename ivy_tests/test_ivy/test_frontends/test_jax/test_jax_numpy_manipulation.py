@@ -721,3 +721,41 @@ def test_jax_numpy_atleast_1d(
         on_device=on_device,
         **arys,
     )
+    
+    
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="shape"))
+    valid_axes = [idx for idx in range(len(shape)) if shape[idx] == 1] + [None]
+    return draw(st.sampled_from(valid_axes))
+
+
+# squeeze
+@handle_frontend_test(
+    fn_tree="jax.numpy.squeeze",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    axis=_squeeze_helper(),
+    test_with_out=st.just(False)
+)
+def test_jax_numpy_squeeze(
+        *,
+        dtype_and_values,
+        axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+):
+    input_dtype, values = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=values[0],
+        axis=axis,
+    )

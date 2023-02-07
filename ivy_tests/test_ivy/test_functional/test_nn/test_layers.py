@@ -81,41 +81,57 @@ def test_linear(
 # Dropout #
 # --------#
 
+
+@st.composite
+def _dropout_helper(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+        )
+    )
+    noise_shape = list(shape)
+    if draw(st.booleans()):
+        noise_shape = None
+    else:
+        for i, _ in enumerate(noise_shape):
+            if draw(st.booleans()):
+                noise_shape[i] = 1
+            elif draw(st.booleans()):
+                noise_shape[i] = None
+    return dtype_and_x, noise_shape
+
+
 # dropout
 @handle_test(
     fn_tree="functional.ivy.dropout",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-    ),
+    dtype_x_noiseshape=_dropout_helper(),
     prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
     training=st.booleans(),
     seed=helpers.ints(min_value=0, max_value=100),
+    dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
 )
 def test_dropout(
     *,
-    dtype_and_x,
+    dtype_x_noiseshape,
     prob,
     scale,
     training,
     seed,
+    dtype,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
-    ret = helpers.test_function(
+    (x_dtype, x), noise_shape = dtype_x_noiseshape
+    ret, gt_ret = helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
+        input_dtypes=x_dtype,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -124,14 +140,16 @@ def test_dropout(
         x=x[0],
         prob=prob,
         scale=scale,
+        noise_shape=noise_shape,
         dtype=dtype[0],
         training=training,
         seed=seed,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
-    for u in ret:
+    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
-        assert u.shape == x[0].shape
+        assert u.shape == v.shape == w.shape
 
 
 # Attention #

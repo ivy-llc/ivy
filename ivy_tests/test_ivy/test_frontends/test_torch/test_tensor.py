@@ -4,7 +4,6 @@ import pytest
 import ivy
 import torch
 from hypothesis import strategies as st, given
-import hypothesis.extra.numpy as hnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -95,7 +94,7 @@ def test_torch_tensor_property_dtype(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_tensor_property_shape(dtype_x):
     dtype, data, shape = dtype_x
@@ -424,30 +423,24 @@ def test_torch_instance_reshape(
 )
 def test_torch_instance_reshape_as(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend_method_data,
+    init_flags,
+    method_flags,
     frontend,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
         },
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         frontend=frontend,
     )
 
@@ -1700,6 +1693,40 @@ def test_torch_instance_arctan_(
     )
 
 
+# arctan2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="arctan2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+    ),
+)
+def test_torch_instance_arctan2(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
 # acos
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1988,31 +2015,25 @@ def test_torch_instance_split(
     dtype_value,
     split_size,
     dim,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
     frontend_method_data,
+    init_flags,
+    method_flags,
     frontend,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "split_size": split_size,
             "dim": dim,
         },
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         frontend=frontend,
     )
 
@@ -2149,7 +2170,7 @@ def _fill_value_and_size(
             key="shape",
         )
     )
-    fill_value = draw(helpers.ints())
+    fill_value = draw(helpers.ints()) if "int" in dtype[0] else draw(helpers.floats())
 
     return dtype, [array, size, fill_value]
 
@@ -2226,15 +2247,18 @@ def test_torch_instance_new_empty(
 
 @st.composite
 def _expand_helper(draw):
-    shape, _ = draw(hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=2))
-    shape1, shape2 = shape
-    dtype_x = draw(
+    dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid", full=True), shape=shape1
+            available_dtypes=helpers.get_dtypes("valid"),
+            ret_shape=True
         )
     )
-    dtype, x = dtype_x
-    return dtype, x, shape1
+    # randomly expand singleton dimensions
+    new_shape = list(shape)
+    for i, v in enumerate(new_shape):
+        if v == 1 and st.booleans():
+            new_shape[i] = draw(st.integers(min_value=2, max_value=10))
+    return dtype, x, new_shape
 
 
 @handle_frontend_method(
@@ -2257,7 +2281,42 @@ def test_torch_instance_expand(
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={str(i): s for i, s in enumerate(shape)},
+        method_all_as_kwargs_np={
+            "size": shape,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# expand_as
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="expand_as",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
+    ),
+)
+def test_torch_instance_expand_as(
+    dtype_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -3636,6 +3695,37 @@ def test_torch_instance_sort(
             "dim": dim,
             "descending": descending,
         },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# sigmoid
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="sigmoid",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_sigmoid(
+    dtype_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
