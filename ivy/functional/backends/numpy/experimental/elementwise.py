@@ -127,7 +127,6 @@ def float_power(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.float_power(x1, x2, out=out)
 
 

@@ -98,8 +98,12 @@ def float_power(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.float_power(x1, x2)
+    # check if either input is complex
+    if ivy.any(ivy.is_complex_dtype(x1)) or ivy.any(ivy.is_complex_dtype(x2)):
+        out_dtype = tf.complex128
+    else:
+        out_dtype = tf.float64
+    return tf.cast(tf.experimental.numpy.float_power(x1, x2), out_dtype)
 
 
 def exp2(

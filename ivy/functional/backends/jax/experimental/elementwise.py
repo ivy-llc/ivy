@@ -70,8 +70,11 @@ def float_power(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.float_power(x1, x2)
+    if jnp.any(jnp.iscomplex(x1)) or jnp.any(jnp.iscomplex(x2)):
+        out_dtype = jnp.complex128
+    else:
+        out_dtype = jnp.float64
+    return jnp.float_power(x1, x2).astype(out_dtype)
 
 
 def exp2(
