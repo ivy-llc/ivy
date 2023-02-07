@@ -44,7 +44,7 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
         # check all argument types.
         try:
             result = overloaded_arg.__array_function__(func, types, args, kwargs)
-        except Exception as error:
+        except Exception:
             # Ensure the type of the overloaded argument ends up in the
             # traceback
             raise ivy.exceptions.IvyNotImplementedException
