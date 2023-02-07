@@ -182,6 +182,8 @@ def solve(input, other, *, out=None):
 def tensorsolve(A, B, dims=None, *, out=None):
     return ivy.tensorsolve(A, B, axes=dims, out=out)
 
+
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def matmul(input, other, *, out=None):
-     return ivy.matmul(input, other, out=out)
+    return ivy.matmul(input, other, out=out)
