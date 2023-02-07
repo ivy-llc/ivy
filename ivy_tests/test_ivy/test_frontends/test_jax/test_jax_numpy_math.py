@@ -2163,3 +2163,30 @@ def test_jax_numpy_real(
         test_values=True,
         val=x[0],
     )
+
+
+# prod
+@handle_frontend_test(
+    fn_tree="jax.numpy.prod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", index=2),
+    ),
+)
+def test_jax_numpy_prod(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+

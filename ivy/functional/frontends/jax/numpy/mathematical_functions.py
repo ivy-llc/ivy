@@ -414,3 +414,9 @@ def hypot(x1, x2, /):
 @to_ivy_arrays_and_back
 def floor_divide(x1, x2, /, out=None):
     return ivy.floor_divide(x1, x2, out=out)
+
+
+@to_ivy_arrays_and_back
+def prod(x, /, out=None):
+    return ivy.prod(x, out=out)
+
