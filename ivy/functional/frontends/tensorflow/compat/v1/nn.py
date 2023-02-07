@@ -6,9 +6,7 @@ from ivy.func_wrapper import with_supported_dtypes
 
 # should have float16 as well but sqrt doesn't support it
 @to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.9.0 and below": ("float32",)}, "tensorflow"
-)
+@with_supported_dtypes({"2.9.0 and below": ("float32",)}, "tensorflow")
 def fused_batch_norm(
     x,
     scale,
@@ -16,7 +14,7 @@ def fused_batch_norm(
     mean=None,
     variance=None,
     epsilon=1e-3,
-    data_format='NHWC',
+    data_format="NHWC",
     is_training=True,
     name=None,
     exponential_avg_factor=1.0,
@@ -49,16 +47,16 @@ def fused_batch_norm(
         variance = ivy.var(x_rest_by_depth, axis=0, keepdims=True)
         y = ivy.reshape(
             scale * (x_rest_by_depth - mean) / ivy.sqrt(variance + epsilon) + offset,
-            x.shape
+            x.shape,
         )
         variance = variance * rest_size / (rest_size - 1) if rest_size > 1 else variance
         mean = ivy.reshape(
             mean * exponential_avg_factor + old_mean * (1 - exponential_avg_factor),
-            old_mean.shape
+            old_mean.shape,
         )
         variance = ivy.reshape(
             variance * exponential_avg_factor + old_var * (1 - exponential_avg_factor),
-            old_var.shape
+            old_var.shape,
         )
     else:
         y = scale * (x - old_mean) / ivy.sqrt(old_var + epsilon) + offset

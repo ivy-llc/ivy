@@ -2249,8 +2249,7 @@ def test_torch_instance_new_empty(
 def _expand_helper(draw):
     dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            ret_shape=True
+            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
         )
     )
     # randomly expand singleton dimensions
