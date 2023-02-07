@@ -184,6 +184,5 @@ def tensorsolve(A, B, dims=None, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)
