@@ -1344,7 +1344,7 @@ def test_tensorflow_where_with_xy(
         min_num_dims=1,
         max_num_dims=8,
     ),
-    dtype_and_axis=helpers.array_values(
+    axis=helpers.array_values(
         shape=(1,),
         exclude_min=False,
         dtype="int32",
@@ -1355,14 +1355,13 @@ def test_tensorflow_reverse(
     *,
     frontend,
     dtype_and_x,
-    dtype_and_axis,
+    axis,
     fn_tree,
     test_flags,
     on_device,
 ):
 
     input_dtype, x = dtype_and_x
-    axis, axis_dtype = dtype_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
