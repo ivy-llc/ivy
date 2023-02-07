@@ -362,15 +362,27 @@ class Tensor:
     def view_as(self, other):
         return self.view(other.shape)
 
-    def expand(self, *sizes):
+    def expand(self, *args, size=None):
+        if args and size:
+            raise TypeError("reshape() got multiple values for argument 'size'")
+        if args:
+            if isinstance(args[0], (tuple, list)):
+                size = args[0]
+            else:
+                size = args
 
-        sizes = list(sizes)
-        for i, dim in enumerate(sizes):
+        size = list(size)
+        for i, dim in enumerate(size):
             if dim < 0:
-                sizes[i] = self.shape[i]
+                size[i] = self.shape[i]
 
         return torch_frontend.tensor(
-            ivy.broadcast_to(self._ivy_array, shape=tuple(sizes))
+            ivy.broadcast_to(self._ivy_array, shape=tuple(size))
+        )
+
+    def expand_as(self, other):
+        return self.expand(
+            ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
         )
 
     def detach(self):
@@ -449,7 +461,7 @@ class Tensor:
         return self
 
     def size(self, dim=None):
-        shape = ivy.shape(self._ivy_array, as_array=True)
+        shape = ivy.shape(self._ivy_array)
         if dim is None:
             return shape
         else:
