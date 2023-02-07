@@ -12,7 +12,7 @@ def _from_int_to_tuple(arg, dim):
         return (arg,) * dim
     if isinstance(arg, tuple) and len(arg) == 1:
         return (arg[0],) * dim
-    return tuple(arg)
+    return arg
 
 
 def max_pool1d(
@@ -53,6 +53,10 @@ def max_pool2d(
     dilation = _from_int_to_tuple(dilation, 2)
     strides = _from_int_to_tuple(strides, 2)
     kernel = _from_int_to_tuple(kernel, 2)
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * 2
 
     new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
     if isinstance(padding, str):
@@ -68,7 +72,7 @@ def max_pool2d(
                 x_shape[i], new_kernel[i], padding[i], strides[i]
             )
 
-    padding = [(0, 0)] + padding + [(0, 0)]
+    padding = [(0, 0)] + list(padding) + [(0, 0)]
     x = tf.pad(x, padding, constant_values=-math.inf)
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
