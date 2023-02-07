@@ -36,7 +36,7 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
                 stride, 1, message="padding cannot be 'same' for stride > 1"
             )
         else:
-            for i in padding:
+            for i in stride:
                 ivy.assertions.check_equal(
                     i, 1, message="padding cannot be 'same' for stride > 1"
                 )
@@ -46,11 +46,13 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
         ivy.assertions.check_equal(
             in_channels,
             in_channels_by_groups * groups,
-            message="in_channels must be consistent",
+            message="in_channels must be consistent between input and weight",
         )
     else:
         ivy.assertions.check_equal(
-            in_channels, weight.shape[0], message="out_channels must be consistent"
+            in_channels,
+            weight.shape[0],
+            message="in_channels must be consistent between input and weight",
         )
 
 
