@@ -636,7 +636,9 @@ class Tensor:
         return torch_frontend.remainder(self._ivy_array, other)
 
     def __long__(self, memory_format=None):
-        return torch_frontend.tensor(ivy.astype(self._ivy_array, ivy.int64))
+        cast_tensor = self.clone()
+        cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.int64)
+        return cast_tensor
 
     def __getitem__(self, query):
         ret = ivy.get_item(self._ivy_array, query)
