@@ -59,10 +59,12 @@ def max_pool2d(
     x: torch.Tensor,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, Tuple[int], Tuple[int, int]],
     /,
     *,
     data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -75,13 +77,20 @@ def max_pool2d(
     elif len(kernel) == 1:
         kernel = (kernel[0], kernel[0])
 
+    if isinstance(dilation, int):
+        dilation = (dilation, dilation)
+    elif len(dilation) == 1:
+        dilation = (dilation[0], dilation[0])
+
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
 
+    new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
+
     if isinstance(padding, str):
-        pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-        pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+        pad_h = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
+        pad_w = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
         pad_list = [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2]
     else:
         # torch pad takes width padding first, then height padding
@@ -94,7 +103,7 @@ def max_pool2d(
         value=float("-inf"),
     )
 
-    res = torch.nn.functional.max_pool2d(x, kernel, strides, 0)
+    res = torch.nn.functional.max_pool2d(x, kernel, strides, 0, dilation, ceil_mode)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res

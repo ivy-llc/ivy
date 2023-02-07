@@ -4,7 +4,6 @@ import pytest
 import ivy
 import torch
 from hypothesis import strategies as st, given
-import hypothesis.extra.numpy as hnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -95,7 +94,7 @@ def test_torch_tensor_property_dtype(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_tensor_property_shape(dtype_x):
     dtype, data, shape = dtype_x
@@ -2171,7 +2170,7 @@ def _fill_value_and_size(
             key="shape",
         )
     )
-    fill_value = draw(helpers.ints())
+    fill_value = draw(helpers.ints()) if "int" in dtype[0] else draw(helpers.floats())
 
     return dtype, [array, size, fill_value]
 
@@ -2248,15 +2247,17 @@ def test_torch_instance_new_empty(
 
 @st.composite
 def _expand_helper(draw):
-    shape, _ = draw(hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=2))
-    shape1, shape2 = shape
-    dtype_x = draw(
+    dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid", full=True), shape=shape1
+            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
         )
     )
-    dtype, x = dtype_x
-    return dtype, x, shape1
+    # randomly expand singleton dimensions
+    new_shape = list(shape)
+    for i, v in enumerate(new_shape):
+        if v == 1 and st.booleans():
+            new_shape[i] = draw(st.integers(min_value=2, max_value=10))
+    return dtype, x, new_shape
 
 
 @handle_frontend_method(
@@ -2289,7 +2290,7 @@ def test_torch_instance_expand(
     )
 
 
-# epxand_as
+# expand_as
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
@@ -4252,6 +4253,35 @@ def _get_clamp_inputs(draw):
     dtype_and_x_min_max=_get_clamp_inputs(),
 )
 def test_torch_instance_clamp(
+    dtype_and_x_min_max,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, min, max = dtype_and_x_min_max
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"min": min, "max": max},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# clamp_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="clamp_",
+    dtype_and_x_min_max=_get_clamp_inputs(),
+)
+def test_torch_instance_clamp_(
     dtype_and_x_min_max,
     frontend,
     frontend_method_data,

@@ -634,3 +634,35 @@ def test_torch_var_mean(
         unbiased=bool(correction),
         keepdim=keepdims,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.aminmax",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    keepdims=st.booleans(),
+)
+def test_torch_aminmax(
+    *,
+    dtype_input_axis,
+    keepdims,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dim=axis,
+        keepdim=keepdims,
+    )
