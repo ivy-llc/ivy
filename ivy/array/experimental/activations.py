@@ -80,3 +80,8 @@ class ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([0., 0., 1.])
         """
         return ivy.thresholded_relu(self._data, threshold=threshold, out=out)
+
+    def prelu(
+        self,
+    ) -> ivy.Array:
+        pass
