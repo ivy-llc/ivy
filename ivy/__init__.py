@@ -24,8 +24,8 @@ try:
     import jaxlib
 except ImportError:
     jax = SimpleNamespace()
-    # jax.interpreters.xla._DeviceArray = SimpleNamespace()
-    # jaxlib.xla_extension.DeviceArray = SimpleNamespace()
+    jax.interpreters.xla._DeviceArray = SimpleNamespace()
+    jaxlib.xla_extension.DeviceArray = SimpleNamespace()
     jax.Buffer = SimpleNamespace()
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
