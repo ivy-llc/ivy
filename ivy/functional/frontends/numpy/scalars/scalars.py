@@ -30,7 +30,6 @@ class bool_(generic):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="bool")
         )
-        self.dtype = "bool"
 
     def __repr__(self):
         return "True" if self.ivy_array else "False"
@@ -71,7 +70,6 @@ class byte(signedinteger):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="int8")
         )
-        self.dtype = "int8"
 
 
 int8 = byte
@@ -92,7 +90,6 @@ class short(signedinteger):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="int16")
         )
-        self.dtype = "int16"
 
 
 int16 = short
@@ -113,7 +110,6 @@ class intc(signedinteger):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="int32")
         )
-        self.dtype = "int32"
 
 
 int32 = intc
@@ -134,7 +130,6 @@ class int_(signedinteger):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="int64")
         )
-        self.dtype = "int64"
 
 
 int64 = intp = int_
@@ -155,7 +150,6 @@ class longlong(signedinteger):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="int64")
         )
-        self.dtype = "int64"
 
 
 class unsignedinteger(integer):
@@ -178,7 +172,6 @@ class ubyte(unsignedinteger):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="uint8")
         )
-        self.dtype = "uint8"
 
 
 uint8 = ubyte
@@ -199,7 +192,6 @@ class ushort(unsignedinteger):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="uint16")
         )
-        self.dtype = "uint16"
 
 
 uint16 = ushort
@@ -220,7 +212,6 @@ class uintc(unsignedinteger):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="uint32")
         )
-        self.dtype = "uint32"
 
 
 uint32 = uintc
@@ -241,7 +232,6 @@ class uint(signedinteger):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="uint64")
         )
-        self.dtype = "uint64"
 
 
 uint64 = uintp = uint
@@ -262,7 +252,6 @@ class ulonglong(signedinteger):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="uint64")
         )
-        self.dtype = "uint64"
 
 
 class inexact(number):
@@ -292,7 +281,6 @@ class half(floating):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="float16")
         )
-        self.dtype = "float16"
 
 
 float16 = half
@@ -313,7 +301,6 @@ class single(floating):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="float32")
         )
-        self.dtype = "float32"
 
 
 float32 = single
@@ -334,7 +321,6 @@ class double(floating, float):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="float64")
         )
-        self.dtype = "float64"
 
 
 float64 = float_ = double
@@ -355,7 +341,6 @@ class bfloat16(generic):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="bfloat16")
         )
-        self.dtype = "bfloat16"
 
 
 class complexfloating(inexact):
@@ -380,7 +365,6 @@ class csingle(complexfloating):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="complex64")
         )
-        self.dtype = "complex64"
 
 
 complex64 = singlecomplex = csingle
@@ -401,7 +385,6 @@ class cdouble(complexfloating, complex):
             if hasattr(value, "ivy_array")
             else ivy.array(value, dtype="complex128")
         )
-        self.dtype = "complex128"
 
 
 complex128 = cfloat = complex_ = cdouble

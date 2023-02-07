@@ -281,3 +281,20 @@ def kl_div(
         reduction = _get_reduction(reduction, size_average, reduce)
 
     return reduction(loss)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def margin_ranking_loss(
+    input1,
+    input2,
+    target,
+    margin=0.0,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = -1 * target * (input1 - input2) + margin
+    loss = ivy.where(loss < 0, 0, loss)
+    reduction = _get_reduction(reduction, size_average, reduce)
+    return reduction(loss)

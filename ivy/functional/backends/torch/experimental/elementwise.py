@@ -113,7 +113,11 @@ def float_power(
 ) -> torch.Tensor:
     # Native out is supported but with restrictions leading
     # to failures hence letting ivy handle it.
-    return torch.float_power(x1, x2).to(x1.dtype)
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return torch.float_power(x1, x2, out=out)
+
+
+float_power.support_native_out = True
 
 
 def exp2(
@@ -386,7 +390,7 @@ def zeta(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    temp = torch.logical_and(torch.ne(torch.remainder(x, 2), 0), torch.ge(x, 1))
+    temp = torch.logical_and(torch.ne(torch.remainder(x, 2), 0), torch.gt(x, 1))
     temp = torch.logical_and(temp, torch.le(q, 0))
     nan_indices = torch.logical_or(temp, torch.lt(x, 1))
     result = torch.special.zeta(x, q)
@@ -425,16 +429,5 @@ def xlogy(
     return torch.xlogy(x, y, out=out)
 
 
-def real(
-    x: Union[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.real(x)
-
-
-def isposinf(
-    x: Union[torch.Tensor],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.isposinf(x)

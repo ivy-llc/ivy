@@ -2,8 +2,16 @@ import operator
 from typing import Optional, Union, Tuple, List
 from numbers import Number
 
-from ivy import promote_types_of_inputs, default_float_dtype, is_float_dtype
+from ivy import (
+    promote_types_of_inputs,
+    default_float_dtype,
+    is_float_dtype,
+    with_unsupported_dtypes,
+    backend_version,
+)
 from ivy.functional.backends.jax import JaxArray
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 import jax.numpy as jnp
 import jax.scipy as js
 
@@ -19,6 +27,7 @@ def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
 def fmod(
     x1: JaxArray,
     x2: JaxArray,
@@ -70,7 +79,12 @@ def float_power(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.float_power(x1, x2)
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if jnp.any(jnp.iscomplex(x1)) or jnp.any(jnp.iscomplex(x2)):
+        out_dtype = jnp.complex128
+    else:
+        out_dtype = jnp.float64
+    return jnp.float_power(x1, x2).astype(out_dtype)
 
 
 def exp2(
@@ -121,6 +135,8 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return jnp.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
@@ -507,14 +523,5 @@ def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> Jax
     return js.special.xlogy(x, y)
 
 
-def real(x: Union[JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.real(x)
-
-
-def isposinf(
-    x: Union[JaxArray],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.isposinf(x)

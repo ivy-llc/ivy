@@ -11,7 +11,6 @@ class DeviceArray:
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
-        self._dtype = dtype(self._ivy_array.dtype)
         self.weak_type = weak_type
 
     def __repr__(self):
@@ -34,7 +33,11 @@ class DeviceArray:
 
     @property
     def dtype(self):
-        return self._dtype
+        return dtype(self._ivy_array.dtype)
+
+    @property
+    def shape(self):
+        return self._ivy_array.shape
 
     @property
     def at(self):

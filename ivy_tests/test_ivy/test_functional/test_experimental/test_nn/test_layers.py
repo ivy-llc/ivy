@@ -1,6 +1,5 @@
 # global
-from hypothesis import strategies as st
-
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -9,17 +8,41 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool2d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=4,
+        max_dims=4,
+        min_side=2,
+        max_side=4,
+        allow_explicit_padding=True,
+        return_dilation=True,
+    ),
+    ceil_mode=st.just(True),
     test_gradients=st.just(False),
+    # problem with containers converting tuple padding to
+    # lists which jax does not support
+    container_flags=st.just([False]),
 )
 def test_max_pool2d(
     *,
     x_k_s_p,
+    ceil_mode,
     test_flags,
     backend_fw,
     fn_name,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation = x_k_s_p
+    assume(
+        not (
+            backend_fw.current_backend_str() == "tensorflow"
+            and (
+                (stride[0] > kernel[0] or stride[0] > kernel[1])
+                or (
+                    (stride[0] > 1 and dilation[0] > 1)
+                    or (stride[0] > 1 and dilation[1] > 1)
+                )
+            )
+        )
+    )
     helpers.test_function(
         ground_truth_backend="jax",
         input_dtypes=dtype,
@@ -32,6 +55,8 @@ def test_max_pool2d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -420,4 +445,44 @@ def test_embedding(
         weights=weights,
         indices=indices,
         max_norm=max_norm,
+    )
+
+
+@handle_test(
+    fn_tree="dft",
+    d_xfft_axis_n_length=x_and_fft(helpers.get_dtypes("complex")),
+    d_xifft_axis_n_length=x_and_ifft(),
+    inverse=st.booleans(),
+    onesided=st.booleans(),
+)
+def test_dft(
+    *,
+    d_xfft_axis_n_length,
+    d_xifft_axis_n_length,
+    inverse,
+    onesided,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    if inverse:
+        dtype, x, axis, norm, dft_length = d_xifft_axis_n_length
+    else:
+        dtype, x, axis, norm, dft_length = d_xfft_axis_n_length
+
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x,
+        axis=axis,
+        inverse=inverse,
+        onesided=onesided,
+        dft_length=dft_length,
+        norm=norm,
+        rtol_=1e-2,
+        atol_=1e-2,
     )

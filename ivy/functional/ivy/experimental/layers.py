@@ -1,4 +1,9 @@
+# global
+import math
 from typing import Optional, Union, Tuple, Literal
+
+
+# local
 import ivy
 from ivy.func_wrapper import (
     handle_array_like_without_promotion,
@@ -79,10 +84,12 @@ def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, Tuple[int], Tuple[int, int]],
     /,
     *,
     data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D max pool given 4-D input x.
@@ -98,7 +105,7 @@ def max_pool2d(
         The stride of the sliding window for each dimension of input.
     padding
         SAME" or "VALID" indicating the algorithm, or list
-        indicating the per-dimensio paddings.
+        indicating the per-dimension paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
     out
@@ -138,7 +145,16 @@ def max_pool2d(
 
             [[46, 47]]]])
     """
-    return ivy.current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)
+    return ivy.current_backend(x).max_pool2d(
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=out,
+    )
 
 
 @to_native_arrays_and_back
@@ -770,3 +786,115 @@ def embedding(
         else:
             ret[i] = weights[x, :]
     return ret
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_exceptions
+@handle_nestable
+def dft(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = 1,
+    inverse: bool = False,
+    onesided: bool = False,
+    dft_length: Optional[Union[int, Tuple[int]]] = None,
+    norm: Optional[str] = "backward",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+        Computes the discrete Fourier transform of input.
+
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*,
+        where d_in indicates the dimension that needs FFT.
+    axis
+        The axis on which to perform the DFT. By default this
+        value is  set to 1, which corresponds to the first dimension
+        after the batch index.
+    inverse
+        Whether to perform the inverse discrete fourier transform.
+        By default this value is set to False.
+    onesided
+        If onesided is True, only values for w in [0, 1, 2, …, floor(n_fft/2) + 1]
+        are returned because the real-to-complex Fourier transform satisfies the
+        conjugate symmetry, i.e., X[m, w] = X[m,w]=X[m,n_fft-w]*. Note if the
+        input or window tensors are complex, then onesided output is not possible.
+        Enabling onesided with real inputs performs a Real-valued fast Fourier
+        transform (RFFT). When invoked with real or complex valued input, the
+        default value is False. Values can be True or False.
+    dft_length
+        The length of the signal.If greater than the axis dimension,
+        the signal will be zero-padded up to dft_length. If less than
+        the axis dimension, only the first dft_length values will be
+        used as the signal. It’s an optional value.
+    norm
+          Optional argument, "backward", "ortho" or "forward". Defaults to be
+          "backward".
+          "backward" indicates no normalization.
+          "ortho" indicates normalization by 1/sqrt(n).
+          "forward" indicates normalization by 1/n.
+    out
+        Optional output array, for writing the result to. It must
+        have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The Fourier Transform of the input vector.If onesided is False,
+        the following shape is expected: [batch_idx][signal_dim1][signal_dim2]
+        …[signal_dimN][2]. If axis=0 and onesided is True, the following shape
+        is expected: [batch_idx][floor(signal_dim1/2)+1][signal_dim2]…[signal_dimN][2].
+        If axis=1 and onesided is True, the following shape is expected:
+        [batch_idx][signal_dim1][floor(signal_dim2/2)+1]…[signal_dimN][2].
+        If axis=N-1 and onesided is True, the following shape is expected:
+        [batch_idx][signal_dim1][signal_dim2]…[floor(signal_dimN/2)+1][2].
+        The signal_dim at the specified axis is equal to the dft_length.
+
+    """
+    if inverse:
+        res = ifft(x, axis, norm=norm, n=dft_length, out=out)
+    else:
+        res = fft(x, axis, norm=norm, n=dft_length, out=out)
+
+    if onesided:
+        slices = [slice(0, a) for a in res.shape]
+        slices[axis] = slice(0, res.shape[axis] // 2 + 1)
+        res = res[tuple(slices)]
+    return res
+
+
+# helpers #
+
+
+def _output_ceil_shape(w, f, p, s):
+    return math.ceil((w - f + p) / s) + 1
+
+
+def padding_ceil_mode(w, f, p, s):
+    remaining_pixels = (w - f + sum(p)) % s
+    if s > 1 and remaining_pixels != 0 and f > 1:
+        input_size = w + sum(p)
+        # making sure that the remaining pixels are supposed
+        # to be covered by the window
+        # they won't be covered if stride is big enough to skip them
+        if input_size - remaining_pixels - (f - 1) + s > input_size:
+            return p
+        output_shape = _output_ceil_shape(
+            w,
+            f,
+            sum(p),
+            s,
+        )
+        # calculating new padding with ceil_output_shape
+        new_pad = (output_shape - 1) * s + f - w
+        # updating pad_list with new padding by adding it to the end
+        p = (
+            p[0],
+            p[1] + new_pad - sum(p),
+        )
+    return p
+    

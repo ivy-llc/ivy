@@ -145,3 +145,20 @@ def var_mean(input, dim, unbiased, keepdim=False, *, out=None):
     )
     temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
     return (temp_var, temp_mean)
+
+
+@to_ivy_arrays_and_back
+def aminmax(input, *, dim=None, keepdim=False, out=None):
+    minmax_tuple = namedtuple("minmax", ["min", "max"])
+    return minmax_tuple(
+        ivy.min(input, axis=dim, keepdims=keepdim, out=out),
+        ivy.max(input, axis=dim, keepdims=keepdim, out=out),
+    )
+
+
+aminmax.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16"),
+    "jax": ("float16", "bfloat16"),
+    "tensorflow": ("float16", "bfloat16"),
+}
