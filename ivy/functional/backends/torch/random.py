@@ -109,7 +109,7 @@ def randint(
     shape = _check_bounds_and_get_shape(low, high, shape)
     if seed:
         torch.manual_seed(seed)
-    return torch.rand(low=low, high=high, size=shape, device=device).to(dtype)
+    return torch.randint(low=low, high=high, size=shape, device=device).to(dtype)
 
 
 def seed(*, seed_value: int = 0) -> None:
