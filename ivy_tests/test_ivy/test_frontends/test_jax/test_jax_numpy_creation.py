@@ -444,3 +444,29 @@ def test_jax_numpy_full_like(
         fill_value=fill_value,
         dtype=dtype,
     )
+
+    
+# size
+@handle_frontend_test(
+    fn_tree="jax.numpy.size",
+    input_fill_dtype=_input_fill_and_dtype(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_size(
+    input_fill_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, fill_value, dtype = input_fill_dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        fill_value=fill_value,
+        dtype=dtype,
+    )
