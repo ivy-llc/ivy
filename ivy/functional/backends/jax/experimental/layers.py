@@ -12,21 +12,27 @@ from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 
 
+def _from_int_to_tuple(arg, dim):
+    if isinstance(arg, int):
+        return (arg,) * dim
+    if isinstance(arg, tuple) and len(arg) == 1:
+        return (arg[0],) * dim
+    return arg
+
+
 def general_pool(
     inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation, ceil_mode
 ):
-    if isinstance(window_shape, int):
-        window_shape = (window_shape,) * dim
-    elif len(window_shape) == 1:
-        window_shape = (window_shape[0],) * dim
-    if isinstance(strides, int):
-        strides = (strides,) * dim
-    elif len(strides) == 1:
-        strides = (strides[0],) * dim
-    if isinstance(dilation, int):
-        dilation = (dilation,) * dim
-    elif len(dilation) == 1:
-        dilation = (dilation[0],) * dim
+    window_shape = _from_int_to_tuple(window_shape, dim)
+    strides = _from_int_to_tuple(strides, dim)
+    dilation = _from_int_to_tuple(dilation, dim)
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * dim
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * dim
+
+    if isinstance(padding, tuple):
+        ivy.assertions.check_kernel_padding_size(window_shape, padding)
 
     assert len(window_shape) == len(
         strides
@@ -66,7 +72,7 @@ def general_pool(
         ]
         pad_list = [(0, 0)] + pad_list + [(0, 0)]
     else:
-        pad_list = [(0, 0)] + padding + [(0, 0)]
+        pad_list = [(0, 0)] + list(padding) + [(0, 0)]
 
     if ceil_mode:
         for i in range(len(dims) - 2):
