@@ -1,7 +1,6 @@
 # global
 import numpy as np
 from hypothesis import strategies as st, assume
-import math
 
 # local
 import ivy
@@ -283,26 +282,14 @@ def _float_power_helper(draw, *, available_dtypes=None):
             safety_factor_scale="log",
         )
     )
-    dtype1 = dtype1[0]
-    if ivy.is_int_dtype(dtype1):
-        max_val = ivy.iinfo(dtype1).max
-    else:
-        max_val = ivy.finfo(dtype1).max
-    max_x1 = np.max(np.abs(x1[0]))
-    if max_x1 in [0, 1]:
-        max_value = None
-    else:
-        max_value = int(math.log(max_val) / math.log(max_x1))
-        if abs(max_value) > abs(max_val) / 40 or max_value < 0:
-            max_value = None
     dtype2, x2 = draw(
         helpers.dtype_and_values(
             min_value=-5,
-            max_value=max_value,
+            max_value=5,
             available_dtypes=available_dtypes,
         )
     )
-    return (dtype1, dtype2[0]), (x1[0], x2[0])
+    return (dtype1[0], dtype2[0]), (x1[0], x2[0])
 
 
 # float_power

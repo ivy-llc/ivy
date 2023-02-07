@@ -128,11 +128,7 @@ def float_power(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = promote_types_of_inputs(x1, x2)
-    if np.any(np.iscomplex(x1)) or np.any(np.iscomplex(x2)):
-        out_dtype = np.complex128
-    else:
-        out_dtype = np.float64
-    return np.float_power(x1, x2, out=out, dtype=out_dtype)
+    return np.float_power(x1, x2, out=out)
 
 
 float_power.support_native_out = True
