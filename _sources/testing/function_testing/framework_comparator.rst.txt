@@ -1,0 +1,4 @@
+framework_comparator
+====================
+
+.. autofunction:: ivy_tests.test_ivy.helpers.function_testing.framework_comparator

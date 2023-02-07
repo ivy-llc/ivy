@@ -158,7 +158,26 @@
     <span class="kn">import</span> <span class="nn">jsonpickle</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="k">pass</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
+
+
+<div class="viewcode-block" id="framework_comparator"><a class="viewcode-back" href="../../../../testing/function_testing/framework_comparator.html#ivy_tests.test_ivy.helpers.function_testing.framework_comparator">[docs]</a><span class="k">def</span> <span class="nf">framework_comparator</span><span class="p">(</span><span class="n">frontend</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;jax&quot;</span><span class="p">:</span>
+        <span class="n">fw</span> <span class="o">=</span> <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">backend_fw</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">__version__</span>
+            <span class="o">+</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;jaxlib&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">__version__</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">backend_fw</span> <span class="o">==</span> <span class="n">fw</span>
+    <span class="k">elif</span> <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;torch&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="o">==</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="o">==</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">__version__</span>
+        <span class="p">)</span></div>
 
 
 <span class="k">try</span><span class="p">:</span>
@@ -190,14 +209,10 @@
 <span class="n">available_frameworks</span> <span class="o">=</span> <span class="n">available_frameworkss</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="multiversion_native_array_check"><a class="viewcode-back" href="../../../../testing/function_testing/multiversion_native_array_check.html#ivy_tests.test_ivy.helpers.function_testing.multiversion_native_array_check">[docs]</a><span class="k">def</span> <span class="nf">multiversion_native_array_check</span><span class="p">(</span><span class="n">fw</span><span class="p">):</span>
-    <span class="n">dic</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="s2">&quot;Tensor&quot;</span><span class="p">,</span> <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="s2">&quot;Tensor&quot;</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span> <span class="s2">&quot;ndarray&quot;</span><span class="p">}</span>
-    <span class="n">param</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">fw</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fw</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">func</span></div>
+<div class="viewcode-block" id="make_json_pickable"><a class="viewcode-back" href="../../../../testing/function_testing/make_json_pickable.html#ivy_tests.test_ivy.helpers.function_testing.make_json_pickable">[docs]</a><span class="k">def</span> <span class="nf">make_json_pickable</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;builtins.bfloat16&quot;</span><span class="p">,</span> <span class="s2">&quot;ivy.bfloat16&quot;</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;jax._src.device_array.reconstruct_device_array&quot;</span><span class="p">,</span> <span class="s2">&quot;jax.numpy.array&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span></div>
 
 
 <div class="viewcode-block" id="empty_func"><a class="viewcode-back" href="../../../../testing/function_testing/empty_func.html#ivy_tests.test_ivy.helpers.function_testing.empty_func">[docs]</a><span class="k">def</span> <span class="nf">empty_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -649,6 +664,8 @@
 
     <span class="c1"># frontend function</span>
     <span class="c1"># parse function name and frontend submodules (jax.lax, jax.numpy etc.)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frontend</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">frontend</span><span class="p">,</span> <span class="n">frontend_proc</span> <span class="o">=</span> <span class="n">frontend</span>
     <span class="n">split_index</span> <span class="o">=</span> <span class="n">fn_tree</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
     <span class="n">frontend_submods</span><span class="p">,</span> <span class="n">fn_name</span> <span class="o">=</span> <span class="n">fn_tree</span><span class="p">[:</span><span class="n">split_index</span><span class="p">],</span> <span class="n">fn_tree</span><span class="p">[</span><span class="n">split_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
     <span class="n">function_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">frontend_submods</span><span class="p">)</span>
@@ -769,111 +786,42 @@
         <span class="c1"># multiversion zone, changes made in non-multiversion zone should</span>
         <span class="c1"># be applied here too</span>
 
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="o">!=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">__version__</span>
-        <span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">framework_comparator</span><span class="p">(</span><span class="n">frontend</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># create frontend framework args</span>
-                <span class="n">args_frontend</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
-                    <span class="n">args_np</span><span class="p">,</span>
-                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
-                    <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">)</span>
-                    <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
-                    <span class="n">shallow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">kwargs_frontend</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
-                    <span class="n">kwargs_np</span><span class="p">,</span>
-                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
-                    <span class="n">shallow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="p">)</span>
-
-                <span class="c1"># change ivy dtypes to native dtypes</span>
-                <span class="k">if</span> <span class="s2">&quot;dtype&quot;</span> <span class="ow">in</span> <span class="n">kwargs_frontend</span><span class="p">:</span>
-                    <span class="n">kwargs_frontend</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span>
-                        <span class="n">kwargs_frontend</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span>
-                    <span class="p">)</span>
-
-                <span class="c1"># change ivy device to native devices</span>
-                <span class="k">if</span> <span class="s2">&quot;device&quot;</span> <span class="ow">in</span> <span class="n">kwargs_frontend</span><span class="p">:</span>
-                    <span class="n">kwargs_frontend</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dev</span><span class="p">(</span>
-                        <span class="n">kwargs_frontend</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">]</span>
-                    <span class="p">)</span>
-
-                <span class="c1"># check and replace the NativeClass objects in arguments</span>
-                <span class="c1"># with true counterparts</span>
-                <span class="n">args_frontend</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
-                    <span class="n">args_frontend</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="n">convtrue</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">10</span>
-                <span class="p">)</span>
-                <span class="n">kwargs_frontend</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
-                    <span class="n">kwargs_frontend</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="n">convtrue</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">10</span>
-                <span class="p">)</span>
 
                 <span class="c1"># compute the return via the frontend framework</span>
                 <span class="n">module_name</span> <span class="o">=</span> <span class="n">fn_tree</span><span class="p">[</span><span class="mi">25</span> <span class="p">:</span> <span class="n">fn_tree</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)]</span>
-                <span class="c1"># frontend_fw = importlib.import_module(module_name)</span>
-
-                <span class="c1"># temp=dict()</span>
-                <span class="c1"># if frontend.split(&quot;/&quot;)[0]==&#39;jax&#39;:</span>
-                <span class="c1">#     # we prepare for jaxlib</span>
-                <span class="c1">#     pass</span>
 
                 <span class="n">pickle_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="n">args_np</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">kwargs_np</span><span class="p">}</span>
-
-                <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-                    <span class="p">[</span>
-                        <span class="s2">&quot;/opt/miniconda/envs/multienv/bin/python&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;test.py&quot;</span><span class="p">,</span>
-                        <span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">pickle_dict</span><span class="p">),</span>
-                        <span class="n">fn_name</span><span class="p">,</span>
-                        <span class="n">module_name</span><span class="p">,</span>
-                        <span class="s2">&quot;numpy&quot;</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
-                        <span class="n">frontend</span><span class="p">,</span>
-                    <span class="p">],</span>
-                    <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="p">)</span>
-
-                <span class="k">if</span> <span class="n">frontend_ret</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
-                    <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">jsonpickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">frontend_ret</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+                <span class="n">process</span> <span class="o">=</span> <span class="n">frontend_proc</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">make_json_pickable</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">pickle_dict</span><span class="p">))</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># process.stdin.write(&#39;1&#39; + &#39;\n&#39;)</span>
+                    <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">z</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">module_name</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fn_name</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="s2">&quot;Something bad happened to the subprocess, here are the logs:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+                    <span class="k">raise</span> <span class="n">e</span>
+                <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">frontend_ret</span><span class="p">:</span>
+                    <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">jsonpickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">make_json_pickable</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">frontend_ret</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
                     <span class="k">raise</span> <span class="ne">Exception</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
-                <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">)</span>
-
-                <span class="c1"># globally_done = (</span>
-                <span class="c1">#     frontend.split(&quot;/&quot;)[0]</span>
-                <span class="c1">#     + &quot;/&quot;</span>
-                <span class="c1">#     + importlib.import_module(frontend.split(&quot;/&quot;)[0]).__version__</span>
-                <span class="c1"># )</span>
-                <span class="c1"># try:</span>
-                <span class="c1">#     frontend_fw = config.custom_import(</span>
-                <span class="c1">#         frontend.split(&quot;/&quot;)[0] + &quot;/&quot; + frontend.split(&quot;/&quot;)[1],</span>
-                <span class="c1">#         module_name,</span>
-                <span class="c1">#         globally_done=globally_done,</span>
-                <span class="c1">#     )</span>
-                <span class="c1"># except Exception as e:</span>
-                <span class="c1">#     raise e</span>
-                <span class="c1">#</span>
-                <span class="c1"># print(frontend_fw.__version__)</span>
-                <span class="c1"># frontend_ret = frontend_fw.__dict__[fn_name](</span>
-                <span class="c1">#     *args_frontend, **kwargs_frontend</span>
-                <span class="c1"># )</span>
-                <span class="c1"># frontend_ret = np.asarray(</span>
-                <span class="c1">#     frontend_ret</span>
-                <span class="c1"># )  # we do this because frontend_ret comes from a module in another file</span>
-
                 <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">):</span>
                     <span class="n">frontend_ret_np_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">)]</span>
                 <span class="k">else</span><span class="p">:</span>
+                    <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">)</span>
                     <span class="c1"># tuplify the frontend return</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
                         <span class="n">frontend_ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">frontend_ret</span><span class="p">,)</span>
                     <span class="n">frontend_ret_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span>
-                        <span class="n">frontend_ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span>
+                        <span class="n">frontend_ret</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
                     <span class="p">)</span>
                     <span class="n">frontend_ret_flat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span>
                         <span class="n">frontend_ret</span><span class="p">,</span> <span class="n">frontend_ret_idxs</span>
@@ -1672,7 +1620,7 @@
     <span class="p">)</span>
 
     <span class="c1"># Compute the return with the native frontend framework</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">frontend</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">args_constructor_frontend</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
         <span class="n">args_constructor_np</span><span class="p">,</span>
         <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
@@ -1720,7 +1668,7 @@
     <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">ins_gt</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">frontend_method_data</span><span class="o">.</span><span class="n">method_name</span><span class="p">)(</span>
         <span class="o">*</span><span class="n">args_method_frontend</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_method_frontend</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;tensorflow&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+    <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">frontend</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;tensorflow&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
         <span class="n">frontend_ret</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span>
     <span class="p">):</span>
         <span class="n">frontend_ret_np_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)]</span>
@@ -1750,7 +1698,7 @@
         <span class="n">ret_np_from_gt_flat</span><span class="o">=</span><span class="n">frontend_ret_np_flat</span><span class="p">,</span>
         <span class="n">rtol</span><span class="o">=</span><span class="n">rtol_</span><span class="p">,</span>
         <span class="n">atol</span><span class="o">=</span><span class="n">atol_</span><span class="p">,</span>
-        <span class="n">ground_truth_backend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">ground_truth_backend</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">frontend</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
     <span class="p">)</span></div>
 
 

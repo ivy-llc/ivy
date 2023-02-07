@@ -1,0 +1,4 @@
+make_json_pickable
+==================
+
+.. autofunction:: ivy_tests.test_ivy.helpers.function_testing.make_json_pickable

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>args_to_container &mdash; Ivy 1.0 documentation</title>
+  <title>make_json_pickable &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="as_cont" href="as_cont.html" />
-    <link rel="prev" title="Function testing" href="../function_testing.html" /> 
+    <link rel="next" title="test_frontend_function" href="test_frontend_function.html" />
+    <link rel="prev" title="kwargs_to_args_n_kwargs" href="kwargs_to_args_n_kwargs.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -104,7 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../assertions.html">Assertions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../available_frameworks.html">Available frameworks</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../function_testing.html">Function testing</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">args_to_container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="args_to_container.html">args_to_container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="as_cont.html">as_cont</a></li>
 <li class="toctree-l2"><a class="reference internal" href="as_lists.html">as_lists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="convtrue.html">convtrue</a></li>
@@ -120,7 +120,7 @@
 <li class="toctree-l2"><a class="reference internal" href="gradient_test.html">gradient_test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient_unsupported_dtypes.html">gradient_unsupported_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kwargs_to_args_n_kwargs.html">kwargs_to_args_n_kwargs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="make_json_pickable.html">make_json_pickable</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">make_json_pickable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="test_frontend_function.html">test_frontend_function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="test_frontend_method.html">test_frontend_method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="test_function.html">test_function</a></li>
@@ -162,9 +162,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../function_testing.html">Function testing</a> &raquo;</li>
-      <li>args_to_container</li>
+      <li>make_json_pickable</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/testing/function_testing/args_to_container.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/testing/function_testing/make_json_pickable.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -172,11 +172,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="args-to-container">
-<h1>args_to_container<a class="headerlink" href="#args-to-container" title="Permalink to this heading"></a></h1>
+  <section id="make-json-pickable">
+<h1>make_json_pickable<a class="headerlink" href="#make-json-pickable" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.args_to_container">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">args_to_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#args_to_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.args_to_container" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.make_json_pickable">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">make_json_pickable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#make_json_pickable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.make_json_pickable" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>
@@ -185,8 +185,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../function_testing.html" class="btn btn-neutral float-left" title="Function testing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="as_cont.html" class="btn btn-neutral float-right" title="as_cont" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kwargs_to_args_n_kwargs.html" class="btn btn-neutral float-left" title="kwargs_to_args_n_kwargs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="test_frontend_function.html" class="btn btn-neutral float-right" title="test_frontend_function" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
