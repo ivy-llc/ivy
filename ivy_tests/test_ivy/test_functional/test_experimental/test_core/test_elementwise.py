@@ -274,7 +274,7 @@ def test_trapz(
 @st.composite
 def _float_power_helper(draw, *, available_dtypes=None):
     if available_dtypes is None:
-        available_dtypes = helpers.get_dtypes("numeric")
+        available_dtypes = helpers.get_dtypes("float_and_complex")
     dtype1, x1 = draw(
         helpers.dtype_and_values(
             available_dtypes=available_dtypes,
@@ -308,7 +308,7 @@ def _float_power_helper(draw, *, available_dtypes=None):
 # float_power
 @handle_test(
     fn_tree="functional.ivy.experimental.float_power",
-    dtype_and_x=_float_power_helper(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=_float_power_helper(),
     test_gradients=st.just(False),
 )
 def test_float_power(
