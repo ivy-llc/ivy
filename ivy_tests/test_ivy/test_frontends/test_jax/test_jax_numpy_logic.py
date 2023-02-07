@@ -663,20 +663,20 @@ def test_jax_numpy_isclose(
     )
 
 
-# logical_or
+# logical_not
 @handle_frontend_test(
-    fn_tree="jax.numpy.logical_or",
+    fn_tree="jax.numpy.logical_not",
     dtypes_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
-        num_arrays=2,
+        num_arrays=1,
     ),
 )
-def test_jax_numpy_logical_or(
-        dtypes_values,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+def test_jax_numpy_logical_not(
+    dtypes_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     x_dtypes, x = dtypes_values
     np_helpers.test_frontend_function(
@@ -685,5 +685,5 @@ def test_jax_numpy_logical_or(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x1=x[0],
-        x2=x[1], )
+        x=x[0],
+    )

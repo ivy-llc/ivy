@@ -158,5 +158,6 @@ def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     return ivy.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-def logical_or(x1, x2, /):
-    return ivy.logical_or(x1, x2)
+@to_ivy_arrays_and_back
+def logical_not(x, /):
+    return ivy.logical_not(x)
