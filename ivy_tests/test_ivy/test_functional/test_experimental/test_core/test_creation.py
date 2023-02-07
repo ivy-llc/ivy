@@ -327,7 +327,6 @@ def test_sequence_empty(
     on_device,
     ground_truth_backend,
 ):
-    dtype, shape = dtype_and_shape
     ret = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
