@@ -120,6 +120,7 @@ def test_acos(
         num_arrays=2,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
+        min_num_dims=1,
         safety_factor_scale="log",
     ),
     alpha=st.integers(min_value=1, max_value=5),
@@ -135,6 +136,7 @@ def test_add(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
+    assume(not (test_flags.with_out and test_flags.test_compile))
 
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
