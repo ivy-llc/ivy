@@ -104,3 +104,11 @@ def full_like(a, fill_value, dtype=None, shape=None):
 @to_ivy_arrays_and_back
 def ndim(a):
     return ivy.astype(ivy.array(a.ndim), ivy.int64)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def empty_like(prototype, dtype=None, shape=None):
+    if shape:
+        return DeviceArray(ivy.empty(shape, dtype=dtype))
+    return DeviceArray(ivy.empty_like(prototype, dtype=dtype))
