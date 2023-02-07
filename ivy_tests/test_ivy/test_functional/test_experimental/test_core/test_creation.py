@@ -304,7 +304,7 @@ def test_eye_like(
 
 
 @handle_test(
-    fn_tree="functional.ivy.sequence_empty",
+    fn_tree="functional.ivy.experimental.sequence_empty",
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
