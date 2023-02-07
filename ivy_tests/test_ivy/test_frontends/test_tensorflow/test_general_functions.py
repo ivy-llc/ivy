@@ -99,10 +99,9 @@ def test_tensorflow_clip_by_value(
 
 @st.composite
 def _get_norm_clip_inputs(draw):
-    x_dtype, x, shape = draw(
+    x_dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
-            ret_shape=True,
             min_num_dims=1,
             min_value=-100,
             max_value=100,
@@ -114,8 +113,8 @@ def _get_norm_clip_inputs(draw):
             shape=1
         )
     )
-    print(x_dtype, x, shape, norm_dtype, norm)
-    return x_dtype, x, norm
+    print(x_dtype, x, norm_dtype, norm)
+    return x_dtype, x, norm_dtype, norm
 
 
 # clip_by_norm
@@ -132,15 +131,15 @@ def test_tensorflow_clip_by_norm(
     fn_tree,
     on_device,
 ):
-    x_dtype, x, norm = input_and_norm
+    x_dtype, x, norm_dtype, norm = input_and_norm
     helpers.test_frontend_function(
-        input_dtypes=x_dtype,
+        input_dtypes=[x_dtype, norm_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         t=x[0],
-        clip_norm=norm
+        clip_norm=norm[0]
     )
 
 
