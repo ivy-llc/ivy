@@ -62,7 +62,6 @@ from .assertions import (
 )
 
 os.environ["IVY_ROOT"] = ".ivy"
-# os.environ["IVY_DEBUG_SOURCE"] = "True"
 from ivy.compiler.compiler import compile
 
 
