@@ -8,10 +8,17 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
 )
+from ivy.functional.ivy.layers import _deconv_length
 
 
 @st.composite
-def x_and_filters(draw, dim: int = 2, transpose: bool = False):
+def x_and_filters(
+        draw,
+        dim: int = 2,
+        transpose: bool = False,
+        fold: bool = False,
+        unfold: bool = False,
+):
     if not isinstance(dim, int):
         dim = draw(dim)
     strides = draw(
@@ -20,8 +27,8 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
             st.integers(min_value=1, max_value=3),
         )
     )
-    if not transpose:
-        paddings = draw(
+    if not (transpose or fold or unfold):
+        padding = draw(
             st.one_of(
                 st.sampled_from(["same", "valid"]) if strides == 1 else st.just("valid"),
                 st.integers(min_value=1, max_value=3),
@@ -35,19 +42,24 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
                 st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
             )
         )
+    if transpose:
         output_padding = draw(
             st.one_of(
                 st.integers(min_value=1, max_value=3),
                 st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
             )
         )
-        paddings = (padding, output_padding)
     batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
         )
     )
+    if fold or unfold:
+        kernel_shape = draw(st.one_of(
+            st.just(filter_shape),
+            st.integers(min_value=1, max_value=5),
+        ))
     dtype = draw(helpers.get_dtypes("float", full=False))
     input_channels = draw(st.integers(1, 3))
     output_channels = draw(st.integers(1, 3))
@@ -76,6 +88,20 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
             min_x = filter_shape[i] + (filter_shape[i] - 1) * (full_dilations[i] - 1)
             x_dim.append(draw(st.integers(min_x, 15)))
         x_dim = tuple(x_dim)
+    if fold:
+        full_strides = [strides] * dim if isinstance(strides, int) else strides
+        full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
+        output_shape = []
+        for i in range(dim):
+            output_shape.append(
+                _deconv_length(
+                    x_dim[i],
+                    full_strides[i],
+                    filter_shape[i],
+                    padding,
+                    full_dilations[i],
+                )
+            )
     if not transpose:
         output_channels = output_channels * fc
         filter_shape = (output_channels, input_channels // fc) + filter_shape
@@ -91,23 +117,37 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
             max_value=1.0,
         )
     )
-    filters = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            shape=filter_shape,
-            min_value=0.0,
-            max_value=1.0,
+    if fold:
+        if vals.shape[0] == 1:  # un-batched inputs are also supported
+            vals = draw(st.one_of(
+                st.just(vals),
+                st.just(ivy.squeeze(vals, axis=0))
+            ))
+    if fold:
+        return dtype, vals, kernel_shape, output_shape, dilations, strides, padding
+    elif unfold:
+        return dtype, vals, kernel_shape, dilations, strides, padding
+    else:
+        filters = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=filter_shape,
+                min_value=0.0,
+                max_value=1.0,
+            )
         )
-    )
-    bias = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            shape=(output_channels,),
-            min_value=0.0,
-            max_value=1.0,
+        bias = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(output_channels,),
+                min_value=0.0,
+                max_value=1.0,
+            )
         )
-    )
-    return dtype, vals, filters, bias, dilations, strides, paddings, fc
+        if transpose:
+            return dtype, vals, filters, bias, dilations, strides, padding, output_padding, fc
+        else:
+            return dtype, vals, filters, bias, dilations, strides, padding, fc
 
 
 @handle_frontend_test(
@@ -217,78 +257,54 @@ def _int_or_tuple(draw, min_val, max_val):
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.unfold",
-    dtype_and_input_and_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        shape=(1, 3, 6, 6),
-    ),
-    kernel_size=_int_or_tuple(2, 5),
-    dilation=_int_or_tuple(1, 3),
-    padding=_int_or_tuple(0, 2),
-    stride=_int_or_tuple(1, 3),
+    dtype_vals=x_and_filters(dim=2, unfold=True),
 )
 def test_torch_unfold(
     *,
-    dtype_and_input_and_shape,
-    kernel_size,
-    dilation,
-    padding,
-    stride,
+    dtype_vals,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    args_dtypes = list([dtype_and_input_and_shape[0][0]] + ["uint8"] * 4)
+    dtype, vals, kernel_shape, dilations, strides, padding = dtype_vals
     helpers.test_frontend_function(
-        input_dtypes=args_dtypes,
+        input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=dtype_and_input_and_shape[1][0],
-        kernel_size=kernel_size,
-        dilation=dilation,
+        input=vals,
+        kernel_size=kernel_shape,
+        dilation=dilations,
         padding=padding,
-        stride=stride,
+        stride=strides,
     )
 
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.fold",
-    dtype_and_input_and_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        shape=(1, 12, 12),
-    ),
-    output_size=_int_or_tuple(3, 5),
-    kernel_size=_int_or_tuple(2, 5),
-    dilation=_int_or_tuple(1, 3),
-    padding=_int_or_tuple(0, 2),
-    stride=_int_or_tuple(1, 3),
+    dtype_vals=x_and_filters(dim=2, fold=True),
 )
 def test_torch_fold(
     *,
-    dtype_and_input_and_shape,
-    output_size,
-    kernel_size,
-    dilation,
-    padding,
-    stride,
+    dtype_vals,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    args_dtypes = list([dtype_and_input_and_shape[0][0]] + ["uint8"] * 5)
+    dtype, vals, kernel_shape, output_shape, dilations, strides, padding = dtype_vals
     helpers.test_frontend_function(
-        input_dtypes=args_dtypes,
+        input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=dtype_and_input_and_shape[1][0],
-        output_size=output_size,
-        kernel_size=kernel_size,
-        dilation=dilation,
+        input=vals,
+        output_size=output_shape,
+        kernel_size=kernel_shape,
+        dilation=dilations,
         padding=padding,
-        stride=stride,
+        stride=strides,
     )
