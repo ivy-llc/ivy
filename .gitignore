@@ -28,3 +28,4 @@ with_time_logs/
 internal_automation_tools/
 .vscode/*
 .idea/*
+*.iml
