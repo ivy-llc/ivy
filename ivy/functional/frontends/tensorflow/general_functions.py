@@ -319,4 +319,4 @@ def where(condition: ivy.array, x=None, y=None, name=None):
 
 
 def roll(input, shift, axis, name=None):
-    return ivy.roll(input,shift,axis)
+    return ivy.roll(input, shift, axis)

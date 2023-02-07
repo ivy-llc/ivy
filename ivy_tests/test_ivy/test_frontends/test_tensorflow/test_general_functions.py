@@ -1336,7 +1336,8 @@ def test_tensorflow_where_with_xy(
         y=y,
     )
 
-#roll
+
+# roll
 @handle_frontend_test(
     fn_tree="tensorflow.roll",
     dtype_and_values=helpers.dtype_and_values(
@@ -1353,14 +1354,14 @@ def test_tensorflow_where_with_xy(
     ),
 )
 def test_tensorflow_roll(
-    *,
-    dtype_and_values,
-    shift,
-    axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_values,
+        shift,
+        axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_and_values
     if isinstance(shift, int) and isinstance(axis, tuple):
@@ -1380,4 +1381,3 @@ def test_tensorflow_roll(
         shifts=shift,
         dims=axis,
     )
-
