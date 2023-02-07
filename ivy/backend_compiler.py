@@ -77,7 +77,9 @@ class MyLoader(Loader):
         transformer.impersonate_import(ast_tree)
         ast.fix_missing_locations(ast_tree)
         try:
-            exec(ast.unparse(ast_tree), module.__dict__)
+            exec(
+                compile(ast_tree, filename=self.filename, mode="exec"), module.__dict__
+            )
         except Exception as e:
             print(e)
             traceback.print_exc()
@@ -190,7 +192,7 @@ def parse_absolute_fromimport(node: ast.ImportFrom):
                 ast.Call(
                     func=ast.Name(id="globals", ctx=ast.Load()), args=[], keywords=[]
                 ),
-                ast.Constant(value=to_import),
+                _create_list(to_import),
             ],
             keywords=[],
         ),
@@ -215,12 +217,17 @@ def parse_relative_fromimport(node: ast.ImportFrom):
                 ast.Call(
                     func=ast.Name(id="globals", ctx=ast.Load()), args=[], keywords=[]
                 ),
-                ast.Constant(value=to_import),
+                _create_list(to_import),
                 ast.Constant(value=node.level),
             ],
             keywords=[],
         ),
     )
+
+
+def _create_list(elements):
+    _elts = [ast.Constant(value=element) for element in elements]
+    return ast.List(elts=_elts, ctx=ast.Load())
 
 
 def _create_assign_to_variable(target, value):
