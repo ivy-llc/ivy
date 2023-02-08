@@ -46,8 +46,9 @@ def _repr(x):
     except TypeError:
         return str(x)
 
-
 # noinspection PyMissingConstructor
+
+
 class ContainerBase(dict, abc.ABC):
     def __init__(
         self,
@@ -66,6 +67,7 @@ class ContainerBase(dict, abc.ABC):
         rebuild_child_containers=False,
         types_to_iteratively_nest=None,
         alphabetical_keys=True,
+        dynamic_backend=None,
         **kwargs,
     ):
         """Initialize container object from input dict representation.
@@ -130,6 +132,10 @@ class ContainerBase(dict, abc.ABC):
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
             self._queue_timeout = ivy.default(queue_timeout, ivy.get_queue_timeout())
+        if dynamic_backend is not None:
+            self._dynamic_backend = dynamic_backend
+        else:
+            self._dynamic_backend = ivy.get_dynamic_backend()
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -157,7 +163,6 @@ class ContainerBase(dict, abc.ABC):
 
     # Class Methods #
     # --------------#
-
     @staticmethod
     def cont_multi_map_in_function(
         fn,
@@ -1586,7 +1591,7 @@ class ContainerBase(dict, abc.ABC):
         **config
 
         """
-        # update config
+        # # update config
         self.cont_update_config(**config)
 
         # update container values inplace
@@ -4025,6 +4030,58 @@ class ContainerBase(dict, abc.ABC):
             New container after updating.
 
         """
+
+        def _map_fn(fn, x):
+            x = x.data if isinstance(x, ivy.Array) else x
+            return fn(x)
+
+        if query == "_backend":
+            self._backend = val
+            return
+
+        if query == "dynamic_backend":
+            from ivy.functional.ivy.gradients import _variable
+            from ivy.backend_handler import _determine_backend_from_args
+
+            if not val:
+                self._backend = _determine_backend_from_args(self)
+            else:
+                is_variable = self._backend.is_variable
+                to_numpy = self._backend.to_numpy
+                variable_data = self._backend.variable_data
+
+                def _is_var(x):
+                    x = x.data if isinstance(x, ivy.Array) else x
+                    return is_variable(x)
+
+                is_var = self.cont_map(lambda x, kc: _is_var(x)).cont_all_true()
+                if is_var and not (
+                        str(self._backend).__contains__("jax")
+                        or str(self._backend).__contains__("numpy")
+                ):
+                    self.cont_map(lambda x, kc: _map_fn(variable_data, x), inplace=True)
+                    self.cont_map(lambda x, kc: _map_fn(to_numpy, x), inplace=True)
+                    self.cont_map(lambda x, kc: _map_fn(ivy.array, x), inplace=True)
+                    self.cont_map(lambda x, kc: _map_fn(_variable, x), inplace=True)
+
+                else:
+                    self.cont_map(lambda x, kc: _map_fn(to_numpy, x), inplace=True)
+                    self.cont_map(lambda x, kc: _map_fn(ivy.array, x), inplace=True)
+
+            def _set_dyn_backend(obj, val):
+                if isinstance(obj, ivy.Array):
+                    obj._dynamic_backend = val
+                    return
+
+                if isinstance(obj, ivy.Container):
+                    for item in obj.values():
+                        _set_dyn_backend(item, val)
+
+                    obj._dynamic_backend = val
+
+            _set_dyn_backend(self, val)
+            return
+
         if isinstance(query, str) and ("/" in query or "." in query):
             return self.cont_set_at_key_chain(query, val, inplace=True)
         else:
@@ -4132,3 +4189,11 @@ class ContainerBase(dict, abc.ABC):
         if not kcs:
             return 0
         return max([len(kc.split("/")) for kc in kcs])
+
+    @property
+    def dynamic_backend(self):
+        return self._dynamic_backend
+
+    @dynamic_backend.setter
+    def dynamic_backend(self, value):
+        self._dynamic_backend = value
