@@ -847,15 +847,16 @@ def test_torch_tensorsolve(
         A=A,
         B=B,
     )
-    
-    
+
+
 @handle_frontend_test(
     fn_tree="torch.linalg.matmul",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=(3, 3),
         num_arrays=2,
-        shared_dtype=True,),
+        shared_dtype=True,
+    ),
     test_with_out=st.just(False),
 )
 def test_torch_matmul(
