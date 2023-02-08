@@ -1344,12 +1344,11 @@ def axis_helper(draw):
             min_num_dims=1, max_num_dims=1
         )
     )
-    dtype_axis = helpers.dtype_and_values(
+    axis = helpers.dtype_and_values(
         shape=shape,
         dtype=["int32"]
     )
-    axis_dtype, axis = dtype_axis
-    return axis[0]
+    return axis[1]
 
 @handle_frontend_test(
     fn_tree="tensorflow.reverse",
