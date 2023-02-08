@@ -796,7 +796,6 @@
                 <span class="n">process</span> <span class="o">=</span> <span class="n">frontend_proc</span>
                 <span class="n">z</span> <span class="o">=</span> <span class="n">make_json_pickable</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">pickle_dict</span><span class="p">))</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="c1"># process.stdin.write(&#39;1&#39; + &#39;\n&#39;)</span>
                     <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">z</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">module_name</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fn_name</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1482,6 +1481,8 @@
 <span class="sd">    ret_gt</span>
 <span class="sd">        optional, return value from the Ground Truth function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frontend</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="n">frontend</span><span class="p">,</span><span class="n">frontend_proc</span><span class="o">=</span><span class="n">frontend</span>
     <span class="n">_assert_dtypes_are_valid</span><span class="p">(</span><span class="n">init_input_dtypes</span><span class="p">)</span>
     <span class="n">_assert_dtypes_are_valid</span><span class="p">(</span><span class="n">method_input_dtypes</span><span class="p">)</span>
 
@@ -1620,7 +1621,7 @@
     <span class="p">)</span>
 
     <span class="c1"># Compute the return with the native frontend framework</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">frontend</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">args_constructor_frontend</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
         <span class="n">args_constructor_np</span><span class="p">,</span>
         <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
@@ -1668,7 +1669,7 @@
     <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">ins_gt</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">frontend_method_data</span><span class="o">.</span><span class="n">method_name</span><span class="p">)(</span>
         <span class="o">*</span><span class="n">args_method_frontend</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_method_frontend</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">frontend</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;tensorflow&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+    <span class="k">if</span> <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;tensorflow&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
         <span class="n">frontend_ret</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span>
     <span class="p">):</span>
         <span class="n">frontend_ret_np_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)]</span>
@@ -1698,7 +1699,7 @@
         <span class="n">ret_np_from_gt_flat</span><span class="o">=</span><span class="n">frontend_ret_np_flat</span><span class="p">,</span>
         <span class="n">rtol</span><span class="o">=</span><span class="n">rtol_</span><span class="p">,</span>
         <span class="n">atol</span><span class="o">=</span><span class="n">atol_</span><span class="p">,</span>
-        <span class="n">ground_truth_backend</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">frontend</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">ground_truth_backend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
