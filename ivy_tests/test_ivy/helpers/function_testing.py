@@ -1474,7 +1474,7 @@ def test_frontend_method(
     )
 
     # Compute the return with the native frontend framework
-    ivy.set_backend(list(frontend)[0].split("/")[0])
+    ivy.set_backend(frontend.split("/")[0])
     args_constructor_frontend = ivy.nested_map(
         args_constructor_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
@@ -1522,7 +1522,7 @@ def test_frontend_method(
     frontend_ret = ins_gt.__getattribute__(frontend_method_data.method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
-    if list(frontend)[0].split("/")[0] == "tensorflow" and isinstance(
+    if frontend.split("/")[0] == "tensorflow" and isinstance(
         frontend_ret, tf.TensorShape
     ):
         frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
@@ -1552,7 +1552,7 @@ def test_frontend_method(
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol_,
         atol=atol_,
-        ground_truth_backend=list(frontend)[0],
+        ground_truth_backend=frontend,
     )
 
 
