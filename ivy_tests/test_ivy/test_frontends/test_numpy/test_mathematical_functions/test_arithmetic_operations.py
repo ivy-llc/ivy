@@ -6,6 +6,9 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_elementwise import (  # noqa
+    _float_power_helper,
+)
 
 
 # add
@@ -287,14 +290,9 @@ def test_numpy_power(
 @handle_frontend_test(
     fn_tree="numpy.float_power",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
-        arr_func=[
-            lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
-                num_arrays=2,
-                shared_dtype=True,
-            )
-        ],
-        get_dtypes_kind="float",
+        arr_func=[lambda: _float_power_helper()],
+        get_dtypes_kind="float_and_complex",
+        special=False,
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -309,11 +307,16 @@ def test_numpy_float_power(
     fn_tree,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
+    xs = list(xs[0])
+    input_dtypes = list(input_dtypes[0])
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
+    # removing casting options as they raise errors for this function
+    assume(casting == "same_kind")
+    assume(dtype != "bool")
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
