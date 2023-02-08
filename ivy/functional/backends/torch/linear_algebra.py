@@ -544,7 +544,7 @@ def multi_dot(
             return ret
 
     for i in range(n):
-        for j in range(i+1, n):
+        for j in range(i + 1, n):
             tensor[i], tensor[j] = ivy.promote_types_of_inputs(tensor[i], tensor[j])
 
     return torch.multi_dot(tensors, out=out)
