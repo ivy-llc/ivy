@@ -1344,8 +1344,9 @@ def test_tensorflow_where_with_xy(
         min_num_dims=1,
         max_num_dims=8,
     ),
-    dtype_and_axis=helpers.dtype_and_values(
+    dtype_axis=helpers.dtype_values_axis(
         max_num_dims=1,
+        forced_int_axis=True,
     )
 
 )
