@@ -279,3 +279,38 @@ def test_corrcoef(
         y=x[1],
         rowvar=rowvar,
     )
+
+# average
+@handle_test(
+    fn_tree="functional.ivy.experimental.average",
+    dtype_x_axis=statistical_dtype_values(function="average"),
+    keep_dims=st.booleans(),
+    dtype=helpers.get_dtypes("float", full=False),
+    test_gradients=st.just(False),
+)
+def test_average(
+    *,
+    dtype_x_axis,
+    keep_dims,
+    dtype,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+        dtype=dtype[0],
+    )
+
+
