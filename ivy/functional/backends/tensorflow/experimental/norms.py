@@ -68,8 +68,9 @@ def instance_norm(
     return normalized
 
 
-def lp_normalize(x: Union[tf.Tensor, tf.Variable],
-/, *, p: float = 2, axis: int = None, out=None) -> tf.Tensor:
+def lp_normalize(
+    x: Union[tf.Tensor, tf.Variable], /, *, p: int = 2, axis: int = None, out=None
+) -> tf.Tensor:
     denorm = tf.norm(x, ord=p, axis=axis, keepdims=True)
     denorm = tf.math.maximum(denorm, 1e-12)
     return tf.math.divide(x, denorm)

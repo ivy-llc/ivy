@@ -143,5 +143,12 @@ class ArrayWithNormsExperimental(abc.ABC):
         -------
         ret
             The normalized array.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> x.lp_normalize(p=2, axis=1)
+        ivy.array([[0.4472, 0.8944],
+               [0.6, 0.8]])
         """
         return ivy.lp_normalize(self, p=p, axis=axis, out=out)

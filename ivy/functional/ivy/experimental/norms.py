@@ -176,7 +176,7 @@ def lp_normalize(
     Examples
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
-    >>> ivy.Lp_normalize(x, p=1, axis=1)
+    >>> ivy.lp_normalize(x, p=1, axis=1)
     ivy.array([[0.3333, 0.6666],
                [0.75, 1.]])
     """

@@ -7,7 +7,10 @@ from .. import backend_version
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, backend_version)
 def l2_normalize(x: JaxArray, /, *, axis: int = None, out=None) -> JaxArray:
-    denorm = jnp.linalg.norm(x, axis=axis, ord=2, keepdims=True)
+    if axis is None:
+        denorm = jnp.linalg.norm(x.flatten(), 2, axis)
+    else:
+        denorm = jnp.linalg.norm(x, 2, axis, keepdims=True)
     denorm = jnp.maximum(denorm, 1e-12)
     return x / denorm
 
@@ -67,9 +70,11 @@ def instance_norm(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, backend_version)
-def lp_normalize(
-    x: JaxArray, /, *, p: float = 2,
-    axis: int = None, out=None) -> JaxArray:
-    denorm = jnp.linalg.norm(x, axis=axis, ord=p, keepdims=True)
+def lp_normalize(x: JaxArray, /, *, p: int = 2, axis: int = None, out=None) -> JaxArray:
+    if axis is None:
+        denorm = jnp.linalg.norm(x.flatten(), axis=axis, ord=p)
+    else:
+        denorm = jnp.linalg.norm(x, axis=axis, ord=p, keepdims=True)
+
     denorm = jnp.maximum(denorm, 1e-12)
-    return x / denorm
+    return jnp.divide(x, denorm)
