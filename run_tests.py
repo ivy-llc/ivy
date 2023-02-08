@@ -75,8 +75,11 @@ def run_multiversion_testing(failed):
     with open("tests_to_run", "r") as f:
         for line in f:
             test, frontend, backend = line.split(",")
+            frontend, backend = frontend.split("=")[1], backend.split("=")[1].replace(
+                " ", ","
+            )
         ret = os.system(
-            f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend={frontend,backend}'  # noqa
+            f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend={backend}'  # noqa
         )
         if ret != 0:
             failed = True
