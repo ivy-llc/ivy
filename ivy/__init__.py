@@ -1059,3 +1059,7 @@ def unset_nan_policy():
     global nan_policy_stack
     if nan_policy_stack:
         nan_policy_stack.pop(-1)
+
+
+def is_local():
+    return not hasattr(ivy, "_is_local")

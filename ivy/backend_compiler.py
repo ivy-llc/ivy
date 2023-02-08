@@ -345,6 +345,7 @@ def _ivy_import_module(name, package=None):
 def with_backend(backend: str):
     sys.meta_path.insert(0, FINDER)
     ivy_pack = _ivy_import_module("ivy")
+    ivy_pack._is_local = True
     backend_module = _ivy_import_module(_backend_dict[backend], ivy_pack.__package__)
     # TODO temporary
     if backend == "numpy":

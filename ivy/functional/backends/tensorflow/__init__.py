@@ -12,7 +12,11 @@ import ivy
 backend_version = {"version": tf.__version__}
 
 # noinspection PyUnresolvedReferences
-use = ivy.backend_handler.ContextManager(sys.modules[__name__])
+if ivy.is_local():
+    _module_in_memory = sys.modules[__name__]
+else:
+    global_backend_compiler = sys.modules["ivy.backend_compiler"]
+    _module_in_memory = global_backend_compiler.IMPORT_CACHE[__name__]
 
 NativeArray = Tensor
 NativeVariable = Tensor

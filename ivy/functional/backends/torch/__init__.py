@@ -8,7 +8,11 @@ import ivy
 backend_version = {"version": torch.__version__.split("+")[0]}
 
 # noinspection PyUnresolvedReferences
-use = ivy.backend_handler.ContextManager(sys.modules[__name__])
+if ivy.is_local():
+    _module_in_memory = sys.modules[__name__]
+else:
+    global_backend_compiler = sys.modules["ivy.backend_compiler"]
+    _module_in_memory = global_backend_compiler.IMPORT_CACHE[__name__]
 
 NativeArray = torch.Tensor
 NativeVariable = torch.Tensor
