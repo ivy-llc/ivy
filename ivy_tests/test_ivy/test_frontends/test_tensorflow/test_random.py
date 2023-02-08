@@ -95,7 +95,7 @@ def test_tensorflow_normal(
 # random_shuffle
 @handle_frontend_test(
     fn_tree="tensorflow.random.shuffle",
-    value=st.floats(allow_nan=False, allow_infinity=False, width=32),
+    value=helpers.ints(min_value=0, max_value=10),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=10),
     test_with_out=st.just(False),
