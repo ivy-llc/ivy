@@ -12,13 +12,7 @@ from ivy.functional.ivy.layers import _deconv_length
 
 
 @st.composite
-def x_and_filters(
-        draw,
-        dim: int = 2,
-        transpose: bool = False,
-        fold: bool = False,
-        unfold: bool = False,
-):
+def x_and_filters(draw, dim: int = 2, transpose: bool = False):
     if not isinstance(dim, int):
         dim = draw(dim)
     strides = draw(
@@ -27,7 +21,7 @@ def x_and_filters(
             st.integers(min_value=1, max_value=3),
         )
     )
-    if not (transpose or fold or unfold):
+    if not transpose:
         padding = draw(
             st.one_of(
                 st.sampled_from(["same", "valid"]) if strides == 1 else st.just("valid"),
@@ -48,10 +42,6 @@ def x_and_filters(
             min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
         )
     )
-    if fold or unfold:
-        kernel_shape = filter_shape
-        if len(set(kernel_shape)) == 1:  # integer kernel shapes are also supported
-            kernel_shape = kernel_shape[0]
     dtype = draw(helpers.get_dtypes("float", full=False))
     input_channels = draw(st.integers(1, 3))
     output_channels = draw(st.integers(1, 3))
@@ -67,6 +57,8 @@ def x_and_filters(
             st.integers(min_value=1, max_value=3),
         )
     )
+    full_strides = [strides] * dim if isinstance(strides, int) else strides
+    full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if transpose:
         x_dim = draw(
             helpers.get_shape(
@@ -75,25 +67,10 @@ def x_and_filters(
         )
     else:
         x_dim = []
-        full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
         for i in range(dim):
             min_x = filter_shape[i] + (filter_shape[i] - 1) * (full_dilations[i] - 1)
             x_dim.append(draw(st.integers(min_x, 15)))
         x_dim = tuple(x_dim)
-    if fold:
-        full_strides = [strides] * dim if isinstance(strides, int) else strides
-        full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
-        output_shape = []
-        for i in range(dim):
-            output_shape.append(
-                _deconv_length(
-                    x_dim[i],
-                    full_strides[i],
-                    filter_shape[i],
-                    padding,
-                    full_dilations[i],
-                )
-            )
     if not transpose:
         output_channels = output_channels * fc
         filter_shape = (output_channels, input_channels // fc) + filter_shape
@@ -109,46 +86,35 @@ def x_and_filters(
             max_value=1.0,
         )
     )
-    if fold:
-        if vals.shape[0] == 1:  # un-batched inputs are also supported
-            vals = draw(st.one_of(
-                st.just(vals),
-                st.just(ivy.squeeze(vals, axis=0))
-            ))
-    if fold:
-        return dtype, vals, kernel_shape, output_shape, dilations, strides, padding
-    elif unfold:
-        return dtype, vals, kernel_shape, dilations, strides, padding
+    filters = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=filter_shape,
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+    bias = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(output_channels,),
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+    if transpose:
+        output_padding = draw(st.lists(
+            st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim)
+        )
+        for i, p in enumerate(output_padding):
+            m = min(full_strides[i], full_dilations[i])
+            if p >= m:
+                output_padding[i] = m - 1
+        if draw(st.booleans()):
+            output_padding = min(output_padding)
+        return dtype, vals, filters, bias, dilations, strides, padding, output_padding, fc
     else:
-        filters = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                shape=filter_shape,
-                min_value=0.0,
-                max_value=1.0,
-            )
-        )
-        bias = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                shape=(output_channels,),
-                min_value=0.0,
-                max_value=1.0,
-            )
-        )
-        if transpose:
-            output_padding = draw(st.lists(
-                st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim)
-            )
-            for i, p in enumerate(output_padding):
-                m = min(full_strides[i], full_dilations[i])
-                if p >= m:
-                    output_padding[i] = m - 1
-            if draw(st.booleans()):
-                output_padding = min(output_padding)
-            return dtype, vals, filters, bias, dilations, strides, padding, output_padding, fc
-        else:
-            return dtype, vals, filters, bias, dilations, strides, padding, fc
+        return dtype, vals, filters, bias, dilations, strides, padding, fc
 
 
 @handle_frontend_test(
@@ -278,14 +244,8 @@ def test_torch_conv_tranpose1d(
 
 
 @st.composite
-def _unfold_helper(draw, dim=2):
-    strides = draw(
-        st.one_of(
-            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
-            st.integers(min_value=1, max_value=3),
-        )
-    )
-    dilations = draw(
+def _fold_unfold_helper(draw, dim):
+    stride = draw(
         st.one_of(
             st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
             st.integers(min_value=1, max_value=3),
@@ -297,7 +257,13 @@ def _unfold_helper(draw, dim=2):
             st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
         )
     )
-    kernel_shape = draw(
+    dilation = draw(
+        st.one_of(
+            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=3),
+        )
+    )
+    kernel_size = draw(
         st.one_of(
             st.integers(min_value=1, max_value=5),
             helpers.get_shape(
@@ -305,11 +271,17 @@ def _unfold_helper(draw, dim=2):
             )
         )
     )
-    full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
-    full_kernel_shape = [kernel_shape] * dim if isinstance(kernel_shape, int) else kernel_shape
+    return stride, padding, dilation, kernel_size
+
+
+@st.composite
+def _unfold_helper(draw, dim=2):
+    stride, padding, dilation, kernel_size = draw(_fold_unfold_helper(dim))
+    full_dilation = [dilation] * dim if isinstance(dilation, int) else dilation
+    full_kernel = [kernel_size] * dim if isinstance(kernel_size, int) else kernel_size
     x_dim = []
     for i in range(dim):
-        min_x = full_kernel_shape[i] + (full_kernel_shape[i] - 1) * (full_dilations[i] - 1)
+        min_x = full_kernel[i] + (full_kernel[i] - 1) * (full_dilation[i] - 1)
         x_dim.append(draw(st.integers(min_x, 15)))
     batch_size = draw(st.integers(1, 5))
     input_channels = draw(st.integers(1, 3))
@@ -322,7 +294,7 @@ def _unfold_helper(draw, dim=2):
             max_value=1.0,
         )
     )
-    return dtype, vals, kernel_shape, dilations, strides, padding
+    return dtype, vals, kernel_size, dilation, stride, padding
 
 
 @handle_frontend_test(
@@ -352,9 +324,51 @@ def test_torch_unfold(
     )
 
 
+@st.composite
+def _fold_helper(draw, dim=2):
+    stride, padding, dilation, kernel_size = draw(_fold_unfold_helper(dim))
+    full_stride = [stride] * dim if isinstance(stride, int) else stride
+    full_dilation = [dilation] * dim if isinstance(dilation, int) else dilation
+    full_kernel = [kernel_size] * dim if isinstance(kernel_size, int) else kernel_size
+    x_dim = []
+    for i in range(dim):
+        min_x = full_kernel[i] + (full_kernel[i] - 1) * (full_dilation[i] - 1)
+        x_dim.append(draw(st.integers(min_x, 15)))
+    output_shape = []
+    for i in range(dim):
+        output_shape.append(
+            _deconv_length(
+                x_dim[i],
+                full_stride[i],
+                full_kernel[i],
+                padding,
+                full_dilation[i],
+            )
+        )
+    batch_size = draw(st.integers(1, 5))
+    input_channels = draw(st.integers(1, 3))
+    x_shape = (batch_size, input_channels) + tuple(x_dim)
+    dtype, [vals] = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=x_shape,
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+    kernel_size = kernel_size ** dim if isinstance(kernel_size, int) else ivy.prod(kernel_size)
+    vals = ivy.reshape(vals, (vals.shape[0], vals.shape[1] * kernel_size, -1))
+    if vals.shape[0] == 1:  # un-batched inputs are also supported
+        vals = draw(st.one_of(
+            st.just(vals),
+            st.just(ivy.squeeze(vals, axis=0))
+        ))
+    return dtype, vals, kernel_size, output_shape, dilation, stride, padding
+
+
 @handle_frontend_test(
     fn_tree="torch.nn.functional.fold",
-    dtype_vals=x_and_filters(dim=2, fold=True),
+    dtype_vals=_fold_helper(),
 )
 def test_torch_fold(
     *,
