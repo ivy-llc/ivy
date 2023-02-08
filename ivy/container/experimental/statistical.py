@@ -668,3 +668,103 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         }
         """
         return self.static_corrcoef(self, y=y, rowvar=rowvar, out=out)
+    
+     @staticmethod
+    def static_average(
+            input: ivy.Container,
+            /,
+            *,
+            axis: Optional[Union[Tuple[int], int]] = None,
+            keepdims: Optional[bool] = False,
+            dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.average.
+
+        Parameters
+        ----------
+        input
+            Input container including arrays.
+        axis
+            Axis or axes along which the average are computed.
+
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a.
+        dtype
+            The desired data type of returned tensor. Default is None.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The average of the array elements in the container.
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "average",
+            input,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def average(
+            self: ivy.Container,
+            /,
+            *,
+            axis: Optional[Union[Tuple[int], int]] = None,
+            keepdims: Optional[bool] = False,
+            dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+
+        """ivy.Container instance method variant of ivy.average. T
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the average are computed.
+
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a.
+        dtype
+            The desired data type of returned tensor. Default is None.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The average of the array elements in the input container.
+
+        Examples
+        --------
+#        >>> a = ivy.Container(x=ivy.array([[1, ivy.nan], [3, 4]]), y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]]))
+        >>> a = ivy.Container(x=ivy.array([[1, 9], [3, 4]]), y=ivy.array([[9, 1, 2], [1, 2, 3]]))
+        >>> a.average()
+        {
+            x: ivy.array(4.25),
+            y: ivy.array(3.)
+        }
+        """
+        return self.static_average(
+            self, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        )
+
