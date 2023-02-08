@@ -221,7 +221,7 @@ def test_jax_numpy_nanargmin(
         axis=axis,
         keepdims=keep_dims,
     )
-    
+
 
 # extract
 @handle_frontend_test(

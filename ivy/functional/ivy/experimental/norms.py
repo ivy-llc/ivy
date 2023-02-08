@@ -67,7 +67,7 @@ def instance_norm(
     affine: Optional[bool] = True,
     track_running_stats: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
-) :
+):
     """Applies Instance Normalization over a 4D input along C dimension.
 
     Parameters

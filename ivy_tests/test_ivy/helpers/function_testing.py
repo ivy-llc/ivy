@@ -6,6 +6,7 @@ import numpy as np
 import types
 import importlib
 import inspect
+
 try:
     import jsonpickle
 except:
@@ -731,7 +732,6 @@ def test_frontend_function(
                         frontend_ret, frontend_ret_idxs
                     )
                     frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
-
 
             except Exception as e:
                 ivy.unset_backend()
