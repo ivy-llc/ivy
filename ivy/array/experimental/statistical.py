@@ -307,4 +307,10 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             array([6.5, 2. , 2.5])
         """
 
-        return ivy.nanmedian(self._data, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out)
+        return ivy.nanmedian(
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            overwrite_input=overwrite_input,
+            out=out,
+        )
