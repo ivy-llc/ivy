@@ -343,3 +343,12 @@ def where(condition: ivy.array, x=None, y=None, name=None):
 
 def roll(input, shift, axis, name=None):
     return ivy.roll(input, shift, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def repeat(
+        input_,
+        repeats,
+        axis=None
+):
+    return ivy.repeat(input_, repeats, axis=axis)

@@ -1491,3 +1491,48 @@ def test_tensorflow_roll(
         shift=shift,
         axis=axis,
     )
+
+
+# repeat
+@st.composite
+def _repeat_helper(draw):
+    dtypes, x, axis, shape = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            valid_axis=True,
+            ret_shape=True,
+            force_int_axis=True,
+        )
+    )
+    if axis is None or len(shape) == 1:
+        repeats = draw(helpers.ints(min_value=0))
+    else:
+        repeat_shape = shape[axis]
+        repeats = draw(helpers.array_values(dtype="int32", shape=repeat_shape))
+    return dtypes, x[0], repeats, axis
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.repeat",
+    x=_repeat_helper()
+)
+def test_tensorflow_repeat(
+    *,
+    x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, input_, repeats, axis = x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input_=input_,
+        repeats=repeats,
+        axis=axis
+    )
