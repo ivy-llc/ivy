@@ -7,6 +7,9 @@ from importlib.util import resolve_name, module_from_spec, spec_from_file_locati
 from importlib.abc import Loader, MetaPathFinder
 
 
+IMPORT_CACHE = {}
+
+
 def _retrive_local_modules():
     ret = []
     wd = sys.path[0]
@@ -21,10 +24,7 @@ def _retrive_local_modules():
     return ret
 
 
-local_modules = _retrive_local_modules()
-
-
-class MyMetaFinder(MetaPathFinder):
+class IvyPathFinder(MetaPathFinder):
     def find_spec(self, fullname, path, target=None):
         if fullname.partition(".")[0] not in _retrive_local_modules():
             # print("Global", fullname, "falling back to sys import")
@@ -50,14 +50,14 @@ class MyMetaFinder(MetaPathFinder):
             return spec_from_file_location(
                 fullname,
                 filename,
-                loader=MyLoader(filename),
+                loader=IvyLoader(filename),
                 submodule_search_locations=submodule_locations,
             )
         # print("Couldn't find Local", fullname)
         return None
 
 
-class MyLoader(Loader):
+class IvyLoader(Loader):
     def __init__(self, filename):
         self.filename = filename
 
@@ -86,10 +86,11 @@ class MyLoader(Loader):
             raise e
 
 
-IMPORT_CACHE = {}
+LOCAL_MODULES = _retrive_local_modules()
+FINDER = IvyPathFinder()
 
 
-def clear_cache():
+def _clear_cache():
     global IMPORT_CACHE
     IMPORT_CACHE = {}
 
@@ -161,7 +162,7 @@ def _ivy_import_module(name, package=None):
         parent_name, _, child_name = absolute_name.rpartition(".")
         parent_module = _ivy_import_module(parent_name)
         path = parent_module.__spec__.submodule_search_locations
-    spec = my_finder.find_spec(absolute_name, path)
+    spec = FINDER.find_spec(absolute_name, path)
     if spec is None:
         msg = f"No module named {absolute_name!r}"
         raise ModuleNotFoundError(msg, name=absolute_name)
@@ -175,9 +176,9 @@ def _ivy_import_module(name, package=None):
     return module
 
 
-def parse_absolute_fromimport(node: ast.ImportFrom):
+def _parse_absolute_fromimport(node: ast.ImportFrom):
     # Not to override absolute imports to other packages
-    if node.module.partition(".")[0] not in local_modules:
+    if node.module.partition(".")[0] not in LOCAL_MODULES:
         return node
     to_import = []
     for entry in node.names:
@@ -199,7 +200,7 @@ def parse_absolute_fromimport(node: ast.ImportFrom):
     )
 
 
-def parse_relative_fromimport(node: ast.ImportFrom):
+def _parse_relative_fromimport(node: ast.ImportFrom):
     if node.module is None:
         name = ""
     else:
@@ -247,11 +248,11 @@ def _create_fromimport_call(name):
     )
 
 
-def parse_import(node: ast.Import):
+def _parse_import(node: ast.Import):
     _local_modules = []
     # We don't want to override imports for outside packages
     for entry in node.names.copy():
-        if entry.name.partition(".")[0] in local_modules:
+        if entry.name.partition(".")[0] in LOCAL_MODULES:
             node.names.remove(entry)
             _local_modules.append(entry)
     return_nodes = []
@@ -301,7 +302,7 @@ class ImportTransformer(ast.NodeTransformer):
             self.generic_visit(node)
             return node
         if isinstance(node, ast.Import):
-            ret, should_impersonate = parse_import(node)
+            ret, should_impersonate = _parse_import(node)
             if should_impersonate and not self.include_ivy_import:
                 self.include_ivy_import = True
             return ret
@@ -315,9 +316,9 @@ class ImportTransformer(ast.NodeTransformer):
             if node.level == 0:
                 if node.module is not None and node.module == "__future__":
                     self.insert_index = 1
-                return parse_absolute_fromimport(node)
+                return _parse_absolute_fromimport(node)
             else:
-                return parse_relative_fromimport(node)
+                return _parse_relative_fromimport(node)
 
     def impersonate_import(self, tree: ast.Module):
         if self.include_ivy_import:
@@ -340,14 +341,11 @@ class ImportTransformer(ast.NodeTransformer):
         return tree
 
 
-my_finder = MyMetaFinder()
-
-
 def with_backend(backend: str):
-    sys.meta_path.insert(0, my_finder)
+    sys.meta_path.insert(0, FINDER)
     ivy_pack = _ivy_import_module("ivy")
     ivy_pack.set_backend(backend)
     # TODO remove access to global stuff
-    sys.meta_path.remove(my_finder)
-    clear_cache()
+    sys.meta_path.remove(FINDER)
+    _clear_cache()
     return ivy_pack
