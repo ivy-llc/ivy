@@ -20,11 +20,16 @@ backend_version = {"version": jax.__version__}
 
 config.update("jax_enable_x64", True)
 
-register_pytree_node(
-    ivy.Container,
-    lambda c: tree_flatten(c.cont_to_dict()),
-    lambda a, c: ivy.Container(tree_unflatten(a, c)),
-)
+try:
+    register_pytree_node(
+        ivy.Container,
+        lambda c: tree_flatten(c.cont_to_dict()),
+        lambda a, c: ivy.Container(tree_unflatten(a, c)),
+    )
+# To avoid trying to add ivy.Container multiple times when with_backend is called
+except ValueError:
+    pass
+
 
 # noinspection PyUnresolvedReferences
 use = ivy.backend_handler.ContextManager(sys.modules[__name__])
