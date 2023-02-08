@@ -249,6 +249,8 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
         input,
         ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2),
     )
+    ret = ret.to_numpy()
+    input_padded = input_padded.to_numpy()
     for i in range(output_shape[0]):
         for j in range(output_shape[1]):
             i_in = i * stride[0]
