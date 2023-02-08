@@ -29,12 +29,11 @@ def test_numpy_ceil(
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -102,14 +101,57 @@ def test_numpy_trunc(
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
+    )
+
+
+# rint
+@handle_frontend_test(
+    fn_tree="numpy.rint",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+            )
+        ],
+        get_dtypes_kind="float",
+    ),
+    where=np_frontend_helpers.where(),
+)
+def test_numpy_rint(
+    dtypes_values_casting,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, casting, dtype = dtypes_values_casting
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=test_flags.as_variable,
+        native_array=test_flags.native_arrays,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

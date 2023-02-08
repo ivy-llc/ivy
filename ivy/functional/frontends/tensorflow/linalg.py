@@ -35,6 +35,19 @@ def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
 
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": (
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def matmul(
     a,
@@ -48,7 +61,20 @@ def matmul(
     output_type=None,
     name=None,
 ):
-    # TODO : handle conjugate when ivy supports complex numbers
+    if adjoint_a:
+        if transpose_a:
+            raise ivy.exceptions.IvyException(
+                "Only one of `transpose_a` and `adjoint_a` can be True. "
+                "Received `transpose_a`=True, `adjoint_a`=True."
+            )
+        a = ivy.adjoint(a)
+    if adjoint_b:
+        if transpose_b:
+            raise ivy.exceptions.IvyException(
+                "Only one of `transpose_b` and `adjoint_b` can be True. "
+                "Received `transpose_b`=True, `adjoint_b`=True."
+            )
+        b = ivy.adjoint(b)
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
@@ -168,8 +194,8 @@ def trace(x, name=None):
 
 @to_ivy_arrays_and_back
 def matrix_transpose(a, name="matrix_transpose", conjugate=False):
-    # Conjugate is ignored - Should be added as an argument
-    # if complex numbers become supported
+    if conjugate:
+        return ivy.adjoint(a)
     return ivy.matrix_transpose(a)
 
 

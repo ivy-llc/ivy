@@ -881,9 +881,9 @@ def _pad_helper(draw):
     mode = draw(
         st.sampled_from(
             [
-                "constant",
-                "reflect",
-                "symmetric",
+                "CONSTANT",
+                "REFLECT",
+                "SYMMETRIC",
             ]
         )
     )
@@ -915,10 +915,12 @@ def _pad_helper(draw):
 # pad
 @handle_frontend_test(
     fn_tree="tensorflow.pad",
+    aliases=["tensorflow.compat.v1.pad"],
     dtype_and_values_and_other=_pad_helper(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_pad(
+    *,
     dtype_and_values_and_other,
     frontend,
     test_flags,
@@ -1048,6 +1050,38 @@ def test_tensorflow_strided_slice(
             ellipsis_mask=masks[2],
             new_axis_mask=masks[3],
             shrink_axis_mask=masks[4],
+        )
+    except Exception as e:
+        if hasattr(e, "message"):
+            if "only stride 1 allowed on non-range indexing" in e.message:
+                assume(False)
+
+
+# slice
+@handle_frontend_test(
+    fn_tree="tensorflow.slice",
+    dtype_x_params=_strided_slice_helper(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_slice(
+    *,
+    dtype_x_params,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, begin, end, strides, masks = dtype_x_params
+    try:
+        helpers.test_frontend_function(
+            input_dtypes=dtype + 3 * ["int64"],
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            input_=x[0],
+            begin=begin,
+            size=end - begin,
         )
     except Exception as e:
         if hasattr(e, "message"):
@@ -1228,6 +1262,71 @@ def test_tensorflow_one_hot(
         on_device=on_device,
         indices=x[0],
         depth=depth,
+    )
+
+
+@st.composite
+def _boolean_mask_helper(draw):
+    tensor_shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=3,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
+    )
+
+    dtype = draw(st.sampled_from(["float32", "float64"]))
+
+    # Param: tensor
+    tensor = draw(
+        helpers.array_values(
+            dtype=dtype, shape=tensor_shape, min_value=-5.0, max_value=5.0
+        ),
+    )
+    mask_dim = draw(helpers.number(min_value=1, max_value=len(tensor_shape)))
+    mask_shape = tensor_shape[:mask_dim]
+
+    # Param:stop
+    mask = draw(
+        helpers.array_values(
+            allow_none=False,
+            dtype="bool",
+            shape=mask_shape,
+        ),
+    )
+
+    return [dtype, "bool"], tensor, mask
+
+
+# boolean_mask
+@handle_frontend_test(
+    fn_tree="tensorflow.boolean_mask",
+    dtype_and_values=_boolean_mask_helper,
+)
+def test_tensorflow_boolean_mask(
+    *,
+    dtype_and_values,
+    as_variable,
+    native_array,
+    num_positional_args,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, tensor, mask = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=tensor,
+        mask=mask,
     )
 
 

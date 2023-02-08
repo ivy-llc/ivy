@@ -66,3 +66,34 @@ def avg_pool2d(
         padding_str,
         data_format=data_format,
     )
+
+
+@to_ivy_arrays_and_back
+def max_pool2d(
+    input,
+    kernel_size,
+    stride=None,
+    padding=0,
+    dilation=1,
+    ceil_mode=False,
+    return_indices=False,
+):
+    # ToDo: Add return_indices once superset in implemented
+    dim_check = False
+    if input.ndim == 3:
+        input = input.expand_dims()
+        dim_check = True
+    if not stride:
+        stride = kernel_size
+    ret = ivy.max_pool2d(
+        input,
+        kernel_size,
+        stride,
+        padding,
+        data_format="NCHW",
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
+    if dim_check:
+        return ret.squeeze(0)
+    return ret

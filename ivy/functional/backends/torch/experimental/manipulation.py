@@ -220,12 +220,10 @@ def take_along_axis(
 
 def hsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.hsplit(ary, indices_or_sections)
+) -> List[torch.Tensor]:
+    return list(torch.hsplit(ary, indices_or_sections))
 
 
 take_along_axis.support_native_out = True
