@@ -1337,6 +1337,7 @@ def test_tensorflow_where_with_xy(
     )
 
 
+@st.composite
 def axis_helper(draw):
     shape = draw(
         helpers.get_shape(
