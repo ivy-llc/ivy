@@ -1344,12 +1344,11 @@ def axis_helper(draw):
             min_num_dims=1, max_num_dims=1
         )
     )
-    dtypeaxis = helpers.dtype_and_values(
+    dtypeaxis, axis = helpers.dtype_and_values(
         shape=shape,
         dtype=["int32"]
     )
-    axis = dtypeaxis[1]
-    return axis
+    return dtypeaxis, axis
 
 @handle_frontend_test(
     fn_tree="tensorflow.reverse",
@@ -1358,12 +1357,12 @@ def axis_helper(draw):
         min_num_dims=1,
         max_num_dims=8,
     ),
-    axis=axis_helper()
+    input_axis=axis_helper()
 )
 def test_tensorflow_reverse(
     *,
     dtype_and_x,
-    axis,
+    input_axis,
     frontend,
     fn_tree,
     test_flags,
@@ -1371,6 +1370,7 @@ def test_tensorflow_reverse(
 ):
 
     input_dtype, x = dtype_and_x
+    dtypeaxis, axis = input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -1378,5 +1378,5 @@ def test_tensorflow_reverse(
         fn_tree=fn_tree,
         on_device=on_device,
         tensor=x[0],
-        axis=axis,
+        axis=axis[0],
     )
