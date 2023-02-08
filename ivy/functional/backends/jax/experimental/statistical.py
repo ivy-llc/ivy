@@ -79,5 +79,7 @@ def nanmedian(
     keepdims: Optional[bool] = False,
     overwrite_input: Optional[bool] = False,
     out: Optional[JaxArray] = None,
-    ) -> JaxArray:
-        return jnp.nanmedian(input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out)
+) -> JaxArray:
+    return jnp.nanmedian(
+        input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+    )

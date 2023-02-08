@@ -291,4 +291,6 @@ def nanmedian(
         array([6.5, 2. , 2.5])
     """
 
-    return ivy.current_backend().nanmedian(input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out)
+    return ivy.current_backend().nanmedian(
+        input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+    )
