@@ -150,7 +150,7 @@ def is_non_decreasing(x, name="is_non_decreasing"):
             if ivy.array(x[0]).size == 2:
                 return ivy.array(x[0][0] <= x[0][1])
             return ivy.all(ivy.less_equal(x[0], ivy.roll(x[0], -1)))
-        except TypeError:
+        except:
             return ivy.array(True)
     if ivy.array(x).size == 2:
         return ivy.array(x[0] <= x[1])
