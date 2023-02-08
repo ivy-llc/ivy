@@ -96,12 +96,16 @@ def randint(
     high: Union[int, torch.Tensor],
     /,
     *,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = (1,),
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: torch.device,
-    dtype: Optional[Union[torch.dtype, ivy.Dtype]] = ivy.default_int_dtype(),
+    dtype: Optional[Union[torch.dtype, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    if not shape:
+        shape = (1,)
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
