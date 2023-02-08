@@ -900,7 +900,13 @@ def array_and_broadcastable_shape(draw, dtype):
 
 @st.composite
 def arrays_for_pooling(
-    draw, min_dims, max_dims, min_side, max_side, allow_explicit_padding=False
+    draw,
+    min_dims,
+    max_dims,
+    min_side,
+    max_side,
+    allow_explicit_padding=False,
+    return_dilation=False,
 ):
     in_shape = draw(
         nph.array_shapes(
@@ -931,24 +937,27 @@ def arrays_for_pooling(
         )
     if array_dim == 3:
         kernel = draw(st.tuples(st.integers(1, in_shape[1])))
+    new_kernel = kernel
+    if return_dilation:
+        new_kernel = []
+        dilations = []
+        for i in range(len(kernel)):
+            if kernel[i] > 1:
+                max_dilation = (in_shape[i + 1] - kernel[i]) // (kernel[i] - 1) + 1
+                dilations.append(draw(st.integers(1, max_dilation)))
+                new_kernel.append(kernel[i] + (kernel[i] - 1) * (dilations[i] - 1))
+            else:
+                dilations.append(1)
+                new_kernel.append(kernel[i])
     if allow_explicit_padding:
         padding = []
         for i in range(array_dim - 2):
-            max_pad = kernel[i] // 2
-            possible_pad_combos = [
-                (i, max_pad - i)
-                for i in range(0, max_pad)
-                if i + (max_pad - i) == max_pad
-            ]
-            if len(possible_pad_combos) == 0:
-                pad_selected_combo = (0, 0)
-            else:
-                pad_selected_combo = draw(st.sampled_from(possible_pad_combos))
+            max_pad = new_kernel[i] // 2
             padding.append(
                 draw(
                     st.tuples(
-                        st.integers(0, pad_selected_combo[0]),
-                        st.integers(0, pad_selected_combo[1]),
+                        st.integers(0, max_pad),
+                        st.integers(0, max_pad),
                     )
                 )
             )
@@ -956,4 +965,6 @@ def arrays_for_pooling(
     else:
         padding = draw(st.sampled_from(["VALID", "SAME"]))
     strides = draw(st.tuples(st.integers(1, in_shape[1])))
+    if return_dilation:
+        return dtype, x, kernel, strides, padding, dilations
     return dtype, x, kernel, strides, padding
