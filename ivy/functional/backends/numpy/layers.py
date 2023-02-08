@@ -184,8 +184,8 @@ def conv2d(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
