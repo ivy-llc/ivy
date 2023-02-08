@@ -217,6 +217,19 @@ def current_backend(*args, **kwargs):
     return importlib.import_module(_backend_dict[implicit_backend])
 
 
+def _set_backend_as_ivy(target, backend):
+    for k, v in ivy_original_dict.items():
+        compositional = k not in backend.__dict__
+        if k not in backend.__dict__:
+            if k in backend.invalid_dtypes and k in ivy.__dict__:
+                del ivy.__dict__[k]
+                continue
+            backend.__dict__[k] = v
+        target.__dict__[k] = _wrap_function(
+            key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
+        )
+
+
 def set_backend(backend: str):
     """Sets `backend` to be the global backend.
 
@@ -258,16 +271,7 @@ def set_backend(backend: str):
         ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
     backend_stack.append(backend)
     set_backend_to_specific_version(backend)
-    for k, v in ivy_original_dict.items():
-        compositional = k not in backend.__dict__
-        if k not in backend.__dict__:
-            if k in backend.invalid_dtypes and k in ivy.__dict__:
-                del ivy.__dict__[k]
-                continue
-            backend.__dict__[k] = v
-        ivy.__dict__[k] = _wrap_function(
-            key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
-        )
+    _set_backend_as_ivy(ivy, backend)
 
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))

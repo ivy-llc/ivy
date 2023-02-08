@@ -5,7 +5,7 @@ import traceback
 from ast import parse
 from importlib.util import resolve_name, module_from_spec, spec_from_file_location
 from importlib.abc import Loader, MetaPathFinder
-
+from backend_handler import _backend_dict, _set_backend_as_ivy
 
 IMPORT_CACHE = {}
 
@@ -345,7 +345,14 @@ def _ivy_import_module(name, package=None):
 def with_backend(backend: str):
     sys.meta_path.insert(0, FINDER)
     ivy_pack = _ivy_import_module("ivy")
-    ivy_pack.set_backend(backend)
+    backend_module = _ivy_import_module(_backend_dict[backend], ivy_pack.__package__)
+    # TODO temporary
+    if backend == "numpy":
+        ivy_pack.set_default_device("cpu")
+    elif backend == "jax":
+        ivy_pack.set_global_attr("RNG", ivy_pack.functional.backends.jax.random.RNG)
+    # We know for sure that the backend stack is empty, no need to do backend unsetting
+    _set_backend_as_ivy(ivy_pack, backend_module)
     # TODO remove access to global stuff
     sys.meta_path.remove(FINDER)
     _clear_cache()
