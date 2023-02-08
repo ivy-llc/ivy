@@ -266,12 +266,14 @@ def average(
         correctly against the original a.
     dtype
         The desired data type of returned tensor. Default is None.
+
     out
         optional output array, for writing the result to.
 
     Returns
     -------
     ret
+    
         The average of the array elements.
 
     Functional Examples

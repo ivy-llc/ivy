@@ -34,6 +34,21 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     return ivy.clip(t, clip_value_min, clip_value_max)
 
 
+@to_ivy_arrays_and_back
+def clip_by_norm(t, clip_norm, axes=None):
+    t = ivy.array(t)
+    l2sum = ivy.sum(t * t, axis=axes, keepdims=True)
+    pred = l2sum > 0
+
+    l2sum_safe = ivy.where(pred, l2sum, ivy.ones_like(l2sum))
+    l2norm = ivy.where(pred, ivy.sqrt(l2sum_safe), l2sum)
+    intermediate = t * clip_norm
+    assert t.shape == intermediate.shape, \
+        ("Dimensions %s and %s are not compatible" % (t.shape, intermediate.shape))
+    t_clip = intermediate / ivy.maximum(l2norm, clip_norm)
+    return t_clip
+
+
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
@@ -86,6 +101,7 @@ def einsum(equation, *inputs, **kwargs):
 
 @to_ivy_arrays_and_back
 def reshape(tensor, shape, name=None):
+    shape = shape.to_list() if ivy.is_array(shape) else shape
     return ivy.reshape(tensor, shape=shape)
 
 
@@ -119,22 +135,6 @@ def squeeze(input, axis=None, name=None):
 @to_ivy_arrays_and_back
 def concat(values, axis, name=None):
     return ivy.concat(values, axis=axis)
-
-
-@to_ivy_arrays_and_back
-def matmul(
-    a,
-    b,
-    transpose_a=False,
-    transpose_b=False,
-    adjoint_a=False,
-    adjoint_b=False,
-    a_is_sparse=False,
-    b_is_sparse=False,
-    output_type=None,
-    name=None,
-):
-    return ivy.matmul(a, b)
 
 
 @to_ivy_arrays_and_back
@@ -209,6 +209,28 @@ def gather_nd(params, indices, batch_dims=0, name=None):
 
 
 @to_ivy_arrays_and_back
+def boolean_mask(tensor, mask, axis=None, name=None):
+    if axis is None or axis == 0:
+        return ivy.get_item(tensor, mask)
+    else:
+        n = ivy.get_num_dims(tensor)
+        k = ivy.get_num_dims(mask)
+        if axis < 0:
+            axis = n + axis
+        ivy.assertions.check_less(
+            k + axis,
+            n,
+            allow_equal=True,
+            message="Value of axis must be \
+                                           such that axis + dim(mask) <= dim(tensor)",
+        )
+        tensor_shape = ivy.shape(tensor)
+        for i in range(axis - 1, -1, -1):
+            mask = ivy.expand_dims(mask, axis=0)
+            mask = ivy.repeat(mask, tensor_shape[i], axis=0)
+        return ivy.get_item(tensor, mask)
+
+
 def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
     paddings = paddings.to_list() if ivy.is_array(paddings) else paddings
     return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
@@ -275,6 +297,11 @@ def strided_slice(
 
 
 @to_ivy_arrays_and_back
+def slice(input_, begin, size, name=None):
+    return strided_slice(input_, begin, begin + size, [1] * len(size))
+
+
+@to_ivy_arrays_and_back
 def linspace(start, stop, num, name=None, axis=0):
     return ivy.linspace(start, stop, num, axis=axis)
 
@@ -302,3 +329,11 @@ def one_hot(
     out=None,
 ):
     return ivy.one_hot(indices, depth)
+
+
+@to_ivy_arrays_and_back
+def where(condition: ivy.array, x=None, y=None, name=None):
+    if x is None and y is None:
+        return ivy.argwhere(condition)
+    else:
+        return ivy.where(condition, x, y)

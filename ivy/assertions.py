@@ -247,3 +247,17 @@ def check_dimensions(x):
             "input must have greater than one dimension; "
             + " {} has {} dimensions".format(x, len(x.shape))
         )
+
+
+def check_kernel_padding_size(kernel_size, padding_size):
+    for i in range(len(kernel_size)):
+        if (
+            padding_size[i][0] > kernel_size[i] // 2
+            or padding_size[i][1] > kernel_size[i] // 2
+        ):
+            raise ValueError(
+                "Padding size should be less than or equal to half of the kernel size. "
+                "Got kernel_size: {} and padding_size: {}".format(
+                    kernel_size, padding_size
+                )
+            )
