@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Tuple, Union, List, Callable
+from typing import Optional, Tuple, Union, List, Callable, Sequence
 
 # local
 import ivy
@@ -76,6 +76,7 @@ class ArrayWithLayers(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         training: bool = True,
         seed: Optional[int] = None,
+        noise_shape: Sequence[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -99,6 +100,9 @@ class ArrayWithLayers(abc.ABC):
         seed
             Set a default seed for random number generating (for
             reproducibility).Default is ``None``.
+        noise_shape
+            a sequence representing the shape of the binary dropout mask that will be
+            multiplied with the input.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -141,6 +145,7 @@ class ArrayWithLayers(abc.ABC):
             dtype=dtype,
             training=training,
             seed=seed,
+            noise_shape=noise_shape,
             out=out,
         )
 
@@ -448,12 +453,12 @@ class ArrayWithLayers(abc.ABC):
     def conv2d(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NHWC",
-        dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        dilations: Union[int, Tuple[int, int]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -463,8 +468,8 @@ class ArrayWithLayers(abc.ABC):
 
         Parameters
         ----------
-        x
-            Input image *[batch_size,h,w,d_in]*.
+        self
+            Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
         filters
             Convolution filters *[fh,fw,d_in,d_out]*.
         strides

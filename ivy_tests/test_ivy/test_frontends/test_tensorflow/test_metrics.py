@@ -280,10 +280,7 @@ def test_binary_crossentropy(
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
         input_dtypes=input_dtype[::-1],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
