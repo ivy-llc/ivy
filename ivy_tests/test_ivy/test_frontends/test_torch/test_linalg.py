@@ -847,3 +847,33 @@ def test_torch_tensorsolve(
         A=A,
         B=B,
     )
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.vander",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        min_value=-1e4,
+        max_value=1e4,
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_vander(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        atol=1e-02,
+        rtol=1e-03,
+    )

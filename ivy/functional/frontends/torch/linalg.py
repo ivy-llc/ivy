@@ -181,3 +181,13 @@ def solve(input, other, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def tensorsolve(A, B, dims=None, *, out=None):
     return ivy.tensorsolve(A, B, axes=dims, out=out)
+
+
+@to_ivy_arrays_and_back
+def vander(input, N=None):
+    assert N is None or N > 1, "N must be greater than 1"
+    input_shape = ivy.shape(input)
+    if len(input_shape) == 1:
+        assert input_shape[0] > 1, "Input shape must be greater than 1"
+    column_number = input_shape[-1] if N is None else N
+    return ivy.stack([input ** i for i in range(column_number)], dim=len(input_shape))
