@@ -75,6 +75,7 @@ def run_multiversion_testing(failed):
     with open("tests_to_run", "r") as f:
         for line in f:
             test, frontend, backend = line.split(",")
+            print(test, frontend, backend)
             frontend, backend = frontend.split("=")[1], backend.split("=")[1].replace(
                 " ", ","
             )
