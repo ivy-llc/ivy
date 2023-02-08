@@ -247,7 +247,7 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
     ret = ivy.zeros((*input.shape[0:2], *kernel_size, *output_shape), dtype=input.dtype)
     input_padded = ivy.zero_pad(
         input,
-        ((0, 0),) * 2 + ((padding[0],) * 2, (padding[1],) * 2),
+        ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2),
     )
     ret = ret.to_numpy()
     input_padded = input_padded.to_numpy()
@@ -276,15 +276,11 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
     padding = [padding] * 2 if isinstance(padding, int) else padding
     kernel_size = [kernel_size] * 2 if isinstance(kernel_size, int) else kernel_size
     output_size = [output_size] * 2 if isinstance(output_size, int) else output_size
-    x_shape = [
-        (output_size[i] + 2 * padding[i] - dilation[i] * (kernel_size[i] - 1) - 1) // stride[i] + 1
-        for i in range(2)
-    ]
     n_channels = input.shape[1] // math.prod(kernel_size)
-    input = ivy.reshape(input, (input.shape[0], n_channels, *kernel_size, *x_shape))
+    input = ivy.reshape(input, (input.shape[0], n_channels, *kernel_size, -1))
     input_padded = ivy.zero_pad(
         input,
-        ((0, 0),) * 4 + ((padding[0],) * 2, (padding[1],) * 2),
+        ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2, (0, 0)),
     )
     output = ivy.zeros((input.shape[0], n_channels, *output_size), dtype=input.dtype)
     output = output.to_numpy()
@@ -296,7 +292,7 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
             w_start = j * stride[1] * dilation[1]
             w_end = w_start + kernel_size[1] * dilation[1]
             sub_matrix = input_padded[
-                         :, :, :, :, h_start:h_end:dilation[0], w_start:w_end:dilation[1]
+                         :, :, h_start:h_end:dilation[0], w_start:w_end:dilation[1], :
                          ]
-            output[:, :, i, j] = ivy.sum(sub_matrix, axis=(2, 3, 4, 5))
+            output[:, :, i, j] = ivy.sum(sub_matrix, axis=(2, 3, 4))
     return ivy.array(output) if orig_ndim == 3 else ivy.squeeze(output, axis=0)
