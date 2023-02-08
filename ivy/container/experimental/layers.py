@@ -150,6 +150,8 @@ class ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -200,6 +202,8 @@ class ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -215,6 +219,8 @@ class ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -266,6 +272,8 @@ class ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1291,11 +1299,7 @@ class ContainerWithLayersExperimental(ContainerBase):
         map_sequences
         out
 
-        Returns
-        -------
-
         """
-
         return ContainerBase.cont_multi_map_in_function(
             "dft",
             x,
@@ -1340,9 +1344,6 @@ class ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied
         map_sequences
         out
-
-        Returns
-        -------
 
         """
         return self.static_dft(

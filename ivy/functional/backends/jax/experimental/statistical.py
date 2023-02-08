@@ -70,6 +70,7 @@ def corrcoef(
 ) -> JaxArray:
     return jnp.corrcoef(x, y=y, rowvar=rowvar)
 
+
 def average(
     a: JaxArray,
     /,

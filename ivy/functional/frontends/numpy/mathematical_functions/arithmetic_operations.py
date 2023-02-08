@@ -152,9 +152,8 @@ def _float_power(
     dtype=None,
     subok=True,
 ):
-    x1 = ivy.astype(x1, ivy.as_ivy_dtype("float64"))
     x1, x2 = promote_types_of_numpy_inputs(x1, x2)
-    ret = ivy.pow(x1, x2, out=out)
+    ret = ivy.float_power(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
