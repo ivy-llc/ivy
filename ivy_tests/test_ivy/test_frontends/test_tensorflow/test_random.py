@@ -95,7 +95,7 @@ def test_tensorflow_normal(
 # random_shuffle
 @handle_frontend_test(
     fn_tree="tensorflow.random.shuffle",
-    shape=helpers.get_shape(
+    value=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
         max_num_dims=5,
@@ -110,7 +110,7 @@ def test_tensorflow_shuffle(
     frontend,
     fn_tree,
     on_device,
-    shape,
+    value,
     dtype,
     seed,
     test_flags,
@@ -123,6 +123,6 @@ def test_tensorflow_shuffle(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        shape=shape,
+        value=value,
         seed=seed,
     )
