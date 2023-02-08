@@ -256,3 +256,43 @@ class ArrayWithStatisticalExperimental(abc.ABC):
                        [-1., nan,  1.]])
         """
         return ivy.corrcoef(self._data, y=y, rowvar=rowvar, out=out)
+    
+     def average(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+
+        """ivy.Array instance method variant of ivy.average.
+
+        Parameters
+        ----------
+        a
+            Input array.
+        axis
+            Axis or axes along which the average are computed.
+
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The average of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 9], [3, 4]])
+        >>> a.average()
+        ivy.array(4.25)
+        """
+        return ivy.average(self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+
+
