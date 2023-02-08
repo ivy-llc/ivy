@@ -85,7 +85,6 @@ def check_docstring_examples_run(
         ).__doc__
     else:
         docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
-
     if docstring is None:
         return True
 
@@ -93,7 +92,6 @@ def check_docstring_examples_run(
 
     trimmed_docstring = trim(docstring=docstring)
     trimmed_docstring = trimmed_docstring.split("\n")
-
     # end_index: -1, if print statement is not found in the docstring
     end_index = -1
 
@@ -109,6 +107,8 @@ def check_docstring_examples_run(
                 if s.startswith(">>>") or s.lower().startswith("with"):
                     end_index = index + i + 1
                     break
+            else:
+                end_index = len(trimmed_docstring)
             p_output = trimmed_docstring[index + 1 : end_index]
             p_output = ("").join(p_output).replace(" ", "")
             p_output = p_output.replace("...", "")
@@ -124,10 +124,11 @@ def check_docstring_examples_run(
     for line in trimmed_docstring:
         if line.startswith(">>>"):
             executable_lines.append(line.split(">>>")[1][1:])
-        if line.startswith("..."):
+            is_multiline_executable = True
+        if line.startswith("...") and is_multiline_executable:
             executable_lines[-1] += line.split("...")[1][1:]
         if ">>> print(" in line:
-            break
+            is_multiline_executable = False
 
     # noinspection PyBroadException
     f = StringIO()
@@ -260,6 +261,7 @@ def test_docstrings(backend):
         "get",
         "deserialize",
         "dropout",
+        "dropout1d",
     ]
     # the temp skip list consists of functions which have an issue with their
     # implementation
@@ -275,7 +277,13 @@ def test_docstrings(backend):
     ]
 
     # skip list for array and container docstrings
-    skip_arr_cont = ["cumprod", "supports_inplace_updates", "slogdet", "dropout"]
+    skip_arr_cont = [
+        "cumprod",
+        "supports_inplace_updates",
+        "slogdet",
+        "dropout",
+        "dropout1d",
+    ]
     # currently_being_worked_on = ["layer_norm"]
 
     # comment out the line below in future to check for the functions in temp skip list

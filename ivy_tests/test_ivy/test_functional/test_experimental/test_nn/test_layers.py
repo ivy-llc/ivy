@@ -1,6 +1,5 @@
 # global
-from hypothesis import strategies as st
-
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -13,16 +12,40 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_dims=4, max_dims=4, min_side=1, max_side=4, allow_explicit_padding=True
     ),
     test_gradients=st.just(False),
+        min_dims=4,
+        max_dims=4,
+        min_side=2,
+        max_side=4,
+        allow_explicit_padding=True,
+        return_dilation=True,
+    ),
+    ceil_mode=st.just(True),
+    test_gradients=st.just(False),
+    # problem with containers converting tuple padding to
+    # lists which jax does not support
     container_flags=st.just([False]),
 )
 def test_max_pool2d(
     *,
     x_k_s_p,
+    ceil_mode,
     test_flags,
     backend_fw,
     fn_name,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation = x_k_s_p
+    assume(
+        not (
+            backend_fw.current_backend_str() == "tensorflow"
+            and (
+                (stride[0] > kernel[0] or stride[0] > kernel[1])
+                or (
+                    (stride[0] > 1 and dilation[0] > 1)
+                    or (stride[0] > 1 and dilation[1] > 1)
+                )
+            )
+        )
+    )
     helpers.test_function(
         ground_truth_backend="jax",
         input_dtypes=dtype,
@@ -35,6 +58,8 @@ def test_max_pool2d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -464,6 +489,7 @@ def test_dft(
         rtol_=1e-2,
         atol_=1e-2,
     )
+
 
 @handle_test(
     fn_tree="functional.ivy.experimental.stft",

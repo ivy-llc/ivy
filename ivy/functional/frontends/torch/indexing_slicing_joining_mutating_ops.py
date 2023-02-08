@@ -4,6 +4,11 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
+def adjoint(input):
+    return ivy.adjoint(input)
+
+
+@to_ivy_arrays_and_back
 def cat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, axis=dim, out=out)
 
@@ -177,4 +182,35 @@ def take_along_dim(input, indices, dim, *, out=None):
 
 @to_ivy_arrays_and_back
 def vstack(tensors, *, out=None):
+    return ivy.vstack(tensors, out=out)
+
+
+@to_ivy_arrays_and_back
+def split(tensor, split_size_or_sections, dim=0):
+    if isinstance(split_size_or_sections, int):
+        split_size = split_size_or_sections
+        split_size_or_sections = [split_size] * (tensor.shape[dim] // split_size)
+        if tensor.shape[dim] % split_size:
+            split_size_or_sections.append(tensor.shape[dim] % split_size)
+    return tuple(
+        ivy.split(
+            tensor,
+            num_or_size_splits=split_size_or_sections,
+            axis=dim,
+            with_remainder=True,
+        )
+    )
+
+
+@to_ivy_arrays_and_back
+def dsplit(input, indices_or_sections):
+    return tuple(ivy.dsplit(input, indices_or_sections))
+
+
+@to_ivy_arrays_and_back
+def hsplit(input, indices_or_sections):
+    return tuple(ivy.hsplit(input, indices_or_sections))
+
+
+def row_stack(tensors, *, out=None):
     return ivy.vstack(tensors, out=out)

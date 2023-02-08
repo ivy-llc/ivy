@@ -233,3 +233,44 @@ def test_poisson(
     for (u, v) in zip(ret, ret_gt):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.bernoulli",
+    dtype_and_probs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        min_value=0,
+        max_value=1,
+        min_num_dims=0,
+    ),
+    seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
+)
+def test_bernoulli(
+    *,
+    dtype_and_probs,
+    seed,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, probs = dtype_and_probs
+    # torch doesn't support half precision on CPU
+    assume(
+        not ("torch" in str(backend_fw) and "float16" in dtype and on_device == "cpu")
+    )
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        test_values=False,
+        probs=probs[0],
+        logits=None,
+        shape=None,
+        seed=seed,
+    )

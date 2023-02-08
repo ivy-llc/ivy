@@ -97,3 +97,25 @@ def poisson(
         jax.random.poisson(rng_input, lam, shape=shape),
         device,
     )
+
+
+def bernoulli(
+    probs: Union[float, JaxArray],
+    *,
+    logits: Union[float, JaxArray] = None,
+    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
+    device: jaxlib.xla_extension.Device,
+    dtype: jnp.dtype = None,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if seed:
+        rng_input = jax.random.PRNGKey(seed)
+    else:
+        RNG_, rng_input = jax.random.split(_getRNG())
+        _setRNG(RNG_)
+    if logits is not None:
+        probs = jax.nn.softmax(logits, axis=-1)
+    if not _check_shapes_broadcastable(shape, probs.shape):
+        shape = probs.shape
+    return to_device(jax.random.bernoulli(rng_input, probs, shape=shape), device)

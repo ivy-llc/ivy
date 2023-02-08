@@ -146,7 +146,7 @@ def is_non_decreasing(x, name="is_non_decreasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
     if ivy.array(x).size == 2:
-        return ivy.array(x[0] <= x[1])
+        return ivy.array([x[0] <= x[1]])
     return ivy.all(ivy.less_equal(x, ivy.roll(x, -1)))
 
 
@@ -210,10 +210,6 @@ def polyval(coeffs, x, name=None):
 
 @to_ivy_arrays_and_back
 def pow(x, y, name="pow"):
-    if not (isinstance(x, int) or isinstance(x, float) or (x is None)):
-        x = x.data
-    if not (isinstance(y, int) or isinstance(y, float) or (y is None)):
-        y = y.data
     x, y = check_tensorflow_casting(x, y)
     return ivy.pow(x, y)
 
@@ -370,10 +366,17 @@ def argmin(input, axis=None, output_type="int64", name=None):
 def truediv(x, y, name="truediv"):
     x, y = check_tensorflow_casting(x, y)
     x_dtype = ivy.dtype(x)
-    if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
-        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
-    elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
-        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+
+    if ivy.current_backend_str() == "torch":
+        if x_dtype in [ivy.int8, ivy.int16]:
+            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+        elif x_dtype in [ivy.int32, ivy.int64]:
+            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    else:
+        if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
+            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+        elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
+            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
 
 
@@ -410,3 +413,13 @@ def sigmoid(x, name=None):
 @to_ivy_arrays_and_back
 def tanh(x, name=None):
     return ivy.tanh(x)
+
+
+@to_ivy_arrays_and_back
+def rsqrt(x, name=None):
+    return ivy.reciprocal(ivy.sqrt(x))
+
+
+@to_ivy_arrays_and_back
+def nextafter(x1, x2, name=None):
+    return ivy.nextafter(x1, x2)

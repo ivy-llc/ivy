@@ -219,8 +219,10 @@ def cumsum(
     if dtype is None:
         if x.dtype == "bool":
             dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
+        if ivy.is_int_dtype(x.dtype):
+            dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
+        dtype = _infer_dtype(x.dtype)
+
     if exclusive or reverse:
         if exclusive and reverse:
             x = np.cumsum(np.flip(x, axis=axis), axis=axis, dtype=dtype)

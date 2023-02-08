@@ -4,7 +4,6 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_method
-from ivy_tests.test_ivy.helpers import test_parameter_flags as pf
 
 # Helpers #
 # ------- #
@@ -179,22 +178,23 @@ def _sparse_bsc_indices_values_shape(draw):
 @handle_method(
     method_tree="SparseArray.to_dense_array",
     sparse_data=_sparse_coo_indices_values_shape(),
+    method_num_positional_args=st.just(0),  # TODO should not be hardcoded
+    init_num_positional_args=st.just(0),  # TODO should not be hardcoded
 )
 def test_sparse_coo(
     sparse_data,
-    init_as_variable_flags: pf.AsVariableFlags,
-    init_native_array_flags: pf.NativeArrayFlags,
     class_name,
     method_name,
     ground_truth_backend,
+    init_flags,
+    method_flags,
 ):
     coo_ind, val_dtype, val, shp = sparse_data
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
         init_input_dtypes=["int64", val_dtype],
-        init_as_variable_flags=init_as_variable_flags,
-        init_num_positional_args=0,
-        init_native_array_flags=init_native_array_flags,
         init_all_as_kwargs_np={
             "coo_indices": coo_ind,
             "values": val,
@@ -202,10 +202,6 @@ def test_sparse_coo(
             "format": "coo",
         },
         method_input_dtypes=[],
-        method_as_variable_flags=[],
-        method_num_positional_args=0,
-        method_native_array_flags=[],
-        method_container_flags=[False],
         method_all_as_kwargs_np={},
         class_name=class_name,
         method_name=method_name,
@@ -216,22 +212,23 @@ def test_sparse_coo(
 @handle_method(
     method_tree="SparseArray.to_dense_array",
     sparse_data=_sparse_csr_indices_values_shape(),
+    method_num_positional_args=st.just(0),  # TODO should not be hardcoded
+    init_num_positional_args=st.just(0),  # TODO should not be hardcoded
 )
 def test_sparse_csr(
     sparse_data,
-    init_as_variable_flags: pf.AsVariableFlags,
-    init_native_array_flags: pf.NativeArrayFlags,
     class_name,
     method_name,
     ground_truth_backend,
+    init_flags,
+    method_flags,
 ):
     crow_indices, col_indices, value_dtype, values, shape = sparse_data
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
         init_input_dtypes=["int64", "int64", value_dtype],
-        init_as_variable_flags=init_as_variable_flags,
-        init_num_positional_args=0,
-        init_native_array_flags=init_native_array_flags,
         init_all_as_kwargs_np={
             "crow_indices": crow_indices,
             "col_indices": col_indices,
@@ -240,10 +237,6 @@ def test_sparse_csr(
             "format": "csr",
         },
         method_input_dtypes=[],
-        method_as_variable_flags=[],
-        method_num_positional_args=0,
-        method_native_array_flags=[],
-        method_container_flags=[False],
         method_all_as_kwargs_np={},
         class_name=class_name,
         method_name=method_name,
@@ -254,22 +247,23 @@ def test_sparse_csr(
 @handle_method(
     method_tree="SparseArray.to_dense_array",
     sparse_data=_sparse_csc_indices_values_shape(),
+    method_num_positional_args=st.just(0),  # TODO should not be hardcoded
+    init_num_positional_args=st.just(0),  # TODO should not be hardcoded
 )
 def test_sparse_csc(
     sparse_data,
-    init_as_variable_flags: pf.AsVariableFlags,
-    init_native_array_flags: pf.NativeArrayFlags,
     class_name,
     method_name,
     ground_truth_backend,
+    init_flags,
+    method_flags,
 ):
     ccol_indices, row_indices, value_dtype, values, shape = sparse_data
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
         init_input_dtypes=["int64", "int64", value_dtype],
-        init_as_variable_flags=init_as_variable_flags,
-        init_num_positional_args=0,
-        init_native_array_flags=init_native_array_flags,
         init_all_as_kwargs_np={
             "ccol_indices": ccol_indices,
             "row_indices": row_indices,
@@ -278,10 +272,6 @@ def test_sparse_csc(
             "format": "csc",
         },
         method_input_dtypes=[],
-        method_as_variable_flags=[],
-        method_num_positional_args=0,
-        method_native_array_flags=[],
-        method_container_flags=[False],
         method_all_as_kwargs_np={},
         class_name=class_name,
         method_name=method_name,
@@ -292,22 +282,23 @@ def test_sparse_csc(
 @handle_method(
     method_tree="SparseArray.to_dense_array",
     sparse_data=_sparse_bsc_indices_values_shape(),
+    method_num_positional_args=st.just(0),  # TODO should not be hardcoded
+    init_num_positional_args=st.just(0),  # TODO should not be hardcoded
 )
 def test_sparse_bsc(
     sparse_data,
-    init_as_variable_flags: pf.AsVariableFlags,
-    init_native_array_flags: pf.NativeArrayFlags,
     class_name,
     method_name,
     ground_truth_backend,
+    init_flags,
+    method_flags,
 ):
     ccol_indices, row_indices, value_dtype, values, shape = sparse_data
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
         init_input_dtypes=["int64", "int64", value_dtype],
-        init_as_variable_flags=init_as_variable_flags,
-        init_num_positional_args=0,
-        init_native_array_flags=init_native_array_flags,
         init_all_as_kwargs_np={
             "ccol_indices": ccol_indices,
             "row_indices": row_indices,
@@ -316,10 +307,6 @@ def test_sparse_bsc(
             "format": "bsc",
         },
         method_input_dtypes=[],
-        method_as_variable_flags=[],
-        method_num_positional_args=0,
-        method_native_array_flags=[],
-        method_container_flags=[False],
         method_all_as_kwargs_np={},
         class_name=class_name,
         method_name=method_name,
@@ -330,22 +317,23 @@ def test_sparse_bsc(
 @handle_method(
     method_tree="SparseArray.to_dense_array",
     sparse_data=_sparse_bsr_indices_values_shape(),
+    method_num_positional_args=st.just(0),  # TODO should not be hardcoded
+    init_num_positional_args=st.just(0),  # TODO should not be hardcoded
 )
 def test_sparse_bsr(
     sparse_data,
-    init_as_variable_flags: pf.AsVariableFlags,
-    init_native_array_flags: pf.NativeArrayFlags,
     class_name,
     method_name,
     ground_truth_backend,
+    init_flags,
+    method_flags,
 ):
     crow_indices, col_indices, value_dtype, values, shape = sparse_data
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
         init_input_dtypes=["int64", "int64", value_dtype],
-        init_as_variable_flags=init_as_variable_flags,
-        init_num_positional_args=0,
-        init_native_array_flags=init_native_array_flags,
         init_all_as_kwargs_np={
             "crow_indices": crow_indices,
             "col_indices": col_indices,
@@ -354,10 +342,6 @@ def test_sparse_bsr(
             "format": "bsr",
         },
         method_input_dtypes=[],
-        method_as_variable_flags=[],
-        method_num_positional_args=0,
-        method_native_array_flags=[],
-        method_container_flags=[False],
         method_all_as_kwargs_np={},
         class_name=class_name,
         method_name=method_name,
