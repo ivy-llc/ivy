@@ -6,8 +6,6 @@ from ivy import (
     promote_types_of_inputs,
     default_float_dtype,
     is_float_dtype,
-    with_unsupported_dtypes,
-    backend_version,
 )
 from ivy.functional.backends.jax import JaxArray
 from ivy.func_wrapper import with_unsupported_dtypes

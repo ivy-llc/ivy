@@ -12,19 +12,29 @@ from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 
 
+def _from_int_to_tuple(arg, dim):
+    if isinstance(arg, int):
+        return (arg,) * dim
+    if isinstance(arg, tuple) and len(arg) == 1:
+        return (arg[0],) * dim
+    return arg
+
+
 def general_pool(
-    inputs, init, reduce_fn, window_shape, strides, padding, dilation, ceil_mode
+    inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation, ceil_mode
 ):
+    window_shape = _from_int_to_tuple(window_shape, dim)
+    strides = _from_int_to_tuple(strides, dim)
+    dilation = _from_int_to_tuple(dilation, dim)
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * dim
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * dim
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
 
-    if isinstance(strides, int):
-        strides = (strides,) * len(window_shape)
-    elif len(strides) == 1:
-        strides = (strides[0],) * len(window_shape)
-
-    if isinstance(dilation, int):
-        dilation = (dilation,) * len(window_shape)
-    elif len(dilation) == 1:
-        dilation = (dilation[0],) * len(window_shape)
+    if isinstance(padding, (tuple, list)):
+        ivy.assertions.check_kernel_padding_size(window_shape, padding)
 
     assert len(window_shape) == len(
         strides
@@ -64,7 +74,7 @@ def general_pool(
         ]
         pad_list = [(0, 0)] + pad_list + [(0, 0)]
     else:
-        pad_list = [(0, 0)] + padding + [(0, 0)]
+        pad_list = [(0, 0)] + list(padding) + [(0, 0)]
 
     if ceil_mode:
         for i in range(len(dims) - 2):
@@ -106,7 +116,7 @@ def max_pool1d(
     elif len(kernel) == 1:
         kernel = (kernel[0],)
 
-    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding, 1)
 
     if data_format == "NCW":
         res = jnp.transpose(x, (0, 2, 1))
@@ -129,7 +139,7 @@ def max_pool2d(
         x = jnp.transpose(x, (0, 2, 3, 1))
 
     res = general_pool(
-        x, -jnp.inf, jlax.max, kernel, strides, padding, dilation, ceil_mode
+        x, -jnp.inf, jlax.max, kernel, strides, padding, 2, dilation, ceil_mode
     )
 
     if data_format == "NCHW":
@@ -152,7 +162,7 @@ def max_pool3d(
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
     if isinstance(kernel, int):
         kernel = (kernel,) * 3
-    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding, 3)
 
     if data_format == "NCDHW":
         res = jnp.transpose(x, (0, 2, 3, 4, 1))
@@ -184,7 +194,7 @@ def avg_pool1d(
     elif len(strides) == 1:
         strides = (strides[0],)
 
-    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
+    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 1)
     div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
@@ -220,7 +230,7 @@ def avg_pool2d(
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
-    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
+    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 2)
     div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
@@ -256,7 +266,7 @@ def avg_pool3d(
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
 
-    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
+    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 3)
 
     res = res / general_pool(
         jnp.ones_like(x, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding

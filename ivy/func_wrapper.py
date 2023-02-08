@@ -8,6 +8,7 @@ import inspect
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
+    "array_function_wrapper",
     "infer_device",
     "infer_dtype",
     "integer_arrays_to_float",
@@ -26,6 +27,35 @@ FN_DECORATORS = [
 
 # Helpers #
 # --------#
+
+
+def try_array_function_override(func, overloaded_args, types, args, kwargs):
+    # TODO: consider simplifying the interface, to only require either `types`
+    # (by calling __array_function__ a classmethod) or `overloaded_args` (by
+    # dropping `types` from the signature of __array_function__)
+    if not overloaded_args:
+        return False, None
+
+    for overloaded_arg in overloaded_args:
+        # Note that we're only calling __array_function__ on the *first*
+        # occurence of each argument type. This is necessary for reasonable
+        # performance with a possibly long list of overloaded arguments, for
+        # which each __array_function__ implementation might reasonably need to
+        # check all argument types.
+        try:
+            result = overloaded_arg.__array_function__(func, types, args, kwargs)
+        except Exception:
+            # Ensure the type of the overloaded argument ends up in the
+            # traceback
+            raise ivy.exceptions.IvyNotImplementedException
+
+        if result is not NotImplemented:
+            return True, result
+
+    raise TypeError(
+        "no implementation found for {} on types that implement "
+        "__array_function__: {}".format(func, list(map(type, overloaded_args)))
+    )
 
 
 def _get_first_array(*args, **kwargs):
@@ -48,6 +78,63 @@ def _get_first_array(*args, **kwargs):
 
 # Array Handling #
 # ---------------#
+
+
+def handle_array_function(func):
+    """
+    Wrap a function to extract the relevant argument types to be passed to
+    array_function method.
+    """
+
+    @functools.wraps(func)
+    def new_func(*args, **kwargs):
+        overloaded_types = []
+        overloaded_args = []
+
+        for arg in args + tuple(kwargs.values()):
+            if ivy.exists(arg) and (
+                not isinstance(arg, ivy.Container)
+                and hasattr(arg, "__array_function__")
+            ):
+                if type(arg) not in overloaded_types:
+                    overloaded_types.append(type(arg))
+                    if (
+                        arg.__array_function__ is not ivy.Array.__array_function__
+                        and not isinstance(arg, (ivy.Array, ivy.NativeArray))
+                    ):
+                        index = len(overloaded_args)
+                        for i, old_arg in enumerate(overloaded_args):
+                            if issubclass(type(arg), type(old_arg)):
+                                index = i
+                                break
+                        overloaded_args.insert(index, arg)
+            if ivy.exists(arg) and isinstance(arg, ivy.Container):
+                indices = ivy.nested_argwhere(
+                    arg, lambda x: hasattr(x, "__array_function__")
+                )
+                for a in indices:
+                    if type(arg.a) not in overloaded_types:
+                        overloaded_types.append(type(arg.a))
+                        if (
+                            arg.a.__array_function__ is not ivy.Array.__array_function__
+                            and not isinstance(arg.a, (ivy.Array, ivy.NativeArray))
+                        ):
+                            index = len(overloaded_args)
+                            for i, old_arg in enumerate(overloaded_args):
+                                if issubclass(type(arg.a), type(old_arg)):
+                                    index = i
+                                    break
+                            overloaded_args.insert(index, arg)
+
+        success, value = try_array_function_override(
+            ivy.__dict__[func.__name__], overloaded_args, overloaded_types, args, kwargs
+        )
+        if success:
+            return value
+        return func(*args, **kwargs)
+
+    new_func.array_function_wrapper = True
+    return new_func
 
 
 def handle_array_like_without_promotion(fn: Callable) -> Callable:
