@@ -530,7 +530,7 @@ def multi_dot(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     n = len(tensors)
-    if n == 0 or tensors[0].dim() not in [1,2] or tensors[-1].dim() not in [1, 2]:
+    if n == 0 or tensors[0].dim() not in [1, 2] or tensors[-1].dim() not in [1, 2]:
         ret = torch.tensor([])
         if ivy.exists(out):
             return ivy.inplace_update(out, ret)
@@ -544,7 +544,7 @@ def multi_dot(
             return ret
 
     for i in range(n):
-        for j in range(i+1:n):
+        for j in range(i+1, n):
             tensor[i], tensor[j] = ivy.promote_types_of_inputs(tensor[i], tensor[j])
 
     return torch.multi_dot(tensors, out=out)
