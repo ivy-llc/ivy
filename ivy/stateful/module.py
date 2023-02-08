@@ -3,7 +3,6 @@
 # global
 import os
 import abc
-import ivy.functional.backends.numpy
 
 # local
 import ivy
