@@ -31,7 +31,7 @@ def general_pool(
     elif isinstance(padding, tuple) and len(padding) == 1:
         padding = [(padding[0],) * 2] * dim
     elif isinstance(padding, tuple) and len(padding) == 2:
-        padding = [(padding[0],) * 2, (padding[1]) * 2]
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
 
     if isinstance(padding, (tuple, list)):
         ivy.assertions.check_kernel_padding_size(window_shape, padding)
