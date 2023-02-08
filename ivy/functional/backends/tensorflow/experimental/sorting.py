@@ -36,4 +36,4 @@ def lexsort(
         ind = tf.gather(key, result)
         temp = tf.argsort(ind, axis=axis, stable=True)
         result = tf.gather(result, temp)
-    return result
+    return tf.cast(result, tf.int64)
