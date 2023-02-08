@@ -235,3 +235,49 @@ def corrcoef(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def average(
+    a: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+
+    """Computes the average of all elements along the specified dimensions.
+
+    Parameters
+    ----------
+    a
+        Input array.
+    axis
+        Axis or axes along which the average are computed.
+
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original a.
+    dtype
+        The desired data type of returned tensor. Default is None.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The average of the array elements.
+
+    Functional Examples
+    -------------------
+    >>> a = ivy.array([[1, 9], [3, 4]])
+    >>> ivy.average(a)
+    ivy.array(4.25)
+    """
+    return ivy.current_backend(a).nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
