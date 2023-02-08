@@ -66,9 +66,9 @@ import ivy.compiler.compiler as ic
 
 
 # Temporary (.so) configuration
-def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
+def compiled_if_required(fn, test_compile=True, args=None, kwargs=None):
     if test_compile:
-        return ic.compile(fn, args=args, kwargs=kwargs)
+        comp_fn = ic.compile(fn,*args,kwargs) #no need to run retrun just testing compilation. (temp)
     return fn
 
 
