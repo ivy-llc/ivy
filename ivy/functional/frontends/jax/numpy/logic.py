@@ -149,6 +149,11 @@ def invert(x, /):
 
 
 @to_ivy_arrays_and_back
+def isfinite(x, /):
+    return ivy.isfinite(x)
+
+
+@to_ivy_arrays_and_back
 def isinf(x, /):
     return ivy.isinf(x)
 
