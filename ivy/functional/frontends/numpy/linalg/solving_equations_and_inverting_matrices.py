@@ -4,7 +4,7 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
-
+from ivy.functional.frontends.numpy.linalg.norms_and_other_numbers import matrix_rank
 
 # solve
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
@@ -46,21 +46,13 @@ def tensorinv(a, ind=2):
     return ivy.reshape(ia, shape=new_shape)
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 def lstsq(a, b, rcond='warn'):
-    solution = ivy.matmul(ivy.pinv(a), b)
-
+    solution = ivy.matmul(ivy.pinv(a, rtol=1e-15).astype(ivy.float64), b.astype(ivy.float64))
     svd = ivy.svd(a, compute_uv=False)
-    if a.ndim < 2:
-        rank = int(not all(a == 0))
-    else:
-        S = svd[0]
-        tol = S.max() * max(a.shape) * ivy.finfo(S.dtype).eps
-        rank = ivy.count_nonzero(S > tol, axis=-1).astype(ivy.int64)
-    residuals = ivy.sum((b - ivy.matmul(a, solution))**2)
-    print("*" * 10)
-    print([solution, residuals, rank, svd[0]])
-    print("-" * 10)
-    return [solution, residuals, rank, svd[0]]
+    rank = matrix_rank(a).astype(ivy.int32)
+    residuals = ivy.sum((b - ivy.matmul(a, solution))**2).astype(ivy.float64)
+    return (solution, residuals, rank, svd[0])
 
 
 
