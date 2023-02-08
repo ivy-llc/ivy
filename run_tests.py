@@ -75,14 +75,17 @@ def run_multiversion_testing(failed):
     with open("tests_to_run", "r") as f:
         for line in f:
             test, frontend, backend = line.split(",")
+            frontend, backend = frontend.split("=")[1], backend.split("=")[1].replace(
+                ":", ","
+            )
+            print(test, frontend, backend)
         ret = os.system(
             f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend={backend}'  # noqa
         )
         if ret != 0:
-            failed = True
-
-        if failed:
             exit(1)
+        else:
+            exit(0)
 
 
 if __name__ == "__main__":
@@ -90,7 +93,8 @@ if __name__ == "__main__":
     redis_pass = sys.argv[2]
     mongo_key = sys.argv[3]
     version_flag = sys.argv[4]
-    if len(sys.argv) > 4:
+    if len(sys.argv) > 5:
+        print(f"Job URL available -: {sys.argv}")
         run_id = sys.argv[5]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/"

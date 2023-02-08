@@ -256,3 +256,61 @@ class ArrayWithStatisticalExperimental(abc.ABC):
                        [-1., nan,  1.]])
         """
         return ivy.corrcoef(self._data, y=y, rowvar=rowvar, out=out)
+
+    def nanmedian(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        overwrite_input: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.nanmedian. This method simply
+        wraps the function, and so the docstring for ivy.nanmedian also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which the means are computed.
+            The default is to compute the mean of the flattened array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a. If the value is anything but the default,
+            then keepdims will be passed through to the mean or sum methods of
+            sub-classes of ndarray. If the sub-classes methods does not implement
+            keepdims any exceptions will be raised.
+        overwrite_input
+            If True, then allow use of memory of input array a for calculations.
+            The input array will be modified by the call to median. This will
+            save memory when you do not need to preserve the contents of the input array.
+            Treat the input as undefined, but it will probably be fully or partially sorted.
+            Default is False. If overwrite_input is True and a is not already an ndarray,
+            an error will be raised.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            A new array holding the result. If the input contains integers
+
+        Examples
+        >>> a = ivy.Array([[10.0, ivy.nan, 4], [3, 2, 1]])
+        >>> a.nanmedian(a)
+            3.0
+        >>> a.nanmedian(a, axis=0)
+            array([6.5, 2. , 2.5])
+        """
+
+        return ivy.nanmedian(
+            self._data,
+            axis=axis,
+            keepdims=keepdims,
+            overwrite_input=overwrite_input,
+            out=out,
+        )
