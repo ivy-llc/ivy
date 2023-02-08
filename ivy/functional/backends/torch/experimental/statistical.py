@@ -119,6 +119,7 @@ def corrcoef(
 
     return torch.corrcoef(xarr)
 
+
 def nanmedian(
     input: torch.tensor,
     /,
@@ -128,4 +129,6 @@ def nanmedian(
     overwrite_input: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-    return torch.nanmedian(input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out)
+    return torch.nanmedian(
+        input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+    )

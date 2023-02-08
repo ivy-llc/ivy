@@ -725,7 +725,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-    )
+        )
 
     def nanmedian(
         self: ivy.Container,
@@ -735,7 +735,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         keepdims: Optional[bool] = False,
         overwrite_input: Optional[bool] = False,
         out: Optional[ivy.Container] = None,
-        ) -> ivy.Container:
+    ) -> ivy.Container:
         """ivy.Array instance method variant of ivy.nanmedian. This method simply
         wraps the function, and so the docstring for ivy.nanmedian also applies to
         this method with minimal changes.
@@ -777,5 +777,6 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             array([6.5, 2. , 2.5])
         """
 
-        return self.static_nanmedian(self, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out)
-
+        return self.static_nanmedian(
+            self, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+        )
