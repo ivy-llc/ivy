@@ -169,6 +169,16 @@
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.backend_handler.convert_from_numpy_to_target_backend">
+<span class="sig-prename descclassname"><span class="pre">ivy.backend_handler.</span></span><span class="sig-name descname"><span class="pre">convert_from_numpy_to_target_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numpy_objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/backend_handler.html#convert_from_numpy_to_target_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.backend_handler.convert_from_numpy_to_target_backend" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.backend_handler.convert_from_source_backend_to_numpy">
+<span class="sig-prename descclassname"><span class="pre">ivy.backend_handler.</span></span><span class="sig-name descname"><span class="pre">convert_from_source_backend_to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numpy_objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/backend_handler.html#convert_from_source_backend_to_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.backend_handler.convert_from_source_backend_to_numpy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.backend_handler.current_backend">
 <span class="sig-prename descclassname"><span class="pre">ivy.backend_handler.</span></span><span class="sig-name descname"><span class="pre">current_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/backend_handler.html#current_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.backend_handler.current_backend" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the current backend. Priorities:
@@ -250,15 +260,16 @@ returns the Ivy backend associated with the current globally set backend.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy_jax</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy_jax</span><span class="p">)</span>
-<span class="go">&lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;   </span>
+<span class="go">&lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.backend_handler.set_backend">
-<span class="sig-prename descclassname"><span class="pre">ivy.backend_handler.</span></span><span class="sig-name descname"><span class="pre">set_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/backend_handler.html#set_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.backend_handler.set_backend" title="Permalink to this definition"></a></dt>
-<dd><p>Sets <cite>backend</cite> to be the global backend.</p>
+<span class="sig-prename descclassname"><span class="pre">ivy.backend_handler.</span></span><span class="sig-name descname"><span class="pre">set_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/backend_handler.html#set_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.backend_handler.set_backend" title="Permalink to this definition"></a></dt>
+<dd><p>Sets <cite>backend</cite> to be the global backend.
+Will also convert all Array and Container objects     to the new backend if <cite>dynamic</cite> = True</p>
 <p class="rubric">Examples</p>
 <p>If we set the global backend to be numpy, then subsequent calls to ivy functions
 will be called from Ivy’s numpy backend:</p>

@@ -395,7 +395,7 @@
                 <span class="c1"># noinspection PyUnresolvedReferences</span>
                 <span class="n">params_hk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_native_module</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">RNG</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="n">params_dict</span> <span class="o">=</span> <span class="n">_hk_flat_map_to_dict</span><span class="p">(</span><span class="n">params_hk</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_hk_params</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">params_dict</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hk_params</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">params_dict</span><span class="p">,</span> <span class="n">dynamic_backend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="n">param_iterator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hk_params</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">()</span>
                 <span class="n">_</span><span class="p">,</span> <span class="n">param0</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">param_iterator</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="n">param0</span><span class="o">.</span><span class="n">device</span><span class="p">())</span>
@@ -499,7 +499,8 @@
                                 <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_native_module</span><span class="o">.</span><span class="n">variables</span>
                             <span class="p">]</span>
                         <span class="p">)</span>
-                    <span class="p">)</span>
+                    <span class="p">),</span>
+                    <span class="n">dynamic_backend</span><span class="o">=</span><span class="kc">False</span>
                 <span class="p">)</span>
 
             <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
@@ -605,7 +606,8 @@
                                 <span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                             <span class="p">]</span>
                         <span class="p">)</span>
-                    <span class="p">)</span>
+                    <span class="p">),</span>
+                    <span class="n">dynamic_backend</span><span class="o">=</span><span class="kc">False</span>
                 <span class="p">)</span>
 
             <span class="nd">@staticmethod</span>

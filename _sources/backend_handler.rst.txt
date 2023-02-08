@@ -16,6 +16,8 @@ Backend handler
    backend_handler/fn_name_from_version_specific_fn_name.rst
    backend_handler/set_backend_to_specific_version.rst
    backend_handler/current_backend.rst
+   backend_handler/convert_from_source_backend_to_numpy.rst
+   backend_handler/convert_from_numpy_to_target_backend.rst
    backend_handler/set_backend.rst
    backend_handler/set_numpy_backend.rst
    backend_handler/set_jax_backend.rst

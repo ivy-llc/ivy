@@ -219,7 +219,7 @@
     <span class="n">ArrayWithStatisticalExperimental</span><span class="p">,</span>
     <span class="n">ArrayWithUtilityExperimental</span><span class="p">,</span>
 <span class="p">):</span>
-<div class="viewcode-block" id="Array.__init__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="Array.__init__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dynamic_backend</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">ArrayWithActivations</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">ArrayWithCreation</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">ArrayWithDataTypes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -259,9 +259,9 @@
         <span class="n">ArrayWithSortingExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
         <span class="n">ArrayWithStatisticalExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
         <span class="n">ArrayWithUtilityExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dynamic_backend</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dynamic_backend</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
         <span class="k">else</span><span class="p">:</span>
@@ -282,9 +282,46 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_post_repr</span> <span class="o">=</span> <span class="s2">&quot;)&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">dynamic_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_backend</span> <span class="o">=</span> <span class="n">dynamic_backend</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_backend</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_dynamic_backend</span><span class="p">()</span>
 
     <span class="c1"># Properties #</span>
     <span class="c1"># ---------- #</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dynamic_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_backend</span>
+
+    <span class="nd">@dynamic_backend</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dynamic_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">ivy.functional.ivy.gradients</span> <span class="kn">import</span> <span class="n">_variable</span>
+        <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">_determine_backend_from_args</span>
+
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_backend</span> <span class="o">=</span> <span class="n">_determine_backend_from_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">is_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend</span><span class="o">.</span><span class="n">is_variable</span>
+            <span class="n">to_numpy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend</span><span class="o">.</span><span class="n">to_numpy</span>
+            <span class="n">variable_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend</span><span class="o">.</span><span class="n">variable_data</span>
+
+            <span class="k">if</span> <span class="n">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="ow">and</span> \
+                    <span class="ow">not</span> <span class="p">(</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend</span><span class="p">)</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">)</span> <span class="ow">or</span>
+                          <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend</span><span class="p">)</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
+                    <span class="p">):</span>
+                <span class="n">native_data</span> <span class="o">=</span> <span class="n">variable_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">np_data</span> <span class="o">=</span> <span class="n">to_numpy</span><span class="p">(</span><span class="n">native_data</span><span class="p">)</span>
+                <span class="n">new_arr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np_data</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">_variable</span><span class="p">(</span><span class="n">new_arr</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">np_data</span> <span class="o">=</span> <span class="n">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np_data</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_backend</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">:</span>
