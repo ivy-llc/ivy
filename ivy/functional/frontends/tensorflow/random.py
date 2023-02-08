@@ -28,4 +28,3 @@ def normal(shape, mean=0.0, stddev=1.0, dtype=ivy.float32, seed=None, name=None)
 @to_ivy_arrays_and_back
 def shuffle(value, seed=None):
     return ivy.shuffle(value, seed=seed)
-
