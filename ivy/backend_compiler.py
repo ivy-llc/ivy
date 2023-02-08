@@ -342,6 +342,10 @@ def _ivy_import_module(name, package=None):
     return module
 
 
+# We shouldn't be able to set the backend on a local Ivy
+modules_to_remove = ["backend_handler"]
+
+
 def with_backend(backend: str):
     sys.meta_path.insert(0, FINDER)
     ivy_pack = _ivy_import_module("ivy")
@@ -354,7 +358,14 @@ def with_backend(backend: str):
         ivy_pack.set_global_attr("RNG", ivy_pack.functional.backends.jax.random.RNG)
     # We know for sure that the backend stack is empty, no need to do backend unsetting
     _set_backend_as_ivy(ivy_pack, backend_module)
-    # TODO remove access to global stuff
+    # Remove access to specific modules on local Ivy
+    for module in modules_to_remove:
+        for fn in inspect.getmembers(ivy_pack.__dict__[module], inspect.isfunction):
+            if fn[1].__module__ != module:
+                continue
+            if hasattr(ivy_pack, fn[0]):
+                del ivy_pack.__dict__[fn[0]]
+        del ivy_pack.__dict__[module]
     sys.meta_path.remove(FINDER)
     _clear_cache()
     return ivy_pack
