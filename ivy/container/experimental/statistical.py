@@ -699,12 +699,14 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             correctly against the original a.
         dtype
             The desired data type of returned tensor. Default is None.
+
         out
             optional output array, for writing the result to.
 
         Returns
         -------
         ret
+
             The average of the array elements in the container.
 
         """
@@ -720,6 +722,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
 
     def average(
             self: ivy.Container,
@@ -746,6 +749,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             correctly against the original a.
         dtype
             The desired data type of returned tensor. Default is None.
+
         out
             optional output array, for writing the result to.
 
@@ -756,7 +760,6 @@ class ContainerWithStatisticalExperimental(ContainerBase):
 
         Examples
         --------
-#        >>> a = ivy.Container(x=ivy.array([[1, ivy.nan], [3, 4]]), y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]]))
         >>> a = ivy.Container(x=ivy.array([[1, 9], [3, 4]]), y=ivy.array([[9, 1, 2], [1, 2, 3]]))
         >>> a.average()
         {
@@ -767,4 +770,5 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         return self.static_average(
             self, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
+
 
