@@ -49,10 +49,9 @@ def x_and_filters(
         )
     )
     if fold or unfold:
-        kernel_shape = draw(st.one_of(
-            st.just(filter_shape),
-            st.integers(min_value=1, max_value=5),
-        ))
+        kernel_shape = filter_shape
+        if len(set(kernel_shape)) == 1:  # integer kernel shapes are also supported
+            kernel_shape = kernel_shape[0]
     dtype = draw(helpers.get_dtypes("float", full=False))
     input_channels = draw(st.integers(1, 3))
     output_channels = draw(st.integers(1, 3))
