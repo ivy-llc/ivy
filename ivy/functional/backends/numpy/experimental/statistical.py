@@ -72,3 +72,16 @@ def corrcoef(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
+
+def average(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.average(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+
+
