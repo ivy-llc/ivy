@@ -69,3 +69,15 @@ def corrcoef(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.corrcoef(x, y=y, rowvar=rowvar)
+
+def average(
+    a: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.average(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+
