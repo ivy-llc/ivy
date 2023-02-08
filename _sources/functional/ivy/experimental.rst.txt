@@ -84,6 +84,7 @@ Experimental
    experimental/unravel_index.rst
    experimental/quantile.rst
    experimental/corrcoef.rst
+   experimental/nanmedian.rst
    experimental/binary_cross_entropy_with_logits.rst
    experimental/sinc.rst
    experimental/lcm.rst
