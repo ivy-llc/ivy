@@ -248,7 +248,7 @@ class ModuleConverters:
                 # noinspection PyUnresolvedReferences
                 params_hk = self._native_module.init(RNG, *args, **kwargs)
                 params_dict = _hk_flat_map_to_dict(params_hk)
-                self._hk_params = ivy.Container(params_dict)
+                self._hk_params = ivy.Container(params_dict, dynamic_backend=False)
                 param_iterator = self._hk_params.cont_to_iterator()
                 _, param0 = next(param_iterator)
                 self._dev = ivy.as_ivy_dev(param0.device())
@@ -352,7 +352,8 @@ class ModuleConverters:
                                 for param in self._native_module.variables
                             ]
                         )
-                    )
+                    ),
+                    dynamic_backend=False
                 )
 
             def _forward(self, *a, **kw):
@@ -458,7 +459,8 @@ class ModuleConverters:
                                 ).items()
                             ]
                         )
-                    )
+                    ),
+                    dynamic_backend=False
                 )
 
             @staticmethod
