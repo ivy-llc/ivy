@@ -256,8 +256,9 @@ class ArrayWithStatisticalExperimental(abc.ABC):
                        [-1., nan,  1.]])
         """
         return ivy.corrcoef(self._data, y=y, rowvar=rowvar, out=out)
-    
+   
      def average(
+     
         self: ivy.Array,
         /,
         *,
@@ -279,6 +280,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         keepdims
             If this is set to True, the axes which are reduced are left in the result
             as dimensions with size one.
+
         out
             optional output array, for writing the result to.
 
@@ -294,5 +296,3 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         ivy.array(4.25)
         """
         return ivy.average(self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
-
-

@@ -96,16 +96,23 @@ def _get_ivy_numpy(version=None):
 def _get_ivy_jax(version=None):
     """Import JAX module from ivy"""
     if version:
-        config.allow_global_framework_imports(
-            fw=[version.split("/")[0] + "/" + version.split("/")[1]]
-        )
-        config.allow_global_framework_imports(
-            fw=[version.split("/")[2] + "/" + version.split("/")[3]]
-        )
-    try:
-        import ivy.functional.backends.jax
-    except ImportError:
-        return None
+        las = [
+            version.split("/")[0] + "/" + version.split("/")[1],
+            version.split("/")[2] + "/" + version.split("/")[3],
+        ]
+        config.allow_global_framework_imports(fw=las)
+        try:
+            config.reset_sys_modules_to_base()
+            import ivy.functional.backends.jax
+
+            return ivy.functional.backends.jax
+        except ImportError as e:
+            raise e
+    else:
+        try:
+            import ivy.functional.backends.jax
+        except ImportError:
+            return None
     return ivy.functional.backends.jax
 
 
@@ -169,8 +176,9 @@ def _set_frontend(framework: str):
     global CURRENT_FRONTEND
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    if "/" in framework:
-        CURRENT_FRONTEND = FWS_DICT[framework.split("/")[0]]
+    if isinstance(framework, list):
+
+        CURRENT_FRONTEND = FWS_DICT[framework[0].split("/")[0]]
     else:
         CURRENT_FRONTEND = FWS_DICT[framework]
 

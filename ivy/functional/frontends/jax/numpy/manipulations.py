@@ -124,5 +124,15 @@ def atleast_3d(*arys):
 
 
 @to_ivy_arrays_and_back
+def atleast_1d(*arys):
+    return ivy.atleast_1d(*arys)
+
+
+@to_ivy_arrays_and_back
 def atleast_2d(*arys):
     return ivy.atleast_2d(*arys)
+
+
+@to_ivy_arrays_and_back
+def squeeze(a, axis=None):
+    return ivy.squeeze(a, axis)
