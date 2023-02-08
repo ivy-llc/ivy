@@ -1364,7 +1364,7 @@ def test_tensorflow_reverse(
     input_dtype, x = dtype_and_x,
     axis_dtype, axis = dtype_and_axis
     helpers.test_frontend_function(
-        input_dtypes=["uint8", "int32", "int64"],
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
