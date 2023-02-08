@@ -547,10 +547,7 @@ def multi_dot(
         for j in range(i+1:n):
             tensor[i], tensor[j] = ivy.promote_types_of_inputs(tensor[i], tensor[j])
 
-    ret = torch.multi_dot(tensors, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return torch.multi_dot(tensors, out=out)
 
 
 multi_dot.support_native_out = True

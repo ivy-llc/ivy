@@ -2595,3 +2595,14 @@ def vector_to_skew_symmetric_matrix(
 
     """
     return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
+
+
+@handle_out_argument
+@handle_nestable
+def multi_dot(
+    tensors: Union[List[ivy.Array], List[ivy.NativeArray]], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Given list of matrices
+    
+    """
+    return current_backend(tensors).multi_dot(tensors, out=out)
