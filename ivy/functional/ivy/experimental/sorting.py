@@ -82,7 +82,7 @@ def lexsort(
     Returns
     -------
     ret
-        array of integer indices with shape N, that sort the keys.
+        array of integer(type int64) indices with shape N, that sort the keys.
 
     Examples
     --------
