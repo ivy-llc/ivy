@@ -277,9 +277,57 @@ def test_torch_conv_tranpose1d(
     )
 
 
+@st.composite
+def _unfold_helper(draw, dim=2):
+    strides = draw(
+        st.one_of(
+            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=3),
+        )
+    )
+    dilations = draw(
+        st.one_of(
+            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=3),
+        )
+    )
+    padding = draw(
+        st.one_of(
+            st.integers(min_value=1, max_value=3),
+            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+        )
+    )
+    kernel_shape = draw(
+        st.one_of(
+            st.integers(min_value=1, max_value=5),
+            helpers.get_shape(
+                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
+            )
+        )
+    )
+    full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
+    full_kernel_shape = [kernel_shape] * dim if isinstance(kernel_shape, int) else kernel_shape
+    x_dim = []
+    for i in range(dim):
+        min_x = full_kernel_shape[i] + (full_kernel_shape[i] - 1) * (full_dilations[i] - 1)
+        x_dim.append(draw(st.integers(min_x, 15)))
+    batch_size = draw(st.integers(1, 5))
+    input_channels = draw(st.integers(1, 3))
+    x_shape = (batch_size, input_channels) + tuple(x_dim)
+    dtype, [vals] = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=x_shape,
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+    return dtype, vals, kernel_shape, dilations, strides, padding
+
+
 @handle_frontend_test(
     fn_tree="torch.nn.functional.unfold",
-    dtype_vals=x_and_filters(dim=2, unfold=True),
+    dtype_vals=_unfold_helper(),
 )
 def test_torch_unfold(
     *,
