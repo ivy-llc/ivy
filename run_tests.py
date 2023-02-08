@@ -90,7 +90,8 @@ if __name__ == "__main__":
     redis_pass = sys.argv[2]
     mongo_key = sys.argv[3]
     version_flag = sys.argv[4]
-    if len(sys.argv) > 4:
+    if len(sys.argv) > 5:
+        print(f"Job URL available -: {sys.argv}")
         run_id = sys.argv[5]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/"
