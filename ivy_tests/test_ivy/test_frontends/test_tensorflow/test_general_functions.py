@@ -1344,9 +1344,11 @@ def axis_helper(draw):
             min_num_dims=1, max_num_dims=1
         )
     )
-    dtypeaxis, axis = helpers.dtype_and_values(
-        shape=shape,
-        dtype=["int32"]
+    dtypeaxis, axis = draw(
+        helpers.dtype_and_values(
+            shape=shape,
+            dtype=["int32"]
+        )
     )
     return dtypeaxis, axis
 
