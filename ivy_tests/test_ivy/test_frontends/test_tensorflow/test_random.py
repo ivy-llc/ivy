@@ -95,7 +95,7 @@ def test_tensorflow_normal(
 # random_shuffle
 @handle_frontend_test(
     fn_tree="tensorflow.random.shuffle",
-    value=helpers.tf_tensor.ivy_array,
+    value=helpers.tf_tensor(array=[[1, 2], [3, 4], [5, 6]]).ivy_array,
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=10),
     test_with_out=st.just(False),
