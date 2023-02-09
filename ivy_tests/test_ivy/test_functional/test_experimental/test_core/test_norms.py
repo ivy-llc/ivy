@@ -47,7 +47,7 @@ def test_l2_normalize(
         returndtype=True,
         force_int_axis=True,
     ),
-    p=st.integers(min_value=1, max_value=2),
+    p=st.floats(min_value=0.1, max_value=2),
     test_gradients=st.just(False),
 )
 def test_lp_normalize(
@@ -68,8 +68,6 @@ def test_lp_normalize(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        rtol_=1e-1,
-        atol_=1e-1,
         x=x[0],
         axis=axis,
         p=p,

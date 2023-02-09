@@ -70,7 +70,9 @@ def instance_norm(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, backend_version)
-def lp_normalize(x: JaxArray, /, *, p: int = 2, axis: int = None, out=None) -> JaxArray:
+def lp_normalize(
+    x: JaxArray, /, *, p: float = 2, axis: int = None, out=None
+) -> JaxArray:
     if axis is None:
         denorm = jnp.linalg.norm(x.flatten(), axis=axis, ord=p)
     else:

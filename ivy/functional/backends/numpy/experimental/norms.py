@@ -68,7 +68,7 @@ def instance_norm(
 
 
 def lp_normalize(
-    x: np.ndarray, /, *, p: int = 2, axis: int = None, out=None
+    x: np.ndarray, /, *, p: float = 2, axis: int = None, out=None
 ) -> np.ndarray:
     if axis is None:
         denorm = np.linalg.norm(x.flatten(), axis=axis, ord=p)

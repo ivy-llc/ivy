@@ -150,7 +150,7 @@ def lp_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    p: int,
+    p: float,
     axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
