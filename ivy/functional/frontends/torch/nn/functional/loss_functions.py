@@ -152,6 +152,19 @@ def cosine_embedding_loss(
         norm_mm, eps = torch_frontend.promote_types_of_torch_inputs(norm_mm, 1e-08)
         return ivy.sum(x1 * x2, axis=axis) / ivy.maximum(norm_mm, eps)
 
+    def calculate_loss(x1, x2, target):
+        cos = cosine_similarity(x1, x2)
+        if target == ivy.array(1.0):
+            loss = 1.0 - cos
+        elif target == ivy.array(-1.0):
+            loss = ivy.maximum(ivy.array(0.0), cos - ivy.array(margin))
+        else:
+            _, zero = torch_frontend.promote_types_of_torch_inputs(input1,
+                                                                   ivy.array(0.0))
+            return zero
+
+        return loss
+
     ivy.assertions.check_true(
         target.ndim + 1 == input1.ndim and target.ndim + 1 == input2.ndim,
         "{}D target tensor expects {}D input tensors, but "
@@ -175,27 +188,11 @@ def cosine_embedding_loss(
                 target.shape[0], input1.shape[0])
         )
 
-    def calculate_loss(cosine_similarity, target):
-        if target == ivy.array(1.0):
-            loss = 1.0 - cosine_similarity
-        elif target == ivy.array(-1.0):
-            loss = ivy.maximum(ivy.array(0.0), cosine_similarity - ivy.array(margin))
-        else:
-            _, zero = torch_frontend.promote_types_of_torch_inputs(input1, ivy.array(0.0))
-            return zero
-
-        return loss
-
     if target.ndim == 0:
-        cos = cosine_similarity(input1, input2)
-        loss = calculate_loss(cos, target)
+        loss = calculate_loss(input1, input2, target)
     else:
-        losses = []
-        for i in range(input1.shape[0]):
-            cos = cosine_similarity(input1[i], input2[i])
-            sample_loss = ivy.array(calculate_loss(cos, target[i]))
-            losses.append(sample_loss)
-        loss = ivy.array(losses)
+        loss = ivy.array([calculate_loss(input1[i], input2[i], target[i])
+                          for i in range(input1.shape[0])])
 
     reduction = _get_reduction(reduction, size_average, reduce)
     loss = reduction(loss)
