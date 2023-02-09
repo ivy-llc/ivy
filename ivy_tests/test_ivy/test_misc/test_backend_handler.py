@@ -27,8 +27,7 @@ import numpy as np
 import ivy
 from ivy.backend_handler import _backend_dict
 
-from ivy_tests.test_ivy.helpers.available_frameworks \
-    import available_frameworks
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
 available_frameworks_with_none = available_frameworks()[:]
 available_frameworks_with_none.append(None)
@@ -99,18 +98,11 @@ def test_unset_backend(backend):
     unset_backend = ivy.unset_backend()
     stack_after_unset = ivy.backend_stack
     # check that the function id has changed as inverse=True.
-    ivy.assertions.check_equal(
-        func_address_before_unset,
-        id(ivy.sum),
-        inverse=True
-    )
+    ivy.assertions.check_equal(func_address_before_unset, id(ivy.sum), inverse=True)
     ivy.assertions.check_equal(
         unset_backend, importlib.import_module(_backend_dict[backend])
     )
-    ivy.assertions.check_greater(
-        len(stack_before_unset),
-        len(stack_after_unset)
-    )
+    ivy.assertions.check_greater(len(stack_before_unset), len(stack_after_unset))
 
     # checking a previously set backend is still set
     ivy.set_backend(backend)
@@ -228,35 +220,34 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
         assert isinstance(a.data, tf.Tensor)
 
     if end_backend == "numpy":
-        assert isinstance(ivy_cont['b'].data, np.ndarray)
+        assert isinstance(ivy_cont["b"].data, np.ndarray)
     elif end_backend == "torch":
-        assert isinstance(ivy_cont['b'].data, torch.Tensor)
+        assert isinstance(ivy_cont["b"].data, torch.Tensor)
     elif end_backend == "jax":
-        assert isinstance(ivy_cont['b'].data, jax.interpreters.xla.DeviceArray)
+        assert isinstance(ivy_cont["b"].data, jax.interpreters.xla.DeviceArray)
     elif end_backend == "tensorflow":
-        assert isinstance(ivy_cont['b'].data, tf.Tensor)
+        assert isinstance(ivy_cont["b"].data, tf.Tensor)
 
     if end_backend == "numpy":
-        assert isinstance(nativ_cont['b'].data, np.ndarray)
+        assert isinstance(nativ_cont["b"].data, np.ndarray)
     elif end_backend == "jax":
-        assert isinstance(
-            nativ_cont['b'].data,
-            jax.interpreters.xla.DeviceArray
-        )
+        assert isinstance(nativ_cont["b"].data, jax.interpreters.xla.DeviceArray)
 
     if middle_backend not in ("jax", "numpy"):
         # these frameworks don't support native variables
         if end_backend == "torch":
-            assert isinstance(nativ_cont['b'].data, torch.Tensor) \
-                   and nativ_cont['b'].data.requires_grad is True
+            assert (
+                isinstance(nativ_cont["b"].data, torch.Tensor)
+                and nativ_cont["b"].data.requires_grad is True
+            )
         if end_backend == "tensorflow":
-            assert isinstance(nativ_cont['b'].data, tf.Variable)
+            assert isinstance(nativ_cont["b"].data, tf.Variable)
 
     else:
         if end_backend == "torch":
-            assert isinstance(nativ_cont['b'].data, torch.Tensor)
+            assert isinstance(nativ_cont["b"].data, torch.Tensor)
         if end_backend == "tensorflow":
-            assert isinstance(nativ_cont['b'].data, tf.Tensor)
+            assert isinstance(nativ_cont["b"].data, tf.Tensor)
 
 
 def test_dynamic_backend_setter():
@@ -293,8 +284,10 @@ def test_variables():
     stat_cont.dynamic_backend = False
 
     ivy.set_backend("torch", dynamic=True)
-    assert isinstance(dyn_cont["w"].data, torch.Tensor) and \
-           dyn_cont["w"].data.requires_grad is True
+    assert (
+        isinstance(dyn_cont["w"].data, torch.Tensor)
+        and dyn_cont["w"].data.requires_grad is True
+    )
 
     assert isinstance(stat_cont["w"], tf.Variable)
 
@@ -302,12 +295,12 @@ def test_variables():
 def test_dynamic_backend_context_manager():
 
     with ivy.dynamic_backend_as(True):
-        a = ivy.array([0., 1.])
-        b = ivy.array([2., 3.])
+        a = ivy.array([0.0, 1.0])
+        b = ivy.array([2.0, 3.0])
 
     with ivy.dynamic_backend_as(False):
-        c = ivy.array([4., 5.])
-        d = ivy.array([6., 7.])
+        c = ivy.array([4.0, 5.0])
+        d = ivy.array([6.0, 7.0])
 
     assert a.dynamic_backend is True
     assert b.dynamic_backend is True
