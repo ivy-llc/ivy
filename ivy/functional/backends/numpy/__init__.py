@@ -8,11 +8,13 @@ import ivy
 backend_version = {"version": np.__version__}
 
 # noinspection PyUnresolvedReferences
-if ivy.is_local():
+if not ivy.is_local():
     _module_in_memory = sys.modules[__name__]
 else:
     global_backend_compiler = sys.modules["ivy.backend_compiler"]
     _module_in_memory = global_backend_compiler.IMPORT_CACHE[__name__]
+
+use = ivy.backend_handler.ContextManager(_module_in_memory)
 
 NativeArray = np.ndarray
 NativeVariable = np.ndarray

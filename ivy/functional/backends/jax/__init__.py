@@ -30,7 +30,7 @@ if not ivy.is_local():
 
 
 # noinspection PyUnresolvedReferences
-if ivy.is_local():
+if not ivy.is_local():
     _module_in_memory = sys.modules[__name__]
 else:
     global_backend_compiler = sys.modules["ivy.backend_compiler"]

@@ -1102,7 +1102,7 @@ def unset_nan_policy():
 
 
 def is_local():
-    return not hasattr(ivy, "_is_local")
+    return hasattr(ivy, "_is_local")
 
 
 # Dynamic Backend
