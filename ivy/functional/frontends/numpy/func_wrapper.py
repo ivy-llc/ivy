@@ -52,7 +52,7 @@ def _assert_args_and_fn(args, kwargs, dtype, fn):
     )
 
 
-def _assert_no_scalar(args, dtype, extra_check=False):
+def _assert_no_scalar(args, dtype):
     if args:
         first_arg = args[0]
         ivy.assertions.check_all_or_any_fn(
@@ -73,7 +73,7 @@ def _assert_no_scalar(args, dtype, extra_check=False):
                 check_dtype,
                 message="type of input is incompatible with dtype {}".format(dtype),
             )
-            if extra_check and dtype not in ["float64", "int8", "int64", "uint8"]:
+            if dtype not in ["float64", "int8", "int64", "uint8"]:
                 if type(args[0]) == int:
                     ivy.assertions.check_elem_in_list(
                         dtype,
@@ -109,11 +109,11 @@ def _casting_no_special_case(dtype1, dtype):
 def _assert_args_casting_no(args, scalar_args, dtype):
     if dtype:
         _assert_no_array(args, dtype)
-        _assert_no_scalar(scalar_args, dtype, extra_check=(args and scalar_args))
+        _assert_no_scalar(scalar_args, dtype)
     else:
         check_dtype = args[0].dtype if args else None
         _assert_no_array(args, check_dtype)
-        _assert_no_scalar(scalar_args, check_dtype, extra_check=(args and scalar_args))
+        _assert_no_scalar(scalar_args, check_dtype)
 
 
 def handle_numpy_casting(fn: Callable) -> Callable:
@@ -156,7 +156,9 @@ def handle_numpy_casting(fn: Callable) -> Callable:
         if casting in ["no", "equiv"]:
             _assert_args_casting_no(args_to_check, args_scalar_to_check, dtype)
             # Todo: kwargs check, all bool combi
-        elif ivy.exists(dtype):
+        # elif casting in ["same_kind"]:
+        #     _assert_args_casting_same_kind(args_to_check, args_scalar_to_check, dtype)
+        if ivy.exists(dtype):
             assert_fn = None
             if casting == "safe":
                 assert_fn = lambda x: np_frontend.can_cast(x, ivy.as_ivy_dtype(dtype))
