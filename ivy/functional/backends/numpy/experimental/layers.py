@@ -94,6 +94,16 @@ def max_pool2d(
     elif len(dilation) == 1:
         dilation = [dilation[0]] * 2
 
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
+
+    if isinstance(padding, (tuple, list)):
+        ivy.assertions.check_kernel_padding_size(kernel, padding)
+
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
 
@@ -108,7 +118,7 @@ def max_pool2d(
         pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
         pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
         pad_list = [(pad_h // 2, pad_h - pad_h // 2), (pad_w // 2, pad_w - pad_w // 2)]
-
+    pad_list = list(pad_list)
     if ceil_mode:
         for i in range(2):
             pad_list[i] = ivy.padding_ceil_mode(

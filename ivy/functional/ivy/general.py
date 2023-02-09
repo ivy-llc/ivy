@@ -16,6 +16,7 @@ from ivy.backend_handler import current_backend, backend_stack
 from ivy.functional.ivy.gradients import _is_variable
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
+    handle_array_function,
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
     outputs_to_ivy_arrays,
@@ -513,6 +514,7 @@ def get_show_func_wrapper_trace_mode() -> bool:
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def array_equal(
     x0: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -559,6 +561,7 @@ def array_equal(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def all_equal(
     *xs: Iterable[Any], equality_matrix: bool = False
 ) -> Union[bool, ivy.Array, ivy.NativeArray]:
@@ -650,6 +653,7 @@ def all_equal(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def to_numpy(
     x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
 ) -> np.ndarray:
@@ -719,6 +723,7 @@ def isscalar(x: Any, /) -> bool:
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """Converts an array with a single element into a scalar.
 
@@ -773,6 +778,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """Creates a (possibly nested) list from input array.
 
@@ -843,6 +849,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
 @handle_nestable
 @outputs_to_ivy_arrays
 @handle_exceptions
+@handle_array_function
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -929,6 +936,7 @@ def clip_vector_norm(
 
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -1009,6 +1017,7 @@ def clip_matrix_norm(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
     max_freq: Union[float, ivy.Array, ivy.NativeArray],
@@ -1112,6 +1121,7 @@ def fourier_encode(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def value_is_nan(
     x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1171,6 +1181,7 @@ def value_is_nan(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def has_nans(
     x: Union[ivy.Array, ivy.NativeArray], /, *, include_infs: bool = True
 ) -> bool:
@@ -1677,6 +1688,7 @@ def current_backend_str() -> Union[str, None]:
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1800,6 +1812,7 @@ def einops_rearrange(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1869,6 +1882,7 @@ einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1949,6 +1963,7 @@ def get_min_denominator() -> float:
 
 
 @handle_exceptions
+@handle_array_function
 def set_min_denominator(val: float) -> None:
     """
     Set the global minimum denominator used by ivy for numerically stable division.
@@ -1995,6 +2010,7 @@ def get_min_base() -> float:
 
 
 @handle_exceptions
+@handle_array_function
 def set_min_base(val: float) -> None:
     """Set the global minimum base used by ivy for numerically stable power raising.
 
@@ -2022,6 +2038,7 @@ def set_min_base(val: float) -> None:
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def stable_divide(
     numerator: Union[Number, ivy.Array, ivy.NativeArray],
     denominator: Union[Number, ivy.Array, ivy.NativeArray],
@@ -2120,6 +2137,7 @@ def stable_divide(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def stable_pow(
     base: Union[Number, ivy.Array, ivy.NativeArray],
     exponent: Union[Number, ivy.Array, ivy.NativeArray],
@@ -2188,6 +2206,7 @@ def print_all_arrays_in_memory():
 
 
 @handle_exceptions
+@handle_array_function
 def set_queue_timeout(timeout: float):
     """
     Set the global queue timeout value (in seconds)
@@ -2358,6 +2377,7 @@ def inplace_variables_supported(f=None):
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
     Determines whether in-place operations are supported for x's data type,
@@ -2413,6 +2433,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """Asserts that inplace operations are supported for x, else raises exception.
 
@@ -2439,6 +2460,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @to_native_arrays_and_back
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_array_function
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     query: Union[ivy.Array, ivy.NativeArray, Tuple],
@@ -2478,6 +2500,7 @@ def get_item(
 @handle_nestable
 @handle_exceptions
 @inputs_to_ivy_arrays
+@handle_array_function
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2515,6 +2538,7 @@ inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 @handle_nestable
 @handle_exceptions
 @inputs_to_ivy_arrays
+@handle_array_function
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2584,6 +2608,7 @@ def inplace_decrement(
 @handle_nestable
 @handle_exceptions
 @inputs_to_ivy_arrays
+@handle_array_function
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2642,6 +2667,7 @@ def inplace_increment(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -2681,6 +2707,7 @@ def scatter_flat(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -2762,6 +2789,7 @@ def scatter_nd(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -2868,6 +2896,7 @@ def gather(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -2939,6 +2968,7 @@ def gather_nd(
 
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def multiprocessing(context: str = None):
     """Return backend-specific multiprocessing module.
 
@@ -2961,6 +2991,7 @@ def multiprocessing(context: str = None):
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> Union[ivy.Shape, ivy.NativeShape]:
@@ -3058,6 +3089,7 @@ def shape_array_mode() -> bool:
 @to_native_arrays_and_back
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_array_function
 def get_num_dims(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> int:
