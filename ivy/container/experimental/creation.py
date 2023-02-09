@@ -818,7 +818,7 @@ class ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_sequence_empty(
-        shape: Union[int, Sequence[int], ivy.Container],
+        shape: Union[ivy.NativeShape, Sequence[int], ivy.Container],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
