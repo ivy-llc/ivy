@@ -2,6 +2,12 @@ prelu
 =====
 
 .. autofunction:: ivy.functional.ivy.experimental.prelu
+
+.. autofunction:: ivy.array.array_methods.prelu
+
+.. autofunction:: ivy.container.container_methods.prelu
+
+.. autofunction:: ivy.container.container_methods.static_prelu
 |
 | **Supported Frameworks:**
 
@@ -18,3 +24,15 @@ prelu
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: prelu
+
+   prelu/prelu_functional.rst
+   prelu/prelu_array.rst
+   prelu/prelu_container.rst
+   prelu/static_prelu_container.rst
+

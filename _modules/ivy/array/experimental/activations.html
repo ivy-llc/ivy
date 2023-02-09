@@ -226,7 +226,36 @@
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([0., 0., 1.])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">thresholded_relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">thresholded_relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithActivationsExperimental.prelu"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithActivationsExperimental.prelu">[docs]</a>    <span class="k">def</span> <span class="nf">prelu</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">slope</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;ivy.Array&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prelu takes input data (Array) and slope array as input,</span>
+<span class="sd">        and produces one output data (array) where the function</span>
+<span class="sd">        f(x) = slope * x for x &lt; 0, f(x) = x for x &gt;= 0., is applied</span>
+<span class="sd">        to the data array elementwise. This operator supports unidirectional</span>
+<span class="sd">        broadcasting (array slope should be unidirectional broadcastable to</span>
+<span class="sd">        input tensor X);</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array.</span>
+<span class="sd">        slope</span>
+<span class="sd">            Slope Array. The shape of slope can be smaller then first input X;</span>
+<span class="sd">            if so, its shape must be unidirectional broadcastable to X.</span>
+<span class="sd">        out</span>
+<span class="sd">            Optional output array.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">prelu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
