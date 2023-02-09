@@ -1344,7 +1344,7 @@ def reverse_helper(draw,):
             available_dtypes=helpers.get_dtypes("numeric"),
             min_num_dims=1,
             max_num_dims=8,
-            ret_shape=True
+            ret_shape=True,
         )
     )
     axis_dtype, axis = draw(
