@@ -99,7 +99,11 @@ def _assert_same_kind_array(args, dtype, scalar_check=False):
             if ivy.is_int_dtype(dtype):
                 ivy.assertions.check_all_or_any_fn(
                     *args,
-                    fn=ivy.is_int_dtype,
+                    fn=lambda x: ivy.is_int_dtype(x)
+                    if ivy.shape(x) == ()
+                    else np_frontend.can_cast(
+                        x, ivy.as_ivy_dtype(dtype), casting="same_kind"
+                    ),
                     type="all",
                     message="type of input is incompatible with dtype: {}".format(
                         dtype
@@ -133,21 +137,20 @@ def _assert_safe_array(args, dtype, scalar_check=False):
                 message="type of input is incompatible with dtype: {}".format(dtype),
             )
         else:
-            assert_fn = None
+            assert_fn = lambda x: np_frontend.can_cast(x, ivy.as_ivy_dtype(dtype))
             if ivy.is_int_dtype(dtype):
                 assert_fn = lambda x: not ivy.is_float_dtype(x)
             elif ivy.is_bool_dtype(dtype):
                 assert_fn = ivy.is_bool_dtype
 
-            if assert_fn:
-                ivy.assertions.check_all_or_any_fn(
-                    *args,
-                    fn=assert_fn,
-                    type="all",
-                    message="type of input is incompatible with dtype: {}".format(
-                        dtype
-                    ),
-                )
+            ivy.assertions.check_all_or_any_fn(
+                *args,
+                fn=lambda x: assert_fn(x)
+                if ivy.shape(x) == ()
+                else np_frontend.can_cast(x, ivy.as_ivy_dtype(dtype)),
+                type="all",
+                message="type of input is incompatible with dtype: {}".format(dtype),
+            )
 
 
 def _assert_safe_scalar(args, dtype):
