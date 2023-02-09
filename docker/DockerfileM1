@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-WORKDIR /ivy
+WORKDIR /Users/ziad
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
@@ -18,15 +18,15 @@ RUN pip3 install torch==1.11.0 -f https://download.pytorch.org/whl/torch_stable.
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.11.0+cpu.html
 
 # Install Ivy Upstream
-RUN git clone --recurse-submodules https://github.com/ZiadAmerr/ivy ivy && \
-    cd ivy
-RUN cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin
-RUN cat requirements/optional_m1_1.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin
-RUN cat requirements/optional_m1_2.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin
+RUN git clone --recurse-submodules --depth 1 https://github.com/unifyai/ivy ivy && \
+    cd ivy && \
+    cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    cat requirements/optional_m1_1.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    cat requirements/optional_m1_2.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    python3 -m pip install --user -e . && \
+    cd ivy_tests/test_array_api && \
+    pip3 install --no-cache-dir -r requirements.txt
 
-RUN python3 -m pip install --user -e .
-RUN cd ivy_tests/test_array_api
-RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install local requirements
 COPY requirements/requirements.txt .
