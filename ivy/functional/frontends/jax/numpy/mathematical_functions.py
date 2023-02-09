@@ -228,6 +228,14 @@ def negative(
 
 
 @to_ivy_arrays_and_back
+def positive(
+    x,
+    /,
+):
+    return ivy.positive(x)
+
+
+@to_ivy_arrays_and_back
 def rad2deg(
     x,
     /,
@@ -419,4 +427,9 @@ def floor_divide(x1, x2, /, out=None):
 @to_ivy_arrays_and_back
 def prod(x, /, out=None):
     return ivy.prod(x, out=out)
+
+
+def inner(a, b):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.inner(a, b)
 
