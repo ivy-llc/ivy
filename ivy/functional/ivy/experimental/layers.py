@@ -867,38 +867,6 @@ def dft(
     return res
 
 
-# Helpers #
-
-
-def _output_ceil_shape(w, f, p, s):
-    return math.ceil((w - f + p) / s) + 1
-
-
-def padding_ceil_mode(w, f, p, s):
-    remaining_pixels = (w - f + sum(p)) % s
-    if s > 1 and remaining_pixels != 0 and f > 1:
-        input_size = w + sum(p)
-        # making sure that the remaining pixels are supposed
-        # to be covered by the window
-        # they won't be covered if stride is big enough to skip them
-        if input_size - remaining_pixels - (f - 1) + s > input_size:
-            return p
-        output_shape = _output_ceil_shape(
-            w,
-            f,
-            sum(p),
-            s,
-        )
-        # calculating new padding with ceil_output_shape
-        new_pad = (output_shape - 1) * s + f - w
-        # updating pad_list with new padding by adding it to the end
-        p = (
-            p[0],
-            p[1] + new_pad - sum(p),
-        )
-    return p
-
-
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1129,3 +1097,35 @@ def interpolate(
 
 
 interpolate.mixed_function = True
+
+
+# Helpers #
+
+
+def _output_ceil_shape(w, f, p, s):
+    return math.ceil((w - f + p) / s) + 1
+
+
+def padding_ceil_mode(w, f, p, s):
+    remaining_pixels = (w - f + sum(p)) % s
+    if s > 1 and remaining_pixels != 0 and f > 1:
+        input_size = w + sum(p)
+        # making sure that the remaining pixels are supposed
+        # to be covered by the window
+        # they won't be covered if stride is big enough to skip them
+        if input_size - remaining_pixels - (f - 1) + s > input_size:
+            return p
+        output_shape = _output_ceil_shape(
+            w,
+            f,
+            sum(p),
+            s,
+        )
+        # calculating new padding with ceil_output_shape
+        new_pad = (output_shape - 1) * s + f - w
+        # updating pad_list with new padding by adding it to the end
+        p = (
+            p[0],
+            p[1] + new_pad - sum(p),
+        )
+    return p
