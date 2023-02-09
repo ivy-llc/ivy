@@ -2232,9 +2232,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
     @staticmethod
     def static_diff(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        n: int = 1,
+        axis: int = -1,
+        prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+        append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2250,6 +2254,27 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ----------
         x
             input container with array-like items.
+        n
+            The number of times values are differenced. If zero, the input is returned
+            as-is.
+        axis
+            The axis along which the difference is taken, default is the last axis.
+        prepend,append
+            Values to prepend/append to x along given axis prior to performing the
+            difference. Scalar values are expanded to arrays with length 1 in the
+            direction of axis and the shape of the input array in along all other
+            axes. Otherwise the dimension and shape must match x except along axis.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to.
 
@@ -2261,17 +2286,21 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
-                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),
+                              b=ivy.array([1, 2, 4, 7, 0]))
         >>> ivy.Container.static_diff(x)
         {
-            a: ivy.array([ 1,  2,  3, -7])
+            a: ivy.array([ 1,  2,  3, -7]),
             b: ivy.array([ 1,  2,  3, -7])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
             "diff",
             x,
+            n=n,
+            axis=axis,
+            prepend=prepend,
+            append=append,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2283,6 +2312,10 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        n: int = 1,
+        axis: int = -1,
+        prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+        append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.diff. This method simply
@@ -2293,6 +2326,16 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ----------
         self
             input container with array-like items.
+        n
+            The number of times values are differenced. If zero, the input is returned
+            as-is.
+        axis
+            The axis along which the difference is taken, default is the last axis.
+        prepend,append
+            Values to prepend/append to x along given axis prior to performing the
+            difference. Scalar values are expanded to arrays with length 1 in the
+            direction of axis and the shape of the input array in along all other
+            axes. Otherwise the dimension and shape must match x except along axis.
         out
             optional output container, for writing the result to.
 
@@ -2304,15 +2347,17 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
-                               b=ivy.array([1, 2, 4, 7, 0]))
-        >>> ivy.Container.static_diff(x)
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),
+                              b=ivy.array([1, 2, 4, 7, 0]))
+        >>> x.diff()
         {
-            a: ivy.array([ 1,  2,  3, -7])
-            b: ivy.array([ 1,  2,  3, -7])
+            a: ivy.array([1, 2, 3, -7]),
+            b: ivy.array([1, 2, 3, -7])
         }
         """
-        return self.static_diff(self, out=out)
+        return self.static_diff(
+            self, n=n, axis=axis, prepend=prepend, append=append, out=out
+        )
 
     @staticmethod
     def static_fix(
