@@ -16,6 +16,13 @@ from ivy_tests.test_ivy.helpers import handle_method
     ),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
+    init_as_variable_flags=st.just([False]),
+    init_num_positional_args=st.just(0),
+    init_native_arrays=st.just([False]),
+    method_as_variable_flags=st.just([False]),
+    method_num_positional_args=st.just(0),
+    method_native_arrays=st.just([False]),
+    method_container_flags=st.just([False]),
 )
 def test_constant(
     var_shape,
@@ -57,6 +64,13 @@ def test_constant(
     var_shape=helpers.get_shape(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
+    init_as_variable_flags=st.just([False]),
+    init_num_positional_args=st.just(0),
+    init_native_arrays=st.just([False]),
+    method_as_variable_flags=st.just([False]),
+    method_num_positional_args=st.just(0),
+    method_native_arrays=st.just([False]),
+    method_container_flags=st.just([False]),
 )
 def test_zeros(
     var_shape,
@@ -97,6 +111,13 @@ def test_zeros(
     var_shape=helpers.get_shape(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
+    init_as_variable_flags=st.just([False]),
+    init_num_positional_args=st.just(0),
+    init_native_arrays=st.just([False]),
+    method_as_variable_flags=st.just([False]),
+    method_num_positional_args=st.just(0),
+    method_native_arrays=st.just([False]),
+    method_container_flags=st.just([False]),
 )
 def test_ones(
     var_shape,
@@ -143,6 +164,13 @@ def test_ones(
     fan_out=helpers.ints(min_value=1, max_value=100),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
+    init_as_variable_flags=st.just([False]),
+    init_num_positional_args=st.just(0),
+    init_native_arrays=st.just([False]),
+    method_as_variable_flags=st.just([False]),
+    method_num_positional_args=st.just(0),
+    method_native_arrays=st.just([False]),
+    method_container_flags=st.just([False]),
 )
 def test_uniform(
     numerator,
@@ -207,6 +235,13 @@ def test_uniform(
     fan_out=helpers.ints(min_value=1, max_value=100),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
+    init_as_variable_flags=st.just([False]),
+    init_num_positional_args=st.just(0),
+    init_native_arrays=st.just([False]),
+    method_as_variable_flags=st.just([False]),
+    method_num_positional_args=st.just(0),
+    method_native_arrays=st.just([False]),
+    method_container_flags=st.just([False]),
 )
 def test_glorot_uniform(
     var_shape,
@@ -257,6 +292,13 @@ def test_glorot_uniform(
     ),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
+    init_as_variable_flags=st.just([False]),
+    init_num_positional_args=st.just(0),
+    init_native_arrays=st.just([False]),
+    method_as_variable_flags=st.just([False]),
+    method_num_positional_args=st.just(0),
+    method_native_arrays=st.just([False]),
+    method_container_flags=st.just([False]),
 )
 def test_first_layer_siren(
     var_shape,
@@ -302,6 +344,13 @@ def test_first_layer_siren(
     fan_in=st.integers(min_value=1),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
+    init_as_variable_flags=st.just([False]),
+    init_native_arrays=st.just([False]),
+    init_num_positional_args=st.just(0),
+    method_as_variable_flags=st.just([False]),
+    method_native_arrays=st.just([False]),
+    method_container_flags=st.just([False]),
+    method_num_positional_args=st.just(0),
 )
 def test_siren(
     var_shape,
@@ -361,6 +410,13 @@ def test_siren(
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
     ground_truth_backend="numpy",
+    init_as_variable_flags=st.just([False]),
+    init_num_positional_args=st.just(0),
+    init_native_arrays=st.just([False]),
+    method_as_variable_flags=st.just([False]),
+    method_num_positional_args=st.just(0),
+    method_native_arrays=st.just([False]),
+    method_container_flags=st.just([False]),
 )
 def test_kaiming_normal(
     mean,

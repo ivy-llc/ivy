@@ -2,7 +2,9 @@
 from hypothesis import strategies as st, assume
 import math
 
+
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
@@ -922,7 +924,10 @@ def _get_split_locations(draw, min_num_dims, axis):
     shape = draw(
         st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
     )
-    axis = draw(st.just(axis))
+    if len(shape) == 1:
+        axis = draw(st.just(0))
+    else:
+        axis = draw(st.just(axis))
 
     @st.composite
     def get_int_split(draw):
@@ -976,4 +981,71 @@ def test_torch_dsplit(
         on_device=on_device,
         input=value[0],
         indices_or_sections=indices_or_sections,
+    )
+
+
+# hsplit
+@handle_frontend_test(
+    fn_tree="torch.hsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
+    number_positional_args=st.just(2),
+)
+def test_torch_hsplit(
+    *,
+    dtype_value,
+    indices_or_sections,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    # TODO: remove the assumption when these bugfixes are merged and version-pinned
+    # https://github.com/tensorflow/tensorflow/pull/59523
+    # https://github.com/google/jax/pull/14275
+    assume(
+        not (
+            len(value[0].shape) == 1
+            and ivy.current_backend_str() in ("tensorflow", "jax")
+        )
+    )
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        indices_or_sections=indices_or_sections,
+    )
+
+
+# row_stack
+@handle_frontend_test(
+    fn_tree="torch.row_stack",
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=st.integers(1, 5),
+    ),
+)
+def test_torch_row_stack(
+    *,
+    dtype_value_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=value,
     )

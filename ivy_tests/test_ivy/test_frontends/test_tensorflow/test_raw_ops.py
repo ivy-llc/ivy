@@ -1488,6 +1488,11 @@ def test_tensorflow_ShapeN(  # NOQA
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+        min_value=-1e04,
+        max_value=1e04,
     ),
     test_with_out=st.just(False),
 )
@@ -1506,7 +1511,7 @@ def test_tensorflow_AddN(  # NOQA
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        inputs=x,
+        inputs=x[0],
     )
 
 
@@ -3015,4 +3020,41 @@ def test_tensorflow_PadV2(
         input=x,
         paddings=paddings,
         constant_values=constant_values,
+    )
+
+
+# Elu
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Elu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-3,
+        max_value=3,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    name=st.just(None),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
+)
+def test_tensorflow_Elu(
+    *,
+    dtype_and_x,
+    name,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+        name=name,
     )

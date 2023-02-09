@@ -2046,15 +2046,14 @@ class ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_hsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Tuple[int]],
+        indices_or_sections: Union[int, Tuple[int, ...]],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> List[ivy.Container]:
         """
         ivy.Container static method variant of ivy.hsplit. This method simply wraps
         the function, and so the docstring for ivy.hsplit also applies to this method
@@ -2065,54 +2064,53 @@ class ContainerWithManipulationExperimental(ContainerBase):
         ary
             the container with array inputs.
         indices_or_sections
-            If indices_or_sections is an integer n, the array is split into n sections.
-            If the array is divisible by n horizontally, each section will be of equal
-            size. If input is not divisible by n, the sizes of the first
-            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
-            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is an integer n, the array is split into n
+            equal sections, provided that n must be a divisor of the split axis.
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
-        out
-            optional output container, for writing the result to.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
         ret
-            container including input arrays split horizontally.
+            list of containers split horizontally from input array.
 
         Examples
         --------
         >>> ary = ivy.Container(
-            a = ivy.ivy.array(
+            a = ivy.array(
                     [[[0.,  1.],
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
                 ),
             b=ivy.array(
-                    [[ 0.,  1.,  2.,  3.],
-                     [ 4.,  5.,  6.,  7.],
-                     [ 8.,  9., 10., 11.],
-                     [12., 13., 14., 15.]])
+                    [0.,  1.,  2.,  3.,
+                     4.,  5.,  6.,  7.,
+                     8.,  9.,  10., 11.,
+                     12., 13., 14., 15.]
                 )
             )
         >>> ivy.Container.static_hsplit(ary, 2)
-        {
-            a: ivy.ivy.array(
-                    [[[0.,  1.],
-                      [2.,  3.]],
-                      [[4.,  5.],
-                      [6.,  7.]]]
-                ),
-            b: [ivy.array([[ 0.,  1.],
-                        [ 4.,  5.],
-                        [ 8.,  9.],
-                        [12., 13.]]),
-                ivy.array([[ 2.,  3.],
-                        [ 6.,  7.],
-                        [10., 11.],
-                        [14., 15.]])
-        }
+        [{
+            a: ivy.array([[[0., 1.]],
+                          [[4., 5.]]]),
+            b: ivy.array([0., 1., 2., 3., 4., 5., 6., 7.])
+        }, {
+            a: ivy.array([[[2., 3.]],
+                          [[6., 7.]]]),
+            b: ivy.array([8., 9., 10., 11., 12., 13., 14., 15.])
+        }]
         """
         return ContainerBase.cont_multi_map_in_function(
             "hsplit",
@@ -2122,16 +2120,13 @@ class ContainerWithManipulationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def hsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Tuple[int]],
+        indices_or_sections: Union[int, Tuple[int, ...]],
         /,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+    ) -> List[ivy.Container]:
         """ivy.Container instance method variant of ivy.hsplit. This method simply
         wraps the function, and so the docstring for ivy.hsplit also applies to this
         method with minimal changes.
@@ -2141,57 +2136,44 @@ class ContainerWithManipulationExperimental(ContainerBase):
         self
             the container with array inputs.
         indices_or_sections
-            If indices_or_sections is an integer n, the array is split into n sections.
-            If the array is divisible by n horizontally, each section will be of equal
-            size. If input is not divisible by n, the sizes of the first
-            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
-            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is an integer n, the array is split into n
+            equal sections, provided that n must be a divisor of the split axis.
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
-        out
-            optional output container, for writing the result to.
 
         Returns
         -------
         ret
-            container including arrays with the modified Bessel
-            function evaluated at each of the elements of x.
+            list of containers split horizontally from input container
 
         Examples
         --------
         >>> ary = ivy.Container(
-            a = ivy.ivy.array(
+            a = ivy.array(
                     [[[0.,  1.],
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
                 ),
             b=ivy.array(
-                    [[ 0.,  1.,  2.,  3.],
-                     [ 4.,  5.,  6.,  7.],
-                     [ 8.,  9., 10., 11.],
-                     [12., 13., 14., 15.]])
+                    [0.,  1.,  2.,  3.,
+                     4.,  5.,  6.,  7.,
+                     8.,  9.,  10., 11.,
+                     12., 13., 14., 15.]
                 )
             )
         >>> ary.hsplit(2)
-        {
-            a: ivy.ivy.array(
-                    [[[0.,  1.],
-                      [2.,  3.]],
-                      [[4.,  5.],
-                      [6.,  7.]]]
-                ),
-            b: [ivy.array([[ 0.,  1.],
-                        [ 4.,  5.],
-                        [ 8.,  9.],
-                        [12., 13.]]),
-                ivy.array([[ 2.,  3.],
-                        [ 6.,  7.],
-                        [10., 11.],
-                        [14., 15.]])
-        }
+        [{
+            a: ivy.array([[[0., 1.]],
+                          [[4., 5.]]]),
+            b: ivy.array([0., 1., 2., 3., 4., 5., 6., 7.])
+        }, {
+            a: ivy.array([[[2., 3.]],
+                          [[6., 7.]]]),
+            b: ivy.array([8., 9., 10., 11., 12., 13., 14., 15.])
+        }]
         """
-        return self.static_hsplit(self, indices_or_sections, out=out)
+        return self.static_hsplit(self, indices_or_sections)
 
     @staticmethod
     def static_broadcast_shapes(
@@ -2310,9 +2292,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
         prune_unapplied
         map_sequences
 
-        Returns
-        -------
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "expand",
@@ -2341,9 +2320,6 @@ class ContainerWithManipulationExperimental(ContainerBase):
         shape
         device
         out
-
-        Returns
-        -------
 
         """
         return self.static_expand(self, shape, device=device, out=out)

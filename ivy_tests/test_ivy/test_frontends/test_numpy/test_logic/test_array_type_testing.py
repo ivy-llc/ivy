@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="isifinite"
+        fn_name="isfinite"
     ),
 )
 def test_numpy_isfinite(

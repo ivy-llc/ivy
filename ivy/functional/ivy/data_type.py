@@ -11,6 +11,7 @@ import importlib
 import ivy
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
+    handle_array_function,
     handle_out_argument,
     to_native_arrays_and_back,
     inputs_to_native_arrays,
@@ -223,6 +224,7 @@ Iinfo = None
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
@@ -328,6 +330,7 @@ def astype(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
     """Broadcasts one or more arrays against one another.
 
@@ -405,6 +408,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -474,6 +478,7 @@ def broadcast_to(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def can_cast(
     from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
     to: ivy.Dtype,
@@ -1895,7 +1900,9 @@ def is_uint_dtype(
         return isinstance(dtype_in, np.unsignedinteger)
     elif isinstance(dtype_in, (list, tuple, dict)):
         return ivy.nested_argwhere(
-            dtype_in, lambda x: isinstance(x, np.unsignedinteger)
+            dtype_in,
+            lambda x: isinstance(x, np.unsignedinteger)
+            or (ivy.is_array(x) and "uint" in ivy.dtype(x)),
         )
     return "uint" in as_ivy_dtype(dtype_in)
 
@@ -1938,7 +1945,9 @@ def is_complex_dtype(
         return isinstance(dtype_in, (complex, np.complexfloating))
     elif isinstance(dtype_in, (list, tuple, dict)):
         return ivy.nested_argwhere(
-            dtype_in, lambda x: isinstance(x, (complex, np.complexfloating))
+            dtype_in,
+            lambda x: isinstance(x, (complex, np.complexfloating))
+            or (ivy.is_array(x) and "complex" in ivy.dtype(x)),
         )
     return "complex" in as_ivy_dtype(dtype_in)
 
