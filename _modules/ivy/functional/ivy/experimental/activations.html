@@ -244,7 +244,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span> <span class="o">*</span> <span class="n">slope</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyError</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;The shape </span><span class="si">{</span><span class="n">slope</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> is not Unidirectional Broadcastable</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;as per ONNX standards&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">IvyException</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">slope</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">dim</span> <span class="o">=</span> <span class="n">slope</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">new_shape</span> <span class="o">=</span> <span class="p">[]</span>
@@ -258,7 +261,7 @@
             <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">xs</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">slope</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">new_shape</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">e</span></div>
+        <span class="k">raise</span> <span class="n">IvyException</span></div>
 
 
 <div class="viewcode-block" id="thresholded_relu"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/thresholded_relu/thresholded_relu_functional.html#ivy.functional.ivy.experimental.activations.thresholded_relu">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
