@@ -306,6 +306,7 @@ array_significant_figures_stack = list()
 array_decimal_values_stack = list()
 warning_level_stack = list()
 nan_policy_stack = list()
+dynamic_backend_stack = list()
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
@@ -842,7 +843,6 @@ globals = GlobalsDict(
         "valid_dtypes": valid_dtypes,
         "valid_numeric_dtypes": valid_numeric_dtypes,
         "valid_int_dtypes": valid_int_dtypes,
-        "valid_int_dtypes": valid_int_dtypes,
         "valid_uint_dtypes": valid_uint_dtypes,
         "valid_complex_dtypes": valid_complex_dtypes,
         "valid_devices": valid_devices,
@@ -866,6 +866,7 @@ globals = GlobalsDict(
         "default_int_dtype_stack": data_type.default_int_dtype_stack,
         "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
         "nan_policy_stack": nan_policy_stack,
+        "dynamic_backend_stack": dynamic_backend_stack,
     }
 )
 
@@ -1098,3 +1099,54 @@ def unset_nan_policy():
     global nan_policy_stack
     if nan_policy_stack:
         nan_policy_stack.pop(-1)
+
+# Dynamic Backend
+
+
+def get_dynamic_backend():
+    """Returns the current dynamic backend setting, with the default being True"""
+    global dynamic_backend_stack
+    if not dynamic_backend_stack:
+        return True
+    else:
+        return dynamic_backend_stack[-1]
+
+
+def set_dynamic_backend(flag):
+    """Sets the global dynamic backend setting to the provided flag (True or False)"""
+    global dynamic_backend_stack
+    if flag not in [True, False]:
+        raise ValueError("dynamic_backend must be a boolean value (True or False)")
+    dynamic_backend_stack.append(flag)
+
+
+def unset_dynamic_backend():
+    """
+    Removes the current dynamic backend setting,
+    restoring the previous setting (if any)
+    """
+    global dynamic_backend_stack
+    if dynamic_backend_stack:
+        dynamic_backend_stack.pop()
+
+
+# Context Managers
+
+
+class DynamicBackendContext:
+    def __init__(self, value):
+        self.value = value
+        self.original = None
+
+    def __enter__(self):
+        self.original = get_dynamic_backend()
+        set_dynamic_backend(self.value)
+
+    def __exit__(self, type, value, traceback):
+        unset_dynamic_backend()
+        if self.original is not None:
+            set_dynamic_backend(self.original)
+
+
+def dynamic_backend_as(value):
+    return DynamicBackendContext(value)

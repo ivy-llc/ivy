@@ -467,3 +467,36 @@ def test_jax_numpy_ndim(
         on_device=on_device,
         a=x[0],
     )
+
+
+# full
+@handle_frontend_test(
+    fn_tree="jax.numpy.full",
+    shape=helpers.get_shape(
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    input_fill_dtype=_input_fill_and_dtype(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_full(
+    shape,
+    input_fill_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, _, fill_value, dtype = input_fill_dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        shape=shape,
+        fill_value=fill_value,
+        dtype=dtype,
+    )

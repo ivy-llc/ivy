@@ -7,6 +7,14 @@ import ivy
 from ivy.functional.ivy.layers import _handle_padding
 
 
+def _from_int_to_tuple(arg, dim):
+    if isinstance(arg, int):
+        return (arg,) * dim
+    if isinstance(arg, tuple) and len(arg) == 1:
+        return (arg[0],) * dim
+    return arg
+
+
 def max_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],
@@ -42,17 +50,18 @@ def max_pool2d(
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
 
-    dilation = (dilation,) * 2 if isinstance(dilation, int) else tuple(dilation)
-    dilation = (
-        (dilation[0],) * 2
-        if isinstance(dilation, tuple) and len(dilation) == 1
-        else dilation
-    )
-    strides = (
-        (strides[0],) * 2
-        if isinstance(strides, (list, tuple)) and len(strides) == 1
-        else strides
-    )
+    dilation = _from_int_to_tuple(dilation, 2)
+    strides = _from_int_to_tuple(strides, 2)
+    kernel = _from_int_to_tuple(kernel, 2)
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
+
+    if isinstance(padding, (tuple, list)):
+        ivy.assertions.check_kernel_padding_size(kernel, padding)
     new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
     if isinstance(padding, str):
         pad_h = _handle_padding(x.shape[1], strides[0], new_kernel[0], padding)
@@ -67,7 +76,7 @@ def max_pool2d(
                 x_shape[i], new_kernel[i], padding[i], strides[i]
             )
 
-    padding = [(0, 0)] + padding + [(0, 0)]
+    padding = [(0, 0)] + list(padding) + [(0, 0)]
     x = tf.pad(x, padding, constant_values=-math.inf)
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 

@@ -953,20 +953,11 @@ def arrays_for_pooling(
         padding = []
         for i in range(array_dim - 2):
             max_pad = new_kernel[i] // 2
-            possible_pad_combos = [
-                (i, max_pad - i)
-                for i in range(0, max_pad)
-                if i + (max_pad - i) == max_pad
-            ]
-            if len(possible_pad_combos) == 0:
-                pad_selected_combo = (0, 0)
-            else:
-                pad_selected_combo = draw(st.sampled_from(possible_pad_combos))
             padding.append(
                 draw(
                     st.tuples(
-                        st.integers(0, pad_selected_combo[0]),
-                        st.integers(0, pad_selected_combo[1]),
+                        st.integers(0, max_pad),
+                        st.integers(0, max_pad),
                     )
                 )
             )
