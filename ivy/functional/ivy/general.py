@@ -2177,7 +2177,7 @@ stable_pow.unsupported_dtypes = ("bfloat16",)
 
 
 @handle_exceptions
-def get_all_arrays_in_memory():
+def get_all_arrays_in_memory() -> ivy.Array:
     """Gets all arrays which are currently alive."""
     all_arrays = list()
     for obj in gc.get_objects():
