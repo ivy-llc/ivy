@@ -78,7 +78,7 @@ def prelu(
     f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
     to the data array elementwise. This operator supports unidirectional
     broadcasting (array slope should be unidirectional broadcastable to
-    input tensor X); for more details please check Broadcasting in ONNX.
+    input tensor X);
 
     Parameters
     ----------
