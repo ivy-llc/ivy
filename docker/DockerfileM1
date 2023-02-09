@@ -19,7 +19,7 @@ RUN pip3 install torch==1.11.0 -f https://download.pytorch.org/whl/torch_stable.
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.11.0+cpu.html
 
 # Install Ivy Upstream
-RUN git clone --recurse-submodules --depth 1 https://github.com/unifyai/ivy
+RUN git clone --recurse-submodules --depth 1 https://github.com/ZiadAmerr/ivy
 RUN cat ivy/requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin
 RUN cat ivy/requirements/optional_m1_1.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin
 RUN cat ivy/requirements/optional_m1_2.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin
