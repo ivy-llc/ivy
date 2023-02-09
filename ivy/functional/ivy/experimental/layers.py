@@ -868,6 +868,7 @@ def dft(
 
 
 @to_native_arrays_and_back
+@handle_exceptions
 @handle_out_argument
 @handle_nestable
 def interp(x, xp, fp, left=None, right=None, period=None):
@@ -933,6 +934,7 @@ def interp(x, xp, fp, left=None, right=None, period=None):
 
 
 @to_native_arrays_and_back
+@handle_exceptions
 @handle_out_argument
 @handle_nestable
 def interpolate(
