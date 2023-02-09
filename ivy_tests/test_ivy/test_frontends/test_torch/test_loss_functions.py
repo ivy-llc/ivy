@@ -285,10 +285,11 @@ def test_torch_cosine_embedding_loss(
     if input1.ndim == input2.ndim == 1:
         tar = ivy.array(1.0)
     else:
-        floor_half = input1.shape[0] // 2
-        ones = ivy.ones(floor_half)
-        minus_ones = ivy.ones(input1.shape[0] - floor_half) * -1
-        tar = ivy.hstack((ones, minus_ones)).shuffle()
+        third = input1.shape[0] // 3
+        ones = ivy.ones(input1.shape[0] - (third * 2))
+        minus_ones = ivy.ones(third) * -1
+        randoms = ivy.random_uniform(shape=[third])
+        tar = ivy.hstack((ones, minus_ones, randoms)).shuffle()
 
     helpers.test_frontend_function(
         input_dtypes=[input1_dtype, input2_dtype],
