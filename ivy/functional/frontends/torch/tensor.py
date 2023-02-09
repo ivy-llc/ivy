@@ -364,7 +364,7 @@ class Tensor:
 
     def expand(self, *args, size=None):
         if args and size:
-            raise TypeError("reshape() got multiple values for argument 'size'")
+            raise TypeError("expand() got multiple values for argument 'size'")
         if args:
             if isinstance(args[0], (tuple, list)):
                 size = args[0]
@@ -585,6 +585,11 @@ class Tensor:
             return torch_frontend.tensor(ivy.array(self._ivy_array).full_like(max))
         return torch_frontend.clamp(self._ivy_array, min=min, max=max, out=out)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+    def clamp_(self, min=None, max=None, *, out=None):
+        self._ivy_array = self.clamp(min=min, max=max, out=out).ivy_array
+        return self
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):
         return torch_frontend.sqrt(self._ivy_array)
@@ -636,7 +641,9 @@ class Tensor:
         return torch_frontend.remainder(self._ivy_array, other)
 
     def __long__(self, memory_format=None):
-        return torch_frontend.tensor(ivy.astype(self._ivy_array, ivy.int64))
+        cast_tensor = self.clone()
+        cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.int64)
+        return cast_tensor
 
     def __getitem__(self, query):
         ret = ivy.get_item(self._ivy_array, query)

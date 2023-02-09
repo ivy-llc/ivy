@@ -14,11 +14,11 @@ from ivy.functional.ivy.layers import (
 )
 
 
-def _add_dilations(x, dilations, axis):
+def _add_dilations(x, dilations, axis, values=0):
     return np.insert(
         x,
         [i for i in range(1, x.shape[axis])] * (dilations - 1),
-        values=0,
+        values=values,
         axis=axis,
     )
 

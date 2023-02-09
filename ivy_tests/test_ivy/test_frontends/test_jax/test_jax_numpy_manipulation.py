@@ -689,3 +689,73 @@ def test_jax_numpy_atleast_2d(
         on_device=on_device,
         **arys,
     )
+
+
+# atleast_1d
+@handle_frontend_test(
+    fn_tree="jax.numpy.atleast_1d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_atleast_1d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, arrays = dtype_and_x
+    arys = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
+        arys["arrs{}".format(i)] = np.asarray(array, dtype=idtype)
+    test_flags.num_positional_args = len(arys)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **arys,
+    )
+
+
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="shape"))
+    valid_axes = [idx for idx in range(len(shape)) if shape[idx] == 1] + [None]
+    return draw(st.sampled_from(valid_axes))
+
+
+# squeeze
+@handle_frontend_test(
+    fn_tree="jax.numpy.squeeze",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    axis=_squeeze_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_squeeze(
+    *,
+    dtype_and_values,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, values = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=values[0],
+        axis=axis,
+    )
