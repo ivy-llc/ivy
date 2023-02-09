@@ -19,10 +19,12 @@ def add(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.add(x, y)
 
+
 @to_ivy_arrays_and_back
 def exp(x, name=None):
     e = 2.718281828459045
     return ivy.pow(e, x)
+
     
 @to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
