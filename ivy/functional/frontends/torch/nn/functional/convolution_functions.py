@@ -232,6 +232,10 @@ def conv_transpose1d(input, weight, bias=None, stride=1, padding=0, output_paddi
     return ret
 
 
+# ToDo: both for fold and unfold, the conversion to numpy and back to ivy can be removed
+#  as soon as scatter_nd stops failing for jax and tensorflow when given slices.
+
+
 @to_ivy_arrays_and_back
 def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
     if input.ndim != 4:
@@ -276,23 +280,31 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
     padding = [padding] * 2 if isinstance(padding, int) else padding
     kernel_size = [kernel_size] * 2 if isinstance(kernel_size, int) else kernel_size
     output_size = [output_size] * 2 if isinstance(output_size, int) else output_size
+    input_shape = [
+        (output_size[i] + 2 * padding[i] - dilation[i] * (kernel_size[i] - 1) - 1) // stride[i] + 1
+        for i in range(2)
+    ]
+    n_batches = input.shape[0]
     n_channels = input.shape[1] // math.prod(kernel_size)
-    input = ivy.reshape(input, (input.shape[0], n_channels, *kernel_size, -1))
-    input_padded = ivy.zero_pad(
-        input,
-        ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2, (0, 0)),
+    output = ivy.zeros((n_batches, n_channels, *output_size), dtype=input.dtype)
+    output_padded = ivy.zero_pad(
+        output,
+        ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2),
     )
-    output = ivy.zeros((input.shape[0], n_channels, *output_size), dtype=input.dtype)
-    output = output.to_numpy()
-    input_padded = input_padded.to_numpy()
-    for i in range(output_size[0]):
-        for j in range(output_size[1]):
-            h_start = i * stride[0] * dilation[0]
-            h_end = h_start + kernel_size[0] * dilation[0]
-            w_start = j * stride[1] * dilation[1]
-            w_end = w_start + kernel_size[1] * dilation[1]
-            sub_matrix = input_padded[
-                         :, :, h_start:h_end:dilation[0], w_start:w_end:dilation[1], :
-                         ]
-            output[:, :, i, j] = ivy.sum(sub_matrix, axis=(2, 3, 4))
-    return ivy.array(output) if orig_ndim == 3 else ivy.squeeze(output, axis=0)
+    output_padded = ivy.to_numpy(output_padded)
+    k = 0
+    for i in range(input_shape[0]):
+        for j in range(input_shape[1]):
+            i_in = i * stride[0]
+            j_in = j * stride[1]
+            patch = ivy.to_numpy(
+                input[:, :, k].reshape((n_batches, n_channels, *kernel_size))
+            )
+            output_padded[
+                :,
+                :,
+                i_in:i_in+kernel_size[0]*dilation[0]:dilation[0],
+                j_in:j_in+kernel_size[1]*dilation[1]:dilation[1]
+            ] += patch
+            k += 1
+    return ivy.array(output_padded[:, :, padding[0]:-padding[0], padding[1]:-padding[1]])
