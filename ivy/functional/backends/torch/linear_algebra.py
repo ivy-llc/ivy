@@ -414,7 +414,7 @@ def trace(
     if len(x) == 0:
         return ivy.array([])
     ret = torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
-    ret = torch.sum(ret)
+    ret = torch.sum(ret, dim=-1)
     return ret
 
 

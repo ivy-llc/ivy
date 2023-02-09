@@ -208,6 +208,11 @@ def dsplit(input, indices_or_sections):
 
 
 @to_ivy_arrays_and_back
+def hsplit(input, indices_or_sections):
+    return tuple(ivy.hsplit(input, indices_or_sections))
+
+
+@to_ivy_arrays_and_back
 def vsplit(input, indices_or_sections):
     return tuple(ivy.vsplit(input, indices_or_sections))
 

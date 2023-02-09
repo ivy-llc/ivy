@@ -118,3 +118,17 @@ def corrcoef(
         xarr = xarr.T if not rowvar else xarr
 
     return torch.corrcoef(xarr)
+
+
+def nanmedian(
+    input: torch.tensor,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    overwrite_input: Optional[bool] = False,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.nanmedian(
+        input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+    )
