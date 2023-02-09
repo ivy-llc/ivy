@@ -142,38 +142,60 @@ def cosine_embedding_loss(
     def norm(input, axis):
         return ivy.sqrt(ivy.sum(ivy.square(input), axis=axis))
 
-    def cosine_similarity():
+    def cosine_similarity(x1, x2):
         axis = None
-        if len(input1.shape) == len(input2.shape) and len(input2.shape) == 2:
+        if len(x1.shape) == len(x2.shape) and len(x2.shape) == 2:
             axis = 1
-        input1_norm = norm(input1, axis=axis)
-        input2_norm = norm(input2, axis=axis)
+        input1_norm = norm(x1, axis=axis)
+        input2_norm = norm(x2, axis=axis)
         norm_mm = input1_norm * input2_norm
         norm_mm, eps = torch_frontend.promote_types_of_torch_inputs(norm_mm, 1e-08)
-        return ivy.sum(input1 * input2, axis=axis) / ivy.maximum(norm_mm, eps)
+        return ivy.sum(x1 * x2, axis=axis) / ivy.maximum(norm_mm, eps)
 
-    ivy.assertions.check_false(
-        target.ndim + 1 != input1.ndim or target.ndim + 1 != input2.ndim,
+    ivy.assertions.check_true(
+        target.ndim + 1 == input1.ndim and target.ndim + 1 == input2.ndim,
         "{}D target tensor expects {}D input tensors, but "
         "found inputs with sizes {} and {}.".format(
             target.ndim, target.ndim + 1, list(input1.shape), list(input2.shape)
         )
     )
 
-    ivy.assertions.check_false(
-        target.ndim > 1,
+    ivy.assertions.check_true(
+        target.ndim < 2,
         "0D or 1D target tensor expected, multi-target not supported"
     )
 
-    cosine_similarity = cosine_similarity()
+    ivy.assertions.check_shape(input1, input2)
 
-    if ivy.all(target == 1.0):
-        loss = 1.0 - cosine_similarity
-    elif ivy.all(target == -1.0):
-        loss = ivy.maximum(ivy.array(0.0), cosine_similarity - ivy.array(margin))
+    if target.ndim == 1:
+        ivy.assertions.check_true(
+            target.shape[0] == input1.shape[0],
+            "The size of target tensor ({}) must match the size of input tensor ({}) "
+            "at non-singleton dimension 0 ".format(
+                target.shape[0], input1.shape[0])
+        )
+
+    def calculate_loss(cosine_similarity, target):
+        if target == ivy.array(1.0):
+            loss = 1.0 - cosine_similarity
+        elif target == ivy.array(-1.0):
+            loss = ivy.maximum(ivy.array(0.0), cosine_similarity - ivy.array(margin))
+        else:
+            _, zero = torch_frontend.promote_types_of_torch_inputs(input1, ivy.array(0.0))
+            return zero
+
+        return loss
+
+    if target.ndim == 0:
+        cos = cosine_similarity(input1, input2)
+        loss = calculate_loss(cos, target)
     else:
-        _, zero = torch_frontend.promote_types_of_torch_inputs(input1, ivy.array(0.0))
-        return zero
+        losses = []
+        for i in range(input1.shape[0]):
+            cos = cosine_similarity(input1[i], input2[i])
+            sample_loss = ivy.array(calculate_loss(cos, target[i]))
+            losses.append(sample_loss)
+        loss = ivy.array(losses)
 
     reduction = _get_reduction(reduction, size_average, reduce)
     loss = reduction(loss)

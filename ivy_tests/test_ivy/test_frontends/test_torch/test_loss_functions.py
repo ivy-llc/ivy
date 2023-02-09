@@ -281,10 +281,14 @@ def test_torch_cosine_embedding_loss(
     input_dtype, x = dtype_and_inputs
     input1_dtype, input1 = input_dtype[0], x[0]
     input2_dtype, input2 = input_dtype[1], x[1]
+
     if input1.ndim == input2.ndim == 1:
         tar = ivy.array(1.0)
     else:
-        tar = ivy.ones(input1.shape[0])
+        floor_half = input1.shape[0] // 2
+        ones = ivy.ones(floor_half)
+        minus_ones = ivy.ones(input1.shape[0] - floor_half) * -1
+        tar = ivy.hstack((ones, minus_ones)).shuffle()
 
     helpers.test_frontend_function(
         input_dtypes=[input1_dtype, input2_dtype],
@@ -295,36 +299,6 @@ def test_torch_cosine_embedding_loss(
         input1=input1,
         input2=input2,
         target=tar,
-        margin=margin,
-        size_average=size_average,
-        reduce=reduce,
-        reduction=reduction,
-    )
-
-    helpers.test_frontend_function(
-        input_dtypes=[input1_dtype, input2_dtype],
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input1=input1,
-        input2=input2,
-        target=tar * -1,
-        margin=margin,
-        size_average=size_average,
-        reduce=reduce,
-        reduction=reduction,
-    )
-
-    helpers.test_frontend_function(
-        input_dtypes=[input1_dtype, input2_dtype],
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input1=input1,
-        input2=input2,
-        target=tar * 0.5,
         margin=margin,
         size_average=size_average,
         reduce=reduce,
