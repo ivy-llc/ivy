@@ -996,9 +996,13 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithElementWiseExperimental.diff"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
+        <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">prepend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">append</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.diff. This method simply</span>
@@ -1009,6 +1013,16 @@
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
 <span class="sd">            array-like input.</span>
+<span class="sd">        n</span>
+<span class="sd">            The number of times values are differenced. If zero, the input is returned</span>
+<span class="sd">            as-is.</span>
+<span class="sd">        axis</span>
+<span class="sd">            The axis along which the difference is taken, default is the last axis.</span>
+<span class="sd">        prepend,append</span>
+<span class="sd">            Values to prepend/append to x along given axis prior to performing the</span>
+<span class="sd">            difference. Scalar values are expanded to arrays with length 1 in the</span>
+<span class="sd">            direction of axis and the shape of the input array in along all other</span>
+<span class="sd">            axes. Otherwise the dimension and shape must match x except along axis.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to.</span>
 
@@ -1019,15 +1033,13 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\</span>
-<span class="sd">                               b=ivy.array([1, 2, 4, 7, 0]))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_diff(x)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([ 1,  2,  3, -7])</span>
-<span class="sd">            b: ivy.array([ 1,  2,  3, -7])</span>
-<span class="sd">        }</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 4, 7, 0])</span>
+<span class="sd">        &gt;&gt;&gt; x.diff()</span>
+<span class="sd">        ivy.array([ 1,  2,  3, -7])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="n">prepend</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithElementWiseExperimental.fix"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.fix">[docs]</a>    <span class="k">def</span> <span class="nf">fix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
