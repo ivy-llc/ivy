@@ -1376,6 +1376,9 @@ class ContainerWithLayersExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
+        Down/up samples the input to the given size.
+        The algorithm used for interpolation is determined by mode.
+
         Parameters
         ----------
         x
@@ -1436,6 +1439,9 @@ class ContainerWithLayersExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
+        Down/up samples the input to the given size.
+        The algorithm used for interpolation is determined by mode.
+
         Parameters
         ----------
         x

@@ -646,6 +646,9 @@ class ArrayWithLayersExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
+        Down/up samples the input to the given size.
+        The algorithm used for interpolation is determined by mode.
+
         Parameters
         ----------
         self
