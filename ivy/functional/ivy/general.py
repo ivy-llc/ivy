@@ -2181,8 +2181,16 @@ def get_all_arrays_in_memory() -> ivy.Array:
     """Gets all arrays which are currently alive."""
     all_arrays = list()
     for obj in gc.get_objects():
-        if ivy.is_ivy_array(obj):
-            all_arrays.append(obj)
+        try:
+            if ivy.current_backend_str() in ["", "numpy"]:
+                if ivy.is_ivy_array(obj):
+                    all_arrays.append(obj)
+            else:
+                if ivy.is_native_array(obj):
+                    all_arrays.append(obj)
+
+        except Exception:
+            pass
     return all_arrays
 
 
