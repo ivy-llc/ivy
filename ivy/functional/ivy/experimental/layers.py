@@ -968,7 +968,8 @@ def interpolate(
     mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
-):
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """
 
     Parameters
@@ -977,12 +978,30 @@ def interpolate(
         Input array, Must have the shape
         [batch x channels x [optional depth] x [optional height] x width].
     size
+        Output size.
     mode
+        Interpolation mode. Can be one of the following:
+        - linear
+        - bilinear
+        - trilinear
+        - nearest
     align_corners
+        If True, the corner pixels of the input and output tensors are aligned,
+        and thus preserving the values at the corner pixels. If False, the corner
+        pixels are not aligned, and the interpolation uses edge value padding for
+        out-of-boundary values.
+        only has an effect when mode is 'linear', 'bilinear',
+        'bicubic' or 'trilinear'. Default: False
     antialias
+        If True, antialiasing is applied when downsampling an image.
+        Supported modes: 'bilinear', 'bicubic'.
+    out
+        Optional output array, for writing the result to. It must
+        have a shape that the inputs broadcast to.
 
     Returns
     -------
+        resized array
 
     """
     if mode == "linear":
