@@ -648,7 +648,7 @@ class ArrayWithLayersExperimental(abc.ABC):
         """
         Parameters
         ----------
-        x
+        self
             Input array, Must have the shape
             [batch x channels x [optional depth] x [optional height] x width].
         size

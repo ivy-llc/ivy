@@ -899,6 +899,9 @@ def padding_ceil_mode(w, f, p, s):
     return p
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False
@@ -923,6 +926,7 @@ def interp(x, xp, fp, left=None, right=None, period=None):
         fp = ivy.concat((fp[-1:], fp, fp[0:1]))
 
     def interp_inner(value):
+        value = ivy.array(value)
         if value < xp[0]:
             return left if left is not None else fp[0]
         elif value > xp[-1]:
@@ -960,6 +964,9 @@ def interp(x, xp, fp, left=None, right=None, period=None):
         return ivy.astype(ivy.array(ret), "float64")
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def interpolate(
     x: Union[ivy.Array, ivy.NativeArray],
     size: Union[Sequence[int], int],
