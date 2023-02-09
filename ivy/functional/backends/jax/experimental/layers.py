@@ -21,7 +21,16 @@ def _from_int_to_tuple(arg, dim):
 
 
 def general_pool(
-    inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation, ceil_mode
+    inputs,
+    init,
+    reduce_fn,
+    window_shape,
+    strides,
+    padding,
+    dim,
+    dilation=1,
+    ceil_mode=False,
+    return_indices=False,
 ):
     window_shape = _from_int_to_tuple(window_shape, dim)
     strides = _from_int_to_tuple(strides, dim)
@@ -133,13 +142,23 @@ def max_pool2d(
     data_format: str = "NHWC",
     dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
     ceil_mode: bool = False,
+    return_indices: bool = False,
     out: Optional[JaxArray] = None,
-) -> JaxArray:
+) -> Union[JaxArray, Tuple[JaxArray, JaxArray]]:
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
     res = general_pool(
-        x, -jnp.inf, jlax.max, kernel, strides, padding, 2, dilation, ceil_mode
+        x,
+        -jnp.inf,
+        jlax.max,
+        kernel,
+        strides,
+        padding,
+        2,
+        dilation,
+        ceil_mode,
+        return_indices,
     )
 
     if data_format == "NCHW":

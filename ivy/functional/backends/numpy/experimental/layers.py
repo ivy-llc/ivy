@@ -76,6 +76,7 @@ def max_pool2d(
     data_format: str = "NHWC",
     dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
     ceil_mode: bool = False,
+    return_indices: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -160,6 +161,11 @@ def max_pool2d(
 
     # B x OH x OW x O
     res = sub_matrices.max(axis=(3, 4))
+    if return_indices:
+        idx = np.argmax(sub_matrices, axis=-2).argmax(axis=-2)
+        if data_format == "NCHW":
+            return np.transpose(res, (0, 3, 1, 2)), np.transpose(idx, (0, 3, 1, 2))
+        return res, idx
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
     return res
