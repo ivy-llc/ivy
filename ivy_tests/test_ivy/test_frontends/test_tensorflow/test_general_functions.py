@@ -1356,7 +1356,7 @@ def test_tensorflow_reverse(
     on_device,
 ):
 
-    input_dtype, x, axis_dtype, axis = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -1364,5 +1364,5 @@ def test_tensorflow_reverse(
         fn_tree=fn_tree,
         on_device=on_device,
         tensor=x[0],
-        axis=axis[0],
+        axis=x[1],
     )
