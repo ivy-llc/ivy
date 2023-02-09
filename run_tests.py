@@ -83,10 +83,9 @@ def run_multiversion_testing(failed):
             f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend={backend}'  # noqa
         )
         if ret != 0:
-            failed = True
-
-        if failed:
             exit(1)
+        else:
+            exit(0)
 
 
 if __name__ == "__main__":
