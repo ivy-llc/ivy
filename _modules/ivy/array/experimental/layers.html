@@ -147,7 +147,7 @@
   <h1>Source code for ivy.array.experimental.layers</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -779,6 +779,60 @@
             <span class="n">onesided</span><span class="o">=</span><span class="n">onesided</span><span class="p">,</span>
             <span class="n">dft_length</span><span class="o">=</span><span class="n">dft_length</span><span class="p">,</span>
             <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithLayersExperimental.interpolate"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithLayersExperimental.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">mode</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;bilinear&quot;</span><span class="p">,</span> <span class="s2">&quot;trilinear&quot;</span><span class="p">,</span> <span class="s2">&quot;nearest&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+        <span class="n">align_corners</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">antialias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Down/up samples the input to the given size.</span>
+<span class="sd">        The algorithm used for interpolation is determined by mode.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input array, Must have the shape</span>
+<span class="sd">            [batch x channels x [optional depth] x [optional height] x width].</span>
+<span class="sd">        size</span>
+<span class="sd">            Output size.</span>
+<span class="sd">        mode</span>
+<span class="sd">            Interpolation mode. Can be one of the following:</span>
+<span class="sd">            - linear</span>
+<span class="sd">            - bilinear</span>
+<span class="sd">            - trilinear</span>
+<span class="sd">            - nearest</span>
+<span class="sd">        align_corners</span>
+<span class="sd">            If True, the corner pixels of the input and output tensors are aligned,</span>
+<span class="sd">            and thus preserving the values at the corner pixels. If False, the corner</span>
+<span class="sd">            pixels are not aligned, and the interpolation uses edge value padding for</span>
+<span class="sd">            out-of-boundary values.</span>
+<span class="sd">            only has an effect when mode is &#39;linear&#39;, &#39;bilinear&#39;,</span>
+<span class="sd">            &#39;bicubic&#39; or &#39;trilinear&#39;. Default: False</span>
+<span class="sd">        antialias</span>
+<span class="sd">            If True, antialiasing is applied when downsampling an image.</span>
+<span class="sd">            Supported modes: &#39;bilinear&#39;, &#39;bicubic&#39;.</span>
+<span class="sd">        out</span>
+<span class="sd">            Optional output array, for writing the result to. It must</span>
+<span class="sd">            have a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            resized array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">size</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+            <span class="n">align_corners</span><span class="o">=</span><span class="n">align_corners</span><span class="p">,</span>
+            <span class="n">antialias</span><span class="o">=</span><span class="n">antialias</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 </pre></div>

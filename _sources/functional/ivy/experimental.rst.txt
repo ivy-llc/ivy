@@ -74,6 +74,8 @@ Experimental
    experimental/ifft.rst
    experimental/embedding.rst
    experimental/dft.rst
+   experimental/interp.rst
+   experimental/interpolate.rst
    experimental/padding_ceil_mode.rst
    experimental/is_ivy_sparse_array.rst
    experimental/is_native_sparse_array.rst
