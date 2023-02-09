@@ -1488,6 +1488,11 @@ def test_tensorflow_ShapeN(  # NOQA
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+        min_value=-1e04,
+        max_value=1e04,
     ),
     test_with_out=st.just(False),
 )
@@ -1506,7 +1511,7 @@ def test_tensorflow_AddN(  # NOQA
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        inputs=x,
+        inputs=x[0],
     )
 
 

@@ -161,8 +161,8 @@ def conv2d(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if data_format == "NHWC":
