@@ -123,7 +123,7 @@ class ArrayWithNormsExperimental(abc.ABC):
             out=out,
         )
 
-    def lp_normalize(self, /, *, p, axis=None, out=None):
+    def lp_normalize(self, /, *, p: float = 2, axis=None, out=None):
         """Normalizes the array to have Lp norm.
 
         Parameters

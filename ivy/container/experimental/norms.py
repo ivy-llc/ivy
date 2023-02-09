@@ -402,7 +402,7 @@ class ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
     def static_lp_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        p: float,
+        p: float = 2,
         axis: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -471,7 +471,7 @@ class ContainerWithNormsExperimental(ContainerBase):
 
     def lp_normalize(
         self,
-        p: float,
+        p: float = 2,
         axis: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
