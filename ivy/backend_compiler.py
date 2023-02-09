@@ -2,6 +2,7 @@ import ast
 import os
 import sys
 import traceback
+import inspect
 from ast import parse
 from importlib.util import resolve_name, module_from_spec, spec_from_file_location
 from importlib.abc import Loader, MetaPathFinder
@@ -366,6 +367,7 @@ def with_backend(backend: str):
             if hasattr(ivy_pack, fn[0]):
                 del ivy_pack.__dict__[fn[0]]
         del ivy_pack.__dict__[module]
+    ivy_pack.backend_stack.append(backend_module)
     sys.meta_path.remove(FINDER)
     _clear_cache()
     return ivy_pack
