@@ -306,12 +306,7 @@ def _interp_args(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.interpolate",
     dtype_x_mode=_interp_args(),
-    container_flags=st.just([False]),
-    as_variable_flags=st.just([False]),
-    native_array_flags=st.just([False]),
-    test_instance_method=st.just(False),
     test_gradients=st.just(False),
-    test_with_out=st.just(False),
     number_positional_args=st.just(2),
 )
 def test_interpolate(
@@ -319,7 +314,6 @@ def test_interpolate(
     test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
     on_device,
 ):
     input_dtype, x, mode, size, align_corners = dtype_x_mode
