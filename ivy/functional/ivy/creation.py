@@ -11,6 +11,7 @@ from ivy import to_ivy
 from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
+    handle_array_function,
     infer_device,
     infer_dtype,
     handle_out_argument,
@@ -156,7 +157,8 @@ class NestedSequence(Protocol[_T_co]):
 @handle_out_argument
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def arange(
     start: Number,
     /,
@@ -224,7 +226,8 @@ def arange(
 
 
 @handle_out_argument
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def asarray(
     obj: Union[
         ivy.Array,
@@ -285,7 +288,8 @@ def asarray(
 @infer_dtype
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def zeros(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -344,7 +348,8 @@ def zeros(
 @infer_dtype
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def ones(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -428,7 +433,8 @@ def ones(
 @infer_device
 @infer_dtype
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 @handle_array_like_without_promotion
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -533,7 +539,8 @@ def full_like(
 @infer_dtype
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 @handle_array_like_without_promotion
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -650,7 +657,8 @@ def ones_like(
 @infer_dtype
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 @handle_array_like_without_promotion
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -765,7 +773,8 @@ def zeros_like(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 @handle_array_like_without_promotion
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -813,7 +822,8 @@ def tril(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 @handle_array_like_without_promotion
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -863,7 +873,8 @@ def triu(
 @infer_dtype
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def empty(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -910,7 +921,8 @@ def empty(
 @infer_dtype
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 @handle_array_like_without_promotion
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -960,7 +972,8 @@ def empty_like(
 @infer_dtype
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -1105,7 +1118,8 @@ def eye(
 @infer_dtype
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -1210,7 +1224,8 @@ def linspace(
 
 @to_native_arrays_and_back
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray],
     sparse: bool = False,
@@ -1324,7 +1339,8 @@ def meshgrid(
 @handle_out_argument
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: Union[float, bool],
@@ -1429,7 +1445,8 @@ def full(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1479,7 +1496,8 @@ array = asarray
 @inputs_to_native_arrays
 @handle_out_argument
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -1583,7 +1601,7 @@ def copy_array(
     return current_backend(x).copy_array(x, to_ivy_array=to_ivy_array, out=out)
 
 
-@handle_exceptions
+@handle_array_like_without_promotion
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,
@@ -1620,7 +1638,8 @@ def native_array(
 @handle_out_argument
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 @handle_array_like_without_promotion
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1733,7 +1752,8 @@ def one_hot(
 @infer_dtype
 @infer_device
 @handle_nestable
-@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
 @handle_array_like_without_promotion
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
