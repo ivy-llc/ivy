@@ -97,7 +97,10 @@ def prelu(
     """
     try:
         return ivy.where(x > 0, x, x * slope, out=out)
-    except ValueError as e:
+    except ivy.exceptions.IvyError(
+        f"The shape {slope.shape} is not Unidirectional Broadcastable\n"
+        f"as per ONNX standards"
+    ) as IvyException:
         if len(slope.shape) == 1:
             dim = slope.shape[0]
             new_shape = []
@@ -111,7 +114,7 @@ def prelu(
             if n == 1:
                 xs = x * slope.reshape(tuple(new_shape), out=out)
                 return ivy.where(x > 0, x, xs, out=out)
-        raise e
+        raise IvyException
 
 
 @to_native_arrays_and_back
