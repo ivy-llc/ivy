@@ -116,6 +116,45 @@ def _assert_args_casting_no(args, scalar_args, dtype):
         _assert_no_scalar(scalar_args, check_dtype)
 
 
+def _assert_args_casting_same_kind(args, scalar_args, dtype):
+    _assert_same_kind_array(args, dtype, scalar_check=(args and scalar_args))
+    _assert_same_kind_scalar(scalar_args, dtype)
+
+
+def _assert_same_kind_array(args, dtype, scalar_check=False):
+    if args and dtype:
+        if not scalar_check:
+            ivy.assertions.check_all_or_any_fn(
+                *args,
+                fn=lambda x: np_frontend.can_cast(
+                    x, ivy.as_ivy_dtype(dtype), casting="same_kind"
+                ),
+                type="all",
+                message="type of input is incompatible with dtype: {}".format(dtype),
+            )
+        else:
+            if ivy.is_int_dtype(dtype):
+                ivy.assertions.check_all_or_any_fn(
+                    *args,
+                    fn=ivy.is_int_dtype,
+                    type="all",
+                    message="type of input is incompatible with dtype: {}".format(
+                        dtype
+                    ),
+                )
+
+
+def _assert_same_kind_scalar(args, dtype):
+    if args:
+        if ivy.exists(dtype) and ivy.is_int_dtype(dtype):
+            ivy.assertions.check_all_or_any_fn(
+                *args,
+                fn=lambda x: type(x) != float,
+                type="all",
+                message="type of input is incompatible with dtype: {}".format(dtype),
+            )
+
+
 def handle_numpy_casting(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, casting="same_kind", dtype=None, **kwargs):
@@ -156,16 +195,22 @@ def handle_numpy_casting(fn: Callable) -> Callable:
         if casting in ["no", "equiv"]:
             _assert_args_casting_no(args_to_check, args_scalar_to_check, dtype)
             # Todo: kwargs check, all bool combi
-        # elif casting in ["same_kind"]:
-        #     _assert_args_casting_same_kind(args_to_check, args_scalar_to_check, dtype)
+        elif casting == "same_kind":
+            _assert_args_casting_same_kind(args_to_check, args_scalar_to_check, dtype)
+            if ivy.exists(dtype):
+                ivy.map_nest_at_indices(
+                    args, args_idxs, lambda x: ivy.astype(x, ivy.as_ivy_dtype(dtype))
+                )
+                ivy.map_nest_at_indices(
+                    kwargs,
+                    kwargs_idxs,
+                    lambda x: ivy.astype(x, ivy.as_ivy_dtype(dtype)),
+                )
+
         if ivy.exists(dtype):
             assert_fn = None
             if casting == "safe":
                 assert_fn = lambda x: np_frontend.can_cast(x, ivy.as_ivy_dtype(dtype))
-            elif casting == "same_kind":  # scalar all can
-                assert_fn = lambda x: np_frontend.can_cast(
-                    x, ivy.as_ivy_dtype(dtype), casting="same_kind"
-                )
             if ivy.exists(assert_fn):
                 _assert_args_and_fn(
                     args_to_check,
