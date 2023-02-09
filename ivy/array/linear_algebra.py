@@ -938,42 +938,40 @@ class ArrayWithLinearAlgebra(abc.ABC):
             the rank of ``self``. The returned array must have a floating-point data
             type determined by :ref:`type-promotion`.
 
-            Examples
-            -------
-            >>> x = ivy.array([1., 2., 3.])
-            >>> x.vector_norm() # default ord: 2
-            ivy.array([3.7416575])
+        Examples
+        -------
+        >>> x = ivy.array([1., 2., 3.])
+        >>> x.vector_norm() # default ord: 2
+        ivy.array([3.7416575])
 
-            >>> x = ivy.array([[1, 2, 3], [1.3, 2.4, -1.2]])
-            >>> x.vector_norm(axis = 1, ord = 1, dtype = ivy.float32)
-            ivy.array([6., 4.9000001])
+        >>> x = ivy.array([[1, 2, 3], [1.3, 2.4, -1.2]])
+        >>> x.vector_norm(axis = 1, ord = 1, dtype = ivy.float32)
+        ivy.array([6., 4.9000001])
 
-            >>> x = ivy.array([[1, 2, 3], [1.3, 2.4, -1.2]])
-            >>> x.vector_norm(axis = 0, keepdims = True,  ord = float("inf"))
-            ivy.array([[1.3, 2.4, 3.]])
+        >>> x = ivy.array([[1, 2, 3], [1.3, 2.4, -1.2]])
+        >>> x.vector_norm(axis = 0, keepdims = True,  ord = float("inf"))
+        ivy.array([[1.3, 2.4, 3.]])
 
-            >>> x = ivy.array([1, 2, 3, 4], dtype = ivy.float32)
-            >>> x.vector_norm(ord = 3.)
-            ivy.array([4.64158917])
+        >>> x = ivy.array([1, 2, 3, 4], dtype = ivy.float32)
+        >>> x.vector_norm(ord = 3.)
+        ivy.array([4.64158917])
 
-            >>> x = ivy.array([1,2,3,4], dtype = ivy.float16)
-            >>> y = ivy.empty(shape = 1)
-            >>> y
-            ivy.array([0.  , 2.  , 0.  , 2.25])
-            >>> x.vector_norm(ord = 0, out = y)
-            ivy.array([4.])
-            >>> y
-            ivy.array([4.])
+        >>> x = ivy.array([1,2,3,4], dtype = ivy.float16)
+        >>> y = ivy.empty(shape = 1)
+        >>> y
+        ivy.array([0.  , 2.  , 0.  , 2.25])
+        >>> x.vector_norm(ord = 0, out = y)
+        ivy.array([4.])
+        >>> y
+        ivy.array([4.])
 
-            >>> x = ivy.arange(8).reshape((2,2,2))
-            >>> x.vector_norm(axis = (0,1), ord = float("-inf"))
-            ivy.array([2, 4])
+        >>> x = ivy.arange(8).reshape((2,2,2))
+        >>> x.vector_norm(axis = (0,1), ord = float("-inf"))
+        ivy.array([2, 4])
 
-            >>> x = ivy.array([-1, 1, -2, 2], dtype = ivy.float16)
-            >>> x.vector_norm(ord = -1)
-            ivy.array([0.33325195])
-
-
+        >>> x = ivy.array([-1, 1, -2, 2], dtype = ivy.float16)
+        >>> x.vector_norm(ord = -1)
+        ivy.array([0.33325195])
         """
         return ivy.vector_norm(
             self._data, axis=axis, keepdims=keepdims, ord=ord, dtype=dtype, out=out
