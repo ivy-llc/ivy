@@ -226,12 +226,12 @@ def current_backend(*args, **kwargs):
     return importlib.import_module(_backend_dict[implicit_backend])
 
 
-def _set_backend_as_ivy(target, backend):
-    for k, v in ivy_original_dict.items():
+def _set_backend_as_ivy(original_dict, target, backend):
+    for k, v in original_dict.items():
         compositional = k not in backend.__dict__
         if k not in backend.__dict__:
-            if k in backend.invalid_dtypes and k in ivy.__dict__:
-                del ivy.__dict__[k]
+            if k in backend.invalid_dtypes and k in target.__dict__:
+                del target.__dict__[k]
                 continue
             backend.__dict__[k] = v
         target.__dict__[k] = _wrap_function(
