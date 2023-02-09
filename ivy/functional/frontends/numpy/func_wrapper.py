@@ -145,7 +145,7 @@ def _assert_same_kind_array(args, dtype, scalar_check=False):
 
 
 def _assert_same_kind_scalar(args, dtype):
-    if args and ivy.exists(dtype) and ivy.is_int_dtype(dtype):
+    if args and dtype and ivy.is_int_dtype(dtype):
         ivy.assertions.check_all_or_any_fn(
             *args,
             fn=lambda x: type(x) != float,
@@ -168,10 +168,41 @@ def _assert_safe_array(args, dtype, scalar_check=False):
                 type="all",
                 message="type of input is incompatible with dtype: {}".format(dtype),
             )
+        else:
+            if ivy.is_int_dtype(dtype):
+                ivy.assertions.check_all_or_any_fn(
+                    *args,
+                    fn=lambda x: not ivy.is_float_dtype(x),
+                    type="all",
+                    message="type of input is incompatible with dtype: {}".format(
+                        dtype
+                    ),
+                )
+            elif ivy.is_bool_dtype(dtype):
+                ivy.assertions.check_all_or_any_fn(
+                    *args,
+                    fn=ivy.is_bool_dtype,
+                    type="all",
+                    message="type of input is incompatible with dtype: {}".format(
+                        dtype
+                    ),
+                )
 
 
 def _assert_safe_scalar(args, dtype):
-    pass
+    if args and dtype:
+        allowed_dtypes = [bool]
+        if ivy.is_int_dtype(dtype):
+            allowed_dtypes += [int]
+        elif ivy.is_float_dtype(dtype):
+            allowed_dtypes += [float, int]
+
+        ivy.assertions.check_all_or_any_fn(
+            *args,
+            fn=lambda x: type(x) in allowed_dtypes,
+            type="all",
+            message="type of input is incompatible with dtype: {}".format(dtype),
+        )
 
 
 def handle_numpy_casting(fn: Callable) -> Callable:
