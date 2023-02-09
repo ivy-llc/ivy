@@ -970,7 +970,7 @@ def interpolate(
     antialias: Optional[bool] = False,
 ):
     """
-    
+
     Parameters
     ----------
     x
@@ -1098,4 +1098,6 @@ def interpolate(
                         ret[i][j][w_dim] = x[i][j][round(w_dim // w_scale)]
 
     return ivy.astype(ret, ivy.dtype(x))
-    
+
+
+interpolate.mixed_function = True

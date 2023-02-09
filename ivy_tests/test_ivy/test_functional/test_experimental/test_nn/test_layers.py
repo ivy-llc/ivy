@@ -312,6 +312,7 @@ def _interp_args(draw):
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
+    number_positional_args=st.just(2),
 )
 def test_interpolate(
     dtype_x_mode,
