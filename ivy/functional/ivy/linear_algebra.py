@@ -2606,7 +2606,43 @@ def multi_dot(
     *,
     out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Given list of matrices
+    """Given list of matrices, return their product by reordering the multiplications
+    so that the fewest arithmetic operations are performed.
+
+    Parameters
+    ----------
+    tensors
+        the arrays to multiply. Should have a numeric type. First and last arrays
+        should be a one-dimensional or two-dimensional array while every other array
+        should be a two-dimensional array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        -   the matrix product if the list of arrays isn't empty and the arrays have
+            the right dimensions.
+
+        -   an empty array is either the array list is empty or at least one array
+            hasn't the right dimension.
     
+            
+    **Raises**
+
+        -   if two consecutive arrays don't have corresponding shapes (see matmul for
+            more precision).
+        
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matmul.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(tensors).multi_dot(tensors, out=out)
