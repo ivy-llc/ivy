@@ -1069,8 +1069,8 @@ def interpolate(
         ret = ret.transpose((0, 1, 4, 2, 3))
 
     elif mode == "nearest":
-        size = (size,) if isinstance(size, int) else size
         dims = len(x.shape) - 2
+        size = (size,) * dims if isinstance(size, int) else size
         ret = ivy.zeros((x.shape[:2] + tuple(size)))
         for i, ba in enumerate(x):
             for j, ch in enumerate(ba):
