@@ -387,17 +387,15 @@ def test_torch_instance_reshape(
     frontend,
 ):
     input_dtype, x = dtype_x
+    shape = {
+        "shape": shape,
+    }
     if unpack_shape:
-        method_flags.num_positional_args = len(shape) + 1
-        shape = {}
+        method_flags.num_positional_args = len(shape["shape"]) + 1
         i = 0
-        for x_ in shape:
+        for x_ in shape["shape"]:
             shape["x{}".format(i)] = x_
             i += 1
-    else:
-        shape = {
-            "shape": shape,
-        }
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -2249,16 +2247,14 @@ def test_torch_instance_new_empty(
 def _expand_helper(draw):
     num_dims = draw(st.integers(min_value=1, max_value=10))
     shape = draw(
-        helpers.get_shape(
-            min_num_dims=num_dims,
-            max_num_dims=num_dims
-        ).filter(lambda x: any(i == 1 for i in x))
+        helpers.get_shape(min_num_dims=num_dims, max_num_dims=num_dims).filter(
+            lambda x: any(i == 1 for i in x)
+        )
     )
     new_shape = draw(
-        helpers.get_shape(
-            min_num_dims=num_dims,
-            max_num_dims=num_dims
-        ).filter(lambda x: all(x[i] == v if v != 1 else True for i, v in enumerate(shape)))
+        helpers.get_shape(min_num_dims=num_dims, max_num_dims=num_dims).filter(
+            lambda x: all(x[i] == v if v != 1 else True for i, v in enumerate(shape))
+        )
     )
     dtype, x = draw(
         helpers.dtype_and_values(
