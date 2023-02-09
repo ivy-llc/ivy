@@ -7,14 +7,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
-def _div_rtn(x, y):
-    q = x / y
-    r = x % y
-    if (r != 0) and ((r < 0) != (y < 0)):
-        q = q - 1
-    return q
-
-
 def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False):
 
     in_channels = input.shape[1]
@@ -60,176 +52,161 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
         )
 
 
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "torch",
-)
+def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
+    dims = len(input.shape) - 2
+    _valid_shapes(input, weight, bias, stride, padding, groups)
+
+    if isinstance(padding, str):
+        padding = padding.upper()
+    else:
+        padding = [padding] * dims if isinstance(padding, int) else padding
+        pad_width = [
+            (0, 0), (0, 0), *[(p, p) for p in padding]
+        ]
+        input = ivy.zero_pad(input, pad_width)
+        padding = "VALID"
+
+    weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 1, 0))
+
+    ret = ivy.conv(
+        input,
+        weight,
+        stride,
+        padding,
+        dims=dims,
+        data_format="channel_first",
+        dilations=dilation,
+        feature_group_count=groups,
+    )
+    if bias is not None:
+        return ivy.add(ret, ivy.expand_dims(bias, axis=(0, *range(2, dims + 2))))
+    return ret
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
-    _valid_shapes(input, weight, bias, stride, padding, groups)
-
-    if type(padding) == str:
-        padding = padding.upper()
-    else:
-        _pad_w = padding if isinstance(padding, int) else padding[0]
-        input = ivy.zero_pad(
-            input,
-            pad_width=[(0, 0), (0, 0), (_pad_w, _pad_w)],
-        )
-        padding = "VALID"
-
-    weight = ivy.permute_dims(weight, axes=(2, 1, 0))
-
-    ret = ivy.conv(
+    return _conv(
         input,
         weight,
-        stride,
-        padding,
-        data_format="channel_first",
-        dilations=dilation,
-        feature_group_count=groups,
-        dims=1,
+        bias=bias,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        groups=groups
     )
 
-    if bias is not None:
-        return ivy.add(ret, ivy.expand_dims(bias, axis=(0, 2)))
-    return ret
 
-
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "torch",
-)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
-    _valid_shapes(input, weight, bias, stride, padding, groups)
-
-    if isinstance(padding, str):
-        padding = padding.upper()
-    else:
-        _pad_h, _pad_w = (
-            (padding, padding) if isinstance(padding, int) else (padding[0], padding[1])
-        )
-        input = ivy.zero_pad(
-            input, pad_width=[(0, 0), (0, 0), (_pad_h, _pad_h), (_pad_w, _pad_w)]
-        )
-        padding = "VALID"
-
-    weight = ivy.permute_dims(weight, axes=(2, 3, 1, 0))
-    ret = ivy.conv(
+    return _conv(
         input,
         weight,
-        stride,
-        padding,
-        data_format="channel_first",
-        dilations=dilation,
-        feature_group_count=groups,
+        bias=bias,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        groups=groups
     )
-    if bias is not None:
-        return ivy.add(ret, ivy.expand_dims(bias, axis=(0, 2, 3)))
-    return ret
 
 
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "torch",
-)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
-    _valid_shapes(input, weight, bias, stride, padding, groups)
-
-    if isinstance(padding, str):
-        padding = padding.upper()
-    else:
-        _pad_t, _pad_h, _pad_w = (
-            (padding, padding, padding)
-            if isinstance(padding, int)
-            else (padding[0], padding[1], padding[2])
-        )
-        input = ivy.zero_pad(
-            input,
-            pad_width=[
-                (0, 0),
-                (0, 0),
-                (_pad_t, _pad_t),
-                (_pad_h, _pad_h),
-                (_pad_w, _pad_w),
-            ],
-        )
-        padding = "VALID"
-
-    weight = ivy.permute_dims(weight, axes=(2, 3, 4, 1, 0))
-    ret = ivy.conv(
+    return _conv(
         input,
         weight,
-        stride,
-        padding,
-        data_format="channel_first",
-        dilations=dilation,
-        feature_group_count=groups,
-        dims=3,
+        bias=bias,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        groups=groups
     )
-    if bias is not None:
-        return ivy.add(ret, ivy.expand_dims(bias, axis=(0, 2, 3, 4)))
-    return ret
 
 
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "torch",
-)
-@to_ivy_arrays_and_back
-def conv_transpose1d(input, weight, bias=None, stride=1, padding=0, output_padding=0, groups=1, dilation=1):
+# ToDo: add support / debug non-default stride, padding, and output_padding
+def _conv_transpose(
+        input,
+        weight,
+        bias=None,
+        stride=1,
+        padding=0,
+        output_padding=0,
+        groups=1,
+        dilation=1,
+):
+    dims = len(input.shape) - 2
     _valid_shapes(input, weight, bias, stride, padding, groups, transpose=True)
 
-    if type(padding) == str:
-        padding = padding.upper()
-    else:
-        _pad_w = padding if isinstance(padding, int) else padding[0]
-        padding = [(_pad_w, _pad_w)]
+    padding = [padding] * dims if isinstance(padding, int) else list(padding)
+    paired_padding = [(padding[i], padding[i]) for i in reversed(range(len(padding)))]
 
-    weight = ivy.permute_dims(weight, axes=(2, 0, 1))
+    weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 0, 1))
 
     ret = ivy.conv_general_transpose(
         input,
         weight,
         stride,
-        padding,
-        dims=1,
+        paired_padding,
+        dims=dims,
         data_format="channel_first",
         dilations=dilation,
         feature_group_count=groups,
     )
-
     if bias is not None:
-        ret = ivy.add(ret, ivy.expand_dims(bias, axis=(0, 2)))
+        ret = ivy.add(ret, ivy.expand_dims(bias, axis=(0, *range(2, dims + 2))))
 
-    _out_pad_w = output_padding if isinstance(output_padding, int) else output_padding[0]
-    ret = ivy.zero_pad(
-        ret,
-        pad_width=[(0, 0), (0, 0), (_out_pad_w,) * 2],
-    )
+    out_pad = [output_padding] * dims if isinstance(output_padding, int) else list(output_padding)
+    paired_out_pad = [(out_pad[i], out_pad[i]) for i in reversed(range(len(out_pad)))]
+
+    ret = ivy.zero_pad(ret, [(0, 0), (0, 0), *paired_out_pad])
     return ret
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def conv_transpose1d(input, weight, bias=None, stride=1, padding=0, output_padding=0, groups=1, dilation=1):
+    return _conv_transpose(
+        input,
+        weight,
+        bias=bias,
+        stride=stride,
+        padding=padding,
+        output_padding=output_padding,
+        groups=groups,
+        dilation=dilation,
+    )
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def conv_transpose2d(input, weight, bias=None, stride=1, padding=0, output_padding=0, groups=1, dilation=1):
+    return _conv_transpose(
+        input,
+        weight,
+        bias=bias,
+        stride=stride,
+        padding=padding,
+        output_padding=output_padding,
+        groups=groups,
+        dilation=dilation,
+    )
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def conv_transpose3d(input, weight, bias=None, stride=1, padding=0, output_padding=0, groups=1, dilation=1):
+    return _conv_transpose(
+        input,
+        weight,
+        bias=bias,
+        stride=stride,
+        padding=padding,
+        output_padding=output_padding,
+        groups=groups,
+        dilation=dilation,
+    )
 
 
 # ToDo: both for fold and unfold, the conversion to numpy and back to ivy can be removed

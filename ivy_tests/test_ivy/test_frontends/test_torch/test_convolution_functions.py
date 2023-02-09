@@ -243,6 +243,74 @@ def test_torch_conv_tranpose1d(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.conv_transpose2d",
+    dtype_vals=x_and_filters(dim=2, transpose=True),
+)
+def test_torch_conv_tranpose2d(
+    *,
+    dtype_vals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=vals,
+        weight=weight,
+        bias=bias,
+        stride=1,
+        # stride=strides,
+        padding=0,
+        # padding=padding,
+        output_padding=0,
+        # output_padding=output_pad,
+        groups=fc,
+        dilation=dilations,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.conv_transpose3d",
+    dtype_vals=x_and_filters(dim=3, transpose=True),
+)
+def test_torch_conv_tranpose3d(
+        *,
+        dtype_vals,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+):
+    dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=vals,
+        weight=weight,
+        bias=bias,
+        stride=1,
+        # stride=strides,
+        padding=0,
+        # padding=padding,
+        output_padding=0,
+        # output_padding=output_pad,
+        groups=fc,
+        dilation=dilations,
+    )
+
+
 @st.composite
 def _fold_unfold_helper(draw, dim):
     stride = draw(
