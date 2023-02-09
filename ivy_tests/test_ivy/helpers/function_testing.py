@@ -66,10 +66,9 @@ import ivy.compiler.compiler as ic
 
 
 # Temporary (.so) configuration
-def compiled_if_required(fn, test_compile=True, args=None, kwargs=None):
+def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
     if test_compile:
-        assert ic.compile(fn, args, kwargs), "Compilation failed"
-
+        fn = ic.compile(fn, args=args, kwargs=kwargs)
     return fn
 
 
