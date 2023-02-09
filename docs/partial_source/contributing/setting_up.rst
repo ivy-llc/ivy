@@ -234,15 +234,14 @@ MacOS
       Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-   d. Choosing "Docker" from the left panel.
-      Type python3 (with the number) in python interpreter path and press ok.
+   d. Choosing "On Docker" from the dropdown menu.
+   e. Choosing "Docker" from the "Docker server" dropdown menu and choose "Pull" if you want to use a remote interpreter and use `unifyai/ivy:latest` as the image tag
+   f. If you don't want to use a remote interpreter, choose "Build" and use the suitable Dockerfile; `Dockerfile` for intel processors, and `DockerfileM1` for M1 chips
+   g. Clicking next and navigating to system interpreter tab from the menu on the left
+   h. Choosing the built interpreter from the dropdown menu.
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
-
-**Important Note**
-
-When setting up on an M1 Mac, you would have to update the Dockerfile to install libraries from :code:`requirements/optional_m1_1.txt` and :code:`requirements/optional_m1_2.txt` instead of :code:`requirements/optional.txt`.
 
 **Video**
 
