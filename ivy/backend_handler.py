@@ -401,7 +401,7 @@ def set_backend(backend: str, dynamic: bool = False):
         ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
     backend_stack.append(backend)
     set_backend_to_specific_version(backend)
-    _set_backend_as_ivy(ivy, backend)
+    _set_backend_as_ivy(ivy_original_dict, ivy, backend)
 
     if dynamic:
         convert_from_numpy_to_target_backend(variable_ids, numpy_objs)
