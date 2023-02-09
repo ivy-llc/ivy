@@ -4,11 +4,7 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import (
-    with_unsupported_dtypes,
-    to_native_arrays_and_back,
-    handle_nestable,
-)
+from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding
@@ -369,8 +365,6 @@ def embedding(
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
 
 
-@to_native_arrays_and_back
-@handle_nestable
 def interpolate(
     x: Union[tf.Tensor, tf.Variable],
     size: Union[Sequence[int], int],
