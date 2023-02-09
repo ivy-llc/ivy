@@ -468,6 +468,8 @@ def get_backend(backend: Optional[str] = None):
     # ToDo: change this so that it doesn't depend at all on the global ivy.
     #  Currently all backend-agnostic implementations returned in this
     #  module will still use the global ivy backend.
+    if ivy.is_local():
+        return ivy
     global ivy_original_dict
     if not backend_stack:
         ivy_original_dict = ivy.__dict__.copy()
