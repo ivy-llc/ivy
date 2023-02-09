@@ -83,5 +83,29 @@ class ArrayWithActivationsExperimental(abc.ABC):
 
     def prelu(
         self,
+        slope: Union[float, ivy.NativeArray, ivy.Array],
+        /,
+        *,
+        out: Optional["ivy.Array"] = None,
     ) -> ivy.Array:
-        pass
+        """
+        Prelu takes input data (Array) and slope array as input,
+        and produces one output data (array) where the function
+        f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
+        to the data array elementwise. This operator supports unidirectional
+        broadcasting (array slope should be unidirectional broadcastable to
+        input tensor X);
+
+        Parameters
+        ----------
+        self
+            input array.
+        slope
+            Slope Array. The shape of slope can be smaller then first input X;
+            if so, its shape must be unidirectional broadcastable to X.
+        out
+            Optional output array.
+        Returns
+        -------
+        """
+        return ivy.prelu(self._data, slope, out=out)
