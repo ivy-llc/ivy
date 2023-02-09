@@ -2415,7 +2415,7 @@ def vector_norm(
     >>> ivy.vector_norm(x, axis = 0, keepdims = True,  ord = float("inf"))
     ivy.array([[1.3, 2.4, 3.]])
 
-    >>> x = ivy.array([1, 2, 3, 4], dtype = ivy.float32)
+    >>> x = ivy.native_array([1, 2, 3, 4], dtype = ivy.float32)
     >>> ivy.vector_norm(x, ord = 3.)
     ivy.array([4.64158917])
 
