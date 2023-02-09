@@ -2794,6 +2794,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
             ``x``. The returned array must have a floating-point data type
             determined by :ref:`type-promotion`.
 
+        Examples
+        -------
+        >>> x = ivy.Container(a = [1., 2., 3.], b = [-2., 0., 3.2])
+        >>> x.vector_norm()
+        {
+            a: ivy.array([3.7416575]),
+            b: ivy.array([3.77359247])
+        }
         """
         return self.static_vector_norm(
             self,
