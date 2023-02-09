@@ -1338,44 +1338,46 @@ def test_tensorflow_where_with_xy(
 
 
 @st.composite
-def reverse_helper(draw):
-    dtype_and_x = draw(
+def reverse_helper(draw,):
+    dtype, x, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             min_num_dims=1,
             max_num_dims=8,
+            ret_shape=True
         )
     )
-    axis_dtype_and_axis = draw(
+    axis_dtype, axis = draw(
         helpers.dtype_and_values(
             available_dtypes=["int32", "int64"],
             min_num_dims=1,
             max_num_dims=1,
+            max_value=len(shape)-1,
         )
     )
-    return dtype_and_x, axis_dtype_and_axis
+    return dtype, x, axis_dtype, axis
 
 
 @handle_frontend_test(
     fn_tree="tensorflow.reverse",
-    x_and_axis=reverse_helper(),
+    dtype_x_axis=reverse_helper(),
 )
 def test_tensorflow_reverse(
     *,
-    x_and_axis,
+    dtype_x_axis,
     frontend,
     fn_tree,
     test_flags,
     on_device,
 ):
 
-    x, axis = x_and_axis
+    dtype, x, axis_dtype, axis = dtype_x_axis
     helpers.test_frontend_function(
-        input_dtypes=x[0] + axis[0],
+        input_dtypes=dtype + axis_dtype,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        tensor=x[1],
-        axis=axis[1],
+        tensor=x[0],
+        axis=axis[0],
     )
