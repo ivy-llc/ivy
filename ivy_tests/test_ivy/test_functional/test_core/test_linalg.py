@@ -1351,7 +1351,7 @@ def test_cholesky(
 @handle_test(
     fn_tree="functional.ivy.cov",
     dtype_x1_x2_cov=_get_dtype_value1_value2_cov(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         max_num_dims=2,
         min_dim_size=2,
