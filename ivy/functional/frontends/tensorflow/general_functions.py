@@ -34,6 +34,23 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     return ivy.clip(t, clip_value_min, clip_value_max)
 
 
+@to_ivy_arrays_and_back
+def clip_by_norm(t, clip_norm, axes=None):
+    t = ivy.array(t)
+    l2sum = ivy.sum(t * t, axis=axes, keepdims=True)
+    pred = l2sum > 0
+
+    l2sum_safe = ivy.where(pred, l2sum, ivy.ones_like(l2sum))
+    l2norm = ivy.where(pred, ivy.sqrt(l2sum_safe), l2sum)
+    intermediate = t * clip_norm
+    assert t.shape == intermediate.shape, "Dimensions %s and %s are not compatible" % (
+        t.shape,
+        intermediate.shape,
+    )
+    t_clip = intermediate / ivy.maximum(l2norm, clip_norm)
+    return t_clip
+
+
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
@@ -202,9 +219,13 @@ def boolean_mask(tensor, mask, axis=None, name=None):
         k = ivy.get_num_dims(mask)
         if axis < 0:
             axis = n + axis
-        ivy.assertions.check_less(k + axis, n, allow_equal=True,
-                                  message="Value of axis must be \
-                                           such that axis + dim(mask) <= dim(tensor)")
+        ivy.assertions.check_less(
+            k + axis,
+            n,
+            allow_equal=True,
+            message="Value of axis must be \
+                                           such that axis + dim(mask) <= dim(tensor)",
+        )
         tensor_shape = ivy.shape(tensor)
         for i in range(axis - 1, -1, -1):
             mask = ivy.expand_dims(mask, axis=0)
