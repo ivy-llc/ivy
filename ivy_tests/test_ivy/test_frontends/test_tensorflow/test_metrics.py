@@ -86,9 +86,7 @@ def _dtype_pred_and_labels(
         for _ in label_shape:
             length *= _
         indices = draw(
-            helpers.list_of_length(
-                x=st.integers(min_value=0, max_value=len(label_set) - 1), length=length
-            )
+            helpers.list_of_length(other=st.integers(min_value=0, max_value=len(label_set) - 1))
         )
         values = [label_set[_] for _ in indices]
         array = np.array(values)

@@ -143,9 +143,9 @@ def array_dtypes(
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if num_arrays == 1:
-        dtypes = draw(ah.list_of_length(x=st.sampled_from(available_dtypes), length=1))
+        dtypes = draw(ah.list_of_length(other=st.sampled_from(available_dtypes)))
     elif shared_dtype:
-        dtypes = draw(ah.list_of_length(x=st.sampled_from(available_dtypes), length=1))
+        dtypes = draw(ah.list_of_length(other=st.sampled_from(available_dtypes)))
         dtypes = [dtypes[0] for _ in range(num_arrays)]
     else:
         unwanted_types = set(ivy.all_dtypes).difference(set(available_dtypes))

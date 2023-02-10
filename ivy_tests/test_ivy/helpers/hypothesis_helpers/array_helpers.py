@@ -15,9 +15,9 @@ from . import dtype_helpers, number_helpers
 
 @st.composite
 def array_bools(
-    draw,
-    *,
-    size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size"),
+        draw,
+        *,
+        size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size")
 ):
     """Draws a list with a fixed size from the data-set other.
 
@@ -38,9 +38,12 @@ def array_bools(
 
 
 def list_of_length(
-    *,
-    other,
-    size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size"),
+        *,
+        other,
+        size=st.shared(
+            number_helpers.ints(min_value=1, max_value=4),
+            key="size"
+        )
 ):
     """Returns a list of the given length with elements drawn randomly from x.
 
@@ -62,7 +65,7 @@ def list_of_length(
 def lists(
     draw,
     *,
-    other,
+    arg,
     min_size=None,
     max_size=None,
     size_bounds=None,
@@ -74,7 +77,7 @@ def lists(
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    other
+    arg
         data-set of elements.
     min_size
         minimum size of the list.
@@ -97,7 +100,7 @@ def lists(
         min_size = draw(st.shared(integers, key=min_size))
     if not isinstance(max_size, int):
         max_size = draw(st.shared(integers, key=max_size))
-    return draw(st.lists(other, min_size=min_size, max_size=max_size))
+    return draw(st.lists(arg, min_size=min_size, max_size=max_size))
 
 
 @st.composite
@@ -743,7 +746,7 @@ def array_values(
             if exclude_max:
                 max_value -= 1
             values = draw(
-                list_of_length(x=st.integers(min_value, max_value), length=size)
+                list_of_length(other=st.integers(min_value, max_value))
             )
         elif kind_dtype == "float":
             floats_info = {
@@ -804,15 +807,12 @@ def array_values(
             if "complex" in dtype:
                 float_strategy = st.tuples(float_strategy, float_strategy)
             values = draw(
-                list_of_length(
-                    x=float_strategy,
-                    length=size,
-                )
+                list_of_length(other=float_strategy)
             )
             if "complex" in dtype:
                 values = [complex(*v) for v in values]
     else:
-        values = draw(list_of_length(x=st.booleans(), length=size))
+        values = draw(list_of_length(other=st.booleans()))
 
     array = np.asarray(values, dtype=dtype)
     if isinstance(shape, (tuple, list)):
