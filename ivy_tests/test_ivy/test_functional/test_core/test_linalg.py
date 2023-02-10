@@ -193,6 +193,8 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False):
     if transpose:
         transpose = draw(st.booleans())
         adjoint = draw(st.booleans())
+        if adjoint and transpose:
+            adjoint = draw(st.just('False'))
         if transpose and not adjoint:
             matrix = np.transpose(matrix)
         if adjoint and not transpose:
@@ -227,6 +229,8 @@ def _get_second_matrix_and_dtype(draw, *, transpose=False):
     if transpose:
         transpose = draw(st.booleans())
         adjoint = draw(st.booleans())
+        if adjoint and transpose:
+            adjoint = draw(st.just('False'))
         if transpose and not adjoint:
             matrix = np.transpose(matrix)
         if adjoint and not transpose:
