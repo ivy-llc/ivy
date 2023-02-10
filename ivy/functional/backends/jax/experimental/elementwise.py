@@ -222,15 +222,20 @@ def allclose(
 
 
 def diff(
-    x: Union[JaxArray, int, float, list, tuple],
+    x: JaxArray,
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[JaxArray, int, float, list, tuple]] = None,
     append: Optional[Union[JaxArray, int, float, list, tuple]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x = jnp.asarray(x)
+    if isinstance(prepend, (list, tuple)):
+        prepend = jnp.asarray(prepend)
+    if isinstance(append, (list, tuple)):
+        append = jnp.asarray(append)
     return jnp.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
@@ -279,7 +284,17 @@ def zeta(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return js.special.zeta(x, q)
+    temp = jnp.logical_and(jnp.greater(x, 0), jnp.equal(jnp.remainder(x, 2), 0))
+    temp = jnp.logical_and(temp, jnp.less_equal(q, 0))
+    temp = jnp.logical_and(temp, jnp.equal(jnp.remainder(q, 1), 0))
+    inf_indices = jnp.logical_or(temp, jnp.equal(x, 1))
+    temp = jnp.logical_and(jnp.not_equal(jnp.remainder(x, 2), 0), jnp.greater(x, 1))
+    temp = jnp.logical_and(temp, jnp.less_equal(q, 0))
+    nan_indices = jnp.logical_or(temp, jnp.less(x, 1))
+    ret = js.special.zeta(x, q)
+    ret = ret.at[nan_indices].set(jnp.nan)
+    ret = ret.at[inf_indices].set(jnp.inf)
+    return ret
 
 
 # def gradient(

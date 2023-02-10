@@ -160,10 +160,10 @@ class Array(
             to_numpy = self._backend.to_numpy
             variable_data = self._backend.variable_data
 
-            if is_variable(self.data) and \
-                    not ( str(self._backend).__contains__("jax") or
-                          str(self._backend).__contains__("numpy")
-                    ):
+            if is_variable(self.data) and not (
+                str(self._backend).__contains__("jax")
+                or str(self._backend).__contains__("numpy")
+            ):
                 native_data = variable_data(self.data)
                 np_data = to_numpy(native_data)
                 new_arr = ivy.array(np_data)
@@ -172,7 +172,6 @@ class Array(
             else:
                 np_data = to_numpy(self.data)
                 self._data = ivy.array(np_data).data
-
 
         self._dynamic_backend = value
 
