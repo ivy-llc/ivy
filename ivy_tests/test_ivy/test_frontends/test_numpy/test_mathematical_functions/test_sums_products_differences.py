@@ -355,4 +355,3 @@ def test_numpy_diff(
         x=x[0],
         axis=axis,
     )
-    
