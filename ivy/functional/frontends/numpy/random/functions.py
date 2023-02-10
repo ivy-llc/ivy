@@ -65,16 +65,9 @@ def multinomial(n, pvals, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def permutation(x):
+def permutation(x, /):
     if isinstance(x, int):
         new_array = ivy.arange(x)
-        ivy.random.shuffle(new_array)
-        return new_array
-    elif isinstance(x, str):
-        raise ValueError("x must be an integer or at least 1-dimensional")
+        return ivy.shuffle(new_array)
     elif x.ndim > 0:
-        new_array = x
-        ivy.random.shuffle(new_array)
-        return new_array
-    else:
-        raise ValueError("x must be an integer or at least 1-dimensional")
+        return ivy.shuffle(x)
