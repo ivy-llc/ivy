@@ -278,6 +278,9 @@ class ndarray:
     def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self.data, order=order)
 
+    def tofile(self, sep="", format="%s"):
+        return np_frontend.tofile(self.data, sep=sep, format=format)
+
     def __add__(self, value, /):
         return np_frontend.add(self._ivy_array, value)
 
