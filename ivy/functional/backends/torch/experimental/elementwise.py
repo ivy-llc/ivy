@@ -172,10 +172,10 @@ def count_nonzero(
     if not keepdims:
         return x
     if isinstance(axis, tuple):
-        for d in sorted(axis, reverse=True):
+        for d in sorted(axis):
             x = x.unsqueeze(d)
         return x
-    elif isinstance(x, int):
+    elif isinstance(axis, int):
         return x.unsqueeze(axis)
     return x
 
@@ -245,14 +245,15 @@ angle.support_native_out = True
 
 
 def imag(
-    input: torch.Tensor,
+    val: torch.Tensor,
     /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if input.dtype != torch.complex64:
-        input = input.to(torch.complex64)
-    return torch.imag(input)
+    if val.dtype not in (torch.complex64, torch.complex128):
+        ret = torch.imag(val.to(torch.complex64))
+        return ret.to(val.dtype)
+    return torch.imag(val)
 
 
 imag.support_native_out = False
