@@ -1338,7 +1338,7 @@ def test_tensorflow_where_with_xy(
 
 
 @st.composite
-def reverse_helper(draw,):
+def reverse_helper(draw):
     dtype, x, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
