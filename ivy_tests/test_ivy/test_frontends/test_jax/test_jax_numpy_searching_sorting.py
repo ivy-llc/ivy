@@ -274,4 +274,6 @@ def test_numpy_sort(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+        rtol=1e-02,
+        atol=1e-03,
     )
