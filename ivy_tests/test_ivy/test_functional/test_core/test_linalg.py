@@ -190,11 +190,14 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False):
             max_value=5,
         )
     )
-    if transpose is True:
+    if transpose:
         transpose = draw(st.booleans())
-        if transpose:
+        adjoint = draw(st.booleans())
+        if transpose and not adjoint:
             matrix = np.transpose(matrix)
-        return [input_dtype], matrix, transpose
+        if adjoint and not transpose:
+            matrix = np.transpose(np.conjugate(matrix))
+        return [input_dtype], matrix, transpose, adjoint
     return [input_dtype], matrix
 
 
@@ -221,11 +224,14 @@ def _get_second_matrix_and_dtype(draw, *, transpose=False):
             max_value=5,
         )
     )
-    if transpose is True:
+    if transpose:
         transpose = draw(st.booleans())
-        if transpose:
+        adjoint = draw(st.booleans())
+        if transpose and not adjoint:
             matrix = np.transpose(matrix)
-        return [input_dtype], matrix, transpose
+        if adjoint and not transpose:
+            matrix = np.transpose(np.conjugate(matrix))
+        return [input_dtype], matrix, transpose, adjoint
     return [input_dtype], matrix
 
 
@@ -328,8 +334,8 @@ def test_matmul(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype1, x_1, transpose_a = x
-    input_dtype2, y_1, transpose_b = y
+    input_dtype1, x_1, transpose_a, adjoint_a = x
+    input_dtype2, y_1, transpose_b, adjoint_b = y
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype1 + input_dtype2,
@@ -343,6 +349,8 @@ def test_matmul(
         x2=y_1,
         transpose_a=transpose_a,
         transpose_b=transpose_b,
+        adjoint_a=adjoint_a,
+        adjoint_b=adjoint_b,
     )
 
 
