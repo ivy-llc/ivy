@@ -270,7 +270,7 @@ def get_bounds(draw, *, dtype):
             return draw(get_bounds(dtype=dtype))
     else:
         none_or_float = number_helpers.floats(dtype=dtype) | st.none()
-        values = draw(array_helpers.list_of_size(other=none_or_float), size=2)
+        values = draw(array_helpers.list_of_size(other=none_or_float, size=2))
         if values[0] is not None and values[1] is not None:
             low, high = min(values), max(values)
         else:
