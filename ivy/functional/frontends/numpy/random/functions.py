@@ -69,5 +69,5 @@ def permutation(x, /):
     if isinstance(x, int):
         x = ivy.arange(x)
     elif x.ndim > 0:
-        new_array = x
+        x = x
     return ivy.shuffle(x)
