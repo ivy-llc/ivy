@@ -87,7 +87,9 @@ from . import tensor
 from .tensor import EagerTensor, Tensor
 from . import keras
 from . import compat
+from . import image
 from . import linalg
+from .linalg import matmul, tensordot, eig, eye, norm
 from . import math
 from .math import *
 from . import nest

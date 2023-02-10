@@ -125,6 +125,6 @@ def adjoint(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     _check_valid_dimension_size(x)
-    axes = [x for x in range(len(x.shape))]
+    axes = list(range(len(x.shape)))
     axes[-1], axes[-2] = axes[-2], axes[-1]
     return jnp.conjugate(jnp.transpose(x, axes=axes))
