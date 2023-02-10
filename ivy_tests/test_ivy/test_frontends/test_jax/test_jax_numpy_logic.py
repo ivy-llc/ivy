@@ -714,3 +714,27 @@ def test_jax_numpy_logical_not(
         on_device=on_device,
         x=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.isscalar",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_jax_numpy_isscalar(
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtypes, x = dtype_and_x
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
