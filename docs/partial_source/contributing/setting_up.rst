@@ -236,7 +236,7 @@ MacOS
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
    d. Choosing "On Docker" from the dropdown menu.
    e. Choosing "Docker" from the "Docker server" dropdown menu and choose "Pull" if you want to use a remote interpreter and use `unifyai/ivy:latest` as the image tag
-   f. If you don't want to use a remote interpreter, choose "Build" and use the suitable Dockerfile; `Dockerfile` for intel processors, and `DockerfileM1` for M1 chips
+   f. If you don't want to use a remote interpreter, choose "Build" and use the suitable Dockerfile; then choosing `docker/Dockerfile` to be the Dockerfile
    g. Clicking next and navigating to system interpreter tab from the menu on the left
    h. Choosing the built interpreter from the dropdown menu.
 
