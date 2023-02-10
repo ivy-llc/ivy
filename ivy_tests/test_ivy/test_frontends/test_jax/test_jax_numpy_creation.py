@@ -532,7 +532,7 @@ def test_jax_numpy_empty_like(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    input_fill_dtype=_input_fill_and_dtype(),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_full(
