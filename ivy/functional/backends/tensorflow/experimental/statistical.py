@@ -37,6 +37,17 @@ def histogram(
     if range:
         if type(bins) == int:
             bins = tf.cast(tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype)
+    original_bins = tf.identity(bins)
+    flag_lower_interval = False
+    if not extend_lower_interval:
+        if tf.reduce_min(a) < bins[0]:
+            bins = tf.concat([[tf.reduce_min(a)], bins], 0)
+            flag_lower_interval = True
+    flag_upper_interval = False
+    if not extend_upper_interval:
+        if tf.reduce_max(a) > bins[-1]:
+            bins = tf.concat([bins, [tf.reduce_max(a)]], 0)
+            flag_upper_interval = True
     ret = tfp.stats.histogram(
         x=a,
         edges=bins,
@@ -47,9 +58,15 @@ def histogram(
         dtype=dtype,
         name="histogram",
     )
-    ret = tf.cast(ret, dtype=dtype)
-    bins = tf.cast(bins, dtype=dtype)
-    return ret, bins
+    # TODO: must delete the first element of the correct axis, this only works with
+    #       1D input
+    if not extend_lower_interval:
+        if flag_lower_interval:
+            ret = ret[1:]
+    if not extend_upper_interval:
+        if flag_upper_interval:
+            ret = ret[:-1]
+    return ret, tf.cast(original_bins, dtype)
 
 
 def median(
