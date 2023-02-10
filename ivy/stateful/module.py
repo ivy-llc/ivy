@@ -3,7 +3,6 @@
 # global
 import os
 import abc
-import ivy.functional.backends.numpy
 
 # local
 import ivy
@@ -513,13 +512,13 @@ class Module(ModuleConverters, ModuleHelpers):
         self.v.cont_to_disk_as_hdf5(weights_path)
 
     def build(
-            self,
-            *args,
-            from_call=False,
-            device=None,
-            dtype=None,
-            dynamic_backend=None,
-            **kwargs
+        self,
+        *args,
+        from_call=False,
+        device=None,
+        dtype=None,
+        dynamic_backend=None,
+        **kwargs,
     ):
         """
         Build the internal layers and variables for this module.
@@ -557,12 +556,11 @@ class Module(ModuleConverters, ModuleHelpers):
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
         created = Container(
-            self._create_variables(device=self._dev, dtype=dtype),
-            dynamic_backend=False
+            self._create_variables(device=self._dev, dtype=dtype), dynamic_backend=False
         )
         created_n_found = Container(
             dict(**self._find_variables(obj=self), **created),
-            dynamic_backend=dynamic_backend
+            dynamic_backend=dynamic_backend,
         )
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:

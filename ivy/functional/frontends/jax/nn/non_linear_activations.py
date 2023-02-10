@@ -294,7 +294,7 @@ def soft_sign(x):
 
 
 @to_ivy_arrays_and_back
-def softmax(x, axis=-1):
+def softmax(x, axis=-1, where=None, initial=None):
     return ivy.softmax(x, axis=axis)
 
 
