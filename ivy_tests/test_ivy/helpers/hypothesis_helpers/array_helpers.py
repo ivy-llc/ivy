@@ -781,8 +781,8 @@ def array_values(
                     ),
                 )
             if dtype == "bool"
-                   arr = np.random.randint(0,2,size=shape,dtype=dtype)
-                   return arr
+                arr = np.random.randint(0,2,size=shape,dtype=dtype)
+                return arr
                    
                    
             if "float" in dtype or "complex" in dtype:
