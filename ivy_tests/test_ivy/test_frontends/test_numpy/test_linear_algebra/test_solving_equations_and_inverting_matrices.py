@@ -169,6 +169,7 @@ def test_numpy_tensorinv(
         ind=ind,
     )
 
+
 @st.composite
 def _get_lstsq_matrices(draw):
     shape1 = draw(helpers.ints(min_value=2, max_value=10))
@@ -177,24 +178,25 @@ def _get_lstsq_matrices(draw):
     a = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=(shape1,shape2),
+            shape=(shape1, shape2),
             min_value=10,
             max_value=20,
             exclude_min=False,
-            exclude_max=False
+            exclude_max=False,
         )
     )
     b = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=(shape1,1),
+            shape=(shape1, 1),
             min_value=10,
             max_value=20,
             exclude_min=False,
-            exclude_max=False
+            exclude_max=False,
         )
     )
     return input_dtype, a, b
+
 
 # lstsq
 @handle_frontend_test(
