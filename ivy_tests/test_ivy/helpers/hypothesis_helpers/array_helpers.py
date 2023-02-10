@@ -34,7 +34,7 @@ def array_bools(
     A strategy that draws a list.
     """
     size = size if isinstance(size, int) else draw(size)
-    return draw(st.lists(st.booleans(), min_size=size, max_size=size))
+    return draw(st.lists(arg=st.booleans(), min_size=size, max_size=size))
 
 
 def list_of_length(
@@ -58,7 +58,7 @@ def list_of_length(
     -------
     A strategy that draws a list.
     """
-    return lists(other=other, min_size=size, max_size=size)
+    return lists(arg=other, min_size=size, max_size=size)
 
 
 @st.composite
