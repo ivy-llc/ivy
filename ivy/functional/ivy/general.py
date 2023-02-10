@@ -2206,7 +2206,6 @@ def get_all_arrays_in_memory() -> List[ivy.Array, ivy.NativeArray]:
             else:
                 if ivy.is_native_array(obj):
                     all_arrays.append(obj)
-
         except Exception:
             pass
     return all_arrays
