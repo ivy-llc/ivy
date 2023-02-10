@@ -2249,16 +2249,14 @@ def test_torch_instance_new_empty(
 def _expand_helper(draw):
     num_dims = draw(st.integers(min_value=1, max_value=10))
     shape = draw(
-        helpers.get_shape(
-            min_num_dims=num_dims,
-            max_num_dims=num_dims
-        ).filter(lambda x: any(i == 1 for i in x))
+        helpers.get_shape(min_num_dims=num_dims, max_num_dims=num_dims).filter(
+            lambda x: any(i == 1 for i in x)
+        )
     )
     new_shape = draw(
-        helpers.get_shape(
-            min_num_dims=num_dims,
-            max_num_dims=num_dims
-        ).filter(lambda x: all(x[i] == v if v != 1 else True for i, v in enumerate(shape)))
+        helpers.get_shape(min_num_dims=num_dims, max_num_dims=num_dims).filter(
+            lambda x: all(x[i] == v if v != 1 else True for i, v in enumerate(shape))
+        )
     )
     dtype, x = draw(
         helpers.dtype_and_values(
