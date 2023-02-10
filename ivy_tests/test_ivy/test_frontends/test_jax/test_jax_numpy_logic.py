@@ -715,7 +715,7 @@ def test_jax_numpy_logical_not(
         x=x[0],
     )
 
-
+# isscalar
 @handle_frontend_test(
     fn_tree="jax.numpy.isscalar",
     dtype_and_x=helpers.dtype_and_values(
