@@ -2245,16 +2245,23 @@ def test_torch_instance_new_empty(
 
 @st.composite
 def _expand_helper(draw):
-    dtype, x, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
+    num_dims = draw(st.integers(min_value=1, max_value=10))
+    shape = draw(
+        helpers.get_shape(min_num_dims=num_dims, max_num_dims=num_dims).filter(
+            lambda x: any(i == 1 for i in x)
         )
     )
-    # randomly expand singleton dimensions
-    new_shape = list(shape)
-    for i, v in enumerate(new_shape):
-        if v == 1 and st.booleans():
-            new_shape[i] = draw(st.integers(min_value=2, max_value=10))
+    new_shape = draw(
+        helpers.get_shape(min_num_dims=num_dims, max_num_dims=num_dims).filter(
+            lambda x: all(x[i] == v if v != 1 else True for i, v in enumerate(shape))
+        )
+    )
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+        )
+    )
     return dtype, x, new_shape
 
 
@@ -2263,24 +2270,35 @@ def _expand_helper(draw):
     init_tree="torch.tensor",
     method_name="expand",
     dtype_x_shape=_expand_helper(),
+    unpack_shape=st.booleans(),
 )
 def test_torch_instance_expand(
     dtype_x_shape,
+    unpack_shape,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
 ):
     input_dtype, x, shape = dtype_x_shape
+    if unpack_shape:
+        method_flags.num_positional_args = len(shape) + 1
+        size = {}
+        i = 0
+        for x_ in shape:
+            size["x{}".format(i)] = x_
+            i += 1
+    else:
+        size = {
+            "size": shape,
+        }
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "size": shape,
-        },
+        method_all_as_kwargs_np=size,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,

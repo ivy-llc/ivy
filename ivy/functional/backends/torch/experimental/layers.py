@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 import torch
 import math
 
@@ -503,3 +503,21 @@ def embedding(
 
 
 embedding.support_native_out = False
+
+
+def interpolate(
+    x: torch.Tensor,
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    align_corners: Optional[bool] = None,
+    antialias: Optional[bool] = False,
+):
+    return torch.nn.functional.interpolate(
+        x,
+        size,
+        mode=mode,
+        align_corners=align_corners,
+        antialias=antialias,
+    )

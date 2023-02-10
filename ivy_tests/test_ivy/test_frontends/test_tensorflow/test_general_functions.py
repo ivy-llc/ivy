@@ -109,8 +109,7 @@ def _get_norm_clip_inputs(draw):
     )
     norm_dtype, norm = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            shape=(1,)
+            available_dtypes=helpers.get_dtypes("numeric"), shape=(1,)
         )
     )
     print(x_dtype, x, norm_dtype, norm)
@@ -139,7 +138,7 @@ def test_tensorflow_clip_by_norm(
         fn_tree=fn_tree,
         on_device=on_device,
         t=x[0],
-        clip_norm=norm[0]
+        clip_norm=norm[0],
     )
 
 

@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
@@ -428,3 +428,37 @@ def ifft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.ifft(x, n, dim, norm)
+
+
+def interpolate(
+    x: JaxArray,
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Union[Literal["linear", "bilinear"]] = "linear",
+    align_corners: Optional[bool] = None,
+    antialias: Optional[bool] = False,
+):
+    # keeping the batch and channel dimension same
+    size = [*x.shape[0:1], *size]
+    if align_corners:
+        return ivy.interpolate(
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias
+        )
+    elif mode == "linear":
+        x = jnp.transpose(x, (0, 2, 1))
+        return jnp.transpose(
+            jax.image.resize(x, shape=size, method=mode, antialias=antialias), (0, 2, 1)
+        )
+    elif mode == "bilinear":
+        x = jnp.transpose(x, (0, 2, 3, 1))
+        return jnp.transpose(
+            jax.image.resize(x, shape=size, method=mode, antialias=antialias),
+            (0, 3, 1, 2),
+        )
+    elif mode == "trilinear":
+        x = jnp.transpose(x, (0, 2, 3, 4, 1))
+        return jnp.transpose(
+            jax.image.resize(x, shape=size, method=mode, antialias=antialias),
+            (0, 4, 1, 2, 3),
+        )
