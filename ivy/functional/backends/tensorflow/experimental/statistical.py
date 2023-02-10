@@ -59,14 +59,18 @@ def histogram(
         name="histogram",
     )
     # TODO: must delete the first element of the correct axis, this only works with
-    #       1D input
+    #       1D input, usar take
     if not extend_lower_interval:
         if flag_lower_interval:
             ret = ret[1:]
     if not extend_upper_interval:
         if flag_upper_interval:
             ret = ret[:-1]
-    return ret, tf.cast(original_bins, dtype)
+    # TODO: Tensorflow dtype argument is not working
+    if dtype:
+        ret = tf.cast(ret, dtype)
+        original_bins = tf.cast(original_bins, dtype)
+    return ret, original_bins
 
 
 def median(
