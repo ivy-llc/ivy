@@ -275,7 +275,7 @@ class ndarray:
             where=where,
         )
 
-    def tobytes(self, order="C"):
+    def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self.data, order=order)
 
     def __add__(self, value, /):
