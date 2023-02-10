@@ -76,6 +76,12 @@ class DeviceArray:
     def __rmod__(self, other):
         return jax_frontend.numpy.mod(other, self)
 
+    def __divmod__(self, other):
+        return jax_frontend.numpy.divmod(self, other)
+
+    def __rdivmod__(self, other):
+        return jax_frontend.numpy.divmod(other, self)
+
     def __truediv__(self, other):
         return jax_frontend.numpy.divide(self, other)
 
