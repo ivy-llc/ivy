@@ -32,9 +32,7 @@ def copy(a, order="K", subok=False):
 def check_shapes_numpy_broadcastable(shape1, shape2):
     """ Checks whether two shapes satisfy Numpy's broadcasting rules. """
     for s1, s2 in zip(shape1[::-1], shape2[::-1]):
-        if s1 == 1 or s2 == 1 or s1 == s2:
-            pass
-        else:
+        if s1 != 1 and s2 != 1 and s1 != s2:
             return False
     return True
         
@@ -62,6 +60,12 @@ def numpy_style_broadcast(a1, a2):
 @handle_numpy_out
 @to_ivy_arrays_and_back
 def choose(a, choices, out=None, mode='raise'):
+    print("Called with")
+    print("a")
+    print(a)
+    print("choices")
+    print(choices)
+    print(f"mode = {mode}")
     _choices = list(choices)
     n = len(_choices)
     # broadcast and promote types as necessary
