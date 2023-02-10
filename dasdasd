@@ -1,0 +1,23 @@
+* [32mmaster[m
+  [31mremotes/origin/HEAD[m -> origin/master
+  [31mremotes/origin/master[m
+  [31mremotes/origin/torch.linalg.lu_factor[m
+  [31mremotes/upstream/Cython_wrapper[m
+  [31mremotes/upstream/FrankShi9-patch-2[m
+  [31mremotes/upstream/JonathanYang-yzh-patch-1[m
+  [31mremotes/upstream/cupy-backend[m
+  [31mremotes/upstream/dashboard[m
+  [31mremotes/upstream/gh-pages[m
+  [31mremotes/upstream/graph-compiler-stateful-array[m
+  [31mremotes/upstream/gsoc_dev[m
+  [31mremotes/upstream/idea_folder_fixup[m
+  [31mremotes/upstream/master[m
+  [31mremotes/upstream/maxpool-superset[m
+  [31mremotes/upstream/revert-6254-master[m
+  [31mremotes/upstream/revert-6920-ivy_arccos[m
+  [31mremotes/upstream/revert-7399-tensorinv[m
+  [31mremotes/upstream/revert-7511-maximum[m
+  [31mremotes/upstream/revert-8521-master[m
+  [31mremotes/upstream/skip_array_api_tests[m
+  [31mremotes/upstream/superset_matmul[m
+  [31mremotes/upstream/test_gpu_codespaces[m
