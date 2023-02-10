@@ -1352,8 +1352,9 @@ def reverse_helper(draw,):
             available_dtypes=["int32", "int64"],
             min_num_dims=1,
             max_num_dims=1,
-            min_value=0,
+            min_value=-(len(shape)-1),
             max_value=len(shape)-1,
+            shape=(1,),
         )
     )
     return dtype, x, axis_dtype, axis
