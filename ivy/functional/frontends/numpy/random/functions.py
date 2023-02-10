@@ -67,10 +67,7 @@ def multinomial(n, pvals, size=None):
 @from_zero_dim_arrays_to_scalar
 def permutation(x, /):
     if isinstance(x, int):
-        new_array = ivy.arange(x)
-        ivy.shuffle(new_array)
-        return new_array
+        x = ivy.arange(x)
     elif x.ndim > 0:
         new_array = x
-        ivy.shuffle(new_array)
-        return new_array
+    return ivy.shuffle(x)
