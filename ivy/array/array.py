@@ -129,7 +129,7 @@ class Array(
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
         self._dev_str = ivy.as_ivy_dev(self._device)
-        self._pre_repr = "ivy."
+        self._pre_repr = "ivy.array"
         if "gpu" in self._dev_str:
             self._post_repr = ", dev={})".format(self._dev_str)
         else:
@@ -298,10 +298,11 @@ class Array(
         )
         arr_np = backend.to_numpy(self._data)
         rep = ivy.vec_sig_fig(arr_np, sig_fig) if self._size > 0 else np.array(arr_np)
+        repr = rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
         with np.printoptions(precision=dec_vals):
             return (
                 self._pre_repr
-                + rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
+                + repr[repr.find("(") :]
                 + self._post_repr.format(ivy.current_backend_str())
             )
 
