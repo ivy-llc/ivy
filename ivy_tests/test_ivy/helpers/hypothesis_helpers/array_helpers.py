@@ -59,7 +59,14 @@ def list_of_length(
 
 
 @st.composite
-def lists(draw, *, other, min_size=None, max_size=None, size_bounds=None):
+def lists(
+    draw,
+    *,
+    other,
+    min_size=None,
+    max_size=None,
+    size_bounds=None,
+):
     """Draws a list with a random bounded size from the data-set other.
 
     Parameters
