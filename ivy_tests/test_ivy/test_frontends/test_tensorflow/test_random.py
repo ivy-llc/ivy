@@ -90,3 +90,42 @@ def test_tensorflow_normal(
         dtype=dtype[0],
         seed=seed,
     )
+
+# random_poisson
+@handle_frontend_test(
+    fn_tree="tensorflow.random.poisson",
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    lam=st.floats(allow_nan=False,allow_infinity=False, width=32),
+    dtype=helpers.get_dtypes("float", full=False),
+    seed=helpers.ints(min_value=0, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_poisson(
+    frontend,
+    fn_tree,
+    on_device,
+    shape,
+    lam,
+    dtype,
+    seed,
+    test_flags,
+):
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape,
+        lam=lam,
+        dtype=dtype[0],
+        seed=seed,
+    )
