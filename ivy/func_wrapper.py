@@ -30,9 +30,6 @@ FN_DECORATORS = [
 
 
 def try_array_function_override(func, overloaded_args, types, args, kwargs):
-    # TODO: consider simplifying the interface, to only require either `types`
-    # (by calling __array_function__ a classmethod) or `overloaded_args` (by
-    # dropping `types` from the signature of __array_function__)
     if not overloaded_args:
         return False, None
 
@@ -45,8 +42,6 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
         try:
             result = overloaded_arg.__array_function__(func, types, args, kwargs)
         except Exception:
-            # Ensure the type of the overloaded argument ends up in the
-            # traceback
             raise ivy.exceptions.IvyNotImplementedException
 
         if result is not NotImplemented:
@@ -109,19 +104,21 @@ def handle_array_function(func):
                                 break
                         overloaded_args.insert(index, arg)
             if ivy.exists(arg) and isinstance(arg, ivy.Container):
+                arg = ivy.Container.cont_flatten_key_chains(arg)
                 indices = ivy.nested_argwhere(
                     arg, lambda x: hasattr(x, "__array_function__")
                 )
                 for a in indices:
-                    if type(arg.a) not in overloaded_types:
-                        overloaded_types.append(type(arg.a))
-                        if (
-                            arg.a.__array_function__ is not ivy.Array.__array_function__
-                            and not isinstance(arg.a, (ivy.Array, ivy.NativeArray))
+                    if type(getattr(arg, a[0])) not in overloaded_types:
+                        overloaded_types.append(type(getattr(arg, a[0])))
+                        if getattr(
+                            arg, a[0]
+                        ).__array_function__ is not ivy.Array.__array_function__ and not isinstance(
+                            getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
                         ):
                             index = len(overloaded_args)
                             for i, old_arg in enumerate(overloaded_args):
-                                if issubclass(type(arg.a), type(old_arg)):
+                                if issubclass(type(getattr(arg, a[0])), type(old_arg)):
                                     index = i
                                     break
                             overloaded_args.insert(index, arg)

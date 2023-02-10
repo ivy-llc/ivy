@@ -46,6 +46,7 @@ def _repr(x):
     except TypeError:
         return str(x)
 
+
 # noinspection PyMissingConstructor
 
 
@@ -4056,8 +4057,8 @@ class ContainerBase(dict, abc.ABC):
 
                 is_var = self.cont_map(lambda x, kc: _is_var(x)).cont_all_true()
                 if is_var and not (
-                        str(self._backend).__contains__("jax")
-                        or str(self._backend).__contains__("numpy")
+                    str(self._backend).__contains__("jax")
+                    or str(self._backend).__contains__("numpy")
                 ):
                     self.cont_map(lambda x, kc: _map_fn(variable_data, x), inplace=True)
                     self.cont_map(lambda x, kc: _map_fn(to_numpy, x), inplace=True)

@@ -245,14 +245,15 @@ angle.support_native_out = True
 
 
 def imag(
-    input: torch.Tensor,
+    val: torch.Tensor,
     /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if input.dtype != torch.complex64:
-        input = input.to(torch.complex64)
-    return torch.imag(input)
+    if val.dtype not in (torch.complex64, torch.complex128):
+        ret = torch.imag(val.to(torch.complex64))
+        return ret.to(val.dtype)
+    return torch.imag(val)
 
 
 imag.support_native_out = False
@@ -294,11 +295,11 @@ logaddexp2.support_native_out = True
 
 
 def diff(
-    x: Union[torch.Tensor, int, float, list, tuple],
+    x: Union[torch.Tensor, list, tuple],
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     out: Optional[torch.Tensor] = None,
