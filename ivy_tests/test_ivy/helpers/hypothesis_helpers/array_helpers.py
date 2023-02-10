@@ -746,7 +746,7 @@ def array_values(
             if exclude_max:
                 max_value -= 1
             values = draw(
-                list_of_size(other=st.integers(min_value, max_value))
+                list_of_size(other=st.integers(min_value, max_value), size=size)
             )
         elif kind_dtype == "float":
             floats_info = {
@@ -807,12 +807,12 @@ def array_values(
             if "complex" in dtype:
                 float_strategy = st.tuples(float_strategy, float_strategy)
             values = draw(
-                list_of_size(other=float_strategy)
+                list_of_size(other=float_strategy, size=size)
             )
             if "complex" in dtype:
                 values = [complex(*v) for v in values]
     else:
-        values = draw(list_of_size(other=st.booleans()))
+        values = draw(list_of_size(other=st.booleans(), size=size))
 
     array = np.asarray(values, dtype=dtype)
     if isinstance(shape, (tuple, list)):
