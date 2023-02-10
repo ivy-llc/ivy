@@ -104,7 +104,12 @@ def where(
 # ----- #
 
 
-def argwhere(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def argwhere(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     where_x = tf.experimental.numpy.where(x)
     if len(where_x) == 1:
         return tf.expand_dims(where_x[0], -1)
