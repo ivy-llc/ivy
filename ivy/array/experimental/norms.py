@@ -122,3 +122,33 @@ class ArrayWithNormsExperimental(abc.ABC):
             track_running_stats=track_running_stats,
             out=out,
         )
+
+    def lp_normalize(self, /, *, p: float = 2, axis=None, out=None):
+        """Normalizes the array to have Lp norm.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        p
+            p-norm to use for normalization.
+        axis
+            Axis along which to normalize. If ``None``, the whole array
+            is normalized.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The normalized array.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> x.lp_normalize(p=2, axis=1)
+        ivy.array([[0.4472, 0.8944],
+               [0.6, 0.8]])
+        """
+        return ivy.lp_normalize(self, p=p, axis=axis, out=out)
