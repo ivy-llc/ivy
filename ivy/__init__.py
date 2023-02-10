@@ -704,7 +704,7 @@ from .container import (
     add_ivy_container_instance_methods,
 )
 from .nested_array import NestedArray
-from .backend_handler import (
+from ivy.utils.backend import (
     current_backend,
     get_backend,
     set_backend,
@@ -718,7 +718,8 @@ from .backend_handler import (
     clear_backend_stack,
 )
 from .func_wrapper import *
-from . import assertions, backend_handler, func_wrapper, exceptions
+from . import assertions, func_wrapper, exceptions
+from .utils.backend import backend_handler
 from . import functional
 from .functional import *
 from . import stateful

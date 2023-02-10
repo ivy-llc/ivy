@@ -4042,7 +4042,7 @@ class ContainerBase(dict, abc.ABC):
 
         if query == "dynamic_backend":
             from ivy.functional.ivy.gradients import _variable
-            from ivy.backend_handler import _determine_backend_from_args
+            from ivy.utils.backend import _determine_backend_from_args
 
             if not val:
                 self._backend = _determine_backend_from_args(self)

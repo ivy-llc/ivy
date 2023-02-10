@@ -11,10 +11,10 @@ backend_version = {"version": torch.__version__.split("+")[0]}
 if not ivy.is_local():
     _module_in_memory = sys.modules[__name__]
 else:
-    global_backend_compiler = sys.modules["ivy.backend_compiler"]
+    global_backend_compiler = sys.modules["ivy.utils.backend.backend_compiler"]
     _module_in_memory = global_backend_compiler.IMPORT_CACHE[__name__]
 
-use = ivy.backend_handler.ContextManager(_module_in_memory)
+use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 NativeArray = torch.Tensor
 NativeVariable = torch.Tensor

@@ -150,7 +150,7 @@ class Array(
     @dynamic_backend.setter
     def dynamic_backend(self, value):
         from ivy.functional.ivy.gradients import _variable
-        from ivy.backend_handler import _determine_backend_from_args
+        from ivy.utils.backend import _determine_backend_from_args
 
         if value == False:
             self._backend = _determine_backend_from_args(self)
