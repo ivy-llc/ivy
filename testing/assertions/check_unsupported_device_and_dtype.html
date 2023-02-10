@@ -159,6 +159,29 @@
              
   <section id="check-unsupported-device-and-dtype">
 <h1>check_unsupported_device_and_dtype<a class="headerlink" href="#check-unsupported-device-and-dtype" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.assertions.check_unsupported_device_and_dtype">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.assertions.</span></span><span class="sig-name descname"><span class="pre">check_unsupported_device_and_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_as_kwargs_np</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/assertions.html#check_unsupported_device_and_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.assertions.check_unsupported_device_and_dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Checks whether a function does not support a given device or data types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> – The function to check.</p></li>
+<li><p><strong>device</strong> – The backend device to check.</p></li>
+<li><p><strong>input_dtypes</strong> – data-types of the input arguments and keyword-arguments.</p></li>
+<li><p><strong>all_as_kwargs_np</strong> – All arguments in Numpy Format, to check for the presence of dtype argument.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>True if the function does not support both the device and any data type, False</em></p></li>
+<li><p><em>otherwise.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

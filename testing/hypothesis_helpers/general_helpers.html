@@ -166,8 +166,240 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="general-helpers">
-<h1>General helpers<a class="headerlink" href="#general-helpers" title="Permalink to this heading"></a></h1>
+  <section id="module-ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers">
+<span id="general-helpers"></span><h1>General helpers<a class="headerlink" href="#module-ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.apply_safety_factor">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">apply_safety_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_smallest_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">small_abs_safety_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_abs_safety_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safety_factor_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#apply_safety_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.apply_safety_factor" title="Permalink to this definition"></a></dt>
+<dd><p>Applies safety factor scaling to numeric data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> – </p></li>
+<li><p><strong>min_value</strong> – </p></li>
+<li><p><strong>max_value</strong> – </p></li>
+<li><p><strong>abs_smallest_val</strong> – </p></li>
+<li><p><strong>large_abs_safety_factor</strong> – </p></li>
+<li><p><strong>small_abs_safety_factor</strong> – </p></li>
+<li><p><strong>safety_factor_scale</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>the result of applying safety scaling to minimum value, maximum value and</em></p></li>
+<li><p><em>absolute smallest representable value (only for float dtypes).</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.embedding_helper">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">embedding_helper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#embedding_helper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.embedding_helper" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.get_axis">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">get_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_neg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_tuple</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_int</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#get_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.get_axis" title="Permalink to this definition"></a></dt>
+<dd><p>Draws one or more axis for the given shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>shape</strong> – shape of the array as a tuple, or a hypothesis strategy from which the shape
+will be drawn</p></li>
+<li><p><strong>allow_neg</strong> – boolean; if True, allow negative axes to be drawn</p></li>
+<li><p><strong>allow_none</strong> – boolean; if True, allow None to be drawn</p></li>
+<li><p><strong>sorted</strong> – boolean; if True, and a tuple of axes is drawn, tuple is sorted in increasing
+fashion</p></li>
+<li><p><strong>unique</strong> – boolean; if True, and a tuple of axes is drawn, all axes drawn will be unique</p></li>
+<li><p><strong>min_size</strong> – int or hypothesis strategy; if a tuple of axes is drawn, the minimum number of
+axes drawn</p></li>
+<li><p><strong>max_size</strong> – int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
+axes drawn.
+If None and unique is True, then it is set to the number of axes in the shape</p></li>
+<li><p><strong>force_tuple</strong> – boolean, if true, all axis will be returned as a tuple. If force_tuple and
+force_int are true, then an AssertionError is raised</p></li>
+<li><p><strong>force_int</strong> – boolean, if true, all axis will be returned as an int. If force_tuple and
+force_int are true, then an AssertionError is raised</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>A strategy that can be used in the &#64;given hypothesis decorator.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.get_bounds">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">get_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#get_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.get_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Draws two integers low, high for a given data type such that low &lt; high.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>dtype</strong> – data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>A strategy that can be used in the &#64;given hypothesis decorator.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.get_mean_std">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">get_mean_std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#get_mean_std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.get_mean_std" title="Permalink to this definition"></a></dt>
+<dd><p>Draws two integers representing the mean and standard deviation for a given data
+type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>dtype</strong> – data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>A strategy that can be used in the &#64;given hypothesis decorator.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.get_shape">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">get_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_num_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#get_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.get_shape" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size]</dt><dd><p>of size drawn from min_num_dims to max_num_dims. Useful for randomly
+drawing the shape of an array.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>allow_none</strong> – if True, allow for the result to be None.</p></li>
+<li><p><strong>min_num_dims</strong> – minimum size of the tuple.</p></li>
+<li><p><strong>max_num_dims</strong> – maximum size of the tuple.</p></li>
+<li><p><strong>min_dim_size</strong> – minimum value of each integer in the tuple.</p></li>
+<li><p><strong>max_dim_size</strong> – maximum value of each integer in the tuple.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>A strategy that draws a tuple.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.matrix_is_stable">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">matrix_is_stable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cond_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#matrix_is_stable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.matrix_is_stable" title="Permalink to this definition"></a></dt>
+<dd><p>Used to avoid numerical instabilities in further computationally heavy
+calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrix</strong> – The original matrix whose condition number is to be determined.</p></li>
+<li><p><strong>condition_index</strong> – <p>The greater the condition number, the more ill-conditioned the matrix
+will be, the more it will be prone to numerical instabilities.</p>
+<p>There is no rule of thumb for what the exact condition number
+should be to consider a matrix ill-conditioned(prone to numerical errors).
+But, if the condition number is “1”, the matrix is perfectly said to be a
+well-conditioned matrix which will not be prone to any type of numerical
+instabilities in further calculations, but that would probably be a
+very simple matrix.</p>
+<p>The cond_limit should start with “30”, gradually decreasing it according
+to our use, lower cond_limit would result in more numerically stable
+matrices but more simple matrices.</p>
+<p>The limit should always be in the range “1-30”, greater the number greater
+the computational instability. Should not increase 30, it leads to strong
+multicollinearity which leads to singularity.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>A bool, either True or False. Which tells whether the matrix is suitable for</em></p></li>
+<li><p><em>further numerical computations or not.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.reshape_shapes">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">reshape_shapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#reshape_shapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.reshape_shapes" title="Permalink to this definition"></a></dt>
+<dd><p>Draws a random shape with the same number of elements as the given shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>shape</strong> – list/strategy/tuple of integers representing an array shape.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>A strategy that draws a tuple.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.subsets">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">subsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elements</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#subsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.subsets" title="Permalink to this definition"></a></dt>
+<dd><p>Draws a subset of elements from the given elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>elements</strong> – set of elements to be drawn from.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>A strategy that draws a subset of elements.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.x_and_filters">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">x_and_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depthwise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#x_and_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.x_and_filters" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
 </section>

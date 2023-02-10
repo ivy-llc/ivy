@@ -172,6 +172,54 @@
              
   <section id="array-indices-axis">
 <h1>array_indices_axis<a class="headerlink" href="#array-indices-axis" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_indices_axis">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">array_indices_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices_dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">get_dtypes(kind='valid')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_random_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_zero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_num_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_dimension_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices_same_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#array_indices_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_indices_axis" title="Permalink to this definition"></a></dt>
+<dd><p>Generates two arrays x &amp; indices, the values in the indices array are indices
+of the array x. Draws an integers randomly from the minimum and maximum number of
+positional arguments a given function can take.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array_dtypes</strong> – list of data type to draw the array dtype from.</p></li>
+<li><p><strong>indices_dtypes</strong> – list of data type to draw the indices dtype from.</p></li>
+<li><p><strong>disable_random_axis</strong> – axis is set to -1 when True. Randomly generated with hypothesis if False.</p></li>
+<li><p><strong>allow_inf</strong> – inf values are allowed to be generated in the values array when True.</p></li>
+<li><p><strong>min_num_dims</strong> – The minimum number of dimensions the arrays can have.</p></li>
+<li><p><strong>max_num_dims</strong> – The maximum number of dimensions the arrays can have.</p></li>
+<li><p><strong>min_dim_size</strong> – The minimum size of the dimensions of the arrays.</p></li>
+<li><p><strong>max_dim_size</strong> – The maximum size of the dimensions of the arrays.</p></li>
+<li><p><strong>indices_same_dims</strong> – Set x and indices dimensions to be the same</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>A strategy that can be used in the &#64;given hypothesis decorator</em></p></li>
+<li><p><em>which generates arrays of values and indices.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<dl class="simple">
+<dt>&#64;given(</dt><dd><dl class="simple">
+<dt>array_indices_axis=array_indices_axis(</dt><dd><p>array_dtypes=helpers.get_dtypes(“valid”),
+indices_dtypes=helpers.get_dtypes(“integer”),
+min_num_dims=1,
+max_num_dims=5,
+min_dim_size=1,
+max_dim_size=10
+)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>)</p>
+</dd></dl>
+
 </section>
 
 

@@ -159,6 +159,24 @@
              
   <section id="check-unsupported-device">
 <h1>check_unsupported_device<a class="headerlink" href="#check-unsupported-device" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.assertions.check_unsupported_device">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.assertions.</span></span><span class="sig-name descname"><span class="pre">check_unsupported_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_as_kwargs_np</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/assertions.html#check_unsupported_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.assertions.check_unsupported_device" title="Permalink to this definition"></a></dt>
+<dd><p>Checks whether a function does not support a given device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> – The function to check.</p></li>
+<li><p><strong>input_device</strong> – The backend device.</p></li>
+<li><p><strong>all_as_kwargs_np</strong> – All arguments in Numpy Format, to check for the presence of dtype argument.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>True if the function does not support the given device, False otherwise.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

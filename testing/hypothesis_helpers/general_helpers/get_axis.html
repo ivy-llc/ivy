@@ -169,6 +169,42 @@
              
   <section id="get-axis">
 <h1>get_axis<a class="headerlink" href="#get-axis" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.get_axis">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.</span></span><span class="sig-name descname"><span class="pre">get_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_neg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_tuple</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_int</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.html#get_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers.get_axis" title="Permalink to this definition"></a></dt>
+<dd><p>Draws one or more axis for the given shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>shape</strong> – shape of the array as a tuple, or a hypothesis strategy from which the shape
+will be drawn</p></li>
+<li><p><strong>allow_neg</strong> – boolean; if True, allow negative axes to be drawn</p></li>
+<li><p><strong>allow_none</strong> – boolean; if True, allow None to be drawn</p></li>
+<li><p><strong>sorted</strong> – boolean; if True, and a tuple of axes is drawn, tuple is sorted in increasing
+fashion</p></li>
+<li><p><strong>unique</strong> – boolean; if True, and a tuple of axes is drawn, all axes drawn will be unique</p></li>
+<li><p><strong>min_size</strong> – int or hypothesis strategy; if a tuple of axes is drawn, the minimum number of
+axes drawn</p></li>
+<li><p><strong>max_size</strong> – int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
+axes drawn.
+If None and unique is True, then it is set to the number of axes in the shape</p></li>
+<li><p><strong>force_tuple</strong> – boolean, if true, all axis will be returned as a tuple. If force_tuple and
+force_int are true, then an AssertionError is raised</p></li>
+<li><p><strong>force_int</strong> – boolean, if true, all axis will be returned as an int. If force_tuple and
+force_int are true, then an AssertionError is raised</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>A strategy that can be used in the &#64;given hypothesis decorator.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

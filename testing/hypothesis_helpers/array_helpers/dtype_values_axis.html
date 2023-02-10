@@ -172,6 +172,71 @@
              
   <section id="dtype-values-axis">
 <h1>dtype_values_axis<a class="headerlink" href="#dtype-values-axis" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.dtype_values_axis">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">dtype_values_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_arrays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_smallest_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_abs_safety_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">small_abs_safety_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safety_factor_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_num_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shared_dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_neg_axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_axes_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_axes_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_int_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_tuple_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#dtype_values_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.dtype_values_axis" title="Permalink to this definition"></a></dt>
+<dd><p>Draws a list of arrays with elements from the given data type,
+and a random axis of the arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
+<li><p><strong>available_dtypes</strong> – if dtype is None, data type is drawn from this list randomly.</p></li>
+<li><p><strong>num_arrays</strong> – Number of arrays to be drawn.</p></li>
+<li><p><strong>abs_smallest_val</strong> – sets the absolute smallest value to be generated for float data types,
+this has no effect on integer data types. If none, the default data type
+absolute smallest value is used.</p></li>
+<li><p><strong>min_value</strong> – minimum value of elements in the array.</p></li>
+<li><p><strong>max_value</strong> – maximum value of elements in the array.</p></li>
+<li><p><strong>large_abs_safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,</p>
+<p>when a “linear” safety factor scaler is used,  a safety factor of 2 means
+that only 50% of the range is included, a safety factor of 3 means that
+only 33% of the range is included etc.</p>
+<p>when a “log” safety factor scaler is used, a data type with maximum
+value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.</p>
+</p></li>
+<li><p><strong>small_abs_safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,
+this has no effect on integer data types.</p>
+<p>when a “linear” safety factor scaler is used, a data type with minimum
+representable number of 0.0001 and a safety factor of 2 transforms the
+minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.</p>
+<p>when a “log” safety factor scaler is used, a data type with minimum
+representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4</p>
+</p></li>
+<li><p><strong>safety_factor_scale</strong> – The operation to use when calculating the maximum value of the list. Can be
+“linear” or “log”. Default value = “linear”.</p></li>
+<li><p><strong>allow_inf</strong> – if True, allow inf in the array.</p></li>
+<li><p><strong>allow_nan</strong> – if True, allow Nans in the arrays.</p></li>
+<li><p><strong>exclude_min</strong> – if True, exclude the minimum limit.</p></li>
+<li><p><strong>exclude_max</strong> – if True, exclude the maximum limit.</p></li>
+<li><p><strong>min_num_dims</strong> – minimum size of the shape tuple.</p></li>
+<li><p><strong>max_num_dims</strong> – maximum size of the shape tuple.</p></li>
+<li><p><strong>min_dim_size</strong> – minimum value of each integer in the shape tuple.</p></li>
+<li><p><strong>max_dim_size</strong> – maximum value of each integer in the shape tuple.</p></li>
+<li><p><strong>valid_axis</strong> – if True, a valid axis will be drawn from the array dimensions.</p></li>
+<li><p><strong>allow_neg_axes</strong> – if True, returned axes may include negative axes.</p></li>
+<li><p><strong>min_axes_size</strong> – minimum size of the axis tuple.</p></li>
+<li><p><strong>max_axes_size</strong> – maximum size of the axis tuple.</p></li>
+<li><p><strong>force_tuple_axis</strong> – if true, all axis will be returned as a tuple.</p></li>
+<li><p><strong>force_int_axis</strong> – if true and only one axis is drawn, the returned axis will be an int.</p></li>
+<li><p><strong>shape</strong> – shape of the array. if None, a random shape is drawn.</p></li>
+<li><p><strong>shared_dtype</strong> – if True, if dtype is None, a single shared dtype is drawn for all arrays.</p></li>
+<li><p><strong>min_axis</strong> – if shape is None, axis is drawn from the range [min_axis, max_axis].</p></li>
+<li><p><strong>max_axis</strong> – if shape is None, axis is drawn from the range [min_axis, max_axis].</p></li>
+<li><p><strong>ret_shape</strong> – if True, the shape of the arrays is also returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>A strategy that draws a dtype, an array (as list), and an axis.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
