@@ -86,9 +86,9 @@ def lists(draw, *, other, min_size=None, max_size=None, size_bounds=None):
         if size_bounds
         else number_helpers.ints()
     )
-    if isinstance(min_size, str):
+    if not isinstance(min_size, int):
         min_size = draw(st.shared(integers, key=min_size))
-    if isinstance(max_size, str):
+    if not isinstance(max_size, int):
         max_size = draw(st.shared(integers, key=max_size))
     return draw(st.lists(other, min_size=min_size, max_size=max_size))
 
