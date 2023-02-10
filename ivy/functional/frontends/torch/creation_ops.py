@@ -20,7 +20,7 @@ def empty(
         raise TypeError("empty() got multiple values for argument 'shape'")
     if size is not None:
         return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
-    size = args[0] if isinstance(args[0], tuple) else args
+    size = args[0] if isinstance(args[0], (tuple, list)) else args
     return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -47,7 +47,7 @@ def ones(*args, size=None, out=None, dtype=None, device=None, requires_grad=Fals
         raise TypeError("ones() got multiple values for argument 'shape'")
     if size is not None:
         return ivy.ones(shape=size, dtype=dtype, device=device, out=out)
-    size = args[0] if isinstance(args[0], tuple) else args
+    size = args[0] if isinstance(args[0], (tuple, list)) else args
     return ivy.ones(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -81,7 +81,7 @@ def zeros(*args, size=None, out=None, dtype=None, device=None, requires_grad=Fal
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if size is not None:
         return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
-    size = args[0] if isinstance(args[0], tuple) else args
+    size = args[0] if isinstance(args[0], (tuple, list)) else args
     return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
 
 

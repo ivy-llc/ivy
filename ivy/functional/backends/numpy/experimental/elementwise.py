@@ -127,7 +127,7 @@ def float_power(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = promote_types_of_inputs(x1, x2)
     return np.float_power(x1, x2, out=out)
 
 
@@ -318,11 +318,11 @@ def hypot(
 
 
 def diff(
-    x: Union[np.ndarray, int, float, list, tuple],
+    x: Union[np.ndarray, list, tuple],
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
     append: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
     out: Optional[np.ndarray] = None,
