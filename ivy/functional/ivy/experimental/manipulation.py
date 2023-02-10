@@ -1484,16 +1484,13 @@ def take_along_axis(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_array_like_without_promotion
 def hsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> List[ivy.Array]:
     """Split an array into multiple sub-arrays horizontally.
 
     Parameters
@@ -1501,15 +1498,10 @@ def hsplit(
     ary
         Array input.
     indices_or_sections
-        If indices_or_sections is an integer n, the array is split into n sections.
-        If the array is divisible by n along the 3rd axis, each section will be of
-        equal size. If input is not divisible by n, the sizes of the first
-        int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1,
-        and the rest will have size int(ary.size(0) / n).
+        If indices_or_sections is an integer n, the array is split into n
+        equal sections, provided that n must be a divisor of the split axis.
         If indices_or_sections is a tuple of ints, then input is split at each of
         the indices in the tuple.
-    out
-        optional output array, for writing the result to.
 
     Returns
     -------
@@ -1525,16 +1517,16 @@ def hsplit(
              [12., 13., 14., 15.]]
             )
     >>> ivy.hsplit(ary, 2)
-    [ivy.array([[ 0.,  1.],
+        [ivy.array([[ 0.,  1.],
                     [ 4.,  5.],
                     [ 8.,  9.],
                     [12., 13.]]),
          ivy.array([[ 2.,  3.],
                     [ 6.,  7.],
                     [10., 11.],
-                    [14., 15.]]))
+                    [14., 15.]])]
     """
-    return ivy.current_backend(ary).hsplit(ary, indices_or_sections, out=out)
+    return ivy.current_backend(ary).hsplit(ary, indices_or_sections)
 
 
 @handle_exceptions
@@ -1580,6 +1572,7 @@ def expand(
     """
     Broadcast the input Array following the given shape
     and the broadcast rule.
+
     Parameters
     ----------
     x
@@ -1589,6 +1582,7 @@ def expand(
         following the broadcast rule
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret

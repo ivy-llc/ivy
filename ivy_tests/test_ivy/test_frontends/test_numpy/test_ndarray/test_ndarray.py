@@ -351,7 +351,11 @@ def test_numpy_ndarray_any(
     frontend,
 ):
     input_dtypes, x, axis = dtype_x_axis
-    where, input_dtypes, method_flags = np_frontend_helpers.handle_where_and_array_bools(
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtypes,
         test_flags=method_flags,
@@ -400,7 +404,11 @@ def test_numpy_ndarray_all(
 ):
 
     input_dtypes, x, axis = dtype_x_axis
-    where, input_dtypes, method_flags = np_frontend_helpers.handle_where_and_array_bools(
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtypes,
         test_flags=method_flags,
@@ -412,7 +420,6 @@ def test_numpy_ndarray_all(
             "object": x[0],
         },
         method_input_dtypes=input_dtypes,
-
         method_all_as_kwargs_np={
             "axis": axis,
             "out": None,
@@ -930,7 +937,7 @@ def test_numpy_instance_repeat(
     input_dtypes, x = dtype_and_x
 
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypess,
+        init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": x[0],
         },
@@ -1046,7 +1053,11 @@ def test_numpy_instance_std(
     frontend,
 ):
     input_dtypes, x, axis = dtype_x_axis
-    where, input_dtypes, method_flags = np_frontend_helpers.handle_where_and_array_bools(
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
         input_dtype=input_dtypes,
         test_flags=method_flags,
@@ -1201,6 +1212,46 @@ def test_numpy_instance_mul__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+    )
+
+
+# __floordiv__ test
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__floordiv__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
+        shared_dtype=True,
+    ),
+)
+def test_numpy_instance_floordiv__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtypes, xs = dtype_and_x
+    assume(not np.any(np.isclose(xs[1], 0)))
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "value": xs[1],
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        atol_=1,
     )
 
 
@@ -1539,6 +1590,45 @@ def test_numpy_instance_pos__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__ifloordiv__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
+        shared_dtype=True,
+    ),
+)
+def test_numpy_instance_ifloordiv__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtypes, xs = dtype_and_x
+    assume(not np.any(np.isclose(xs[1], 0)))
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "value": xs[1],
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        atol_=1,
     )
 
 
@@ -2257,6 +2347,16 @@ def test_numpy_instance_len__(
     ),
 )
 def test_numpy_instance_array__(
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__tobytes__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_numpy_instance_tobytes__(
     dtype_and_x,
     frontend_method_data,
     init_flags,

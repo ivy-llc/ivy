@@ -12,8 +12,14 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     fn_tree="jax.numpy.array",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=1, max_value=10),
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        shared_dtype=True,
     ),
-    dtype=helpers.get_dtypes("numeric", full=False, none=True),
+    as_list=st.booleans(),
     copy=st.booleans(),
     ndmin=helpers.ints(min_value=0, max_value=10),
     test_with_out=st.just(False),
@@ -21,7 +27,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def test_jax_numpy_array(
     *,
     dtype_and_x,
-    dtype,
+    as_list,
     copy,
     ndmin,
     on_device,
@@ -30,14 +36,24 @@ def test_jax_numpy_array(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+
+    if as_list:
+        if isinstance(x, list):
+            x = [list(i) if len(i.shape) > 0 else [float(i)] for i in x]
+        else:
+            x = list(x)
+    else:
+        if len(x) == 1:
+            x = x[0]
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        object=x[0],
-        dtype=dtype[0],
+        object=x,
+        dtype=input_dtype[0],
         copy=copy,
         order="K",
         ndmin=ndmin,
@@ -441,6 +457,100 @@ def test_jax_numpy_full_like(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+        fill_value=fill_value,
+        dtype=dtype,
+    )
+
+
+# ndim
+@handle_frontend_test(
+    fn_tree="jax.numpy.ndim",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_jax_numpy_ndim(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+    )
+
+
+# empty_like
+@handle_frontend_test(
+    fn_tree="jax.numpy.empty_like",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    shape=helpers.get_shape(
+        allow_none=True,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_empty_like(
+    dtype_and_x,
+    shape,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        dtype=dtype[0],
+        shape=shape,
+    )
+
+
+# full
+@handle_frontend_test(
+    fn_tree="jax.numpy.full",
+    shape=helpers.get_shape(
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    input_fill_dtype=_input_fill_and_dtype(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_full(
+    shape,
+    input_fill_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, _, fill_value, dtype = input_fill_dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        shape=shape,
         fill_value=fill_value,
         dtype=dtype,
     )

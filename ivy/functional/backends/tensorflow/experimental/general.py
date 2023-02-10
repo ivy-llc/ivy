@@ -1,7 +1,13 @@
+# global
 from typing import Optional
 import tensorflow as tf
 
+# local
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
 
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: tf.Tensor,
     test_elements: tf.Tensor,

@@ -1153,12 +1153,6 @@ def test_tensorflow_truediv(
 )
 def test_tensorflow_pow(dtype_and_x, frontend, test_flags, fn_tree):
     input_dtype, x = dtype_and_x
-    if x[1].dtype == "int32" or x[1].dtype == "int64":
-        if x[1].ndim == 0:
-            if x[1] < 0:
-                x[1] *= -1
-        else:
-            x[1][(x[1] < 0).nonzero()] *= -1
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

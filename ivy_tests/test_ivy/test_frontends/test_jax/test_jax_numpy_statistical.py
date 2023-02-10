@@ -82,12 +82,11 @@ def test_jax_numpy_mean(
     input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, input_dtypes, test_flags =\
-        np_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
 
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -132,12 +131,11 @@ def test_jax_numpy_var(
     input_dtypes, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, input_dtypes, test_flags =\
-        np_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
 
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -333,12 +331,11 @@ def test_jax_numpy_sum(
 
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, input_dtypes, test_flags =\
-        np_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
 
     np_helpers.test_frontend_function(
         input_dtypes=[input_dtypes],
@@ -379,12 +376,11 @@ def test_jax_numpy_min(
     input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, input_dtypes, test_flags =\
-        np_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
 
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -421,12 +417,11 @@ def test_jax_numpy_max(
     input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, input_dtypes, test_flags =\
-        np_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
 
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -521,12 +516,11 @@ def test_numpy_nanmax(
         assume(initial is -inf)
 
     input_dtypes, x, axis = dtype_x_axis
-    where, input_dtypes, test_flags =\
-        np_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -573,12 +567,11 @@ def test_numpy_nanmin(
         assume(initial is inf)
 
     input_dtypes, x, axis = dtype_x_axis
-    where, input_dtypes, test_flags =\
-        np_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         all_aliases=["numpy.nanmin"],

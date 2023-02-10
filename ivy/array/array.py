@@ -72,7 +72,7 @@ class Array(
     ArrayWithStatisticalExperimental,
     ArrayWithUtilityExperimental,
 ):
-    def __init__(self, data):
+    def __init__(self, data, dynamic_backend=None):
         ArrayWithActivations.__init__(self)
         ArrayWithCreation.__init__(self)
         ArrayWithDataTypes.__init__(self)
@@ -112,9 +112,9 @@ class Array(
         ArrayWithSortingExperimental.__init__(self),
         ArrayWithStatisticalExperimental.__init__(self),
         ArrayWithUtilityExperimental.__init__(self),
-        self._init(data)
+        self._init(data, dynamic_backend)
 
-    def _init(self, data):
+    def _init(self, data, dynamic_backend=None):
         if ivy.is_ivy_array(data):
             self._data = data.data
         else:
@@ -135,9 +135,45 @@ class Array(
         else:
             self._post_repr = ")"
         self.backend = ivy.current_backend_str()
+        if dynamic_backend is not None:
+            self._dynamic_backend = dynamic_backend
+        else:
+            self._dynamic_backend = ivy.get_dynamic_backend()
 
     # Properties #
     # ---------- #
+
+    @property
+    def dynamic_backend(self):
+        return self._dynamic_backend
+
+    @dynamic_backend.setter
+    def dynamic_backend(self, value):
+        from ivy.functional.ivy.gradients import _variable
+        from ivy.backend_handler import _determine_backend_from_args
+
+        if value == False:
+            self._backend = _determine_backend_from_args(self)
+
+        else:
+            is_variable = self._backend.is_variable
+            to_numpy = self._backend.to_numpy
+            variable_data = self._backend.variable_data
+
+            if is_variable(self.data) and not (
+                str(self._backend).__contains__("jax")
+                or str(self._backend).__contains__("numpy")
+            ):
+                native_data = variable_data(self.data)
+                np_data = to_numpy(native_data)
+                new_arr = ivy.array(np_data)
+                self._data = _variable(new_arr).data
+
+            else:
+                np_data = to_numpy(self.data)
+                self._data = ivy.array(np_data).data
+
+        self._dynamic_backend = value
 
     @property
     def data(self) -> ivy.NativeArray:
@@ -217,6 +253,24 @@ class Array(
         args, kwargs = args_to_native(*args, **kwargs)
         return func(*args, **kwargs)
 
+    def __array_function__(self, func, types, args, kwargs):
+        # Cannot handle items that have __array_function__ other than those of
+        # ivy arrays or native arrays.
+        for t in types:
+            if (
+                hasattr(t, "__array_function__")
+                and (t.__array_function__ is not ivy.Array.__array_function__)
+                or (
+                    hasattr(ivy.NativeArray, "__array_function__")
+                    and (t.__array_function__ is not ivy.NativeArray.__array_function__)
+                )
+            ):
+                return NotImplemented
+
+        # Arguments contain no overrides, so we can safely call the
+        # overloaded function again.
+        return func(*args, **kwargs)
+
     def __array__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
         return self._data.__array__(*args, **kwargs)
@@ -266,6 +320,8 @@ class Array(
 
     def __setitem__(self, query, val):
         try:
+            if ivy.current_backend_str() == "torch":
+                self._data = self._data.detach()
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
             self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
@@ -1007,4 +1063,9 @@ class Array(
         return len(self._data)
 
     def __iter__(self):
-        return iter([to_ivy(i) for i in self._data])
+        if self.ndim == 0:
+            raise TypeError("iteration over a 0-d ivy.Array not supported")
+        elif self.ndim == 1:
+            return iter(self._data)
+        else:
+            return iter([to_ivy(i) for i in self._data])

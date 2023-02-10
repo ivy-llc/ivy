@@ -25,6 +25,7 @@ def _arrays_idx_n_dtypes(draw):
                     available_dtypes=helpers.get_dtypes("numeric"),
                     shape=shape,
                     num_arrays=num_arrays,
+                    shared_dtype=True,
                 )
             ],
             get_dtypes_kind="numeric",
@@ -53,13 +54,13 @@ def test_numpy_concatenate(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        arrays=xs,
-        axis=unique_idx,
-        out=None,
         rtol=1e-01,
         atol=1e-01,
+        arrays=xs,
+        axis=unique_idx,
         casting=casting,
         dtype=dtype,
+        out=None,
     )
 
 

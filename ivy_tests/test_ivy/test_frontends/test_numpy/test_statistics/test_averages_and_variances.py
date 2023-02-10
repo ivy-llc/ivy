@@ -34,12 +34,11 @@ def test_numpy_mean(
     if isinstance(axis, tuple):
         axis = axis[0]
 
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
 
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -79,12 +78,11 @@ def test_numpy_nanmean(
     if isinstance(axis, tuple):
         axis = axis[0]
 
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
 
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -123,12 +121,11 @@ def test_numpy_std(
     input_dtypes, x, axis, correction = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -213,16 +210,15 @@ def test_numpy_nanstd(
     on_device,
     keep_dims,
 ):
-    input_dtypes, a, axis, axis_excess = dtype_and_a
+    input_dtypes, a, axis, correction = dtype_and_a
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
-    assume(np.dtype(dtype[0]) >= np.dtype(input_dtype[0]))
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -295,12 +291,11 @@ def test_numpy_nanvar(
     input_dtypes, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, input_dtypes, test_flags =\
-        np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
 
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
