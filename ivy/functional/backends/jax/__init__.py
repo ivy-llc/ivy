@@ -33,6 +33,7 @@ if not ivy.is_local():
 if not ivy.is_local():
     _module_in_memory = sys.modules[__name__]
 else:
+    # TODO remove str dependency
     global_backend_compiler = sys.modules["ivy.utils.backend.compiler"]
     _module_in_memory = global_backend_compiler.IMPORT_CACHE[__name__]
 

@@ -164,7 +164,7 @@ class ImportTransformer(ast.NodeTransformer):
             tree.body.insert(
                 self.insert_index,
                 ast.ImportFrom(
-                    module="ivy.utils.backend.compiler",
+                    module="ivy.utils.backend.compiler",  # TODO remove str dependency
                     names=[ast.alias(name="_ivy_fromimport")],
                     level=0,
                 ),
@@ -172,7 +172,7 @@ class ImportTransformer(ast.NodeTransformer):
             tree.body.insert(
                 self.insert_index,
                 ast.ImportFrom(
-                    module="ivy.utils.backend.compiler",
+                    module="ivy.utils.backend.compiler",  # TODO remove str dependency
                     names=[ast.alias(name="_ivy_absolute_import")],
                     level=0,
                 ),
