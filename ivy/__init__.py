@@ -719,7 +719,7 @@ from ivy.utils.backend import (
 )
 from .func_wrapper import *
 from . import assertions, func_wrapper, exceptions
-from .utils.backend import backend_handler
+from .utils.backend import handler
 from . import functional
 from .functional import *
 from . import stateful
