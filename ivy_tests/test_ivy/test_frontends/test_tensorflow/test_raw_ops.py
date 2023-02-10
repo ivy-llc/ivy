@@ -279,7 +279,7 @@ def test_tensorflow_Cosh(  # NOQA
 def _dtypes(draw):
     return draw(
         st.shared(
-            helpers.list_of_length(other=st.sampled_from(draw(helpers.get_dtypes("numeric")))),
+            helpers.list_of_size(other=st.sampled_from(draw(helpers.get_dtypes("numeric")))),
             key="dtype",
         )
     )

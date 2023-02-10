@@ -37,13 +37,13 @@ def array_bools(
     return draw(st.lists(arg=st.booleans(), min_size=size, max_size=size))
 
 
-def list_of_length(
-        *,
-        other,
-        size=st.shared(
-            number_helpers.ints(min_value=1, max_value=4),
-            key="size"
-        )
+def list_of_size(
+    *,
+    other,
+    size=st.shared(
+        number_helpers.ints(min_value=1, max_value=4),
+        key="size",
+    )
 ):
     """Returns a list of the given length with elements drawn randomly from x.
 
@@ -746,7 +746,7 @@ def array_values(
             if exclude_max:
                 max_value -= 1
             values = draw(
-                list_of_length(other=st.integers(min_value, max_value))
+                list_of_size(other=st.integers(min_value, max_value))
             )
         elif kind_dtype == "float":
             floats_info = {
@@ -807,12 +807,12 @@ def array_values(
             if "complex" in dtype:
                 float_strategy = st.tuples(float_strategy, float_strategy)
             values = draw(
-                list_of_length(other=float_strategy)
+                list_of_size(other=float_strategy)
             )
             if "complex" in dtype:
                 values = [complex(*v) for v in values]
     else:
-        values = draw(list_of_length(other=st.booleans()))
+        values = draw(list_of_size(other=st.booleans()))
 
     array = np.asarray(values, dtype=dtype)
     if isinstance(shape, (tuple, list)):
