@@ -17,46 +17,60 @@ from . import dtype_helpers, number_helpers
 def array_bools(
     draw,
     *,
-    num_arrays=st.shared(
-        number_helpers.ints(min_value=1, max_value=4), key="num_arrays"
-    ),
+    size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size"),
 ):
-    """Draws a boolean list of a given size.
+    """Draws a list with a fixed size from the data-set other.
 
     Parameters
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    num_arrays
+    size
         size of the list.
 
     Returns
     -------
     A strategy that draws a list.
     """
-    size = num_arrays if isinstance(num_arrays, int) else draw(num_arrays)
+    size = size if isinstance(size, int) else draw(size)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
-def list_of_length(*, x, length):
-    """Returns a random list of the given length from elements in x."""
-    return st.lists(x, min_size=length, max_size=length)
+def list_of_length(
+    *,
+    other,
+    size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size"),
+):
+    """Returns a list of the given length with elements drawn randomly from x.
+
+    Parameters
+    ----------
+    other
+        a list to draw elements from
+    size
+        length of the list
+
+    Returns
+    -------
+    A strategy that draws a list.
+    """
+    return lists(other=other, min_size=size, max_size=size)
 
 
 @st.composite
-def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
-    """Draws a list from the dataset arg.
+def lists(draw, *, other, min_size=None, max_size=None, size_bounds=None):
+    """Draws a list with a random bounded size from the data-set other.
 
     Parameters
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    arg
-        dataset of elements.
+    other
+        data-set of elements.
     min_size
-        least size of the list.
+        minimum size of the list.
     max_size
         max size of the list.
     size_bounds
@@ -76,7 +90,7 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
         min_size = draw(st.shared(integers, key=min_size))
     if isinstance(max_size, str):
         max_size = draw(st.shared(integers, key=max_size))
-    return draw(st.lists(arg, min_size=min_size, max_size=max_size))
+    return draw(st.lists(other, min_size=min_size, max_size=max_size))
 
 
 @st.composite
