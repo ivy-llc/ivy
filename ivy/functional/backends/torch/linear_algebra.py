@@ -164,6 +164,8 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
@@ -171,6 +173,10 @@ def matmul(
         x1 = torch.t(x1)
     if transpose_b is True:
         x2 = torch.t(x2)
+    if adjoint_a is True:
+        x1 = torch.adjoint(x1)
+    if adjoint_b is True:
+        x2 = torch.adjoint(x2)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.matmul(x1, x2, out=out)
 
@@ -414,7 +420,7 @@ def trace(
     if len(x) == 0:
         return ivy.array([])
     ret = torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
-    ret = torch.sum(ret)
+    ret = torch.sum(ret, dim=-1)
     return ret
 
 
