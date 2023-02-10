@@ -60,9 +60,7 @@ def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
         padding = padding.upper()
     else:
         padding = [padding] * dims if isinstance(padding, int) else padding
-        pad_width = [
-            (0, 0), (0, 0), *[(p, p) for p in padding]
-        ]
+        pad_width = [(0, 0), (0, 0), *[(p, p) for p in padding]]
         input = ivy.zero_pad(input, pad_width)
         padding = "VALID"
 
@@ -93,7 +91,7 @@ def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
         stride=stride,
         padding=padding,
         dilation=dilation,
-        groups=groups
+        groups=groups,
     )
 
 
@@ -107,7 +105,7 @@ def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
         stride=stride,
         padding=padding,
         dilation=dilation,
-        groups=groups
+        groups=groups,
     )
 
 
@@ -121,20 +119,20 @@ def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
         stride=stride,
         padding=padding,
         dilation=dilation,
-        groups=groups
+        groups=groups,
     )
 
 
 # ToDo: add support / debug non-default stride, padding, and output_padding
 def _conv_transpose(
-        input,
-        weight,
-        bias=None,
-        stride=1,
-        padding=0,
-        output_padding=0,
-        groups=1,
-        dilation=1,
+    input,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    output_padding=0,
+    groups=1,
+    dilation=1,
 ):
     dims = len(input.shape) - 2
     _valid_shapes(input, weight, bias, stride, padding, groups, transpose=True)
@@ -157,7 +155,11 @@ def _conv_transpose(
     if bias is not None:
         ret = ivy.add(ret, ivy.expand_dims(bias, axis=(0, *range(2, dims + 2))))
 
-    out_pad = [output_padding] * dims if isinstance(output_padding, int) else list(output_padding)
+    out_pad = (
+        [output_padding] * dims
+        if isinstance(output_padding, int)
+        else list(output_padding)
+    )
     paired_out_pad = [(out_pad[i], out_pad[i]) for i in reversed(range(len(out_pad)))]
 
     ret = ivy.zero_pad(ret, [(0, 0), (0, 0), *paired_out_pad])
@@ -166,7 +168,16 @@ def _conv_transpose(
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
-def conv_transpose1d(input, weight, bias=None, stride=1, padding=0, output_padding=0, groups=1, dilation=1):
+def conv_transpose1d(
+    input,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    output_padding=0,
+    groups=1,
+    dilation=1,
+):
     return _conv_transpose(
         input,
         weight,
@@ -181,7 +192,16 @@ def conv_transpose1d(input, weight, bias=None, stride=1, padding=0, output_paddi
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
-def conv_transpose2d(input, weight, bias=None, stride=1, padding=0, output_padding=0, groups=1, dilation=1):
+def conv_transpose2d(
+    input,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    output_padding=0,
+    groups=1,
+    dilation=1,
+):
     return _conv_transpose(
         input,
         weight,
@@ -196,7 +216,16 @@ def conv_transpose2d(input, weight, bias=None, stride=1, padding=0, output_paddi
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
-def conv_transpose3d(input, weight, bias=None, stride=1, padding=0, output_padding=0, groups=1, dilation=1):
+def conv_transpose3d(
+    input,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    output_padding=0,
+    groups=1,
+    dilation=1,
+):
     return _conv_transpose(
         input,
         weight,
@@ -222,7 +251,9 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
     padding = [padding] * 2 if isinstance(padding, int) else padding
     kernel_size = [kernel_size] * 2 if isinstance(kernel_size, int) else kernel_size
     output_shape = [
-        (input.shape[i + 2] + 2 * padding[i] - dilation[i] * (kernel_size[i] - 1) - 1) // stride[i] + 1
+        (input.shape[i + 2] + 2 * padding[i] - dilation[i] * (kernel_size[i] - 1) - 1)
+        // stride[i]
+        + 1
         for i in range(2)
     ]
     ret = ivy.zeros((*input.shape[0:2], *kernel_size, *output_shape), dtype=input.dtype)
@@ -237,12 +268,14 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
             i_in = i * stride[0]
             j_in = j * stride[1]
             ret[:, :, :, :, i, j] = input_padded[
-                                       :,
-                                       :,
-                                       i_in:i_in+kernel_size[0]*dilation[0]:dilation[0],
-                                       j_in:j_in+kernel_size[1]*dilation[1]:dilation[1],
-                                       ]
-    return ivy.reshape(ret, (input.shape[0], input.shape[1]*math.prod(kernel_size), -1))
+                :,
+                :,
+                i_in : i_in + kernel_size[0] * dilation[0] : dilation[0],
+                j_in : j_in + kernel_size[1] * dilation[1] : dilation[1],
+            ]
+    return ivy.reshape(
+        ret, (input.shape[0], input.shape[1] * math.prod(kernel_size), -1)
+    )
 
 
 @to_ivy_arrays_and_back
@@ -258,7 +291,9 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
     kernel_size = [kernel_size] * 2 if isinstance(kernel_size, int) else kernel_size
     output_size = [output_size] * 2 if isinstance(output_size, int) else output_size
     input_shape = [
-        (output_size[i] + 2 * padding[i] - dilation[i] * (kernel_size[i] - 1) - 1) // stride[i] + 1
+        (output_size[i] + 2 * padding[i] - dilation[i] * (kernel_size[i] - 1) - 1)
+        // stride[i]
+        + 1
         for i in range(2)
     ]
     n_batches = input.shape[0]
@@ -280,8 +315,10 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
             output_padded[
                 :,
                 :,
-                i_in:i_in+kernel_size[0]*dilation[0]:dilation[0],
-                j_in:j_in+kernel_size[1]*dilation[1]:dilation[1]
+                i_in : i_in + kernel_size[0] * dilation[0] : dilation[0],
+                j_in : j_in + kernel_size[1] * dilation[1] : dilation[1],
             ] += patch
             k += 1
-    return ivy.array(output_padded[:, :, padding[0]:-padding[0], padding[1]:-padding[1]])
+    return ivy.array(
+        output_padded[:, :, padding[0] : -padding[0], padding[1] : -padding[1]]
+    )

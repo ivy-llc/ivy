@@ -106,14 +106,15 @@ def handle_array_function(func):
             if ivy.exists(arg) and isinstance(arg, ivy.Container):
                 arg = ivy.Container.cont_flatten_key_chains(arg)
                 indices = ivy.nested_argwhere(
-                arg, lambda x: hasattr(x, "__array_function__")
-                                )
+                    arg, lambda x: hasattr(x, "__array_function__")
+                )
                 for a in indices:
                     if type(getattr(arg, a[0])) not in overloaded_types:
                         overloaded_types.append(type(getattr(arg, a[0])))
-                        if (
-                            getattr(arg, a[0]).__array_function__ is not ivy.Array.__array_function__
-                            and not isinstance(getattr(arg, a[0]), (ivy.Array, ivy.NativeArray))
+                        if getattr(
+                            arg, a[0]
+                        ).__array_function__ is not ivy.Array.__array_function__ and not isinstance(
+                            getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
                         ):
                             index = len(overloaded_args)
                             for i, old_arg in enumerate(overloaded_args):

@@ -275,6 +275,9 @@ class ndarray:
             where=where,
         )
 
+    def tobytes(self, order="C") -> bytes:
+        return np_frontend.tobytes(self.data, order=order)
+
     def __add__(self, value, /):
         return np_frontend.add(self._ivy_array, value)
 
@@ -387,6 +390,9 @@ class ndarray:
 
     def __itruediv__(self, value, /):
         return np_frontend.true_divide(self._ivy_array, value)
+
+    def __ifloordiv__(self, value, /):
+        return np_frontend.floor_divide(self._ivy_array, value, out=self)
 
     def __ipow__(self, value, /):
         return np_frontend.power(self._ivy_array, value)
