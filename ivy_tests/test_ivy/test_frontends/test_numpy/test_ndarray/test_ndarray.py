@@ -2302,29 +2302,28 @@ def test_numpy_instance_len__(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
-    method_name="tobytes",
-    dtype_and_a=helpers.dtype_and_values(
+    method_name="__tobytes__",
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_instance_tobytes(
-    dtype_and_a,
+def test_numpy_instance_tobytes__(
+    dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
 ):
-    input_dtypes, a = dtype_and_a
-
+    input_dtypes, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
-            "object": a[0],
+            "object": x[0],
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={},
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
