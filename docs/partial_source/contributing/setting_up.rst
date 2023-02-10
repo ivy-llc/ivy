@@ -246,6 +246,7 @@ If Docker's latest version causes error, try using an earlier version by visitin
 **Important Note**
 
 When setting up on an M1 Mac, you would have to update the Dockerfile to install libraries from :code:`requirements/optional_m1_1.txt` and :code:`requirements/optional_m1_2.txt` instead of :code:`requirements/optional.txt`.
+
 **Video**
 
 .. raw:: html
