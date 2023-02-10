@@ -114,3 +114,8 @@ def empty_like(a, dtype=None, shape=None):
     if shape:
         return ivy.zeros(shape, dtype=dtype)
     return ivy.zeros_like(a, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def full(shape, fill_value, dtype=None):
+    return ivy.full(shape, fill_value, dtype=dtype)

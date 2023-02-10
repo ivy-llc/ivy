@@ -114,7 +114,10 @@ def float_power(
     # Native out is supported but with restrictions leading
     # to failures hence letting ivy handle it.
     x1, x2 = promote_types_of_inputs(x1, x2)
-    return torch.float_power(x1, x2).to(x1.dtype)
+    return torch.float_power(x1, x2, out=out)
+
+
+float_power.support_native_out = True
 
 
 def exp2(
@@ -291,11 +294,11 @@ logaddexp2.support_native_out = True
 
 
 def diff(
-    x: Union[torch.Tensor, int, float, list, tuple],
+    x: Union[torch.Tensor, list, tuple],
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     out: Optional[torch.Tensor] = None,
