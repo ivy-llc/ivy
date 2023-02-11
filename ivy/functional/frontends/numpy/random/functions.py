@@ -68,6 +68,4 @@ def multinomial(n, pvals, size=None):
 def permutation(x, /):
     if isinstance(x, int):
         x = ivy.arange(x)
-    elif x.ndim > 0:
-        x = x
     return ivy.shuffle(x)
