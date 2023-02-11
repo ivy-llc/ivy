@@ -73,6 +73,23 @@ def log_softmax(
 ):
     return tf.nn.log_softmax(x, axis)
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+def tanh(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return tf.nn.tanh(x)
+
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+def selu(x: Tensor, /, *, alpha: float = 1.67326, scale: float = 1.0507, out: Optional[Tensor] = None) -> Tensor:
+    return tf.nn.selu(x, alpha=alpha, scale=scale)
+
+def hard_sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return tf.keras.backend.hard_sigmoid(x)
+
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+def elu(
+    x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None
+) -> Tensor:
+    return tf.nn.elu(x, alpha)
+
 
 def deserialize(
     name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
