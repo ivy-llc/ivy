@@ -104,14 +104,17 @@ def randint(
 ) -> torch.Tensor:
     if not dtype:
         dtype = ivy.default_int_dtype()
-    if not shape:
-        shape = (1,)
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
     if seed:
         torch.manual_seed(seed)
-    return torch.randint(low=low, high=high, size=shape, device=device, dtype=dtype)
+    if torch.is_tensor(low):
+        low = torch.flatten(low)
+        high = torch.flatten(high)
+    result = torch.tensor([torch.randint(l, h, (1,)) for l, h in zip(low, high)])
+    return torch.reshape(result, shape)
+
 
 
 def seed(*, seed_value: int = 0) -> None:
