@@ -632,7 +632,7 @@ def test_angle(
 @handle_test(
     fn_tree="functional.ivy.experimental.imag",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32"],
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-5,
         max_value=5,
         max_dim_size=5,

@@ -93,11 +93,12 @@ if __name__ == "__main__":
     redis_pass = sys.argv[2]
     mongo_key = sys.argv[3]
     version_flag = sys.argv[4]
-    if len(sys.argv) > 5:
+    workflow_id = sys.argv[5]
+    if len(sys.argv) > 6:
         print(f"Job URL available -: {sys.argv}")
-        run_id = sys.argv[5]
+        run_id = sys.argv[6]
     else:
-        run_id = "https://github.com/unifyai/ivy/actions/"
+        run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
     failed = False
     # multiversion testing
     if version_flag == "true":
