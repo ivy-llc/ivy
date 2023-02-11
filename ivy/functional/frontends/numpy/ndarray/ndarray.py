@@ -414,7 +414,7 @@ class ndarray:
 
     def __array__(self, dtype, /):
         return ivy.array(ivy.reshape(self._ivy_array, -1), dtype)[0]
-        
+
     def __getitem__(self, query):
         ret = ivy.get_item(self._ivy_array, query)
         return np_frontend.numpy_dtype_to_scalar[ivy.dtype(self._ivy_array)](
