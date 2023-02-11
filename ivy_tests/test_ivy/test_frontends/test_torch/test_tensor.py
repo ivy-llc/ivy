@@ -2262,8 +2262,6 @@ def _expand_helper(draw):
         helpers.dtype_and_values(
 
             available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
-
-            available_dtypes=helpers.get_dtypes("valid"),
             shape=shape,
 
         )
