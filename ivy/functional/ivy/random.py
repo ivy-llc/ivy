@@ -26,7 +26,7 @@ def _check_bounds_and_get_shape(low, high, shape):
         ivy.assertions.check_all_or_any_fn(
             low,
             high,
-            fn=lambda x: isinstance(x, (int, float)),
+            fn=lambda x: (ivy.is_float_dtype(x) or ivy.is_int_dtype(x)),
             type="all",
             message="low and high bounds must be numerics when shape is specified",
         )
