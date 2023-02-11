@@ -177,6 +177,7 @@ def _set_frontend(framework: str):
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     if isinstance(framework, list):
+
         CURRENT_FRONTEND = FWS_DICT[framework[0].split("/")[0]]
     else:
         CURRENT_FRONTEND = FWS_DICT[framework]

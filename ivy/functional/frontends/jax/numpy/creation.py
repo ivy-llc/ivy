@@ -106,6 +106,16 @@ def ndim(a):
     return ivy.astype(ivy.array(a.ndim), ivy.int64)
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def empty_like(a, dtype=None, shape=None):
+    # XLA cannot create uninitialized arrays
+    # jax.numpy.empty_like returns an array initialized with zeros.
+    if shape:
+        return ivy.zeros(shape, dtype=dtype)
+    return ivy.zeros_like(a, dtype=dtype)
+
+
 @to_ivy_arrays_and_back
 def full(shape, fill_value, dtype=None):
     return ivy.full(shape, fill_value, dtype=dtype)
