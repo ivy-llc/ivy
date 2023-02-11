@@ -34,21 +34,25 @@ def array_bools(
 
     Returns
     -------
-    A strategy that draws a list.
+    ret
+        A strategy that draws a list.
 
     Examples
     --------
     >>> array_bools(size=5)
-    [False, False, True, False, False]
+    [False, True, False, False, False]
+    [False, False, False, False, False]
+    [True, False, False, False, False]
 
     >>> array_bools(size=1)
     [True]
+    [False]
+    [True]
 
     >>> array_bools()
-    [True, False, True, False]
-
-    >>> array_bools()
-    [True, True]
+    [False, False, False, False]
+    [True, True, True, False]
+    [True]
 
     """
     size = size if isinstance(size, int) else draw(size)
@@ -71,7 +75,8 @@ def list_of_size(
 
     Returns
     -------
-    A strategy that draws a list.
+    ret
+        A strategy that draws a list.
 
     Examples
     --------
@@ -79,19 +84,25 @@ def list_of_size(
     >>>     other=st.sampled_from([-1, 5, 9]),
     >>>     size=4,
     >>> )
-    [5, -1, 9, -1]
+    [-1, 5, -1, -1]
+    [9, -1, -1, -1]
+    [9, 9, -1, 9]
 
     >>> list_of_size(
     >>>     other=st.integers(min_value=0, max_value=4),
     >>>     size=10,
     >>> )
-    [1, 0, 2, 3, 4, 3, 4, 4, 1, 2]
+    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [3, 3, 2, 4, 1, 0, 4, 2, 1, 2]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     >>> list_of_size(
     >>>     other=st.booleans(),
     >>>     size=3,
     >>> )
-    [False, False, True]
+    [False, False, False]
+    [True, True, False]
+    [False, True, False]
 
     """
     return lists(other=other, min_size=size, max_size=size)
@@ -125,7 +136,8 @@ def lists(
 
     Returns
     -------
-    A strategy that draws a list.
+    ret
+        A strategy that draws a list.
 
     Examples
     --------
@@ -134,19 +146,25 @@ def lists(
     >>>     min_size=4,
     >>>     max_size=5,
     >>> )
-    [5, -1, 9, -1]
+    [5, 5, 5, 9, 9]
+    [5, 9, -1, -1]
+    [5, 9, 5, 9]
 
     >>> lists(
     >>>     other=st.integers(min_value=0, max_value=4),
     >>>     size_bounds=(9, 10),
     >>> )
-    [4, 0, 4, 3, 3, 2, 1, 3, 4, 1]
+    [0, 2, 4, 3, 3, 3, 3, 2, 1, 4]
+    [1, 0, 1, 2, 1, 4, 1, 3, 1]
+    [1, 0, 1, 2, 1, 4, 1, 3, 1]
 
     >>> lists(
     >>>     other=st.integers(min_value=0, max_value=4),
     >>>     size_bounds=[9, 10],
     >>> )
+    [1, 3, 0, 2, 0, 0, 1, 4, 2, 3]
     [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [1, 2, 4, 1, 1, 1, 4, 3, 2]
 
     >>> lists(
     >>>     other=st.floats(
@@ -157,7 +175,9 @@ def lists(
     >>>     min_size=5,
     >>>     max_size=5,
     >>> )
-    [2.00001, 2.999999999999999, 2.00001, 1.9762410071349654, 1.9999999999999996]
+    [1.1, 1.0, 1.0, 1.0, 1.0]
+    [2.00001, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]
+    [1.0, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]
 
     """
     integers = (
@@ -272,15 +292,38 @@ def dtype_and_values(
 
     Returns
     -------
-    A strategy that draws a list of dtype and arrays (as lists).
+    ret
+        A strategy that draws a list of dtype and arrays (as lists).
 
     Examples
     --------
-    >>> x = ivy.array([[1., 2.], [0., 3.]])
-    >>> y = ivy.matrix_transpose(x)
-    >>> print(y)
-    ivy.array([[1., 0.],
-               [2., 3.]])
+    >>> dtype_and_values(
+    >>>     num_arrays=3,
+    >>> )
+    (['uint16', 'float16', 'uint16'], [array([37915,  6322, 26765, 12413, 26986, 34665], dtype=uint16), array([-5.000e-01, -5.000e-01, -2.000e+00, -6.711e-05, -1.100e+00, -5.955e+04], dtype=float16), array([40817, 56193, 29200,     0,  5851,  9746], dtype=uint16)])
+    (['bool', 'uint32', 'bool'], [array(False), array(0, dtype=uint32), array(False)])
+    (['int8', 'int8', 'int8'], [array(0, dtype=int8), array(0, dtype=int8), array(0, dtype=int8)])
+
+    >>> dtype_and_values(
+    >>>     available_dtypes=get_dtypes("numeric"),
+    >>>     min_value=-10,
+    >>>     max_value=10,
+    >>>     num_arrays=2,
+    >>>     shared_dtype=True,
+    >>> ),
+    (['float32', 'float32'], [array([1.1, 1.5], dtype=float32), array([-5.9604645e-08,  5.9604645e-08], dtype=float32)])
+    (['int32', 'int32'], [array(-5, dtype=int32), array(-1, dtype=int32)])
+    (['uint64', 'uint64'], [array([0], dtype=uint64), array([0], dtype=uint64)])
+
+    >>> dtype_and_values(
+    >>>     available_dtypes=get_dtypes("numeric"),
+    >>>     num_arrays=2,
+    >>>     ret_shape=True
+    >>> )
+    (['int8', 'int32'], [array([27], dtype=int8), array([192], dtype=int32)], (1,))
+    (['int32', 'int16'], [array(0, dtype=int32), array(0, dtype=int16)], ())
+    (['int32', 'int16'], [array([[-103, 12, -41795, 1170789994, 44251, 44209, 433075925]], dtype=int32), array([[24791, -24691, 24892, 16711, 7696, 972, 15357]], dtype=int16)], (1, 7))
+
     """
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
