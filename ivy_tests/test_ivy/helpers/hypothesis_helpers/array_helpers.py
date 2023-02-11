@@ -15,9 +15,9 @@ from . import dtype_helpers, number_helpers
 
 @st.composite
 def array_bools(
-        draw,
-        *,
-        size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size")
+    draw,
+    *,
+    size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size")
 ):
     """Draws a list with a fixed size from the data-set other.
 
@@ -202,6 +202,14 @@ def dtype_and_values(
     Returns
     -------
     A strategy that draws a list of dtype and arrays (as lists).
+
+    Examples
+    --------
+    >>> x = ivy.array([[1., 2.], [0., 3.]])
+    >>> y = ivy.matrix_transpose(x)
+    >>> print(y)
+    ivy.array([[1., 0.],
+               [2., 3.]])
     """
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
