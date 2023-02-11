@@ -298,8 +298,8 @@ class Array(
         )
         arr_np = backend.to_numpy(self._data)
         rep = ivy.vec_sig_fig(arr_np, sig_fig) if self._size > 0 else np.array(arr_np)
-        repr = rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
         with np.printoptions(precision=dec_vals):
+            repr = rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
             return (
                 self._pre_repr
                 + repr[repr.find("(") :]
