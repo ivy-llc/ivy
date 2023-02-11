@@ -538,6 +538,10 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _tan,
 )
 
+from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
+    _imag,
+)
+
 from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
     _arccosh,
     _arcsinh,
@@ -636,6 +640,7 @@ trunc = ufunc("_trunc")
 equal = ufunc("_equal")
 greater = ufunc("_greater")
 greater_equal = ufunc("_greater_equal")
+imag = ufunc("_imag")
 less = ufunc("_less")
 less_equal = ufunc("_less_equal")
 not_equal = ufunc("_not_equal")
