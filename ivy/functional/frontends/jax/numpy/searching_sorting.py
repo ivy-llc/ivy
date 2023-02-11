@@ -87,13 +87,13 @@ def nanargmin(a, /, *, axis=None, out=None, keepdims=None):
 
 @to_ivy_arrays_and_back
 def sort_complex(a):
-    real = ivy.real(a)
-    imag = ivy.imag(a)
-    sort_key = real + imag * 1j
-    sorted_indices = ivy.argsort(sort_key)
-    sorted_complex = a[sorted_indices]
-    return sorted_complex
+    if len(a) == 0:
+        raise ValueError("Input array cannot be empty")
+    
+    if not np.issubdtype(a.dtype, np.complexfloating):
+        raise TypeError("Input array must contain only complex numbers")
 
+    return sorted(array, key=lambda x: (x.real, x.imag))
 
 def extract(condition, arr):
     if condition.dtype is not bool:
