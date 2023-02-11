@@ -17,7 +17,10 @@ from . import dtype_helpers, number_helpers
 def array_bools(
     draw,
     *,
-    size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size")
+    size=st.shared(
+        number_helpers.ints(min_value=1, max_value=4),
+        key="size"
+    )
 ):
     """Draws a list with a fixed size from the data-set other.
 
