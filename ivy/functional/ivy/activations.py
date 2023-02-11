@@ -401,9 +401,14 @@ def relu(
 @handle_array_like_without_promotion
 @handle_array_function
 def sigmoid(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Applies the sigmoid function element-wise.
+
+    """
+    Applies the sigmoid function element-wise.
 
     Parameters
     ----------
@@ -411,7 +416,8 @@ def sigmoid(
         input array.
     out
         optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        input broadcast to.
+        default: None
 
     Returns
     -------

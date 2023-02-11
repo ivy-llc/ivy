@@ -1334,8 +1334,8 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    if isinstance(frontend,list):
-        frontend,frontend_proc=frontend
+    if isinstance(frontend, list):
+        frontend, frontend_proc = frontend
     _assert_dtypes_are_valid(init_input_dtypes)
     _assert_dtypes_are_valid(method_input_dtypes)
 
