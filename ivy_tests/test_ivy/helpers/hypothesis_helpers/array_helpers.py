@@ -30,23 +30,35 @@ def array_bools(
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
     size
-        size of the list.
+        size of the list. If not specified, default is a random number between 1 and 4 inclusive.
 
     Returns
     -------
     A strategy that draws a list.
+
+    Examples
+    --------
+    >>> array_bools(size=5)
+    [False, False, True, False, False]
+
+    >>> array_bools(size=1)
+    [True]
+
+    >>> array_bools()
+    [True, False, True, False]
+
+    >>> array_bools()
+    [True, True]
+
     """
     size = size if isinstance(size, int) else draw(size)
-    return draw(st.lists(arg=st.booleans(), min_size=size, max_size=size))
+    return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
 def list_of_size(
     *,
     other,
-    size=st.shared(
-        number_helpers.ints(min_value=1, max_value=4),
-        key="size",
-    )
+    size,
 ):
     """Returns a list of the given length with elements drawn randomly from x.
 
@@ -60,6 +72,27 @@ def list_of_size(
     Returns
     -------
     A strategy that draws a list.
+
+    Examples
+    --------
+    >>> list_of_size(
+    >>>     other=st.sampled_from([-1, 5, 9]),
+    >>>     size=4,
+    >>> )
+    [5, -1, 9, -1]
+
+    >>> list_of_size(
+    >>>     other=st.integers(min_value=0, max_value=4),
+    >>>     size=10,
+    >>> )
+    [1, 0, 2, 3, 4, 3, 4, 4, 1, 2]
+
+    >>> list_of_size(
+    >>>     other=st.booleans(),
+    >>>     size=3,
+    >>> )
+    [False, False, True]
+
     """
     return lists(arg=other, min_size=size, max_size=size)
 
@@ -93,6 +126,32 @@ def lists(
     Returns
     -------
     A strategy that draws a list.
+
+    Examples
+    --------
+    >>> lists(
+    >>>     other=st.sampled_from([-1, 5, 9]),
+    >>>     size=4,
+    >>> )
+    [5, -1, 9, -1]
+
+    >>> lists(
+    >>>     other=st.integers(min_value=0, max_value=4),
+    >>>     size=10,
+    >>> )
+    [1, 0, 2, 3, 4, 3, 4, 4, 1, 2]
+
+    >>> lists(
+    >>>     other=st.floats(
+    >>>         min_value=1,
+    >>>         max_value=3,
+    >>>         exclude_max=True,
+    >>>     ),
+    >>>     min_size=5,
+    >>>     max_size=5,
+    >>> )
+    [2.00001, 2.999999999999999, 2.00001, 1.9762410071349654, 1.9999999999999996]
+
     """
     integers = (
         number_helpers.ints(min_value=size_bounds[0], max_value=size_bounds[1])
@@ -103,6 +162,8 @@ def lists(
         min_size = draw(st.shared(integers, key=min_size))
     if not isinstance(max_size, int):
         max_size = draw(st.shared(integers, key=max_size))
+    min_size, max_size = abs(min_size), abs(max_size)
+    min_size, max_size = (min_size, max_size) if min_size <= max_size else (max_size, min_size)
     return draw(st.lists(arg, min_size=min_size, max_size=max_size))
 
 
