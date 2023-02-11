@@ -94,14 +94,14 @@ def list_of_size(
     [False, False, True]
 
     """
-    return lists(arg=other, min_size=size, max_size=size)
+    return lists(other=other, min_size=size, max_size=size)
 
 
 @st.composite
 def lists(
     draw,
     *,
-    arg,
+    other,
     min_size=None,
     max_size=None,
     size_bounds=None,
@@ -113,7 +113,7 @@ def lists(
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    arg
+    other
         data-set of elements.
     min_size
         minimum size of the list.
@@ -131,15 +131,22 @@ def lists(
     --------
     >>> lists(
     >>>     other=st.sampled_from([-1, 5, 9]),
-    >>>     size=4,
+    >>>     min_size=4,
+    >>>     max_size=5,
     >>> )
     [5, -1, 9, -1]
 
     >>> lists(
     >>>     other=st.integers(min_value=0, max_value=4),
-    >>>     size=10,
+    >>>     size_bounds=(9, 10),
     >>> )
-    [1, 0, 2, 3, 4, 3, 4, 4, 1, 2]
+    [4, 0, 4, 3, 3, 2, 1, 3, 4, 1]
+
+    >>> lists(
+    >>>     other=st.integers(min_value=0, max_value=4),
+    >>>     size_bounds=[9, 10],
+    >>> )
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     >>> lists(
     >>>     other=st.floats(
@@ -164,7 +171,7 @@ def lists(
         max_size = draw(st.shared(integers, key=max_size))
     min_size, max_size = abs(min_size), abs(max_size)
     min_size, max_size = (min_size, max_size) if min_size <= max_size else (max_size, min_size)
-    return draw(st.lists(arg, min_size=min_size, max_size=max_size))
+    return draw(st.lists(other, min_size=min_size, max_size=max_size))
 
 
 @st.composite
