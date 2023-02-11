@@ -22,7 +22,7 @@ def array_bools(
         key="size"
     )
 ):
-    """Draws a list with a fixed size from the data-set other.
+    """Draws a list of booleans with a fixed size.
 
     Parameters
     ----------
