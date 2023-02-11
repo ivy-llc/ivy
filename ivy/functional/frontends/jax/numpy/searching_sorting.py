@@ -95,6 +95,11 @@ def sort_complex(a):
 
     return sorted(array, key=lambda x: (x.real, x.imag))
 
+def lexsort(keys, /, *, axis=-1):
+    return ivy.lexsort(keys, axis=axis)
+
+
+@to_ivy_arrays_and_back
 def extract(condition, arr):
     if condition.dtype is not bool:
         condition = condition != 0
