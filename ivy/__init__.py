@@ -3,7 +3,6 @@ from types import SimpleNamespace
 import warnings
 from ivy._version import __version__ as __version__
 import builtins
-import numpy as np
 
 try:
     import torch
