@@ -50,6 +50,7 @@ ufuncs = [
     "greater_equal",
     "heaviside",
     "hypot",
+    "imag"
     "invert",
     "isfinite",
     "isinf",
