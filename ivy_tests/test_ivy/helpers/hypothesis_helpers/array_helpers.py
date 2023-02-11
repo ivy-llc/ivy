@@ -803,7 +803,7 @@ def array_values(
                         arr = arr[mask]
                         
                         
-                    return arr
+            return arr
                 
             if "complex" in dtype:
                 float_strategy = st.tuples(float_strategy, float_strategy)
