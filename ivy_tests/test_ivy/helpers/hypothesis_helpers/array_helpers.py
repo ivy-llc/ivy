@@ -498,7 +498,47 @@ def dtype_values_axis(
 
     Returns
     -------
-    A strategy that draws a dtype, an array (as list), and an axis.
+    ret
+        A strategy that draws a dtype, an array (as list), and an axis.
+
+    Examples
+    -------
+    >>> dtype_values_axis()
+    (['int16'], [array(29788, dtype=int16)])
+    (['complex128'], [array(1.62222885e+156-2.68281172e-257j)])
+    (['float64'], [array(-1.40129846e-45)])
+
+    >>> dtype_values_axis(
+    >>>     available_dtypes=get_dtypes("numeric"),
+    >>>     num_arrays=2,
+    >>> )
+    (['int8', 'int16'], [array([[0]], dtype=int8), array([[1]], dtype=int16)], 0)
+    (['uint16', 'uint16'], [array(0, dtype=uint16), array(0, dtype=uint16)], 0)
+    (['float64', 'int16'], [array(-2.44758124e-308), array(0, dtype=int16)], 0)
+
+    >>> dtype_values_axis(
+    >>>     available_dtypes=get_dtypes("float"),
+    >>>     min_num_dims=2,
+    >>>     max_num_dims=3,
+    >>>     min_dim_size=2,
+    >>>     max_dim_size=5,
+    >>>     min_axis=-2,
+    >>>     max_axis=1,
+    >>> )
+    (['float64'], [array([[1.90000000e+000, 1.63426649e+308], [-1.50000000e+000, -1.91931887e+234]])], -1)
+    (['bfloat16'], [array([[-1.29488e-38, -1.29488e-38], [-1.29488e-38, -1.29488e-38]], dtype=bfloat16)], 0)
+    (['float64'], [array([[-2.44758124e-308, -2.44758124e-308], [-2.44758124e-308, -2.44758124e-308]])], 0)
+
+    >>> dtype_values_axis(
+    >>>     available_dtypes=get_dtypes("numeric"),
+    >>>     num_arrays=1,
+    >>>     allow_inf=True,
+    >>>     allow_nan=True,
+    >>> )
+    (['float64'], [array([inf, -5.14361019e+16, 5.96046448e-08, 1.50000000e+00])], -51)
+    (['int16'], [array(12445, dtype=int16)], 171)
+    (['uint32'], [array([0], dtype=uint32)], 0)
+
     """
     results = draw(
         dtype_and_values(
