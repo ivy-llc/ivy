@@ -620,4 +620,4 @@ def sequence_empty(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend(x).empty_like(shape, dtype=dtype, device=device, out=out)
+    return current_backend(x).sequence_empty(shape, dtype=dtype, device=device, out=out)
