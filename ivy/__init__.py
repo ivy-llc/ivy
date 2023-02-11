@@ -3,7 +3,6 @@ from types import SimpleNamespace
 import warnings
 from ivy._version import __version__ as __version__
 import builtins
-import numpy as np
 
 try:
     import torch
@@ -27,10 +26,10 @@ except ImportError:
     jax.interpreters = SimpleNamespace()
     jax.interpreters.xla = SimpleNamespace()
     jax.interpreters.xla._DeviceArray = SimpleNamespace()
-    jax.Buffer = SimpleNamespace()
     jaxlib = SimpleNamespace()
     jaxlib.xla_extension = SimpleNamespace()
     jaxlib.xla_extension.DeviceArray = SimpleNamespace()
+    jaxlib.xla_extension.Buffer = SimpleNamespace()
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
@@ -207,7 +206,7 @@ class Shape(tuple):
                 torch.Size,
                 jax.interpreters.xla._DeviceArray,
                 jaxlib.xla_extension.DeviceArray,
-                jax.Buffer,
+                jax.xla_extension.Buffer,
                 np.ndarray,
                 tf.Tensor,
             )
