@@ -258,30 +258,30 @@ def test_dct(
 
 @st.composite
 def _interp_args(draw):
-    mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest"]))
+    mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"]))
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
-        size = draw(helpers.ints(min_value=4, max_value=5))
+        size = draw(helpers.ints(min_value=1, max_value=5))
         num_dims = 3
     elif mode == "bilinear":
         size = draw(
             helpers.lists(
-                arg=helpers.ints(min_value=4, max_value=5), min_size=2, max_size=2
+                arg=helpers.ints(min_value=1, max_value=5), min_size=2, max_size=2
             )
         )
         num_dims = 4
     elif mode == "trilinear":
         size = draw(
             helpers.lists(
-                arg=helpers.ints(min_value=4, max_value=5), min_size=3, max_size=3
+                arg=helpers.ints(min_value=1, max_value=5), min_size=3, max_size=3
             )
         )
         num_dims = 5
-    elif mode == "nearest":
+    elif mode == "nearest" or mode == "area":
         dim = draw(helpers.ints(min_value=1, max_value=3))
         size = draw(
             helpers.lists(
-                arg=helpers.ints(min_value=4, max_value=5), min_size=dim, max_size=dim
+                arg=helpers.ints(min_value=1, max_value=5), min_size=dim, max_size=dim
             )
         )
         size = size[0] if dim == 1 else size

@@ -214,7 +214,7 @@ def pad(
 
 def vsplit(
     ary: np.ndarray,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[np.ndarray]:
     return np.vsplit(ary, indices_or_sections)
