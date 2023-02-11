@@ -1349,28 +1349,25 @@
 <span class="nd">@handle_array_like_without_promotion</span>
 <span class="k">def</span> <span class="nf">vsplit</span><span class="p">(</span>
     <span class="n">ary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">indices_or_sections</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">indices_or_sections</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
     <span class="o">/</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split an array into multiple sub-arrays along the 3rd axis.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split an array vertically into multiple sub-arrays.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ary</span>
 <span class="sd">        Array input.</span>
 <span class="sd">    indices_or_sections</span>
-<span class="sd">        If indices_or_sections is an integer n, the array is split into n sections.</span>
-<span class="sd">        If the array is divisible by n along the 3rd axis, each section will be of</span>
-<span class="sd">        equal size. If input is not divisible by n, the sizes of the first</span>
-<span class="sd">        int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1,</span>
-<span class="sd">        and the rest will have size int(ary.size(0) / n).</span>
+<span class="sd">        If indices_or_sections is an integer n, the array is split into n</span>
+<span class="sd">        equal sections, provided that n must be a divisor of the split axis.</span>
 <span class="sd">        If indices_or_sections is a tuple of ints, then input is split at each of</span>
 <span class="sd">        the indices in the tuple.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        input array split along the 3rd axis.</span>
+<span class="sd">        input array split vertically.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
