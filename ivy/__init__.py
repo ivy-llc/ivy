@@ -1,4 +1,5 @@
 # global
+import copy
 from types import SimpleNamespace
 import warnings
 from ivy._version import __version__ as __version__
@@ -834,6 +835,12 @@ class GlobalsDict(dict):
     __delattr__ = dict.__delitem__
     __name__ = dict.__name__
 
+    def __deepcopy__(self, memo):
+        ret = self.__class__.__new__(self.__class__)
+        for k, v in self.items():
+            ret[k] = copy.deepcopy(v)
+        return ret
+
 
 # defines ivy.globals attribute
 globals = GlobalsDict(
@@ -869,6 +876,13 @@ globals = GlobalsDict(
         "dynamic_backend_stack": dynamic_backend_stack,
     }
 )
+
+_default_globals = copy.deepcopy(globals)
+
+
+def reset_globals():
+    global globals
+    globals = copy.deepcopy(_default_globals)
 
 
 def set_global_attr(attr_name, attr_val):
