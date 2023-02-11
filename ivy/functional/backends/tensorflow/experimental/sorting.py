@@ -25,7 +25,7 @@ def lexsort(
     if len(shape) == 1:
         return tf.cast(tf.argsort(keys, axis=axis, stable=True), tf.int64)
     if shape[0] == 0:
-        raise TypeError('need sequence of keys with len > 0 in lexsort')
+        raise TypeError("need sequence of keys with len > 0 in lexsort")
     if len(shape) == 2 and shape[1] == 1:
         return tf.cast(tf.convert_to_tensor([0]), tf.int64)
     result = tf.argsort(keys[0], axis=axis, stable=True)
