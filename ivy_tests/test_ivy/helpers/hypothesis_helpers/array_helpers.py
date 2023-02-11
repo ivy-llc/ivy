@@ -780,9 +780,7 @@ def array_values(
                         exclude_max=exclude_max,
                     ),
                 )
-            if dtype == np.bool
-                arr = np.random.randint(0,2,size=shape,dtype=dtype)
-                return arr
+           
                    
                    
             if "float" in dtype or "complex" in dtype:
