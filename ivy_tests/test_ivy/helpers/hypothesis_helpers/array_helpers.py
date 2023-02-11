@@ -791,6 +791,7 @@ def array_values(
                 raise ValueError("unsupported data type")
 
      #new code to generate random float array or complex array with subnormal values
+    
             if allow_subnormal:
                 arr = np.random.randn(*shape, dtype=dtype)
             else:
