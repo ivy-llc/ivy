@@ -159,7 +159,7 @@ def _assert_safe_array(args, dtype, scalar_check=False):
                 message="type of input is incompatible with dtype: {}".format(dtype),
             )
         else:
-            assert_fn = lambda x: np_frontend.can_cast(x, ivy.as_ivy_dtype(dtype))
+            assert_fn = ivy.exists
             if ivy.is_int_dtype(dtype):
                 assert_fn = lambda x: not ivy.is_float_dtype(x)
             elif ivy.is_bool_dtype(dtype):
