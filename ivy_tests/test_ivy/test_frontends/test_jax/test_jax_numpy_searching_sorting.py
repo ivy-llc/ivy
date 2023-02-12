@@ -249,7 +249,7 @@ def test_jax_numpy_extract(
 
 # sort
 @handle_frontend_test(
-    fn_tree="jax.numpy.sort",
+    fn_tree="numpy.sort",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
@@ -266,7 +266,8 @@ def test_numpy_sort(
     on_device,
     test_flags,
 ):
-    input_dtype, x, axis= dtype_x_axis
+    input_dtype, x= dtype_x_axis
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -274,6 +275,4 @@ def test_numpy_sort(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
-        rtol=1e-02,
-        atol=1e-03,
     )
