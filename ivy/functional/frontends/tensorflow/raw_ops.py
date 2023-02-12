@@ -378,7 +378,6 @@ ShapeN = to_ivy_arrays_and_back(
     map_raw_ops_alias(tf_frontend.general_functions.shape_n)
 )
 
-
 @to_ivy_arrays_and_back
 def Sin(*, x, name="Sin"):
     return ivy.sin(x)
@@ -404,6 +403,9 @@ def Sinh(*, x, name="Sinh"):
 def Sign(*, x, name="Sign"):
     return ivy.sign(x)
 
+@to_ivy_arrays_and_back
+def Softmax(*, logits, name="Softmax"):
+    return ivy.softmax(logits, axis=1)
 
 @to_ivy_arrays_and_back
 def Split(*, axis, value, num_split, name="Split"):
@@ -493,11 +495,6 @@ def Relu6(features, name="Relu6"):
 Sigmoid = to_ivy_arrays_and_back(
     map_raw_ops_alias(tf_frontend.keras.activations.sigmoid)
 )
-
-
-@to_ivy_arrays_and_back
-def Softmax(*, logits, name="Softmax"):
-    return ivy.softmax(logits, axis=1)
 
 
 @to_ivy_arrays_and_back
