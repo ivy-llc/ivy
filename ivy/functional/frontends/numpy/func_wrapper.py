@@ -105,17 +105,25 @@ def _assert_same_kind_array(args, dtype, scalar_check=False):
                 message="type of input is incompatible with dtype: {}".format(dtype),
             )
         else:
-            # if not ivy.is_float_dtype(dtype):
-            ivy.assertions.check_all_or_any_fn(
-                *args,
-                fn=lambda x: ivy.is_int_dtype(x)
-                if ivy.shape(x) == ()
-                else np_frontend.can_cast(
-                    x, ivy.as_ivy_dtype(dtype), casting="same_kind"
-                ),
-                type="all",
-                message="type of input is incompatible with dtype: {}".format(dtype),
-            )
+            assert_fn = None
+            if ivy.is_bool_dtype(dtype):
+                assert_fn = ivy.is_bool_dtype
+            if ivy.is_int_dtype(dtype):
+                assert_fn = lambda x: not ivy.is_float_dtype(x)
+
+            if assert_fn:
+                ivy.assertions.check_all_or_any_fn(
+                    *args,
+                    fn=lambda x: assert_fn(x)
+                    if ivy.shape(x) == ()
+                    else np_frontend.can_cast(
+                        x, ivy.as_ivy_dtype(dtype), casting="same_kind"
+                    ),
+                    type="all",
+                    message="type of input is incompatible with dtype: {}".format(
+                        dtype
+                    ),
+                )
 
 
 def _assert_same_kind_scalar(args, dtype):
