@@ -852,10 +852,14 @@ def test_torch_tensorsolve(
 # lu_factor
 @st.composite
 def _lu_factor_helper(draw):
-    input_dtype = draw(st.shared(st.sampled_from(draw(helpers.array_dtypes(shared_dtype=True)))))
+    # generate input matrix of shape (*, m, n) and where '*' is one or more batch dimensions
+    input_dtype = draw(
+        helpers.get_dtypes("float", index=1, full=True)
+    )
+
     dim1 = draw(helpers.ints(min_value=2, max_value=5))
     dim2 = draw(helpers.ints(min_value=2, max_value=5))
-    batch_dim = draw(helpers.ints(min_value=0, max_value=2))
+    batch_dim = draw(helpers.get_shape(min_dim_size=0, max_dim_size=5))
 
     if batch_dim == 0:
         input_matrix = draw(
@@ -870,7 +874,7 @@ def _lu_factor_helper(draw):
         input_matrix = draw(
             helpers.array_values(
                 dtype=input_dtype,
-                shape=(batch_dim, dim1, dim2),
+                shape=(*batch_dim, dim1, dim2),
                 min_value=-5,
                 max_value=5,
             )
@@ -881,29 +885,30 @@ def _lu_factor_helper(draw):
 
 @handle_frontend_test(
     fn_tree="torch.linalg.lu_factor",
-    dtype_and_a=_lu_factor_helper(),
+    input_dtype_and_input=_lu_factor_helper(),
 )
 def test_torch_lu_factor(
     *,
-    dtype_and_a,
+    input_dtype_and_input,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    dtype, a = dtype_and_a
+    dtype, input = input_dtype_and_input
     ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=helpers.get_dtypes("float"),
+        input_dtypes=dtype,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        test_values=False,
         rtol=1e-03,
         atol=1e-02,
-        A=a,
+        A=input,
     )
-    #ret = [ivy.to_numpy(x) for x in ret]
-    #frontend_ret = [np.asarray(x) for x in frontend_ret]
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
 
     LU, pivot = ret
     frontend_LU, frontend_pivot = frontend_ret

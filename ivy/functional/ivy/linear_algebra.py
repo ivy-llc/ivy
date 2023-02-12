@@ -2624,7 +2624,7 @@ def vector_to_skew_symmetric_matrix(
     instances in place of any of the arguments.
 
     """
-    return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
+    return ivy.current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
 
 
 @to_native_arrays_and_back
