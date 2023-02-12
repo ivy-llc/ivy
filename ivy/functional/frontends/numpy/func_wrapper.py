@@ -250,7 +250,6 @@ def handle_numpy_casting(fn: Callable) -> Callable:
 
         if casting in ["no", "equiv"]:
             _assert_args_casting_no(args_to_check, args_scalar_to_check, dtype)
-            # Todo: all bool combi and casting
         elif casting == "same_kind":
             _assert_args_casting_same_kind(args_to_check, args_scalar_to_check, dtype)
         elif casting == "safe":
