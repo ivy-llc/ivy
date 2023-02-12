@@ -258,7 +258,6 @@ def test_jax_numpy_extract(
         force_int_axis=True,
     ),
     test_with_out=st.just(False),
-    keep_dims=st.booleans(),
 )
 def test_numpy_sort(
     *,
@@ -267,7 +266,6 @@ def test_numpy_sort(
     fn_tree,
     on_device,
     test_flags,
-    keep_dims,
 ):
     input_dtype, x, axis= dtype_x_axis
 
@@ -279,5 +277,4 @@ def test_numpy_sort(
         on_device=on_device,
         a=x[0],
         axis=axis,
-        keepdims=keep_dims,
     )
