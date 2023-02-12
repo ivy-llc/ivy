@@ -21,7 +21,7 @@ def _assert_args_casting_no(args, scalar_args, dtype):
     else:
         check_dtype = args[0].dtype if args else None
         _assert_no_array(args, check_dtype)
-        _assert_no_scalar(scalar_args, check_dtype)
+        _assert_no_scalar(scalar_args, check_dtype, none=True)
 
 
 def _assert_no_array(args, dtype):
@@ -32,7 +32,7 @@ def _assert_no_array(args, dtype):
             *args,
             fn=lambda x: ivy.dtype(x) == fn_func
             if ivy.shape(x) != ()
-            else _casting_no_special_case(x.dtype, fn_func),
+            else _casting_no_special_case(ivy.dtype(x), fn_func),
             type="all",
             message="type of input is incompatible with dtype: {}".format(dtype),
         )
@@ -46,7 +46,7 @@ def _casting_no_special_case(dtype1, dtype):
     return dtype1 == dtype
 
 
-def _assert_no_scalar(args, dtype):
+def _assert_no_scalar(args, dtype, none=False):
     if args:
         first_arg = args[0]
         ivy.assertions.check_all_or_any_fn(
@@ -55,7 +55,7 @@ def _assert_no_scalar(args, dtype):
             type="all",
             message="type of input is incompatible with dtype {}".format(dtype),
         )
-        if ivy.exists(dtype):
+        if dtype:
             if ivy.is_int_dtype(dtype):
                 check_dtype = int
             elif ivy.is_float_dtype(dtype):
@@ -67,7 +67,7 @@ def _assert_no_scalar(args, dtype):
                 check_dtype,
                 message="type of input is incompatible with dtype {}".format(dtype),
             )
-            if dtype not in ["float64", "int8", "int64", "uint8"]:
+            if ivy.as_ivy_dtype(dtype) not in ["float64", "int8", "int64", "uint8"]:
                 if type(args[0]) == int:
                     ivy.assertions.check_elem_in_list(
                         dtype,
@@ -76,6 +76,15 @@ def _assert_no_scalar(args, dtype):
                     )
                 elif type(args[0]) == float:
                     ivy.assertions.check_equal(dtype, "float32", inverse=True)
+            if none:
+                if type(args[0]) == float:
+                    ivy.assertions.check_equal(dtype, "float16", inverse=True)
+                elif type(args[0]) == int:
+                    ivy.assertions.check_elem_in_list(
+                        dtype,
+                        ["uint8", "int8"],
+                        inverse=True,
+                    )
 
 
 # same_kind casting
