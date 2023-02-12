@@ -317,9 +317,9 @@ def diff(
     if n == 0:
         return x
     if prepend is not None:
-        x = tf.experimental.numpy.append(prepend, x, axis=axis)
+        x = tf.experimental.numpy.append(prepend, x, axis=axis if axis != -1 else None)
     if append is not None:
-        x = tf.experimental.numpy.append(x, append, axis=axis)
+        x = tf.experimental.numpy.append(x, append, axis=axis if axis != -1 else None)
     return tf.experimental.numpy.diff(x, n=n, axis=axis)
 
 
