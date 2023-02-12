@@ -16,23 +16,30 @@ import ivy.functional.frontends.numpy as np_frontend
 # no casting
 def _assert_args_casting_no(args, scalar_args, dtype):
     if dtype:
-        _assert_no_array(args, dtype)
+        _assert_no_array(args, dtype, scalar_check=(args and scalar_args))
         _assert_no_scalar(scalar_args, dtype)
     else:
         check_dtype = args[0].dtype if args else None
-        _assert_no_array(args, check_dtype, none=True)
+        _assert_no_array(
+            args, check_dtype, scalar_check=(args and scalar_args), none=True
+        )
         _assert_no_scalar(scalar_args, check_dtype, none=True)
 
 
-def _assert_no_array(args, dtype, none=False):
+def _assert_no_array(args, dtype, scalar_check=False, none=False):
     if args:
         first_arg = args[0]
         fn_func = ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
+        assert_fn = lambda x: ivy.dtype(x) == fn_func
+        if scalar_check:
+            assert_fn = (
+                lambda x: ivy.dtype(x) == fn_func
+                if ivy.shape(x) != ()
+                else _casting_no_special_case(ivy.dtype(x), fn_func, none)
+            )
         ivy.assertions.check_all_or_any_fn(
             *args,
-            fn=lambda x: ivy.dtype(x) == fn_func
-            if ivy.shape(x) != ()
-            else _casting_no_special_case(ivy.dtype(x), fn_func, none),
+            fn=assert_fn,
             type="all",
             message="type of input is incompatible with dtype: {}".format(dtype),
         )
@@ -255,7 +262,7 @@ def handle_numpy_casting(fn: Callable) -> Callable:
         elif casting == "safe":
             _assert_args_casting_safe(args_to_check, args_scalar_to_check, dtype)
 
-        if ivy.exists(dtype) and casting in ["same_kind", "safe"]:
+        if ivy.exists(dtype):
             ivy.map_nest_at_indices(
                 args, args_idxs, lambda x: ivy.astype(x, ivy.as_ivy_dtype(dtype))
             )
