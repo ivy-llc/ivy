@@ -172,10 +172,10 @@ def count_nonzero(
     if not keepdims:
         return x
     if isinstance(axis, tuple):
-        for d in sorted(axis, reverse=True):
+        for d in sorted(axis):
             x = x.unsqueeze(d)
         return x
-    elif isinstance(x, int):
+    elif isinstance(axis, int):
         return x.unsqueeze(axis)
     return x
 
