@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix,
     _get_second_matrix,
 )
-from hypothesis import reproduce_failure
+#from hypothesis import reproduce_failure
 
 
 # solve
