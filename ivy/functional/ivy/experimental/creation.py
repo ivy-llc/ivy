@@ -1,7 +1,7 @@
 # global
 from __future__ import annotations
 from math import sqrt, pi, cos
-from typing import Union, Tuple, Optional, Sequence
+from typing import Union, Tuple, Optional
 
 # local
 import ivy
@@ -585,7 +585,7 @@ def eye_like(
 @handle_exceptions
 @handle_array_like_without_promotion
 def sequence_empty(
-    shape: Union[ivy.NativeShape, Sequence[int]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = ivy.float32,
@@ -612,6 +612,7 @@ def sequence_empty(
     -------
     ret
         an array having the same shape as x and containing uninitialized data.
+    
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty_like.html>`_ # noqa
