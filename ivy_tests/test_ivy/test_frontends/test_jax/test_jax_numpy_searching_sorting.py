@@ -249,7 +249,7 @@ def test_jax_numpy_extract(
 
 # sort
 @handle_frontend_test(
-    fn_tree="jax.numpy.searching_sorting",
+    fn_tree="jax.numpy.sort",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
