@@ -81,15 +81,6 @@ def _assert_no_scalar(args, dtype, none=False):
                     )
                 elif type(args[0]) == float:
                     ivy.assertions.check_equal(dtype, "float32", inverse=True)
-            # if none:
-            #     if type(args[0]) == float:
-            #         ivy.assertions.check_equal(dtype, "float16", inverse=True)
-            #     elif type(args[0]) == int:
-            #         ivy.assertions.check_elem_in_list(
-            #             dtype,
-            #             ["uint8", "int8"],
-            #             inverse=True,
-            #         )
 
 
 # same_kind casting
