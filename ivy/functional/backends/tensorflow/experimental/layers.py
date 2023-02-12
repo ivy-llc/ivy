@@ -1,6 +1,9 @@
+# global
 import math
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
+
+# local
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
@@ -57,8 +60,10 @@ def max_pool2d(
         padding = [(padding,) * 2] * 2
     elif isinstance(padding, tuple) and len(padding) == 1:
         padding = [(padding[0],) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
 
-    if isinstance(padding, tuple):
+    if isinstance(padding, (tuple, list)):
         ivy.assertions.check_kernel_padding_size(kernel, padding)
     new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
     if isinstance(padding, str):
@@ -358,3 +363,32 @@ def embedding(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
+
+
+def interpolate(
+    x: Union[tf.Tensor, tf.Variable],
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Union[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    align_corners: Optional[bool] = None,
+    antialias: Optional[bool] = False,
+):
+    if align_corners:
+        return ivy.functional.experimental.interpolate(
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias
+        )
+    elif mode == "linear":
+        x = tf.transpose(x, (0, 2, 1))
+        return tf.transpose(
+            tf.image.resize(
+                x, size=[x.shape[0], size], method="bilinear", antialias=antialias
+            ),
+            (0, 2, 1),
+        )
+    elif mode == "bilinear":
+        x = tf.transpose(x, (0, 2, 3, 1))
+        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 3, 1, 2))
+    elif mode == "trilinear":
+        x = tf.transpose(x, (0, 2, 3, 4, 1))
+        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 4, 1, 2, 3))

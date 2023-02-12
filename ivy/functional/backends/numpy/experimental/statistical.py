@@ -73,6 +73,7 @@ def corrcoef(
 ) -> np.ndarray:
     return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
 
+
 def nanmedian(
     input: np.ndarray,
     /,
@@ -82,4 +83,6 @@ def nanmedian(
     overwrite_input: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.nanmedian(input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out)
+    return np.nanmedian(
+        input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+    )

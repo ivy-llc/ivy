@@ -257,6 +257,83 @@ def test_dct(
 
 
 @st.composite
+def _interp_args(draw):
+    mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"]))
+    align_corners = draw(st.one_of(st.booleans(), st.none()))
+    if mode == "linear":
+        size = draw(helpers.ints(min_value=1, max_value=5))
+        num_dims = 3
+    elif mode == "bilinear":
+        size = draw(
+            helpers.lists(
+                arg=helpers.ints(min_value=1, max_value=5), min_size=2, max_size=2
+            )
+        )
+        num_dims = 4
+    elif mode == "trilinear":
+        size = draw(
+            helpers.lists(
+                arg=helpers.ints(min_value=1, max_value=5), min_size=3, max_size=3
+            )
+        )
+        num_dims = 5
+    elif mode == "nearest" or mode == "area":
+        dim = draw(helpers.ints(min_value=1, max_value=3))
+        size = draw(
+            helpers.lists(
+                arg=helpers.ints(min_value=1, max_value=5), min_size=dim, max_size=dim
+            )
+        )
+        size = size[0] if dim == 1 else size
+        num_dims = dim + 2
+        align_corners = None
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=num_dims,
+            max_num_dims=num_dims,
+            min_dim_size=1,
+            max_dim_size=3,
+            large_abs_safety_factor=30,
+            small_abs_safety_factor=30,
+            safety_factor_scale="log",
+        )
+    )
+
+    return dtype, x, mode, size, align_corners
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.interpolate",
+    dtype_x_mode=_interp_args(),
+    test_gradients=st.just(False),
+    number_positional_args=st.just(2),
+)
+def test_interpolate(
+    dtype_x_mode,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x, mode, size, align_corners = dtype_x_mode
+    helpers.test_function(
+        ground_truth_backend="torch",
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-01,
+        atol_=1e-01,
+        x=x[0],
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+    )
+
+
+@st.composite
 def x_and_fft(draw, dtypes):
     min_fft_points = 2
     dtype = draw(dtypes)

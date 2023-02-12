@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 import torch
 import math
 
@@ -86,8 +86,10 @@ def max_pool2d(
         padding = [(padding,) * 2] * 2
     elif isinstance(padding, tuple) and len(padding) == 1:
         padding = [(padding[0],) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
 
-    if isinstance(padding, tuple):
+    if isinstance(padding, (tuple, list)):
         ivy.assertions.check_kernel_padding_size(kernel, padding)
 
     if data_format == "NHWC":
@@ -501,3 +503,21 @@ def embedding(
 
 
 embedding.support_native_out = False
+
+
+def interpolate(
+    x: torch.Tensor,
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    align_corners: Optional[bool] = None,
+    antialias: Optional[bool] = False,
+):
+    return torch.nn.functional.interpolate(
+        x,
+        size,
+        mode=mode,
+        align_corners=align_corners,
+        antialias=antialias,
+    )

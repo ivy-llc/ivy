@@ -98,8 +98,10 @@ def max_pool2d(
         padding = [(padding,) * 2] * 2
     elif isinstance(padding, tuple) and len(padding) == 1:
         padding = [(padding[0],) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
 
-    if isinstance(padding, tuple):
+    if isinstance(padding, (tuple, list)):
         ivy.assertions.check_kernel_padding_size(kernel, padding)
 
     if data_format == "NCHW":

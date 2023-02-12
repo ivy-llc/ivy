@@ -54,7 +54,7 @@ class Tensor:
         if shape is not None:
             return torch_frontend.reshape(self._ivy_array, shape)
         if args:
-            if isinstance(args[0], tuple):
+            if isinstance(args[0], (tuple, list)):
                 shape = args[0]
                 return torch_frontend.reshape(self._ivy_array, shape)
             else:
@@ -501,7 +501,7 @@ class Tensor:
         if dims is not None:
             return torch_frontend.permute(self._ivy_array, dims)
         if args:
-            if isinstance(args[0], tuple):
+            if isinstance(args[0], (tuple, list)):
                 dims = args[0]
                 return torch_frontend.permute(self._ivy_array, dims)
             else:
