@@ -2337,6 +2337,16 @@ def test_numpy_instance_len__(
         frontend_method_data=frontend_method_data,
     )
 
+# __array__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__array__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_numpy_instance_array__(
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,

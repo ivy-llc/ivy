@@ -218,7 +218,7 @@ def pad(
 
 def vsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[JaxArray]:
     return jnp.vsplit(ary, indices_or_sections)
