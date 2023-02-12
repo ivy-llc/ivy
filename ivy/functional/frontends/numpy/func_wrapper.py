@@ -96,29 +96,34 @@ def _assert_same_kind_array(args, dtype, scalar_check=False):
                 message="type of input is incompatible with dtype: {}".format(dtype),
             )
         else:
-            if ivy.is_int_dtype(dtype):
-                ivy.assertions.check_all_or_any_fn(
-                    *args,
-                    fn=lambda x: ivy.is_int_dtype(x)
-                    if ivy.shape(x) == ()
-                    else np_frontend.can_cast(
-                        x, ivy.as_ivy_dtype(dtype), casting="same_kind"
-                    ),
-                    type="all",
-                    message="type of input is incompatible with dtype: {}".format(
-                        dtype
-                    ),
-                )
+            # if not ivy.is_float_dtype(dtype):
+            ivy.assertions.check_all_or_any_fn(
+                *args,
+                fn=lambda x: ivy.is_int_dtype(x)
+                if ivy.shape(x) == ()
+                else np_frontend.can_cast(
+                    x, ivy.as_ivy_dtype(dtype), casting="same_kind"
+                ),
+                type="all",
+                message="type of input is incompatible with dtype: {}".format(dtype),
+            )
 
 
 def _assert_same_kind_scalar(args, dtype):
-    if args and dtype and ivy.is_int_dtype(dtype):
-        ivy.assertions.check_all_or_any_fn(
-            *args,
-            fn=lambda x: type(x) != float,
-            type="all",
-            message="type of input is incompatible with dtype: {}".format(dtype),
-        )
+    if args and dtype:
+        assert_fn = None
+        if ivy.is_int_dtype(dtype):
+            assert_fn = lambda x: type(x) != float
+        elif ivy.is_bool_dtype(dtype):
+            assert_fn = lambda x: type(x) == bool
+
+        if assert_fn:
+            ivy.assertions.check_all_or_any_fn(
+                *args,
+                fn=assert_fn,
+                type="all",
+                message="type of input is incompatible with dtype: {}".format(dtype),
+            )
 
 
 # safe casting
@@ -238,7 +243,7 @@ def handle_numpy_casting(fn: Callable) -> Callable:
         elif casting == "safe":
             _assert_args_casting_safe(args_to_check, args_scalar_to_check, dtype)
 
-        if ivy.exists(dtype):
+        if ivy.exists(dtype) and casting in ["same_kind", "safe"]:
             ivy.map_nest_at_indices(
                 args, args_idxs, lambda x: ivy.astype(x, ivy.as_ivy_dtype(dtype))
             )
