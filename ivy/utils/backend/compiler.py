@@ -3,18 +3,18 @@ import os
 import sys
 import traceback
 import inspect
+from . import _importlib
 from ast import parse
-from importlib.util import resolve_name, module_from_spec, spec_from_file_location
+from importlib.util import spec_from_file_location
 from importlib.abc import Loader, MetaPathFinder
 
-IMPORT_CACHE = {}
 
 # AST helpers ##################
 
 
 def _parse_absolute_fromimport(node: ast.ImportFrom):
     # Not to override absolute imports to other packages
-    if node.module.partition(".")[0] not in LOCAL_MODULES:
+    if node.module.partition(".")[0] not in local_modules:
         return node
     to_import = []
     for entry in node.names:
@@ -88,7 +88,7 @@ def _parse_import(node: ast.Import):
     _local_modules = []
     # We don't want to override imports for outside packages
     for entry in node.names.copy():
-        if entry.name.partition(".")[0] in LOCAL_MODULES:
+        if entry.name.partition(".")[0] in local_modules:
             node.names.remove(entry)
             _local_modules.append(entry)
     return_nodes = []
@@ -164,7 +164,7 @@ class ImportTransformer(ast.NodeTransformer):
             tree.body.insert(
                 self.insert_index,
                 ast.ImportFrom(
-                    module="ivy.utils.backend.compiler",  # TODO remove str dependency
+                    module="ivy.utils.backend._importlib",  # TODO remove str dependency
                     names=[ast.alias(name="_ivy_fromimport")],
                     level=0,
                 ),
@@ -172,7 +172,7 @@ class ImportTransformer(ast.NodeTransformer):
             tree.body.insert(
                 self.insert_index,
                 ast.ImportFrom(
-                    module="ivy.utils.backend.compiler",  # TODO remove str dependency
+                    module="ivy.utils.backend._importlib",  # TODO remove str dependency
                     names=[ast.alias(name="_ivy_absolute_import")],
                     level=0,
                 ),
@@ -196,7 +196,7 @@ def _retrive_local_modules():
 
 class IvyPathFinder(MetaPathFinder):
     def find_spec(self, fullname, path, target=None):
-        if fullname.partition(".")[0] not in _retrive_local_modules():
+        if fullname.partition(".")[0] not in local_modules:
             # print("Global", fullname, "falling back to sys import")
             return None
         # We're local
@@ -252,99 +252,19 @@ class IvyLoader(Loader):
             raise e
 
 
-LOCAL_MODULES = _retrive_local_modules()
-FINDER = IvyPathFinder()
-
-
-def _clear_cache():
-    global IMPORT_CACHE
-    IMPORT_CACHE = {}
-
-
-def _ivy_fromimport(name: str, package=None, mod_globals=None, from_list=(), level=0):
-    """
-    Handles absolute and relative from_import statmement
-    """
-    module_exist = name != ""
-    name = "." * level + name
-    module = _ivy_import_module(name, package)
-    for entry_name, entry_asname in from_list:
-        if entry_name == "*":
-            if "__all__" in module.__dict__.keys():
-                _all = module.__dict__["__all__"]
-            else:
-                _all = {
-                    k: v for (k, v) in module.__dict__.items() if not k.startswith("__")
-                }
-            for k, v in _all.items():
-                mod_globals[k] = v
-            continue
-        alias = entry_name if entry_asname is None else entry_asname
-        # Handles attributes inside module
-        try:
-            mod_globals[alias] = module.__dict__[entry_name]
-            # In the case this is a module from a package
-        except KeyError:
-            if module_exist:
-                in_name = f"{name}.{entry_name}"
-            else:
-                in_name = name + entry_name
-            mod_globals[alias] = _ivy_import_module(in_name, package)
-    return module
-
-
-def _ivy_absolute_import(name: str, asname=None, mod_globals=None):
-    """
-    Handles absolute import statement
-    :param name:
-    :return:
-    """
-    if asname is None:
-        _ivy_import_module(name)
-        true_name = name.partition(".")[0]
-        module = IMPORT_CACHE[true_name]
-    else:
-        true_name = asname
-        module = _ivy_import_module(name)
-    mod_globals[true_name] = module
-
-
-def _ivy_import_module(name, package=None):
-    global IMPORT_CACHE
-    absolute_name = resolve_name(name, package)
-    try:
-        return IMPORT_CACHE[absolute_name]
-    except KeyError:
-        pass
-
-    path = None
-    if "." in absolute_name:
-        parent_name, _, child_name = absolute_name.rpartition(".")
-        parent_module = _ivy_import_module(parent_name)
-        path = parent_module.__spec__.submodule_search_locations
-    spec = FINDER.find_spec(absolute_name, path)
-    if spec is None:
-        msg = f"No module named {absolute_name!r}"
-        raise ModuleNotFoundError(msg, name=absolute_name)
-    # print(spec, name)
-    module = module_from_spec(spec)
-    IMPORT_CACHE[absolute_name] = module
-    spec.loader.exec_module(module)
-    if path is not None:
-        # Set reference to self in parent, if exist
-        setattr(parent_module, child_name, module)
-    return module
-
+finder = IvyPathFinder()
+local_modules = _retrive_local_modules()
 
 # We shouldn't be able to set the backend on a local Ivy
-#modules_to_remove = ["utils.backend.handler"]
+# modules_to_remove = ["utils.backend.handler"]
 
 
 def with_backend(backend: str):
-    sys.meta_path.insert(0, FINDER)
-    ivy_pack = _ivy_import_module("ivy")
+    sys.meta_path.insert(0, finder)
+    _importlib.path_hooks.insert(0, finder)
+    ivy_pack = _importlib._ivy_import_module("ivy")
     ivy_pack._is_local = True
-    backend_module = _ivy_import_module(
+    backend_module = _importlib._ivy_import_module(
         ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
     )
     # TODO temporary
@@ -358,7 +278,7 @@ def with_backend(backend: str):
     )
     # Remove access to specific modules on local Ivy
     # TODO this doesn't work properly atm due to not handling nested module name
-    #for module in modules_to_remove:
+    # for module in modules_to_remove:
     #    for fn in inspect.getmembers(ivy_pack.__dict__[module], inspect.isfunction):
     #        if fn[1].__module__ != module:
     #            continue
@@ -366,6 +286,7 @@ def with_backend(backend: str):
     #            del ivy_pack.__dict__[fn[0]]
     #    del ivy_pack.__dict__[module]
     ivy_pack.backend_stack.append(backend_module)
-    sys.meta_path.remove(FINDER)
-    _clear_cache()
+    _importlib.path_hooks.remove(finder)
+    sys.meta_path.remove(finder)
+    _importlib._clear_cache()
     return ivy_pack

@@ -21,7 +21,7 @@ def compiled_backends():
     # To be able to share compiled_backends between examples
     suppress_health_check=[hypothesis.HealthCheck(9)]
 )
-@given(name=st.sampled_from(["add", "Array", "Container", "globals"]))
+@given(name=st.sampled_from(["add", "Array", "Container", "globals_vars"]))
 def test_memory_id(name, compiled_backends):
     for b in compiled_backends:
         assert id(getattr(ivy, name)) != id(

@@ -878,12 +878,12 @@ globals_vars = GlobalsDict(
     }
 )
 
-_default_globals = copy.deepcopy(globals)
+_default_globals = copy.deepcopy(globals_vars)
 
 
 def reset_globals():
-    global globals
-    globals = copy.deepcopy(_default_globals)
+    global globals_vars
+    globals_vars = copy.deepcopy(_default_globals)
 
 
 def set_global_attr(attr_name, attr_val):
