@@ -180,9 +180,6 @@ def handle_numpy_casting(fn: Callable) -> Callable:
             message="casting must be one of [no, equiv, safe, same_kind, unsafe]",
         )
         args = list(args)
-
-        # check if scalar exists and convert them to 0-dim arrays,
-        # so that their dtypes are handled correctly
         args_scalar_idxs = ivy.nested_argwhere(
             args, lambda x: isinstance(x, (int, float, bool))
         )
