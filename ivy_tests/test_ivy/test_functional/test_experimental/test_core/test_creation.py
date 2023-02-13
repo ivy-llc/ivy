@@ -327,7 +327,7 @@ def test_sequence_empty(
     on_device,
     ground_truth_backend,
 ):
-    ret = helpers.test_function(
+    helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
