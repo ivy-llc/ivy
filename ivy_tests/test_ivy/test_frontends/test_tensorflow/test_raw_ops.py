@@ -3059,6 +3059,21 @@ def test_tensorflow_Elu(
         name=name,
     )
 
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Conv3D",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NDHWC"]),
+        padding=st.sampled_from(["SAME", "VALID"]),
+        type="3d",
+        # Tensorflow backprop doesn't support dilations more than 1 on CPU
+        dilation_min=1,
+        dilation_max=1,
+    ),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
+)
 def test_tensorflow_Conv2D(
     *,
     x_f_d_df,
@@ -3091,3 +3106,4 @@ def test_tensorflow_Conv2D(
         data_format=data_format,
         dilations=dilation,
     )
+    
