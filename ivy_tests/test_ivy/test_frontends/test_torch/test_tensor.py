@@ -1228,9 +1228,11 @@ def test_torch_instance_amin(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
+    keepdim=st.booleans(),
 )
 def test_torch_instance_aminmax(
     dtype_x,
+    keepdim,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -1243,7 +1245,9 @@ def test_torch_instance_aminmax(
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={
+            "keepdim": keepdim,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
