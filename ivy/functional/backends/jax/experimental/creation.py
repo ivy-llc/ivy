@@ -89,7 +89,6 @@ def tril_indices(
 
 def sequence_empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
-    /,
     *,
     dtype: Optional[jnp.dtype] = jnp.float32,
     device: jaxlib.xla_extension.Device,
