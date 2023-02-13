@@ -2031,8 +2031,6 @@ def test_numpy_instance_isub__(
         init_flags=init_flags,
         method_flags=method_flags,
     )
-
-
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",

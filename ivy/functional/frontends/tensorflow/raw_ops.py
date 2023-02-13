@@ -406,6 +406,11 @@ def Sign(*, x, name="Sign"):
 
 
 @to_ivy_arrays_and_back
+def Softmax(*, logits, name="Softmax"):
+    return ivy.softmax(logits, axis=1)
+
+
+@to_ivy_arrays_and_back
 def Split(*, axis, value, num_split, name="Split"):
     return ivy.split(value, num_or_size_splits=num_split, axis=axis)
 
@@ -496,11 +501,6 @@ Sigmoid = to_ivy_arrays_and_back(
 
 
 @to_ivy_arrays_and_back
-def Softmax(*, logits, name="Softmax"):
-    return ivy.softmax(logits, axis=1)
-
-
-@to_ivy_arrays_and_back
 def Softplus(*, features, name="Softplus"):
     return ivy.softplus(features)
 
@@ -560,6 +560,40 @@ def Conv3D(
         dilations = dilations[2:]
 
     return tf_frontend.nn.conv3d(
+        input,
+        filter,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+        name=name,
+    )
+
+@to_ivy_arrays_and_back
+def Conv2D(
+        *,
+        input,
+        filter,
+        strides,
+        padding,
+        data_format="NHWC",
+        dilations=[1,1,1,1],
+        name="Conv2D"
+):
+
+    # ivy.backends.tensorflow expects strides and dilations to be
+    # a single integer value or a list of 3 values whereas the raw op
+    # expects a list of 4 values
+
+    if data_format == "NHWC":
+        strides = strides[1:-1]
+        dilations = dilations[1:-1]
+
+    elif data_format == "NCHW":
+        strides = strides[1:]
+        dilations = dilations[1:]
+
+    return tf_frontend.nn.Conv2D(
         input,
         filter,
         strides,

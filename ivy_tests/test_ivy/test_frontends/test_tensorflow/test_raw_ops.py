@@ -2958,6 +2958,8 @@ def test_tensorflow_Conv3D(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
+        with_out=False,
+        num_positional_args=0,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -3057,4 +3059,55 @@ def test_tensorflow_Elu(
         on_device=on_device,
         features=x[0],
         name=name,
+    )
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Conv2D",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["SAME", "VALID"]),
+        type="2d",
+        # Tensorflow backprop doesn't support dilation more than 1 on CPU
+        dilation_min=1,
+        dilation_max=1,
+    ),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(0),
+)
+
+def test_tensorflow_Conv2D(
+        *,
+        x_f_d_df,
+        test_flags,
+        frontend,
+        fn_tree,
+        on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+
+    # Broadcast strides and dilation to correct dims for the ground truth
+    # backend function to run correctly
+
+    stride = _convolution_broadcast_helper(
+        stride, num_spatial_dims=2, channel_index=3, name="strides"
+    )
+
+    dilation = _convolution_broadcast_helper(
+        dilation, num_spatial_dims=2, channel_index=3, name="dilations"
+    )
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        with_out=False,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filter=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
     )
