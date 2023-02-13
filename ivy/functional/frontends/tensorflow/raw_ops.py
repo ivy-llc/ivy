@@ -587,8 +587,8 @@ def Conv2D(
         strides = strides[1:-1]
         dilations = dilations[1:-1]
     elif data_format == "NCHW":
-        strides = strides[1:]
-        dilations = dilations[1:]
+        strides = strides[2:]
+        dilations = dilations[2:]
 
     return tf_frontend.nn.conv2d(
         input,
