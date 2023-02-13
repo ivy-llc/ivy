@@ -1360,7 +1360,11 @@ def matrix_rank(
 @handle_array_like_without_promotion
 @handle_array_function
 def matrix_transpose(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    conjugate: bool = False,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """
     Transposes a matrix (or a stack of matrices) ``x``.
@@ -1432,7 +1436,7 @@ def matrix_transpose(
                       [4., 5.]])
     }
     """
-    return current_backend(x).matrix_transpose(x, out=out)
+    return current_backend(x).matrix_transpose(x, conjugate=conjugate, out=out)
 
 
 @to_native_arrays_and_back
