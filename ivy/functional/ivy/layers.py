@@ -1643,6 +1643,7 @@ def conv_general_transpose(
     dilations: Optional[
         Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
     ] = 1,
+    output_padding: Sequence[int] = (0, 0),
     feature_group_count: Optional[int] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
@@ -1672,6 +1673,9 @@ def conv_general_transpose(
         while "channel_last" corresponds to "NWC", "NHWC", "NDHWC" respectively.
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    output_padding
+        A sequence of n integers that give the padding to apply before each spatial
+        dimension of the output shape.
     feature_group_count
          split input into groups, d_in should be divisible by the number of groups.
     bias
@@ -1694,6 +1698,7 @@ def conv_general_transpose(
         output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
+        output_padding=output_padding,
         feature_group_count=feature_group_count,
         bias=bias,
         out=out,

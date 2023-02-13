@@ -484,6 +484,7 @@ def conv_general_transpose(
     dilations: Optional[
         Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
     ] = 1,
+    output_padding: Sequence[int] = (0, 0),
     feature_group_count: Optional[int] = 1,
     bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,

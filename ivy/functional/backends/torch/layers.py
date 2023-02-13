@@ -52,27 +52,29 @@ def _pad_before_conv_tranpose(
         filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
         for i in range(dims)
     ]
-    pad_specific = [
-        _handle_padding(output_shape[i + 1], strides[i], filter_shape[i], padding)
-        for i in range(dims)
-    ]
-    if padding == "VALID":
-        padding_list = [0] * dims
+    if isinstance(padding, str):
+        pad_specific = [
+            _handle_padding(output_shape[i + 1], strides[i], filter_shape[i], padding)
+            for i in range(dims)
+        ]
+        if padding == "VALID":
+            padding_list = pad_specific
+        else:
+            for i in range(dims):
+                if pad_specific[i] % 2 != 0:
+                    pad_specific[i] -= 1
+                    not_valid_pad[i] = True
+            padding_list = [pad_specific[i] // 2 for i in range(dims)]
     else:
-        for i in range(dims):
-            if pad_specific[i] % 2 != 0:
-                pad_specific[i] -= 1
-                not_valid_pad[i] = True
-        padding_list = [pad_specific[i] // 2 for i in range(dims)]
-    out_shape = [
-        (x.shape[i + 2] - 1) * strides[i]
-        - 2 * padding_list[i]
-        + dilations[i] * (filters.shape[i + 2] - 1)
-        + 1
-        for i in range(dims)
-    ]
-    output_padding = [max(output_shape[i + 1] - out_shape[i], 0) for i in range(dims)]
-    return not_valid_pad, padding_list, output_padding
+        # TODO: need to modify to handle asymmetric explicit padding
+        # for i in range(dims):
+        #     x = x[(slice(None),) * (i + 2) + (slice(padding[i][0], -padding[i][1], 1),) + (...,)]
+        padding_list = [item for sublist in padding for item in sublist[::-1]][::-1]
+        padding_list = [
+            (padding_list[i] + padding_list[i + 1]) // 2
+            for i in range(0, len(padding_list), 2)
+        ]
+    return not_valid_pad, padding_list
 
 
 @with_unsupported_dtypes(
@@ -130,7 +132,7 @@ def conv1d_transpose(
     dilations = [dilations] if isinstance(dilations, int) else dilations
     filter_shape = list(filters.shape[0:1])
     filters = filters.permute(1, 2, 0)
-    not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
+    not_valid_pad, padding_list = _pad_before_conv_tranpose(
         x, filters, strides, padding, 1, dilations, output_shape, filter_shape
     )
     res = torch.nn.functional.conv_transpose1d(
@@ -140,7 +142,6 @@ def conv1d_transpose(
         strides,
         padding_list,
         dilation=dilations,
-        output_padding=output_padding,
     )
     if not_valid_pad[0]:
         res = res[:, :, 0:-1]
@@ -204,7 +205,7 @@ def conv2d_transpose(
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filter_shape = list(filters.shape[0:2])
     filters = filters.permute(2, 3, 0, 1)
-    not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
+    not_valid_pad, padding_list = _pad_before_conv_tranpose(
         x, filters, strides, padding, 2, dilations, output_shape, filter_shape
     )
     res = torch.nn.functional.conv_transpose2d(
@@ -214,7 +215,6 @@ def conv2d_transpose(
         strides,
         padding_list,
         dilation=dilations,
-        output_padding=output_padding,
     )
     if not_valid_pad[0]:
         res = res[:, :, 0:-1, :]
@@ -313,7 +313,7 @@ def conv3d_transpose(
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
     filter_shape = list(filters.shape[0:3])
     filters = filters.permute(3, 4, 0, 1, 2)
-    not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
+    not_valid_pad, padding_list = _pad_before_conv_tranpose(
         x, filters, strides, padding, 3, dilations, output_shape, filter_shape
     )
     res = torch.nn.functional.conv_transpose3d(
@@ -323,7 +323,6 @@ def conv3d_transpose(
         strides,
         padding_list,
         dilation=dilations,
-        output_padding=output_padding,
     )
     if not_valid_pad[0]:
         res = res[:, :, 0:-1, :, :]
@@ -410,6 +409,7 @@ def conv_general_transpose(
     dilations: Optional[
         Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
     ] = 1,
+    output_padding: Sequence[int] = (0, 0),
     feature_group_count: Optional[int] = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
@@ -420,7 +420,7 @@ def conv_general_transpose(
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     filter_shape = list(filters.shape[0:dims])
     filters = filters.permute(dims, dims + 1, *range(dims))
-    not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
+    not_valid_pad, padding_list = _pad_before_conv_tranpose(
         x, filters, strides, padding, dims, dilations, output_shape, filter_shape
     )
     if dims == 1:

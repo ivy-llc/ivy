@@ -63,7 +63,6 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
             st.integers(min_value=1, max_value=3),
         )
     )
-    full_strides = [strides] * dim if isinstance(strides, int) else strides
     full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if transpose:
         x_dim = draw(
@@ -109,8 +108,16 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
         )
     )
     if transpose:
+        full_strides = [strides] * dim if isinstance(strides, int) else strides
+        full_padding = [padding] * dim if isinstance(padding, int) else padding
         output_padding = draw(
-            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim)
+            st.lists(
+                st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim
+            ).filter(
+                lambda x: all(out_size > 0 for out_size in [
+                    (vals.shape[i + 2] - 1) * full_strides[i] - 2 * full_padding[i] +
+                    full_dilations[i] * (filter_shape[i + 2] - 1) for i in range(dim)])
+            )
         )
         for i, p in enumerate(output_padding):
             m = min(full_strides[i], full_dilations[i])
@@ -248,12 +255,9 @@ def test_torch_conv_tranpose1d(
         input=vals,
         weight=weight,
         bias=bias,
-        stride=1,
-        # stride=strides,
-        padding=0,
-        # padding=padding,
-        output_padding=0,
-        # output_padding=output_pad,
+        stride=strides,
+        padding=padding,
+        output_padding=output_pad,
         groups=fc,
         dilation=dilations,
     )
@@ -282,12 +286,12 @@ def test_torch_conv_tranpose2d(
         input=vals,
         weight=weight,
         bias=bias,
-        stride=1,
-        # stride=strides,
-        padding=0,
-        # padding=padding,
-        output_padding=0,
-        # output_padding=output_pad,
+        # stride=1,
+        stride=strides,
+        # padding=0,
+        padding=padding,
+        # output_padding=0,
+        output_padding=output_pad,
         groups=fc,
         dilation=dilations,
     )
@@ -316,12 +320,9 @@ def test_torch_conv_tranpose3d(
         input=vals,
         weight=weight,
         bias=bias,
-        stride=1,
-        # stride=strides,
-        padding=0,
-        # padding=padding,
-        output_padding=0,
-        # output_padding=output_pad,
+        stride=strides,
+        padding=padding,
+        output_padding=output_pad,
         groups=fc,
         dilation=dilations,
     )

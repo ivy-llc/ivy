@@ -459,7 +459,24 @@ def x_and_filters(
         strides,
         padding,
     )
-    ret = ret + (output_shape, fc) if transpose else ret + (fc,)
+    if transpose:
+        full_padding = [padding] * dim if isinstance(padding, int) else padding
+        output_padding = draw(
+            st.lists(
+                st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim
+            ).filter(
+                lambda x: all(out_size > 0 for out_size in [
+                    (vals.shape[i + 2] - 1) * full_strides[i] - 2 * full_padding[i] +
+                    full_dilations[i] * (filter_shape[i + 2] - 1) for i in range(dim)])
+            )
+        )
+        for i, p in enumerate(output_padding):
+            m = min(full_strides[i], full_dilations[i])
+            if p >= m:
+                output_padding[i] = m - 1
+        ret = ret + (output_shape, output_padding, fc)
+    else:
+        ret = ret + (fc,)
     if bias:
         return ret + (b,)
     return ret

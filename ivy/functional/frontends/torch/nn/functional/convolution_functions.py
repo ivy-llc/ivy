@@ -123,7 +123,6 @@ def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-# ToDo: add support / debug non-default stride, padding, and output_padding
 def _conv_transpose(
     input,
     weight,
@@ -150,19 +149,11 @@ def _conv_transpose(
         dims=dims,
         data_format="channel_first",
         dilations=dilation,
+        output_padding=output_padding,
         feature_group_count=groups,
     )
     if bias is not None:
-        ret = ivy.add(ret, ivy.expand_dims(bias, axis=(0, *range(2, dims + 2))))
-
-    out_pad = (
-        [output_padding] * dims
-        if isinstance(output_padding, int)
-        else list(output_padding)
-    )
-    paired_out_pad = [(out_pad[i], out_pad[i]) for i in reversed(range(len(out_pad)))]
-
-    ret = ivy.zero_pad(ret, [(0, 0), (0, 0), *paired_out_pad])
+        return ivy.add(ret, ivy.expand_dims(bias, axis=(0, *range(2, dims + 2))))
     return ret
 
 
