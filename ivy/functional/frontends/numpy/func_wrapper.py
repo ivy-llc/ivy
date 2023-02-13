@@ -113,11 +113,6 @@ def _assert_no_scalar(args, dtype, none=False):
 
 
 # same_kind casting
-def _assert_args_casting_same_kind(args, scalar_args, dtype):
-    _assert_array(args, dtype, scalar_check=(args and scalar_args), casting="same_kind")
-    _assert_same_kind_scalar(scalar_args, dtype)
-
-
 def _assert_same_kind_scalar(args, dtype):
     if args and dtype:
         assert_fn = None
@@ -136,11 +131,6 @@ def _assert_same_kind_scalar(args, dtype):
 
 
 # safe casting
-def _assert_args_casting_safe(args, scalar_args, dtype):
-    _assert_array(args, dtype, scalar_check=(args and scalar_args), casting="safe")
-    _assert_safe_scalar(scalar_args, dtype)
-
-
 def _assert_safe_scalar(args, dtype):
     if args and dtype:
         allowed_dtypes = [bool]
@@ -230,9 +220,21 @@ def handle_numpy_casting(fn: Callable) -> Callable:
             )
             _assert_no_scalar(args_scalar_to_check, dtype, none=none)
         elif casting == "same_kind":
-            _assert_args_casting_same_kind(args_to_check, args_scalar_to_check, dtype)
+            _assert_array(
+                args_to_check,
+                dtype,
+                scalar_check=(args_to_check and args_scalar_to_check),
+                casting="same_kind",
+            )
+            _assert_same_kind_scalar(args_scalar_to_check, dtype)
         elif casting == "safe":
-            _assert_args_casting_safe(args_to_check, args_scalar_to_check, dtype)
+            _assert_array(
+                args_to_check,
+                dtype,
+                scalar_check=(args_to_check and args_scalar_to_check),
+                casting="safe",
+            )
+            _assert_safe_scalar(args_scalar_to_check, dtype)
 
         if ivy.exists(dtype):
             ivy.map_nest_at_indices(
