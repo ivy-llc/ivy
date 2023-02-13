@@ -896,7 +896,7 @@ def lu_solve(
     ret
         Tensor containing the solution of a square system of linear equations.
     """
-    return current_backend(LU).inv(LU, pivots, B, left=left, adjoint=adjoint, out=out)
+    return current_backend(LU).lu_solve(LU, pivots, B, left=left, adjoint=adjoint, out=out)
 
 
 @to_native_arrays_and_back
