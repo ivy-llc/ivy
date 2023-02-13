@@ -1,11 +1,8 @@
 # local
 import ivy
-from ivy.functional.frontends.jax.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
-from ivy.functional.frontends.jax.numpy import (
-    promote_types_of_jax_inputs as promote_jax_arrays,
-)
+from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.jax.numpy import \
+    promote_types_of_jax_inputs as promote_jax_arrays
 
 
 @to_ivy_arrays_and_back
@@ -167,6 +164,10 @@ def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
 @to_ivy_arrays_and_back
 def logical_not(x, /):
     return ivy.logical_not(x)
+
+@to_ivy_arrays_and_back
+def logical_xor(x, /):
+    return ivy.logical_xor(x)
 
 
 @to_ivy_arrays_and_back
