@@ -117,6 +117,7 @@ Experimental
    experimental/gradient.rst
    experimental/xlogy.rst
    experimental/real.rst
+   experimental/binarizer.rst
    experimental/isin.rst
    experimental/is_native_dtype.rst
    experimental/SparseArray.rst
