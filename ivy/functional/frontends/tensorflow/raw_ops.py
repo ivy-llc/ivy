@@ -600,8 +600,6 @@ def Conv2D(
         name=name,
     )
 
-
-
 @to_ivy_arrays_and_back
 def Elu(features, name=None):
     zeros = ivy.zeros_like(features, dtype=ivy.dtype(features))
