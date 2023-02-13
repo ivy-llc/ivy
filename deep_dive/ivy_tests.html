@@ -381,9 +381,15 @@ Using a lot of help from <a class="reference external" href="https://github.com/
 For <code class="code docutils literal notranslate"><span class="pre">out</span></code> keyword argument, the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_test</span></code> decorator generates a boolean for whether we should provide an <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument or not, thankfully, the <cite>test_function</cite> helper function does a lot under the hood to properly create an array for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
 If the function does not support the <code class="code docutils literal notranslate"><span class="pre">out</span></code>, we should explicitly specify that we should not generate boolean flags for <code class="code docutils literal notranslate"><span class="pre">out</span></code> by setting <code class="code docutils literal notranslate"><span class="pre">with_out=False</span></code>, the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_test</span></code> in this case will not generate a value for <code class="code docutils literal notranslate"><span class="pre">with_out</span></code>.</p>
 <p>As  discussed above, the helper functions use the composite decorator, which helps in defining a series of custom strategies.
-It can be seen that <code class="code docutils literal notranslate"><span class="pre">dtype_and_x</span></code> uses the code:<cite>dtype_and_values</cite> strategy to generate numeric data types and corresponding array elements, whose shapes can be specified manually or are randomized by default.
-The generated data is returned as a tuple.
-Let’s look at the data produced by this strategy -:</p>
+It can be seen that <code class="code docutils literal notranslate"><span class="pre">dtype_and_x</span></code> uses the code:<cite>dtype_and_values</cite> strategy to generate numeric data types(for more details, see the section below) and corresponding array elements, whose shapes can be specified manually or are randomized by default.
+The generated data is returned as a tuple.</p>
+<p>One thing to note here is the <code class="code docutils literal notranslate"><span class="pre">test_flags</span></code> variable in the test function. This is basically an object which is initialized internally, which captures all the flags mentioned above for the test during collection time. These flags are then available for the helper function at test time.</p>
+<p>The test flags can also be generated explicitely like this -:</p>
+<p>In the test above <code class="code docutils literal notranslate"><span class="pre">test_abs</span></code>, one can assume that these flags are automatically loaded inside the <code class="code docutils literal notranslate"><span class="pre">test_flags</span></code> object with <a class="reference external" href="https://github.com/unifyai/ivy/blob/aef5ef5620bb6ad194030276e9c00118d006091b/ivy_tests/test_ivy/helpers/test_parameter_flags.py#L28">default</a> values.</p>
+<p>Test flags are mostly similar across decorators with slight difference in the variable names. This is how we generate them for method testing.</p>
+<p>The only difference here is that the <code class="code docutils literal notranslate"><span class="pre">test_flags</span></code> object here is divided in two, the <code class="code docutils literal notranslate"><span class="pre">init_flags</span></code> and the <code class="code docutils literal notranslate"><span class="pre">method_flags</span></code>. The above standards are extended
+to the <cite>handle_frontend_test</cite> and <cite>handle_frontend_method</cite> respectively.</p>
+<p>Let’s look at the data produced by this strategy -:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_hypothesis_examples</span><span class="p">(</span><span class="n">dtype_and_values</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
 
 <span class="go">([&#39;int8&#39;], [array(69, dtype=int8)])</span>
@@ -485,7 +491,7 @@ For example-:</p>
 </div>
 <ol class="arabic simple" start="5">
 <li><dl class="simple">
-<dt><cite>array_dtypes</cite> - As the name suggests, this will generate arbitrary sequences of valid float data types.</dt><dd><p>The sequence parameters like <em>min_size</em>, and <em>max_size</em>, are specified at test time based on the function.
+<dt><a href="#id9"><span class="problematic" id="id10">`array_dtypes`_</span></a> - As the name suggests, this will generate arbitrary sequences of valid float data types.</dt><dd><p>The sequence parameters like <em>min_size</em>, and <em>max_size</em>, are specified at test time based on the function.
 This is what the function returns -:</p>
 </dd>
 </dl>
@@ -500,7 +506,7 @@ This is what the function returns -:</p>
 </div>
 <p>This function should be used whenever we are testing an ivy function that accepts at least one array as an input.</p>
 <ol class="arabic simple" start="6">
-<li><p><a href="#id9"><span class="problematic" id="id10">`array_bools`_</span></a> - This function generates a sequence of boolean values.
+<li><p><a href="#id11"><span class="problematic" id="id12">`array_bools`_</span></a> - This function generates a sequence of boolean values.
 For example-:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_hypothesis_examples</span><span class="p">(</span><span class="n">array_bools</span><span class="p">(</span><span class="n">na</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">)))</span>
@@ -526,7 +532,7 @@ For example -:</p></li>
 </div>
 <p>The generated values are then passed to the array creation functions inside the test function as tuples.</p>
 <ol class="arabic simple" start="9">
-<li><p><a href="#id11"><span class="problematic" id="id12">`valid_axes`_</span></a> - This function generates valid axes for a given array dimension.
+<li><p><a href="#id13"><span class="problematic" id="id14">`valid_axes`_</span></a> - This function generates valid axes for a given array dimension.
 For example -:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_hypothesis_examples</span><span class="p">(</span><span class="n">valid_axes</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">size_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">]))</span>
@@ -539,7 +545,7 @@ For example -:</p></li>
 <ol class="arabic simple" start="10">
 <li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.integers">integers</a> - This is similar to the <code class="code docutils literal notranslate"><span class="pre">helpers.ints</span></code> strategy, with the only difference being that here the range can either be specified manually, or a shared key can be provided.
 The way shared keys work has been discussed in the <em>Important Strategies</em> sections above.</p></li>
-<li><p><a href="#id13"><span class="problematic" id="id14">`reshape_shapes`_</span></a> - This function returns a valid shape after a reshape operation is applied given as input of any arbitrary shape.
+<li><p><a href="#id15"><span class="problematic" id="id16">`reshape_shapes`_</span></a> - This function returns a valid shape after a reshape operation is applied given as input of any arbitrary shape.
 For example-:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_hypothesis_examples</span><span class="p">(</span><span class="n">reshape_shapes</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]),</span> <span class="mi">3</span><span class="p">)</span>
@@ -551,7 +557,7 @@ For example-:</p></li>
 </div>
 <p>It should be used in places where broadcast operations are run, either as a part of a larger computation or in a stand-alone fashion.</p>
 <ol class="arabic simple" start="12">
-<li><p><a href="#id15"><span class="problematic" id="id16">`subsets`_</span></a> - As the function name suggests, it generates subsets of any sequence, and returns that subset as a tuple.
+<li><p><a href="#id17"><span class="problematic" id="id18">`subsets`_</span></a> - As the function name suggests, it generates subsets of any sequence, and returns that subset as a tuple.
 For example-:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">some_sequence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">3.06</span><span class="p">,</span> <span class="s1">&#39;torch&#39;</span><span class="p">,</span> <span class="s1">&#39;ivy&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -567,7 +573,7 @@ For example-:</p></li>
 Such parameters usually test the function for edge cases.
 This function should be used in places where the result doesn’t depend on the kind of value an array contains.</p>
 <ol class="arabic simple" start="13">
-<li><p><a href="#id17"><span class="problematic" id="id18">`get_shape`_</span></a> - This is used to generate any arbitrary shape.If <em>allow_none</em> is set to <code class="code docutils literal notranslate"><span class="pre">True</span></code>, then an implicit <em>st.one_of</em> strategy is used, wherein the function will either generate <code class="code docutils literal notranslate"><span class="pre">None</span></code> as shape or it will generate a shape based on the keyword <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1354">arguments</a> of the function.
+<li><p><a href="#id19"><span class="problematic" id="id20">`get_shape`_</span></a> - This is used to generate any arbitrary shape.If <em>allow_none</em> is set to <code class="code docutils literal notranslate"><span class="pre">True</span></code>, then an implicit <em>st.one_of</em> strategy is used, wherein the function will either generate <code class="code docutils literal notranslate"><span class="pre">None</span></code> as shape or it will generate a shape based on the keyword <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1354">arguments</a> of the function.
 For example -:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_hypothesis_examples</span><span class="p">(</span>
@@ -582,7 +588,7 @@ For example -:</p></li>
 </pre></div>
 </div>
 <ol class="arabic simple" start="14">
-<li><p><a href="#id19"><span class="problematic" id="id20">`get_bounds`_</span></a> -  It’s often the case that we need to define a lower and an upper limit for generating certain values, like floats, sequences, arrays_values etc.
+<li><p><a href="#id21"><span class="problematic" id="id22">`get_bounds`_</span></a> -  It’s often the case that we need to define a lower and an upper limit for generating certain values, like floats, sequences, arrays_values etc.
 This strategy can be put to use when we want our function to pass on values in any range  possible, or we’re unsure about the limits.
 We can also use the function to generate a list of possible bounds wherein the function fails.
 For example-:</p></li>
@@ -596,7 +602,7 @@ For example-:</p></li>
 </div>
 <p><strong>Note</strong> - Under the hood, <strong>array_values</strong> strategy is called if the data type is <em>integer</em>, and <strong>none_or_list_of_floats</strong> is called when the data type is <em>float</em>.</p>
 <ol class="arabic simple" start="15">
-<li><p><a href="#id21"><span class="problematic" id="id22">`get_probs`_</span></a> -  This is similar to the <strong>get_mean_std</strong> strategy, and is used to generate a tuple containing two values.
+<li><p><a href="#id23"><span class="problematic" id="id24">`get_probs`_</span></a> -  This is similar to the <strong>get_mean_std</strong> strategy, and is used to generate a tuple containing two values.
 The first one being the <em>unnormalized probabilities</em> for all elements in a population, the second one being the <em>population size</em>.
 For example-:</p></li>
 </ol>
@@ -608,7 +614,7 @@ For example-:</p></li>
 </div>
 <p>Such strategies can be used to test statistical and probabilistic functions in Ivy.</p>
 <ol class="arabic simple" start="16">
-<li><p><a href="#id23"><span class="problematic" id="id24">`get_axis`_</span></a> - Similar to the <strong>valid_axes</strong> strategy, it generates an axis given any arbitrary shape as input.
+<li><p><a href="#id25"><span class="problematic" id="id26">`get_axis`_</span></a> - Similar to the <strong>valid_axes</strong> strategy, it generates an axis given any arbitrary shape as input.
 For example-:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_hypothesis_examples</span><span class="p">(</span><span class="n">get_axis</span><span class="p">(</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
@@ -618,7 +624,7 @@ For example-:</p></li>
 </pre></div>
 </div>
 <ol class="arabic simple" start="17">
-<li><p><a href="#id25"><span class="problematic" id="id26">`num_positional_args`_</span></a> - A helper function which generates the number of positional arguments, provided a function name from any ivy submodule.
+<li><p><a href="#id27"><span class="problematic" id="id28">`num_positional_args`_</span></a> - A helper function which generates the number of positional arguments, provided a function name from any ivy submodule.
 For example -:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_hypothesis_examples</span><span class="p">(</span><span class="n">num_positional_args</span><span class="p">(</span><span class="s2">&quot;matmul&quot;</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
@@ -647,8 +653,8 @@ It can be helpful when we are testing a function with varied number of arguments
 <section id="bonus-hypothesis-extended-features">
 <h3>Bonus: Hypothesis’ Extended Features<a class="headerlink" href="#bonus-hypothesis-extended-features" title="Permalink to this heading"></a></h3>
 <ol class="arabic simple">
-<li><p><strong>Hypothesis</strong> performs <strong>Automated Test-Case Reduction</strong>.
-That is, the <strong>given</strong> decorator strives to report the simplest set of input values that produce a given error.
+<li><p>Hypothesis performs <em>Automated Test-Case Reduction</em>.
+That is, the <em>given</em> decorator strives to report the simplest set of input values that produce a given error.
 For the code block below-:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@given</span><span class="p">(</span>
@@ -698,7 +704,7 @@ Instead, it saves a database of these examples associated with each of the proje
 In the case of Ivy, the <code class="code docutils literal notranslate"><span class="pre">.hypothesis</span></code> cache folder is generated if one doesn’t exist, otherwise the existing one is added to it.
 We just preserve this folder on the CI, so that each commit uses the same folder, and so it is ignored by git, thereby never forming part of the <code class="code docutils literal notranslate"><span class="pre">commit</span></code>.</p>
 <ol class="arabic simple" start="2">
-<li><p><strong>–-hypothesis-show-statistics</strong></p></li>
+<li><p><strong>–hypothesis-show-statistics</strong></p></li>
 </ol>
 <p>This feature helps in debugging the tests, with methods like <strong>note()</strong>, custom <strong>event()s</strong> where addition to the summary, and a variety performance details are supported.
 Let’s look at the function <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_nn/test_activations.py#L104">test_gelu</a> -:</p>
