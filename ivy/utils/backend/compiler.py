@@ -264,12 +264,6 @@ def _clear_cache():
 def _ivy_fromimport(name: str, package=None, mod_globals=None, from_list=(), level=0):
     """
     Handles absolute and relative from_import statmement
-    :param name:
-    :param package:
-    :param mod_globals:
-    :param from_list:
-    :param level:
-    :return:
     """
     module_exist = name != ""
     name = "." * level + name
