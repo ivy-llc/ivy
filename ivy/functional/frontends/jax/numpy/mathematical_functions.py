@@ -66,6 +66,12 @@ def mod(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def divmod(x1, x2, /):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return tuple([ivy.floor_divide(x1, x2), ivy.remainder(x1, x2)])
+
+
+@to_ivy_arrays_and_back
 def sinh(x):
     return ivy.sinh(x)
 
