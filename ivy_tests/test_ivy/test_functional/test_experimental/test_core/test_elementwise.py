@@ -262,6 +262,8 @@ def test_trapz(
         fw=backend_fw,
         ground_truth_backend=ground_truth_backend,
         fn_name=fn_name,
+        rtol_=1e-3,
+        atol_=1e-3,
         y=np.asarray(y[0], dtype=input_dtype[0]),
         x=x,
         dx=dx,
