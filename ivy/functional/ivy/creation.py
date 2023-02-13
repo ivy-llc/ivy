@@ -9,7 +9,7 @@ import numpy as np
 import ivy
 from ivy import to_ivy
 from ivy.backend_handler import current_backend
-#from ivy.exceptions import handle_exceptions
+# from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     handle_array_function,
     infer_device,
