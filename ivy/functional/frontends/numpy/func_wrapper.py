@@ -201,20 +201,12 @@ def handle_numpy_casting(fn: Callable) -> Callable:
                 none=none,
             )
             _assert_no_scalar(args_scalar_to_check, dtype, none=none)
-        elif casting == "same_kind":
+        elif casting in ["same_kind", "safe"]:
             _assert_array(
                 args_to_check,
                 dtype,
                 scalar_check=(args_to_check and args_scalar_to_check),
-                casting="same_kind",
-            )
-            _assert_scalar(args_scalar_to_check, dtype)
-        elif casting == "safe":
-            _assert_array(
-                args_to_check,
-                dtype,
-                scalar_check=(args_to_check and args_scalar_to_check),
-                casting="safe",
+                casting=casting,
             )
             _assert_scalar(args_scalar_to_check, dtype)
 
