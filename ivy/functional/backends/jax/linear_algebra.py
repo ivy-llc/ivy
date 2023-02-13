@@ -290,7 +290,8 @@ def matrix_transpose(
     /,
     *,
     conjugate: bool = False,
-    out: Optional[JaxArray] = None) -> JaxArray:
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     if conjugate:
         jnp.conj(x)
     return jnp.swapaxes(x, -1, -2)
