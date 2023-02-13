@@ -8,8 +8,6 @@ from ivy.functional.frontends.numpy.linalg.norms_and_other_numbers import matrix
 
 # solve
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
-
-
 @to_ivy_arrays_and_back
 def solve(a, b):
     a, b = promote_types_of_numpy_inputs(a, b)
