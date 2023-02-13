@@ -54,8 +54,8 @@ class ArrayWithCreationExperimental(abc.ABC):
                     0., 1., 0.]])
         """
         return ivy.eye_like(self._data, k=k, dtype=dtype, device=device, out=out)
-    
-    
+
+
     def sequence_empty(
         self: ivy.Array,
         /,
