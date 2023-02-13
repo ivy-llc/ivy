@@ -596,8 +596,8 @@ def sequence_empty(
     
     Parameters
     ----------
-    x
-        input array from which to derive the output array shape.
+    shape
+        tuple for the shape of the output array.
     dtype
         output array data type. If dtype is None, the output array data type must be
         inferred from x. Deafult: ``None``.
@@ -621,4 +621,4 @@ def sequence_empty(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend(x).sequence_empty(shape, dtype=dtype, device=device, out=out)
+    return current_backend().sequence_empty(shape, dtype=dtype, device=device, out=out)
