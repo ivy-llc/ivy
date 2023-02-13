@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple, Union, List, Dict, Sequence
+from typing import Optional, Tuple, Union, List, Dict
 
 # local
 import ivy
@@ -818,7 +818,7 @@ class ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_sequence_empty(
-        shape: Union[ivy.NativeShape, Sequence[int], ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape, ivy.Container],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
