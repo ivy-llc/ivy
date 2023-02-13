@@ -74,6 +74,8 @@ def rot90(
     axes: Optional[Tuple[int, int]] = (0, 1),
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axes, list):
+        axes = tuple(axes)
     return jnp.rot90(m, k, axes)
 
 

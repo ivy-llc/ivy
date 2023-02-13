@@ -1140,3 +1140,27 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([4., 6., 1.])
         """
         return ivy.real(self._data, out=out)
+
+    def binarizer(
+            self: ivy.Array, /, *, threshold: float = 0, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        Maps the values of the input tensor to either 0 or 1,
+        element-wise, based on the outcome of a comparison
+        against a threshold value.
+        Parameters
+        ----------
+        self
+             Data to be binarized
+        threshold
+             Values greater than this are
+             mapped to 1, others to 0.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            Binarized output data
+        """
+        return ivy.binarizer(self._data, threshold=threshold, out=out)
