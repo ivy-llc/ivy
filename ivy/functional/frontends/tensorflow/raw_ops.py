@@ -569,6 +569,7 @@ def Conv3D(
         name=name,
     )
 
+
 @to_ivy_arrays_and_back
 def Conv2D(
     *,
@@ -599,6 +600,7 @@ def Conv2D(
         dilations=dilations,
         name=name,
     )
+
 
 @to_ivy_arrays_and_back
 def Elu(features, name=None):
