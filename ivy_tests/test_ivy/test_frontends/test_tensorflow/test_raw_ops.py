@@ -3058,3 +3058,36 @@ def test_tensorflow_Elu(
         features=x[0],
         name=name,
     )
+
+def test_tensorflow_Conv2D(
+    *,
+    x_f_d_df,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+
+    # Broadcast stirdes and dilations to correct dims for the ground truth
+    # backend func to run correctly
+    stride = _convolution_broadcast_helper(
+        stride, num_spatial_dims=2, channel_index=3, name="strides"
+    )
+    dilation = _convolution_broadcast_helper(
+        dilation, num_spatial_dims=2, channel_index=3, name="dilations"
+    )
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filter=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )

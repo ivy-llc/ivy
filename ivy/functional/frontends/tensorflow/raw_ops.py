@@ -569,6 +569,38 @@ def Conv3D(
         name=name,
     )
 
+@to_ivy_arrays_and_back
+def Conv2D(
+    *,
+    input,
+    filter,
+    strides,
+    padding,
+    data_format="NHWC",
+    dilations=[1, 1, 1, 1],
+    name="Conv2D",
+):
+    # ivy.backends.tensorflow expects strides and dilations to be
+    # a single integer value or a list of 3 values whereas the raw op
+    # expects a list of 4 values
+    if data_format == "NHWC":
+        strides = strides[1:-1]
+        dilations = dilations[1:-1]
+    elif data_format == "NCHW":
+        strides = strides[1:]
+        dilations = dilations[1:]
+
+    return tf_frontend.nn.conv2d(
+        input,
+        filter,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+        name=name,
+    )
+
+
 
 @to_ivy_arrays_and_back
 def Elu(features, name=None):
