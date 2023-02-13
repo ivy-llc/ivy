@@ -854,17 +854,17 @@ def test_torch_tensorsolve(
 def _lu_factor_helper(draw):
     # generate input matrix of shape (*, m, n) and where '*' is one or more batch dimensions
     input_dtype = draw(
-        helpers.get_dtypes("float", index=1, full=True)
+        helpers.get_dtypes("float")
     )
 
     dim1 = draw(helpers.ints(min_value=2, max_value=5))
     dim2 = draw(helpers.ints(min_value=2, max_value=5))
-    batch_dim = draw(helpers.get_shape(min_dim_size=0, max_dim_size=5))
+    batch_dim = draw(helpers.ints(min_value=0, max_value=5))
 
     if batch_dim == 0:
         input_matrix = draw(
             helpers.array_values(
-                dtype=input_dtype,
+                dtype=input_dtype[0],
                 shape=(dim1, dim2),
                 min_value=-5,
                 max_value=5,
@@ -873,8 +873,8 @@ def _lu_factor_helper(draw):
     else:
         input_matrix = draw(
             helpers.array_values(
-                dtype=input_dtype,
-                shape=(*batch_dim, dim1, dim2),
+                dtype=input_dtype[0],
+                shape=(batch_dim, dim1, dim2),
                 min_value=-5,
                 max_value=5,
             )
