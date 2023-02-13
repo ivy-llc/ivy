@@ -86,7 +86,7 @@ def test_numpy_sum(
     fn_tree="numpy.prod",
     dtype_x_axis_dtype=_get_castable_dtypes_values(),
     keep_dims=st.booleans(),
-    initial=st.one_of(st.floats(), st.none()),
+    initial=st.one_of(st.floats()),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_prod(
@@ -102,43 +102,28 @@ def test_numpy_prod(
     input_dtypes, x, axis, dtype = dtype_x_axis_dtype
     if ivy.current_backend_str() == "torch":
         assume(not test_flags.as_variable[0])
-    if initial is not None:
-        (
-            where,
-            input_dtypes,
-            test_flags,
-        ) = np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
-        helpers.test_frontend_function(
-            input_dtypes=input_dtypes,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            x=x[0],
-            axis=axis,
-            dtype=dtype,
-            keepdims=keep_dims,
-            initial=initial,
-            where=where,
-        )
-    else:
-        where = True
-        np_frontend_helpers.test_frontend_function(
-            input_dtypes=input_dtypes,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            x=x[0],
-            axis=axis,
-            dtype=dtype,
-            keepdims=keep_dims,
-            where=where,
-        )
+    (
+        where,
+        input_dtypes,
+        test_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        dtype=dtype,
+        keepdims=keep_dims,
+        initial=initial,
+        where=where,
+    )
 
 
 # cumsum

@@ -46,18 +46,13 @@ def sum(
 def prod(
     x, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=True
 ):
-    if not where:
-        if dtype:
-            return ivy.astype(ivy.array(0), ivy.as_ivy_dtype(dtype))
-        return ivy.array(0)
     if initial:
         s = ivy.shape(x, as_array=True)
         s[axis] = 1
         header = ivy.full(ivy.Shape(tuple(s)), initial)
         if ivy.is_array(where):
             x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)), out=out)
-        assert 0 == 1, f"{where}, {x}, {out}"
-        x = ivy.concat([x, header], axis=axis)
+        x = ivy.concat([header, x], axis=axis)
     return ivy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
