@@ -156,11 +156,26 @@ def test_numpy_slogdet(
 
 @handle_frontend_test(
     fn_tree="numpy.trace",
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
     test_with_out=st.just(False),
+    offset=st.integers(min_value=0, max_value=0),
+    axis1=st.integers(min_value=0, max_value=0),
+    axis2=st.integers(min_value=1, max_value=1),
 )
 def test_numpy_trace(
     dtype_and_x,
+    offset,
+    axis1,
+    axis2,
     frontend,
     test_flags,
     fn_tree,
@@ -174,4 +189,7 @@ def test_numpy_trace(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+        offset=offset,
+        axis1=axis1,
+        axis2=axis2,
     )

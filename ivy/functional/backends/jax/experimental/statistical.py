@@ -69,3 +69,17 @@ def corrcoef(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.corrcoef(x, y=y, rowvar=rowvar)
+
+
+def nanmedian(
+    input: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    overwrite_input: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.nanmedian(
+        input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+    )
