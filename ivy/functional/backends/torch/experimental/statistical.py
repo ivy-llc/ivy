@@ -32,6 +32,9 @@ def median(
             keepdim=keepdims,
             out=out,
         )
+    
+    
+median.support_native_out = True
 
 
 def nanmean(
@@ -46,7 +49,7 @@ def nanmean(
     return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
 
 
-nanmean_support_native_out = True
+nanmean.support_native_out = True
 
 
 @with_unsupported_dtypes(
@@ -132,3 +135,6 @@ def nanmedian(
     return torch.nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
+
+
+nanmedian.support_native_out = True

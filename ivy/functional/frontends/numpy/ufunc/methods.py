@@ -52,6 +52,7 @@ ufuncs = [
     "hypot",
     "imag",
     "invert",
+    "imag" "invert",
     "isfinite",
     "isinf",
     "isnan",

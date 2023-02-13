@@ -526,7 +526,11 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
 
     def matrix_transpose(
-        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        /,
+        *,
+        conjugate: bool = False,
+        out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         Transposes a matrix (or a stack of matrices) ``x``.
@@ -557,7 +561,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array([[1., 0.],
                    [2., 3.]])
         """
-        return ivy.matrix_transpose(self._data, out=out)
+        return ivy.matrix_transpose(self._data, conjugate=conjugate, out=out)
 
     def outer(
         self: ivy.Array,
