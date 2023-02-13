@@ -885,6 +885,12 @@ def matmul(
         if True, ``x1`` is transposed before multiplication.
     transpose_b
         if True, ``x2`` is transposed before multiplication.
+    adjoint_a
+        If True, takes the conjugate of the matrix then the transpose of the matrix.
+        adjoint_a and transpose_a can not be true at the same time.
+    adjoint_b
+        If True, takes the conjugate of the matrix then the transpose of the matrix.
+        adjoint_b and transpose_b can not be true at the same time.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1374,6 +1380,8 @@ def matrix_transpose(
     x
         input array having shape ``(..., M, N)`` and whose innermost two
         dimensions form ``MxN`` matrices.
+    conjugate
+        If True, takes the conjugate of the matrix.
     out
         optional output array, for writing the result to. It must have a
         shape that the inputs broadcast to.
