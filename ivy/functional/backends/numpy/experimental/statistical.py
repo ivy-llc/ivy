@@ -18,6 +18,9 @@ def median(
     )
 
 
+median.support_native_out = True
+
+
 def nanmean(
     a: np.ndarray,
     /,
@@ -30,7 +33,7 @@ def nanmean(
     return np.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
 
-nanmean_support_native_out = True
+nanmean.support_native_out = True
 
 
 def unravel_index(
@@ -86,3 +89,6 @@ def nanmedian(
     return np.nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
+
+
+nanmedian.support_native_out = True
