@@ -58,7 +58,6 @@ class ArrayWithCreationExperimental(abc.ABC):
 
     def sequence_empty(
         self: ivy.Array,
-        /,
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = ivy.float32,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
