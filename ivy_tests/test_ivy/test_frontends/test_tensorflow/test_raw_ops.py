@@ -3078,6 +3078,8 @@ def test_tensorflow_Conv2D(
     *,
     x_f_d_df,
     test_flags,
+    as_variable,
+    native_array,
     frontend,
     fn_tree,
     on_device,
