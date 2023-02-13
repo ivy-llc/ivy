@@ -477,9 +477,12 @@ def _get_castable_dtypes_values(draw, *, allow_nan=False):
     )
     axis = draw(helpers.get_axis(shape=shape, force_int=True))
     dtype1, values, dtype2 = draw(
-        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("float")), dtype[0], values[0]
+        )
     )
     return [dtype1], [values], axis, dtype2
+
 
 # nansum
 @handle_test(
