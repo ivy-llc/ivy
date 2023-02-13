@@ -847,3 +847,33 @@ def test_torch_tensorsolve(
         A=A,
         B=B,
     )
+
+
+# eigh
+@handle_frontend_test(
+    fn_tree="torch.linalg.eigh",
+    dtype_x=_get_symmetrix_matrix(),
+    UPLO=st.sampled_from(("L", "U")),
+    test_with_out=st.just(False),
+)
+def test_torch_eigh(
+    *,
+    dtype_x,
+    UPLO,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        UPLO=UPLO,
+        atol=1e-4,
+        rtol=1e-3,
+    )
