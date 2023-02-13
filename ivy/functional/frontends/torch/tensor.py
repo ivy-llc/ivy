@@ -328,7 +328,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def arctan2_(self, other):
-        self._ivy_array = self.arctan2().ivy_array
+        self._ivy_array = self.arctan2(other).ivy_array
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
