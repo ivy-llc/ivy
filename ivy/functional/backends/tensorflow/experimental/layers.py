@@ -1,6 +1,9 @@
+# global
 import math
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
+
+# local
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
@@ -12,7 +15,7 @@ def _from_int_to_tuple(arg, dim):
         return (arg,) * dim
     if isinstance(arg, tuple) and len(arg) == 1:
         return (arg[0],) * dim
-    return tuple(arg)
+    return arg
 
 
 def max_pool1d(
@@ -53,7 +56,15 @@ def max_pool2d(
     dilation = _from_int_to_tuple(dilation, 2)
     strides = _from_int_to_tuple(strides, 2)
     kernel = _from_int_to_tuple(kernel, 2)
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
 
+    if isinstance(padding, (tuple, list)):
+        ivy.assertions.check_kernel_padding_size(kernel, padding)
     new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
     if isinstance(padding, str):
         pad_h = _handle_padding(x.shape[1], strides[0], new_kernel[0], padding)
@@ -68,7 +79,7 @@ def max_pool2d(
                 x_shape[i], new_kernel[i], padding[i], strides[i]
             )
 
-    padding = [(0, 0)] + padding + [(0, 0)]
+    padding = [(0, 0)] + list(padding) + [(0, 0)]
     x = tf.pad(x, padding, constant_values=-math.inf)
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
@@ -352,3 +363,32 @@ def embedding(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
+
+
+def interpolate(
+    x: Union[tf.Tensor, tf.Variable],
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Union[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    align_corners: Optional[bool] = None,
+    antialias: Optional[bool] = False,
+):
+    if align_corners:
+        return ivy.functional.experimental.interpolate(
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias
+        )
+    elif mode == "linear":
+        x = tf.transpose(x, (0, 2, 1))
+        return tf.transpose(
+            tf.image.resize(
+                x, size=[x.shape[0], size], method="bilinear", antialias=antialias
+            ),
+            (0, 2, 1),
+        )
+    elif mode == "bilinear":
+        x = tf.transpose(x, (0, 2, 3, 1))
+        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 3, 1, 2))
+    elif mode == "trilinear":
+        x = tf.transpose(x, (0, 2, 3, 4, 1))
+        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 4, 1, 2, 3))

@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
@@ -12,21 +12,29 @@ from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 
 
+def _from_int_to_tuple(arg, dim):
+    if isinstance(arg, int):
+        return (arg,) * dim
+    if isinstance(arg, tuple) and len(arg) == 1:
+        return (arg[0],) * dim
+    return arg
+
+
 def general_pool(
     inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation, ceil_mode
 ):
-    if isinstance(window_shape, int):
-        window_shape = (window_shape,) * dim
-    elif len(window_shape) == 1:
-        window_shape = (window_shape[0],) * dim
-    if isinstance(strides, int):
-        strides = (strides,) * dim
-    elif len(strides) == 1:
-        strides = (strides[0],) * dim
-    if isinstance(dilation, int):
-        dilation = (dilation,) * dim
-    elif len(dilation) == 1:
-        dilation = (dilation[0],) * dim
+    window_shape = _from_int_to_tuple(window_shape, dim)
+    strides = _from_int_to_tuple(strides, dim)
+    dilation = _from_int_to_tuple(dilation, dim)
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * dim
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * dim
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
+
+    if isinstance(padding, (tuple, list)):
+        ivy.assertions.check_kernel_padding_size(window_shape, padding)
 
     assert len(window_shape) == len(
         strides
@@ -66,7 +74,7 @@ def general_pool(
         ]
         pad_list = [(0, 0)] + pad_list + [(0, 0)]
     else:
-        pad_list = [(0, 0)] + padding + [(0, 0)]
+        pad_list = [(0, 0)] + list(padding) + [(0, 0)]
 
     if ceil_mode:
         for i in range(len(dims) - 2):
@@ -420,3 +428,28 @@ def ifft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.ifft(x, n, dim, norm)
+
+
+def interpolate(
+    x: JaxArray,
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Union[Literal["linear", "bilinear"]] = "linear",
+    align_corners: Optional[bool] = None,
+    antialias: Optional[bool] = False,
+):
+    # keeping the batch and channel dimension same
+    dims = len(x.shape) - 2
+    size = (size,) * dims if isinstance(size, int) else size
+    size = [*x.shape[0:2], *size]
+
+    if align_corners or mode == "area":
+        return ivy.interpolate(
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias
+        )
+    x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
+    return jnp.transpose(
+        jax.image.resize(x, shape=size, method=mode, antialias=antialias),
+        (0, dims + 1, *range(1, dims + 1)),
+    )

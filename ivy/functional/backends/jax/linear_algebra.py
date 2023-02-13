@@ -168,12 +168,18 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if transpose_a is True:
         x1 = jnp.transpose(x1)
     if transpose_b is True:
         x2 = jnp.transpose(x2)
+    if adjoint_a is True:
+        x1 = jnp.transpose(jnp.conjugate(x1))
+    if adjoint_b is True:
+        x2 = jnp.transpose(jnp.conjugate(x2))
     return jnp.matmul(x1, x2)
 
 
