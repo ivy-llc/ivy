@@ -54,8 +54,9 @@ def prod(
         s = ivy.shape(x, as_array=True)
         s[axis] = 1
         header = ivy.full(ivy.Shape(tuple(s)), initial)
-        if where:
-            x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)))
+        if ivy.is_array(where):
+            x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)), out=out)
+        assert 0 == 1, f"{where}, {x}, {out}"
         x = ivy.concat([x, header], axis=axis)
     return ivy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
