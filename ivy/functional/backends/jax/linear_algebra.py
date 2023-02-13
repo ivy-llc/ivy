@@ -285,7 +285,15 @@ def matrix_rank(
     {"0.3.14 and below": ("int", "float16", "complex")},
     backend_version,
 )
-def matrix_transpose(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def matrix_transpose(
+    x: JaxArray,
+    /,
+    *,
+    conjugate: bool = False,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    if conjugate:
+        jnp.conj(x)
     return jnp.swapaxes(x, -1, -2)
 
 
