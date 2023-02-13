@@ -854,6 +854,50 @@ def inv(
     """
     return current_backend(x).inv(x, adjoint=adjoint, out=out)
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def lu_solve(
+    LU: Union[ivy.Array, ivy.NativeArray], 
+    pivots: Union[ivy.Array, ivy.NativeArray], 
+    B: Union[ivy.Array, ivy.NativeArray], 
+    /, 
+    *, 
+    left:Optional[bool]=True, 
+    adjoint:Optional[bool]=False, 
+    out:Optional[ivy.Array]=None,
+) -> ivy.Array:
+    """Returns the LU solve of the linear system Ax=B, 
+    using the partially pivoted LU factorization of A 
+    from lu_factor().
+
+    Parameters
+    ----------
+    LU
+        The LU matrix's upper and lower triangular parts encode the 
+        non-constant elements of L and U of the LU decomposition of A.
+    pivot
+        The returned permutation matrix is represented by a 1-indexed vector. 
+        pivots[i] == j represents that in the i-th step of the algorithm, the 
+        i-th row was permuted with the j-1-th row.
+    B
+        Right-hand side tensor.
+    left
+        If left= False, this function solves XA=B else AX=B.
+    adjoint
+        If adjoint= True (and left= True), given an LU factorization of A^TX=B
+        A^H is the conjugate transpose when A is complex, and the transpose when 
+        A is real-valued.
+    Returns
+    -------
+    ret
+        Tensor containing the solution of a square system of linear equations.
+    """
+    return current_backend(LU).inv(LU, pivots, B, left=left, adjoint=adjoint, out=out)
+
 
 @to_native_arrays_and_back
 @handle_out_argument
