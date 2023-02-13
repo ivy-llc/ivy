@@ -362,11 +362,31 @@
 
 <div class="viewcode-block" id="ArrayWithDataTypes.iinfo"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.iinfo">[docs]</a>    <span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iinfo</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        `ivy.Array` instance method variant of `ivy.iinfo`. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for `ivy.iinfo` also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            An instance of the `Iinfo` class, containing information</span>
+<span class="sd">            about the integer data type of the input array.</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([-119,122,14], dtype=ivy.int8))</span>
 <span class="sd">        &gt;&gt;&gt; x.iinfo()</span>
 <span class="sd">        iinfo(min=-128, max=127, dtype=int8)</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([-12,54,1,9,-1220], dtype=ivy.int16))</span>
+<span class="sd">        &gt;&gt;&gt; x.iinfo()</span>
+<span class="sd">        iinfo(min=-32768, max=32767, dtype=int16)</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
