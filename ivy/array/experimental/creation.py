@@ -60,7 +60,7 @@ class ArrayWithCreationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = ivy.float32,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
