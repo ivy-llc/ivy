@@ -1081,3 +1081,34 @@ def test_hypot(
         x1=x[0],
         x2=x[1],
     )
+
+
+@handle_test(
+    fn_tree="binarizer",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    threshold=helpers.floats(),
+    container_flags=st.just([False]),
+)
+def test_binarizer(
+    *,
+    dtype_and_x,
+    threshold,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        threshold=threshold,
+    )
