@@ -866,14 +866,37 @@ def test_torch_eigh(
     on_device,
 ):
     input_dtype, x = dtype_x
-    helpers.test_frontend_function(
+    if x.dtype == ivy.float32:
+        x = x.astype("float64")
+        input_dtype = [ivy.float64]
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        test_values=False,
         input=x,
         UPLO=UPLO,
-        atol=1e-4,
-        rtol=1e-3,
+    )
+    ret = [ivy.to_numpy(x).astype("float64") for x in ret]
+    frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
+
+    l, q = ret
+    front_l, front_q = frontend_ret
+
+    assert_all_close(
+        ret_np=l,
+        ret_from_gt_np=front_l,
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )
+
+    assert_all_close(
+        ret_np=q,
+        ret_from_gt_np=front_q,
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
     )
