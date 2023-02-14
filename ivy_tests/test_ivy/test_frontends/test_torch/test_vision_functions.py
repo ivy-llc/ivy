@@ -215,6 +215,7 @@ def test_torch_upsample_bilinear(
         scale_factor=scale_factor,
     )
 
+
 @st.composite
 def _interpolate_helper(draw):
     dtype, input, shape = draw(
