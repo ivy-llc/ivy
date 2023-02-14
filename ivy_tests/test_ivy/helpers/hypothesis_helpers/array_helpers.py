@@ -22,7 +22,7 @@ def array_bools(
         key="size"
     )
 ):
-    """Draws a list of booleans with a fixed size.
+    """Draws a list of booleans with a given size.
 
     Parameters
     ----------
@@ -61,14 +61,14 @@ def array_bools(
 
 def list_of_size(
     *,
-    other,
-    size,
+    x,
+    size
 ):
     """Returns a list of the given length with elements drawn randomly from x.
 
     Parameters
     ----------
-    other
+    x
         a list to draw elements from
     size
         length of the list
@@ -81,7 +81,7 @@ def list_of_size(
     Examples
     --------
     >>> list_of_size(
-    ...     other=st.sampled_from([-1, 5, 9]),
+    ...     x=st.sampled_from([-1, 5, 9]),
     ...     size=4,
     ... )
     [-1, 5, -1, -1]
@@ -89,7 +89,7 @@ def list_of_size(
     [9, 9, -1, 9]
 
     >>> list_of_size(
-    ...     other=st.integers(min_value=0, max_value=4),
+    ...     x=st.integers(min_value=0, max_value=4),
     ...     size=10,
     ... )
     [3, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -97,7 +97,7 @@ def list_of_size(
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     >>> list_of_size(
-    ...     other=st.booleans(),
+    ...     x=st.booleans(),
     ...     size=3,
     ... )
     [False, False, False]
@@ -105,26 +105,26 @@ def list_of_size(
     [False, True, False]
 
     """
-    return lists(other=other, min_size=size, max_size=size)
+    return lists(other=x, min_size=size, max_size=size)
 
 
 @st.composite
 def lists(
     draw,
     *,
-    other,
+    x,
     min_size=None,
     max_size=None,
     size_bounds=None,
 ):
-    """Draws a list with a random bounded size from the data-set other.
+    """Draws a list with a random bounded size from the data-set x.
 
     Parameters
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    other
+    x
         data-set of elements.
     min_size
         minimum size of the list.
@@ -142,7 +142,7 @@ def lists(
     Examples
     --------
     >>> lists(
-    ...     other=st.sampled_from([-1, 5, 9]),
+    ...     x=st.sampled_from([-1, 5, 9]),
     ...     min_size=4,
     ...     max_size=5,
     ... )
@@ -151,7 +151,7 @@ def lists(
     [5, 9, 5, 9]
 
     >>> lists(
-    ...     other=st.integers(min_value=0, max_value=4),
+    ...     x=st.integers(min_value=0, max_value=4),
     ...     size_bounds=(9, 10),
     ... )
     [0, 2, 4, 3, 3, 3, 3, 2, 1, 4]
@@ -159,7 +159,7 @@ def lists(
     [1, 0, 1, 2, 1, 4, 1, 3, 1]
 
     >>> lists(
-    ...     other=st.integers(min_value=0, max_value=4),
+    ...     x=st.integers(min_value=0, max_value=4),
     ...     size_bounds=[9, 10],
     ... )
     [1, 3, 0, 2, 0, 0, 1, 4, 2, 3]
@@ -167,7 +167,7 @@ def lists(
     [1, 2, 4, 1, 1, 1, 4, 3, 2]
 
     >>> lists(
-    ...     other=st.floats(
+    ...     x=st.floats(
     ...         min_value=1,
     ...         max_value=3,
     ...         exclude_max=True,
@@ -194,7 +194,7 @@ def lists(
         min_size, max_size = (min_size, max_size)
     else:
         min_size, max_size = (max_size, min_size)
-    return draw(st.lists(other, min_size=min_size, max_size=max_size))
+    return draw(st.lists(x=x, min_size=min_size, max_size=max_size))
 
 
 @st.composite
@@ -790,7 +790,7 @@ def arrays_and_axes(
     min_dim_size=1,
     max_dim_size=10,
     num=2,
-    returndtype=False,
+    return_dtype=False,
     force_int_axis=False,
 ):
     shapes = list()
@@ -831,7 +831,7 @@ def arrays_and_axes(
                     st.one_of(st.none(), st.integers(0, len(shape) - 1))
                 )
         axes = draw(st.tuples(*all_axes_ranges))
-    if returndtype:
+    if return_dtype:
         return dtype, arrays, axes
     return arrays, axes
 
@@ -978,7 +978,7 @@ def array_values(
             if exclude_max:
                 max_value -= 1
             values = draw(
-                list_of_size(other=st.integers(min_value, max_value), size=size)
+                list_of_size(x=st.integers(min_value, max_value), size=size)
             )
         elif kind_dtype == "float":
             floats_info = {
@@ -1039,12 +1039,12 @@ def array_values(
             if "complex" in dtype:
                 float_strategy = st.tuples(float_strategy, float_strategy)
             values = draw(
-                list_of_size(other=float_strategy, size=size)
+                list_of_size(x=float_strategy, size=size)
             )
             if "complex" in dtype:
                 values = [complex(*v) for v in values]
     else:
-        values = draw(list_of_size(other=st.booleans(), size=size))
+        values = draw(list_of_size(x=st.booleans(), size=size))
 
     array = np.asarray(values, dtype=dtype)
     if isinstance(shape, (tuple, list)):

@@ -110,14 +110,14 @@ def _arrays_idx_n_dtypes(draw):
     )
     common_shape = draw(
         helpers.list_of_size(
-            other=helpers.ints(min_value=2, max_value=4),
+            x=helpers.ints(min_value=2, max_value=4),
             size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
         helpers.list_of_size(
-            other=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_value=2, max_value=3),
             size=num_arrays,
         )
     )

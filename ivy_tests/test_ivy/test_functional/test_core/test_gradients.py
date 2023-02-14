@@ -274,7 +274,7 @@ def test_grad(x, dtype, func, backend_fw):
     ),
     step=helpers.ints(min_value=1, max_value=3),
     beta1_n_beta2_n_epsilon=helpers.list_of_size(
-        other=helpers.floats(min_value=1e-1, max_value=1),
+        x=helpers.floats(min_value=1e-1, max_value=1),
         size=3,
     ),
 )
@@ -425,7 +425,7 @@ def test_lars_update(
     ),
     step=st.integers(min_value=1, max_value=10),
     beta1_n_beta2_n_epsilon=helpers.list_of_size(
-        other=helpers.floats(min_value=1e-2, max_value=1),
+        x=helpers.floats(min_value=1e-2, max_value=1),
         size=3,
     ),
     stopgrad=st.booleans(),
@@ -475,7 +475,7 @@ def test_adam_update(
     ),
     step=helpers.ints(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon_n_lambda=helpers.list_of_size(
-        other=helpers.floats(
+        x=helpers.floats(
             min_value=1e-2,
             max_value=1.0,
         ),

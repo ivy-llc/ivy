@@ -138,14 +138,14 @@ def _arrays_idx_n_dtypes(draw):
     )
     common_shape = draw(
         helpers.list_of_size(
-            other=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_value=2, max_value=3),
             size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
         helpers.list_of_size(
-            other=helpers.ints(min_value=2, max_value=3),
+            x=helpers.ints(min_value=2, max_value=3),
             size=num_arrays,
         )
     )
@@ -277,10 +277,7 @@ def test_tensorflow_Cosh(  # NOQA
 def _dtypes(draw):
     return draw(
         st.shared(
-            helpers.list_of_size(
-                other=st.sampled_from(draw(helpers.get_dtypes("numeric"))),
-                size=1
-            ),
+            helpers.list_of_size(x=st.sampled_from(draw(helpers.get_dtypes("numeric"))), size=1),
             key="dtype",
         )
     )

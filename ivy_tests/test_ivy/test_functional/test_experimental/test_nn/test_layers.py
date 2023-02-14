@@ -266,7 +266,7 @@ def _interp_args(draw):
     elif mode == "bilinear":
         size = draw(
             helpers.list_of_size(
-                other=helpers.ints(min_value=1, max_value=5),
+                x=helpers.ints(min_value=1, max_value=5),
                 size=2,
             )
         )
@@ -274,7 +274,7 @@ def _interp_args(draw):
     elif mode == "trilinear":
         size = draw(
             helpers.list_of_size(
-                other=helpers.ints(min_value=1, max_value=5),
+                x=helpers.ints(min_value=1, max_value=5),
                 size=3,
             )
         )
@@ -283,7 +283,7 @@ def _interp_args(draw):
         dim = draw(helpers.ints(min_value=1, max_value=3))
         size = draw(
             helpers.list_of_size(
-                other=helpers.ints(min_value=1, max_value=5),
+                x=helpers.ints(min_value=1, max_value=5),
                 size=dim,
             )
         )
