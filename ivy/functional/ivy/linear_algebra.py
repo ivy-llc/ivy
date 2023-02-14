@@ -1007,7 +1007,6 @@ def matmul(
         out=out,
     )
 
-
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1351,6 +1350,7 @@ def matrix_rank(
 
     """
     return current_backend(x).matrix_rank(x, atol=atol, rtol=rtol, out=out)
+
 
 
 @to_native_arrays_and_back
@@ -2279,6 +2279,7 @@ def trace(
     }
     """
     return current_backend(x).trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
+
 
 
 @to_native_arrays_and_back

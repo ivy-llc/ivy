@@ -141,7 +141,6 @@ def matmul(
 
 matmul.support_native_out = True
 
-
 @_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_norm(
