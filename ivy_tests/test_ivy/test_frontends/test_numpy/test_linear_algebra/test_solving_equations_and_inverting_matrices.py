@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix,
     _get_second_matrix,
 )
+from hypothesis import reproduce_failure
 
 
 # solve
@@ -166,4 +167,57 @@ def test_numpy_tensorinv(
         on_device=on_device,
         a=x,
         ind=ind,
+    )
+
+
+@st.composite
+def _get_lstsq_matrices(draw):
+    shape1 = draw(helpers.ints(min_value=2, max_value=10))
+    shape2 = draw(helpers.ints(min_value=2, max_value=10))
+    input_dtype = "float64"
+    a = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=(shape1, shape2),
+            min_value=10,
+            max_value=20,
+            exclude_min=False,
+            exclude_max=False,
+        )
+    )
+    b = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=(shape1, 1),
+            min_value=10,
+            max_value=20,
+            exclude_min=False,
+            exclude_max=False,
+        )
+    )
+    return input_dtype, a, b
+
+
+# lstsq
+@handle_frontend_test(
+    fn_tree="numpy.linalg.lstsq",
+    params=_get_lstsq_matrices(),
+    test_with_out=st.just(False),
+)
+def test_numpy_lstsq(
+    params,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, fir, sec = params
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype, input_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=fir,
+        b=sec,
     )
