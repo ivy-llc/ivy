@@ -298,3 +298,29 @@ def margin_ranking_loss(
     loss = ivy.where(loss < 0, 0, loss)
     reduction = _get_reduction(reduction, size_average, reduce)
     return reduction(loss)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def poisson_nll_loss(
+    input,
+    target,
+    log_input=True,
+    full=False,
+    size_average=None,
+    eps=1e-8,
+    reduce=None,
+    reduction="mean",
+):
+    if log_input:
+        loss = ivy.exp(input) - target * input
+    else:
+        loss = input - target * ivy.log(input + eps)
+    if full:
+        approximation = (
+            target * ivy.log(target) - target + 0.5 * ivy.log(2 * ivy.pi * target)
+        )
+        loss += ivy.where(target > 1, approximation, 0)
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+    return reduction(loss)
