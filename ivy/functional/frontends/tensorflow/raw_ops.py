@@ -346,11 +346,6 @@ Relu = to_ivy_arrays_and_back(
     )
 )
 
-@to_ivy_arrays_and_back
-def Explicit_Padding(x, paddings, name="Explicit_Padding"):
-    """Pads the input with explicit padding."""
-    return ivy.pad(x, paddings, mode='CONSTANT')
-
 
 @to_ivy_arrays_and_back
 def RealDiv(*, x, y, name="RealDiv"):
@@ -599,7 +594,8 @@ def Conv2D(
         dilations = dilations[2:]
 
     if padding == 'EXPLICIT':
-        input = Explicit_Padding(input, paddings=(1, 1, 1, 1))
+        padding = "explicit_paddings"
+        output = ivy.conv2d(input, filter, strides, padding, data_format, dilations)
         padding = 'VALID'
 
     return tf_frontend.nn.conv2d(
