@@ -2325,7 +2325,25 @@
 
 <div class="viewcode-block" id="get_all_arrays_in_memory"><a class="viewcode-back" href="../../../../functional/ivy/general/get_all_arrays_in_memory.html#ivy.functional.ivy.general.get_all_arrays_in_memory">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">get_all_arrays_in_memory</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets all arrays which are currently alive.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets all arrays which are currently alive.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        All arrays which are alive.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.get_all_arrays_in_memory()</span>
+<span class="sd">    []</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.get_all_arrays_in_memory()</span>
+<span class="sd">    &gt;&gt;&gt; x</span>
+<span class="sd">    []</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([0, 1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; x</span>
+<span class="sd">    [ivy.array([0, 1, 2])]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">all_arrays</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_objects</span><span class="p">():</span>
         <span class="k">try</span><span class="p">:</span>
