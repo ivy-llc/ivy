@@ -1447,7 +1447,6 @@ def test_tensorflow_where_with_xy(
     )
 
 
-
 @st.composite
 def reverse_helper(draw):
     dtype, x, shape = draw(
