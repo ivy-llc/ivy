@@ -2,6 +2,7 @@
 import numpy as np
 from typing import Optional, Sequence, Union
 import ivy
+import math
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -286,3 +287,148 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
     if ivy.all(all_nan):
         ret = ivy.astype(ret, ivy.array([float("inf")]))
     return ret
+
+
+def _quantile_is_valid(q):
+    # avoid expensive reductions, relevant for arrays with < O(1000) elements
+    if q.ndim == 1 and q.size < 10:
+        for i in range(q.size):
+            if not (0.0 <= q[i] <= 1.0):
+                return False
+    else:
+        if not (ivy.all(0 <= q) and ivy.all(q <= 1)):
+            return False
+    return True
+
+
+def cpercentile(N, percent, key=lambda x: x):
+    """
+    Find the percentile   of a list of values.
+
+    @parameter N - is a list of values. Note N MUST BE already sorted.
+    @parameter percent - a float value from 0.0 to 1.0.
+    @parameter key - optional key function to compute value from each element of N.
+
+    @return - the percentile  of the values
+    """
+    N.sort()
+    k = (len(N) - 1) * percent
+    f = math.floor(k)
+    c = math.ceil(k)
+    if f == c:
+        return key(N[int(k)])
+    d0 = key(N[int(f)]) * (c - k)
+    d1 = key(N[int(c)]) * (k - f)
+    return d0 + d1
+
+
+# https://numpy.org/doc/stable/reference/generated/numpy.nanpercentile.html
+def nanpercentile(
+    a,
+    q,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    *,
+    interpolation=None,
+):
+    a = ivy.array(a)
+    q = ivy.divide(q, 100.0)
+    q = ivy.array(q)
+    if not _quantile_is_valid(q):
+        raise ValueError("percentile s must be in the range [0, 100]")
+    if axis is None:
+        qqq = []
+        eee = []
+        for wi in a:
+
+            # eeen=0
+            for i in wi:
+                if not ivy.is_nan(i):
+                    eee.append(i)
+                    # eeen=eeen+1
+        for i in q:
+            qqq.append(cpercentile(eee, i))
+        return qqq
+    elif axis == 1:
+        qqq = []
+        na = []
+        for i in a:
+            rrr = []
+            for t in i:
+                if not ivy.is_nan(t):
+                    rrr.append(t)
+            na.append(rrr)
+        for i in q:
+            eee = []
+            for ii in na:
+                eee.append(cpercentile(ii, i))
+            qqq.append(eee)
+        return qqq
+    elif axis == 0:
+        a = ivy.swapaxes(a, 0, 1)
+        qqq = []
+        na = []
+        for i in a:
+            rrr = []
+            for t in i:
+                if not ivy.is_nan(t):
+                    rrr.append(t)
+            na.append(rrr)
+        for i in q:
+            eee = []
+            for ii in na:
+                eee.append(cpercentile(ii, i))
+            qqq.append(eee)
+        return qqq
+
+    # https://code.activestate.com/recipes/511478-finding-the-percentile -of-the-values/
+    """    if interpolation is not None:
+        method = function_base._check_interpolation_as_method(
+            method, interpolation, "nanpercentile ")
+
+    a = np.asanyarray(a)
+    q = np.true_divide(q, 100.0)
+    # undo any decay that the ufunc performed (see gh-13105)
+    q = np.asanyarray(q)
+    if not function_base._quantile_is_valid(q):
+        raise ValueError("percentile s must be in the range [0, 100]")
+    return _nanquantile_unchecked(
+        a, q, axis, out, overwrite_input, method, keepdims)
+    """
+    """
+        def nanmean(
+    a,
+    /,
+    *,
+    axis=None,
+    keepdims=False,
+    out=None,
+    dtype=None,
+    where=True,
+):
+    is_nan = ivy.isnan(a)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    if not ivy.any(is_nan):
+        if dtype:
+            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+        ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    else:
+        a = [i for i in a if ivy.isnan(i) is False]
+
+        if dtype:
+            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+        ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    return ret
+"""
