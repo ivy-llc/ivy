@@ -1,5 +1,6 @@
 # global
 import sys
+import copy
 import ivy
 import importlib
 import numpy as np
@@ -580,7 +581,7 @@ def choose_random_backend(excluded=None):
 
 
 # We shouldn't be able to set the backend on a local Ivy
-# modules_to_remove = ["utils.backend.handler"]
+modules_to_remove = {"utils.backend.handler": ("with_backend", "set_backend")}
 
 
 def with_backend(backend: str):
@@ -602,7 +603,6 @@ def with_backend(backend: str):
         ivy_pack.__dict__.copy(), ivy_pack, backend_module
     )
     # Remove access to specific modules on local Ivy
-    # TODO this doesn't work properly atm due to not handling nested module name
     # for module in modules_to_remove:
     #    for fn in inspect.getmembers(ivy_pack.__dict__[module], inspect.isfunction):
     #        if fn[1].__module__ != module:
@@ -611,8 +611,7 @@ def with_backend(backend: str):
     #            del ivy_pack.__dict__[fn[0]]
     #    del ivy_pack.__dict__[module]
     ivy_pack.backend_stack.append(backend_module)
-    # TODO use an init function
-    ivy_pack.__setattr__("import_module", ivy_pack.utils.backend._ivy_import_module)
+    ivy_pack.utils.backend._importlib.import_cache = copy.copy(_importlib.import_cache)
     _importlib.path_hooks.remove(finder)
     sys.meta_path.remove(finder)
     _importlib._clear_cache()
