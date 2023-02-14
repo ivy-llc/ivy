@@ -15,6 +15,7 @@ from . import ast_helpers
 from ivy.func_wrapper import _wrap_function
 
 backend_stack = []
+compiled_backends = {}
 implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
 ivy_original_fn_dict = dict()
@@ -620,4 +621,5 @@ def with_backend(backend: str):
     _importlib.path_hooks.remove(finder)
     sys.meta_path.remove(finder)
     _importlib._clear_cache()
+    compiled_backends[f"{ivy_pack.backend}_{id(ivy_pack)}"] = ivy_pack
     return ivy_pack
