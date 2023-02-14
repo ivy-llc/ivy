@@ -66,6 +66,12 @@ def mod(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def divmod(x1, x2, /):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return tuple([ivy.floor_divide(x1, x2), ivy.remainder(x1, x2)])
+
+
+@to_ivy_arrays_and_back
 def sinh(x):
     return ivy.sinh(x)
 
@@ -225,6 +231,14 @@ def negative(
     /,
 ):
     return ivy.negative(x)
+
+
+@to_ivy_arrays_and_back
+def positive(
+    x,
+    /,
+):
+    return ivy.positive(x)
 
 
 @to_ivy_arrays_and_back
@@ -414,3 +428,9 @@ def hypot(x1, x2, /):
 @to_ivy_arrays_and_back
 def floor_divide(x1, x2, /, out=None):
     return ivy.floor_divide(x1, x2, out=out)
+
+
+@to_ivy_arrays_and_back
+def inner(a, b):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.inner(a, b)
