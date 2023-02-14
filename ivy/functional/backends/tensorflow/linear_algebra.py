@@ -470,8 +470,11 @@ def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    conjugate: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if conjugate:
+        tf.math.conj(x)
     return tf.linalg.matrix_transpose(x)
 
 
