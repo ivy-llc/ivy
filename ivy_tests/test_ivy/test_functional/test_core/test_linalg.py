@@ -938,6 +938,18 @@ def test_vector_norm(
         dtype=dtype[0],
     )
 
+    # Specific value test to handle cases when ord is one of {inf, -inf}
+
+    arr = ivy.array([[1.0, 2.0, 3.0], [-1.0, 2.0, 4.0]])
+    arr_normed_inf = ivy.vector_norm(arr, axis=0, ord=float("inf"))
+    arr_normed_min_inf = ivy.vector_norm(arr, axis=0, ord=float("-inf"))
+
+    gt_arr_normed_inf = ivy.array([1.0, 2.0, 4.0])
+    gt_arr_normed_min_inf = ivy.array([1.0, 2.0, 3.0])
+
+    helpers.assert_all_close(arr_normed_inf, gt_arr_normed_inf)
+    helpers.assert_all_close(arr_normed_min_inf, gt_arr_normed_min_inf)
+
 
 # pinv
 @handle_test(

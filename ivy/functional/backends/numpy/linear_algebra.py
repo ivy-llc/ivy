@@ -408,7 +408,11 @@ def vector_norm(
     if axis is None:
         np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
     else:
-        if isinstance(ord, (int, float)) and ord != 0:
+        if ord == np.Inf:
+            np_normalized_vector = np.abs(x).max(axis=axis, keepdims=keepdims)
+        elif ord == -np.Inf:
+            np_normalized_vector = np.abs(x).min(axis=axis, keepdims=keepdims)
+        elif isinstance(ord, (int, float)) and ord != 0:
             np_normalized_vector = np.sum(
                 np.abs(x) ** ord, axis=axis, keepdims=keepdims
             ) ** (1.0 / ord)
