@@ -279,7 +279,7 @@ def _interp_args(draw):
             )
         )
         num_dims = 5
-    else:
+    elif mode == "nearest" or mode == "area":
         dim = draw(helpers.ints(min_value=1, max_value=3))
         size = draw(
             helpers.list_of_size(
