@@ -428,16 +428,23 @@ def sigmoid(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([-1., 1., 2.])
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+    
+    or
+    
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.sigmoid()
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
 
 
-    >>> x = ivy.array([-1.3, 3.8, 2.1])
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([0.214, 0.978, 0.891])
+    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
     """
     return current_backend(x).sigmoid(x, out=out)
 
