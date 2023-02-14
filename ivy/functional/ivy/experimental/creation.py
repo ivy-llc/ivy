@@ -586,11 +586,10 @@ def eye_like(
 @handle_array_like_without_promotion
 def sequence_empty(
     shape: Union[ivy.Shape, ivy.NativeShape],
-    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = ivy.float32,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """ ONNX function that returns an uninitialized array with the same shape as inputted.
     
