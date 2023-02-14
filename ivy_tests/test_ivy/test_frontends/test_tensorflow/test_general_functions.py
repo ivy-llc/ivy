@@ -1354,14 +1354,14 @@ def test_tensorflow_where_with_xy(
     ),
 )
 def test_tensorflow_roll(
-        *,
-        dtype_and_values,
-        shift,
-        axis,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_values,
+    shift,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, value = dtype_and_values
     if isinstance(shift, int) and isinstance(axis, tuple):
@@ -1378,6 +1378,6 @@ def test_tensorflow_roll(
         fn_tree=fn_tree,
         on_device=on_device,
         input=value[0],
-        shifts=shift,
-        dims=axis,
+        shift=shift,
+        axis=axis,
     )
