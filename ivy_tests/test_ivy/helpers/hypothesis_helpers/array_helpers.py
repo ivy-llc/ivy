@@ -105,7 +105,7 @@ def list_of_size(
     [False, True, False]
 
     """
-    return lists(other=x, min_size=size, max_size=size)
+    return lists(x=x, min_size=size, max_size=size)
 
 
 @st.composite
@@ -185,16 +185,11 @@ def lists(
         if size_bounds
         else number_helpers.ints()
     )
-    if not isinstance(min_size, int):
+    if isinstance(min_size, str):
         min_size = draw(st.shared(integers, key=min_size))
-    if not isinstance(max_size, int):
+    if isinstance(max_size, str):
         max_size = draw(st.shared(integers, key=max_size))
-    min_size, max_size = abs(min_size), abs(max_size)
-    if min_size <= max_size:
-        min_size, max_size = (min_size, max_size)
-    else:
-        min_size, max_size = (max_size, min_size)
-    return draw(st.lists(x=x, min_size=min_size, max_size=max_size))
+    return draw(st.lists(x, min_size=min_size, max_size=max_size))
 
 
 @st.composite
