@@ -1019,7 +1019,7 @@ def multi_dot(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the dot product of two or more arrays in a single function call, 
-    while automatically selecting the fastest evaluation order.) ``x``.
+    while automatically selecting the fastest evaluation order.
 
     Parameters
     ----------
