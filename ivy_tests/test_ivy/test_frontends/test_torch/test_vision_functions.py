@@ -214,3 +214,63 @@ def test_torch_upsample_bilinear(
         size=size,
         scale_factor=scale_factor,
     )
+
+
+def _interpolate_helper(draw):
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            ret_shape=True,
+            min_num_dims=3,
+            max_num_dims=5,
+        )
+    )
+
+    size = draw(
+        st.sampled_from(
+            [
+                st.integers(min_value=1),
+                st.tuples(st.integers(min_value=1), st.integers(min_value=1)),
+                st.tuples(
+                    st.integers(min_value=1),
+                    st.integers(min_value=1),
+                    st.integers(min_value=1),
+                ),
+            ]
+        )
+    )
+
+    mode = draw(
+        st.sampled_from(["nearest", "linear", "bilinear", "bicubic", "trilinear"])
+    )
+    align_corners = draw(st.booleans())
+    antialias = draw(st.booleans())
+
+    return dtype, input[0], size, mode, align_corners, antialias
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.interpolate",
+    dtype_and_input_and_other=_interpolate_helper(),
+)
+def test_torch_interpolate(
+    *,
+    dtype_and_input_and_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, input, size, mode, align_corners, antialias = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+        antialias=antialias,
+    )
