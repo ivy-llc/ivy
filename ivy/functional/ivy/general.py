@@ -1822,7 +1822,8 @@ def einops_reduce(
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
-    """Perform einops reduce operation on input array x.
+    """
+    Perform einops reduce operation on input array x.
 
     Parameters
     ----------
@@ -1837,6 +1838,7 @@ def einops_reduce(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+        default: None
 
     Returns
     -------
@@ -1845,13 +1847,40 @@ def einops_reduce(
 
     Examples
     --------
-    With :class:`ivy.Array` input:
+    With :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([[-4.47, 0.93, -3.34],
     ...                [3.66, 24.29, 3.64]])
     >>> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
     >>> print(reduced)
-    ivy.array([-0.405, 12.6  ,  0.15 ])
+    ivy.array([-0.405, 12.61, 0.15 ])
+    
+    x = ivy.array([[-4.47, 0.93, -3.34],
+    ...            [3.66, 24.29, 3.64]])
+    >>> reduced = x.einops_reduce( 'a b -> b', 'max')
+    >>> print(reduced)
+    ivy.array([ 3.66000009, 24.29000092,  3.6400001 ])
+    
+    x = ivy.array([[-4.47, 0.93, -3.34],
+    ...            [3.66, 24.29, 3.64]])
+    >>> reduced = x.einops_reduce( 'a b -> b', 'min')
+    >>> print(reduced)
+    ivy.array([-4.47,  0.93, -3.34)
+    
+    x = ivy.array([[-4.47, 0.93, -3.34],
+    ...            [3.66, 24.29, 3.64]])
+    >>> reduced = x.einops_reduce( 'a b -> b', 'sum')
+    >>> print(reduced)
+    ivy.array([-0.81 , 25.22,  0.3])
+    
+    x = ivy.array([[-4.47, 0.93, -3.34],
+    ...            [3.66, 24.29, 3.64]])
+    >>> reduced = x.einops_reduce( 'a b -> b', 'prod')
+    >>> print(reduced)
+    ivy.array([-16.36,  22.59, -12.16])
+    
+    
+    
 
     With :class:`ivy.Container` input:
 
