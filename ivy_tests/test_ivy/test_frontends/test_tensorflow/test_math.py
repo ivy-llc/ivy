@@ -1462,7 +1462,7 @@ def test_tensorflow_nextafter(
 # log_softmax
 @handle_frontend_test(
     fn_tree="tensorflow.math.log_softmax",
-    dtype_x_and_axis=helpers.dtype_values_axis(
+    dtype_x_and_axis=helpers.dtype_and_x(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         max_axes_size=1,
