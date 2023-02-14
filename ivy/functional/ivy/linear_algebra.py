@@ -885,12 +885,6 @@ def matmul(
         if True, ``x1`` is transposed before multiplication.
     transpose_b
         if True, ``x2`` is transposed before multiplication.
-    adjoint_a
-        If True, takes the conjugate of the matrix then the transpose of the matrix.
-        adjoint_a and transpose_a can not be true at the same time.
-    adjoint_b
-        If True, takes the conjugate of the matrix then the transpose of the matrix.
-        adjoint_b and transpose_b can not be true at the same time.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1012,6 +1006,53 @@ def matmul(
         adjoint_b=adjoint_b,
         out=out,
     )
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def multi_dot(
+    x: ivy.Array,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Compute the dot product of two or more arrays in a single function call, 
+    while automatically selecting the fastest evaluation order.) ``x``.
+
+    Parameters
+    ----------
+    x : sequence of array_like
+        If the first argument is 1-D it is treated as row vector. If the last argument is 1-D it is 
+        treated as column vector. The other arguments must be 2-D.
+
+
+    Returns
+    -------
+    ret : ndarray
+          Returns the dot product of the supplied arrays.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> import ivy
+    >>> ivy.set_backend('numpy')
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> b = ivy.array([[5, 6], [7, 8]])
+    >>> c = ivy.array([[9, 10], [11, 12]])
+    >>> d = ivy.array([[13, 14], [15, 16]])
+    >>> z = ivy.multi_dot([a,b,c,d])
+    >>> z
+    ivy.array([[12179, 13046],
+        [27631, 29598]])
+    >>> ivy.multi_dot([c,d,b])
+    ivy.array([[3337, 3890],
+        [4037, 4706]])
+    """
+    return current_backend().multi_dot(x)
+
 
 @to_native_arrays_and_back
 @handle_out_argument
@@ -1366,11 +1407,7 @@ def matrix_rank(
 @handle_array_like_without_promotion
 @handle_array_function
 def matrix_transpose(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    conjugate: bool = False,
-    out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """
     Transposes a matrix (or a stack of matrices) ``x``.
@@ -1380,8 +1417,6 @@ def matrix_transpose(
     x
         input array having shape ``(..., M, N)`` and whose innermost two
         dimensions form ``MxN`` matrices.
-    conjugate
-        If True, takes the conjugate of the matrix.
     out
         optional output array, for writing the result to. It must have a
         shape that the inputs broadcast to.
@@ -1444,7 +1479,7 @@ def matrix_transpose(
                       [4., 5.]])
     }
     """
-    return current_backend(x).matrix_transpose(x, conjugate=conjugate, out=out)
+    return current_backend(x).matrix_transpose(x, out=out)
 
 
 @to_native_arrays_and_back

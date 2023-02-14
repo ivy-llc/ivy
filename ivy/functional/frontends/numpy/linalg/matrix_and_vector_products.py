@@ -50,3 +50,7 @@ def tensordot(a, b, axes=2):
 @to_ivy_arrays_and_back
 def tensorsolve(a, b, axes=2):
     return ivy.tensorsolve(a, b, axes=axes)
+
+@to_ivy_arrays_and_back
+def multi_dot(a):
+    return ivy.multi_dot(a)

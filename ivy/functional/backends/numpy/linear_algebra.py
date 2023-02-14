@@ -141,6 +141,23 @@ def matmul(
 
 matmul.support_native_out = True
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+def multi_dot(
+    x: np.ndarray,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    # n = len(x)
+    # if n < 2:
+    #     raise ValueError("Expecting at least two arrays.")
+    # elif n == 2:
+    #     return np.dot(x[0], x[1], out=out)
+    # print()
+    ret = np.linalg.multi_dot(x,out=out)
+    return ret
+
+multi_dot.support_native_out = True
+
 @_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_norm(
@@ -240,10 +257,8 @@ def matrix_rank(
 
 
 def matrix_transpose(
-    x: np.ndarray, /, *, conjugate: bool = False, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if conjugate:
-        np.conjugate(x)
     return np.swapaxes(x, -1, -2)
 
 
