@@ -82,7 +82,7 @@ def matrix_power(input, n, *, out=None):
 
 @to_ivy_arrays_and_back
 def matrix_exp(input, *, out=None):
-    return torch_frontend.matrix_exp(input, out=out)
+    return ivy.matrix_exp(input, out=out)
 
 
 @with_supported_dtypes(
