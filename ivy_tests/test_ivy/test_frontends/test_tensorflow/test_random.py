@@ -95,8 +95,9 @@ def test_tensorflow_normal(
 # random_shuffle
 @handle_frontend_test(
     fn_tree="tensorflow.random.shuffle",
-    value=helpers.tf_tensor(array=[[1, 2], [3, 4], [5, 6]]).ivy_array,
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer")
+    ),
     seed=helpers.ints(min_value=0, max_value=10),
     test_with_out=st.just(False),
 )
@@ -104,19 +105,18 @@ def test_tensorflow_shuffle(
     frontend,
     fn_tree,
     on_device,
-    value,
-    dtype,
+    dtype_value,
     seed,
     test_flags,
 ):
-
+    input_dtypes, value = dtype_value
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        value=value,
+        value=value[0],
         seed=seed,
     )
