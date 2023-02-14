@@ -255,6 +255,13 @@ def _set_backend_as_ivy(original_dict, target, backend):
         )
 
 
+def _handle_backend_specific_vars(backend):
+    if backend.current_backend_str() == "numpy":
+        backend.set_default_device("cpu")
+    elif backend.current_backend_str() == "jax":
+        backend.set_global_attr("RNG", backend.functional.backends.jax.random.RNG)
+
+
 def convert_from_source_backend_to_numpy(variable_ids, numpy_objs):
     # Dynamic Backend
     from ivy.functional.ivy.gradients import _is_variable, _variable_data
@@ -607,11 +614,7 @@ def with_backend(backend: str):
     backend_module = _importlib._ivy_import_module(
         ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
     )
-    # TODO temporary
-    if backend == "numpy":
-        ivy_pack.set_default_device("cpu")
-    elif backend == "jax":
-        ivy_pack.set_global_attr("RNG", ivy_pack.functional.backends.jax.random.RNG)
+    _handle_backend_specific_vars(ivy_pack)
     # We know for sure that the backend stack is empty, no need to do backend unsetting
     ivy_pack.utils.backend.handler._set_backend_as_ivy(
         ivy_pack.__dict__.copy(), ivy_pack, backend_module
