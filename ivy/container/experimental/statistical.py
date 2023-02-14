@@ -668,3 +668,115 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         }
         """
         return self.static_corrcoef(self, y=y, rowvar=rowvar, out=out)
+
+    @staticmethod
+    def static_nanmedian(
+        input: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.median. This method simply wraps
+        the function, and so the docstring for ivy.median also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        input
+            Input container including arrays.
+        axis
+            Axis or axes along which the medians are computed. The default is to compute
+            the median along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The median of the array elements.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
+        >>> ivy.Container.static_nanmedian(x, 0, -1).shape
+        {
+            a: (4, 5, 3)
+            b: (7, 6, 2)
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "nanmedian",
+            input,
+            axis=axis,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def nanmedian(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        overwrite_input: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Array instance method variant of ivy.nanmedian. This method simply
+        wraps the function, and so the docstring for ivy.nanmedian also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which the means are computed.
+            The default is to compute the mean of the flattened array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a. If the value is anything but the default,
+            then keepdims will be passed through to the mean or sum methods of
+            sub-classes of ndarray. If the sub-classes methods does not implement
+            keepdims any exceptions will be raised.
+        overwrite_input
+            If True, then allow use of memory of input array a for calculations.
+            The input array will be modified by the call to median. This will
+            save memory when you do not need to preserve the contents of the input array.
+            Treat the input as undefined, but it will probably be fully or partially sorted.
+            Default is False. If overwrite_input is True and a is not already an ndarray,
+            an error will be raised.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            A new array holding the result. If the input contains integers
+
+        Examples
+        >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
+        >>> a.nanmedian(a)
+            3.0
+        >>> a.nanmedian(a, axis=0)
+            array([6.5, 2. , 2.5])
+        """
+
+        return self.static_nanmedian(
+            self, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+        )

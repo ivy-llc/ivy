@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy.func_wrapper import handle_array_function
 from ivy.functional.ivy.gradients import gradient_descent_update
 from ivy.exceptions import handle_exceptions
 
@@ -399,6 +400,7 @@ def _train_tasks(
 
 
 @handle_exceptions
+@handle_array_function
 def fomaml_step(
     batch: ivy.Container,
     inner_cost_fn: Callable,
@@ -519,6 +521,7 @@ fomaml_step.computes_gradients = True
 
 
 @handle_exceptions
+@handle_array_function
 def reptile_step(
     batch: ivy.Container,
     cost_fn: Callable,
@@ -610,6 +613,7 @@ reptile_step.computes_gradients = True
 
 
 @handle_exceptions
+@handle_array_function
 def maml_step(
     batch: ivy.Container,
     inner_cost_fn: Callable,

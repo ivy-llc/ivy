@@ -150,7 +150,7 @@ def flatten(
 
 def vsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[torch.Tensor]:
     return torch.vsplit(ary, indices_or_sections)
