@@ -3,6 +3,7 @@ import sys
 import copy
 import ivy
 import importlib
+import functools
 import numpy as np
 from ivy import verbosity
 from typing import Optional
@@ -55,6 +56,16 @@ _backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
 
 # Backend Getting/Setting #
 # ----------------------- #
+
+
+def prevent_access_locally(fn):
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        if ivy.is_local():
+            raise RuntimeError(f"Calling {fn.__name__} is not allowed on this object.")
+        return fn(*args, **kwargs)
+
+    return new_fn
 
 
 def _determine_backend_from_args(args):
@@ -351,6 +362,7 @@ def convert_from_numpy_to_target_backend(variable_ids, numpy_objs):
             obj._data = new_data.data
 
 
+@prevent_access_locally
 def set_backend(backend: str, dynamic: bool = False):
     """Sets `backend` to be the global backend.
     Will also convert all Array and Container objects \
@@ -491,6 +503,7 @@ def get_backend(backend: Optional[str] = None):
     return backend
 
 
+@prevent_access_locally
 def unset_backend():
     """Unsets the current global backend, and adjusts the ivy dict such that either
     a previously set global backend is then used as the backend, otherwise we return
@@ -554,11 +567,13 @@ def unset_backend():
     return backend
 
 
+@prevent_access_locally
 def clear_backend_stack():
     while backend_stack:
         unset_backend()
 
 
+@prevent_access_locally
 def choose_random_backend(excluded=None):
     excluded = list() if excluded is None else excluded
     while True:
@@ -580,10 +595,8 @@ def choose_random_backend(excluded=None):
             return f
 
 
-# We shouldn't be able to set the backend on a local Ivy
-modules_to_remove = {"utils.backend.handler": ("with_backend", "set_backend")}
-
-
+# noinspection PyProtectedMember
+@prevent_access_locally
 def with_backend(backend: str):
     finder = ast_helpers.IvyPathFinder()
     sys.meta_path.insert(0, finder)
@@ -602,14 +615,6 @@ def with_backend(backend: str):
     ivy_pack.utils.backend.handler._set_backend_as_ivy(
         ivy_pack.__dict__.copy(), ivy_pack, backend_module
     )
-    # Remove access to specific modules on local Ivy
-    # for module in modules_to_remove:
-    #    for fn in inspect.getmembers(ivy_pack.__dict__[module], inspect.isfunction):
-    #        if fn[1].__module__ != module:
-    #            continue
-    #        if hasattr(ivy_pack, fn[0]):
-    #            del ivy_pack.__dict__[fn[0]]
-    #    del ivy_pack.__dict__[module]
     ivy_pack.backend_stack.append(backend_module)
     ivy_pack.utils.backend._importlib.import_cache = copy.copy(_importlib.import_cache)
     _importlib.path_hooks.remove(finder)
