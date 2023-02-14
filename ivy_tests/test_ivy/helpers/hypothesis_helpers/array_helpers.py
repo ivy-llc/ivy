@@ -69,9 +69,9 @@ def list_of_size(
     Parameters
     ----------
     x
-        a list to draw elements from
+        a list to draw elements from.
     size
-        length of the list
+        length of the list.
 
     Returns
     -------
