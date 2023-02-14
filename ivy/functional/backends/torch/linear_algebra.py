@@ -244,11 +244,7 @@ matrix_rank.support_native_out = True
 
 
 def matrix_transpose(
-    x: torch.Tensor,
-    /,
-    *,
-    conjugate: bool = False,
-    out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, conjugate: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if conjugate:
         torch.conj(x)
