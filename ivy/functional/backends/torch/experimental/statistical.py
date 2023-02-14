@@ -32,8 +32,8 @@ def median(
             keepdim=keepdims,
             out=out,
         )
-    
-    
+
+
 median.support_native_out = True
 
 
