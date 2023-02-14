@@ -228,7 +228,7 @@ matrix_power.support_native_out = True
 def matrix_exp(
     x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    return torch.linalg.matrix_exp(x, out=out)
+    return torch.exp(x, out=out)
 
 
 matrix_exp.support_native_out = True
