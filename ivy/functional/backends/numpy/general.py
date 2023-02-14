@@ -206,7 +206,7 @@ def inplace_variables_supported():
 
 
 def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, (np.ndarray, np.generic)):
+    if isinstance(x, np.ndarray) or np.isscalar(x):
         return True
     return False
 
