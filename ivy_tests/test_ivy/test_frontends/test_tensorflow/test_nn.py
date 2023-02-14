@@ -1123,3 +1123,40 @@ def test_tensorflow_embedding_lookup(
         max_norm=max_norm,
         atol=1e-4,
     )
+
+
+# compute_average_loss
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.compute_average_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(kind="float"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        min_value=0,
+        max_value=3,
+    ),
+    sample_weight=st.floats(
+        min_value=0,
+        max_value=3,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_compute_average_loss(
+    dtype_and_x,
+    sample_weight,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, input_values = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        per_example_loss=input_values,
+        sample_weight=sample_weight,
+    )

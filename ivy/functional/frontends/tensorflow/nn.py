@@ -402,3 +402,12 @@ def relu(features, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def compute_average_loss(per_example_loss, sample_weight=None, global_batch_size=None):
+    return ivy.compute_average_loss(
+        per_example_loss,
+        sample_weight=sample_weight,
+        global_batch_size=global_batch_size,
+    )
