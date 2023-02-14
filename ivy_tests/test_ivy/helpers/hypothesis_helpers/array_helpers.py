@@ -335,6 +335,15 @@ def dtype_and_values(
         -24691, 24892, 16711, 7696, 972, 15357]], dtype=int16)],
         (1, 7))
 
+    >>> dtype_and_values(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=1,
+    ...     ret_shape=True,
+    ... )
+    (['uint8'], [array([0], dtype=uint8)], (1,))
+    (['float32'], [array(-1., dtype=float32)], ())
+    (['int64'], [array(72057594037927936)], ())
+
     """
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
