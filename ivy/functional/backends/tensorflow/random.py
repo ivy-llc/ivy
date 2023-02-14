@@ -138,7 +138,7 @@ def randint(
         dtype = ivy.default_int_dtype()
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    low, high, shape = _check_bounds_and_get_shape(low, high, shape)
     low = tf.cast(low, "float32")
     high = tf.cast(high, "float32")
     with tf.device(device):

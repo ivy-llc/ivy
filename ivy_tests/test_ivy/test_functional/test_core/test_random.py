@@ -218,12 +218,13 @@ def test_multinomial(
 @st.composite
 def _gen_randint_data(draw):
     dtype = draw(helpers.get_dtypes("signed_integer", full=False))
-    dim1 = draw(helpers.ints(min_value=1, max_value=5))
-    dim2 = draw(helpers.ints(min_value=2, max_value=8))
+    shape1, shape2, shape3 = draw(helpers.mutually_broadcastable_shapes(num_shapes=3))
+    shape, shape_low, shape_high = sorted([shape1, shape2, shape3])
+    shape = draw(st.sampled_from([None, shape]))
     low = draw(
         helpers.array_values(
             dtype=dtype[0],
-            shape=(dim1, dim2),
+            shape=shape_low,
             min_value=-100,
             max_value=25,
         )
@@ -231,24 +232,24 @@ def _gen_randint_data(draw):
     high = draw(
         helpers.array_values(
             dtype=dtype[0],
-            shape=(dim1, dim2),
+            shape=shape_high,
             min_value=26,
             max_value=100,
         )
     )
-    return dtype, low, high
+    return dtype, low, high, shape
 
 
 # randint
 @handle_test(
     fn_tree="functional.ivy.randint",
-    dtype_low_high=_gen_randint_data(),
+    dtype_low_high_shape=_gen_randint_data(),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
 )
 def test_randint(
     *,
-    dtype_low_high,
+    dtype_low_high_shape,
     seed,
     test_flags,
     backend_fw,
@@ -256,7 +257,7 @@ def test_randint(
     on_device,
     ground_truth_backend,
 ):
-    dtype, low, high = dtype_low_high
+    dtype, low, high, shape = dtype_low_high_shape
 
     def call():
         return helpers.test_function(
@@ -267,9 +268,10 @@ def test_randint(
             fw=backend_fw,
             fn_name=fn_name,
             test_values=False,
+            return_flat_np_arrays=True,
             low=low,
             high=high,
-            shape=None,
+            shape=shape,
             dtype=dtype[0],
             seed=seed,
         )
@@ -277,12 +279,30 @@ def test_randint(
     ret, ret_gt = call()
     if seed:
         ret1, ret_gt1 = call()
-        assert ivy.any(ret == ret1)
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        assert ivy.all(u >= low) and ivy.all(u < high)
-        assert ivy.all(v >= low) and ivy.all(v < high)
+        assert ivy.all(ret[0] == ret1[0])
+    def _get_indices(shape1, shape2):
+        indices = [0] * len(shape1)
+        for i, (p, q) in enumerate(zip(shape1[::-1], shape2[::-1])):
+            if p == q:
+                indices[i] = None
+        return tuple(indices[::-1])
+
+    low = ivy.array(low)
+    high = ivy.array(high)
+
+    if shape is not None:
+        low, high, _ = ivy.broadcast_arrays(low, high, ivy.ones(shape))
+    else:
+        low, high = ivy.broadcast_arrays(low, high)
+
+    if shape and not high.shape == tuple(shape):
+        indices = _get_indices(high.shape, shape)
+        high = high[indices]
+        low = low[indices]
+    low = helpers.flatten_and_to_np(ret=low)
+    high = helpers.flatten_and_to_np(ret=high)
+    assert ivy.all(ret[0] >= low[0]) and ivy.all(ret[0] < high[0])
+    assert ivy.all(ret_gt[0] >= low[0]) and ivy.all(ret_gt[0] < high[0])
 
 
 # seed

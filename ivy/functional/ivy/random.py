@@ -20,18 +20,43 @@ from ivy.exceptions import handle_exceptions
 # Helpers #
 # ------- #
 
+def _get_low_high_shape_arrays(low, high, shape):
+    try:
+        if shape is not None:
+            low, high, _ = ivy.broadcast_arrays(low, high, ivy.ones(shape))
+        else:
+            low, high = ivy.broadcast_arrays(low, high)
+
+        low = ivy.native_array(low)
+        high = ivy.native_array(high)
+
+        def _get_indices(shape1, shape2):
+            indices = [0] * len(shape1)
+            for i, (p, q) in enumerate(zip(shape1[::-1], shape2[::-1])):
+                if p == q:
+                    indices[i] = None
+            return tuple(indices[::-1])
+
+        if shape and not high.shape == tuple(shape):
+            indices = _get_indices(high.shape, shape)
+            high = high[indices]
+            low = low[indices]
+    except:
+        raise ivy.exceptions.IvyException(
+            "high, low and shape cannot be broadcast together with shapes {}, {}, & {}".format(high.shape,
+                                                                                               low.shape, shape))
+
+    return low, high, high.shape
+
 
 def _check_bounds_and_get_shape(low, high, shape):
-    if shape is not None:
-        ivy.assertions.check_all_or_any_fn(
-            low,
-            high,
-            fn=lambda x: (ivy.is_float_dtype(x) or ivy.is_int_dtype(x)),
-            type="all",
-            message="low and high bounds must be numerics when shape is specified",
-        )
-        return shape
-
+    ivy.assertions.check_all_or_any_fn(
+        low,
+        high,
+        fn=lambda x: (ivy.is_float_dtype(x) or ivy.is_int_dtype(x)),
+        type="all",
+        message="low and high bounds must be numerics when shape is specified",
+    )
     valid_types = (
         ivy.Array,
         ivy.get_backend("torch").NativeArray,
@@ -44,13 +69,10 @@ def _check_bounds_and_get_shape(low, high, shape):
         valid_types += (ivy.current_backend().NativeArray,)
     else:
         valid_types += (ivy.NativeArray,)
-    if isinstance(low, valid_types):
-        if isinstance(high, valid_types):
-            ivy.assertions.check_equal(ivy.shape(low), ivy.shape(high))
-        return ivy.shape(low)
-    if isinstance(high, valid_types):
-        return ivy.shape(high)
-    return ()
+    if isinstance(low, valid_types) and isinstance(high, valid_types):
+        return _get_low_high_shape_arrays(ivy.native_array(low), ivy.native_array(high), shape)
+    else:
+        return low, high, shape
 
 
 def _randint_check_dtype_and_bound(low, high, dtype):
@@ -431,15 +453,15 @@ def multinomial(
 @handle_exceptions
 @handle_array_function
 def randint(
-    low: Union[int, ivy.NativeArray, ivy.Array],
-    high: Union[int, ivy.NativeArray, ivy.Array],
-    /,
-    *,
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    seed: Optional[int] = None,
-    out: Optional[ivy.Array] = None,
+        low: Union[int, ivy.NativeArray, ivy.Array],
+        high: Union[int, ivy.NativeArray, ivy.Array],
+        /,
+        *,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns an array filled with random integers generated uniformly between
     low (inclusive) and high (exclusive).
