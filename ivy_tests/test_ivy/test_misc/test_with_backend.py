@@ -12,7 +12,7 @@ def compiled_backends():
     compiled_backends = []
     print(ivy.backend, id(ivy))
     for b in backends:
-        _b = ivy.utils.backend.compiler.with_backend(b)
+        _b = ivy.with_backend(b)
         compiled_backends.append(_b)
     return compiled_backends
 
