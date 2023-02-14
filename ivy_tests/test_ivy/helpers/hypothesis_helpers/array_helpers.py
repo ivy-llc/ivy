@@ -639,7 +639,7 @@ def array_indices_axis(
     indices_dtypes
         list of data type to draw the indices dtype from.
     disable_random_axis
-        Axis is randomly generated with hypothesis if False. If True, axis is set
+        axis is randomly generated with hypothesis if False. If True, axis is set
         to 0 if axis_zero is True, -1 otherwise.
     axis_zero
         If True, axis is set to zero if disable_random_axis is True.
