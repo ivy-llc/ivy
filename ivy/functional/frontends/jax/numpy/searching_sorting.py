@@ -118,6 +118,6 @@ def sort(
         x = ivy.sort(x, axis=1, out=out)
     if descending:
         x = ivy.sort(x, descending, out=out)
-    if not stable:
-        x = ivy.sort(x, stable=True, out=out)
+    #if not stable:
+     #   x = ivy.sort(x, stable=True, out=out)
     return x
