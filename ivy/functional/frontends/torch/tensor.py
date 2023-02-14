@@ -54,7 +54,7 @@ class Tensor:
         if shape is not None:
             return torch_frontend.reshape(self._ivy_array, shape)
         if args:
-            if isinstance(args[0], tuple):
+            if isinstance(args[0], (tuple, list)):
                 shape = args[0]
                 return torch_frontend.reshape(self._ivy_array, shape)
             else:
@@ -501,7 +501,7 @@ class Tensor:
         if dims is not None:
             return torch_frontend.permute(self._ivy_array, dims)
         if args:
-            if isinstance(args[0], tuple):
+            if isinstance(args[0], (tuple, list)):
                 dims = args[0]
                 return torch_frontend.permute(self._ivy_array, dims)
             else:
@@ -584,6 +584,11 @@ class Tensor:
         if min is not None and max is not None and ivy.all(min > max):
             return torch_frontend.tensor(ivy.array(self._ivy_array).full_like(max))
         return torch_frontend.clamp(self._ivy_array, min=min, max=max, out=out)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+    def clamp_(self, min=None, max=None, *, out=None):
+        self._ivy_array = self.clamp(min=min, max=max, out=out).ivy_array
+        return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):

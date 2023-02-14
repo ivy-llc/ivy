@@ -503,7 +503,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
 
     def vsplit(
         self: ivy.Array,
-        indices_or_sections: Union[int, Tuple[int]],
+        indices_or_sections: Union[int, Tuple[int, ...]],
         /,
     ) -> List[ivy.Array]:
         """
@@ -516,18 +516,15 @@ class ArrayWithManipulationExperimental(abc.ABC):
         self
             Input array.
         indices_or_sections
-            If indices_or_sections is an integer n, the array is split into n sections.
-            If the array is divisible by n along the 3rd axis, each section will be of
-            equal size. If input is not divisible by n, the sizes of the first
-            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
-            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is an integer n, the array is split into n
+            equal sections, provided that n must be a divisor of the split axis.
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
 
         Returns
         -------
         ret
-            input array split along the 3rd axis.
+            input array split vertically.
 
         Examples
         --------
@@ -557,11 +554,8 @@ class ArrayWithManipulationExperimental(abc.ABC):
         self
             Input array.
         indices_or_sections
-            If indices_or_sections is an integer n, the array is split into n sections.
-            If the array is divisible by n along the 3rd axis, each section will be of
-            equal size. If input is not divisible by n, the sizes of the first
-            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
-            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is an integer n, the array is split into n
+            equal sections, provided that n must be a divisor of the split axis.
             If indices_or_sections is a tuple of ints, then input is split at each of
             the indices in the tuple.
 

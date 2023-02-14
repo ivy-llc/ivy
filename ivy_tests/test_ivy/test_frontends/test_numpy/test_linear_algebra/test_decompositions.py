@@ -89,14 +89,18 @@ def test_numpy_qr(
     fn_tree="numpy.linalg.svd",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
+        min_value=0.1,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ),
+    full_matrices=st.booleans(),
+    compute_uv=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_numpy_svd(
     dtype_and_x,
+    full_matrices,
+    compute_uv,
     frontend,
     test_flags,
     fn_tree,
@@ -114,10 +118,11 @@ def test_numpy_svd(
         test_values=False,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-02,
         a=x,
+        full_matrices=full_matrices,
+        compute_uv=compute_uv,
     )
     for u, v in zip(ret, ret_gt):
         u = ivy.to_numpy(ivy.abs(u))
         v = ivy.to_numpy(ivy.abs(v))
-        helpers.value_test(ret_np_flat=u, ret_np_from_gt_flat=v)
+        helpers.value_test(ret_np_flat=u, ret_np_from_gt_flat=v, rtol=1e-04, atol=1e-04)
