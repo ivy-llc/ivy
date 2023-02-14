@@ -12,13 +12,13 @@ def _extract_patches_helper(draw):
         1,
         draw(st.integers(min_value=1, max_value=5)),
         draw(st.integers(min_value=1, max_value=5)),
-        1
+        1,
     ]
     rates = [
         1,
         draw(st.integers(min_value=1, max_value=5)),
         draw(st.integers(min_value=1, max_value=5)),
-        1
+        1,
     ]
     x_dim = []
     for i in range(1, 3):
@@ -27,7 +27,7 @@ def _extract_patches_helper(draw):
     x_shape = [
         draw(st.integers(min_value=1, max_value=5)),
         *x_dim,
-        draw(st.integers(min_value=1, max_value=5))
+        draw(st.integers(min_value=1, max_value=5)),
     ]
     dtype_x = draw(
         helpers.dtype_and_values(
@@ -39,7 +39,7 @@ def _extract_patches_helper(draw):
         1,
         draw(st.integers(min_value=1, max_value=5)),
         draw(st.integers(min_value=1, max_value=5)),
-        1
+        1,
     ]
     padding = draw(st.sampled_from(["VALID", "SAME"]))
     return dtype_x, sizes, strides, rates, padding

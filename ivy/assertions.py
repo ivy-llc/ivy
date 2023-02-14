@@ -72,10 +72,15 @@ def check_exists(x, inverse=False, message=""):
         )
 
 
-def check_elem_in_list(elem, list, message=""):
-    message = message if message != "" else "{} must be one of {}".format(elem, list)
-    if elem not in list:
-        raise ivy.exceptions.IvyException(message)
+def check_elem_in_list(elem, list, inverse=False, message=""):
+    if inverse and elem in list:
+        raise ivy.exceptions.IvyException(
+            message if message != "" else "{} must not be one of {}".format(elem, list)
+        )
+    elif not inverse and elem not in list:
+        raise ivy.exceptions.IvyException(
+            message if message != "" else "{} must be one of {}".format(elem, list)
+        )
 
 
 def check_true(expression, message="expression must be True"):
@@ -247,3 +252,17 @@ def check_dimensions(x):
             "input must have greater than one dimension; "
             + " {} has {} dimensions".format(x, len(x.shape))
         )
+
+
+def check_kernel_padding_size(kernel_size, padding_size):
+    for i in range(len(kernel_size)):
+        if (
+            padding_size[i][0] > kernel_size[i] // 2
+            or padding_size[i][1] > kernel_size[i] // 2
+        ):
+            raise ValueError(
+                "Padding size should be less than or equal to half of the kernel size. "
+                "Got kernel_size: {} and padding_size: {}".format(
+                    kernel_size, padding_size
+                )
+            )

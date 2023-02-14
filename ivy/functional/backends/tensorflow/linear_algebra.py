@@ -35,7 +35,15 @@ def cholesky(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex", "float16",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "complex",
+            "float16",
+        )
+    },
+    backend_version,
+)
 def cross(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -160,7 +168,7 @@ def eigvalsh(
             "uint16",
             "uint32",
             "uint64",
-            "complex"
+            "complex",
         )
     },
     backend_version,
@@ -205,6 +213,8 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
 
@@ -215,6 +225,11 @@ def matmul(
         x1 = tf.transpose(x1)
     if transpose_b is True:
         x2 = tf.transpose(x2)
+
+    if adjoint_a is True:
+        x1 = tf.linalg.adjoint(x1)
+    if adjoint_b is True:
+        x2 = tf.linalg.adjoint(x2)
 
     if dtype_from.is_unsigned or dtype_from == tf.int8 or dtype_from == tf.int16:
         x1 = tf.cast(x1, tf.int64)
@@ -346,13 +361,7 @@ def matrix_power(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.9.1 and below": (
-            "bfloat16",
-            "float16",
-            "complex"
-        )
-    },
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 # noinspection PyPep8Naming
@@ -461,13 +470,16 @@ def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    conjugate: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if conjugate:
+        tf.math.conj(x)
     return tf.linalg.matrix_transpose(x)
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
-@with_unsupported_dtypes({"2.9.1 and below": ("complex", )}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def outer(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -480,13 +492,7 @@ def outer(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.9.1 and below": (
-            "bfloat16",
-            "float16",
-            "complex"
-        )
-    },
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def pinv(
@@ -540,18 +546,13 @@ def slogdet(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.9.1 and below": (
-            "bfloat16",
-            "float16",
-            "complex"
-        )
-    },
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def solve(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -589,13 +590,7 @@ def solve(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.9.1 and below": (
-            "bfloat16",
-            "float16",
-            "complex"
-        )
-    },
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def svd(
@@ -655,13 +650,7 @@ def tensordot(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.9.1 and below": (
-            "bfloat16",
-            "float16",
-            "complex"
-        )
-    },
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def trace(
@@ -680,13 +669,7 @@ def trace(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.9.1 and below": (
-            "bfloat16",
-            "float16",
-            "complex"
-        )
-    },
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def vecdot(
@@ -735,7 +718,8 @@ def vector_norm(
         tn_normalized_vector = tf.reduce_sum(tf.cast(x != 0, x.dtype), axis, keepdims)
     else:
         tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
-            1.0 / ord)
+            1.0 / ord
+        )
     return tn_normalized_vector
 
 
@@ -755,13 +739,7 @@ def diag(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.9.1 and below": (
-            "bfloat16",
-            "float16",
-            "complex"
-        )
-    },
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def vander(
@@ -788,7 +766,7 @@ def vander(
             "uint64",
             "float16",
             "float64",
-            "complex"
+            "complex",
         )
     },
     backend_version,

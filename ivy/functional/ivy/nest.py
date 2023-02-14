@@ -1120,6 +1120,7 @@ def nested_map(
         }
         if shallow:
             x.update(**ret)
+            return x
         return class_instance(**ret)
     return fn(x)
 

@@ -91,13 +91,7 @@ def inner(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.23.0 and below": (
-            "bfloat16",
-            "float16",
-            "complex"
-        )
-    },
+    {"1.23.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def inv(
@@ -127,12 +121,18 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if transpose_a is True:
         x1 = np.transpose(x1)
     if transpose_b is True:
         x2 = np.transpose(x2)
+    if adjoint_a is True:
+        x1 = np.transpose(np.conjugate(x1))
+    if adjoint_b is True:
+        x2 = np.transpose(np.conjugate(x2))
     ret = np.matmul(x1, x2, out=out)
     if len(x1.shape) == len(x2.shape) == 1:
         ret = np.array(ret)
@@ -165,13 +165,7 @@ def matrix_power(
 
 
 @with_unsupported_dtypes(
-    {
-        "1.23.0 and below": (
-            "float16",
-            "bfloat16",
-            "complex"
-        )
-    },
+    {"1.23.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 @_scalar_output_to_0d_array
@@ -247,11 +241,10 @@ def matrix_rank(
 
 
 def matrix_transpose(
-    x: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, conjugate: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    if conjugate:
+        np.conjugate(x)
     return np.swapaxes(x, -1, -2)
 
 
