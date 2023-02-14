@@ -117,6 +117,6 @@ def test_tensorflow_shuffle(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        value=value[0],
+        value=value,
         seed=seed,
     )
