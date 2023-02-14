@@ -125,6 +125,15 @@ def conv(
     )
 
 
+def _set_dimension_numbers(dims):
+    if dims == 1:
+        return 'NHC', 'HIO', 'NHC'
+    elif dims == 2:
+        return 'NHWC', 'HWIO', 'NHWC'
+    elif dims == 3:
+        return 'NHWDC', 'HWDIO', 'NHWDC'
+
+
 def _get_general_df(data_format):
     if data_format is None:
         return "channel_first"
@@ -182,12 +191,15 @@ def conv_general_dilated(
     if preferred_element_type:
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
+    dims = len(lhs.shape) - 2
+    if dimension_numbers is None:
+        dimension_numbers = _set_dimension_numbers(dims)
     return ivy.conv_general_dilated(
         lhs,
         _format_rhs(rhs, dimension_numbers),
         window_strides,
         padding,
-        dims=len(lhs.shape) - 2,
+        dims=dims,
         data_format=_get_general_df(dimension_numbers[0]),
         x_dilations=1 if lhs_dilation is None else lhs_dilation,
         dilations=1 if rhs_dilation is None else rhs_dilation,

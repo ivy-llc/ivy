@@ -10,7 +10,7 @@ def msort(
     return torch.msort(a, out=out)
 
 
-msort_support_native_out = True
+msort.support_native_out = True
 
 
 # lexsort
@@ -40,4 +40,4 @@ def lexsort(
     return result
 
 
-lexsort_support_native_out = False
+lexsort.support_native_out = False

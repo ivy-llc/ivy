@@ -1643,6 +1643,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        conjugate: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1687,6 +1688,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "matrix_transpose",
             x,
+            conjugate=conjugate,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1698,6 +1700,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        conjugate: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1740,6 +1743,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_matrix_transpose(
             self,
+            conjugate=conjugate,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
