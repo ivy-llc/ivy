@@ -12,7 +12,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 
 
-
 # solve
 @handle_frontend_test(
     fn_tree="numpy.linalg.solve",
