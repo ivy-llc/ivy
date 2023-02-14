@@ -589,7 +589,7 @@ def with_backend(backend: str):
     sys.meta_path.insert(0, finder)
     _importlib.path_hooks.insert(0, finder)
     ivy_pack = _importlib._ivy_import_module("ivy")
-    ivy_pack._is_local = True
+    ivy_pack._is_local_pkg = True
     backend_module = _importlib._ivy_import_module(
         ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
     )
