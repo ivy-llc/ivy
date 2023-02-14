@@ -688,3 +688,37 @@ def test_tensorflow_linalg_cholesky(
         rtol=1e-02,
         input=x,
     )
+    
+    
+# matmul
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.matmul",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=0,
+        max_value=10,
+        shared_dtype=True,
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+)
+def test_tensorflow_matmul(
+    *,
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    x1, x2 = x[0], x[1].T
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        a=x1,
+        b=x2,
+    )

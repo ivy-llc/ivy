@@ -222,3 +222,15 @@ def cholesky(input, name=None):
     input = symmetrize(input)
 
     return ivy.cholesky(input)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+def matmul(a, b, transpose_a=False, transpose_b=False, adjoint_a=False,
+           adjoint_b=False, a_is_sparse=False, b_is_sparse=False,
+           output_type=None, name=None):
+    a, b = check_tensorflow_casting(a, b)
+    return ivy.matmul(a, b)
