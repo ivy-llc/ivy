@@ -577,9 +577,12 @@ def Conv2D(
     filter,
     strides,
     padding,
-    data_format="NHWC",
+    use_cudnn_on_gpu=False,
+    explicit_paddings=[],
+    data_format='NHWC',
     dilations=[1, 1, 1, 1],
-    name="Conv2D",
+    name="Conv2D"
+
 ):
     # ivy.backends.tensorflow expects strides and dilations to be
     # a single integer value or a list of 3 values whereas the raw op
@@ -596,6 +599,7 @@ def Conv2D(
         filter,
         strides,
         padding,
+        explicit_paddings,
         data_format=data_format,
         dilations=dilations,
         name=name,
