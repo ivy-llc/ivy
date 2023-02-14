@@ -241,8 +241,14 @@ def matrix_rank(
 
 
 def matrix_transpose(
-    x: np.ndarray, /, *, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    conjugate: bool = False,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    if conjugate:
+        np.conjugate(x)
     return np.swapaxes(x, -1, -2)
 
 
