@@ -16,6 +16,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
         *,
         transpose_a: bool = False,
         transpose_b: bool = False,
+        adjoint_a: bool = False,
+        adjoint_b: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -57,7 +59,13 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array(11.)
         """
         return ivy.matmul(
-            self._data, x2, transpose_a=transpose_a, transpose_b=transpose_b, out=out
+            self._data,
+            x2,
+            transpose_a=transpose_a,
+            transpose_b=transpose_b,
+            adjoint_a=adjoint_a,
+            adjoint_b=adjoint_b,
+            out=out,
         )
 
     def cholesky(
@@ -518,7 +526,11 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
 
     def matrix_transpose(
-        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        /,
+        *,
+        conjugate: bool = False,
+        out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         Transposes a matrix (or a stack of matrices) ``x``.
@@ -549,7 +561,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array([[1., 0.],
                    [2., 3.]])
         """
-        return ivy.matrix_transpose(self._data, out=out)
+        return ivy.matrix_transpose(self._data, conjugate=conjugate, out=out)
 
     def outer(
         self: ivy.Array,

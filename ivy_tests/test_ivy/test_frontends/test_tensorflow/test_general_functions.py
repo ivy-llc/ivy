@@ -97,6 +97,51 @@ def test_tensorflow_clip_by_value(
     )
 
 
+@st.composite
+def _get_norm_clip_inputs(draw):
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            min_value=-100,
+            max_value=100,
+        )
+    )
+    norm_dtype, norm = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"), shape=(1,)
+        )
+    )
+    print(x_dtype, x, norm_dtype, norm)
+    return x_dtype, x, norm_dtype, norm
+
+
+# clip_by_norm
+@handle_frontend_test(
+    fn_tree="tensorflow.clip_by_norm",
+    input_and_norm=_get_norm_clip_inputs(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_clip_by_norm(
+    *,
+    input_and_norm,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    x_dtype, x, norm_dtype, norm = input_and_norm
+    helpers.test_frontend_function(
+        input_dtypes=[x_dtype, norm_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        t=x[0],
+        clip_norm=norm[0],
+    )
+
+
 # eye
 @handle_frontend_test(
     fn_tree="tensorflow.eye",
@@ -1282,17 +1327,10 @@ def _boolean_mask_helper(draw):
     # Param: tensor
     tensor = draw(
         helpers.array_values(
-            dtype=dtype,
-            shape=tensor_shape,
-            min_value=-5.0,
-            max_value=5.0),
+            dtype=dtype, shape=tensor_shape, min_value=-5.0, max_value=5.0
+        ),
     )
-    mask_dim = draw(
-        helpers.number(
-            min_value=1,
-            max_value=len(tensor_shape)
-        )
-    )
+    mask_dim = draw(helpers.number(min_value=1, max_value=len(tensor_shape)))
     mask_shape = tensor_shape[:mask_dim]
 
     # Param:stop
