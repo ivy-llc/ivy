@@ -635,6 +635,7 @@ def test_torch_margin_ranking_loss(
         reduction=reduction,
     )
 
+
 # poisson_nll_loss
 @handle_frontend_test(
     fn_tree="torch.nn.functional.poisson_nll_loss",
@@ -655,7 +656,7 @@ def test_torch_margin_ranking_loss(
         min_dim_size=2,
     ),
     log_input=st.booleans(),
-    full = st.booleans(),
+    full=st.booleans(),
     size_average=st.booleans(),
     reduce=st.booleans(),
     reduction=st.sampled_from(["mean", "none", "sum"]),
