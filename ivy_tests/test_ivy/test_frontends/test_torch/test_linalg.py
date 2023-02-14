@@ -352,6 +352,31 @@ def test_torch_matrix_power(
     )
 
 
+# matrix_exp
+@handle_frontend_test(
+    fn_tree="torch.linalg.matrix_exp",
+    aliases=["torch.matrix_exp"],
+    dtype_and_x=_get_dtype_and_square_matrix(),
+)
+def test_torch_matrix_exp(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+    )
+
+
 # matrix_norm
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_norm",
