@@ -164,6 +164,10 @@ def matrix_power(
     return np.linalg.matrix_power(x, n)
 
 
+def matrix_exp(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.exp(x, out=out)
+
+
 @with_unsupported_dtypes(
     {"1.23.0 and below": ("float16", "bfloat16", "complex")},
     backend_version,
