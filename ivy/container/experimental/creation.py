@@ -816,6 +816,7 @@ class ContainerWithCreationExperimental(ContainerBase):
         )
     
 
+'''
     @staticmethod
     def static_sequence_empty(
         shape: Union[ivy.Shape, ivy.NativeShape, ivy.Container],
@@ -862,4 +863,4 @@ class ContainerWithCreationExperimental(ContainerBase):
             dtype=dtype,
             device=device,
         )
-
+'''
