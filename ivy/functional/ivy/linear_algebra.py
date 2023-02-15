@@ -2402,7 +2402,7 @@ def vector_norm(
     instances in place of any of the arguments.
 
     Examples
-    -------
+    --------
     >>> x = ivy.array([1., 2., 3.])
     >>> ivy.vector_norm(x)
     ivy.array([3.7416575])

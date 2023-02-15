@@ -2683,7 +2683,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             by :ref:`type-promotion`.
 
         Examples
-        -------
+        --------
         >>> x = ivy.Container(a = [1., 2., 3.], b = [-2., 0., 3.2])
         >>> ivy.Container.static_vector_norm(x)
         {
@@ -2795,7 +2795,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             determined by :ref:`type-promotion`.
 
         Examples
-        -------
+        --------
         >>> x = ivy.Container(a = [1., 2., 3.], b = [-2., 0., 3.2])
         >>> x.vector_norm()
         {

@@ -939,7 +939,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
             type determined by :ref:`type-promotion`.
 
         Examples
-        -------
+        --------
         >>> x = ivy.array([1., 2., 3.])
         >>> x.vector_norm()
         ivy.array([3.7416575])
