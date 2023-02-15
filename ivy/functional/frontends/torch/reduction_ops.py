@@ -162,4 +162,3 @@ aminmax.unsupported_dtypes = {
     "jax": ("float16", "bfloat16"),
     "tensorflow": ("float16", "bfloat16"),
 }
-
