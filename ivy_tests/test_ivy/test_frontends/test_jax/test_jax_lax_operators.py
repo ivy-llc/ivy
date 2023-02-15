@@ -1785,12 +1785,8 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
     fc = draw(st.sampled_from(group_list)) if general else 1
-    strides = draw(
-        st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
-    )
-    dilations = draw(
-        st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
-    )
+    strides = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+    dilations = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
     elif dim == 1:
@@ -1839,15 +1835,11 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
         )
     )
     if general and not transpose:
-        x_dilation = draw(
-            st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
-        )
+        x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
         dilations = (dilations, x_dilation)
     if draw(st.booleans()):
         p_dtype, pref = draw(
-            helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("numeric")), dtype[0]
-            )
+            helpers.get_castable_dtype(draw(helpers.get_dtypes("numeric")), dtype[0])
         )
         assume(can_cast(p_dtype, pref))
     else:

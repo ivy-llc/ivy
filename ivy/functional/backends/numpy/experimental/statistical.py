@@ -5,6 +5,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
+
 def median(
     input: np.ndarray,
     /,
