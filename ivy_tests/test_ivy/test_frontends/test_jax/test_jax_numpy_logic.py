@@ -754,6 +754,7 @@ def test_jax_numpy_isscalar(
     invert=st.booleans()
 )
 def test_jax_numpy_isin(
+    *,
     dtype_and_input,
     assume_unique,
     invert,
