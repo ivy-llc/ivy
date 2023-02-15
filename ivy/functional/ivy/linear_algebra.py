@@ -2429,11 +2429,11 @@ def vector_norm(
     ivy.array([4.])
 
     >>> x = ivy.arange(8).reshape((2,2,2))
-    >>> ivy.vector_norm(axis = (0,1), ord = float("-inf"))
+    >>> ivy.vector_norm(x, axis = (0,1), ord = float("-inf"))
     ivy.array([2, 4])
 
     >>> x = ivy.Container(a = [-1., 1., -2., 2.], b = [0., 1.2, 2.3, -3.1])
-    >>> ivy.vector_norm(ord = -1)
+    >>> ivy.vector_norm(x, ord = -1)
     {
         a: ivy.array([0.33333334]),
         b: ivy.array([0.])
