@@ -15,12 +15,7 @@ from . import dtype_helpers, number_helpers
 
 @st.composite
 def array_bools(
-    draw,
-    *,
-    size=st.shared(
-        number_helpers.ints(min_value=1, max_value=4),
-        key="size"
-    )
+    draw, *, size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size")
 ):
     """Draws a list of booleans with a given size.
 
@@ -59,11 +54,7 @@ def array_bools(
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
-def list_of_size(
-    *,
-    x,
-    size
-):
+def list_of_size(*, x, size):
     """Returns a list of the given length with elements drawn randomly from x.
 
     Parameters
@@ -981,9 +972,7 @@ def array_values(
                 min_value += 1
             if exclude_max:
                 max_value -= 1
-            values = draw(
-                list_of_size(x=st.integers(min_value, max_value), size=size)
-            )
+            values = draw(list_of_size(x=st.integers(min_value, max_value), size=size))
         elif kind_dtype == "float":
             floats_info = {
                 "float16": {"cast_type": "float16", "width": 16},
@@ -1042,9 +1031,7 @@ def array_values(
                 )
             if "complex" in dtype:
                 float_strategy = st.tuples(float_strategy, float_strategy)
-            values = draw(
-                list_of_size(x=float_strategy, size=size)
-            )
+            values = draw(list_of_size(x=float_strategy, size=size))
             if "complex" in dtype:
                 values = [complex(*v) for v in values]
     else:
