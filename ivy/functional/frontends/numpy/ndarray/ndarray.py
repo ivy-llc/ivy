@@ -116,6 +116,21 @@ class ndarray:
     def swapaxes(self, axis1, axis2, /):
         return np_frontend.swapaxes(self._ivy_array, axis1, axis2)
 
+    def round(
+        self,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+    ):
+        return np_frontend.round(
+            self.data,
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+        )
+
     def all(self, axis=None, out=None, keepdims=False, *, where=True):
         return np_frontend.all(self._ivy_array, axis, out, keepdims, where=where)
 
