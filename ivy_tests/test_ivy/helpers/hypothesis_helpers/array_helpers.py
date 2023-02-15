@@ -181,11 +181,14 @@ def lists(
         min_size = draw(st.shared(integers, key=min_size))
     if not isinstance(max_size, int):
         max_size = draw(st.shared(integers, key=max_size))
+
     min_size, max_size = abs(min_size), abs(max_size)
+
     if min_size <= max_size:
         min_size, max_size = (min_size, max_size)
     else:
         min_size, max_size = (max_size, min_size)
+
     return draw(st.lists(x=x, min_size=min_size, max_size=max_size))
 
 
