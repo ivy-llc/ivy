@@ -1,6 +1,5 @@
 import ivy
 # function for bincount
-import ivy
 
 def bincount(input, weights=None, minlength=0):
     # Convert the input array to a sequence of integer indices
