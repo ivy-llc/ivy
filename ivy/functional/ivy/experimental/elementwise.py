@@ -1322,3 +1322,39 @@ def real(
     }
     """
     return ivy.current_backend(x).real(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def binarizer(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    threshold: float = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Maps the values of the input tensor to either 0 or 1,
+    element-wise, based on the outcome of a comparison
+    against a threshold value.
+    Parameters
+    ----------
+    x
+        Data to be binarized
+    threshold
+        Values greater than this are
+        mapped to 1, others to 0.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+    Returns
+    -------
+    ret
+        Binarized output data
+    """
+    xc = ivy.copy_array(x, out=out)
+    bin = ivy.where(xc > threshold, 1, 0)
+    return bin
