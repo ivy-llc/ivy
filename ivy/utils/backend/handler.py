@@ -222,6 +222,8 @@ def current_backend(*args, **kwargs):
     >>> print(ivy.current_backend(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
     """
+    if ivy.is_local():
+        return ivy
     global implicit_backend
     # if a global backend has been set with
     # set_backend then this will be returned
