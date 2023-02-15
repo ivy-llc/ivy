@@ -387,6 +387,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With one :class:`ivy.Container` input:</span>
+
 <span class="sd">        &gt;&gt;&gt; m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))</span>
 <span class="sd">        &gt;&gt;&gt; ivy.Container.static_flipud(m)</span>
 <span class="sd">        {</span>
@@ -434,6 +435,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With one :class:`ivy.Container` input:</span>
+
 <span class="sd">        &gt;&gt;&gt; m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))</span>
 <span class="sd">        &gt;&gt;&gt; m.flipud()</span>
 <span class="sd">        {</span>
@@ -513,9 +515,11 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With one :class:`ivy.Container` input:</span>
+
 <span class="sd">        &gt;&gt;&gt; c = ivy.Container(a=[ivy.array([1,2,3]), ivy.array([0,0,0])],</span>
 <span class="sd">                              b=ivy.arange(3))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_vstack(c)</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_vstack(c)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[1, 2, 3],</span>
 <span class="sd">                          [0, 0, 0]]),</span>
@@ -557,7 +561,8 @@
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))</span>
-<span class="sd">        &gt;&gt;&gt; x.hstack([y])</span>
+<span class="sd">        &gt;&gt;&gt; z = x.hstack([y])</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[0, 1, 3, 2],</span>
 <span class="sd">                          [2, 3, 1, 0]]),</span>
@@ -664,7 +669,8 @@
 <span class="sd">        &gt;&gt;&gt; m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\</span>
 <span class="sd">                        b=ivy.array([[1,2,3,4],\</span>
 <span class="sd">                                    [7,8,9,10]]))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_rot90(m)</span>
+<span class="sd">        &gt;&gt;&gt; n = ivy.Container.static_rot90(m)</span>
+<span class="sd">        &gt;&gt;&gt; print(n)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[2, 4],</span>
 <span class="sd">                          [1, 3]]),</span>
@@ -734,9 +740,9 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\</span>
-<span class="sd">                        b=ivy.array([[1,2,3,4],\</span>
-<span class="sd">                                    [7,8,9,10]]))</span>
-<span class="sd">        &gt;&gt;&gt; m.rot90()</span>
+<span class="sd">        ...                   b=ivy.array([[1,2,3,4],[7,8,9,10]]))</span>
+<span class="sd">        &gt;&gt;&gt; n = m.rot90()</span>
+<span class="sd">        &gt;&gt;&gt; print(n)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[2, 4],</span>
 <span class="sd">                          [1, 3]]),</span>
@@ -957,7 +963,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        With one :class:`ivy.Container` input:</span>
 <span class="sd">        &gt;&gt;&gt; m = ivy.Container(a=ivy.diag([1, 2, 3]),\</span>
-<span class="sd">                            b=ivy.array([[1, 2, 3],[4, 5, 6]]))</span>
+<span class="sd">        ...                    b=ivy.array([[1, 2, 3],[4, 5, 6]]))</span>
 <span class="sd">        &gt;&gt;&gt; ivy.Container.static_fliplr(m)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[0, 0, 1],</span>
@@ -1003,8 +1009,9 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With one :class:`ivy.Container` input:</span>
+
 <span class="sd">        &gt;&gt;&gt; m = ivy.Container(a=ivy.diag([1, 2, 3]),\</span>
-<span class="sd">                            b=ivy.array([[1, 2, 3],[4, 5, 6]]))</span>
+<span class="sd">        ...                    b=ivy.array([[1, 2, 3],[4, 5, 6]]))</span>
 <span class="sd">        &gt;&gt;&gt; m.fliplr()</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[0, 0, 1],</span>
@@ -1048,6 +1055,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With one :class:`ivy.Container` input:</span>
+
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array(4))</span>
 <span class="sd">        &gt;&gt;&gt; ivy.Container.static_i0(x)</span>
 <span class="sd">        {</span>
@@ -1091,6 +1099,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With one :class:`ivy.Container` input:</span>
+
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array(4))</span>
 <span class="sd">        &gt;&gt;&gt; x.i0()</span>
 <span class="sd">        {</span>
