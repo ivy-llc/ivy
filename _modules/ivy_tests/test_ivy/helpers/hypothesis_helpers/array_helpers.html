@@ -162,12 +162,7 @@
 
 <div class="viewcode-block" id="array_bools"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/array_bools.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_bools">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
 <span class="k">def</span> <span class="nf">array_bools</span><span class="p">(</span>
-    <span class="n">draw</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">size</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span>
-        <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
-        <span class="n">key</span><span class="o">=</span><span class="s2">&quot;size&quot;</span>
-    <span class="p">)</span>
+    <span class="n">draw</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">)</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws a list of booleans with a given size.</span>
 
@@ -206,11 +201,7 @@
     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="list_of_size"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/list_of_size.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.list_of_size">[docs]</a><span class="k">def</span> <span class="nf">list_of_size</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">x</span><span class="p">,</span>
-    <span class="n">size</span>
-<span class="p">):</span>
+<div class="viewcode-block" id="list_of_size"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/list_of_size.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.list_of_size">[docs]</a><span class="k">def</span> <span class="nf">list_of_size</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a list of the given length with elements drawn randomly from x.</span>
 
 <span class="sd">    Parameters</span>
@@ -1128,9 +1119,7 @@
                 <span class="n">min_value</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="n">exclude_max</span><span class="p">:</span>
                 <span class="n">max_value</span> <span class="o">-=</span> <span class="mi">1</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
-                <span class="n">list_of_size</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">list_of_size</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">kind_dtype</span> <span class="o">==</span> <span class="s2">&quot;float&quot;</span><span class="p">:</span>
             <span class="n">floats_info</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;float16&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">},</span>
@@ -1189,9 +1178,7 @@
                 <span class="p">)</span>
             <span class="k">if</span> <span class="s2">&quot;complex&quot;</span> <span class="ow">in</span> <span class="n">dtype</span><span class="p">:</span>
                 <span class="n">float_strategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="n">float_strategy</span><span class="p">,</span> <span class="n">float_strategy</span><span class="p">)</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
-                <span class="n">list_of_size</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">float_strategy</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">list_of_size</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">float_strategy</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span>
             <span class="k">if</span> <span class="s2">&quot;complex&quot;</span> <span class="ow">in</span> <span class="n">dtype</span><span class="p">:</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">complex</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
