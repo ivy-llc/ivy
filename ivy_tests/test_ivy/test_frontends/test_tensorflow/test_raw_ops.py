@@ -3060,12 +3060,36 @@ def test_tensorflow_Elu(
     )
 
 
+@st.composite
+def explicit_paddings(draw):
+    x, filters, strides, dilations, data_format = _x_and_filters(draw)
+
+    padding = draw(
+        st.lists(
+            st.tuples(
+                st.integers(min_value=0, max_value=3),
+                st.integers(min_value=0, max_value=3),
+            ),
+            min_size=2,
+            max_size=2,
+        )
+    )
+
+    if data_format == 'NCHW':
+        padding.append((0, 0))
+    else:
+        padding.insert((0, 0), (0, 0))
+
+    return padding
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Conv2D",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["SAME", "VALID", "EXPLICIT"]),
+        explicit_paddings=explicit_paddings(),
         type="2d",
         dilation_min=1,
         dilation_max=1,
@@ -3080,7 +3104,7 @@ def test_tensorflow_Conv2D(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    input_dtype, x, filters, dilation, data_format, stride, padding, explicit_paddings = x_f_d_df
 
     # Broadcast strides and dilations to correct dims for the ground truth
     # backend func to run correctly
@@ -3090,12 +3114,8 @@ def test_tensorflow_Conv2D(
     dilation = _convolution_broadcast_helper(
         dilation, num_spatial_dims=2, channel_index=3, name="dilations"
     )
-
-    if padding == "EXPLICIT" and data_format == "NHWC":
-        explicit_paddings = [(0, 0), (1, 1), (1, 1), (0, 0)]
+    if padding == "EXPLICIT":
         padding = explicit_paddings
-    elif padding == "EXPLICIT" and data_format == "NCHW":
-        explicit_paddings = [(0, 0), (0, 0), (1, 1), (1, 1)]
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -3107,6 +3127,7 @@ def test_tensorflow_Conv2D(
         filter=filters,
         strides=stride,
         padding=padding,
+        explicit_paddings=explicit_paddings,
         data_format=data_format,
         dilations=dilation,
     )
