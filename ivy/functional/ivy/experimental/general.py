@@ -11,7 +11,7 @@ from ivy.exceptions import handle_exceptions
 @handle_nestable
 @handle_exceptions
 def isin(
-    elements: Union[ivy.Array, ivy.NativeArray],
+    element: Union[ivy.Array, ivy.NativeArray],
     test_elements: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
@@ -22,7 +22,7 @@ def isin(
 
     Parameters
     ----------
-    elements
+    element
         input array
     test_elements
         values against which to test for each input element
@@ -52,5 +52,5 @@ def isin(
     ivy.array([False, False, False,  True])
     """
     return ivy.current_backend().isin(
-        elements, test_elements, assume_unique=assume_unique, invert=invert
+        element, test_elements, assume_unique=assume_unique, invert=invert
     )

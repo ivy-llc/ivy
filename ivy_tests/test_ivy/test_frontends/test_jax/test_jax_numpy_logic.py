@@ -740,3 +740,35 @@ def test_jax_numpy_isscalar(
         on_device=on_device,
         x=x[0],
     )
+
+
+# isin
+@handle_frontend_test(
+    fn_tree="jax.numpy.isin",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    assume_unique=st.booleans(),
+    invert=st.booleans()
+)
+def test_jax_numpy_isin(
+    dtype_and_input,
+    assume_unique,
+    invert,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        element=x[0],
+        test_elements=x[1],
+        assume_unique=assume_unique,
+        invert=invert
+    )

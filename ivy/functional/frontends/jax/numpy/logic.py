@@ -172,3 +172,9 @@ def logical_not(x, /):
 @to_ivy_arrays_and_back
 def isscalar(x, /):
     return ivy.isscalar(x)
+
+
+@to_ivy_arrays_and_back
+def isin(element, test_elements, assume_unique=False, invert=False):
+    element, test_elements = promote_jax_arrays(element, test_elements)
+    return ivy.isin(element, test_elements, assume_unique=assume_unique, invert=invert)
