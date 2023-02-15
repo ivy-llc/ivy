@@ -26,8 +26,9 @@ CLASS_TREE = "ivy.functional.frontends.torch.Tensor"
 def _dtypes(draw):
     return draw(
         st.shared(
-            helpers.list_of_length(
-                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))), length=1
+            helpers.list_of_size(
+                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+                size=1,
             ),
             key="dtype",
         )
