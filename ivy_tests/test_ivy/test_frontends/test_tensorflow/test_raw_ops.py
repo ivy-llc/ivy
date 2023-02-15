@@ -3092,46 +3092,14 @@ def test_tensorflow_Conv2D(
     )
 
     if padding == "EXPLICIT":
-        input = ivy.shape(x)
+        input = ivy.shape(input)
         filter = ivy.shape(filter)
-        padding = list(input)
-        padding[1] += 2
-        padding[2] += 2
-        padding[3] += 2
-        paddings = ivy.ones(padding, input_dtype)
-        x = ivy.concat(
-            [
-                ivy.zeros(
-                    [input[0], input[1], 1, input[3]], input_dtype
-                ),
-                x,
-                ivy.zeros(
-                    [input[0], input[1], 1, input[3]], input_dtype
-                ),
-            ],
-            axis=2,
-        )
-        x = ivy.concat(
-            [
-                ivy.zeros(
-                    [input[0], 1, input[2] + 2, input[3]], input_dtype
-                ),
-                x,
-                ivy.zeros(
-                    [input[0], 1, input[2] + 2, input[3]], input_dtype
-                ),
-            ],
-            axis=1,
-        )
         explicit_paddings = ivy.array(
             [[0, 0], [1, 1], [1, 1], [0, 0]], dtype=input_dtype
         )
-        paddings = ivy.pad(paddings, explicit_paddings, "CONSTANT")
-        paddings = ivy.reshape(paddings, [-1, padding[1], padding[2], 1])
-        paddings = ivy.tile(paddings, [1, 1, 1, input[3]])
-        paddings = ivy.astype(paddings, input_dtype)
+        padding = explicit_paddings
     else:
-        paddings = None
+        padding = padding
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
