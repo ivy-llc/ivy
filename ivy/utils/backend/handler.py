@@ -8,7 +8,7 @@ import numpy as np
 from ivy import verbosity
 from typing import Optional
 import gc
-from . import _importlib
+from .. import _importlib
 from . import ast_helpers
 
 # local
@@ -609,9 +609,9 @@ def with_backend(backend: str):
     finder = ast_helpers.IvyPathFinder()
     sys.meta_path.insert(0, finder)
     _importlib.path_hooks.insert(0, finder)
-    ivy_pack = _importlib._ivy_import_module("ivy")
+    ivy_pack = _importlib._import_module("ivy")
     ivy_pack._is_local_pkg = True
-    backend_module = _importlib._ivy_import_module(
+    backend_module = _importlib._import_module(
         ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
     )
     _handle_backend_specific_vars(ivy_pack)

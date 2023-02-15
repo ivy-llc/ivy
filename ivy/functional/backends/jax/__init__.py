@@ -34,8 +34,8 @@ if not ivy.is_local():
     _module_in_memory = sys.modules[__name__]
 else:
     # TODO remove str dependency
-    global_backend_compiler = sys.modules["ivy.utils.backend._importlib"]
-    _module_in_memory = global_backend_compiler.import_cache[__name__]
+    global_importlib = sys.modules["ivy.utils._importlib"]
+    _module_in_memory = global_importlib.import_cache[__name__]
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 

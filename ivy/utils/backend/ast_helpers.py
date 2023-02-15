@@ -10,9 +10,9 @@ from importlib.abc import Loader, MetaPathFinder
 # AST helpers ##################
 
 # TODO add assertion to make sure module path exists
-importlib_module_path = "ivy.utils.backend._importlib"
-importlib_abs_import_fn = "_ivy_absolute_import"
-importlib_from_import_fn = "_ivy_fromimport"
+importlib_module_path = "ivy.utils._importlib"
+importlib_abs_import_fn = "_absolute_import"
+importlib_from_import_fn = "_from_import"
 
 
 def _retrive_local_modules():
