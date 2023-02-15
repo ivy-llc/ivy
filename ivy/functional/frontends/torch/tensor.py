@@ -564,6 +564,11 @@ class Tensor:
     def ne(self, other):
         return torch_frontend.ne(self._ivy_array, other)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def ne_(self, other):
+        self._ivy_array = self.ne(other).ivy_array
+        return self
+
     def squeeze(self, dim):
         return torch_frontend.squeeze(self._ivy_array, dim)
 
