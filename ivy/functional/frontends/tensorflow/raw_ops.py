@@ -487,7 +487,7 @@ def Pow(*, x, y, name="Pow"):
 
 @to_ivy_arrays_and_back
 def Relu6(features, name="Relu6"):
-    return ivy.clip(features, 0, 6)
+    return ivy.relu6(features)
 
 
 Sigmoid = to_ivy_arrays_and_back(

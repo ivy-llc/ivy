@@ -269,7 +269,7 @@ def relu(x):
 
 @to_ivy_arrays_and_back
 def relu6(x):
-    res = ivy.minimum(ivy.maximum(x, 0.0), 6.0)
+    res = ivy.relu6(x)
     return _type_conversion_64(res)
 
 
