@@ -47,7 +47,9 @@ def any(
 @to_ivy_arrays_and_back
 def isscalar(element):
     return (
-            isinstance(element, int) or isinstance(element, bool) or isinstance(element, float)
+            isinstance(element, int)
+            or isinstance(element, bool)
+            or isinstance(element, float)
     )
 
 
