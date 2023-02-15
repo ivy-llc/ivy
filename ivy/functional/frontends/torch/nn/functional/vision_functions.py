@@ -392,3 +392,27 @@ def interpolate(
     return ivy.interpolate(
         input, size, mode=mode, align_corners=align_corners, antialias=antialias
     )
+
+
+@to_ivy_arrays_and_back
+def upsample(
+    input,
+    size=None,
+    scale_factor=None,
+    mode="nearest",
+    align_corners=None,
+):
+
+    return interpolate(
+        input,
+        size=size,
+        scale_factor=scale_factor,
+        mode=mode,
+        align_corners=align_corners,
+    )
+
+
+@to_ivy_arrays_and_back
+def upsample_nearest(input, size=None, scale_factor=None):
+
+    return interpolate(input, size=size, scale_factor=scale_factor, mode="nearest")
