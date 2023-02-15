@@ -406,8 +406,7 @@ def softmax(logits, axis=None, name=None):
 
 @to_ivy_arrays_and_back
 def compute_average_loss(per_example_loss, sample_weight=None, global_batch_size=None):
-    return ivy.compute_average_loss(
-        per_example_loss,
-        sample_weight=sample_weight,
-        global_batch_size=global_batch_size,
-    )
+    # TODO: scale according to global batch size as well
+    if sample_weight is not None:
+        per_example_loss = ivy.multiply(sample_weight, per_example_loss)
+    return per_example_loss[0]

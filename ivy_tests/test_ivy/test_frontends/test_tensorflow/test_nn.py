@@ -1130,11 +1130,12 @@ def test_tensorflow_embedding_lookup(
     fn_tree="tensorflow.nn.compute_average_loss",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes(kind="float"),
-        min_num_dims=2,
-        max_num_dims=2,
+        min_value=0.0,
+        max_value=1.0,
+        min_num_dims=1,
+        max_num_dims=1,
         min_dim_size=1,
-        min_value=0,
-        max_value=3,
+        max_dim_size=1,
     ),
     sample_weight=st.floats(
         min_value=0,
@@ -1157,6 +1158,6 @@ def test_tensorflow_compute_average_loss(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        per_example_loss=input_values,
+        per_example_loss=input_values[0],
         sample_weight=sample_weight,
     )

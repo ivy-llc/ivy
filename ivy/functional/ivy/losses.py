@@ -303,37 +303,3 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
-
-
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
-def compute_average_loss(
-    loss: ivy.Array,
-    /,
-    *,
-    sample_weight: float = None,
-    axis: int = -1,
-    global_batch_size: int = None,
-    reduction: str = "none",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Scales per-example losses with sample_weights and computes their average.
-
-    Parameters
-    ----------
-
-
-    Returns
-    -------
-    ret
-        The scalar loss value
-
-    Functional Examples
-    -------------------
-
-    """
-
-    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    return _reduce_loss(reduction, loss * sample_weight, axis, out)
