@@ -1118,6 +1118,11 @@ def unset_nan_policy():
         nan_policy_stack.pop(-1)
 
 
+# Local Ivy
+
+import_module_path = "ivy.utils._importlib"
+
+
 def is_local():
     return hasattr(ivy, "_is_local_pkg")
 
