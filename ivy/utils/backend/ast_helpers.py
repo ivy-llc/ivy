@@ -9,6 +9,28 @@ from importlib.abc import Loader, MetaPathFinder
 
 # AST helpers ##################
 
+# TODO add assertion to make sure module path exists
+importlib_module_path = "ivy.utils.backend._importlib"
+importlib_abs_import_fn = "_ivy_absolute_import"
+importlib_from_import_fn = "_ivy_fromimport"
+
+
+def _retrive_local_modules():
+    ret = []
+    wd = sys.path[0]
+    for entry in os.scandir(wd):
+        if entry.is_file():
+            if entry.name.endswith(".py"):
+                ret.append(entry.name[:-3])
+                continue
+        if entry.is_dir():
+            if "__init__.py" in os.listdir(wd + "/" + entry.name):
+                ret.append(entry.name)
+    return ret
+
+
+local_modules = _retrive_local_modules()
+
 
 def _parse_absolute_fromimport(node: ast.ImportFrom):
     # Not to override absolute imports to other packages
@@ -20,7 +42,7 @@ def _parse_absolute_fromimport(node: ast.ImportFrom):
     # Return a function call
     return ast.Expr(
         value=ast.Call(
-            func=ast.Name(id="_ivy_fromimport", ctx=ast.Load()),
+            func=ast.Name(id=importlib_from_import_fn, ctx=ast.Load()),
             args=[
                 ast.Constant(value=node.module),
                 ast.Constant(value=None),
@@ -45,7 +67,7 @@ def _parse_relative_fromimport(node: ast.ImportFrom):
     # Return a function call
     return ast.Expr(
         value=ast.Call(
-            func=ast.Name(id="_ivy_fromimport", ctx=ast.Load()),
+            func=ast.Name(id=importlib_from_import_fn, ctx=ast.Load()),
             args=[
                 ast.Constant(value=name),
                 ast.Name(id="__package__", ctx=ast.Load()),
@@ -74,7 +96,7 @@ def _create_assign_to_variable(target, value):
 
 def _create_fromimport_call(name):
     return ast.Call(
-        func=ast.Name(id="_ivy_fromimport", ctx=ast.Load()),
+        func=ast.Name(id=importlib_from_import_fn, ctx=ast.Load()),
         args=[
             ast.Constant(value=name),
         ],
@@ -97,7 +119,7 @@ def _parse_import(node: ast.Import):
         return_nodes.append(
             ast.Expr(
                 ast.Call(
-                    func=ast.Name(id="_ivy_absolute_import", ctx=ast.Load()),
+                    func=ast.Name(id=importlib_abs_import_fn, ctx=ast.Load()),
                     args=[
                         ast.Constant(value=node.name),
                         ast.Constant(value=node.asname),
@@ -162,44 +184,29 @@ class ImportTransformer(ast.NodeTransformer):
             tree.body.insert(
                 self.insert_index,
                 ast.ImportFrom(
-                    module="ivy.utils.backend._importlib",  # TODO remove str dependency
-                    names=[ast.alias(name="_ivy_fromimport")],
+                    module=importlib_module_path,
+                    names=[ast.alias(name=importlib_from_import_fn)],
                     level=0,
                 ),
             )
             tree.body.insert(
                 self.insert_index,
                 ast.ImportFrom(
-                    module="ivy.utils.backend._importlib",  # TODO remove str dependency
-                    names=[ast.alias(name="_ivy_absolute_import")],
+                    module=importlib_module_path,
+                    names=[ast.alias(name=importlib_abs_import_fn)],
                     level=0,
                 ),
             )
         return tree
 
 
-def _retrive_local_modules():
-    ret = []
-    wd = sys.path[0]
-    for entry in os.scandir(wd):
-        if entry.is_file():
-            if entry.name.endswith(".py"):
-                ret.append(entry.name[:-3])
-                continue
-        if entry.is_dir():
-            if "__init__.py" in os.listdir(wd + "/" + entry.name):
-                ret.append(entry.name)
-    return ret
-
-
 class IvyPathFinder(MetaPathFinder):
     def find_spec(self, fullname, path, target=None):
         if fullname.partition(".")[0] not in local_modules:
-            # print("Global", fullname, "falling back to sys import")
             return None
         # We're local
         if path is None or path == "":
-            path = [sys.path[0]]  # top level import --
+            path = [sys.path[0]]
         if "." in fullname:
             *parents, name = fullname.split(".")
         else:
@@ -214,14 +221,12 @@ class IvyPathFinder(MetaPathFinder):
                 submodule_locations = None
             if not os.path.exists(filename):
                 continue
-            # print("Found Local", fullname)
             return spec_from_file_location(
                 fullname,
                 filename,
                 loader=IvyLoader(filename),
                 submodule_search_locations=submodule_locations,
             )
-        # print("Couldn't find Local", fullname)
         return None
 
 
@@ -233,7 +238,6 @@ class IvyLoader(Loader):
         with open(self.filename) as f:
             data = f.read()
 
-        # print("Calling custom loader on ", module)
         ast_tree = parse(data)
         transformer = ImportTransformer()
         transformer.visit_ImportFrom(ast_tree)
@@ -248,6 +252,3 @@ class IvyLoader(Loader):
             print(e)
             traceback.print_exc()
             raise e
-
-
-local_modules = _retrive_local_modules()
