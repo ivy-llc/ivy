@@ -67,8 +67,6 @@ def _pad_before_conv_tranpose(
             padding_list = [pad_specific[i] // 2 for i in range(dims)]
     else:
         # TODO: need to modify to handle asymmetric explicit padding
-        # for i in range(dims):
-        #     x = x[(slice(None),) * (i + 2) + (slice(padding[i][0], -padding[i][1], 1),) + (...,)]
         padding_list = [item for sublist in padding for item in sublist[::-1]][::-1]
         padding_list = [
             (padding_list[i] + padding_list[i + 1]) // 2
