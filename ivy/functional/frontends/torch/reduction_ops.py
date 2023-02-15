@@ -163,13 +163,3 @@ aminmax.unsupported_dtypes = {
     "tensorflow": ("float16", "bfloat16"),
 }
 
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
-def logsumexp(input, dim, keepdim=False, *, out=None):
-    # for numerical stability, subtract the largest value and add it back at the end
-    max_entry = ivy.max(input)
-    input_offset = input - max_entry
-    exp_input = ivy.exp(input_offset)
-    sum_exp_input = ivy.sum(exp_input, axis=dim, out=out, keepdims=keepdim)
-    return ivy.log(sum_exp_input) + max_entry
