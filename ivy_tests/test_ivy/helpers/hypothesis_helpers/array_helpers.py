@@ -802,14 +802,6 @@ def array_values(
 
     
             if "complex" in dtype:
-               float_strategy = st.tuples(float_strategy, float_strategy)
-               values = draw(
-                list_of_length(
-                    x=float_strategy,
-                    length=size,
-                )
-            )
-            if "complex" in dtype:
                 values = [complex(*v) for v in values]
     else:
         values = draw(list_of_length(x=st.booleans(), length=size))
