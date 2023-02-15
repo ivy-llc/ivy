@@ -3690,7 +3690,6 @@ def test_torch_instance_cumsum(
         allow_neg=True,
         force_int=True,
     ),
-    dtypes=_dtypes(),
 )
 def test_torch_instance_cumsum_(
     dtype_value,
