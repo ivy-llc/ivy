@@ -127,7 +127,7 @@ You can immediately use Ivy to train a neural network, using your favorite frame
 
     def loss_fn(v):
         out = model(x_in, v=v)
-        return ivy.ivy.mean((out - target)**2)
+        return ivy.mean((out - target)**2)
 
     for step in range(100):
         loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
