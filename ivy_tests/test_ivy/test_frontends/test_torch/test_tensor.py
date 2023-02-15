@@ -26,8 +26,9 @@ CLASS_TREE = "ivy.functional.frontends.torch.Tensor"
 def _dtypes(draw):
     return draw(
         st.shared(
-            helpers.list_of_length(
-                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))), length=1
+            helpers.list_of_size(
+                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+                size=1,
             ),
             key="dtype",
         )
@@ -387,17 +388,15 @@ def test_torch_instance_reshape(
     frontend,
 ):
     input_dtype, x = dtype_x
+    shape = {
+        "shape": shape,
+    }
     if unpack_shape:
-        method_flags.num_positional_args = len(shape) + 1
-        shape = {}
+        method_flags.num_positional_args = len(shape["shape"]) + 1
         i = 0
-        for x_ in shape:
+        for x_ in shape["shape"]:
             shape["x{}".format(i)] = x_
             i += 1
-    else:
-        shape = {
-            "shape": shape,
-        }
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
