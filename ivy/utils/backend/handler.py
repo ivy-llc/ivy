@@ -608,6 +608,7 @@ def choose_random_backend(excluded=None):
 # noinspection PyProtectedMember
 @prevent_access_locally
 def with_backend(backend: str):
+    # TODO do error handling if finder fails
     finder = ast_helpers.IvyPathFinder()
     sys.meta_path.insert(0, finder)
     _importlib.path_hooks.insert(0, finder)
