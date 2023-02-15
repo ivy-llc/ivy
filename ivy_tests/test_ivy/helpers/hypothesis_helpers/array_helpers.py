@@ -794,7 +794,6 @@ def array_indices_axis(
 def arrays_and_axes(
     draw,
     available_dtypes=get_dtypes("float"),
-    allow_none=False,
     min_num_dims=1,
     max_num_dims=5,
     min_dim_size=1,
