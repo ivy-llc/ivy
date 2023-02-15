@@ -8,8 +8,8 @@ import numpy as np
 from ivy import verbosity
 from typing import Optional
 import gc
-from .. import _importlib
-from . import ast_helpers
+from ivy.utils import _importlib
+from ivy.utils.backend import ast_helpers
 
 # local
 from ivy.func_wrapper import _wrap_function
