@@ -787,7 +787,7 @@ def array_values(
             elif "int" in dtype:
                kind_dtype = "int"
                dtype_info = ivy.iinfo(dtype)
-           else:
+            else:
               raise ValueError("unsupported data type")
 
            # new code to generate random float array or complex array with subnormal values
