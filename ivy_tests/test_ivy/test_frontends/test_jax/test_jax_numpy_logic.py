@@ -749,7 +749,7 @@ def test_jax_numpy_isscalar(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
 )
-def test_jax_lax_tan(
+def test_jax_numpy_left_shift(
     *,
     dtype_and_x,
     on_device,
