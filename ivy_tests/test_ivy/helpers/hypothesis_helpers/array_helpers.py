@@ -50,7 +50,8 @@ def array_bools(
     [True]
 
     """
-    size = size if isinstance(size, int) else draw(size)
+    if not isinstance(size, int):
+        size = draw(size)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
