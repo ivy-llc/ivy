@@ -206,6 +206,7 @@ class IvyPathFinder(MetaPathFinder):
             return None
         # We're local
         if path is None or path == "":
+            # TODO look for Ivy specificly
             path = [sys.path[0]]
         if "." in fullname:
             *parents, name = fullname.split(".")
