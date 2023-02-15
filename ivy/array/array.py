@@ -129,7 +129,7 @@ class Array(
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
         self._dev_str = ivy.as_ivy_dev(self._device)
-        self._pre_repr = "ivy."
+        self._pre_repr = "ivy.array"
         if "gpu" in self._dev_str:
             self._post_repr = ", dev={})".format(self._dev_str)
         else:
@@ -160,10 +160,10 @@ class Array(
             to_numpy = self._backend.to_numpy
             variable_data = self._backend.variable_data
 
-            if is_variable(self.data) and \
-                    not ( str(self._backend).__contains__("jax") or
-                          str(self._backend).__contains__("numpy")
-                    ):
+            if is_variable(self.data) and not (
+                str(self._backend).__contains__("jax")
+                or str(self._backend).__contains__("numpy")
+            ):
                 native_data = variable_data(self.data)
                 np_data = to_numpy(native_data)
                 new_arr = ivy.array(np_data)
@@ -172,7 +172,6 @@ class Array(
             else:
                 np_data = to_numpy(self.data)
                 self._data = ivy.array(np_data).data
-
 
         self._dynamic_backend = value
 
@@ -300,9 +299,10 @@ class Array(
         arr_np = backend.to_numpy(self._data)
         rep = ivy.vec_sig_fig(arr_np, sig_fig) if self._size > 0 else np.array(arr_np)
         with np.printoptions(precision=dec_vals):
+            repr = rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
             return (
                 self._pre_repr
-                + rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
+                + repr[repr.find("(") :]
                 + self._post_repr.format(ivy.current_backend_str())
             )
 

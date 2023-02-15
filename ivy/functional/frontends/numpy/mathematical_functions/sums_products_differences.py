@@ -116,3 +116,8 @@ def nancumprod(a, /, axis=None, dtype=None, out=None):
 def nancumsum(a, /, axis=None, dtype=None, out=None):
     a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
     return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
+
+
+@to_ivy_arrays_and_back
+def diff(x, /, *, n=1, axis=-1, prepend=None, append=None):
+    return ivy.diff(x, n=n, axis=axis, prepend=prepend, append=append)

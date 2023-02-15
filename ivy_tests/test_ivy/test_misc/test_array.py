@@ -63,7 +63,7 @@ def test_array_function():
 
     x = MyArray(-3)
     y = ivy.array([1, -1])
-    xy = ivy.abs(x, ivy_array=y)  # works
+    xy = _(x, ivy_array=y)
     x1 = xy[0]
     y1 = xy[1]
     assert x1.data == 3

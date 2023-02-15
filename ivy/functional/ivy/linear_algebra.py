@@ -867,6 +867,8 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the matrix product.
@@ -883,6 +885,12 @@ def matmul(
         if True, ``x1`` is transposed before multiplication.
     transpose_b
         if True, ``x2`` is transposed before multiplication.
+    adjoint_a
+        If True, takes the conjugate of the matrix then the transpose of the matrix.
+        adjoint_a and transpose_a can not be true at the same time.
+    adjoint_b
+        If True, takes the conjugate of the matrix then the transpose of the matrix.
+        adjoint_b and transpose_b can not be true at the same time.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -996,7 +1004,13 @@ def matmul(
 
     """
     return current_backend(x1).matmul(
-        x1, x2, transpose_a=transpose_a, transpose_b=transpose_b, out=out
+        x1,
+        x2,
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
+        adjoint_a=adjoint_a,
+        adjoint_b=adjoint_b,
+        out=out,
     )
 
 
@@ -1352,7 +1366,11 @@ def matrix_rank(
 @handle_array_like_without_promotion
 @handle_array_function
 def matrix_transpose(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    conjugate: bool = False,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Transposes a matrix (or a stack of matrices) ``x``.
@@ -1362,6 +1380,8 @@ def matrix_transpose(
     x
         input array having shape ``(..., M, N)`` and whose innermost two
         dimensions form ``MxN`` matrices.
+    conjugate
+        If True, takes the conjugate of the matrix.
     out
         optional output array, for writing the result to. It must have a
         shape that the inputs broadcast to.
@@ -1424,7 +1444,7 @@ def matrix_transpose(
                       [4., 5.]])
     }
     """
-    return current_backend(x).matrix_transpose(x, out=out)
+    return current_backend(x).matrix_transpose(x, conjugate=conjugate, out=out)
 
 
 @to_native_arrays_and_back

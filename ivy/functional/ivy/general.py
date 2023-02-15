@@ -2177,13 +2177,36 @@ stable_pow.unsupported_dtypes = ("bfloat16",)
 
 
 @handle_exceptions
-def get_all_arrays_in_memory():
-    """Gets all arrays which are currently alive."""
+def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
+    """
+    Gets all arrays which are currently alive.
+
+    Returns
+    -------
+    ret
+        All arrays which are alive.
+
+    Examples
+    --------
+    >>> ivy.get_all_arrays_in_memory()
+    []
+    >>> x = ivy.get_all_arrays_in_memory()
+    >>> x
+    []
+    >>> y = ivy.array([0, 1, 2])
+    >>> x
+    [ivy.array([0, 1, 2])]
+    """
     all_arrays = list()
     for obj in gc.get_objects():
         try:
-            if ivy.is_native_array(obj):
-                all_arrays.append(obj)
+            if ivy.current_backend_str() in ["", "numpy"]:
+                if ivy.is_ivy_array(obj):
+                    all_arrays.append(obj)
+            else:
+                if ivy.is_native_array(obj):
+                    all_arrays.append(obj)
+
         except Exception:
             pass
     return all_arrays
