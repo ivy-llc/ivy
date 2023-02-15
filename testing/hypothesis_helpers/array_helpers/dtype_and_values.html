@@ -116,7 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="broadcast_shapes.html">broadcast_shapes</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">dtype_and_values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dtype_values_axis.html">dtype_values_axis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="list_of_length.html">list_of_length</a></li>
+<li class="toctree-l3"><a class="reference internal" href="list_of_size.html">list_of_size</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lists.html">lists</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mutually_broadcastable_shapes.html">mutually_broadcastable_shapes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="prod.html">prod</a></li>
@@ -189,7 +189,7 @@ absolute smallest value is used.</p></li>
 <li><p><strong>min_value</strong> – minimum value of elements in each array.</p></li>
 <li><p><strong>max_value</strong> – maximum value of elements in each array.</p></li>
 <li><p><strong>large_abs_safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,</p>
-<p>when a “linear” safety factor scaler is used,  a safety factor of 2 means
+<p>when a “linear” safety factor scaler is used, a safety factor of 2 means
 that only 50% of the range is included, a safety factor of 3 means that
 only 33% of the range is included etc.</p>
 <p>when a “log” safety factor scaler is used, a data type with maximum
@@ -226,9 +226,63 @@ table.</p></li>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>A strategy that draws a list of dtype and arrays (as lists).</em></p>
+<dd class="field-odd"><p><em>ret</em> – A strategy that draws a tuple of a list of dtypes and a list
+of their respective arrays.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_and_values</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;uint16&#39;, &#39;float16&#39;, &#39;uint16&#39;], [array([37915, 6322, 26765, 12413,</span>
+<span class="go">    26986, 34665], dtype=uint16), array([-5.000e-01, -5.000e-01,</span>
+<span class="go">    -2.000e+00, -6.711e-05, -1.100e+00, -5.955e+04], dtype=float16),</span>
+<span class="go">    array([40817, 56193, 29200, 0, 5851, 9746], dtype=uint16)])</span>
+<span class="go">([&#39;bool&#39;, &#39;uint32&#39;, &#39;bool&#39;], [array(False), array(0, dtype=uint32),</span>
+<span class="go">    array(False)])</span>
+<span class="go">([&#39;int8&#39;, &#39;int8&#39;, &#39;int8&#39;], [array(0, dtype=int8), array(0, dtype=int8),</span>
+<span class="go">    array(0, dtype=int8)])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_and_values</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">min_value</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_value</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">),</span>
+<span class="go">([&#39;float32&#39;, &#39;float32&#39;], [array([1.1, 1.5], dtype=float32),</span>
+<span class="go">    array([-5.9604645e-08, 5.9604645e-08], dtype=float32)])</span>
+<span class="go">([&#39;int32&#39;, &#39;int32&#39;], [array(-5, dtype=int32), array(-1, dtype=int32)])</span>
+<span class="go">([&#39;uint64&#39;, &#39;uint64&#39;], [array([0], dtype=uint64), array([0],</span>
+<span class="go">    dtype=uint64)])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_and_values</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ret_shape</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;int8&#39;, &#39;int32&#39;], [array([27], dtype=int8), array([192],</span>
+<span class="go">    dtype=int32)], (1,))</span>
+<span class="go">([&#39;int32&#39;, &#39;int16&#39;], [array(0, dtype=int32), array(0,</span>
+<span class="go">    dtype=int16)], ())</span>
+<span class="go">([&#39;int32&#39;, &#39;int16&#39;], [array([[-103, 12, -41795, 1170789994,</span>
+<span class="go">    44251, 44209, 433075925]], dtype=int32), array([[24791,</span>
+<span class="go">    -24691, 24892, 16711, 7696, 972, 15357]], dtype=int16)],</span>
+<span class="go">    (1, 7))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_and_values</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ret_shape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;uint8&#39;], [array([0], dtype=uint8)], (1,))</span>
+<span class="go">([&#39;float32&#39;], [array(-1., dtype=float32)], ())</span>
+<span class="go">([&#39;int64&#39;], [array(72057594037927936)], ())</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

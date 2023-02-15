@@ -116,7 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="broadcast_shapes.html">broadcast_shapes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dtype_and_values.html">dtype_and_values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dtype_values_axis.html">dtype_values_axis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="list_of_length.html">list_of_length</a></li>
+<li class="toctree-l3"><a class="reference internal" href="list_of_size.html">list_of_size</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lists.html">lists</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mutually_broadcastable_shapes.html">mutually_broadcastable_shapes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="prod.html">prod</a></li>
@@ -181,9 +181,13 @@ positional arguments a given function can take.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
 <li><p><strong>array_dtypes</strong> – list of data type to draw the array dtype from.</p></li>
 <li><p><strong>indices_dtypes</strong> – list of data type to draw the indices dtype from.</p></li>
-<li><p><strong>disable_random_axis</strong> – axis is set to -1 when True. Randomly generated with hypothesis if False.</p></li>
+<li><p><strong>disable_random_axis</strong> – axis is randomly generated with hypothesis if False. If True, axis is set
+to 0 if axis_zero is True, -1 otherwise.</p></li>
+<li><p><strong>axis_zero</strong> – If True, axis is set to zero if disable_random_axis is True.</p></li>
 <li><p><strong>allow_inf</strong> – inf values are allowed to be generated in the values array when True.</p></li>
 <li><p><strong>min_num_dims</strong> – The minimum number of dimensions the arrays can have.</p></li>
 <li><p><strong>max_num_dims</strong> – The maximum number of dimensions the arrays can have.</p></li>
@@ -196,11 +200,8 @@ positional arguments a given function can take.</p>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>A strategy that can be used in the &#64;given hypothesis decorator</em></p></li>
-<li><p><em>which generates arrays of values and indices.</em></p></li>
-</ul>
-</p>
+<dd class="field-odd"><p><em>ret</em> – A strategy that can be used in the &#64;given hypothesis
+decorator which generates arrays of values and indices.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -218,6 +219,50 @@ max_dim_size=10
 </dd>
 </dl>
 <p>)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">array_indices_axis</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">array_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">indices_dtypes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int64&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">indices_same_dims</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">disable_random_axis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">axis_zero</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;int64&#39;, &#39;int64&#39;], array([-65536]), array([0]))</span>
+<span class="go">([&#39;bool&#39;, &#39;int64&#39;], array([False, False, False, True,</span>
+<span class="go">    False, False, False, False]), array([0, 0, 2, 4,</span>
+<span class="go">    0, 0, 0, 1]))</span>
+<span class="go">([&#39;int64&#39;, &#39;int64&#39;], array([0]), array([0]))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">array_indices_axis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">array_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">indices_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;integer&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">disable_random_axis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">first_dimension_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;float64&#39;, &#39;uint64&#39;], array([-2.44758124e-308]),</span>
+<span class="go">    array([0], dtype=uint64))</span>
+<span class="go">([&#39;bool&#39;, &#39;uint64&#39;], array([False]), array([0], dtype=uint64))</span>
+<span class="go">([&#39;bool&#39;, &#39;int8&#39;], array([False]), array([[0, 0, 0, 0],</span>
+<span class="go">   [0, 0, 0, 0],</span>
+<span class="go">   [0, 0, 0, 0],</span>
+<span class="go">   [0, 0, 0, 0]], dtype=int8))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">array_indices_axis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">array_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">indices_dtypes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int64&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">indices_same_dims</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;float16&#39;, &#39;int64&#39;], array([-256.], dtype=float16),</span>
+<span class="go">    array([0]), 0, 0)</span>
+<span class="go">([&#39;uint8&#39;, &#39;int64&#39;], array([1], dtype=uint8),</span>
+<span class="go">    array([0]), -1, 0)</span>
+<span class="go">([&#39;uint64&#39;, &#39;int64&#39;], array([0], dtype=uint64),</span>
+<span class="go">    array([0]), 0, 0)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

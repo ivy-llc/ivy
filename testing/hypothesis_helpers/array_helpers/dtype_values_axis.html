@@ -21,7 +21,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="list_of_length" href="list_of_length.html" />
+    <link rel="next" title="list_of_size" href="list_of_size.html" />
     <link rel="prev" title="dtype_and_values" href="dtype_and_values.html" /> 
 </head>
 
@@ -116,7 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="broadcast_shapes.html">broadcast_shapes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dtype_and_values.html">dtype_and_values</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">dtype_values_axis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="list_of_length.html">list_of_length</a></li>
+<li class="toctree-l3"><a class="reference internal" href="list_of_size.html">list_of_size</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lists.html">lists</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mutually_broadcastable_shapes.html">mutually_broadcastable_shapes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="prod.html">prod</a></li>
@@ -190,7 +190,7 @@ absolute smallest value is used.</p></li>
 <li><p><strong>min_value</strong> – minimum value of elements in the array.</p></li>
 <li><p><strong>max_value</strong> – maximum value of elements in the array.</p></li>
 <li><p><strong>large_abs_safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,</p>
-<p>when a “linear” safety factor scaler is used,  a safety factor of 2 means
+<p>when a “linear” safety factor scaler is used, a safety factor of 2 means
 that only 50% of the range is included, a safety factor of 3 means that
 only 33% of the range is included etc.</p>
 <p>when a “log” safety factor scaler is used, a data type with maximum
@@ -232,9 +232,54 @@ minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>A strategy that draws a dtype, an array (as list), and an axis.</em></p>
+<dd class="field-odd"><p><em>ret</em> – A strategy that draws a tuple of a list of dtypes,
+a list of arrays, and an axis.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_values_axis</span><span class="p">()</span>
+<span class="go">([&#39;int16&#39;], [array(29788, dtype=int16)])</span>
+<span class="go">([&#39;complex128&#39;], [array(1.62222885e+156-2.68281172e-257j)])</span>
+<span class="go">([&#39;float64&#39;], [array(-1.40129846e-45)])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_values_axis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;int8&#39;, &#39;int16&#39;], [array([[0]], dtype=int8), array([[1]], dtype=int16)], 0)</span>
+<span class="go">([&#39;uint16&#39;, &#39;uint16&#39;], [array(0, dtype=uint16), array(0, dtype=uint16)], 0)</span>
+<span class="go">([&#39;float64&#39;, &#39;int16&#39;], [array(-2.44758124e-308), array(0, dtype=int16)], 0)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_values_axis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">min_axis</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;float64&#39;], [array([[1.90000000e+000, 1.63426649e+308],</span>
+<span class="go">    [-1.50000000e+000, -1.91931887e+234]])], -1)</span>
+<span class="go">([&#39;bfloat16&#39;], [array([[-1.29488e-38, -1.29488e-38],</span>
+<span class="go">    [-1.29488e-38, -1.29488e-38]], dtype=bfloat16)], 0)</span>
+<span class="go">([&#39;float64&#39;], [array([[-2.44758124e-308, -2.44758124e-308],</span>
+<span class="go">    [-2.44758124e-308, -2.44758124e-308]])], 0)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_values_axis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">allow_inf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">allow_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;float64&#39;], [array([inf, -5.14361019e+16, 5.96046448e-08, 1.50000000e+00])], -51)</span>
+<span class="go">([&#39;int16&#39;], [array(12445, dtype=int16)], 171)</span>
+<span class="go">([&#39;uint32&#39;], [array([0], dtype=uint32)], 0)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -244,7 +289,7 @@ minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="dtype_and_values.html" class="btn btn-neutral float-left" title="dtype_and_values" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="list_of_length.html" class="btn btn-neutral float-right" title="list_of_length" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="list_of_size.html" class="btn btn-neutral float-right" title="list_of_size" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

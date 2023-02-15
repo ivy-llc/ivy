@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>lists &mdash; Ivy 1.0 documentation</title>
+  <title>list_of_size &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="mutually_broadcastable_shapes" href="mutually_broadcastable_shapes.html" />
-    <link rel="prev" title="list_of_size" href="list_of_size.html" /> 
+    <link rel="next" title="lists" href="lists.html" />
+    <link rel="prev" title="dtype_values_axis" href="dtype_values_axis.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -116,8 +116,8 @@
 <li class="toctree-l3"><a class="reference internal" href="broadcast_shapes.html">broadcast_shapes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dtype_and_values.html">dtype_and_values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dtype_values_axis.html">dtype_values_axis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="list_of_size.html">list_of_size</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">lists</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">list_of_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lists.html">lists</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mutually_broadcastable_shapes.html">mutually_broadcastable_shapes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="prod.html">prod</a></li>
 </ul>
@@ -160,9 +160,9 @@
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../hypothesis_helpers.html">Hypothesis helpers</a> &raquo;</li>
           <li><a href="../array_helpers.html">Array helpers</a> &raquo;</li>
-      <li>lists</li>
+      <li>list_of_size</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/testing/hypothesis_helpers/array_helpers/lists.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/testing/hypothesis_helpers/array_helpers/list_of_size.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -170,72 +170,49 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="lists">
-<h1>lists<a class="headerlink" href="#lists" title="Permalink to this heading"></a></h1>
+  <section id="list-of-size">
+<h1>list_of_size<a class="headerlink" href="#list-of-size" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.lists">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">lists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.lists" title="Permalink to this definition"></a></dt>
-<dd><p>Draws a list with a random bounded size from the data-set x.</p>
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.list_of_size">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">list_of_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#list_of_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.list_of_size" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of the given length with elements drawn randomly from x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
-data-set (ex. list).</p></li>
-<li><p><strong>x</strong> – data-set of elements.</p></li>
-<li><p><strong>min_size</strong> – minimum size of the list.</p></li>
-<li><p><strong>max_size</strong> – max size of the list.</p></li>
-<li><p><strong>size_bounds</strong> – if min_size or max_size is None, draw them randomly from the range
-[size_bounds[0], size_bounds[1]].</p></li>
+<li><p><strong>x</strong> – a list to draw elements from.</p></li>
+<li><p><strong>size</strong> – length of the list.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – A strategy that draws a list.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – A strategy that draws a list.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">(</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">list_of_size</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">]),</span>
-<span class="gp">... </span>    <span class="n">min_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">max_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="go">[5, 5, 5, 9, 9]</span>
-<span class="go">[5, 9, -1, -1]</span>
-<span class="go">[5, 9, 5, 9]</span>
+<span class="go">[-1, 5, -1, -1]</span>
+<span class="go">[9, -1, -1, -1]</span>
+<span class="go">[9, 9, -1, 9]</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">(</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">list_of_size</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="n">size_bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="go">[0, 2, 4, 3, 3, 3, 3, 2, 1, 4]</span>
-<span class="go">[1, 0, 1, 2, 1, 4, 1, 3, 1]</span>
-<span class="go">[1, 0, 1, 2, 1, 4, 1, 3, 1]</span>
+<span class="go">[3, 0, 0, 0, 0, 0, 0, 0, 0, 0]</span>
+<span class="go">[3, 3, 2, 4, 1, 0, 4, 2, 1, 2]</span>
+<span class="go">[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="n">size_bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">list_of_size</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
+<span class="gp">... </span>    <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="go">[1, 3, 0, 2, 0, 0, 1, 4, 2, 3]</span>
-<span class="go">[0, 0, 0, 0, 0, 0, 0, 0, 0]</span>
-<span class="go">[1, 2, 4, 1, 1, 1, 4, 3, 2]</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span>
-<span class="gp">... </span>        <span class="n">min_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="n">max_value</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="n">exclude_max</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="p">),</span>
-<span class="gp">... </span>    <span class="n">min_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">max_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="go">[1.1, 1.0, 1.0, 1.0, 1.0]</span>
-<span class="go">[2.00001, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]</span>
-<span class="go">[1.0, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]</span>
+<span class="go">[False, False, False]</span>
+<span class="go">[True, True, False]</span>
+<span class="go">[False, True, False]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -246,8 +223,8 @@ data-set (ex. list).</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="list_of_size.html" class="btn btn-neutral float-left" title="list_of_size" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="mutually_broadcastable_shapes.html" class="btn btn-neutral float-right" title="mutually_broadcastable_shapes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="dtype_values_axis.html" class="btn btn-neutral float-left" title="dtype_values_axis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lists.html" class="btn btn-neutral float-right" title="lists" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

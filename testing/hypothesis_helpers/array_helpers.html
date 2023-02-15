@@ -116,7 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="array_helpers/broadcast_shapes.html">broadcast_shapes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="array_helpers/dtype_and_values.html">dtype_and_values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="array_helpers/dtype_values_axis.html">dtype_values_axis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="array_helpers/list_of_length.html">list_of_length</a></li>
+<li class="toctree-l3"><a class="reference internal" href="array_helpers/list_of_size.html">list_of_size</a></li>
 <li class="toctree-l3"><a class="reference internal" href="array_helpers/lists.html">lists</a></li>
 <li class="toctree-l3"><a class="reference internal" href="array_helpers/mutually_broadcastable_shapes.html">mutually_broadcastable_shapes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="array_helpers/prod.html">prod</a></li>
@@ -184,23 +184,42 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_bools">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">array_bools</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_arrays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">shared(ints(min_value=1,</span> <span class="pre">max_value=4),</span> <span class="pre">key='num_arrays')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#array_bools"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_bools" title="Permalink to this definition"></a></dt>
-<dd><p>Draws a boolean list of a given size.</p>
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">array_bools</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">shared(ints(min_value=1,</span> <span class="pre">max_value=4),</span> <span class="pre">key='size')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#array_bools"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_bools" title="Permalink to this definition"></a></dt>
+<dd><p>Draws a list of booleans with a given size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
 data-set (ex. list).</p></li>
-<li><p><strong>num_arrays</strong> – size of the list.</p></li>
+<li><p><strong>size</strong> – size of the list.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>A strategy that draws a list.</em></p>
+<dd class="field-odd"><p><em>ret</em> – A strategy that draws a list.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">array_bools</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">[False, True, False, False, False]</span>
+<span class="go">[False, False, False, False, False]</span>
+<span class="go">[True, False, False, False, False]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">array_bools</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">[True]</span>
+<span class="go">[False]</span>
+<span class="go">[True]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">array_bools</span><span class="p">()</span>
+<span class="go">[False, False, False, False]</span>
+<span class="go">[True, True, True, False]</span>
+<span class="go">[True]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -212,9 +231,13 @@ positional arguments a given function can take.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
+data-set (ex. list).</p></li>
 <li><p><strong>array_dtypes</strong> – list of data type to draw the array dtype from.</p></li>
 <li><p><strong>indices_dtypes</strong> – list of data type to draw the indices dtype from.</p></li>
-<li><p><strong>disable_random_axis</strong> – axis is set to -1 when True. Randomly generated with hypothesis if False.</p></li>
+<li><p><strong>disable_random_axis</strong> – axis is randomly generated with hypothesis if False. If True, axis is set
+to 0 if axis_zero is True, -1 otherwise.</p></li>
+<li><p><strong>axis_zero</strong> – If True, axis is set to zero if disable_random_axis is True.</p></li>
 <li><p><strong>allow_inf</strong> – inf values are allowed to be generated in the values array when True.</p></li>
 <li><p><strong>min_num_dims</strong> – The minimum number of dimensions the arrays can have.</p></li>
 <li><p><strong>max_num_dims</strong> – The maximum number of dimensions the arrays can have.</p></li>
@@ -227,11 +250,8 @@ positional arguments a given function can take.</p>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>A strategy that can be used in the &#64;given hypothesis decorator</em></p></li>
-<li><p><em>which generates arrays of values and indices.</em></p></li>
-</ul>
-</p>
+<dd class="field-odd"><p><em>ret</em> – A strategy that can be used in the &#64;given hypothesis
+decorator which generates arrays of values and indices.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -249,6 +269,50 @@ max_dim_size=10
 </dd>
 </dl>
 <p>)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">array_indices_axis</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">array_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">indices_dtypes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int64&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">indices_same_dims</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">disable_random_axis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">axis_zero</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;int64&#39;, &#39;int64&#39;], array([-65536]), array([0]))</span>
+<span class="go">([&#39;bool&#39;, &#39;int64&#39;], array([False, False, False, True,</span>
+<span class="go">    False, False, False, False]), array([0, 0, 2, 4,</span>
+<span class="go">    0, 0, 0, 1]))</span>
+<span class="go">([&#39;int64&#39;, &#39;int64&#39;], array([0]), array([0]))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">array_indices_axis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">array_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">indices_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;integer&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">disable_random_axis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">first_dimension_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;float64&#39;, &#39;uint64&#39;], array([-2.44758124e-308]),</span>
+<span class="go">    array([0], dtype=uint64))</span>
+<span class="go">([&#39;bool&#39;, &#39;uint64&#39;], array([False]), array([0], dtype=uint64))</span>
+<span class="go">([&#39;bool&#39;, &#39;int8&#39;], array([False]), array([[0, 0, 0, 0],</span>
+<span class="go">   [0, 0, 0, 0],</span>
+<span class="go">   [0, 0, 0, 0],</span>
+<span class="go">   [0, 0, 0, 0]], dtype=int8))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">array_indices_axis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">array_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">indices_dtypes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int64&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">indices_same_dims</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;float16&#39;, &#39;int64&#39;], array([-256.], dtype=float16),</span>
+<span class="go">    array([0]), 0, 0)</span>
+<span class="go">([&#39;uint8&#39;, &#39;int64&#39;], array([1], dtype=uint8),</span>
+<span class="go">    array([0]), -1, 0)</span>
+<span class="go">([&#39;uint64&#39;, &#39;int64&#39;], array([0], dtype=uint64),</span>
+<span class="go">    array([0]), 0, 0)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -273,7 +337,7 @@ absolute smallest value is used.</p></li>
 <li><p><strong>exclude_min</strong> – if True, exclude the minimum limit.</p></li>
 <li><p><strong>exclude_max</strong> – if True, exclude the maximum limit.</p></li>
 <li><p><strong>large_abs_safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,</p>
-<p>when a “linear” safety factor scaler is used,  a safety factor of 2 means
+<p>when a “linear” safety factor scaler is used, a safety factor of 2 means
 that only 50% of the range is included, a safety factor of 3 means that
 only 33% of the range is included etc.</p>
 <p>when a “log” safety factor scaler is used, a data type with maximum
@@ -307,7 +371,7 @@ minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.arrays_and_axes">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">arrays_and_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">available_dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">get_dtypes(kind='float')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_num_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returndtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_int_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#arrays_and_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.arrays_and_axes" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">arrays_and_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">available_dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">get_dtypes(kind='float')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_num_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_int_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#arrays_and_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.arrays_and_axes" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
@@ -347,7 +411,7 @@ absolute smallest value is used.</p></li>
 <li><p><strong>min_value</strong> – minimum value of elements in each array.</p></li>
 <li><p><strong>max_value</strong> – maximum value of elements in each array.</p></li>
 <li><p><strong>large_abs_safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,</p>
-<p>when a “linear” safety factor scaler is used,  a safety factor of 2 means
+<p>when a “linear” safety factor scaler is used, a safety factor of 2 means
 that only 50% of the range is included, a safety factor of 3 means that
 only 33% of the range is included etc.</p>
 <p>when a “log” safety factor scaler is used, a data type with maximum
@@ -384,9 +448,63 @@ table.</p></li>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>A strategy that draws a list of dtype and arrays (as lists).</em></p>
+<dd class="field-odd"><p><em>ret</em> – A strategy that draws a tuple of a list of dtypes and a list
+of their respective arrays.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_and_values</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;uint16&#39;, &#39;float16&#39;, &#39;uint16&#39;], [array([37915, 6322, 26765, 12413,</span>
+<span class="go">    26986, 34665], dtype=uint16), array([-5.000e-01, -5.000e-01,</span>
+<span class="go">    -2.000e+00, -6.711e-05, -1.100e+00, -5.955e+04], dtype=float16),</span>
+<span class="go">    array([40817, 56193, 29200, 0, 5851, 9746], dtype=uint16)])</span>
+<span class="go">([&#39;bool&#39;, &#39;uint32&#39;, &#39;bool&#39;], [array(False), array(0, dtype=uint32),</span>
+<span class="go">    array(False)])</span>
+<span class="go">([&#39;int8&#39;, &#39;int8&#39;, &#39;int8&#39;], [array(0, dtype=int8), array(0, dtype=int8),</span>
+<span class="go">    array(0, dtype=int8)])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_and_values</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">min_value</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_value</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">),</span>
+<span class="go">([&#39;float32&#39;, &#39;float32&#39;], [array([1.1, 1.5], dtype=float32),</span>
+<span class="go">    array([-5.9604645e-08, 5.9604645e-08], dtype=float32)])</span>
+<span class="go">([&#39;int32&#39;, &#39;int32&#39;], [array(-5, dtype=int32), array(-1, dtype=int32)])</span>
+<span class="go">([&#39;uint64&#39;, &#39;uint64&#39;], [array([0], dtype=uint64), array([0],</span>
+<span class="go">    dtype=uint64)])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_and_values</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ret_shape</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;int8&#39;, &#39;int32&#39;], [array([27], dtype=int8), array([192],</span>
+<span class="go">    dtype=int32)], (1,))</span>
+<span class="go">([&#39;int32&#39;, &#39;int16&#39;], [array(0, dtype=int32), array(0,</span>
+<span class="go">    dtype=int16)], ())</span>
+<span class="go">([&#39;int32&#39;, &#39;int16&#39;], [array([[-103, 12, -41795, 1170789994,</span>
+<span class="go">    44251, 44209, 433075925]], dtype=int32), array([[24791,</span>
+<span class="go">    -24691, 24892, 16711, 7696, 972, 15357]], dtype=int16)],</span>
+<span class="go">    (1, 7))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_and_values</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ret_shape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;uint8&#39;], [array([0], dtype=uint8)], (1,))</span>
+<span class="go">([&#39;float32&#39;], [array(-1., dtype=float32)], ())</span>
+<span class="go">([&#39;int64&#39;], [array(72057594037927936)], ())</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -407,7 +525,7 @@ absolute smallest value is used.</p></li>
 <li><p><strong>min_value</strong> – minimum value of elements in the array.</p></li>
 <li><p><strong>max_value</strong> – maximum value of elements in the array.</p></li>
 <li><p><strong>large_abs_safety_factor</strong> – <p>A safety factor of 1 means that all values are included without limitation,</p>
-<p>when a “linear” safety factor scaler is used,  a safety factor of 2 means
+<p>when a “linear” safety factor scaler is used, a safety factor of 2 means
 that only 50% of the range is included, a safety factor of 3 means that
 only 33% of the range is included etc.</p>
 <p>when a “log” safety factor scaler is used, a data type with maximum
@@ -449,28 +567,112 @@ minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>A strategy that draws a dtype, an array (as list), and an axis.</em></p>
+<dd class="field-odd"><p><em>ret</em> – A strategy that draws a tuple of a list of dtypes,
+a list of arrays, and an axis.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_values_axis</span><span class="p">()</span>
+<span class="go">([&#39;int16&#39;], [array(29788, dtype=int16)])</span>
+<span class="go">([&#39;complex128&#39;], [array(1.62222885e+156-2.68281172e-257j)])</span>
+<span class="go">([&#39;float64&#39;], [array(-1.40129846e-45)])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_values_axis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;int8&#39;, &#39;int16&#39;], [array([[0]], dtype=int8), array([[1]], dtype=int16)], 0)</span>
+<span class="go">([&#39;uint16&#39;, &#39;uint16&#39;], [array(0, dtype=uint16), array(0, dtype=uint16)], 0)</span>
+<span class="go">([&#39;float64&#39;, &#39;int16&#39;], [array(-2.44758124e-308), array(0, dtype=int16)], 0)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_values_axis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">min_axis</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;float64&#39;], [array([[1.90000000e+000, 1.63426649e+308],</span>
+<span class="go">    [-1.50000000e+000, -1.91931887e+234]])], -1)</span>
+<span class="go">([&#39;bfloat16&#39;], [array([[-1.29488e-38, -1.29488e-38],</span>
+<span class="go">    [-1.29488e-38, -1.29488e-38]], dtype=bfloat16)], 0)</span>
+<span class="go">([&#39;float64&#39;], [array([[-2.44758124e-308, -2.44758124e-308],</span>
+<span class="go">    [-2.44758124e-308, -2.44758124e-308]])], 0)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype_values_axis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">num_arrays</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">allow_inf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">allow_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">([&#39;float64&#39;], [array([inf, -5.14361019e+16, 5.96046448e-08, 1.50000000e+00])], -51)</span>
+<span class="go">([&#39;int16&#39;], [array(12445, dtype=int16)], 171)</span>
+<span class="go">([&#39;uint32&#39;], [array([0], dtype=uint32)], 0)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.list_of_length">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">list_of_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#list_of_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.list_of_length" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a random list of the given length from elements in x.</p>
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.list_of_size">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">list_of_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#list_of_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.list_of_size" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of the given length with elements drawn randomly from x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – a list to draw elements from.</p></li>
+<li><p><strong>size</strong> – length of the list.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – A strategy that draws a list.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">list_of_size</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">]),</span>
+<span class="gp">... </span>    <span class="n">size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">[-1, 5, -1, -1]</span>
+<span class="go">[9, -1, -1, -1]</span>
+<span class="go">[9, 9, -1, 9]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">list_of_size</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">[3, 0, 0, 0, 0, 0, 0, 0, 0, 0]</span>
+<span class="go">[3, 3, 2, 4, 1, 0, 4, 2, 1, 2]</span>
+<span class="go">[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">list_of_size</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
+<span class="gp">... </span>    <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">[False, False, False]</span>
+<span class="go">[True, True, False]</span>
+<span class="go">[False, True, False]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.lists">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">lists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.lists" title="Permalink to this definition"></a></dt>
-<dd><p>Draws a list from the dataset arg.</p>
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.</span></span><span class="sig-name descname"><span class="pre">lists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.html#lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.lists" title="Permalink to this definition"></a></dt>
+<dd><p>Draws a list with a random bounded size from the data-set x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>draw</strong> – special function that draws data randomly (but is reproducible) from a given
 data-set (ex. list).</p></li>
-<li><p><strong>arg</strong> – dataset of elements.</p></li>
-<li><p><strong>min_size</strong> – least size of the list.</p></li>
+<li><p><strong>x</strong> – data-set of elements.</p></li>
+<li><p><strong>min_size</strong> – minimum size of the list.</p></li>
 <li><p><strong>max_size</strong> – max size of the list.</p></li>
 <li><p><strong>size_bounds</strong> – if min_size or max_size is None, draw them randomly from the range
 [size_bounds[0], size_bounds[1]].</p></li>
@@ -480,9 +682,52 @@ data-set (ex. list).</p></li>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>A strategy that draws a list.</em></p>
+<dd class="field-odd"><p><em>ret</em> – A strategy that draws a list.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">]),</span>
+<span class="gp">... </span>    <span class="n">min_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">[5, 5, 5, 9, 9]</span>
+<span class="go">[5, 9, -1, -1]</span>
+<span class="go">[5, 9, 5, 9]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">size_bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">[0, 2, 4, 3, 3, 3, 3, 2, 1, 4]</span>
+<span class="go">[1, 0, 1, 2, 1, 4, 1, 3, 1]</span>
+<span class="go">[1, 0, 1, 2, 1, 4, 1, 3, 1]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">size_bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">[1, 3, 0, 2, 0, 0, 1, 4, 2, 3]</span>
+<span class="go">[0, 0, 0, 0, 0, 0, 0, 0, 0]</span>
+<span class="go">[1, 2, 4, 1, 1, 1, 4, 3, 2]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lists</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">min_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">max_value</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">exclude_max</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="p">),</span>
+<span class="gp">... </span>    <span class="n">min_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">[1.1, 1.0, 1.0, 1.0, 1.0]</span>
+<span class="go">[2.00001, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]</span>
+<span class="go">[1.0, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">

@@ -212,7 +212,7 @@
             <span class="p">),</span>
         <span class="p">}</span>
 
-    <span class="c1"># TODO refactor this so we run the interesection in a chained clean way</span>
+    <span class="c1"># TODO refactor this so we run the intersection in a chained clean way</span>
     <span class="n">backend_dtypes</span> <span class="o">=</span> <span class="n">_get_type_dict</span><span class="p">(</span><span class="n">ivy</span><span class="p">)[</span><span class="n">kind</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span><span class="p">:</span>  <span class="c1"># NOQA</span>
         <span class="n">fw_dtypes</span> <span class="o">=</span> <span class="n">_get_type_dict</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span><span class="p">())[</span><span class="n">kind</span><span class="p">]</span>
@@ -290,9 +290,19 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">num_arrays</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">num_arrays</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">ah</span><span class="o">.</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">),</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">ah</span><span class="o">.</span><span class="n">list_of_size</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">),</span>
+                <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">elif</span> <span class="n">shared_dtype</span><span class="p">:</span>
-        <span class="n">dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">ah</span><span class="o">.</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">),</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">ah</span><span class="o">.</span><span class="n">list_of_size</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">),</span>
+                <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">dtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">unwanted_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">all_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">))</span>
