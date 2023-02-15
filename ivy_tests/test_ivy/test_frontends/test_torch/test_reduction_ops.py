@@ -666,3 +666,37 @@ def test_torch_aminmax(
         dim=axis,
         keepdim=keepdims,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.logsumexp",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        min_axis=-1,
+        max_axis=0,
+        min_value=-10,
+        max_value=10,
+    ),
+    keepdims=st.booleans(),
+)
+def test_torch_logsumexp(
+    *,
+    dtype_input_axis,
+    keepdims,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dim=axis,
+        keepdim=keepdims,
+    )
