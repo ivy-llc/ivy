@@ -65,8 +65,9 @@ def statistical_dtype_values(draw, *, function):
 
         interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
         interpolation = draw(
-            helpers.lists(
-                arg=st.sampled_from(interpolation_names), min_size=1, max_size=1
+            helpers.list_of_size(
+                x=st.sampled_from(interpolation_names),
+                size=1,
             )
         )
         return dtype, values, axis, interpolation, q

@@ -2074,7 +2074,7 @@ def _fn3(x, y):
         min_dim_size=2,
         max_dim_size=10,
         num=2,
-        returndtype=True,
+        return_dtype=True,
     ),
     in_axes_as_cont=st.booleans(),
 )

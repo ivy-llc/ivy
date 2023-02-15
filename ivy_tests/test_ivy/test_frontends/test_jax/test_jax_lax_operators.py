@@ -107,18 +107,16 @@ def _arrays_idx_n_dtypes(draw):
         st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
     )
     common_shape = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=4),
-            min_size=num_dims - 1,
-            max_size=num_dims - 1,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=4),
+            size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_arrays,
-            max_size=num_arrays,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_arrays,
         )
     )
     xs = list()
@@ -1787,12 +1785,8 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
     fc = draw(st.sampled_from(group_list)) if general else 1
-    strides = draw(
-        st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
-    )
-    dilations = draw(
-        st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
-    )
+    strides = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+    dilations = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
     elif dim == 1:
@@ -1841,15 +1835,11 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
         )
     )
     if general and not transpose:
-        x_dilation = draw(
-            st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
-        )
+        x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
         dilations = (dilations, x_dilation)
     if draw(st.booleans()):
         p_dtype, pref = draw(
-            helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("numeric")), dtype[0]
-            )
+            helpers.get_castable_dtype(draw(helpers.get_dtypes("numeric")), dtype[0])
         )
         assume(can_cast(p_dtype, pref))
     else:
