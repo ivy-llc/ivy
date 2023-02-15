@@ -1,9 +1,10 @@
-import hypothesis
+# Global
 import pytest
-import ivy
-from hypothesis import strategies as st, given, settings
 import itertools
+from hypothesis import strategies as st, given, settings, HealthCheck
 
+# Local
+import ivy
 from ivy.utils.backend.handler import _backend_dict
 
 
@@ -18,7 +19,7 @@ def compiled_backends():
 
 @settings(
     # To be able to share compiled_backends between examples
-    suppress_health_check=[hypothesis.HealthCheck(9)]
+    suppress_health_check=[HealthCheck(9)]
 )
 @given(name=st.sampled_from(["add", "Array", "Container", "globals_vars"]))
 def test_memory_id(name, compiled_backends):
