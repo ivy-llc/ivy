@@ -35,6 +35,10 @@ def relu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.maximum(x, 0)
 
 
+def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.relu6(x)
+
+
 def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return 1 / (1 + jnp.exp(-x))
 
