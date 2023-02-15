@@ -49,7 +49,9 @@ def _x_and_filters(
         dilations = draw(
             st.one_of(
                 st.integers(dilation_min, dilation_max),
-                st.lists(st.integers(dilation_min, dilation_max), min_size=dim, max_size=dim),
+                st.lists(
+                    st.integers(dilation_min, dilation_max), min_size=dim, max_size=dim
+                ),
             )
         )
     if atrous:
@@ -58,7 +60,9 @@ def _x_and_filters(
         stride = draw(
             st.one_of(
                 st.integers(stride_min, stride_max),
-                st.lists(st.integers(stride_min, stride_max), min_size=dim, max_size=dim),
+                st.lists(
+                    st.integers(stride_min, stride_max), min_size=dim, max_size=dim
+                ),
             )
         )
     fstride = [stride] * dim if isinstance(stride, int) else stride
@@ -104,7 +108,9 @@ def _x_and_filters(
         if transpose:
             output_shape = [
                 x_shape[0],
-                _deconv_length(x_w, fstride[0], filter_shape[0], padding, fdilations[0]),
+                _deconv_length(
+                    x_w, fstride[0], filter_shape[0], padding, fdilations[0]
+                ),
                 d_in,
             ]
     elif dim == 2:
@@ -1061,6 +1067,36 @@ def test_tensorflow_convolution(
     test_with_out=st.just(False),
 )
 def test_tensorflow_relu(
+    *,
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+    )
+
+
+# relu6
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.relu6",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_value=-20,
+        max_value=20,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_relu6(
     *,
     dtype_and_x,
     test_flags,
