@@ -597,9 +597,9 @@ def Conv2D(
     # [[0, 0], [pad_top, pad_bottom], [pad_left, pad_right], [0, 0]]
     # when the data_format is "NHWC"
     # for Conv2D, the explicit_paddings is defined as
-    #[[0, 0], [0, 0], [pad_top, pad_bottom], [pad_left, pad_right],
+    # [[0, 0], [0, 0], [pad_top, pad_bottom], [pad_left, pad_right],
     # when the data_format is "NCHW"
-    if padding[0] == "EXPLICIT" and len(padding) == 4 and data_format=="NHWC" :
+    if padding[0] == "EXPLICIT" and len(padding) == 4 and data_format == "NHWC" :
         padding = padding[1:2]
         return ivy.conv2d(
             input,
@@ -611,7 +611,7 @@ def Conv2D(
             name=name
         )
 
-    elif padding[0] == "EXPLICIT" and len(padding) == 4  and data_format == "NCHW":
+    elif padding[0] == "EXPLICIT" and len(padding) == 4 and data_format == "NCHW":
         padding = padding[2:3]
         return ivy.conv2d(
             input,
