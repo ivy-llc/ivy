@@ -8,11 +8,9 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
-    x_and_filters,
     _assume_tf_dilation_gt_1,
 )
 from ivy.functional.frontends.jax.numpy import can_cast
-from ivy.functional.ivy.layers import _get_x_data_format
 
 
 # add
@@ -109,18 +107,16 @@ def _arrays_idx_n_dtypes(draw):
         st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
     )
     common_shape = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=4),
-            min_size=num_dims - 1,
-            max_size=num_dims - 1,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=4),
+            size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_arrays,
-            max_size=num_arrays,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_arrays,
         )
     )
     xs = list()
@@ -1758,53 +1754,112 @@ def test_jax_lax_dot_general(
 
 
 @st.composite
-def _conv_helper(draw, general=False, transpose=False):
-    dims = draw(st.sampled_from([1, 2, 3]))
-    x_f_d_df = draw(x_and_filters(dim=dims, general=general, transpose=transpose))
-    if dims == 1:
+def x_and_filters(draw, dim=2, transpose=False, general=False):
+    if not isinstance(dim, int):
+        dim = draw(dim)
+    batch_size = draw(st.integers(1, 5))
+    filter_shape = draw(
+        helpers.get_shape(
+            min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
+        )
+    )
+    dtype = draw(helpers.get_dtypes("float", full=False))
+    padding = draw(
+        st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=dim,
+                max_size=dim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
+        )
+    )
+    input_channels = draw(st.integers(1, 3))
+    output_channels = draw(st.integers(1, 3))
+    group_list = [i for i in range(1, 6)]
+    if not transpose:
+        group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
+    else:
+        group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
+    fc = draw(st.sampled_from(group_list)) if general else 1
+    strides = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+    dilations = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+    if dim == 2:
+        data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
+    elif dim == 1:
+        data_format = draw(st.sampled_from(["NWC", "NCW"]))
+    else:
+        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
+    x_dim = []
+    for i in range(dim):
+        min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
+        x_dim.append(draw(st.integers(min_x, min_x + 1)))
+    x_dim = tuple(x_dim)
+    if dim == 1:
         filter_df = draw(st.sampled_from(["OIW", "WIO"]))
-    elif dims == 2:
+    elif dim == 2:
         filter_df = draw(st.sampled_from(["OIHW", "HWIO"]))
     else:
         filter_df = draw(st.sampled_from(["OIDHW", "DHWIO"]))
-    df = _get_x_data_format(dims, x_f_d_df[4]) if general else x_f_d_df[4]
-    x_f_d_df = x_f_d_df[:4] + ((df, filter_df, df),) + x_f_d_df[5:]
+    if not transpose:
+        output_channels = output_channels * fc
+        channel_shape = (output_channels, input_channels // fc)
+    else:
+        input_channels = input_channels * fc
+        channel_shape = (output_channels // fc, input_channels)
     if filter_df[0] == "O":
-        x_f_d_df = (
-            x_f_d_df[:2]
-            + (ivy.permute_dims(x_f_d_df[2], axes=(dims + 1, dims, *range(0, dims))),)
-            + x_f_d_df[3:]
+        filter_shape = channel_shape + filter_shape
+    else:
+        filter_shape = filter_shape + channel_shape[::-1]
+    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+        x_shape = (batch_size,) + x_dim + (input_channels,)
+    else:
+        x_shape = (batch_size, input_channels) + x_dim
+    vals = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=x_shape,
+            min_value=0.0,
+            max_value=1.0,
         )
-    strides = x_f_d_df[5]
-    strides = [strides] * dims if isinstance(strides, int) else strides
-    x_f_d_df = x_f_d_df[:5] + (strides,) + x_f_d_df[6:]
+    )
+    filters = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=filter_shape,
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
     if general and not transpose:
-        dilations = x_f_d_df[3][0]
-        x_dilations = x_f_d_df[3][1]
-        dilations = [dilations] * dims if isinstance(dilations, int) else dilations
-        x_dilations = (
-            [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
-        )
-        x_f_d_df = x_f_d_df[:3] + ((dilations, x_dilations),) + x_f_d_df[4:]
-    else:
-        dilations = x_f_d_df[3]
-        dilations = [dilations] * dims if isinstance(dilations, int) else dilations
-        x_f_d_df = x_f_d_df[:3] + (dilations,) + x_f_d_df[4:]
+        x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+        dilations = (dilations, x_dilation)
     if draw(st.booleans()):
-        dtype, pref = draw(
-            helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("numeric")), x_f_d_df[0][0]
-            )
+        p_dtype, pref = draw(
+            helpers.get_castable_dtype(draw(helpers.get_dtypes("numeric")), dtype[0])
         )
-        assume(can_cast(dtype, pref))
-        return x_f_d_df + (pref,)
+        assume(can_cast(p_dtype, pref))
     else:
-        return x_f_d_df + (None,)
+        pref = None
+    return (
+        dtype,
+        vals,
+        filters,
+        dilations,
+        (data_format, filter_df, data_format),
+        strides,
+        padding,
+        fc,
+        pref,
+    )
 
 
 @handle_frontend_test(
     fn_tree="jax.lax.conv",
-    x_f_d_other=_conv_helper(),
+    x_f_d_other=x_and_filters(),
     test_with_out=st.just(False),
 )
 def test_jax_lax_conv(
@@ -1835,25 +1890,19 @@ def test_jax_lax_conv(
 
 @handle_frontend_test(
     fn_tree="jax.lax.conv_transpose",
-    x_f_d_other=_conv_helper(general=True, transpose=True),
-    transpose_kernel=st.booleans(),
+    x_f_d_other=x_and_filters(general=True, transpose=True),
     test_with_out=st.just(False),
 )
 def test_jax_lax_conv_transpose(
     *,
     x_f_d_other,
-    transpose_kernel,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    dtype, x, filters, dilation, dim_num, stride, pad, out_shape, fc, pref = x_f_d_other
+    dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
     _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
-    if dim_num[1][-1] == "O":
-        filters = ivy.swapaxes(filters, -1, -2)
-    else:
-        filters = ivy.swapaxes(filters, 0, 1)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -1866,7 +1915,6 @@ def test_jax_lax_conv_transpose(
         padding=pad,
         rhs_dilation=dilation,
         dimension_numbers=dim_num,
-        # transpose_kernel=transpose_kernel,
         transpose_kernel=False,
         precision=None,
         preferred_element_type=pref,
@@ -1875,7 +1923,7 @@ def test_jax_lax_conv_transpose(
 
 @handle_frontend_test(
     fn_tree="jax.lax.conv_general_dilated",
-    x_f_d_other=_conv_helper(general=True),
+    x_f_d_other=x_and_filters(general=True),
     test_with_out=st.just(False),
 )
 def test_jax_lax_conv_general_dilated(

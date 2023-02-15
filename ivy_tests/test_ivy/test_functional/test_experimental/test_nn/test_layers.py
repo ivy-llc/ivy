@@ -265,23 +265,26 @@ def _interp_args(draw):
         num_dims = 3
     elif mode == "bilinear":
         size = draw(
-            helpers.lists(
-                arg=helpers.ints(min_value=1, max_value=5), min_size=2, max_size=2
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=2,
             )
         )
         num_dims = 4
     elif mode == "trilinear":
         size = draw(
-            helpers.lists(
-                arg=helpers.ints(min_value=1, max_value=5), min_size=3, max_size=3
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=3,
             )
         )
         num_dims = 5
     elif mode == "nearest" or mode == "area":
         dim = draw(helpers.ints(min_value=1, max_value=3))
         size = draw(
-            helpers.lists(
-                arg=helpers.ints(min_value=1, max_value=5), min_size=dim, max_size=dim
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=dim,
             )
         )
         size = size[0] if dim == 1 else size

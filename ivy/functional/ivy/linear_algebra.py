@@ -1370,7 +1370,7 @@ def matrix_transpose(
     /,
     *,
     conjugate: bool = False,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Transposes a matrix (or a stack of matrices) ``x``.

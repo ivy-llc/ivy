@@ -286,11 +286,7 @@ def matrix_rank(
     backend_version,
 )
 def matrix_transpose(
-    x: JaxArray,
-    /,
-    *,
-    conjugate: bool = False,
-    out: Optional[JaxArray] = None
+    x: JaxArray, /, *, conjugate: bool = False, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if conjugate:
         jnp.conj(x)

@@ -259,7 +259,7 @@ def _axis(draw):
 @handle_test(
     fn_tree="functional.ivy.split_func_call",
     array_shape=helpers.lists(
-        arg=helpers.ints(min_value=1, max_value=3),
+        x=helpers.ints(min_value=1, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
@@ -307,7 +307,7 @@ def test_split_func_call(
 @handle_test(
     fn_tree="functional.ivy.split_func_call",
     array_shape=helpers.lists(
-        arg=helpers.ints(min_value=2, max_value=3),
+        x=helpers.ints(min_value=2, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[2, 3],

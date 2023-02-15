@@ -1142,7 +1142,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         return ivy.real(self._data, out=out)
 
     def binarizer(
-            self: ivy.Array, /, *, threshold: float = 0, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, threshold: float = 0, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         Maps the values of the input tensor to either 0 or 1,
