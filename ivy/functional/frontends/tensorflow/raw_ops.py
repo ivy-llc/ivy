@@ -364,8 +364,8 @@ def RightShift(*, x, y, name="RightShift"):
 
 
 @to_ivy_arrays_and_back
-def Rint(*, x, y, name="Rint"):
-    return ivy.round(x, y)
+def Rint(*, x, name="Rint"):
+    return ivy.round(x)
 
 
 @to_ivy_arrays_and_back
