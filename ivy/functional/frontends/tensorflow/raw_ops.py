@@ -594,18 +594,34 @@ def Conv2D(
         dilations = dilations[2:]
 
     # for Conv2D, the explicit_padding is defined as
-    # [[0, 0], [pad_top, pad_bottom], [pad_left, pad_right], [0, 0]] when the data_format is "NHWC"
-
+    # [[0, 0], [pad_top, pad_bottom], [pad_left, pad_right], [0, 0]]
+    # when the data_format is "NHWC"
     # for Conv2D, the explicit_paddings is defined as
-    #[[0, 0], [0, 0], [pad_top, pad_bottom], [pad_left, pad_right], when the data_format is "NCHW"
-
+    #[[0, 0], [0, 0], [pad_top, pad_bottom], [pad_left, pad_right],
+    # when the data_format is "NCHW"
     if padding[0] == "EXPLICIT" and len(padding) == 4 and data_format=="NHWC" :
         padding = padding[1:2]
-        return ivy.conv2d(input, filter, strides, padding, data_format=data_format, dilations=dilations, name=name)
+        return ivy.conv2d(
+            input,
+            filter,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            name=name
+        )
 
     elif padding[0] == "EXPLICIT" and len(padding) == 4  and data_format == "NCHW":
         padding = padding[2:3]
-        return ivy.conv2d(input, filter, strides, padding, data_format=data_format, dilations=dilations, name=name)
+        return ivy.conv2d(
+            input,
+            filter,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            name=name
+        )
 
 
 @to_ivy_arrays_and_back
