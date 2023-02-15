@@ -7,7 +7,6 @@ import ivy.functional.frontends.mxnet as mxnet_frontend
 
 
 def _ivy_array_to_mxnet(x):
-
     # TODO: replace isinstance with ivy.is_native_array once
     # it's implemented in the mxnet backend
     if isinstance(x, ivy.Array) or isinstance(x, mxnet.ndarray.NDArray):
@@ -23,8 +22,11 @@ def _mxnet_frontend_array_to_ivy(x):
 
 
 def _native_to_ivy_array(x):
-    if isinstance(x, ivy.NativeArray):
-        return ivy.array(x)
+    # TODO: replace `ndarray.NDArray` with `ivy.NativeArray``
+    # and `x.asnumpy()` with `x` once the mxnet tensor class 
+    # is implemented
+    if isinstance(x, mxnet.ndarray.NDArray):
+        return ivy.array(x.asnumpy())
     return x
 
 
