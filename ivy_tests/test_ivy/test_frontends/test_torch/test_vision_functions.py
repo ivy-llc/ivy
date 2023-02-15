@@ -275,3 +275,53 @@ def test_torch_interpolate(
         align_corners=align_corners,
         antialias=antialias,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.upsample",
+    dtype_and_input_and_other=_interpolate_helper(),
+)
+def test_torch_upsample(
+    *,
+    dtype_and_input_and_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, input, size, mode, align_corners, _ = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.upsample_nearest",
+    dtype_and_input_and_other=_interpolate_helper(),
+)
+def test_torch_upsample_nearest(
+    *,
+    dtype_and_input_and_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, input, size, _, _, _ = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        size=size,
+    )
