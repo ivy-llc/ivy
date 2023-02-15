@@ -792,12 +792,12 @@ def array_values(
 
            # new code to generate random float array or complex array with subnormal values
 
-           if allow_subnormal:
+            if allow_subnormal:
               arr = np.random.randn(*shape, dtype=dtype)
-           else:
+            else:
              mask = np.isneginf(arr) | np.isposinf(arr) | np.isfinite(arr)
              arr = arr[mask]
-          return arr
+            return arr
 
 
     
