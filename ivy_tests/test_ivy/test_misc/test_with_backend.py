@@ -4,14 +4,13 @@ import ivy
 from hypothesis import strategies as st, given, settings
 import itertools
 
-backends = ["numpy", "jax", "tensorflow", "torch"]
+from ivy.utils.backend.handler import _backend_dict
 
 
 @pytest.fixture
 def compiled_backends():
     compiled_backends = []
-    print(ivy.backend, id(ivy))
-    for b in backends:
+    for b in _backend_dict:
         _b = ivy.with_backend(b)
         compiled_backends.append(_b)
     return compiled_backends

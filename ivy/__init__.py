@@ -707,6 +707,7 @@ from .container import (
 from .nested_array import NestedArray
 from ivy.utils.backend import (
     current_backend,
+    compiled_backends,
     with_backend,
     get_backend,
     set_backend,
