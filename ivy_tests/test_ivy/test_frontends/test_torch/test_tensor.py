@@ -3694,7 +3694,6 @@ def test_torch_instance_cumsum(
 def test_torch_instance_cumsum_(
     dtype_value,
     dim,
-    dtypes,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -3706,7 +3705,7 @@ def test_torch_instance_cumsum_(
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=dtypes,
+        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "dim": dim,
             "dtype": input_dtype[0],
