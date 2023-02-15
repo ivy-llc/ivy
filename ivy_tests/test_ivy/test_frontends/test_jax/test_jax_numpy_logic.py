@@ -746,8 +746,8 @@ def test_jax_numpy_isscalar(
 @handle_frontend_test(
     fn_tree="jax.numpy.left_shift",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")),
-    test_with_out=st.just(False),
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_jax_lax_tan(
     *,
