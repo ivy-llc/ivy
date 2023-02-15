@@ -1,5 +1,6 @@
 # global
 import ivy
+import numpy as np
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     from_zero_dim_arrays_to_scalar,
@@ -11,12 +12,12 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def all(
-    a,
-    axis=None,
-    out=None,
-    keepdims=False,
-    *,
-    where=None,
+        a,
+        axis=None,
+        out=None,
+        keepdims=False,
+        *,
+        where=None,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
     ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
@@ -29,12 +30,12 @@ def all(
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def any(
-    a,
-    axis=None,
-    out=None,
-    keepdims=False,
-    *,
-    where=None,
+        a,
+        axis=None,
+        out=None,
+        keepdims=False,
+        *,
+        where=None,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
     ret = ivy.any(a, axis=axis, keepdims=keepdims, out=out)
@@ -46,7 +47,14 @@ def any(
 @to_ivy_arrays_and_back
 def isscalar(element):
     return (
-        isinstance(element, int)
-        or isinstance(element, bool)
-        or isinstance(element, float)
+            isinstance(element, int)
+            or isinstance(element, bool)
+            or isinstance(element, float)
     )
+
+
+@to_ivy_arrays_and_back
+def isfortran(
+        a: np.ndarray
+):
+    return a.flags.fnc
