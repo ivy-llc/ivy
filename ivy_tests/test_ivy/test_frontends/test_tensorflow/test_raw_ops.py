@@ -3095,7 +3095,7 @@ def test_tensorflow_Conv2D(
         explicit_paddings = [(0, 0), (1, 1), (1, 1), (0, 0)]
         padding = explicit_paddings
     elif padding == "EXPLICIT" and data_format == "NCHW":
-        explicit_paddings = [(0,0),(0,0),(1,1),(1,1)]
+        explicit_paddings = [(0, 0), (0, 0), (1, 1), (1, 1)]
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
