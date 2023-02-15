@@ -5,10 +5,11 @@ from typing import Union, Optional, Tuple, Literal, List, Sequence
 import ivy
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
+    handle_array_function,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -24,7 +25,8 @@ inf = float("inf")
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -161,7 +163,7 @@ def cholesky(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_function
 def cross(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -252,7 +254,8 @@ def cross(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def det(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -321,7 +324,8 @@ def det(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def diagonal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -497,7 +501,8 @@ def diagonal(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -557,7 +562,8 @@ def eig(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -617,14 +623,12 @@ def eigh(
     return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
 
-eigh.out_index = 1
-
-
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def eigvalsh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -726,7 +730,7 @@ def eigvalsh(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_function
 def inner(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -764,7 +768,8 @@ def inner(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def inv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -854,7 +859,7 @@ def inv(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_function
 def matmul(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -862,6 +867,8 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the matrix product.
@@ -878,6 +885,12 @@ def matmul(
         if True, ``x1`` is transposed before multiplication.
     transpose_b
         if True, ``x2`` is transposed before multiplication.
+    adjoint_a
+        If True, takes the conjugate of the matrix then the transpose of the matrix.
+        adjoint_a and transpose_a can not be true at the same time.
+    adjoint_b
+        If True, takes the conjugate of the matrix then the transpose of the matrix.
+        adjoint_b and transpose_b can not be true at the same time.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -991,7 +1004,13 @@ def matmul(
 
     """
     return current_backend(x1).matmul(
-        x1, x2, transpose_a=transpose_a, transpose_b=transpose_b, out=out
+        x1,
+        x2,
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
+        adjoint_a=adjoint_a,
+        adjoint_b=adjoint_b,
+        out=out,
     )
 
 
@@ -999,7 +1018,8 @@ def matmul(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1146,7 +1166,8 @@ def matrix_norm(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def matrix_power(
     x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1238,7 +1259,8 @@ def matrix_power(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1341,9 +1363,14 @@ def matrix_rank(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def matrix_transpose(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    conjugate: bool = False,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Transposes a matrix (or a stack of matrices) ``x``.
@@ -1353,6 +1380,8 @@ def matrix_transpose(
     x
         input array having shape ``(..., M, N)`` and whose innermost two
         dimensions form ``MxN`` matrices.
+    conjugate
+        If True, takes the conjugate of the matrix.
     out
         optional output array, for writing the result to. It must have a
         shape that the inputs broadcast to.
@@ -1415,14 +1444,14 @@ def matrix_transpose(
                       [4., 5.]])
     }
     """
-    return current_backend(x).matrix_transpose(x, out=out)
+    return current_backend(x).matrix_transpose(x, conjugate=conjugate, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_function
 def outer(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1509,7 +1538,8 @@ def outer(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def pinv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1576,15 +1606,18 @@ def pinv(
 
 
 @to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def qr(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     mode: str = "reduced",
-) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+    out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
     matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
@@ -1602,6 +1635,9 @@ def qr(
         - 'complete': compute q and r with dimensions (..., M, M) and (..., M, N),
           respectively.
         Default: 'reduced'.
+    out
+        optional output tuple of arrays, for writing the result to. The arrays must have
+        shapes that the inputs broadcast to.
 
     Returns
     -------
@@ -1630,13 +1666,14 @@ def qr(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).qr(x, mode=mode)
+    return current_backend(x).qr(x, mode=mode, out=out)
 
 
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1717,7 +1754,7 @@ def slogdet(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_function
 def solve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1770,7 +1807,8 @@ def solve(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1893,7 +1931,8 @@ def svd(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def svdvals(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -2016,7 +2055,7 @@ def svdvals(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_function
 def tensordot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2098,7 +2137,7 @@ def tensordot(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_function
 def tensorsolve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2143,7 +2182,8 @@ def tensorsolve(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def trace(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2257,7 +2297,7 @@ def trace(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_function
 def vecdot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2323,7 +2363,8 @@ def vecdot(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2421,7 +2462,8 @@ def vector_norm(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def diag(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2501,7 +2543,8 @@ def diag(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def vander(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2573,7 +2616,8 @@ def vander(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:

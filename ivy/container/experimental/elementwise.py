@@ -1407,184 +1407,6 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_isposinf(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.isposinf. This method simply wraps
-        the function, and so the docstring for ivy.isposinf also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            container with the base input arrays.
-        out
-            optional output container, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Container including a boolean array with values
-            True where the corresponding element of the input
-            is positive infinity and values False where the
-            element of the input is not positive infinity.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                                b=ivy.array([5, ivy.inf, ivy.inf]))
-        >>> ivy.Container.static_isposinf(x)
-        {
-            a: ivy.array([False, True, False]),
-            b: ivy.array([False, True, True])
-        }
-        """
-        return ContainerBase.cont_multi_map_in_function(
-            "isposinf",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def isposinf(
-        self: ivy.Container,
-        /,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.isposinf. This method simply
-        wraps the function, and so the docstring for ivy.isposinf also applies to
-        this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            container with the base input arrays.
-        out
-            optional output container, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Returns container including a boolean array with values
-            True where the corresponding element of the input
-            is positive infinity and values False where the
-            element of the input is not positive infinity.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                               b=ivy.array([5, ivy.inf, ivy.inf]))
-        >>> x.isposinf()
-        {
-            a: ivy.array([False, True, False]),
-            b: ivy.array([False, True, True])
-        }
-        """
-        return self.static_isposinf(self, out=out)
-
-    @staticmethod
-    def static_isneginf(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.isneginf. This method simply wraps
-        the function, and so the docstring for ivy.isneginf also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            container with the base input arrays.
-        out
-            optional output container, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Container including a boolean array with values
-            True where the corresponding element of the input
-            is negative infinity and values False where the
-            element of the input is not negative infinity.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                                b=ivy.array([5, -ivy.inf, -ivy.inf]))
-        >>> ivy.Container.static_isneginf(x)
-        {
-            a: ivy.array([False, False, True]),
-            b: ivy.array([False, True, True])
-        }
-        """
-        return ContainerBase.cont_multi_map_in_function(
-            "isneginf",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def isneginf(
-        self: ivy.Container,
-        /,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.isneginf. This method simply
-        wraps the function, and so the docstring for ivy.isneginf also applies to
-        this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            container with the base input arrays.
-        out
-            optional output container, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Returns container including a boolean array with values
-            True where the corresponding element of the input
-            is negative infinity and values False where the
-            element of the input is not negative infinity.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
-                               b=ivy.array([5, -ivy.inf, -ivy.inf]))
-        >>> x.isneginf()
-        {
-            a: ivy.array([False, False, True]),
-            b: ivy.array([False, True, True])
-        }
-        """
-        return self.static_isneginf(self, out=out)
-
-    @staticmethod
     def static_angle(
         z: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1728,7 +1550,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            Returns an Container including arrays with the imaginary part of complex numbers.
+            Returns an Container including arrays with the imaginary part
+            of complex numbers.
 
         Examples
         --------
@@ -1776,7 +1599,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            Returns an Container including arrays with the imaginary part of complex numbers.
+            Returns an Container including arrays with the imaginary part
+            of complex numbers.
 
         Examples
         --------
@@ -2097,6 +1921,136 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_signbit(self, out=out)
 
     @staticmethod
+    def static_hypot(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hypot. This method simply wraps
+        the function, and so the docstring for ivy.hypot also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            Input container containing first input array.
+        x2
+            Input container containing second input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the hypot function computed element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.0]),\
+        ...                         b=ivy.array([3.0]))
+        >>> y = ivy.Container(a=ivy.array([3.0]),\
+                                    b=ivy.array([4.0]))
+        >>> ivy.Container.static_hypot(x, y)
+        {
+            a: ivy.array([3.6055]),
+            b: ivy.array([5.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "hypot",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hypot(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.hypot. This method simply
+        wraps the function, and so the docstring for ivy.hypot also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing first input array.
+        x2
+            Input container containing second input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the hypot function computed element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.0]),\
+        ...                         b=ivy.array([3.0]))
+        >>> y = ivy.Container(a=ivy.array([3.0]),\
+                                    b=ivy.array([4.0]))
+        >>> x.hypot(y)
+        {
+            a: ivy.array([3.6055]),
+            b: ivy.array([5.])
+        }
+        """
+        return self.static_hypot(
+            self,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_allclose(
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -2278,9 +2232,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
     @staticmethod
     def static_diff(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        n: int = 1,
+        axis: int = -1,
+        prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+        append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2296,6 +2254,27 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ----------
         x
             input container with array-like items.
+        n
+            The number of times values are differenced. If zero, the input is returned
+            as-is.
+        axis
+            The axis along which the difference is taken, default is the last axis.
+        prepend,append
+            Values to prepend/append to x along given axis prior to performing the
+            difference. Scalar values are expanded to arrays with length 1 in the
+            direction of axis and the shape of the input array in along all other
+            axes. Otherwise the dimension and shape must match x except along axis.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to.
 
@@ -2307,17 +2286,21 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
-                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),
+                              b=ivy.array([1, 2, 4, 7, 0]))
         >>> ivy.Container.static_diff(x)
         {
-            a: ivy.array([ 1,  2,  3, -7])
+            a: ivy.array([ 1,  2,  3, -7]),
             b: ivy.array([ 1,  2,  3, -7])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
             "diff",
             x,
+            n=n,
+            axis=axis,
+            prepend=prepend,
+            append=append,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2329,6 +2312,10 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        n: int = 1,
+        axis: int = -1,
+        prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+        append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.diff. This method simply
@@ -2339,6 +2326,16 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ----------
         self
             input container with array-like items.
+        n
+            The number of times values are differenced. If zero, the input is returned
+            as-is.
+        axis
+            The axis along which the difference is taken, default is the last axis.
+        prepend,append
+            Values to prepend/append to x along given axis prior to performing the
+            difference. Scalar values are expanded to arrays with length 1 in the
+            direction of axis and the shape of the input array in along all other
+            axes. Otherwise the dimension and shape must match x except along axis.
         out
             optional output container, for writing the result to.
 
@@ -2350,15 +2347,17 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
-                               b=ivy.array([1, 2, 4, 7, 0]))
-        >>> ivy.Container.static_diff(x)
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),
+                              b=ivy.array([1, 2, 4, 7, 0]))
+        >>> x.diff()
         {
-            a: ivy.array([ 1,  2,  3, -7])
-            b: ivy.array([ 1,  2,  3, -7])
+            a: ivy.array([1, 2, 3, -7]),
+            b: ivy.array([1, 2, 3, -7])
         }
         """
-        return self.static_diff(self, out=out)
+        return self.static_diff(
+            self, n=n, axis=axis, prepend=prepend, append=append, out=out
+        )
 
     @staticmethod
     def static_fix(
@@ -2992,6 +2991,234 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_xlogy(
             self,
             y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_real(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.real.
+        This method simply wraps the function, and so the docstring for
+        ivy.real also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container. Should have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the test result. An element ``out_i`` is ``out_i``
+            if ``x_i`` is real number part only else ``real number part``,
+            if it contains real and complex part both.
+            The returned array should have a data type of ``float``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1+5j, 0-0j, 1.23j]),
+        ...                   b=ivy.array([7.9, 0.31+3.3j, -4.2-5.9j]))
+        >>> z = ivy.Container.static_real(x)
+        >>> print(z)
+        {
+            a: ivy.array([-1., 0., 0.]),
+            b: ivy.array([7.9, 0.31, -4.2])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "real",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def real(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.real.
+        This method simply wraps the function, and so the docstring
+        for ivy.real also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container. Should have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the test result. 
+            An element ``out_i`` is ``self_i`` if ``self_i`` is real number
+            else ``took real number part only`` if ``self_i``
+            contains real number and complex number both.
+            The returned array should have a data type of ``float``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1j, 0.335+2.345j, 1.23+7j]),\
+                          b=ivy.array([0.0, 1.2+3.3j, 1+0j]))
+        >>> x.real()
+        {
+            a: ivy.array([0., 0.335, 1.23]),
+            b: ivy.array([0.0, 1.2, 1.])
+        }
+        """
+        return self.static_real(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_binarizer(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        threshold: float = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        Maps the values of the input tensor to either 0 or 1,
+        element-wise, based on the outcome of a comparison
+        against a threshold value.
+
+        Parameters
+        ----------
+        self
+            input container. Should have a real-valued floating-point data type.
+        threshold
+            Values greater than this are
+            mapped to 1, others to 0.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            Binarized output data
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "binarizer",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def binarizer(
+        self: [ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
+        threshold: float = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        Maps the values of the input tensor to either 0 or 1,
+        element-wise, based on the outcome of a comparison
+        against a threshold value.
+
+        Parameters
+        ----------
+        threshold
+            Values greater than this are
+            mapped to 1, others to 0.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Binarized output data
+        """
+        return self.static_binarizer(
+            self,
+            threshold=threshold,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

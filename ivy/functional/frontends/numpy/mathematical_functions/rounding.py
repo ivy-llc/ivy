@@ -16,7 +16,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def ceil(
+def _ceil(
     x,
     /,
     out=None,
@@ -49,7 +49,7 @@ def fix(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def trunc(
+def _trunc(
     x,
     /,
     out=None,
@@ -63,4 +63,26 @@ def trunc(
     ret = ivy.trunc(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def rint(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    ret = ivy.round(x, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, x), out=out)
     return ret

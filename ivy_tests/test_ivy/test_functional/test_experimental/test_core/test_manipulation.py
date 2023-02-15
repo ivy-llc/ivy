@@ -195,14 +195,12 @@ def test_flipud(
 @handle_test(
     fn_tree="functional.ivy.experimental.vstack",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
-        shared_dtype=True,
-        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=helpers.get_shape(
-            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+            min_num_dims=1,
         ),
+        shared_dtype=True,
+        num_arrays=helpers.ints(min_value=2, max_value=10),
     ),
     test_gradients=st.just(False),
 )
@@ -231,13 +229,11 @@ def test_vstack(
 @handle_test(
     fn_tree="functional.ivy.experimental.hstack",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
+        available_dtypes=helpers.get_dtypes("valid"),
         shared_dtype=True,
-        num_arrays=2,
+        num_arrays=helpers.ints(min_value=2, max_value=10),
         shape=helpers.get_shape(
-            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+            min_num_dims=1,
         ),
     ),
     test_gradients=st.just(False),
@@ -606,13 +602,49 @@ def test_pad(
     )
 
 
+@st.composite
+def _get_split_locations(draw, min_num_dims, axis):
+    """
+    Generate valid splits, either by generating an integer that evenly divides the axis
+    or a list of split locations.
+    """
+    shape = draw(
+        st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
+    )
+    if len(shape) == 1:
+        axis = draw(st.just(0))
+    else:
+        axis = draw(st.just(axis))
+
+    @st.composite
+    def get_int_split(draw):
+        if shape[axis] == 0:
+            return 0
+        factors = []
+        for i in range(1, shape[axis] + 1):
+            if shape[axis] % i == 0:
+                factors.append(i)
+        return draw(st.sampled_from(factors))
+
+    @st.composite
+    def get_list_split(draw):
+        return draw(
+            st.lists(
+                st.integers(min_value=0, max_value=shape[axis]),
+                min_size=0,
+                max_size=shape[axis],
+                unique=True,
+            ).map(sorted)
+        )
+
+    return draw(get_list_split() | get_int_split())
+
+
 # vsplit
 @handle_test(
     fn_tree="functional.ivy.experimental.vsplit",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=2,
@@ -622,6 +654,7 @@ def test_pad(
         min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_vsplit(
     dtype_and_x,
@@ -649,18 +682,12 @@ def test_vsplit(
 @handle_test(
     fn_tree="functional.ivy.experimental.dsplit",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
-        min_num_dims=3,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=5,
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=helpers.get_shape(
-        min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
-    ),
+    indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_dsplit(
     dtype_and_x,
@@ -672,7 +699,6 @@ def test_dsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -723,13 +749,11 @@ def test_atleast_1d(
 @handle_test(
     fn_tree="functional.ivy.experimental.dstack",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-10,
-        max_value=10,
+        available_dtypes=helpers.get_dtypes("valid"),
         shared_dtype=True,
-        num_arrays=2,
+        num_arrays=helpers.ints(min_value=1, max_value=10),
         shape=helpers.get_shape(
-            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+            min_num_dims=1,
         ),
     ),
     test_gradients=st.just(False),
@@ -876,6 +900,7 @@ def test_take_along_axis(
         min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_hsplit(
     dtype_and_x,
@@ -927,4 +952,57 @@ def test_broadcast_shapes(
         fn_name=fn_name,
         on_device=on_device,
         shapes=shapes,
+    )
+
+
+@handle_test(
+    fn_tree="expand",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=False),
+        shape=st.shared(
+            helpers.get_shape(
+                allow_none=False,
+                min_num_dims=1,
+                max_num_dims=5,
+                min_dim_size=1,
+                max_dim_size=5,
+            ),
+            key="value_shape",
+        ),
+    ),
+    shape=st.shared(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=5,
+        ),
+        key="value_shape",
+    ),
+    container_flags=st.just([False]),
+    test_instance_method=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_expand(
+    *,
+    dtype_and_x,
+    shape,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x,
+        shape=shape,
+        device=on_device,
     )

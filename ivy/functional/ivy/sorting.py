@@ -4,10 +4,11 @@ from typing import Union, Optional
 # local
 import ivy
 from ivy.func_wrapper import (
+    handle_array_function,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -20,7 +21,8 @@ from ivy.exceptions import handle_exceptions
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -135,7 +137,8 @@ def argsort(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -242,7 +245,8 @@ def sort(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_like
+@handle_array_like_without_promotion
+@handle_array_function
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],

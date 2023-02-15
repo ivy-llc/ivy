@@ -6,6 +6,7 @@ import math
 import ivy
 import numpy as np
 from . import array_helpers, number_helpers, dtype_helpers
+from ivy.functional.ivy.layers import _deconv_length
 
 
 def matrix_is_stable(x, cond_limit=30):
@@ -143,10 +144,6 @@ def reshape_shapes(draw, *, shape):
             lambda s: math.prod(s) == size
         )
     )
-    # assume(all(side <= MAX_SIDE for side in rshape))
-    if len(rshape) != 0 and size > 0 and draw(st.booleans()):
-        index = draw(number_helpers.ints(min_value=0, max_value=len(rshape) - 1))
-        rshape[index] = 1
     return tuple(rshape)
 
 
@@ -244,7 +241,7 @@ def get_mean_std(draw, *, dtype):
     A strategy that can be used in the @given hypothesis decorator.
     """
     none_or_float = none_or_float = number_helpers.floats(dtype=dtype) | st.none()
-    values = draw(array_helpers.list_of_length(x=none_or_float, length=2))
+    values = draw(array_helpers.list_of_size(x=none_or_float, size=2))
     values[1] = abs(values[1]) if values[1] else None
     return values[0], values[1]
 
@@ -273,7 +270,7 @@ def get_bounds(draw, *, dtype):
             return draw(get_bounds(dtype=dtype))
     else:
         none_or_float = number_helpers.floats(dtype=dtype) | st.none()
-        values = draw(array_helpers.list_of_length(x=none_or_float, length=2))
+        values = draw(array_helpers.list_of_size(x=none_or_float, size=2))
         if values[0] is not None and values[1] is not None:
             low, high = min(values), max(values)
         else:
@@ -430,9 +427,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         )
         for i in range(dim):
             output_shape.append(
-                ivy.deconv_length(
-                    x_dim[i], strides, filter_shape[i], padding, dilations
-                )
+                _deconv_length(x_dim[i], strides, filter_shape[i], padding, dilations)
             )
     else:
         for i in range(dim):
@@ -477,3 +472,33 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             output_shape,
         )
     return dtype, vals, filters, dilations, data_format, strides, padding
+
+
+@st.composite
+def embedding_helper(draw):
+    dtype_weight, weight = draw(
+        array_helpers.dtype_and_values(
+            available_dtypes=[
+                x
+                for x in draw(dtype_helpers.get_dtypes("numeric"))
+                if "float" in x or "complex" in x
+            ],
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=1,
+            min_value=-1e04,
+            max_value=1e04,
+        )
+    )
+    num_embeddings, embedding_dim = weight[0].shape
+    dtype_indices, indices = draw(
+        array_helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            min_num_dims=2,
+            min_dim_size=1,
+            min_value=0,
+            max_value=num_embeddings - 1,
+        ).filter(lambda x: x[1][0].shape[-1] == embedding_dim)
+    )
+    padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings - 1))
+    return dtype_indices + dtype_weight, indices[0], weight[0], padding_idx

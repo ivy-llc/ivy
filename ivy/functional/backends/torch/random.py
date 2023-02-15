@@ -22,7 +22,7 @@ def random_uniform(
     *,
     low: Union[float, torch.Tensor] = 0.0,
     high: Union[float, torch.Tensor] = 1.0,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    shape: Optional[Union[torch.Tensor, ivy.NativeShape, Sequence[int]]] = None,
     dtype: torch.dtype,
     device: torch.device,
     seed=None,
@@ -32,6 +32,8 @@ def random_uniform(
     rand_range = high - low
     if seed:
         torch.manual_seed(seed)
+    if torch.is_tensor(shape):
+        shape = shape.tolist()
     return torch.rand(shape, device=device, dtype=dtype) * rand_range + low
 
 
@@ -102,13 +104,14 @@ def randint(
 ) -> torch.Tensor:
     if not dtype:
         dtype = ivy.default_int_dtype()
+    if not shape:
+        shape = (1,)
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
-    rand_range = high - low
     if seed:
         torch.manual_seed(seed)
-    return torch.rand(shape, device=device).to(dtype) * rand_range + low
+    return torch.randint(low=low, high=high, size=shape, device=device, dtype=dtype)
 
 
 def seed(*, seed_value: int = 0) -> None:

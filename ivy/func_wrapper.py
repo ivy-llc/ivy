@@ -5,11 +5,10 @@ from types import FunctionType
 from typing import Callable
 import inspect
 
-# import typing
-
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
+    "array_function_wrapper",
     "infer_device",
     "infer_dtype",
     "integer_arrays_to_float",
@@ -22,12 +21,36 @@ FN_DECORATORS = [
     "handle_exceptions",
     "with_unsupported_dtypes",
     "handle_nans",
-    "handle_array_like",
+    "handle_array_like_without_promotion",
 ]
 
 
 # Helpers #
 # --------#
+
+
+def try_array_function_override(func, overloaded_args, types, args, kwargs):
+    if not overloaded_args:
+        return False, None
+
+    for overloaded_arg in overloaded_args:
+        # Note that we're only calling __array_function__ on the *first*
+        # occurence of each argument type. This is necessary for reasonable
+        # performance with a possibly long list of overloaded arguments, for
+        # which each __array_function__ implementation might reasonably need to
+        # check all argument types.
+        try:
+            result = overloaded_arg.__array_function__(func, types, args, kwargs)
+        except Exception:
+            raise ivy.exceptions.IvyNotImplementedException
+
+        if result is not NotImplemented:
+            return True, result
+
+    raise TypeError(
+        "no implementation found for {} on types that implement "
+        "__array_function__: {}".format(func, list(map(type, overloaded_args)))
+    )
 
 
 def _get_first_array(*args, **kwargs):
@@ -52,37 +75,101 @@ def _get_first_array(*args, **kwargs):
 # ---------------#
 
 
-def handle_array_like(fn: Callable) -> Callable:
+def handle_array_function(func):
+    """
+    Wrap a function to extract the relevant argument types to be passed to
+    array_function method.
+    """
+
+    @functools.wraps(func)
+    def new_func(*args, **kwargs):
+        overloaded_types = []
+        overloaded_args = []
+
+        for arg in args + tuple(kwargs.values()):
+            if ivy.exists(arg) and (
+                not isinstance(arg, ivy.Container)
+                and hasattr(arg, "__array_function__")
+            ):
+                if type(arg) not in overloaded_types:
+                    overloaded_types.append(type(arg))
+                    if (
+                        arg.__array_function__ is not ivy.Array.__array_function__
+                        and not isinstance(arg, (ivy.Array, ivy.NativeArray))
+                    ):
+                        index = len(overloaded_args)
+                        for i, old_arg in enumerate(overloaded_args):
+                            if issubclass(type(arg), type(old_arg)):
+                                index = i
+                                break
+                        overloaded_args.insert(index, arg)
+            if ivy.exists(arg) and isinstance(arg, ivy.Container):
+                arg = ivy.Container.cont_flatten_key_chains(arg)
+                indices = ivy.nested_argwhere(
+                    arg, lambda x: hasattr(x, "__array_function__")
+                )
+                for a in indices:
+                    if type(getattr(arg, a[0])) not in overloaded_types:
+                        overloaded_types.append(type(getattr(arg, a[0])))
+                        if getattr(
+                            arg, a[0]
+                        ).__array_function__ is not ivy.Array.__array_function__ and not isinstance(
+                            getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
+                        ):
+                            index = len(overloaded_args)
+                            for i, old_arg in enumerate(overloaded_args):
+                                if issubclass(type(getattr(arg, a[0])), type(old_arg)):
+                                    index = i
+                                    break
+                            overloaded_args.insert(index, arg)
+
+        success, value = try_array_function_override(
+            ivy.__dict__[func.__name__], overloaded_args, overloaded_types, args, kwargs
+        )
+        if success:
+            return value
+        return func(*args, **kwargs)
+
+    new_func.array_function_wrapper = True
+    return new_func
+
+
+def handle_array_like_without_promotion(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         args = list(args)
         num_args = len(args)
         try:
-            type_hints = dict(inspect.signature(fn).parameters)
-        except TypeError:
+            type_hints = inspect.signature(fn).parameters
+        except (TypeError, ValueError):
             return fn(*args, **kwargs)
-        parameters = [param.name for param in type_hints.values()]
+        parameters = list(type_hints.keys())
         annotations = [param.annotation for param in type_hints.values()]
 
         for i, (annotation, parameter, arg) in enumerate(
             zip(annotations, parameters, args)
         ):
             annotation_str = str(annotation)
-            if "Array" in annotation_str and all(
-                sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
+            if (
+                ("rray" in annotation_str or "Tensor" in annotation_str)
+                and parameter != "out"
+                and all(
+                    sq not in annotation_str
+                    for sq in ["Sequence", "List", "Tuple", "float", "int", "bool"]
+                )
             ):
 
                 if i < num_args:
-                    if isinstance(arg, (list, tuple)):
+                    if not ivy.is_array(arg):
                         args[i] = ivy.array(arg)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
-                    if isinstance(kwarg, (list, tuple)):
+                    if not ivy.is_array(arg):
                         kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_array_like = True
+    new_fn.handle_array_like_without_promotion = True
     return new_fn
 
 
@@ -116,9 +203,7 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
             del kwargs["out"]
             has_out = True
         # convert all arrays in the inputs to ivy.NativeArray instances
-        new_args, new_kwargs = ivy.args_to_native(
-            *args, **kwargs, include_derived={tuple: True}
-        )
+        new_args, new_kwargs = ivy.args_to_native(*args, **kwargs)
         # add the original out argument back to the keyword arguments
         if has_out:
             new_kwargs["out"] = out
@@ -396,6 +481,13 @@ def handle_out_argument(fn: Callable) -> Callable:
         # compute return, and then handle the inplace update explicitly
 
         ret = fn(*args, **kwargs)
+        if not ivy.is_array(ret) and not ivy.is_ivy_container(ret):
+            return ivy.nested_multi_map(
+                lambda x, _: ivy.inplace_update(
+                    x[0], ivy.astype(x[1], ivy.dtype(x[0]))
+                ),
+                [out, ret],
+            )
         return ivy.inplace_update(out, ivy.astype(ret, ivy.dtype(out)))
         # return output matches the dtype of the out array to match numpy and torch
 

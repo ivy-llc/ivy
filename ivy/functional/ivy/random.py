@@ -6,6 +6,7 @@ from typing import Optional, Union
 # local
 import ivy
 from ivy.func_wrapper import (
+    handle_array_function,
     infer_dtype,
     infer_device,
     handle_out_argument,
@@ -95,11 +96,12 @@ def _check_shapes_broadcastable(out, inp):
 @infer_dtype
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
     high: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    shape: Optional[Union[ivy.Array, ivy.Shape, ivy.NativeShape]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     seed: Optional[int] = None,
@@ -208,6 +210,7 @@ def random_uniform(
 @infer_dtype
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -317,6 +320,7 @@ def random_normal(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -425,6 +429,7 @@ def multinomial(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
@@ -520,6 +525,7 @@ def seed(*, seed_value: int = 0) -> None:
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

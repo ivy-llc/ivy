@@ -6,18 +6,21 @@ import torch.nn.functional as tnf
 
 import ivy
 
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 # Array API Standard #
 # ------------------ #
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def argmax(
     x: torch.Tensor,
     /,
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     select_last_index: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -32,12 +35,13 @@ def argmax(
             ret = x.shape[axis] - ret - 1
     else:
         ret = torch.argmax(x, dim=axis, keepdim=keepdims)
-    if output_dtype:
-        output_dtype = ivy.as_native_dtype(output_dtype)
-        return ret.to(dtype=output_dtype)
+    if dtype:
+        dtype = ivy.as_native_dtype(dtype)
+        return ret.to(dtype=dtype)
     return ret
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def argmin(
     x: torch.Tensor,
     /,

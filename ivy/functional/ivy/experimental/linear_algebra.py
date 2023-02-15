@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_array_like_without_promotion,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -23,6 +24,7 @@ def _check_valid_dimension_size(std):
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -53,16 +55,6 @@ def diagflat(
     -------
     ret
         The 2-D output array.
-
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     Functional Examples
     ------------------
@@ -97,6 +89,7 @@ def diagflat(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -136,6 +129,7 @@ def kron(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -175,12 +169,13 @@ def matrix_exp(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[ivy.Array]:
     """Computes eigenvalies and eigenvectors of x. Returns a tuple with two elements:
-     first is the set of eigenvalues, second is the set of eigenvectors.
+    first is the set of eigenvalues, second is the set of eigenvectors.
 
     Parameters
     ----------
@@ -235,6 +230,7 @@ def eig(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -276,6 +272,7 @@ def eigvals(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

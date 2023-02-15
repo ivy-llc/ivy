@@ -553,76 +553,6 @@ class ArrayWithElementWiseExperimental(abc.ABC):
             self._data, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
         )
 
-    def isposinf(
-        self: Union[ivy.Array, float, list, tuple],
-        /,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.isposinf. This method simply
-        wraps the function, and so the docstring for ivy.isposinf also applies to
-        this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input array.
-        out
-            Alternate output array in which to place the result.
-            The default is None.
-
-        Returns
-        -------
-        ret
-            Returns a boolean array with values True where
-            the corresponding element of the input is positive
-            infinity and values False where the element of the
-            input is not positive infinity.
-
-        Examples
-        --------
-        >>> a = ivy.array([12.1, -ivy.inf, ivy.inf])
-        >>> ivy.isposinf(a)
-        ivy.array([False, False,  True])
-        """
-        return ivy.isposinf(self._data, out=out)
-
-    def isneginf(
-        self: Union[ivy.Array, float, list, tuple],
-        /,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.isneginf. This method simply
-        wraps the function, and so the docstring for ivy.isneginf also applies to
-        this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input array.
-        out
-            Alternate output array in which to place the result.
-            The default is None.
-
-        Returns
-        -------
-        ret
-            Returns a boolean array with values True where
-            the corresponding element of the input is negative
-            infinity and values False where the element of the
-            input is not negative infinity.
-
-        Examples
-        --------
-        >>> x = ivy.array([12.1, -ivy.inf, ivy.inf])
-        >>> x.isneginf()
-        ivy.array([False, True,  False])
-        """
-        return ivy.isneginf(self._data, out=out)
-
     def angle(
         self: ivy.Array,
         /,
@@ -819,6 +749,43 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.signbit(self._data, out=out)
 
+    def hypot(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.hypot. This method simply wraps the
+        function, and so the docstring for ivy.hypot also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array
+        x2
+            Second input array
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array containing the hypotenuse computed from each element of the
+            input arrays.
+
+        Examples
+        --------
+        >>> x = ivy.array([3.0, 4.0, 5.0])
+        >>> y = ivy.array([4.0, 5.0, 6.0])
+        >>> x.hypot(y)
+        ivy.array([5.0, 6.4031, 7.8102])
+        """
+        return ivy.hypot(self._data, x2, out=out)
+
     def allclose(
         self: ivy.Array,
         x2: ivy.Array,
@@ -882,9 +849,13 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         )
 
     def diff(
-        self: Union[ivy.Array, int, float, list, tuple],
+        self: ivy.Array,
         /,
         *,
+        n: int = 1,
+        axis: int = -1,
+        prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+        append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.diff. This method simply
@@ -895,6 +866,16 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ----------
         self
             array-like input.
+        n
+            The number of times values are differenced. If zero, the input is returned
+            as-is.
+        axis
+            The axis along which the difference is taken, default is the last axis.
+        prepend,append
+            Values to prepend/append to x along given axis prior to performing the
+            difference. Scalar values are expanded to arrays with length 1 in the
+            direction of axis and the shape of the input array in along all other
+            axes. Otherwise the dimension and shape must match x except along axis.
         out
             optional output array, for writing the result to.
 
@@ -905,15 +886,13 @@ class ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
-                               b=ivy.array([1, 2, 4, 7, 0]))
-        >>> ivy.Container.static_diff(x)
-        {
-            a: ivy.array([ 1,  2,  3, -7])
-            b: ivy.array([ 1,  2,  3, -7])
-        }
+        >>> x = ivy.array([1, 2, 4, 7, 0])
+        >>> x.diff()
+        ivy.array([ 1,  2,  3, -7])
         """
-        return ivy.diff(self._data, out=out)
+        return ivy.diff(
+            self._data, n=n, axis=axis, prepend=prepend, append=append, out=out
+        )
 
     def fix(
         self: ivy.Array,
@@ -1132,3 +1111,56 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([1.0986, 1.3863, 0.0000])
         """
         return ivy.xlogy(self._data, y, out=out)
+
+    def real(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.real. This method simply wraps
+        the function, and so the docstring for ivy.real also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a real-valued floating-point data type.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing test results. If input in an
+            array is real then, it is returned unchanged. on the
+            other hand, if it is complex then, it returns real part from it
+
+        Examples
+        --------
+        >>> x = ivy.array([4+3j, 6+2j, 1-6j])
+        >>> x.real()
+        ivy.array([4., 6., 1.])
+        """
+        return ivy.real(self._data, out=out)
+
+    def binarizer(
+        self: ivy.Array, /, *, threshold: float = 0, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        Maps the values of the input tensor to either 0 or 1,
+        element-wise, based on the outcome of a comparison
+        against a threshold value.
+        Parameters
+        ----------
+        self
+             Data to be binarized
+        threshold
+             Values greater than this are
+             mapped to 1, others to 0.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            Binarized output data
+        """
+        return ivy.binarizer(self._data, threshold=threshold, out=out)

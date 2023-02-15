@@ -2,8 +2,8 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
+    handle_jax_dtype,
 )
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_dtype
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
@@ -19,7 +19,7 @@ def einsum(
     return ivy.einsum(subscripts, *operands, out=out)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -32,7 +32,7 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -62,7 +62,7 @@ def bincount(x, weights=None, minlength=0, *, length=None):
     return ret
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def cumprod(a, axis=None, dtype=None, out=None):
     if dtype is None:
@@ -70,7 +70,7 @@ def cumprod(a, axis=None, dtype=None, out=None):
     return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def cumsum(a, axis=0, dtype=None, out=None):
     if dtype is None:
@@ -81,7 +81,7 @@ def cumsum(a, axis=0, dtype=None, out=None):
 cumproduct = cumprod
 
 
-@handle_numpy_dtype
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 def sum(
     a,
@@ -264,6 +264,54 @@ def nanmax(
         else:
             a = ivy.concat([a, header], axis=0)
     res = ivy.max(a, axis=axis, keepdims=keepdims, out=out)
+    if nan_mask is not None:
+        nan_mask = ivy.all(nan_mask, axis=axis, keepdims=keepdims, out=out)
+        if ivy.any(nan_mask):
+            res = ivy.where(
+                ivy.logical_not(nan_mask),
+                res,
+                initial if initial is not None else ivy.nan,
+                out=out,
+            )
+    if where_mask is not None and ivy.any(where_mask):
+        res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
+    return res
+
+
+@to_ivy_arrays_and_back
+def nanmin(
+    a,
+    axis=None,
+    out=None,
+    keepdims=False,
+    initial=None,
+    where=True,
+):
+    nan_mask = ivy.isnan(a)
+    a = ivy.where(ivy.logical_not(nan_mask), a, a.full_like(+ivy.inf))
+    where_mask = None
+    if initial is not None:
+        if ivy.is_array(where):
+            a = ivy.where(where, a, a.full_like(initial))
+            where_mask = ivy.all(ivy.logical_not(where), axis=axis, keepdims=keepdims)
+        s = ivy.shape(a, as_array=True)
+        if axis is not None:
+            if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
+                # introducing the initial in one dimension is enough
+                ax = axis[0] % len(s)
+                s[ax] = 1
+            else:
+                ax = axis % len(s)
+                s[ax] = 1
+        header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
+        if axis:
+            if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
+                a = ivy.concat([a, header], axis=axis[0])
+            else:
+                a = ivy.concat([a, header], axis=axis)
+        else:
+            a = ivy.concat([a, header], axis=0)
+    res = ivy.min(a, axis=axis, keepdims=keepdims, out=out)
     if nan_mask is not None:
         nan_mask = ivy.all(nan_mask, axis=axis, keepdims=keepdims, out=out)
         if ivy.any(nan_mask):

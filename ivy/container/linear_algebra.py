@@ -21,6 +21,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         transpose_a: bool = False,
         transpose_b: bool = False,
+        adjoint_a: bool = False,
+        adjoint_b: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -77,6 +79,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
             x2,
             transpose_a=transpose_a,
             transpose_b=transpose_b,
+            adjoint_a=adjoint_a,
+            adjoint_b=adjoint_b,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -91,6 +95,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         transpose_a: bool = False,
         transpose_b: bool = False,
+        adjoint_a: bool = False,
+        adjoint_b: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -146,6 +152,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
             x2,
             transpose_a=transpose_a,
             transpose_b=transpose_b,
+            adjoint_a=adjoint_a,
+            adjoint_b=adjoint_b,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1635,6 +1643,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        conjugate: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1679,6 +1688,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "matrix_transpose",
             x,
+            conjugate=conjugate,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1690,6 +1700,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        conjugate: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1732,6 +1743,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_matrix_transpose(
             self,
+            conjugate=conjugate,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1793,8 +1805,62 @@ class ContainerWithLinearAlgebra(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
+        out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.qr. This method simply wraps the
+        function, and so the docstring for ivy.qr also applies to this method with
+        minimal changes.
+
+        Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
+        matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
+        upper-triangular matrix (or a stack of matrices).
+
+        Parameters
+        ----------
+        x
+            input container having shape (..., M, N) and whose innermost two dimensions
+            form MxN matrices of rank N. Should have a floating-point data type.
+        mode
+            decomposition mode. Should be one of the following modes:
+            - 'reduced': compute only the leading K columns of q, such that q and r have
+            dimensions (..., M, K) and (..., K, N), respectively, and where
+            K = min(M, N).
+            - 'complete': compute q and r with dimensions (..., M, M) and (..., M, N),
+            respectively.
+            Default: 'reduced'.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output tuple of containers, for writing the result to. The arrays
+            must have shapes that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a namedtuple (Q, R) whose
+            - first element must have the field name Q and must be an container whose
+            shape depends on the value of mode and contain matrices with orthonormal
+            columns. If mode is 'complete', the container must have shape (..., M, M).
+            If mode is 'reduced', the container must have shape (..., M, K), where
+            K = min(M, N). The first x.ndim-2 dimensions must have the same size as
+            those of the input container x.
+            - second element must have the field name R and must be an container whose
+            shape depends on the value of mode and contain upper-triangular matrices. If
+            mode is 'complete', the container must have shape (..., M, N). If mode is
+            'reduced', the container must have shape (..., K, N), where K = min(M, N).
+            The first x.ndim-2 dimensions must have the same size as those of the input
+            x.
+        """
         return ContainerBase.cont_multi_map_in_function(
             "qr",
             x,
@@ -1815,8 +1881,62 @@ class ContainerWithLinearAlgebra(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+        out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
+    ) -> Tuple[ivy.Container, ivy.Container]:
+        """
+        ivy.Container instance method variant of ivy.qr. This method simply wraps the
+        function, and so the docstring for ivy.qr also applies to this method with
+        minimal changes.
+
+        Returns the qr decomposition x = QR of a full column rank matrix (or a stack of
+        matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an
+        upper-triangular matrix (or a stack of matrices).
+
+        Parameters
+        ----------
+        self
+            input container having shape (..., M, N) and whose innermost two dimensions
+            form MxN matrices of rank N. Should have a floating-point data type.
+        mode
+            decomposition mode. Should be one of the following modes:
+            - 'reduced': compute only the leading K columns of q, such that q and r have
+            dimensions (..., M, K) and (..., K, N), respectively, and where
+            K = min(M, N).
+            - 'complete': compute q and r with dimensions (..., M, M) and (..., M, N),
+            respectively.
+            Default: 'reduced'.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output tuple of containers, for writing the result to. The arrays
+            must have shapes that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a namedtuple (Q, R) whose
+            - first element must have the field name Q and must be an container whose
+            shape depends on the value of mode and contain matrices with orthonormal
+            columns. If mode is 'complete', the container must have shape (..., M, M).
+            If mode is 'reduced', the container must have shape (..., M, K), where
+            K = min(M, N). The first x.ndim-2 dimensions must have the same size as
+            those of the input container x.
+            - second element must have the field name R and must be an container whose
+            shape depends on the value of mode and contain upper-triangular matrices. If
+            mode is 'complete', the container must have shape (..., M, N). If mode is
+            'reduced', the container must have shape (..., K, N), where K = min(M, N).
+            The first x.ndim-2 dimensions must have the same size as those of the input
+            x.
+        """
         return self.static_qr(
             self,
             mode=mode,

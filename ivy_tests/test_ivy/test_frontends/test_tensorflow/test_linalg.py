@@ -29,25 +29,21 @@ def _get_dtype_and_matrix(draw):
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.det",
     dtype_and_input=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_det(
     *,
     dtype_and_input,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        native_array_flags=native_array,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -57,25 +53,21 @@ def test_tensorflow_det(
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.eigh",
     dtype_and_input=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_eigh(
     *,
     dtype_and_input,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         tensor=x[0],
@@ -85,25 +77,21 @@ def test_tensorflow_eigh(
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.eigvalsh",
     dtype_and_input=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_eigvalsh(
     *,
     dtype_and_input,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        native_array_flags=native_array,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         tensor=x[0],
@@ -119,31 +107,75 @@ def test_tensorflow_eigvalsh(
         max_value=1e05,
     ),
     tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    test_with_out=st.just(False),
 )
 def test_matrix_rank(
     *,
     dtype_x,
     tolr,
-    num_positional_args,
-    native_array,
-    as_variable,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        native_array_flags=native_array,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         atol=1.0,
         a=x[0],
         tol=tolr,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.matmul",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=(3, 3),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+    transpose_a=st.booleans(),
+    transpose_b=st.booleans(),
+    adjoint_a=st.booleans(),
+    adjoint_b=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_matmul(
+    *,
+    dtype_x,
+    transpose_a,
+    transpose_b,
+    adjoint_a,
+    adjoint_b,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    if adjoint_a and transpose_a:
+        transpose_a = False
+    if adjoint_b and transpose_b:
+        transpose_b = False
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        b=x[1],
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
+        adjoint_a=adjoint_a,
+        adjoint_b=adjoint_b,
     )
 
 
@@ -173,41 +205,37 @@ def _solve_get_dtype_and_data(draw):
             )
         )
     shape = (batch, random_size, draw(st.integers(min_value=2, max_value=4)))
-    input_dtype2, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=draw(helpers.get_dtypes("float")),
+    x = draw(
+        helpers.array_values(
+            dtype=input_dtype,
             shape=shape,
             min_value=-10,
             max_value=10,
         )
     )
 
-    return [[input_dtype] * batch, input_dtype2[0]], [tmp, x[0]]
+    return [[input_dtype] * batch, input_dtype], [tmp, x[0]]
 
 
 # solve
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.solve",
     dtype_and_x=_solve_get_dtype_and_data(),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_solve(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=[input_dtypes[0][0], input_dtypes[1]],
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-3,
@@ -249,22 +277,16 @@ def _get_hermitian_pos_def_matrix(draw):
 def test_tensorflow_logdet(
     *,
     dtype_and_x,
-    with_out,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         matrix=x,
@@ -275,25 +297,21 @@ def test_tensorflow_logdet(
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.slogdet",
     dtype_and_x=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_slogdet(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        native_array_flags=native_array,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -349,15 +367,14 @@ def _get_second_matrix(draw):
     fn_tree="tensorflow.linalg.cholesky_solve",
     x=_get_cholesky_matrix(),
     y=_get_second_matrix(),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_cholesky_solve(
     *,
     x,
     y,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -365,11 +382,8 @@ def test_tensorflow_cholesky_solve(
     input_dtype2, x2 = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
-        native_array_flags=native_array,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-3,
@@ -387,21 +401,16 @@ def test_tensorflow_cholesky_solve(
 def test_tensorflow_pinv(
     *,
     dtype_and_input,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        native_array_flags=native_array,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -419,10 +428,8 @@ def test_tensorflow_pinv(
 def test_tensorflow_tensordot(
     *,
     dtype_x_y_axes,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
@@ -434,11 +441,8 @@ def test_tensorflow_tensordot(
     ) = dtype_x_y_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        native_array_flags=native_array,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x,
@@ -467,21 +471,16 @@ def test_tensorflow_norm(
     dtype_values_axis,
     ord,
     keepdims,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        native_array_flags=native_array,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         tensor=x[0],
@@ -504,27 +503,22 @@ def test_tensorflow_norm(
         max_axis=2,
     ),
     ord=st.sampled_from([1, 2, np.inf]),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_normalize(
     *,
     dtype_values_axis,
     ord,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        native_array_flags=native_array,
-        as_variable_flags=as_variable,
-        with_out=False,
-        with_inplace=False,
-        num_positional_args=num_positional_args,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         tensor=x[0],
@@ -550,21 +544,16 @@ def test_tensorflow_normalize(
 def test_tensorflow_l2_normalize(
     *,
     dtype_values_axis,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        native_array_flags=native_array,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -576,26 +565,19 @@ def test_tensorflow_l2_normalize(
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.trace",
     dtype_and_input=_get_dtype_and_matrix(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.linalg.trace"
-    ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_trace(
     dtype_and_input,
-    as_variable,
-    num_positional_args,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         x=x[0],
     )
@@ -608,25 +590,24 @@ def test_tensorflow_trace(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
     ),
+    conjugate=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_matrix_transpose(
     dtype_and_input,
-    as_variable,
-    num_positional_args,
-    native_array,
+    conjugate,
     frontend,
+    test_flags,
     fn_tree,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
+        conjugate=conjugate,
     )
 
 
@@ -649,25 +630,21 @@ def _get_dtype_and_sequence_of_arrays(draw):
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.global_norm",
     dtype_and_input=_get_dtype_and_sequence_of_arrays(),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_global_norm(
     *,
     dtype_and_input,
-    num_positional_args,
-    as_variable,
-    native_array,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        native_array_flags=native_array,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         t_list=x,
@@ -688,16 +665,15 @@ def test_tensorflow_global_norm(
         and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_linalg_cholesky(
     *,
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -705,11 +681,8 @@ def test_tensorflow_linalg_cholesky(
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-02,

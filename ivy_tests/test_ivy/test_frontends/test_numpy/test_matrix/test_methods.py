@@ -6,7 +6,6 @@ import sys
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 import ivy.functional.frontends.numpy as ivy_np
 
@@ -152,10 +151,8 @@ def test_numpy_matrix_property_size(matrices):
 def test_numpy_matrix_argmax(
     dtype_x_axis,
     to_str,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
+    init_flags,
+    method_flags,
     frontend_method_data,
     frontend,
 ):
@@ -165,17 +162,13 @@ def test_numpy_matrix_argmax(
         axis = axis[0]
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
+        init_flags=init_flags,
+        method_flags=method_flags,
         init_all_as_kwargs_np={
             "data": x,
             "dtype": input_dtype[0],
         },
         method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_native_array_flags=native_array,
-        method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={
             "axis": axis,
         },
@@ -203,10 +196,8 @@ def test_numpy_matrix_argmax(
 def test_numpy_matrix_any(
     dtype_x_axis,
     to_str,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
+    init_flags,
+    method_flags,
     frontend_method_data,
     frontend,
 ):
@@ -216,17 +207,13 @@ def test_numpy_matrix_any(
         axis = axis[0]
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
+        init_flags=init_flags,
+        method_flags=method_flags,
         init_all_as_kwargs_np={
             "data": x,
             "dtype": input_dtype[0],
         },
         method_input_dtypes=[],
-        method_as_variable_flags=as_variable,
-        method_native_array_flags=native_array,
-        method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={
             "axis": axis,
         },

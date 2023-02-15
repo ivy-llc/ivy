@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -57,22 +58,16 @@ def _get_clip_inputs(draw):
 def test_jax_numpy_clip(
     *,
     input_and_ranges,
-    num_positional_args,
-    as_variable,
-    native_array,
-    with_out,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -89,18 +84,16 @@ def _arrays_idx_n_dtypes(draw):
         st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
     )
     common_shape = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_dims - 1,
-            max_size=num_dims - 1,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_arrays,
-            max_size=num_arrays,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_arrays,
         )
     )
     xs = list()
@@ -121,25 +114,21 @@ def _arrays_idx_n_dtypes(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.concatenate",
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_concat(
     *,
     xs_n_input_dtypes_n_unique_idx,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         arrays=xs,
@@ -173,26 +162,22 @@ def _get_input_and_reshape(draw):
     fn_tree="jax.numpy.reshape",
     input_x_shape=_get_input_and_reshape(),
     order=st.sampled_from(["C", "F"]),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_reshape(
     *,
     input_x_shape,
     order,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     x_dtype, x, shape = input_x_shape
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -248,27 +233,23 @@ def test_jax_numpy_reshape(
         min_size=1,
         force_int=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_moveaxis(
     *,
     dtype_and_a,
     source,
     destination,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=a[0],
@@ -289,25 +270,21 @@ def test_jax_numpy_moveaxis(
         min_dim_size=1,
         max_dim_size=3,
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_flipud(
     *,
     dtype_and_m,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         m=m[0],
@@ -323,25 +300,21 @@ def test_jax_numpy_flipud(
         min_dim_size=0,
         max_dim_size=10,
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_transpose(
     *,
     array_and_axes,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     array, dtype, axes = array_and_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=array,
@@ -362,26 +335,22 @@ def test_jax_numpy_transpose(
         max_size=1,
         force_int=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_flip(
     *,
     dtype_value,
     axis,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         m=value[0],
@@ -396,25 +365,21 @@ def test_jax_numpy_flip(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_fliplr(
     *,
     dtype_and_m,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         m=m[0],
@@ -436,22 +401,16 @@ def test_jax_expand_dims(
     *,
     dtype_and_x,
     axis,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
@@ -476,22 +435,16 @@ def test_jax_expand_dims(
 def test_jax_numpy_stack(
     dtype_values_axis,
     dtype,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, values, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         arrays=values,
@@ -515,22 +468,16 @@ def test_jax_numpy_stack(
 def test_jax_numpy_take(
     *,
     dtype_indices_axis,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtypes, value, indices, axis, _ = dtype_indices_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=3,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=value,
@@ -564,25 +511,21 @@ def _get_input_and_broadcast_shape(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.broadcast_to",
     input_x_broadcast=_get_input_and_broadcast_shape(),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_broadcast_to(
     *,
     input_x_broadcast,
-    num_positional_args,
-    as_variable,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     x_dtype, x, shape = input_x_broadcast
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         arr=x[0],
@@ -607,25 +550,20 @@ def test_jax_numpy_broadcast_to(
         allow_neg_axes=True,
         force_int_axis=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_append(
     dtype_values_axis,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
     on_device,
     fn_tree,
     frontend,
+    test_flags,
 ):
     input_dtype, values, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         arr=values[0],
@@ -664,13 +602,12 @@ def _get_input_and_two_swapabble_axes(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.swapaxes",
     input_x_axis1_axis2=_get_input_and_two_swapabble_axes(),
+    test_with_out=st.just(False),
 )
 def test_jax_numpy_swapaxes(
     *,
     input_x_axis1_axis2,
-    num_positional_args,
-    as_variable,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -678,14 +615,145 @@ def test_jax_numpy_swapaxes(
     x_dtype, x, axis1, axis2 = input_x_axis1_axis2
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
         axis1=axis1,
         axis2=axis2,
+    )
+
+
+# atleast_3d
+@handle_frontend_test(
+    fn_tree="jax.numpy.atleast_3d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_atleast_3d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, arrays = dtype_and_x
+    arys = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
+        arys["arrs{}".format(i)] = np.asarray(array, dtype=idtype)
+    test_flags.num_positional_args = len(arys)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **arys,
+    )
+
+
+# atleast_2d
+@handle_frontend_test(
+    fn_tree="jax.numpy.atleast_2d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_atleast_2d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, arrays = dtype_and_x
+    arys = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
+        arys["arrs{}".format(i)] = np.asarray(array, dtype=idtype)
+    test_flags.num_positional_args = len(arys)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **arys,
+    )
+
+
+# atleast_1d
+@handle_frontend_test(
+    fn_tree="jax.numpy.atleast_1d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_atleast_1d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, arrays = dtype_and_x
+    arys = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
+        arys["arrs{}".format(i)] = np.asarray(array, dtype=idtype)
+    test_flags.num_positional_args = len(arys)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **arys,
+    )
+
+
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="shape"))
+    valid_axes = [idx for idx in range(len(shape)) if shape[idx] == 1] + [None]
+    return draw(st.sampled_from(valid_axes))
+
+
+# squeeze
+@handle_frontend_test(
+    fn_tree="jax.numpy.squeeze",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    axis=_squeeze_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_squeeze(
+    *,
+    dtype_and_values,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, values = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=values[0],
+        axis=axis,
     )

@@ -3,7 +3,6 @@
 # global
 import os
 import abc
-import ivy.functional.backends.numpy
 
 # local
 import ivy
@@ -34,6 +33,7 @@ class Module(ModuleConverters, ModuleHelpers):
         with_partial_v=False,
         devices=None,
         dtype=None,
+        dynamic_backend=None,
         **kwargs,
     ):
         """
@@ -119,12 +119,17 @@ class Module(ModuleConverters, ModuleHelpers):
         self._kwargs = kwargs
         if build_mode != "on_init":
             return
-        self.build(*args, **kwargs)
+        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
     # Private #
     # --------#
 
     def _fn_with_var_arg(self, fn, v_fn, /):
+        """
+        Use v_fn to extract the variables and use the extracted variables
+        as inputs to the call function fn of the module.
+        """
+
         def new_fn(*a, with_grads=None, **kw):
             with_grads = ivy.with_grads(with_grads=with_grads)
             if "v" in kw.keys():
@@ -186,18 +191,25 @@ class Module(ModuleConverters, ModuleHelpers):
     @staticmethod
     def _extract_v(v, keychain_mappings: dict, orig_key_chain, /):
         """
-
+        Extract the variables from the variables container v using the key
+        orig_key_chain and reinstantiate the duplicate variables that were removed by
+        _remove_duplicate_variables in their correct locations using
+        keychain_mappings.
 
         Parameters
         ----------
         v
+            The variables container
         keychain_mappings
+            The keychain mappings of duplicate vatriables
         orig_key_chain
+            keychain of the variables to be extracted
 
 
         Returns
         -------
         ret_cont
+            container with the extracted variables.
         """
         if v.cont_has_key_chain(orig_key_chain):
             ret_cont = v.cont_at_key_chain(orig_key_chain)
@@ -212,14 +224,16 @@ class Module(ModuleConverters, ModuleHelpers):
 
     def _wrap_call_methods(self, keychain_mappings, /, *, key="", obj=None):
         """
-        Wraps the call methods of the Module object
+        Wraps the call methods of the Module object by looping over all the items
+        within the module, wrapping the __call__ methods of all submodules using
+        _fn_with_var_arg.
 
         Parameters
         ----------
         keychain_mappings
             The keychain mappings of the object
         key
-
+            The keychain of the object obj, used for recursion.
         obj
             the object whose __call__ method is to be wrapped
 
@@ -497,7 +511,15 @@ class Module(ModuleConverters, ModuleHelpers):
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.cont_to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
+    def build(
+        self,
+        *args,
+        from_call=False,
+        device=None,
+        dtype=None,
+        dynamic_backend=None,
+        **kwargs,
+    ):
         """
         Build the internal layers and variables for this module.
 
@@ -533,8 +555,13 @@ class Module(ModuleConverters, ModuleHelpers):
 
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
-        created = Container(self._create_variables(device=self._dev, dtype=dtype))
-        created_n_found = Container(dict(**self._find_variables(obj=self), **created))
+        created = Container(
+            self._create_variables(device=self._dev, dtype=dtype), dynamic_backend=False
+        )
+        created_n_found = Container(
+            dict(**self._find_variables(obj=self), **created),
+            dynamic_backend=dynamic_backend,
+        )
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
                 if v_from_constructor:

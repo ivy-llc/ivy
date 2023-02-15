@@ -63,7 +63,7 @@ def clip(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def sqrt(
+def _sqrt(
     x,
     /,
     out=None,
@@ -85,7 +85,7 @@ def sqrt(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def cbrt(
+def _cbrt(
     x,
     /,
     out=None,
@@ -108,7 +108,7 @@ def cbrt(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def square(
+def _square(
     x,
     /,
     out=None,
@@ -130,7 +130,7 @@ def square(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def absolute(
+def _absolute(
     x,
     /,
     out=None,
@@ -152,7 +152,7 @@ def absolute(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def fabs(
+def _fabs(
     x,
     /,
     out=None,
@@ -174,7 +174,7 @@ def fabs(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def sign(
+def _sign(
     x,
     /,
     out=None,
@@ -196,7 +196,7 @@ def sign(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def heaviside(
+def _heaviside(
     x1,
     x2,
     /,
@@ -228,6 +228,7 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     ret = ivy.where(nan_where, nan, x)
     ret = ivy.where(pos_where, posinf, ret)
     ret = ivy.where(neg_where, neginf, ret)
+    ret = ret.astype(x.dtype, copy=False)
     if not copy:
         return ivy.inplace_update(x, ret)
     return ret
@@ -241,61 +242,7 @@ def real_if_close(a, tol=100):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def interp(x, xp, fp, left=None, right=None, period=None):
-    x_arr = ivy.array(x)
-    fix_later = False
-    if x_arr.shape == ():
-        x_arr = ivy.array([x])
-        fix_later = True
-    x = ivy.astype(x_arr, "float64")
-    xp = ivy.astype(ivy.array(xp), "float64")
-    fp = ivy.astype(ivy.array(fp), "float64")
-    ivy.assertions.check_equal(xp.ndim, 1)
-    ivy.assertions.check_equal(fp.ndim, 1)
-    ivy.assertions.check_equal(xp.shape[0], fp.shape[0])
-    if period is not None:
-        ivy.assertions.check_equal(period, 0, inverse=True)
-        period = ivy.abs(period)
-        x = ivy.remainder(x, period)
-        xp = ivy.remainder(xp, period)
-        asort_xp = ivy.argsort(xp)
-        xp = xp[asort_xp]
-        fp = fp[asort_xp]
-        xp = ivy.concat((xp[-1:] - period, xp, xp[0:1] + period))
-        fp = ivy.concat((fp[-1:], fp, fp[0:1]))
-
-    def interp_inner(value):
-        if value < xp[0]:
-            return left if left is not None else fp[0]
-        elif value > xp[-1]:
-            return right if right is not None else fp[-1]
-        else:
-            last = None
-            if xp.shape[0] < 3:
-                for i in range(xp.shape[0]):
-                    if xp[i] == value:
-                        return fp[i]
-                    elif xp[i] < value:
-                        last = i
-            else:
-                first = 0
-                last = xp.shape[0]
-                while first <= last:
-                    midpoint = (first + last) // 2
-                    if xp[midpoint] == value:
-                        return fp[midpoint]
-                    else:
-                        if value < xp[midpoint]:
-                            last = midpoint - 1
-                        else:
-                            first = midpoint + 1
-            dist = (value - xp[last]) / (xp[last + 1] - xp[last])
-            return (fp[last + 1] - fp[last]) * dist + fp[last]
-
-    ret = ivy.map(interp_inner, unique={"value": x})
-    if fix_later:
-        return ivy.astype(ivy.array(ret[0]), "float64")
-    else:
-        return ivy.astype(ivy.array(ret), "float64")
+    return ivy.interp(x, xp, fp, left=left, right=right, period=period)
 
 
 @handle_numpy_out
@@ -303,7 +250,7 @@ def interp(x, xp, fp, left=None, right=None, period=None):
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def copysign(
+def _copysign(
     x1,
     x2,
     /,

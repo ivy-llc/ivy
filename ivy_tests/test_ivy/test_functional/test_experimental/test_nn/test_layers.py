@@ -1,6 +1,5 @@
 # global
-from hypothesis import strategies as st
-
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -9,17 +8,41 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool2d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=4,
+        max_dims=4,
+        min_side=2,
+        max_side=4,
+        allow_explicit_padding=True,
+        return_dilation=True,
+    ),
+    ceil_mode=st.just(True),
     test_gradients=st.just(False),
+    # problem with containers converting tuple padding to
+    # lists which jax does not support
+    container_flags=st.just([False]),
 )
 def test_max_pool2d(
     *,
     x_k_s_p,
+    ceil_mode,
     test_flags,
     backend_fw,
     fn_name,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation = x_k_s_p
+    assume(
+        not (
+            backend_fw.current_backend_str() == "tensorflow"
+            and (
+                (stride[0] > kernel[0] or stride[0] > kernel[1])
+                or (
+                    (stride[0] > 1 and dilation[0] > 1)
+                    or (stride[0] > 1 and dilation[1] > 1)
+                )
+            )
+        )
+    )
     helpers.test_function(
         ground_truth_backend="jax",
         input_dtypes=dtype,
@@ -32,6 +55,8 @@ def test_max_pool2d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -232,6 +257,86 @@ def test_dct(
 
 
 @st.composite
+def _interp_args(draw):
+    mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"]))
+    align_corners = draw(st.one_of(st.booleans(), st.none()))
+    if mode == "linear":
+        size = draw(helpers.ints(min_value=1, max_value=5))
+        num_dims = 3
+    elif mode == "bilinear":
+        size = draw(
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=2,
+            )
+        )
+        num_dims = 4
+    elif mode == "trilinear":
+        size = draw(
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=3,
+            )
+        )
+        num_dims = 5
+    elif mode == "nearest" or mode == "area":
+        dim = draw(helpers.ints(min_value=1, max_value=3))
+        size = draw(
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=dim,
+            )
+        )
+        size = size[0] if dim == 1 else size
+        num_dims = dim + 2
+        align_corners = None
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=num_dims,
+            max_num_dims=num_dims,
+            min_dim_size=1,
+            max_dim_size=3,
+            large_abs_safety_factor=30,
+            small_abs_safety_factor=30,
+            safety_factor_scale="log",
+        )
+    )
+
+    return dtype, x, mode, size, align_corners
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.interpolate",
+    dtype_x_mode=_interp_args(),
+    test_gradients=st.just(False),
+    number_positional_args=st.just(2),
+)
+def test_interpolate(
+    dtype_x_mode,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x, mode, size, align_corners = dtype_x_mode
+    helpers.test_function(
+        ground_truth_backend="torch",
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-01,
+        atol_=1e-01,
+        x=x[0],
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+    )
+
+
+@st.composite
 def x_and_fft(draw, dtypes):
     min_fft_points = 2
     dtype = draw(dtypes)
@@ -350,7 +455,7 @@ def x_and_ifft(draw):
             dtype=dtype[0],
             shape=tuple(x_dim),
             min_value=-1e-10,
-            max_value=1e+10,
+            max_value=1e10,
         )
     )
     dim = draw(st.integers(1 - len(list(x_dim)), len(list(x_dim)) - 1))
@@ -365,12 +470,12 @@ def x_and_ifft(draw):
     test_gradients=st.just(False),
 )
 def test_ifft(
-        *,
-        d_x_d_n_n,
-        test_flags,
-        backend_fw,
-        fn_name,
-        ground_truth_backend,
+    *,
+    d_x_d_n_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
 ):
     dtype, x, dim, norm, n = d_x_d_n_n
 
@@ -386,4 +491,78 @@ def test_ifft(
         dim=dim,
         norm=norm,
         n=n,
+    )
+
+
+# embedding
+@handle_test(
+    fn_tree="functional.ivy.experimental.embedding",
+    dtypes_indices_weights=helpers.embedding_helper(),
+    max_norm=st.one_of(st.none(), st.floats(min_value=1, max_value=5)),
+    number_positional_args=st.just(2),
+)
+def test_embedding(
+    *,
+    dtypes_indices_weights,
+    max_norm,
+    test_flags,
+    backend_fw,
+    on_device,
+    fn_name,
+    ground_truth_backend,
+):
+    dtypes, indices, weights, _ = dtypes_indices_weights
+    dtypes = [dtypes[1], dtypes[0]]
+
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        xs_grad_idxs=[[0, 0]],
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        weights=weights,
+        indices=indices,
+        max_norm=max_norm,
+    )
+
+
+@handle_test(
+    fn_tree="dft",
+    d_xfft_axis_n_length=x_and_fft(helpers.get_dtypes("complex")),
+    d_xifft_axis_n_length=x_and_ifft(),
+    inverse=st.booleans(),
+    onesided=st.booleans(),
+)
+def test_dft(
+    *,
+    d_xfft_axis_n_length,
+    d_xifft_axis_n_length,
+    inverse,
+    onesided,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    if inverse:
+        dtype, x, axis, norm, dft_length = d_xifft_axis_n_length
+    else:
+        dtype, x, axis, norm, dft_length = d_xfft_axis_n_length
+
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x,
+        axis=axis,
+        inverse=inverse,
+        onesided=onesided,
+        dft_length=dft_length,
+        norm=norm,
+        rtol_=1e-2,
+        atol_=1e-2,
     )

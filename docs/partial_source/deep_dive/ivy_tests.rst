@@ -17,6 +17,7 @@ Ivy Tests
 .. _`test_default_int_dtype`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835
 .. _`sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
 .. _`lists`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
+.. _`default`: https://github.com/unifyai/ivy/blob/aef5ef5620bb6ad194030276e9c00118d006091b/ivy_tests/test_ivy/helpers/test_parameter_flags.py#L28
 .. _`booleans`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.booleans
 .. _`integers`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.integers
 .. _`floats`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.floats
@@ -254,44 +255,33 @@ to write an effective test, the following example describes how to implement a t
 
 .. code-block:: python
     @handle_test(
-        fn_tree="functional.ivy.abs",
-        dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric")
+    fn_tree="functional.ivy.abs",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
         ),
     )
     def test_abs(
         *,
         dtype_and_x,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container_flags,
-        instance_method,
+        test_flags,
         backend_fw,
         fn_name,
         on_device,
-        test_gradients,
+        ground_truth_backend,
     ):
         input_dtype, x = dtype_and_x
         helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            container_flags=container_flags,
-            instance_method=instance_method,
+            test_flags=test_flags,
             fw=backend_fw,
             fn_name=fn_name,
             on_device=on_device,
-            test_gradients=test_gradients,
             x=x[0],
         )
 
 Integration of Strategies into Ivy Tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 Once a strategy is initialised the :code:`@given` decorator is added to the test function for drawing values from the strategy and passing them as inputs to the test.
 For example, in this code snippet here -:
 
@@ -307,8 +297,47 @@ For :code:`out` keyword argument, the :code:`@handle_test` decorator generates a
 If the function does not support the :code:`out`, we should explicitly specify that we should not generate boolean flags for :code:`out` by setting :code:`with_out=False`, the :code:`@handle_test` in this case will not generate a value for :code:`with_out`.
 
 As  discussed above, the helper functions use the composite decorator, which helps in defining a series of custom strategies.
-It can be seen that :code:`dtype_and_x` uses the code:`dtype_and_values` strategy to generate numeric data types and corresponding array elements, whose shapes can be specified manually or are randomized by default.
+It can be seen that :code:`dtype_and_x` uses the code:`dtype_and_values` strategy to generate numeric data types(for more details, see the section below) and corresponding array elements, whose shapes can be specified manually or are randomized by default.
 The generated data is returned as a tuple.
+
+One thing to note here is the :code:`test_flags` variable in the test function. This is basically an object which is initialized internally, which captures all the flags mentioned above for the test during collection time. These flags are then available for the helper function at test time.
+
+The test flags can also be generated explicitely like this -:
+
+.. code-block:: python
+    @handle_test(
+        as_variable_flags = st.lists(st.booleans(), min_size = <any>, max_size = <any>),
+        native_array_flags = st.lists(st.booleans(), min_size = <any>, max_size = <any> ),
+        container_flags = st.lists(st.booleans(), min_size= <any>, max_size= <any>),    # <any> integer value can be passed
+        test_instance_method = st.just(<bool>),                                         # <bool> can either be True or False
+        test_with_out = st.just(<bool>),
+        test_gradients = st.just(<bool>),
+        test_inplace = st.just(<bool>),
+    )
+In the test above :code:`test_abs`, one can assume that these flags are automatically loaded inside the :code:`test_flags` object with `default`_ values.
+
+Test flags are mostly similar across decorators with slight difference in the variable names. This is how we generate them for method testing.
+
+.. code-block:: python
+    @handle_method(
+         init_native_arrays = st.lists(st.booleans(), min_size = <any>, max_size = <any>),
+         init_as_variable_flags = st.lists(st.booleans(), min_size = <any>, max_size = <any>),
+         init_container_flags = st.lists(st.booleans(), min_size = <any>, max_size = <any>),
+         method_native_arrays = st.lists(st.booleans(), min_size = <any>, max_size = <any>),
+         method_as_variable_flags = st.lists(st.booleans(), min_size = <any>, max_size = <any>),
+         method_container_flags = st.lists(st.booleans(), min_size = <any>, max_size = <any>),
+         test_gradients = st.just(<bool>)
+    )
+    def test_some_method(
+        *,
+        init_flags,
+        method_flags,
+    ):
+        pass
+
+The only difference here is that the :code:`test_flags` object here is divided in two, the :code:`init_flags` and the :code:`method_flags`. The above standards are extended
+to the `handle_frontend_test` and `handle_frontend_method` respectively.
+
 Let's look at the data produced by this strategy -:
 
 .. code-block:: python
@@ -411,7 +440,7 @@ For example-:
     array([57384, 25687,   248], dtype=int32)
     array([1, 1, 1], dtype=int32)
 
-5. `array_dtypes` - As the name suggests, this will generate arbitrary sequences of valid float data types.
+5. `array_dtypes`_ - As the name suggests, this will generate arbitrary sequences of valid float data types.
     The sequence parameters like *min_size*, and *max_size*, are specified at test time based on the function.
     This is what the function returns -:
 
@@ -584,8 +613,8 @@ It would be helpful to keep in mind the following points while writing test -:
 Bonus: Hypothesis' Extended Features
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1. **Hypothesis** performs **Automated Test-Case Reduction**.
-   That is, the **given** decorator strives to report the simplest set of input values that produce a given error.
+1. Hypothesis performs *Automated Test-Case Reduction*.
+   That is, the *given* decorator strives to report the simplest set of input values that produce a given error.
    For the code block below-:
 
 .. code-block:: python
@@ -640,7 +669,7 @@ Instead, it saves a database of these examples associated with each of the proje
 In the case of Ivy, the :code:`.hypothesis` cache folder is generated if one doesn’t exist, otherwise the existing one is added to it.
 We just preserve this folder on the CI, so that each commit uses the same folder, and so it is ignored by git, thereby never forming part of the :code:`commit`.
 
-2. **–-hypothesis-show-statistics**
+2. **--hypothesis-show-statistics**
 
 This feature helps in debugging the tests, with methods like **note()**, custom **event()s** where addition to the summary, and a variety performance details are supported.
 Let’s look at the function `test_gelu`_ -:

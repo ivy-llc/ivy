@@ -18,22 +18,16 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 def test_numpy_eigvalsh(
     x,
     UPLO,
-    as_variable,
-    with_out,
-    native_array,
-    num_positional_args,
     frontend,
+    test_flags,
     fn_tree,
     on_device,
 ):
     input_dtypes, xs = x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-2,

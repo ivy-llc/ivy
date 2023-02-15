@@ -1,5 +1,6 @@
 # global
 import ivy
+import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 
@@ -128,6 +129,74 @@ def binary_cross_entropy_with_logits(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def cosine_embedding_loss(
+    input1, input2, target, margin=0.0, size_average=None, reduce=None, reduction="mean"
+):
+    def norm(input, axis):
+        return ivy.sqrt(ivy.sum(ivy.square(input), axis=axis))
+
+    def cosine_similarity(x1, x2):
+        axis = None
+        if len(x1.shape) == len(x2.shape) and len(x2.shape) == 2:
+            axis = 1
+        input1_norm = norm(x1, axis=axis)
+        input2_norm = norm(x2, axis=axis)
+        norm_mm = input1_norm * input2_norm
+        norm_mm, eps = torch_frontend.promote_types_of_torch_inputs(norm_mm, 1e-08)
+        return ivy.sum(x1 * x2, axis=axis) / ivy.maximum(norm_mm, eps)
+
+    def calculate_loss(x1, x2, target):
+        cos = cosine_similarity(x1, x2)
+        if target == ivy.array(1.0):
+            loss = 1.0 - cos
+        elif target == ivy.array(-1.0):
+            loss = ivy.maximum(ivy.array(0.0), cos - ivy.array(margin))
+        else:
+            _, zero = torch_frontend.promote_types_of_torch_inputs(
+                input1, ivy.array(0.0)
+            )
+            return zero
+
+        return loss
+
+    ivy.assertions.check_true(
+        target.ndim + 1 == input1.ndim and target.ndim + 1 == input2.ndim,
+        "{}D target tensor expects {}D input tensors, but "
+        "found inputs with sizes {} and {}.".format(
+            target.ndim, target.ndim + 1, list(input1.shape), list(input2.shape)
+        ),
+    )
+
+    ivy.assertions.check_true(
+        target.ndim < 2, "0D or 1D target tensor expected, multi-target not supported"
+    )
+
+    ivy.assertions.check_shape(input1, input2)
+
+    if target.ndim == 1:
+        ivy.assertions.check_true(
+            target.shape[0] == input1.shape[0],
+            "The size of target tensor ({}) must match the size of input tensor ({}) "
+            "at non-singleton dimension 0 ".format(target.shape[0], input1.shape[0]),
+        )
+
+    if target.ndim == 0:
+        loss = calculate_loss(input1, input2, target)
+    else:
+        loss = ivy.array(
+            [
+                calculate_loss(input1[i], input2[i], target[i])
+                for i in range(input1.shape[0])
+            ]
+        )
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+    loss = reduction(loss)
+    return loss
+
+
+@to_ivy_arrays_and_back
 def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.square(input - target)
@@ -216,7 +285,6 @@ def nll_loss(
     reduce=None,
     reduction="mean",
 ):
-
     out = ivy.zeros_like(target)
 
     if len(input.shape) == 1:
@@ -248,3 +316,54 @@ def soft_margin_loss(
     reduction = _get_reduction(reduction, size_average, reduce)
     ret = reduction(loss)
     return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def kl_div(
+    input, target, size_average=None, reduce=None, reduction="mean", log_target=False
+):
+    size = ivy.shape(input)
+
+    if len(size) < 1:
+        size = [1]
+
+    def loss_fn():
+        if log_target:
+            return ivy.exp(target) * (target - input)
+        return target * (ivy.log(target) - input)
+
+    def batchmean(x):
+        if not reduce:
+            return x / size[0]
+
+        if size_average:
+            return ivy.mean(x) / size[0]
+
+        return ivy.sum(x) / size[0]
+
+    loss = ivy.nan_to_num(loss_fn())
+
+    if reduction == "batchmean":
+        reduction = batchmean
+    else:
+        reduction = _get_reduction(reduction, size_average, reduce)
+
+    return reduction(loss)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def margin_ranking_loss(
+    input1,
+    input2,
+    target,
+    margin=0.0,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = -1 * target * (input1 - input2) + margin
+    loss = ivy.where(loss < 0, 0, loss)
+    reduction = _get_reduction(reduction, size_average, reduce)
+    return reduction(loss)
