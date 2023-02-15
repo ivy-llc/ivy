@@ -3091,11 +3091,11 @@ def test_tensorflow_Conv2D(
         dilation, num_spatial_dims=2, channel_index=3, name="dilations"
     )
 
-    if padding == "EXPLICIT":
+    if padding == "EXPLICIT" and data_format == "NHWC":
         explicit_paddings = [(0, 0), (1, 1), (1, 1), (0, 0)]
         padding = explicit_paddings
-    else:
-        padding = padding
+    elif padding == "EXPLICIT" and data_format == "NCHW":
+        explicit_paddings = [(0,0),(0,0),(1,1),(1,1)]
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
