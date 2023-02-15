@@ -125,6 +125,7 @@ def swapdims(input, dim0, dim1):
 def transpose(input, dim0, dim1):
     return ivy.swapaxes(input, dim0, dim1)
 
+@to_ivy_arrays_and_back
 def t(input):
     if input.ndim > 2:
         raise ivy.exceptions.IvyException("t(input) expects a tensor with <= 2 dimensions, but self is %dD" % input.ndim)
