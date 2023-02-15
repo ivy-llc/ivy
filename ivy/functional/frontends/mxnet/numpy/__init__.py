@@ -1,3 +1,4 @@
 # flake8: noqa
-from . import linalg
 from . import random
+from . import linalg
+from .linalg import *
