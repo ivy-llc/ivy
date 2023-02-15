@@ -816,7 +816,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
         >>> m = ivy.Container(a=ivy.diag([1, 2, 3]),\
-                            b=ivy.array([[1, 2, 3],[4, 5, 6]]))
+        ...                    b=ivy.array([[1, 2, 3],[4, 5, 6]]))
         >>> ivy.Container.static_fliplr(m)
         {
             a: ivy.array([[0, 0, 1],
@@ -862,8 +862,9 @@ class ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> m = ivy.Container(a=ivy.diag([1, 2, 3]),\
-                            b=ivy.array([[1, 2, 3],[4, 5, 6]]))
+        ...                    b=ivy.array([[1, 2, 3],[4, 5, 6]]))
         >>> m.fliplr()
         {
             a: ivy.array([[0, 0, 1],
@@ -907,6 +908,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array(4))
         >>> ivy.Container.static_i0(x)
         {
@@ -950,6 +952,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array(4))
         >>> x.i0()
         {
