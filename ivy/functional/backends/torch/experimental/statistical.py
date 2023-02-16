@@ -22,7 +22,6 @@ def median(
                 input,
                 dim=dim,
                 keepdim=keepdims,
-                out=out,
             )[0]
         return input
     else:
@@ -30,11 +29,10 @@ def median(
             input,
             dim=axis,
             keepdim=keepdims,
-            out=out,
-        )
+        )[0]
 
 
-median.support_native_out = True
+median.support_native_out = False
 
 
 def nanmean(
