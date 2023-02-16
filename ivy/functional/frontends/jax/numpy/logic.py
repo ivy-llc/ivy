@@ -166,8 +166,8 @@ def logical_not(x, /):
     return ivy.logical_not(x)
 
 @to_ivy_arrays_and_back
-def logical_xor(x, /):
-    return ivy.logical_xor(x)
+def logical_xor(x, y):
+    return ivy.logical_xor(x,y)
 
 
 @to_ivy_arrays_and_back
