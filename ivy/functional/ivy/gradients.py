@@ -10,6 +10,7 @@ import ivy
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
+    handle_array_function,
     inputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
@@ -321,6 +322,7 @@ class GradientTracking:
 
 # noinspection PyShadowingNames
 @handle_exceptions
+@handle_array_function
 def with_grads(*, with_grads: bool = None) -> bool:
     """
     Enter a nested code space where gradients are computed. This method
@@ -371,6 +373,7 @@ def with_grads(*, with_grads: bool = None) -> bool:
 
 # noinspection PyShadowingNames
 @handle_exceptions
+@handle_array_function
 def set_with_grads(with_grads: bool):
     """
     Enter a nested code space where gradients are computed. This method
@@ -416,6 +419,7 @@ def set_with_grads(with_grads: bool):
 
 
 @handle_exceptions
+@handle_array_function
 def unset_with_grads():
     """
     Enter a nested code space where gradients are computed. This method
@@ -452,6 +456,7 @@ def unset_with_grads():
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -527,6 +532,7 @@ def stop_gradient(
 
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
@@ -571,6 +577,7 @@ execute_with_gradients.computes_gradients = True
 
 @to_native_arrays_and_back
 @handle_exceptions
+@handle_array_function
 def value_and_grad(func):
     """
     Create a function that evaluates both func and the gradient of func.
@@ -606,6 +613,7 @@ value_and_grad.computes_gradients = True
 
 @to_native_arrays_and_back
 @handle_exceptions
+@handle_array_function
 def jac(func):
     """Call function func, and return func's Jacobian partial derivatives.
 
@@ -641,6 +649,7 @@ jac.computes_gradients = True
 
 @to_native_arrays_and_back
 @handle_exceptions
+@handle_array_function
 def grad(func):
     """Call function func, and return func's gradients.
 
@@ -678,6 +687,7 @@ grad.computes_gradients = True
 @inputs_to_ivy_arrays
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def adam_step(
     dcdw: Union[ivy.Array, ivy.NativeArray],
     mw: Union[ivy.Array, ivy.NativeArray],
@@ -831,6 +841,7 @@ adam_step.out_index = 0
 @inputs_to_ivy_arrays
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def optimizer_update(
     w: Union[ivy.Array, ivy.NativeArray],
     effective_grad: Union[ivy.Array, ivy.NativeArray],
@@ -953,6 +964,7 @@ def optimizer_update(
 @inputs_to_ivy_arrays
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def gradient_descent_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1045,6 +1057,7 @@ def gradient_descent_update(
 @inputs_to_ivy_arrays
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def lars_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1095,6 +1108,7 @@ def lars_update(
 @inputs_to_ivy_arrays
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def adam_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1259,6 +1273,7 @@ adam_update.out_index = 0
 @inputs_to_ivy_arrays
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],

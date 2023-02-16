@@ -849,9 +849,13 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         )
 
     def diff(
-        self: Union[ivy.Array, int, float, list, tuple],
+        self: ivy.Array,
         /,
         *,
+        n: int = 1,
+        axis: int = -1,
+        prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+        append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.diff. This method simply
@@ -862,6 +866,16 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ----------
         self
             array-like input.
+        n
+            The number of times values are differenced. If zero, the input is returned
+            as-is.
+        axis
+            The axis along which the difference is taken, default is the last axis.
+        prepend,append
+            Values to prepend/append to x along given axis prior to performing the
+            difference. Scalar values are expanded to arrays with length 1 in the
+            direction of axis and the shape of the input array in along all other
+            axes. Otherwise the dimension and shape must match x except along axis.
         out
             optional output array, for writing the result to.
 
@@ -872,15 +886,13 @@ class ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
-                               b=ivy.array([1, 2, 4, 7, 0]))
-        >>> ivy.Container.static_diff(x)
-        {
-            a: ivy.array([ 1,  2,  3, -7])
-            b: ivy.array([ 1,  2,  3, -7])
-        }
+        >>> x = ivy.array([1, 2, 4, 7, 0])
+        >>> x.diff()
+        ivy.array([ 1,  2,  3, -7])
         """
-        return ivy.diff(self._data, out=out)
+        return ivy.diff(
+            self._data, n=n, axis=axis, prepend=prepend, append=append, out=out
+        )
 
     def fix(
         self: ivy.Array,

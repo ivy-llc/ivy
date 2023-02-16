@@ -899,11 +899,11 @@ def hypot(
 @handle_nestable
 @handle_array_like_without_promotion
 def diff(
-    x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
     append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
     out: Optional[ivy.Array] = None,
@@ -923,14 +923,18 @@ def diff(
         Values to prepend/append to x along given axis prior to performing the
         difference. Scalar values are expanded to arrays with length 1 in the direction
         of axis and the shape of the input array in along all other axes. Otherwise the
-        dimension and shape must match a except along axis.
+        dimension and shape must match x except along axis.
     out
         optional output array, for writing the result to.
 
     Returns
     -------
     ret
-        Rreturns the n-th discrete difference along the given axis.
+        Returns the n-th discrete difference along the given axis.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------

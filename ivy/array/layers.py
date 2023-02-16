@@ -453,12 +453,12 @@ class ArrayWithLayers(abc.ABC):
     def conv2d(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NHWC",
-        dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        dilations: Union[int, Tuple[int, int]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -468,8 +468,8 @@ class ArrayWithLayers(abc.ABC):
 
         Parameters
         ----------
-        x
-            Input image *[batch_size,h,w,d_in]*.
+        self
+            Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
         filters
             Convolution filters *[fh,fw,d_in,d_out]*.
         strides
