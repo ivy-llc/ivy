@@ -168,7 +168,7 @@ def _get_dtype_and_matrix(draw, *, symmetric=False):
 
 
 @st.composite
-def _get_first_matrix_and_dtype(draw, *, transpose=False):
+def _get_first_matrix_and_dtype(draw, *, transpose=False, conjugate=False):
     # batch_shape, random_size, shared
     input_dtype = draw(
         st.shared(
@@ -190,6 +190,9 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False):
             max_value=5,
         )
     )
+    if conjugate:
+        conjugate = draw(st.booleans())
+        return [input_dtype], matrix, conjugate
     if transpose:
         transpose = draw(st.booleans())
         adjoint = draw(st.booleans())
@@ -564,7 +567,7 @@ def test_inv(
 # matrix_transpose
 @handle_test(
     fn_tree="functional.ivy.matrix_transpose",
-    dtype_x=_get_first_matrix_and_dtype(),
+    dtype_x=_get_first_matrix_and_dtype(conjugate=True),
 )
 def test_matrix_transpose(
     *,
@@ -575,7 +578,7 @@ def test_matrix_transpose(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_x
+    input_dtype, x, conjugate = dtype_x
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -584,6 +587,7 @@ def test_matrix_transpose(
         fn_name=fn_name,
         on_device=on_device,
         x=x,
+        conjugate=conjugate,
     )
 
 

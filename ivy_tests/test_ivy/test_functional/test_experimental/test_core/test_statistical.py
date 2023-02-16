@@ -65,8 +65,9 @@ def statistical_dtype_values(draw, *, function):
 
         interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
         interpolation = draw(
-            helpers.lists(
-                arg=st.sampled_from(interpolation_names), min_size=1, max_size=1
+            helpers.list_of_size(
+                x=st.sampled_from(interpolation_names),
+                size=1,
             )
         )
         return dtype, values, axis, interpolation, q
@@ -84,12 +85,7 @@ def test_median(
     *,
     dtype_x_axis,
     keep_dims,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -99,12 +95,7 @@ def test_median(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
-        num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -161,7 +152,7 @@ def max_value_as_shape_prod(draw):
     )
     dtype_and_x = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("integer"),
+            available_dtypes=["int32", "int64"],
             min_value=0,
             max_value=np.prod(shape) - 1,
         )
@@ -199,19 +190,13 @@ def test_unravel_index(
     fn_tree="functional.ivy.experimental.quantile",
     dtype_and_x=statistical_dtype_values(function="quantile"),
     keep_dims=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="quantile"),
     test_gradients=st.just(False),
 )
 def test_quantile(
     *,
     dtype_and_x,
     keep_dims,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
-    with_out,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -220,12 +205,7 @@ def test_quantile(
     input_dtype, x, axis, interpolation, q = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
+        test_flags=test_flags,
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,

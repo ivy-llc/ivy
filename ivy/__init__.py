@@ -836,7 +836,7 @@ class GlobalsDict(dict):
 
 
 # defines ivy.globals attribute
-globals = GlobalsDict(
+globals_vars = GlobalsDict(
     {
         "backend_stack": backend_stack,
         "default_device_stack": device.default_device_stack,
@@ -872,11 +872,11 @@ globals = GlobalsDict(
 
 
 def set_global_attr(attr_name, attr_val):
-    setattr(globals, attr_name, attr_val)
+    setattr(globals_vars, attr_name, attr_val)
 
 
 def del_global_attr(attr_name):
-    delattr(globals, attr_name)
+    delattr(globals_vars, attr_name)
 
 
 backend = "none"

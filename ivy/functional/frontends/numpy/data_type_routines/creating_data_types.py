@@ -160,3 +160,7 @@ class dtype:
     @property
     def ivy_dtype(self):
         return self._ivy_dtype
+
+    @property
+    def name(self):
+        return self._ivy_dtype.__repr__()

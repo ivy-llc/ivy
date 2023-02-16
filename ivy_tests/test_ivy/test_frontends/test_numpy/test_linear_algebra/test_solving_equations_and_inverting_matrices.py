@@ -1,4 +1,5 @@
 # global
+import sys
 import numpy as np
 from hypothesis import strategies as st
 
@@ -9,7 +10,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix,
     _get_second_matrix,
 )
-from hypothesis import reproduce_failure
 
 
 # solve
@@ -45,11 +45,10 @@ def test_numpy_solve(
     fn_tree="numpy.linalg.inv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_dim_size=6,
-        max_dim_size=6,
-        min_num_dims=2,
-        max_num_dims=2,
-    ).filter(lambda x: np.linalg.det(x[1][0]) != 0),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     test_with_out=st.just(False),
 )
 def test_numpy_inv(
