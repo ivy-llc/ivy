@@ -13,7 +13,7 @@ TOLERANCE_DICT = {
 def assert_all_close(
     ret_np, ret_from_gt_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
-    """Matches the ret_np and ret_from_np inputs element-by-element to ensure that
+    """Matches the ret_np and ret_from_gt_np inputs element-by-element to ensure that
     they are the same.
 
     Parameters
@@ -36,8 +36,8 @@ def assert_all_close(
     ret_dtype = str(ret_np.dtype)
     ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("longlong", "int64")
     assert ret_dtype == ret_from_gt_dtype, (
-        "the return with a {} backend produced data type of {}, while the return with"
-        " a {} backend returned a data type of {}.".format(
+        "the ground truth framework {} returned a {} datatype while"
+        "the backend {} returned a {} datatype".format(
             ground_truth_backend,
             ret_from_gt_dtype,
             ivy.current_backend_str(),
@@ -52,7 +52,8 @@ def assert_all_close(
             ret_from_gt_np = ret_from_gt_np.astype("float64")
         assert np.allclose(
             np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
-        ), "{} != {}".format(ret_np, ret_from_gt_np)
+        ), f" the results from backend {ivy.current_backend_str()} and ground truth framework {ground_truth_backend} " \
+           f"do not match\n\n {ret_np}!={ret_from_gt_np}"
 
 
 def assert_same_type_and_shape(values, this_key_chain=None):
@@ -73,7 +74,7 @@ def value_test(
     ground_truth_backend="TensorFlow",
 ):
     """Performs a value test for matching the arrays in ret_np_flat and
-    ret_from_np_flat.
+    ret_from_np_gt_flat.
 
     Parameters
     ----------
@@ -101,9 +102,10 @@ def value_test(
     if type(ret_np_from_gt_flat) != list:
         ret_np_from_gt_flat = [ret_np_from_gt_flat]
     assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
+        "The length of results from backend {} and ground truth framework {} does not match\n\n"
         "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
         "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
-            ret_np_flat, ret_np_from_gt_flat
+            ivy.current_backend_str(), ground_truth_backend, ret_np_flat, ret_np_from_gt_flat
         )
     )
     # value tests, iterating through each array in the flattened returns
