@@ -172,10 +172,10 @@ def count_nonzero(
     if not keepdims:
         return x
     if isinstance(axis, tuple):
-        for d in sorted(axis, reverse=True):
+        for d in sorted(axis):
             x = x.unsqueeze(d)
         return x
-    elif isinstance(x, int):
+    elif isinstance(axis, int):
         return x.unsqueeze(axis)
     return x
 
@@ -192,6 +192,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
     return torch.nansum(x, dim=axis, keepdim=keepdims, dtype=dtype)
 
 

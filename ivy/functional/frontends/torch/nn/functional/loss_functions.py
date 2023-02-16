@@ -131,13 +131,7 @@ def binary_cross_entropy_with_logits(
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def cosine_embedding_loss(
-    input1,
-    input2,
-    target,
-    margin=0.0,
-    size_average=None,
-    reduce=None,
-    reduction="mean"
+    input1, input2, target, margin=0.0, size_average=None, reduce=None, reduction="mean"
 ):
     def norm(input, axis):
         return ivy.sqrt(ivy.sum(ivy.square(input), axis=axis))
@@ -159,8 +153,9 @@ def cosine_embedding_loss(
         elif target == ivy.array(-1.0):
             loss = ivy.maximum(ivy.array(0.0), cos - ivy.array(margin))
         else:
-            _, zero = torch_frontend.promote_types_of_torch_inputs(input1,
-                                                                   ivy.array(0.0))
+            _, zero = torch_frontend.promote_types_of_torch_inputs(
+                input1, ivy.array(0.0)
+            )
             return zero
 
         return loss
@@ -170,12 +165,11 @@ def cosine_embedding_loss(
         "{}D target tensor expects {}D input tensors, but "
         "found inputs with sizes {} and {}.".format(
             target.ndim, target.ndim + 1, list(input1.shape), list(input2.shape)
-        )
+        ),
     )
 
     ivy.assertions.check_true(
-        target.ndim < 2,
-        "0D or 1D target tensor expected, multi-target not supported"
+        target.ndim < 2, "0D or 1D target tensor expected, multi-target not supported"
     )
 
     ivy.assertions.check_shape(input1, input2)
@@ -184,15 +178,18 @@ def cosine_embedding_loss(
         ivy.assertions.check_true(
             target.shape[0] == input1.shape[0],
             "The size of target tensor ({}) must match the size of input tensor ({}) "
-            "at non-singleton dimension 0 ".format(
-                target.shape[0], input1.shape[0])
+            "at non-singleton dimension 0 ".format(target.shape[0], input1.shape[0]),
         )
 
     if target.ndim == 0:
         loss = calculate_loss(input1, input2, target)
     else:
-        loss = ivy.array([calculate_loss(input1[i], input2[i], target[i])
-                          for i in range(input1.shape[0])])
+        loss = ivy.array(
+            [
+                calculate_loss(input1[i], input2[i], target[i])
+                for i in range(input1.shape[0])
+            ]
+        )
 
     reduction = _get_reduction(reduction, size_average, reduce)
     loss = reduction(loss)

@@ -260,3 +260,8 @@ def tensor(
     pin_memory=False,
 ):
     return ivy.array(data, dtype=dtype, device=device)
+
+
+@to_ivy_arrays_and_back
+def as_strided(input, size, stride, storage_offset=None):
+    return ivy.as_strided(input, size, stride, storage_offset)
