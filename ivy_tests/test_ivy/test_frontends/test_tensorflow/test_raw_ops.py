@@ -3095,7 +3095,7 @@ def _conv2d_helper(draw):
                                  (pad_top, pad_bottom),
                                  (pad_left, pad_right)]
 
-    else:
+    elif padding == "SAME" or padding == "VALID":
         explicit_paddings = []
         padding = padding
 
@@ -3127,9 +3127,7 @@ def test_tensorflow_Conv2D(
         dilation, \
         data_format, \
         stride, \
-        padding, \
-        explicit_paddings = x_f_d_df
-
+        padding = x_f_d_df
     # Broadcast strides and dilations to correct dims for the ground truth
     # backend func to run correctly
     stride = _convolution_broadcast_helper(
