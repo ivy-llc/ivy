@@ -332,19 +332,19 @@ def handle_view(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, copy=None, **kwargs):
         ret = fn(*args, **kwargs)
-        if copy:
+        if copy or ivy.backend in ("numpy", "torch"):
             return ret
-        if ivy.exists(args[0]._base):
-            if ivy.backend in ("jax", "tensorflow"):
-                warnings.warn(
-                    "Creating many views will lead to overhead "
-                    "when performing inplace updates with this backend"
-                )
-            base = args[0]._base
+        original = ivy.to_ivy(args[0])
+        if ivy.exists(original._base):
+            warnings.warn(
+                "Creating many views will lead to overhead "
+                "when performing inplace updates with this backend"
+            )
+            base = original._base
             ret._base = base
-            ret._manipulation_stack = python_copy.copy(args[0]._manipulation_stack)
+            ret._manipulation_stack = python_copy.copy(original._manipulation_stack)
         else:
-            base = args[0]
+            base = original
             ret._base = base
         base._view_refs.append(weakref.ref(ret))
         ret._manipulation_stack.append((fn, args[1:], kwargs))
