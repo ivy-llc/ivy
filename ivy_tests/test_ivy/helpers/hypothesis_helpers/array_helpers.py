@@ -792,12 +792,12 @@ def array_values(
                 values = [complex(*v) for v in values]
     else:
         values = draw(list_of_length(x=st.booleans(), length=size))
-    if dtype=='bfloat16':
-        #check bfloat16 behavior enabled or not
+    if dtype == "bfloat16":
+        # check bfloat16 behavior enabled or not
         try:
-            np.dtype('bfloat16')
+            np.dtype("bfloat16")
         except:
-            #enables bfloat16 behavior with possibly no side-effects
+            # enables bfloat16 behavior with possibly no side-effects
             import paddle_bfloat
 
     array = np.asarray(values, dtype=dtype)

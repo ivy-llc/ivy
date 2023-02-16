@@ -14,7 +14,7 @@ except:
 
 
 def framework_comparator(frontend):
-    if ivy.current_backend_str()!=frontend.split('/')[0]:
+    if ivy.current_backend_str() != frontend.split("/")[0]:
         return False
     if frontend.split("/")[0] == "jax":
         fw = frontend.split("/")[1] + frontend.split("/")[3]
@@ -635,7 +635,6 @@ def test_frontend_function(
         shallow=False,
     )
 
-
     if "/" in frontend:
         # multiversion zone, changes made in non-multiversion zone should
         # be applied here too
@@ -819,7 +818,6 @@ def test_frontend_function(
         except Exception as e:
             ivy.unset_backend()
             raise e
-
 
     ret_np_flat = flatten_and_to_np(ret=ret)
 
@@ -1343,8 +1341,8 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    if isinstance(frontend,list):
-        frontend,frontend_proc=frontend
+    if isinstance(frontend, list):
+        frontend, frontend_proc = frontend
     _assert_dtypes_are_valid(init_input_dtypes)
     _assert_dtypes_are_valid(method_input_dtypes)
 
