@@ -171,6 +171,40 @@ def test_jax_numpy_arctan2(
     )
 
 
+# convolve
+@handle_frontend_test(
+    fn_tree = "jax.numpy.convolve",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+)
+def test_jax_numpy_convolve(
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        v=x[1],
+        mode='full',
+        precision=None,
+    )
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.cos",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
