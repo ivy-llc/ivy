@@ -130,7 +130,10 @@ def t(input):
     if input.ndim > 2:
         raise ivy.exceptions.IvyException("t(input) expects a tensor with <= 2 dimensions, but self is %dD" % input.ndim)
 
-    return ivy.swapaxes(input, 0, 1)
+    if input.ndim == 2:
+        return ivy.swapaxes(input, 0, 1)
+    else:
+        return input
 
 
 @to_ivy_arrays_and_back
