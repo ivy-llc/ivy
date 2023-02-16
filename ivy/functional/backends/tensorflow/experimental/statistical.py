@@ -3,7 +3,7 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_math_ops
 
-from ivy.func_wrapper import with_unsupported_dtypes, wth_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 
 
@@ -37,7 +37,15 @@ def nanmean(
     return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
 
 
-@with_supported_dtypes({"2.9.1 and below": ("int32", "int64", )}, backend_version)
+@with_supported_dtypes(
+    {
+        "2.9.1 and below": (
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
 def unravel_index(
     indices: Union[tf.Tensor, tf.Variable],
     shape: Tuple[int],

@@ -19,13 +19,13 @@ def _reduce_strides_dilations(dim, stride, dilations):
 
 @to_ivy_arrays_and_back
 def atrous_conv2d(value, filters, rate, padding):
-    return ivy.conv2d(value, filters, 1, padding, dilations=[rate]*2)
+    return ivy.conv2d(value, filters, 1, padding, dilations=[rate] * 2)
 
 
 @to_ivy_arrays_and_back
 def atrous_conv2d_transpose(value, filters, output_shape, rate, padding):
     return ivy.conv2d_transpose(
-        value, filters, 1, padding, output_shape=output_shape, dilations=[rate]*2
+        value, filters, 1, padding, output_shape=output_shape, dilations=[rate] * 2
     )
 
 
@@ -145,13 +145,15 @@ def depthwise_conv2d(
 ):
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     fc = filter.shape[-2]
-    filter = filter.reshape([*filter.shape[0:2], 1, filter.shape[-2]*filter.shape[-1]])
+    filter = filter.reshape(
+        [*filter.shape[0:2], 1, filter.shape[-2] * filter.shape[-1]]
+    )
     return ivy.conv_general_dilated(
         input,
         filter,
         strides,
         padding,
-        data_format='channel_last' if data_format[-1] == 'C' else 'channel_first',
+        data_format="channel_last" if data_format[-1] == "C" else "channel_first",
         dilations=dilations,
         feature_group_count=fc,
     )
