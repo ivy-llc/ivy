@@ -16,6 +16,8 @@ from ivy.func_wrapper import (
 #      Permit multiple axis.
 #      Flatten input when axis == None.
 #      Modify documentation to match the above modifications.
+#      Tensorflow has different limits in each bins limits
+#           (Test example: a = [1, 2, 3], bins = [1, 2, 3])
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

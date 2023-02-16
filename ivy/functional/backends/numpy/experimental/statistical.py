@@ -45,30 +45,38 @@ def histogram(
         if weights is not None:
             a_is, a_ks = a.shape[:axis], a.shape[axis + 1:]
             weights_is, weights_ks = weights.shape[:axis], weights.shape[axis + 1:]
-            out_shape = list(a.shape)
-            out_shape[axis] = np.array(bins).size - 1
-            histogram_values = np.zeros(shape=out_shape)
+            histogram_values = []
             for a_i, weights_i in zip(np.ndindex(a_is), np.ndindex(weights_is)):
                 for a_k, weights_k in zip(np.ndindex(a_ks), np.ndindex(weights_ks)):
-                    f = np.histogram(
+                    ret_1D = np.histogram(
                         a[a_i + np.s_[:, ] + a_k],
                         bins=bins,
                         range=range,
                         weights=weights[weights_i + np.s_[:, ] + weights_k],
                     )[0]
-                    f_js = f.shape
-                    for f_j in np.ndindex(f_js):
-                        histogram_values[a_i + f_j + a_k] = f[f_j]
+                    histogram_values.append(ret_1D)
+            histogram_values = np.array(histogram_values)
+            out_shape = list(a.shape)
+            del out_shape[axis]
+            out_shape.insert(0, len(bins) - 1)
+            histogram_values = histogram_values.transpose().reshape(out_shape)
         else:
-            histogram_values = np.apply_along_axis(
-                lambda x: np.histogram(
-                    a=x,
-                    bins=bins,
-                    range=range,
-                )[0],
-                axis,
-                a,
-            )
+            a_is, a_ks = a.shape[:axis], a.shape[axis + 1:]
+            histogram_values = []
+            for a_i in np.ndindex(a_is):
+                for a_k in np.ndindex(a_ks):
+                    print(a_i, a_k)
+                    ret_1D = np.histogram(
+                        a[a_i + np.s_[:, ] + a_k],
+                        bins=bins,
+                        range=range,
+                    )[0]
+                    histogram_values.append(ret_1D)
+            histogram_values = np.array(histogram_values)
+            out_shape = list(a.shape)
+            del out_shape[axis]
+            out_shape.insert(0, len(bins)-1)
+            histogram_values = histogram_values.transpose().reshape(out_shape)
         if dtype:
             histogram_values = histogram_values.astype(dtype)
             bins_out = np.array(bins_out).astype(dtype)

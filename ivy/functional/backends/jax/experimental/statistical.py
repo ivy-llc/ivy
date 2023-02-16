@@ -1,4 +1,7 @@
 from typing import Optional, Union, Tuple, Sequence
+
+import numpy as np
+
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
@@ -43,30 +46,42 @@ def histogram(
         if weights is not None:
             a_is, a_ks = a.shape[:axis], a.shape[axis + 1:]
             weights_is, weights_ks = weights.shape[:axis], weights.shape[axis + 1:]
-            out_shape = list(a.shape)
-            out_shape[axis] = jnp.array(bins).size - 1
-            histogram_values = jnp.zeros(shape=out_shape)
-            for a_i, weights_i in zip(jnp.ndindex(a_is), jnp.ndindex(weights_is)):
-                for a_k, weights_k in zip(jnp.ndindex(a_ks), jnp.ndindex(weights_ks)):
-                    f = jnp.histogram(
-                        a[a_i + jnp.s_[:, ] + a_k],
+            ndindex = []
+            ndindex_shape = np.zeros(a.shape)
+            for dim in np.arange(a.ndim):
+
+            histogram_values = []
+            for a_i, weights_i in zip(jnp.arange(a_is), jnp.arange(weights_is)):
+                for a_k, weights_k in zip(jnp.arange(a_ks), jnp.arange(weights_ks)):
+                    ret_1D = jnp.histogram(
+                        a[(a_i,) + jnp.s_[:, ] + (a_k,)],
                         bins=bins,
                         range=range,
                         weights=weights[weights_i + jnp.s_[:, ] + weights_k],
                     )[0]
-                    f_js = f.shape
-                    for f_j in jnp.ndindex(f_js):
-                        histogram_values[a_i + f_j + a_k] = f[f_j]
+                    histogram_values.append(ret_1D)
+            histogram_values = jnp.array(histogram_values)
+            out_shape = list(a.shape)
+            del out_shape[axis]
+            out_shape.insert(0, len(bins) - 1)
+            histogram_values = histogram_values.transpose().reshape(out_shape)
         else:
-            histogram_values = jnp.apply_along_axis(
-                lambda x: jnp.histogram(
-                    a=x,
-                    bins=bins,
-                    range=range,
-                )[0],
-                axis,
-                a,
-            )
+            a_is, a_ks = a.shape[:axis], a.shape[axis + 1:]
+            print(a_is, a_ks)
+            histogram_values = []
+            for a_i in jnp.arange(a_is):
+                for a_k in jnp.arange(a_ks):
+                    ret_1D = jnp.histogram(
+                        a[(a_i,) + jnp.s_[:, ] + (a_k,)],
+                        bins=bins,
+                        range=range,
+                    )[0]
+                    histogram_values.append(ret_1D)
+            histogram_values = jnp.array(histogram_values)
+            out_shape = list(a.shape)
+            del out_shape[axis]
+            out_shape.insert(0, len(bins) - 1)
+            histogram_values = histogram_values.transpose().reshape(out_shape)
         if dtype:
             histogram_values = histogram_values.astype(dtype)
             bins_out = jnp.array(bins_out).astype(dtype)
