@@ -2028,7 +2028,7 @@ def test_numpy_instance_itruediv__(
     init_tree="numpy.array",
     method_name="__ipow__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     power=helpers.ints(min_value=1, max_value=3),
 )
@@ -2216,7 +2216,7 @@ def test_numpy_instance_abs__(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "object": x[0],
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={},
