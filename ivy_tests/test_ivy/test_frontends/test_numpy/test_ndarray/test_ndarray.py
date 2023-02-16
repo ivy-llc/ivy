@@ -1290,7 +1290,8 @@ def test_numpy_instance_rtruediv__(
     init_tree="numpy.array",
     method_name="__pow__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
     ),
     power=helpers.ints(min_value=1, max_value=3),
 )
