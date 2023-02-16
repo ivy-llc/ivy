@@ -526,7 +526,7 @@ class Tensor:
         return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
-    def cumsum_(self, dim, dtype=None):
+    def cumsum_(self, dim, *, dtype=None):
         self._ivy_array = self.cumsum(dim, dtype).ivy_array
         return self
 

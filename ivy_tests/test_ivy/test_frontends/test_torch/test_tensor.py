@@ -3682,7 +3682,7 @@ def test_torch_instance_cumsum(
     init_tree="torch.tensor",
     method_name="cumsum_",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     dim=helpers.get_axis(
