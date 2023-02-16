@@ -2554,6 +2554,7 @@ def test_tensorflow_MatrixInverse(  # NOQA
 
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Rint",
+    aliases="tensorflow.raw_ops.Round",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
