@@ -1,4 +1,5 @@
 import ivy
+from ivy import with_unsupported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
 )
@@ -68,6 +69,7 @@ def avg_pool2d(
     )
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def max_pool2d(
     input,

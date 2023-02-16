@@ -22,7 +22,7 @@ def sort(a, axis=-1, kind=None, order=None):
 
 @to_ivy_arrays_and_back
 def msort(a):
-    return ivy.sort(a, axis=0)
+    return ivy.msort(a)
 
 
 @to_ivy_arrays_and_back
@@ -30,7 +30,6 @@ def sort_complex(a):
     return ivy.sort(a)
 
 
-# All backends need to be implemented for this function.
 @to_ivy_arrays_and_back
 def lexsort(keys, /, *, axis=-1):
     return ivy.lexsort(keys, axis=axis)
