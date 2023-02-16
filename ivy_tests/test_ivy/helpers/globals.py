@@ -35,7 +35,8 @@ CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
-CURRENT_FRONTEND_STR=''
+CURRENT_FRONTEND_STR = ""
+
 
 @dataclass(frozen=True)  # ToDo use kw_only=True when version is updated
 class TestData:
@@ -180,10 +181,9 @@ def _set_frontend(framework: str):
     if isinstance(framework, list):
 
         CURRENT_FRONTEND = FWS_DICT[framework[0].split("/")[0]]
-        CURRENT_FRONTEND_STR=framework
+        CURRENT_FRONTEND_STR = framework
     else:
         CURRENT_FRONTEND = FWS_DICT[framework]
-
 
 
 def _set_backend(framework: str):

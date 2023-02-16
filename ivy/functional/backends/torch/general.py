@@ -4,10 +4,11 @@ from functools import reduce
 from numbers import Number
 from operator import mul
 from typing import Optional, Union, Sequence, Callable, List
+
 try:
     import functorch
-except:
-    functorch=() #for torch 1.10.1
+except ImportError:
+    functorch = ()  # for torch 1.10.1
 import numpy as np
 import torch
 

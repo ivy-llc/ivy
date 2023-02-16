@@ -1035,15 +1035,14 @@ def array_values(
             if "complex" in dtype:
                 values = [complex(*v) for v in values]
     else:
-        values = draw(list_of_length(x=st.booleans(), length=size))
+        values = draw(list_of_size(x=st.booleans(), length=size))
     if dtype == "bfloat16":
         # check bfloat16 behavior enabled or not
         try:
             np.dtype("bfloat16")
-        except:
+        except Exception:
             # enables bfloat16 behavior with possibly no side-effects
-            import paddle_bfloat
-
+            import paddle_bfloat # noqa
 
     array = np.asarray(values, dtype=dtype)
 
