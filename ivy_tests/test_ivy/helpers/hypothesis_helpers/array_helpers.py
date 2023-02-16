@@ -172,15 +172,19 @@ def lists(
     [1.0, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]
 
     """
-    integers = (
-        number_helpers.ints(min_value=size_bounds[0], max_value=size_bounds[1])
-        if size_bounds
-        else number_helpers.ints()
-    )
-    if not isinstance(min_size, int):
-        min_size = draw(st.shared(integers, key=min_size))
-    if not isinstance(max_size, int):
-        max_size = draw(st.shared(integers, key=max_size))
+    if size_bounds[0] > size_bounds[1]:
+        size_bounds = (size_bounds[1], size_bounds[0])
+
+    if not isinstance(min_size, int) or not isinstance(max_size, int):
+        integers = (
+            number_helpers.ints(min_value=size_bounds[0], max_value=size_bounds[1])
+            if size_bounds
+            else number_helpers.ints()
+        )
+        if not isinstance(min_size, int):
+            min_size = draw(st.shared(integers, key=min_size))
+        else:
+            max_size = draw(st.shared(integers, key=max_size))
 
     min_size, max_size = abs(min_size), abs(max_size)
 
@@ -189,7 +193,7 @@ def lists(
     else:
         min_size, max_size = (max_size, min_size)
 
-    return draw(st.lists(x=x, min_size=min_size, max_size=max_size))
+    return draw(st.lists(x, min_size=min_size, max_size=max_size))
 
 
 @st.composite
