@@ -3072,15 +3072,21 @@ def _conv2d_helper(draw):
         pad_right = draw(st.integers(min_value=0, max_value=3))
 
         if data_format == "NHWC":
-            explicit_paddings = [(0, 0), (pad_top, pad_bottom), (pad_left, pad_right), (0, 0)]
+            explicit_paddings = [(0, 0),
+                                 (pad_top, pad_bottom),
+                                 (pad_left, pad_right),
+                                 (0, 0)]
         else:
-            explicit_paddings = [(0, 0), (0, 0), (pad_top, pad_bottom), (pad_left, pad_right)]
+            explicit_paddings = [(0, 0),
+                                 (0, 0),
+                                 (pad_top, pad_bottom),
+                                 (pad_left, pad_right)]
 
     else:
         explicit_paddings = []
 
-    return input_dtype, x, filters, dilations, data_format, strides, padding, explicit_paddings
-
+    return input_dtype, \
+        x, filters, dilations, data_format, strides, padding, explicit_paddings
 
 
 @handle_frontend_test(
