@@ -139,6 +139,14 @@ class Array(
             self._dynamic_backend = dynamic_backend
         else:
             self._dynamic_backend = ivy.get_dynamic_backend()
+        if hasattr(data, "base"):
+            self._base = data.base
+        elif hasattr(data, "_base"):
+            self._base = data._base
+        else:
+            self._base = None
+        self._view_refs = []
+        self._manipulation_stack = []
 
     # Properties #
     # ---------- #

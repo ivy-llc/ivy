@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_view,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -392,6 +393,7 @@ def permute_dims(
     return current_backend(x).permute_dims(x, axes, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

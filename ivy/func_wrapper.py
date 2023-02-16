@@ -1,6 +1,8 @@
 import ivy
 import functools
 import logging
+import weakref
+import copy as python_copy
 from types import FunctionType
 from typing import Callable
 import inspect
@@ -22,6 +24,7 @@ FN_DECORATORS = [
     "with_unsupported_dtypes",
     "handle_nans",
     "handle_array_like_without_promotion",
+    "handle_view",
 ]
 
 
@@ -113,7 +116,7 @@ def handle_array_function(func):
                         overloaded_types.append(type(getattr(arg, a[0])))
                         if getattr(
                             arg, a[0]
-                        ).__array_function__ is not ivy.Array.__array_function__ and not isinstance(
+                        ).__array_function__ is not ivy.Array.__array_function__ and not isinstance(  # noqa
                             getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
                         ):
                             index = len(overloaded_args)
@@ -322,6 +325,27 @@ def to_native_arrays_and_back(fn: Callable) -> Callable:
     and return arrays are all converted to `ivy.Array` instances.
     """
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
+
+
+def handle_view(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, copy=None, **kwargs):
+        ret = fn(*args, **kwargs)
+        if copy:
+            return ret
+        if ivy.exists(args[0]._base):
+            base = args[0]._base
+            ret._base = base
+            ret._manipulation_stack = python_copy.copy(args[0]._manipulation_stack)
+        else:
+            base = args[0]
+            ret._base = base
+        base._view_refs.append(weakref.ref(ret))
+        ret._manipulation_stack.append((fn, args[1:], kwargs))
+        return ret
+
+    new_fn.handle_view = True
+    return new_fn
 
 
 # Data Type Handling #
