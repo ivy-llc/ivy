@@ -95,3 +95,16 @@ def extract(condition, arr):
     if condition.dtype is not bool:
         condition = condition != 0
     return arr[condition]
+
+
+@to_ivy_arrays_and_back
+def count_nonzero(a, axis=None):
+    if axis is None:
+        return ivy.count_nonzero(a)
+
+    return ivy.sum(a != 0, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def flatnonzero(a):
+    return ivy.flatten(ivy.nonzero(a), end_axis=-1)
