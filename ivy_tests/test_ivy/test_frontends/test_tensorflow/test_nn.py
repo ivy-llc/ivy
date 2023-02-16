@@ -49,7 +49,9 @@ def _x_and_filters(
         dilations = draw(
             st.one_of(
                 st.integers(dilation_min, dilation_max),
-                st.lists(st.integers(dilation_min, dilation_max), min_size=dim, max_size=dim),
+                st.lists(
+                    st.integers(dilation_min, dilation_max), min_size=dim, max_size=dim
+                ),
             )
         )
     if atrous:
@@ -58,7 +60,9 @@ def _x_and_filters(
         stride = draw(
             st.one_of(
                 st.integers(stride_min, stride_max),
-                st.lists(st.integers(stride_min, stride_max), min_size=dim, max_size=dim),
+                st.lists(
+                    st.integers(stride_min, stride_max), min_size=dim, max_size=dim
+                ),
             )
         )
     fstride = [stride] * dim if isinstance(stride, int) else stride
@@ -104,7 +108,9 @@ def _x_and_filters(
         if transpose:
             output_shape = [
                 x_shape[0],
-                _deconv_length(x_w, fstride[0], filter_shape[0], padding, fdilations[0]),
+                _deconv_length(
+                    x_w, fstride[0], filter_shape[0], padding, fdilations[0]
+                ),
                 d_in,
             ]
     elif dim == 2:
