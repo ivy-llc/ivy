@@ -16,10 +16,11 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
+    temp = input
     if hasattr(axis, "__iter__"):
         for dim in axis:
-            input = torch.median(
-                input,
+            temp = torch.median(
+                temp,
                 dim=dim,
                 keepdim=keepdims,
             )[0]
