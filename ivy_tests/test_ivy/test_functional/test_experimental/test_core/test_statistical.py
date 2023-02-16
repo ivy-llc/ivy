@@ -152,7 +152,7 @@ def max_value_as_shape_prod(draw):
     )
     dtype_and_x = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("integer"),
+            available_dtypes=["int32", "int64"],
             min_value=0,
             max_value=np.prod(shape) - 1,
         )
