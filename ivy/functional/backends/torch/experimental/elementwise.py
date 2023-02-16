@@ -192,6 +192,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
     return torch.nansum(x, dim=axis, keepdim=keepdims, dtype=dtype)
 
 

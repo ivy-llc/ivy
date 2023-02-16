@@ -998,8 +998,13 @@ def matmul(
 
     """
     return current_backend(x1).matmul(
-        x1, x2, transpose_a=transpose_a, transpose_b=transpose_b,
-        adjoint_a=adjoint_a, adjoint_b=adjoint_b, out=out
+        x1,
+        x2,
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
+        adjoint_a=adjoint_a,
+        adjoint_b=adjoint_b,
+        out=out,
     )
 
 

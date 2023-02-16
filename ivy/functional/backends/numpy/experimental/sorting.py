@@ -11,3 +11,13 @@ def msort(
 
 
 msort_support_native_out = False
+
+
+# lexsort
+def lexsort(
+    keys: np.ndarray, /, *, axis: int = -1, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.asarray(np.lexsort(keys, axis=axis))
+
+
+lexsort_support_native_out = False

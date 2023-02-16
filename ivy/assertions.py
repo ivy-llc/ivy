@@ -72,10 +72,15 @@ def check_exists(x, inverse=False, message=""):
         )
 
 
-def check_elem_in_list(elem, list, message=""):
-    message = message if message != "" else "{} must be one of {}".format(elem, list)
-    if elem not in list:
-        raise ivy.exceptions.IvyException(message)
+def check_elem_in_list(elem, list, inverse=False, message=""):
+    if inverse and elem in list:
+        raise ivy.exceptions.IvyException(
+            message if message != "" else "{} must not be one of {}".format(elem, list)
+        )
+    elif not inverse and elem not in list:
+        raise ivy.exceptions.IvyException(
+            message if message != "" else "{} must be one of {}".format(elem, list)
+        )
 
 
 def check_true(expression, message="expression must be True"):

@@ -59,8 +59,13 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array(11.)
         """
         return ivy.matmul(
-            self._data, x2, transpose_a=transpose_a, transpose_b=transpose_b,
-            adjoint_a=adjoint_a, adjoint_b=adjoint_b, out=out
+            self._data,
+            x2,
+            transpose_a=transpose_a,
+            transpose_b=transpose_b,
+            adjoint_a=adjoint_a,
+            adjoint_b=adjoint_b,
+            out=out,
         )
 
     def cholesky(
