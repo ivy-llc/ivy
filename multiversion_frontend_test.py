@@ -56,6 +56,8 @@ class NativeClass:
             A reperence to the framework-specific class being represented.
         """
         self._native_class = native_class
+
+
 def _get_type_dict(framework):
     return {
         "valid": framework.valid_dtypes,
@@ -68,9 +70,7 @@ def _get_type_dict(framework):
         ),
         "complex": framework.valid_complex_dtypes,
         "real_and_complex": tuple(
-            set(framework.valid_numeric_dtypes).union(
-                framework.valid_complex_dtypes
-            )
+            set(framework.valid_numeric_dtypes).union(framework.valid_complex_dtypes)
         ),
         "float_and_complex": tuple(
             set(framework.valid_float_dtypes).union(framework.valid_complex_dtypes)
@@ -80,10 +80,11 @@ def _get_type_dict(framework):
         ),
     }
 
+
 def dtype_handler(framework):
-    framework=importlib.import_module('ivy.functional.backends.'+framework)
-    dtypes=_get_type_dict(framework)
-    dtypes=jsonpickle.dumps(dtypes)
+    framework = importlib.import_module("ivy.functional.backends." + framework)
+    dtypes = _get_type_dict(framework)
+    dtypes = jsonpickle.dumps(dtypes)
     print(dtypes)
 
 
@@ -109,7 +110,7 @@ if __name__ == "__main__":
     while j:
         try:
             z = input()
-            if z=='1':
+            if z == "1":
                 dtype_handler(arg_lis[2].split("/")[0])
                 continue
 
