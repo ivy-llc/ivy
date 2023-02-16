@@ -18,6 +18,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -2026,6 +2027,8 @@ inputs broadcast to.</p></li>
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_array_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#set_array_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_array_mode" title="Permalink to this definition"></a></dt>
 <dd><p>Set the mode of whether to convert inputs to ivy.NativeArray, then convert
 outputs back to ivy.Array</p>
+<section id="parameter">
+<h2>Parameter<a class="headerlink" href="#parameter" title="Permalink to this heading"></a></h2>
 <dl class="simple">
 <dt>mode</dt><dd><p>boolean whether to perform ivy.Array conversions</p>
 </dd>
@@ -2042,10 +2045,11 @@ outputs back to ivy.Array</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">rtype</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
@@ -2053,6 +2057,8 @@ outputs back to ivy.Array</p>
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_exception_trace_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#set_exception_trace_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_exception_trace_mode" title="Permalink to this definition"></a></dt>
 <dd><p>Set the mode of whether to show frontend-truncated exception stack traces,
 ivy-truncated exception stack traces or full exception stack traces</p>
+<section id="id1">
+<h2>Parameter<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <dl class="simple">
 <dt>mode</dt><dd><p>str exeption trace mode, one of <cite>ivy</cite>, <cite>full</cite> or <cite>frontend</cite></p>
 </dd>
@@ -2069,10 +2075,11 @@ ivy-truncated exception stack traces or full exception stack traces</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">rtype</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
@@ -2135,6 +2142,8 @@ ivy-truncated exception stack traces or full exception stack traces</p>
 <dt class="sig sig-object py" id="ivy.functional.ivy.general.set_nestable_mode">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_nestable_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#set_nestable_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_nestable_mode" title="Permalink to this definition"></a></dt>
 <dd><p>Set the mode of whether to check if function inputs are ivy.Container</p>
+<section id="id2">
+<h2>Parameter<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
 <dl class="simple">
 <dt>mode</dt><dd><p>boolean whether to check if function inputs are ivy.Container</p>
 </dd>
@@ -2151,10 +2160,11 @@ ivy-truncated exception stack traces or full exception stack traces</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">rtype</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
@@ -2187,6 +2197,8 @@ To be set in seconds.</p>
 <dt class="sig sig-object py" id="ivy.functional.ivy.general.set_shape_array_mode">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_shape_array_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#set_shape_array_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_shape_array_mode" title="Permalink to this definition"></a></dt>
 <dd><p>Set the mode of returning shape as ivy.Array to the given mode instance</p>
+<section id="id3">
+<h2>Parameter<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h2>
 <dl class="simple">
 <dt>mode</dt><dd><p>boolean whether to return shape as ivy.Array</p>
 </dd>
@@ -2203,10 +2215,11 @@ To be set in seconds.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">rtype</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
@@ -2214,6 +2227,8 @@ To be set in seconds.</p>
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_show_func_wrapper_trace_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#set_show_func_wrapper_trace_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_show_func_wrapper_trace_mode" title="Permalink to this definition"></a></dt>
 <dd><p>Set the mode of whether to show the full stack trace with function
 wrapping traces</p>
+<section id="id4">
+<h2>Parameter<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h2>
 <dl class="simple">
 <dt>mode</dt><dd><p>boolean whether to perform ivy.Array conversions</p>
 </dd>
@@ -2230,10 +2245,11 @@ wrapping traces</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">rtype</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
@@ -2452,7 +2468,7 @@ data type of x.</p>
 <li><p><strong>ValueError</strong> – If x isn’t a class instance of ivy.Array or ivy.NativeArray, an exception will
     be raised.</p></li>
 <li><p><strong>This function is nestable</strong><strong>, </strong><strong>and therefore also accepts :code:'ivy.Container'</strong> – </p></li>
-<li><p><strong>instance in place of the argument.</strong> – </p></li>
+<li><p><strong>instance in place</strong><strong> of </strong><strong>the argument.</strong> – </p></li>
 </ul>
 </dd>
 </dl>
