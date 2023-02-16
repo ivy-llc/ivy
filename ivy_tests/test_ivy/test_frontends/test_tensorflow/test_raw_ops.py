@@ -3061,39 +3061,31 @@ def test_tensorflow_Elu(
 
 
 @st.composite
-def explicit_paddings(draw):
-    x, filters, strides, dilations, data_format = _x_and_filters(draw)
+def _conv2d_helper(draw):
+    input_dtype, x, filters, strides, dilations, data_format, padding = _x_and_filters(draw)
 
-    padding = draw(
-        st.lists(
-            st.tuples(
-                st.integers(min_value=0, max_value=3),
-                st.integers(min_value=0, max_value=3),
-            ),
-            min_size=2,
-            max_size=2,
-        )
-    )
+    if padding == "EXPLICIT":
+        explicit_paddings = padding
+        pad_top = draw(st.integers(min_value=0, max_value=3))
+        pad_bottom = draw(st.integers(min_value=0, max_value=3))
+        pad_left = draw(st.integers(min_value=0, max_value=3))
+        pad_right = draw(st.integers(min_value=0, max_value=3))
 
-    if data_format == 'NCHW':
-        padding.append((0, 0))
+        if data_format == "NHWC":
+            explicit_paddings = [(0, 0), (pad_top, pad_bottom), (pad_left, pad_right), (0, 0)]
+        else:
+            explicit_paddings = [(0, 0), (0, 0), (pad_top, pad_bottom), (pad_left, pad_right)]
+
     else:
-        padding.insert((0, 0), (0, 0))
+        explicit_paddings = []
 
-    return padding
+    return input_dtype, x, filters, dilations, data_format, strides, padding, explicit_paddings
+
 
 
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Conv2D",
-    x_f_d_df=_x_and_filters(
-        dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NHWC", "NCHW"]),
-        padding=st.sampled_from(["SAME", "VALID", "EXPLICIT"]),
-        explicit_paddings=explicit_paddings(),
-        type="2d",
-        dilation_min=1,
-        dilation_max=1,
-    ),
+    x_f_d_df=_conv2d_helper(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_Conv2D(
