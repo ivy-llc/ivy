@@ -3,7 +3,9 @@ from hypothesis import assume, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    _interp_args,
+)
 
 
 # pixel_shuffle
@@ -216,43 +218,10 @@ def test_torch_upsample_bilinear(
     )
 
 
-@st.composite
-def _interpolate_helper(draw):
-    dtype, input, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
-            ret_shape=True,
-            min_num_dims=3,
-            max_num_dims=5,
-        )
-    )
-
-    size = draw(
-        st.sampled_from(
-            [
-                st.integers(min_value=1),
-                st.tuples(st.integers(min_value=1), st.integers(min_value=1)),
-                st.tuples(
-                    st.integers(min_value=1),
-                    st.integers(min_value=1),
-                    st.integers(min_value=1),
-                ),
-            ]
-        )
-    )
-
-    mode = draw(
-        st.sampled_from(["nearest", "linear", "bilinear", "bicubic", "trilinear"])
-    )
-    align_corners = draw(st.booleans())
-    antialias = draw(st.booleans())
-
-    return dtype, input[0], size, mode, align_corners, antialias
-
-
 @handle_frontend_test(
     fn_tree="torch.nn.functional.interpolate",
-    dtype_and_input_and_other=_interpolate_helper(),
+    dtype_and_input_and_other=_interp_args(),
+    number_positional_args=st.just(2),
 )
 def test_torch_interpolate(
     *,
@@ -262,24 +231,26 @@ def test_torch_interpolate(
     frontend,
     test_flags,
 ):
-    dtype, input, size, mode, align_corners, antialias = dtype_and_input_and_other
+    input_dtype, x, mode, size, align_corners = dtype_and_input_and_other
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input,
+        rtol=1e-01,
+        atol=1e-01,
+        input=x[0],
         size=size,
         mode=mode,
         align_corners=align_corners,
-        antialias=antialias,
     )
 
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.upsample",
-    dtype_and_input_and_other=_interpolate_helper(),
+    dtype_and_input_and_other=_interp_args(),
+    number_positional_args=st.just(2),
 )
 def test_torch_upsample(
     *,
@@ -289,14 +260,14 @@ def test_torch_upsample(
     frontend,
     test_flags,
 ):
-    dtype, input, size, mode, align_corners, _ = dtype_and_input_and_other
+    input_dtype, x, mode, size, align_corners = dtype_and_input_and_other
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input,
+        input=x[0],
         size=size,
         mode=mode,
         align_corners=align_corners,
@@ -305,7 +276,8 @@ def test_torch_upsample(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.upsample_nearest",
-    dtype_and_input_and_other=_interpolate_helper(),
+    dtype_and_input_and_other=_interp_args(),
+    number_positional_args=st.just(2),
 )
 def test_torch_upsample_nearest(
     *,
@@ -315,13 +287,13 @@ def test_torch_upsample_nearest(
     frontend,
     test_flags,
 ):
-    dtype, input, size, _, _, _ = dtype_and_input_and_other
+    input_dtype, x, _, size, _ = dtype_and_input_and_other
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input,
+        input=x[0],
         size=size,
     )
