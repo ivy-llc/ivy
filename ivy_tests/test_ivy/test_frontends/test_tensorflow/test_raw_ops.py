@@ -3062,7 +3062,13 @@ def test_tensorflow_Elu(
 
 @st.composite
 def _conv2d_helper(draw):
-    input_dtype, x, filters, strides, dilations, data_format, padding = _x_and_filters(draw)
+    input_dtype, \
+        x, \
+        filters, \
+        strides, \
+        dilations, \
+        data_format, \
+        padding = _x_and_filters(draw)
 
     if padding == "EXPLICIT":
         explicit_paddings = padding
@@ -3085,8 +3091,7 @@ def _conv2d_helper(draw):
     else:
         explicit_paddings = []
 
-    return input_dtype, \
-        x, filters, dilations, data_format, strides, padding, explicit_paddings
+    return input_dtype, x, filters, dilations, data_format, strides, padding, explicit_paddings
 
 
 @handle_frontend_test(
@@ -3102,7 +3107,14 @@ def test_tensorflow_Conv2D(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, filters, dilation, data_format, stride, padding, explicit_paddings = x_f_d_df
+    input_dtype, \
+        x, \
+        filters, \
+        dilation, \
+        data_format, \
+        stride, \
+        padding, \
+        explicit_paddings = x_f_d_df
 
     # Broadcast strides and dilations to correct dims for the ground truth
     # backend func to run correctly
