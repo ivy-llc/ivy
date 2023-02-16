@@ -76,14 +76,14 @@
 Contents
 --------
 
-* `Overview`_
+* `Ivy란?`_
 * `시작하기`_
 * `Background`_
 * `Design`_
 * `Extensions`_
 * `Contributing`_
 
-Overview
+Ivy란?
 --------
 Ivy는 JAX, TensorFlow, PyTorch 및 Numpy를 지원하는 ML 프레임워크입니다.
 
