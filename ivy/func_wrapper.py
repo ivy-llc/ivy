@@ -2,6 +2,7 @@ import ivy
 import functools
 import logging
 import weakref
+import warnings
 import copy as python_copy
 from types import FunctionType
 from typing import Callable
@@ -19,12 +20,12 @@ FN_DECORATORS = [
     "inputs_to_native_arrays",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
+    "handle_view",
     "handle_nestable",
     "handle_exceptions",
     "with_unsupported_dtypes",
     "handle_nans",
     "handle_array_like_without_promotion",
-    "handle_view",
 ]
 
 
@@ -334,6 +335,11 @@ def handle_view(fn: Callable) -> Callable:
         if copy:
             return ret
         if ivy.exists(args[0]._base):
+            if ivy.backend in ("jax", "tensorflow"):
+                warnings.warn(
+                    "Creating many views will lead to overhead "
+                    "when performing inplace updates with this backend"
+                )
             base = args[0]._base
             ret._base = base
             ret._manipulation_stack = python_copy.copy(args[0]._manipulation_stack)
