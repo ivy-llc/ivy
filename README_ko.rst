@@ -34,12 +34,15 @@
 
     <h4 align="center">
         <p>
-            <b>English</b> |
-            <a href="https://github.com/unifyai/ivy/blob/master/README_ko.rst">한국어</a>
+            <a href="https://github.com/unifyai/ivy">English</a> |
+            <b>한국어</b>
+
         <p>
     </h4>
 
-**We’re on a mission to unify all ML frameworks 💥 + automate code conversions 🔄. pip install ivy-core 🚀, join our growing community 😊, and lets-unify.ai! 🦾**
+**Ivy와 함께 모든 ML framework를 통합하고 💥 + 자동으로 코드 변환까지 진행해보세요 🔄.**
+
+**pip install ivy-core 이후 🚀 Ivy팀의 성장하는 community에 가입하시고 😊, 통합된 환경을 구축하세요! 🦾**
 
 .. raw:: html
 
@@ -69,11 +72,12 @@
 .. _`contributor guide`: https://lets-unify.ai/ivy/contributing.html
 .. _`open tasks`: https://lets-unify.ai/ivy/contributing/open_tasks.html
 
+
 Contents
 --------
 
 * `Overview`_
-* `Quick Start`_
+* `시작하기`_
 * `Background`_
 * `Design`_
 * `Extensions`_
@@ -81,36 +85,31 @@ Contents
 
 Overview
 --------
+Ivy는 JAX, TensorFlow, PyTorch 및 Numpy를 지원하는 ML 프레임워크입니다.
 
-Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, and Numpy.
-We’re very excited for you to try it out!
+IVY의 다음 목표는 모든 프레임워크 간의 자동 코드 변환을 지원하고,
+모든 오픈 소스 라이브러리에 대해 단 몇 줄의 코드만 변경함으로써 다양한 프레임워크를 지원하는 것입니다.
+더 많은 정보를 알아보려면 아래를 참조하세요.😊
 
-Next on our roadmap is to support automatic code conversions between all frameworks 🔄,
-and add instant multi-framework support for all open-source libraries with only a few lines of code changed!
-Read on to learn more 😊
+문서는 Ivy를 왜 만들었는지, 어떻게 사용하는지, 우리의 로드맵에서 무엇을 계획하고 있는지와 
+contribute하는 방법에 대해 다룬 sub-page로 구성되어 있습니다.
+Contents의 각 항목을 클릭하시면 sub-page 조회가 가능합니다.
 
-The docs are split into a number of sub-pages explaining different aspects of why we created Ivy,
-how to use it, what we’ve got planned on our roadmap, and how to contribute!
-Click on the sub-headings below to check out these pages!
+현재 개발 중인 기능은 🚧, 이미 구현된 기능에 대해서는 ✅로 표시합니다.
 
-We use 🚧 to indicate that the feature being discussed is in development.
-We use ✅ to indicate that it is already implemented!
+더 많은 정보를 원하시면 docs_ 를 참고해주시고,
+예제 코드는 Google Colabs_ 를 참고해주세요!
 
-Check out the docs_ for more info,
-and check out our Google Colabs_ for some interactive demos!
 
-🚨 Ivy is still at a relatively early stage of development.
-Expect breaking changes and sharp edges until we release version 1.2.0 in the next few weeks!
+🚨 Ivy는 아직 상대적으로 개발 초기 단계입니다. 앞으로 몇 주 안에 버전 1.2.0을 출시할 때까지 획기적인 변화를 기대해주세요!
 
-If you would like to contribute,
-please check out our `contributor guide`_,
-and take a look at the `open tasks`_ if you'd like to dive straight in! 🧑‍💻
+만약 contribute하는 것을 원하시면, `contributor guide`_ 와 `open tasks`_ 를 참고해주세요 🧑‍💻
 
-Quick Start
+시작하기
 -----------
 
-Ivy can be installed like so: ``pip install ivy-core``
-You can immediately use Ivy to train a neural network, using your favorite framework in the background, like so:
+Ivy는 ``pip install ivy-core`` 로 설치할 수 있습니다.
+아래와 같이, 사용자가 선호하는 프레임워크를 background에서 선택하여 신경망을 훈련시킬 수 있습니다
 
 .. code-block:: python
 
@@ -143,13 +142,13 @@ You can immediately use Ivy to train a neural network, using your favorite frame
 
     print('Finished training!')
 
-This example uses PyTorch as a backend framework,
-but the backend can easily be changed to your favorite frameworks, such as TensorFlow, or JAX.
+이 예제는 backend framework로 PyTorch를 사용하였습니다.
+backend는 TensorFlow, JAX와 같은 사용자가 선호하는 프레임워크로 쉽게 변경이 가능합니다.
 
 **Framework Agnostic Functions**
 
-In the example below we show how Ivy's concatenation function is compatible with tensors from different frameworks.
-This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.
+아래의 예제에서는 다양한 프레임워크의 tensor와 호환되는 Ivy의 concatenation 함수를 사용하였습니다.
+이는 Ivy의 모든 함수에 적용됩니다. 모든 Ivy 함수는 어떤 프레임워크에서든 tensor를 받아들이고, 결과를 반환합니다.
 
 .. code-block:: python
 
@@ -165,8 +164,8 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
     np_concatted    = ivy.concat((np.ones((1,)), np.ones((1,))), -1)
     torch_concatted = ivy.concat((torch.ones((1,)), torch.ones((1,))), -1)
 
-To see a list of all Ivy methods, type :code:`ivy.` into a python command prompt and press :code:`tab`.
-You should then see output like the following:
+Ivy의 모든 method들을 살펴보려면, python command prompt에서 :code:`ivy.` 를 입력하고 :code:`tab` 을 누르세요.
+결과는 다음과 같습니다.
 
 ::
 
@@ -211,38 +210,38 @@ Background
 ----------
 
 | (a) `ML Explosion <https://lets-unify.ai/ivy/background/ml_explosion.html>`_
-| A huge number of ML tools have exploded onto the scene!
+| 많은 ML framework들이 등장하고 있습니다.
 |
 | (b) `Why Unify? <https://lets-unify.ai/ivy/background/why_unify.html>`_
-| Why should we try to unify them?
+| 왜 ML framework들을 통합해야 할까요?
 |
 | (c) `Standardization <https://lets-unify.ai/ivy/background/standardization.html>`_
-| We’re collaborating with The `Consortium for Python Data API Standards <https://data-apis.org>`_
+| Ivy는 `Consortium for Python Data API Standards <https://data-apis.org>`_ 와 협력합니다.
 
 Design
 ------
 
-| Ivy can fulfill two distinct purposes:
+| Ivy는 두 가지의 역할을 수행할 수 있습니다:
+| 
+| 1. Framework간 transpiler 역할 수행 🚧
+| 2. Multi-framework 지원을 통한 새로운 ML framework 역할 수행 ✅
 |
-| 1. Serve as a transpiler between frameworks 🚧
-| 2. Serve as a new ML framework with multi-framework support ✅
-|
-| The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which falls into one of these three categories as follows:
+| Ivy의 codebase는 세 가지의 카테고리로 나눌 수 있으며, 8개의 distinct한 submodule로 나눌 수 있습니다. 각각은 다음과 같은 세 가지 카테고리 중 하나에 속합니다
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 
-| (a) `Building Blocks <https://lets-unify.ai/ivy/design/building_blocks.html>`_
+| (a) `Block 구성하기 <https://lets-unify.ai/ivy/design/building_blocks.html>`_
 | Backend functional APIs ✅
 | Ivy functional API ✅
 | Backend Handler ✅
 | Ivy Compiler 🚧
 |
-| (b) `Ivy as a Transpiler <https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_
+| (b) `Transpiler로서의 Ivy <https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_
 | Front-end functional APIs 🚧
 |
-| (c) `Ivy as a Framework <https://lets-unify.ai/ivy/design/ivy_as_a_framework.html>`_
+| (c) `Framework로서의 Ivy <https://lets-unify.ai/ivy/design/ivy_as_a_framework.html>`_
 | Ivy stateful API ✅
 | Ivy Container ✅
 | Ivy Array 🚧
@@ -251,17 +250,16 @@ Extensions
 ----------
 
 | (a) `Applied Libraries <https://lets-unify.ai/ivy/extensions/applied_libraries.html>`_ ✅
-| Ivy libraries in mechanics, vision, robotics, memory, and other areas
+| mechanics, vision, robotics, memory 및 다른 기타 분야에 적용할 수 있는 Ivy library들입니다.
 |
-| (b) **Builder [page coming soon!]** ✅
-| :code:`ivy.Trainer`, :code:`ivy.Dataset`, :code:`ivy.Dataloader` and other helpful classes and functions for creating training workflows in only a few lines of code
+| (b) **Builder [Docs 제작 중입니다!]** ✅
+| 단 몇 줄의 코드만으로 학습 workflow를 구성하는데 도움이 되는 :code:`ivy.Trainer`, :code:`ivy.Dataset`, :code:`ivy.Dataloader` 및 기타 class들입니다.
 
 Contributing
 ------------
 
-Join our community as a code contributor, and help accelerate our journey to unify all ML frameworks!
-Check out all of our open tasks, and find out more info in our
-`Contributing <https://lets-unify.ai/ivy/contributing.html>`_ guide!
+Ivy community에 code contributor로 합류하시고, 모든 ML Framework를 통합하는 것을 도와주세요!
+저희의 모든 open task를 확인하시고, `Contributing <https://lets-unify.ai/ivy/contributing.html>`_ 가이드에서 더 많은 정보를 확인하세요!
 
 Citation
 --------
