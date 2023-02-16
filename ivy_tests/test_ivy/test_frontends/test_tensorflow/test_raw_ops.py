@@ -3076,7 +3076,6 @@ def _conv2d_helper(draw):
         dilation_min=1,
         dilation_max=1,
     ))
-
     if padding == "EXPLICIT":
         explicit_paddings = padding
         pad_top = draw(st.integers(min_value=0, max_value=3))

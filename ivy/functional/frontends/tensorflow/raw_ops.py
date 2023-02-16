@@ -601,30 +601,12 @@ def Conv2D(
     # when the data_format is "NCHW"
     if padding == "EXPLICIT" and data_format == "NHWC":
         padding = padding[1:2]
-        return ivy.conv2d(
-            input,
-            filter,
-            strides,
-            padding,
-            data_format=data_format,
-            dilations=dilations,
-            name=name
-        )
-
     elif padding == "EXPLICIT" and data_format == "NCHW":
         padding = padding[2:3]
-        return ivy.conv2d(
-            input,
-            filter,
-            strides,
-            padding,
-            data_format=data_format,
-            dilations=dilations,
-            name=name
-        )
     else:
         padding = padding
-        return ivy.conv2d(
+
+    return ivy.conv2d(
             input,
             filter,
             strides,
@@ -632,7 +614,7 @@ def Conv2D(
             data_format=data_format,
             dilations=dilations,
             name=name,
-        )
+    )
 
 
 @to_ivy_arrays_and_back
