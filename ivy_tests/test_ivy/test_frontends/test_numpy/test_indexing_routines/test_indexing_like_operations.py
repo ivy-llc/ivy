@@ -1,7 +1,7 @@
 # Testing Function
 # global
 from hypothesis import strategies as st
-
+import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
@@ -97,4 +97,41 @@ def test_numpy_diag_indices(
         on_device=on_device,
         n=n,
         ndim=ndim,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.unravel_index",
+    dtype_x_shape=st.tuples(
+        st.sampled_from(helpers.dtype_values_axis(available_dtypes=helpers.get_dtypes(kind='integer'),
+                                                  min_value=0,
+                                                  max_value=10)),
+        st.sampled_from(helpers.get_shape(min_num_dims=1,
+                                          max_num_dims=5, min_dim_size=1, max_dim_size=5))
+    )
+    ,
+
+
+    order=st.sampled_from(["C", "F"]),
+        test_with_out=st.just(False),
+)
+def test_numpy_unravel_index(
+        dtype_x_shape,
+        order,
+        test_flags,
+        frontend,
+        fn_tree,
+        on_device,
+):
+    dtype_and_x, shape = dtype_x_shape
+    input_dtype, x = dtype_and_x[0], dtype_and_x[1]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        indices=np.asarray(x[0], dtype=input_dtype[0]),
+        shape=shape,
+        order=order
     )
