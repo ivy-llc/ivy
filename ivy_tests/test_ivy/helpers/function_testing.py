@@ -266,7 +266,7 @@ def test_function(
         container_flags=container_flags,
     )
 
-    if 'out' in kwargs and 'out' not in inspect.signature(fn).parameters:
+    if ('out' in kwargs or test_flags.with_out) and 'out' not in inspect.signature(fn).parameters:
         raise Exception(f"Function {fn_name} does not have an out parameter")
     # run either as an instance method or from the API directly
     instance = None
@@ -574,6 +574,10 @@ def test_frontend_function(
         importlib.import_module("ivy.functional.frontends.jax").config.update(
             "jax_enable_x64", True
         )
+
+    if ('out' in kwargs or test_flags.with_out) and 'out' not in inspect.signature(frontend_fn).parameters:
+        raise Exception(f"Function {fn_tree} does not have an out parameter")
+
     ret = get_frontend_ret(frontend_fn, *args_ivy, **kwargs_ivy)
     if test_flags.with_out:
         if not inspect.isclass(ret):
