@@ -1447,6 +1447,7 @@ def test_tensorflow_where_with_xy(
     )
 
 
+# reverse
 @st.composite
 def reverse_helper(draw):
     dtype, x, shape = draw(
@@ -1492,6 +1493,8 @@ def test_tensorflow_reverse(
         on_device=on_device,
         tensor=x[0],
         axis=axis[0],
+    )
+
 
 # roll
 @handle_frontend_test(
