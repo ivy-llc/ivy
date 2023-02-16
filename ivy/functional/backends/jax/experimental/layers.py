@@ -442,7 +442,7 @@ def interpolate(
     # keeping the batch and channel dimension same
     dims = len(x.shape) - 2
     size = (size,) * dims if isinstance(size, int) else size
-    size = [*x.shape[0:2], *size]
+    size = [x.shape[0], *size, x.shape[1]]
 
     if align_corners or mode == "area":
         return ivy.interpolate(
