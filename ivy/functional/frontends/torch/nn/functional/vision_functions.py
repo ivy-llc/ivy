@@ -250,7 +250,15 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     return result
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def interpolate(
     input,
@@ -287,8 +295,8 @@ def interpolate(
                 len(size),
                 dim,
                 inverse=False,
-                message=
-                f"Input and output must have the same number of spatial dimensions,"
+                message=f"Input and output must have the "
+                f"same number of spatial dimensions,"
                 f" but got input with spatial dimensions of {list(input.shape[2:])}"
                 f" and output size of {size}. "
                 f"Please provide input tensor in (N, C, d1, d2, ...,dK) format"
@@ -306,8 +314,8 @@ def interpolate(
                 len(scale_factor),
                 dim,
                 inverse=False,
-                message=
-                f"Input and scale_factor must have the same number of spatial dimensions,"
+                message=f"Input and scale_factor must have the "
+                f"same number of spatial dimensions,"
                 f" but got input with spatial dimensions of {list(input.shape[2:])}"
                 f" and scale_factor of shape {scale_factor}. "
                 f"Please provide input tensor in (N, C, d1, d2, ...,dK) format"
