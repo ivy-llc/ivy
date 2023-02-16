@@ -2,6 +2,7 @@ import operator
 from typing import Union, Optional, Tuple, List
 from numbers import Number
 import tensorflow as tf
+from tensorflow.python.ops.numpy_ops import np_math_ops
 
 from ivy import promote_types_of_inputs
 from .. import backend_version
@@ -35,10 +36,7 @@ def lcm(
     return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
 
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "uint8", "uint16", "uint32", "uint64")},
-    backend_version,
-)
+@with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
 def fmod(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -93,6 +91,9 @@ def trapz(
     return tfp.math.trapz(y, x=x, dx=dx, axis=axis, name=None)
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
 def float_power(
     x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
     x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
@@ -100,7 +101,12 @@ def float_power(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.float_power(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if ivy.any(ivy.is_complex_dtype(x1)) or ivy.any(ivy.is_complex_dtype(x2)):
+        out_dtype = tf.complex128
+    else:
+        out_dtype = tf.float64
+    return tf.cast(tf.experimental.numpy.float_power(x1, x2), out_dtype)
 
 
 def exp2(
@@ -156,6 +162,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    np_math_ops.enable_numpy_methods_on_tensor()
     return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
@@ -298,14 +305,17 @@ def nextafter(
     {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def diff(
-    x: Union[tf.Tensor, tf.Variable, int, float, list, tuple],
+    x: Union[tf.Tensor, tf.Variable, list, tuple],
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
     append: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if n == 0:
+        return x
     if prepend is not None:
         x = tf.experimental.numpy.append(prepend, x, axis=axis)
     if append is not None:
@@ -353,12 +363,12 @@ def angle(
     backend_version,
 )
 def imag(
-    input: Union[tf.Tensor, tf.Variable],
+    val: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.imag(input, name=None)
+    return tf.math.imag(val, name=None)
 
 
 @with_supported_dtypes(
@@ -603,12 +613,3 @@ def real(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.real(x)
-
-
-def isposinf(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.isposinf(x)

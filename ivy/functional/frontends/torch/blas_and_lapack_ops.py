@@ -100,6 +100,12 @@ def ger(input, vec2, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def inner(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+    return ivy.inner(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
 def inverse(input, *, out=None):
     return torch_frontend.linalg.inv(input, out=out)
 

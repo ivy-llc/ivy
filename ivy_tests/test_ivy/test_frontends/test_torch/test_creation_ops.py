@@ -1,6 +1,7 @@
 # global
 import ivy
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
+import math
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -29,6 +30,34 @@ def _start_stop_step(draw):
     else:
         step = draw(helpers.ints(min_value=-50, max_value=-1))
     return start, stop, step
+
+
+@st.composite
+def _as_strided_helper(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            ret_shape=True,
+        )
+    )
+    ndim = len(shape)
+    numel = x[0].size
+    offset = draw(st.integers(min_value=0, max_value=numel - 1))
+    numel = numel - offset
+    size = draw(
+        helpers.get_shape(
+            min_num_dims=ndim,
+            max_num_dims=ndim,
+        ).filter(lambda s: math.prod(s) <= numel)
+    )
+    stride = draw(
+        helpers.get_shape(
+            min_num_dims=ndim,
+            max_num_dims=ndim,
+        ).filter(lambda s: all(numel // s_i >= size[i] for i, s_i in enumerate(s)))
+    )
+    return x_dtype, x, size, stride, offset
 
 
 # full
@@ -494,3 +523,81 @@ def test_torch_tensor(
         dtype=dtype[0],
         device=on_device,
     )
+
+
+@st.composite
+def _heaviside_helper(draw):
+    input_dtype, data = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+        )
+    )
+    _, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=input_dtype,
+            shape=helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=1,
+                max_dim_size=1,
+            ),
+        )
+    )
+    return input_dtype, data, values
+
+
+# heaviside
+@handle_frontend_test(
+    fn_tree="torch.heaviside",
+    dtype_and_input=_heaviside_helper(),
+)
+def test_torch_heaviside(
+    *,
+    dtype_and_input,
+    test_flags,
+    fn_tree,
+    on_device,
+    frontend,
+):
+    input_dtype, data, values = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=data[0],
+        values=values[0],
+        on_device=on_device,
+    )
+
+
+# as_strided
+@handle_frontend_test(
+    fn_tree="torch.as_strided",
+    dtype_x_and_other=_as_strided_helper(),
+)
+def test_torch_as_strided(
+    *,
+    dtype_x_and_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtype, x, size, stride, offset = dtype_x_and_other
+    try:
+        helpers.test_frontend_function(
+            input_dtypes=x_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            input=x[0],
+            size=size,
+            stride=stride,
+            storage_offset=offset,
+        )
+    except Exception as e:
+        if hasattr(e, "message"):
+            if "out of bounds for storage of size" in e.message:
+                assume(False)

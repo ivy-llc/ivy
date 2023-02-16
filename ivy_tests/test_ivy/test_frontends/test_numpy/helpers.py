@@ -171,12 +171,14 @@ def test_frontend_function(*args, where=None, **kwargs):
 
 
 # noinspection PyShadowingNames
-def handle_where_and_array_bools(where, input_dtype, as_variable, native_array):
+def handle_where_and_array_bools(where, input_dtype, test_flags):
     if isinstance(where, list) or isinstance(where, tuple):
-        input_dtype = list(input_dtype) + ["bool"]
         where = where[0]
-        return where, as_variable + [False], native_array + [False]
-    return where, as_variable, native_array
+        test_flags.as_variable += [False]
+        test_flags.native_arrays += [False]
+        input_dtype += ["bool"]
+        return where, input_dtype, test_flags
+    return where, input_dtype, test_flags
 
 
 def handle_dtype_and_casting(
@@ -319,14 +321,14 @@ def get_dtype_and_values_and_casting(
 @st.composite
 def get_num_positional_args_ufunc(draw, *, fn_name=None):
     """
-    This function draws data randomly from numbers between nin and nargs
+    Draws data randomly from numbers between nin and nargs
     where nin and nargs are properties of the given ufunc.
 
     Parameters
     ----------
     draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
+        special function that draws data randomly (but is reproducible)
+        from a given data-set (ex. list).
     fn_name
         name of the ufunc.
 

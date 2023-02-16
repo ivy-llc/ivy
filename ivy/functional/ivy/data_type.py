@@ -11,6 +11,7 @@ import importlib
 import ivy
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
+    handle_array_function,
     handle_out_argument,
     to_native_arrays_and_back,
     inputs_to_native_arrays,
@@ -97,7 +98,7 @@ def _get_function_list(func):
                 if (
                     hasattr(nodef, "value")
                     and hasattr(nodef.value, "id")
-                    and nodef.value.id != "ivy"
+                    and nodef.value.id not in ["ivy", "self"]
                 ):
                     continue
                 names[nodef.attr] = getattr(
@@ -223,6 +224,7 @@ Iinfo = None
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
@@ -328,6 +330,7 @@ def astype(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
     """Broadcasts one or more arrays against one another.
 
@@ -405,6 +408,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -474,6 +478,7 @@ def broadcast_to(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def can_cast(
     from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
     to: ivy.Dtype,
@@ -1119,14 +1124,18 @@ def infer_default_dtype(
     >>> ivy.infer_default_dtype(x.dtype)
     'uint32'
     """
-    if ivy.is_float_dtype(dtype):
+    if ivy.is_complex_dtype(dtype):
+        default_dtype = ivy.default_complex_dtype(as_native=as_native)
+    elif ivy.is_float_dtype(dtype):
         default_dtype = ivy.default_float_dtype(as_native=as_native)
     elif ivy.is_uint_dtype(dtype):
         default_dtype = ivy.default_uint_dtype(as_native=as_native)
-    elif ivy.is_complex_dtype(dtype):
-        default_dtype = ivy.default_complex_dtype(as_native=as_native)
-    else:
+    elif ivy.is_int_dtype(dtype):
         default_dtype = ivy.default_int_dtype(as_native=as_native)
+    elif as_native:
+        default_dtype = ivy.as_native_dtype("bool")
+    else:
+        default_dtype = ivy.as_ivy_dtype("bool")
     return default_dtype
 
 
@@ -1168,6 +1177,8 @@ def default_dtype(
             return ivy.default_complex_dtype(input=item, as_native=as_native)
         elif ivy.is_float_dtype(item):
             return ivy.default_float_dtype(input=item, as_native=as_native)
+        elif ivy.is_uint_dtype(item):
+            return ivy.default_int_dtype(input=item, as_native=as_native)
         elif ivy.is_int_dtype(item):
             return ivy.default_int_dtype(input=item, as_native=as_native)
         elif as_native:
@@ -1534,7 +1545,7 @@ def dtype(
     >>> print(y)
     float32
     """
-    return current_backend(x).dtype(x, as_native)
+    return current_backend(x).dtype(x, as_native=as_native)
 
 
 @handle_nestable
@@ -1889,7 +1900,9 @@ def is_uint_dtype(
         return isinstance(dtype_in, np.unsignedinteger)
     elif isinstance(dtype_in, (list, tuple, dict)):
         return ivy.nested_argwhere(
-            dtype_in, lambda x: isinstance(x, np.unsignedinteger)
+            dtype_in,
+            lambda x: isinstance(x, np.unsignedinteger)
+            or (ivy.is_array(x) and "uint" in ivy.dtype(x)),
         )
     return "uint" in as_ivy_dtype(dtype_in)
 
@@ -1932,7 +1945,9 @@ def is_complex_dtype(
         return isinstance(dtype_in, (complex, np.complexfloating))
     elif isinstance(dtype_in, (list, tuple, dict)):
         return ivy.nested_argwhere(
-            dtype_in, lambda x: isinstance(x, (complex, np.complexfloating))
+            dtype_in,
+            lambda x: isinstance(x, (complex, np.complexfloating))
+            or (ivy.is_array(x) and "complex" in ivy.dtype(x)),
         )
     return "complex" in as_ivy_dtype(dtype_in)
 

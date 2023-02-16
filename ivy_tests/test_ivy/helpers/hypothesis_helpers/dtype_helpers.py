@@ -26,7 +26,8 @@ def get_dtypes(
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
     kind
-        Supported types are integer, float, valid, numeric, and unsigned
+        Supported types are integer, float, valid, numeric, signed_integer, complex,
+        real_and_complex, float_and_complex, bool, and unsigned
     index
         list indexing incase a test needs to be skipped for a particular dtype(s)
     full
@@ -64,7 +65,7 @@ def get_dtypes(
             ),
         }
 
-    # TODO refactor this so we run the interesection in a chained clean way
+    # TODO refactor this so we run the intersection in a chained clean way
     backend_dtypes = _get_type_dict(ivy)[kind]
     if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:  # NOQA
         fw_dtypes = _get_type_dict(test_globals.CURRENT_FRONTEND())[kind]
@@ -142,9 +143,19 @@ def array_dtypes(
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if num_arrays == 1:
-        dtypes = draw(ah.list_of_length(x=st.sampled_from(available_dtypes), length=1))
+        dtypes = draw(
+            ah.list_of_size(
+                x=st.sampled_from(available_dtypes),
+                size=1,
+            )
+        )
     elif shared_dtype:
-        dtypes = draw(ah.list_of_length(x=st.sampled_from(available_dtypes), length=1))
+        dtypes = draw(
+            ah.list_of_size(
+                x=st.sampled_from(available_dtypes),
+                size=1,
+            )
+        )
         dtypes = [dtypes[0] for _ in range(num_arrays)]
     else:
         unwanted_types = set(ivy.all_dtypes).difference(set(available_dtypes))

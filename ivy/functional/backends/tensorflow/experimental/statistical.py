@@ -96,3 +96,20 @@ def corrcoef(
     cov2_t = tf.linalg.diag(1 / tf.sqrt(tf.linalg.diag_part(cov_t)))
     cor = cov2_t @ cov_t @ cov2_t
     return cor
+
+
+def nanmedian(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tfp.stats.percentile(
+        input,
+        50.0,
+        axis=axis,
+        interpolation="midpoint",
+        keepdims=keepdims,
+    )

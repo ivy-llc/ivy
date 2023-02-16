@@ -22,6 +22,11 @@ def add(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def diff(a, n=1, axis=-1, prepend=None, append=None):
+    return ivy.diff(a, n=n, axis=axis, prepend=prepend, append=append, out=None)
+
+
+@to_ivy_arrays_and_back
 def arctan(x):
     ret = ivy.atan(x)
     return ret
@@ -58,6 +63,12 @@ def floor(x):
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def divmod(x1, x2, /):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return tuple([ivy.floor_divide(x1, x2), ivy.remainder(x1, x2)])
 
 
 @to_ivy_arrays_and_back
@@ -223,6 +234,14 @@ def negative(
 
 
 @to_ivy_arrays_and_back
+def positive(
+    x,
+    /,
+):
+    return ivy.positive(x)
+
+
+@to_ivy_arrays_and_back
 def rad2deg(
     x,
     /,
@@ -286,6 +305,21 @@ def fmin(x1, x2):
     )
     print("jax-frontend", ret)
     return ret
+
+
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("uint16",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def fabs(x):
+    return ivy.abs(x)
+
+
+@to_ivy_arrays_and_back
+def fmod(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return ivy.fmod(x1, x2)
 
 
 @to_ivy_arrays_and_back
@@ -379,3 +413,24 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
 @to_ivy_arrays_and_back
 def fix(x, out=None):
     return ivy.fix(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def real(val, /):
+    return ivy.real(val)
+
+
+@to_ivy_arrays_and_back
+def hypot(x1, x2, /):
+    return ivy.hypot(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def floor_divide(x1, x2, /, out=None):
+    return ivy.floor_divide(x1, x2, out=out)
+
+
+@to_ivy_arrays_and_back
+def inner(a, b):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.inner(a, b)

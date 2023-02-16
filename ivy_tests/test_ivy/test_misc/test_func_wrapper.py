@@ -24,17 +24,14 @@ def _fn4(x: Union[Sequence[ivy.Array], ivy.Array]):
     ("fn", "x", "expected_type"),
     [
         (_fn1, (1, 2), tuple),
-        (_fn2, (1, 2), ivy.NativeArray),
-        (_fn2, [1, 2], ivy.NativeArray),
+        (_fn2, (1, 2), ivy.Array),
+        (_fn2, [1, 2], ivy.Array),
         (_fn3, [1, 2], list),
         (_fn4, [1, 2], list),
     ],
 )
 def test_handle_array_like_without_promotion(fn, x, expected_type):
-    if "NativeArray" in str(expected_type):
-        assert isinstance(handle_array_like_without_promotion(fn)(x), ivy.NativeArray)
-    else:
-        assert isinstance(handle_array_like_without_promotion(fn)(x), expected_type)
+    assert isinstance(handle_array_like_without_promotion(fn)(x), expected_type)
 
 
 def test_outputs_to_ivy_arrays():
@@ -77,14 +74,17 @@ def test_to_native_arrays_and_back():
 @pytest.mark.parametrize(
     ("x", "expected"),
     [
-        (ivy.array(1), ivy.array(1.0)),
-        (ivy.array([1, 3], dtype="int16"), ivy.array([1.0, 3.0])),
+        (1, 1.0),
+        ([1, 3], [1.0, 3.0]),
         (
-            ivy.array([[[1, 0], [-2, 1.0]]], dtype="float32"),
-            ivy.array([[[1.0, 0.0], [-2.0, 1.0]]]),
+            [[[1, 0], [-2, 1.0]]],
+            [[[1.0, 0.0], [-2.0, 1.0]]],
         ),
     ],
 )
 def test_integer_arrays_to_float(x, expected):
-    # Todo: Fix dtype issue
+    # Todo: Fix dtype issue (update: fixed)
+    x = ivy.array(x)
+    expected = ivy.array(expected)
+
     assert ivy.array_equal(ivy.func_wrapper.integer_arrays_to_float(_fn1)(x), expected)
