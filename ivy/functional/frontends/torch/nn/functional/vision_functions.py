@@ -1,4 +1,5 @@
 import ivy
+from ivy import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.exceptions import IvyNotImplementedException
 
@@ -249,6 +250,7 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     return result
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16",)}, "torch")
 @to_ivy_arrays_and_back
 def interpolate(
     input,
@@ -262,7 +264,7 @@ def interpolate(
     if mode in ["nearest", "area", "nearest-exact"]:
         ivy.assertions.check_exists(
             align_corners,
-            inverse=False,
+            inverse=True,
             message="align_corners option can only be set with the interpolating modes:"
             " linear | bilinear | bicubic | trilinear",
         )
@@ -284,7 +286,7 @@ def interpolate(
             ivy.assertions.check_equal(
                 len(size),
                 dim,
-                inverse=True,
+                inverse=False,
                 message=
                 f"Input and output must have the same number of spatial dimensions,"
                 f" but got input with spatial dimensions of {list(input.shape[2:])}"
@@ -303,7 +305,7 @@ def interpolate(
             ivy.assertions.check_equal(
                 len(scale_factor),
                 dim,
-                inverse=True,
+                inverse=False,
                 message=
                 f"Input and scale_factor must have the same number of spatial dimensions,"
                 f" but got input with spatial dimensions of {list(input.shape[2:])}"
