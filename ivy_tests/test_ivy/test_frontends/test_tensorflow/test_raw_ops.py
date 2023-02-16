@@ -3068,7 +3068,14 @@ def _conv2d_helper(draw):
         strides, \
         dilations, \
         data_format, \
-        padding = _x_and_filters(draw)
+        padding = draw(_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC", "NCHW"]),
+        padding=st.sampled_from(["SAME", "VALID", "EXPLICIT"]),
+        type="2d",
+        dilation_min=1,
+        dilation_max=1,
+    ))
 
     if padding == "EXPLICIT":
         explicit_paddings = padding
@@ -3090,8 +3097,15 @@ def _conv2d_helper(draw):
 
     else:
         explicit_paddings = []
+        padding = padding
 
-    return input_dtype, x, filters, dilations, data_format, strides, padding, explicit_paddings
+    return input_dtype, \
+        x, \
+        filters, \
+        dilations, \
+        data_format, \
+        strides, \
+        padding
 
 
 @handle_frontend_test(
@@ -3124,9 +3138,6 @@ def test_tensorflow_Conv2D(
     dilation = _convolution_broadcast_helper(
         dilation, num_spatial_dims=2, channel_index=3, name="dilations"
     )
-    if padding == "EXPLICIT":
-        padding = explicit_paddings
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -3137,7 +3148,6 @@ def test_tensorflow_Conv2D(
         filter=filters,
         strides=stride,
         padding=padding,
-        explicit_paddings=explicit_paddings,
         data_format=data_format,
         dilations=dilation,
     )
