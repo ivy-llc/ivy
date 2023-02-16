@@ -22,7 +22,6 @@ def median(
                 input,
                 dim=dim,
                 keepdim=keepdims,
-                out=out,
             )[0]
         return input
     else:
@@ -30,8 +29,10 @@ def median(
             input,
             dim=axis,
             keepdim=keepdims,
-            out=out,
-        )
+        )[0]
+
+
+median.support_native_out = False
 
 
 def nanmean(
@@ -46,7 +47,7 @@ def nanmean(
     return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
 
 
-nanmean_support_native_out = True
+nanmean.support_native_out = True
 
 
 @with_unsupported_dtypes(
@@ -118,3 +119,20 @@ def corrcoef(
         xarr = xarr.T if not rowvar else xarr
 
     return torch.corrcoef(xarr)
+
+
+def nanmedian(
+    input: torch.tensor,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    overwrite_input: Optional[bool] = False,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.nanmedian(
+        input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+    )
+
+
+nanmedian.support_native_out = True

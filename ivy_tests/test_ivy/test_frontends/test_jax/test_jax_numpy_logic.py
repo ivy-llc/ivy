@@ -604,6 +604,33 @@ def test_jax_numpy_invert(
     )
 
 
+# isfinite
+@handle_frontend_test(
+    fn_tree="jax.numpy.isfinite",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), allow_nan=True
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_isfinite(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # isinf
 @handle_frontend_test(
     fn_tree="jax.numpy.isinf",
@@ -660,4 +687,56 @@ def test_jax_numpy_isclose(
         a=input[0],
         b=input[1],
         equal_nan=equal_nan,
+    )
+
+
+# logical_not
+@handle_frontend_test(
+    fn_tree="jax.numpy.logical_not",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=1,
+    ),
+)
+def test_jax_numpy_logical_not(
+    dtypes_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtypes, x = dtypes_values
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# isscalar
+@handle_frontend_test(
+    fn_tree="jax.numpy.isscalar",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_jax_numpy_isscalar(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtypes, x = dtype_and_x
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
