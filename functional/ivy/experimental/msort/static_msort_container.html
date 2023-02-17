@@ -22,7 +22,7 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="triu_indices" href="../triu_indices.html" />
+    <link rel="next" title="lexsort" href="../lexsort.html" />
     <link rel="prev" title="ivy.Container.msort" href="msort_container.html" /> 
 </head>
 
@@ -57,6 +57,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../../experimental.html">Experimental</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../l2_normalize.html">l2_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../instance_norm.html">instance_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lp_normalize.html">lp_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../diagflat.html">diagflat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../kron.html">kron</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../matrix_exp.html">matrix_exp</a></li>
@@ -102,6 +103,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.static_msort</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../lexsort.html">lexsort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../triu_indices.html">triu_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../vorbis_window.html">vorbis_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hann_window.html">hann_window</a></li>
@@ -163,6 +165,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../gradient.html">gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../xlogy.html">xlogy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../real.html">real</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../binarizer.html">binarizer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../isin.html">isin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../is_native_dtype.html">is_native_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../SparseArray.html">SparseArray</a></li>
@@ -179,6 +182,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../../experimental.html">Experimental</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../l2_normalize.html">l2_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../instance_norm.html">instance_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lp_normalize.html">lp_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../diagflat.html">diagflat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../kron.html">kron</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../matrix_exp.html">matrix_exp</a></li>
@@ -224,6 +228,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.static_msort</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../lexsort.html">lexsort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../triu_indices.html">triu_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../vorbis_window.html">vorbis_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hann_window.html">hann_window</a></li>
@@ -285,6 +290,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../gradient.html">gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../xlogy.html">xlogy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../real.html">real</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../binarizer.html">binarizer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../isin.html">isin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../is_native_dtype.html">is_native_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../SparseArray.html">SparseArray</a></li>
@@ -402,17 +408,17 @@ with minimal changes.</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)),</span>
-<span class="gp">... </span>                  <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_msort</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">],[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]),</span>
+<span class="gp">... </span>                  <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_lexsort</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="go">{</span>
 <span class="go">    x: ivy.array(</span>
 <span class="go">        [[6, 2, 6],</span>
 <span class="go">         [8, 9, 6]]</span>
 <span class="go">        ),</span>
 <span class="go">    y: ivy.array(</span>
-<span class="go">        [[0, 0],</span>
-<span class="go">         [4, 0]]</span>
+<span class="go">        [[3, 4],</span>
+<span class="go">         [7, 2]]</span>
 <span class="go">        )</span>
 <span class="go">}</span>
 </pre></div>
@@ -431,7 +437,7 @@ with minimal changes.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="msort_container.html" class="btn btn-neutral float-left" title="ivy.Container.msort" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../triu_indices.html" class="btn btn-neutral float-right" title="triu_indices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../lexsort.html" class="btn btn-neutral float-right" title="lexsort" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
