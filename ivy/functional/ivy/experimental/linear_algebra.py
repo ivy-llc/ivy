@@ -56,16 +56,6 @@ def diagflat(
     ret
         The 2-D output array.
 
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
     Functional Examples
     ------------------
 
@@ -185,7 +175,7 @@ def eig(
     /,
 ) -> Tuple[ivy.Array]:
     """Computes eigenvalies and eigenvectors of x. Returns a tuple with two elements:
-     first is the set of eigenvalues, second is the set of eigenvectors.
+    first is the set of eigenvalues, second is the set of eigenvectors.
 
     Parameters
     ----------
