@@ -3,6 +3,7 @@ A state holder for testing, this is only intended to hold and store
 testing data to be used by the test helpers to prune unsupported data.
 Should not be used inside any of the test functions.
 """
+import importlib
 import sys
 from ... import config
 
@@ -84,7 +85,8 @@ class InterruptedTest(BaseException):
 def _get_ivy_numpy(version=None):
     """Import Numpy module from ivy"""
     if version:
-        config.reset_sys_modules_to_base()
+        if version.split('/')[1]!=importlib.import_module('numpy').__version__:
+            config.reset_sys_modules_to_base()
         config.allow_global_framework_imports(fw=[version])
 
     try:
@@ -102,13 +104,8 @@ def _get_ivy_jax(version=None):
             version.split("/")[2] + "/" + version.split("/")[3],
         ]
         config.allow_global_framework_imports(fw=las)
-        try:
-            config.reset_sys_modules_to_base()
-            import ivy.functional.backends.jax
+        import ivy.functional.backends.jax
 
-            return ivy.functional.backends.jax
-        except ImportError as e:
-            raise e
     else:
         try:
             import ivy.functional.backends.jax
