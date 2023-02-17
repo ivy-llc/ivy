@@ -412,8 +412,10 @@ class ndarray:
     def __abs__(self):
         return np_frontend.absolute(self._ivy_array)
 
-    def __array__(self, dtype, /):
-        return ivy.array(ivy.reshape(self._ivy_array, -1), dtype)[0]
+    def __array__(self, dtype=None, /):
+        if not dtype:
+            return self
+        return np_frontend.array(self, dtype=dtype)
 
     def __getitem__(self, query):
         ret = ivy.get_item(self._ivy_array, query)

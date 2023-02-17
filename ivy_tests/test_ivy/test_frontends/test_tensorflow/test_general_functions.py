@@ -1445,3 +1445,49 @@ def test_tensorflow_where_with_xy(
         x=x,
         y=y,
     )
+
+
+# roll
+@handle_frontend_test(
+    fn_tree="tensorflow.roll",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ),
+    shift=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_tuple=True,
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_tuple=True,
+    ),
+)
+def test_tensorflow_roll(
+    *,
+    dtype_and_values,
+    shift,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_and_values
+    if isinstance(shift, int) and isinstance(axis, tuple):
+        axis = axis[0]
+    if isinstance(shift, tuple) and isinstance(axis, tuple):
+        if len(shift) != len(axis):
+            mn = min(len(shift), len(axis))
+            shift = shift[:mn]
+            axis = axis[:mn]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        shift=shift,
+        axis=axis,
+    )

@@ -125,6 +125,15 @@ def conv(
     )
 
 
+def _set_dimension_numbers(dims):
+    if dims == 1:
+        return "NHC", "HIO", "NHC"
+    elif dims == 2:
+        return "NHWC", "HWIO", "NHWC"
+    elif dims == 3:
+        return "NDHWC", "DHWIO", "NDHWC"
+
+
 def _get_general_df(data_format):
     if data_format is None:
         return "channel_first"
@@ -132,6 +141,22 @@ def _get_general_df(data_format):
         return "channel_first"
     if data_format[-1] == "C":
         return "channel_last"
+
+
+def _conv_transpose_padding(k, s, padding):
+    if padding == "SAME":
+        pad_len = k + s - 2
+        if s > k - 1:
+            pad_a = k - 1
+        else:
+            pad_a = int(ivy.to_scalar(ivy.ceil(pad_len / 2)))
+    elif padding == "VALID":
+        pad_len = k + s - 2 + ivy.to_scalar(ivy.maximum(k - s, 0))
+        pad_a = k - 1
+    else:
+        raise ValueError("Padding mode must be `SAME` or `VALID`.")
+    pad_b = pad_len - pad_a
+    return pad_a, pad_b
 
 
 @to_ivy_arrays_and_back
@@ -146,21 +171,32 @@ def conv_transpose(
     precision=None,
     preferred_element_type=None,
 ):
+    # TODO: add support for transpose_kernel
     if preferred_element_type:
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
-    if dimension_numbers[1][-1] == "O":
-        rhs = ivy.swapaxes(rhs, -1, -2)
-    else:
-        rhs = ivy.swapaxes(rhs, 0, 1)
-    return ivy.conv_general_transpose(
+    dims = len(lhs.shape) - 2
+    if dimension_numbers is None:
+        dimension_numbers = _set_dimension_numbers(dims)
+    k_sdims = [
+        rhs.shape[i] for i, v in enumerate(dimension_numbers[1]) if v not in ["I", "O"]
+    ]
+    rhs_dilation = 1 if rhs_dilation is None else rhs_dilation
+    if isinstance(padding, str) and padding in {"SAME", "VALID"}:
+        effective_k_size = map(lambda k, r: (k - 1) * r + 1, k_sdims, rhs_dilation)
+        padding = [
+            _conv_transpose_padding(k, s, padding)
+            for k, s in zip(effective_k_size, strides)
+        ]
+    return ivy.conv_general_dilated(
         lhs,
         _format_rhs(rhs, dimension_numbers),
-        strides,
+        1,
         padding,
-        dims=len(lhs.shape) - 2,
+        dilations=rhs_dilation,
+        x_dilations=strides,
+        dims=dims,
         data_format=_get_general_df(dimension_numbers[0]),
-        dilations=1 if rhs_dilation is None else rhs_dilation,
     )
 
 
@@ -182,12 +218,15 @@ def conv_general_dilated(
     if preferred_element_type:
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
+    dims = len(lhs.shape) - 2
+    if dimension_numbers is None:
+        dimension_numbers = _set_dimension_numbers(dims)
     return ivy.conv_general_dilated(
         lhs,
         _format_rhs(rhs, dimension_numbers),
         window_strides,
         padding,
-        dims=len(lhs.shape) - 2,
+        dims=dims,
         data_format=_get_general_df(dimension_numbers[0]),
         x_dilations=1 if lhs_dilation is None else lhs_dilation,
         dilations=1 if rhs_dilation is None else rhs_dilation,
