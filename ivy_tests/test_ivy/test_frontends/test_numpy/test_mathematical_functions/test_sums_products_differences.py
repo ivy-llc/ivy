@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # helpers
 @st.composite
-def _get_castable_dtypes_values(draw, *, allow_nan=False):
+def _get_castable_dtypes_values(draw, *, allow_nan=False, use_where=False):
     available_dtypes = helpers.get_dtypes("numeric")
     shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
     dtype, values = draw(
@@ -28,14 +28,16 @@ def _get_castable_dtypes_values(draw, *, allow_nan=False):
     dtype1, values, dtype2 = draw(
         helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
     )
-    where = draw(np_frontend_helpers.where(shape=shape))
-    return [dtype1], [values], axis, dtype2, where
+    if use_where:
+        where = draw(np_frontend_helpers.where(shape=shape))
+        return [dtype1], [values], axis, dtype2, where
+    return [dtype1], [values], axis, dtype2
 
 
 # sum
 @handle_frontend_test(
     fn_tree="numpy.sum",
-    dtype_x_axis_dtype=_get_castable_dtypes_values(),
+    dtype_x_axis_dtype=_get_castable_dtypes_values(use_where=True),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats()),
 )
@@ -74,29 +76,23 @@ def test_numpy_sum(
 # prod
 @handle_frontend_test(
     fn_tree="numpy.prod",
-    dtype_x_axis_dtype=_get_castable_dtypes_values(),
+    dtype_x_axis_dtype=_get_castable_dtypes_values(use_where=True),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats()),
-    where=np_frontend_helpers.where(),
 )
 def test_numpy_prod(
     dtype_x_axis_dtype,
     keep_dims,
     initial,
-    where,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtypes, x, axis, dtype = dtype_x_axis_dtype
+    input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype
     if ivy.current_backend_str() == "torch":
         assume(not test_flags.as_variable[0])
-    (
-        where,
-        input_dtypes,
-        test_flags,
-    ) = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
         test_flags=test_flags,

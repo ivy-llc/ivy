@@ -46,7 +46,9 @@ def sum(
 def prod(
     x, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=True
 ):
-    if initial:
+    if ivy.is_array(where):
+        x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)), out=out)
+    if initial is not None:
         s = ivy.shape(x, as_array=True)
         s[axis] = 1
         header = ivy.full(ivy.Shape(tuple(s)), initial)
