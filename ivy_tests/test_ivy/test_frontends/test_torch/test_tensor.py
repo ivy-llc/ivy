@@ -12,7 +12,6 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops impor
     _get_dtype_input_and_matrices,
 )
 from ivy.functional.frontends.torch import Tensor
-import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
@@ -4068,10 +4067,10 @@ def test_torch_instance_ne(
 )
 def test_torch_instance_ne_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
+    init_num_positional_args,
+    method_num_positional_args,
+    as_variable,
+    native_array,
     frontend_method_data,
     frontend,
 ):
