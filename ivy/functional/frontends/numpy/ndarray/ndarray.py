@@ -171,19 +171,6 @@ class ndarray:
             out=out,
         )
 
-    def choose(
-        self,
-        choices,
-        out=None,
-        mode='raise'
-    ):
-        return np_frontend.choose(
-            self,
-            choices,
-            out=out,
-            mode=mode
-        )
-
     def clip(
         self,
         min,
