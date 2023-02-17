@@ -952,24 +952,17 @@ def compute_weight_mat(
         sample_f = (ivy.arange(output_size) + 0.5) * inv_scale - 0.5
         x = ivy.abs(sample_f[None, :] - ivy.arange(input_size)[:, None]) / kernel_scale
     else:
-        if input_size > 1:
-            sample_f = ivy.linspace(0, 1, output_size)
-            x = (
-                ivy.abs(sample_f[None, :] - ivy.linspace(0, 1, input_size)[:, None])
-                / kernel_scale
-            )
-        else:
-            sample_f = ivy.zeros(output_size)
-            x = ivy.zeros((1, output_size))
-    weights = kernel_fn(x)
-
-    if input_size < output_size and align_corners:
-        total_weight_sum = ivy.sum(weights, axis=0, keepdims=True)
-        weights = ivy.where(
-            ivy.abs(total_weight_sum) > 1000.0 * float(ivy.finfo("float32").eps),
-            ivy.divide(weights, ivy.where(total_weight_sum != 0, total_weight_sum, 1)),
-            0,
+        sample_f = ivy.linspace(0, input_size - 1, output_size)
+        x = ivy.abs(sample_f[None, :] - ivy.arange(input_size)[:, None]) / (
+            kernel_scale
         )
+    weights = kernel_fn(x)
+    total_weight_sum = ivy.sum(weights, axis=0, keepdims=True)
+    weights = ivy.where(
+        ivy.abs(total_weight_sum) > 1000.0 * float(ivy.finfo("float32").eps),
+        ivy.divide(weights, ivy.where(total_weight_sum != 0, total_weight_sum, 1)),
+        0,
+    )
     input_size_minus_0_5 = input_size if align_corners else input_size - 0.5
     return ivy.where(
         ivy.logical_and(sample_f >= -0.5, sample_f <= input_size_minus_0_5)[None, :],
@@ -1035,24 +1028,14 @@ def interpolate(
     spatial_dims = [2 + i for i in range(dims)]
     input_shape = ivy.shape(x)
     scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]
-    if mode == "linear":
-        size = size[0]
-        scale = size / ivy.shape(x)[-1]
-        inv_scale = 1.0 / scale
-        kernel_scale = ivy.maximum(inv_scale, 1.0) if antialias else 1.0
-        if not align_corners or align_corners is None:
-            x_up = ivy.arange(0, ivy.shape(x)[-1]) / kernel_scale
-            missing = (ivy.arange(0, size) + 0.5) * inv_scale - 0.5
-        else:
-            x_up = ivy.linspace(0, 1, ivy.shape(x)[-1]) / kernel_scale
-            missing = ivy.linspace(0, 1, size)
-        ret = ivy.zeros(ivy.shape(x)[:-1] + (size,))
-        for i, ba in enumerate(x):
-            for j, ch in enumerate(ba):
-                ret[i][j] = ivy.interp(missing, x_up, ch)
-    elif mode == "bilinear":
+    if mode == "bilinear" or mode == "linear" or mode == "trilinear":
+        if mode == "linear":
+            equation = "ijk,km->ijm"
+        elif mode == "bilinear":
+            equation = "ijkl,km,ln->ijmn"
+        elif mode == "trilinear":
+            equation = "ijklm,kn,lo,mp->ijnop"
         output_shape = tuple(input_shape[:2]) + size
-        equation = "ijkl,km,ln->ijmn"
         operands = []
         for i, d in enumerate(spatial_dims):
             m = input_shape[d]
@@ -1062,83 +1045,6 @@ def interpolate(
             ).astype(x.dtype)
             operands.append(w)
         ret = ivy.einsum(equation, x, *operands)
-        # scale = ivy.divide(size, ivy.shape(x)[-2:])
-        # inv_scale = 1. / scale
-        # kernel_scale = ivy.maximum(inv_scale, 1.) if antialias else 1.
-        # if not align_corners or align_corners is None:
-        #     x_up_h = ivy.arange(0, ivy.shape(x)[-2])
-        #     x_up_w = ivy.arange(0, ivy.shape(x)[-1])
-        #     missing_h = (ivy.arange(0, size[0]) + 0.5) * (
-        #         ivy.shape(x)[-2] / size[0]
-        #     ) - 0.5
-        #     missing_w = (ivy.arange(0, size[1]) + 0.5) * (
-        #         ivy.shape(x)[-1] / size[1]
-        #     ) - 0.5
-        # else:
-        #     missing_h = ivy.linspace(0, 1, size[0])
-        #     missing_w = ivy.linspace(0, 1, size[1])
-        #     x_up_h = ivy.abs(missing_h[None, :] -
-        #     ivy.linspace(0, 1, ivy.shape(x)[-2])[:, None]) / kernel_scale[0]
-        #     x_up_w = ivy.abs(missing_w -
-        #     ivy.linspace(0, 1, ivy.shape(x)[-1])) / kernel_scale[1]
-        #
-        # ret = ivy.zeros(ivy.shape(x)[:-2] + (size[1], size[0]))
-        # for i, ba in enumerate(x):
-        #     for j, ch in enumerate(ba):
-        #         row_ret = ivy.zeros((ivy.shape(x)[-2], size[1]))
-        #         for k, row in enumerate(ch):
-        #             row_ret[k] = ivy.interp(missing_w, x_up_w, row)
-        #         row_ret = row_ret.T
-        #         for k, col in enumerate(row_ret):
-        #             ret[i][j][k] = ivy.interp(missing_h, x_up_h, col)
-        # ret = ivy.permute_dims(ret, (0, 1, 3, 2))
-    elif mode == "trilinear":
-        if not align_corners or align_corners is None:
-            x_up_d = ivy.arange(0, ivy.shape(x)[-3])
-            x_up_h = ivy.arange(0, ivy.shape(x)[-2])
-            x_up_w = ivy.arange(0, ivy.shape(x)[-1])
-            missing_d = (ivy.arange(0, size[0]) + 0.5) * (
-                ivy.shape(x)[-3] / size[0]
-            ) - 0.5
-            missing_h = (ivy.arange(0, size[1]) + 0.5) * (
-                ivy.shape(x)[-2] / size[1]
-            ) - 0.5
-            missing_w = (ivy.arange(0, size[2]) + 0.5) * (
-                ivy.shape(x)[-1] / size[2]
-            ) - 0.5
-        else:
-            x_up_d = ivy.linspace(0, 1, ivy.shape(x)[-3])
-            x_up_h = ivy.linspace(0, 1, ivy.shape(x)[-2])
-            x_up_w = ivy.linspace(0, 1, ivy.shape(x)[-1])
-            missing_d = ivy.linspace(0, 1, size[0])
-            missing_h = ivy.linspace(0, 1, size[1])
-            missing_w = ivy.linspace(0, 1, size[2])
-        ret = ivy.zeros(ivy.shape(x)[:-3] + (size[1], size[2], size[0]))
-        for i, ba in enumerate(x):
-            for j, ch in enumerate(ba):
-                depth_ret = ivy.zeros((x.shape[-3], size[2], size[1]))
-                row_ret = ivy.zeros((ivy.shape(x)[-3], ivy.shape(x)[-2], size[2]))
-                for k, depth in enumerate(ch):
-                    for (
-                        l,
-                        row,
-                    ) in enumerate(ch[k]):
-                        row_ret[k][l] = ivy.interp(missing_w, x_up_w, row)
-                row_ret = row_ret.transpose((0, 2, 1))
-                for k, row in enumerate(ch):
-                    for (
-                        l,
-                        col,
-                    ) in enumerate(row_ret[k]):
-                        depth_ret[k][l] = ivy.interp(missing_h, x_up_h, col)
-                depth_ret = depth_ret.transpose((2, 1, 0))
-                for k, col in enumerate(depth_ret):
-                    for (
-                        l,
-                        depth,
-                    ) in enumerate(depth_ret[k]):
-                        ret[i][j][k][l] = ivy.interp(missing_d, x_up_d, depth)
-        ret = ret.transpose((0, 1, 4, 2, 3))
     elif mode == "nearest" or mode == "nearest_exact":
         ret = ivy.zeros((x.shape[:2] + tuple(size)))
         for i, ba in enumerate(x):

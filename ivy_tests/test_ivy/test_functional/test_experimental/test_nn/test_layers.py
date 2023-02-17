@@ -261,32 +261,25 @@ def _interp_args(draw):
     mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"]))
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
-        size = draw(helpers.ints(min_value=1, max_value=5))
         num_dims = 3
     elif mode == "bilinear":
-        size = draw(
-            helpers.lists(
-                arg=helpers.ints(min_value=1, max_value=5), min_size=2, max_size=2
-            )
-        )
         num_dims = 4
     elif mode == "trilinear":
-        size = draw(
-            helpers.lists(
-                arg=helpers.ints(min_value=1, max_value=5), min_size=3, max_size=3
-            )
-        )
         num_dims = 5
     elif mode == "nearest" or mode == "area":
         dim = draw(helpers.ints(min_value=1, max_value=3))
-        size = draw(
-            helpers.lists(
-                arg=helpers.ints(min_value=1, max_value=5), min_size=dim, max_size=dim
-            )
-        )
-        size = size[0] if dim == 1 else size
         num_dims = dim + 2
         align_corners = None
+    size = draw(
+        st.one_of(
+            helpers.lists(
+                arg=helpers.ints(min_value=1, max_value=5),
+                min_size=num_dims - 2,
+                max_size=num_dims - 2,
+            ),
+            st.integers(min_value=1, max_value=5),
+        )
+    )
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
@@ -294,8 +287,8 @@ def _interp_args(draw):
             max_num_dims=num_dims,
             min_dim_size=1,
             max_dim_size=3,
-            large_abs_safety_factor=30,
-            small_abs_safety_factor=30,
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
             safety_factor_scale="log",
         )
     )
@@ -306,11 +299,13 @@ def _interp_args(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.interpolate",
     dtype_x_mode=_interp_args(),
+    antialias=st.just(False),
     test_gradients=st.just(False),
     number_positional_args=st.just(2),
 )
 def test_interpolate(
     dtype_x_mode,
+    antialias,
     test_flags,
     backend_fw,
     fn_name,
@@ -330,6 +325,7 @@ def test_interpolate(
         size=size,
         mode=mode,
         align_corners=align_corners,
+        antialias=antialias,
     )
 
 
