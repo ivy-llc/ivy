@@ -33,7 +33,7 @@ def sum(
         header = ivy.full(ivy.Shape(tuple(s)), initial)
         if ivy.is_array(where):
             x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
-        x = ivy.concat([x, header], axis=axis)
+        x = ivy.concat([header, x], axis=axis)
     else:
         x = ivy.where(ivy.isnan(x), ivy.zeros_like(x), x)
     return ivy.sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)

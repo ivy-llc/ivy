@@ -56,7 +56,7 @@ def test_numpy_sum(
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
