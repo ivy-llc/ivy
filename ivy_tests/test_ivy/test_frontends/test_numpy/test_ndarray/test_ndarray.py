@@ -773,6 +773,82 @@ def test_numpy_instance_diagonal(
     )
 
 
+# prod
+@st.composite
+def dtype_values_axis_where_initial(draw):
+    dtype_x_axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=1,
+            min_value=-10000,
+            max_value=10000,
+            min_num_dims=1,
+            max_num_dims=3,
+            max_dim_size=5,
+            min_axis=0,
+            max_axis=2,
+            valid_axis=True,
+            force_int_axis=True,
+        )
+    )
+    where = draw(np_frontend_helpers.where())
+    dtype, x, axis = dtype_x_axis
+    initial = draw(
+        st.one_of(st.none(), helpers.array_values(dtype=dtype[0], shape=(1,)))
+    )
+    initial = None if initial is None else initial[0]
+    return dtype, x, axis, where, initial
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="prod",
+    dtype_x_axis_where_initial=dtype_values_axis_where_initial(),
+    keepdims=st.booleans(),
+)
+def test_numpy_instance_prod(
+    dtype_x_axis_where_initial,
+    keepdims,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    dtypes, x, axis, where, initial = dtype_x_axis_where_initial
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
+        where=[where[0][0]] if isinstance(where, list) else where,
+        input_dtype=dtypes,
+        test_flags=method_flags,
+    )
+    # Numpy can't handle a 'where' argument when there is
+    # no 'initial' argument, so in this case we'll skip testing
+    assume((initial is not None and where is not None) or where is None)
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "out": None,
+            "keepdims": keepdims,
+            "where": where,
+            "initial": None if initial is None else initial,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",

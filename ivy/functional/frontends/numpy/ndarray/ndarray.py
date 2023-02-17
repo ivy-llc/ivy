@@ -220,6 +220,39 @@ class ndarray:
             axis2=axis2,
         )
 
+    def prod(
+        self,
+        *,
+        axis=None,
+        dtype=None,
+        keepdims=False,
+        initial=None,
+        where=True,
+        out=None,
+    ):
+        if (
+            ivy.is_array(where)
+            or ivy.is_native_array(where)
+            or type(where) == ivy.functional.frontends.numpy.ndarray
+        ):
+            if hasattr(self, "ivy_array"):
+                arg = ivy.where(where, self.ivy_array, 1)
+            else:
+                arg = ivy.where(where, self, 1)
+            _where = True
+        else:
+            arg = self
+            _where = True  # where
+        return np_frontend.prod(
+            arg,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            initial=initial,
+            where=_where,
+            out=out,
+        )
+
     def sort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.sort(self._ivy_array, axis=axis, kind=kind, order=order)
 
