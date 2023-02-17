@@ -98,6 +98,7 @@ class ModuleConverters:
     def from_haiku_module(
         native_module,
         params_hk=None,
+        rng_seed=0,
         constructor_args: Optional[List] = None,
         constructor_kwargs: Optional[Dict] = None,
         instance_args: Optional[List] = None,
@@ -115,6 +116,9 @@ class ModuleConverters:
         params_hk
             Haiku parameters to pass to the constructor of the native module.
             Default is ``None``.
+        rng_seed
+            Seed used to initialize haiku parameters is initializing from a class.
+            Default is ``0``.
         constructor_args
             Positional arguments to pass to the constructor of the native module.
             Default is ``None``.
@@ -138,7 +142,6 @@ class ModuleConverters:
             The new trainable torch module instance.
 
         """
-        RNG = jax.random.PRNGKey(42)
 
         def _hk_flat_map_to_dict(hk_flat_map):
             ret_dict = dict()
@@ -183,9 +186,6 @@ class ModuleConverters:
             def _build(self, params_hk, *args, **kwargs):
                 args, kwargs = ivy.args_to_native(*args, **kwargs)
                 # noinspection PyUnresolvedReferences
-                # params_hk = self._native_module.init(RNG, *args, **kwargs)
-
-                # TODO: this _hk_flat_map_to_dict does not seem to be working fine ig ?
                 params_dict = _hk_flat_map_to_dict(params_hk)
                 self._hk_params = ivy.Container(params_dict, dynamic_backend=False)
                 param_iterator = self._hk_params.cont_to_iterator()
@@ -219,7 +219,7 @@ class ModuleConverters:
                 return model(*i_args, **i_kwargs)
 
             transformed_module = hk.transform(forward_fn)
-            params_hk = transformed_module.init(0, *i_args, **i_kwargs)
+            params_hk = transformed_module.init(rng_seed, *i_args, **i_kwargs)
 
         return HaikuIvyModule(
             *i_args,
