@@ -979,12 +979,12 @@ class ContainerWithLayers(ContainerBase):
     def static_conv2d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NHWC",
-        dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        dilations: Union[int, Tuple[int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1011,6 +1011,17 @@ class ContainerWithLayers(ContainerBase):
             "NHWC" or "NCHW". Defaults to "NHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1052,12 +1063,12 @@ class ContainerWithLayers(ContainerBase):
     def conv2d(
         self: ivy.Container,
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NHWC",
-        dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        dilations: Union[int, Tuple[int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1071,7 +1082,7 @@ class ContainerWithLayers(ContainerBase):
 
         Parameters
         ----------
-        x
+        self
             Input image *[batch_size,h,w,d_in]*.
         filters
             Convolution filters *[fh,fw,d_in,d_out]*.
@@ -1084,6 +1095,17 @@ class ContainerWithLayers(ContainerBase):
             "NHWC" or "NCHW". Defaults to "NHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1125,19 +1147,76 @@ class ContainerWithLayers(ContainerBase):
     def static_conv1d_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: int,
+        strides: Union[int, Tuple[int]],
         padding: str,
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NWC",
-        dilations: int = 1,
+        dilations: Union[int, Tuple[int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[Union[ivy.Array, ivy.Container]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.conv1d_transpose. This method simply
+        wraps the function, and so the docstring for ivy.conv1d_transpose also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
+        filters
+            Convolution filters *[fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+            padding), or a sequence of n (low, high) integer pairs that give the padding
+            to apply before and after each spatial dimension.
+        output_shape
+            Shape of the output (Default value = None)
+        data_format
+            The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
+            corresponds to input with shape (batch_size, width, channels), while "NCW"
+            corresponds to input with shape (batch_size, channels, width).
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the transpose convolution operation.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.random_normal(mean=0, std=1, shape=[1, 28, 3]),
+        ...                   b=ivy.random_normal(mean=0, std=1, shape=[1, 56, 3]))
+        >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
+        >>> y = ivy.Container.static_conv1d_transpose(x, filters, 2, 'SAME')
+        >>> print(y.shape)
+        {
+            a: [1,56,6],
+            b: [1,112,6]
+        }
+        """
         return ContainerBase.cont_multi_map_in_function(
             "conv1d_transpose",
             x,
@@ -1170,6 +1249,63 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+        """
+        ivy.Container instance method variant of ivy.conv1d_transpose. This method
+        simply wraps the function, and so the docstring for ivy.conv1d_transpose also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
+        filters
+            Convolution filters *[fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+            padding), or a sequence of n (low, high) integer pairs that give the padding
+            to apply before and after each spatial dimension.
+        output_shape
+            Shape of the output (Default value = None)
+        data_format
+            The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
+            corresponds to input with shape (batch_size, width, channels), while "NCW"
+            corresponds to input with shape (batch_size, channels, width).
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the transpose convolution operation.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.random_normal(mean=0, std=1, shape=[1, 28, 3]),
+        ...                   b=ivy.random_normal(mean=0, std=1, shape=[1, 56, 3]))
+        >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
+        >>> y = x.conv1d_transpose(filters, 2, 'SAME')
+        >>> print(y.shape)
+        {
+            a: [1,56,6],
+            b: [1,112,6]
+        }
+        """
         return self.static_conv1d_transpose(
             self,
             filters,

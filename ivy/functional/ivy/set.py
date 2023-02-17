@@ -4,6 +4,7 @@ from typing import Union, Tuple, Optional
 # local
 import ivy
 from ivy.func_wrapper import (
+    handle_array_function,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -20,6 +21,7 @@ from ivy.exceptions import handle_exceptions
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -139,6 +141,7 @@ def unique_all(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -240,6 +243,7 @@ def unique_inverse(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -306,6 +310,7 @@ def unique_values(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def unique_counts(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

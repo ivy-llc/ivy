@@ -249,3 +249,77 @@ class ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_prelu(
+        x: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        slope: Union[float, ivy.NativeArray, ivy.Array, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional["ivy.Array"] = None,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        x
+        slope
+        key_chains
+        to_apply
+        prune_unapplied
+        map_sequences
+        out
+
+        Returns
+        -------
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "prelu",
+            x,
+            slope,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def prelu(
+        self: ivy.Container,
+        slope: Union[float, ivy.NativeArray, ivy.Array, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+
+        Parameters
+        ----------
+        slope
+        key_chains
+        to_apply
+        prune_unapplied
+        map_sequences
+        out
+
+        Returns
+        -------
+
+        """
+        return self.static_prelu(
+            self,
+            slope,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

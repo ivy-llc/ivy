@@ -73,12 +73,12 @@ def prelu(
     out: Optional["ivy.Array"] = None,
 ) -> ivy.Array:
     """
-    PRelu takes input data (Array) and slope array as input,
+    Prelu takes input data (Array) and slope array as input,
     and produces one output data (array) where the function
     f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
     to the data array elementwise. This operator supports unidirectional
     broadcasting (array slope should be unidirectional broadcastable to
-    input tensor X); for more details please check Broadcasting in ONNX.
+    input tensor X);
 
     Parameters
     ----------
@@ -90,7 +90,6 @@ def prelu(
     out
         Optional output array.
 
-
     Returns
     -------
     ret
@@ -98,7 +97,10 @@ def prelu(
     """
     try:
         return ivy.where(x > 0, x, x * slope, out=out)
-    except ValueError as e:
+    except ivy.exceptions.IvyError(
+        f"The shape {slope.shape} is not Unidirectional Broadcastable\n"
+        f"as per ONNX standards"
+    ) as IvyException:
         if len(slope.shape) == 1:
             dim = slope.shape[0]
             new_shape = []
@@ -112,7 +114,7 @@ def prelu(
             if n == 1:
                 xs = x * slope.reshape(tuple(new_shape), out=out)
                 return ivy.where(x > 0, x, xs, out=out)
-        raise e
+        raise IvyException
 
 
 @to_native_arrays_and_back
