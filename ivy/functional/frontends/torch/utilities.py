@@ -9,4 +9,7 @@ def result_type(tensor, other):
 
 @to_ivy_arrays_and_back
 def _assert(condition, message):
-    return ivy._assert(condition, message)
+    if not condition:
+        raise Exception(message)
+    else:
+        return True
