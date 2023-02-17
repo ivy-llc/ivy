@@ -156,6 +156,8 @@
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -272,7 +274,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="k">if</span> <span class="n">build_mode</span> <span class="o">!=</span> <span class="s2">&quot;on_init&quot;</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">dynamic_backend</span><span class="o">=</span><span class="n">dynamic_backend</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">dynamic_backend</span><span class="o">=</span><span class="n">dynamic_backend</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_module_graph</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lazy_compiled</span> <span class="o">=</span> <span class="kc">False</span></div>
 
     <span class="c1"># Private #</span>
     <span class="c1"># --------#</span>
@@ -627,6 +633,19 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lazy_compiled</span><span class="p">:</span>
+            <span class="c1"># we are compiling since we want to transpile module, so set the appropriate backend</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">:</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">:</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module_graph</span><span class="p">:</span>
+            <span class="c1"># we need `v` in kwargs, since this is a compiled call</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">v</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module_graph</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
         <span class="n">with_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="o">=</span><span class="n">with_grads</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">submod_rets</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
             <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
@@ -702,7 +721,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtype</span>
+        <span class="c1"># why are we adding this kwarg in user-defined build ?</span>
+        <span class="c1"># it results in the error while doing `from_haiku_module` if haiku&#39;s forward</span>
+        <span class="c1"># therefore leaving it commented out</span>
+        <span class="c1"># kwargs[&quot;dtype&quot;] = dtype</span>
+
         <span class="c1"># build local Module, and any child modules flagged with &quot;explicit&quot; build mode</span>
         <span class="n">built</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
 
@@ -787,7 +810,93 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">built_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_built</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_built</span>
+
+<div class="viewcode-block" id="Module.show_graph"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.show_graph">[docs]</a>    <span class="k">def</span> <span class="nf">show_graph</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">with_grads</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">stateful</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">arg_stateful_idxs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">kwarg_stateful_idxs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">randomness_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">save_to_disk</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">with_edge_labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">with_arg_labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">with_output_labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">output_connected_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">include_generators</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">array_caching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">highlight_subgraph</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fname</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">return_graph</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="n">with_grads</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># for on call build modes</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_built</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">from_call</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># for explicit build modes</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;with_grads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">with_grads</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">show_graph</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_call</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="n">stateful</span><span class="o">=</span><span class="n">stateful</span><span class="p">,</span>
+            <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="n">arg_stateful_idxs</span><span class="p">,</span>
+            <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="n">kwarg_stateful_idxs</span><span class="p">,</span>
+            <span class="n">randomness_factor</span><span class="o">=</span><span class="n">randomness_factor</span><span class="p">,</span>
+            <span class="n">save_to_disk</span><span class="o">=</span><span class="n">save_to_disk</span><span class="p">,</span>
+            <span class="n">with_edge_labels</span><span class="o">=</span><span class="n">with_edge_labels</span><span class="p">,</span>
+            <span class="n">with_arg_labels</span><span class="o">=</span><span class="n">with_arg_labels</span><span class="p">,</span>
+            <span class="n">with_output_labels</span><span class="o">=</span><span class="n">with_output_labels</span><span class="p">,</span>
+            <span class="n">output_connected_only</span><span class="o">=</span><span class="n">output_connected_only</span><span class="p">,</span>
+            <span class="n">include_generators</span><span class="o">=</span><span class="n">include_generators</span><span class="p">,</span>
+            <span class="n">array_caching</span><span class="o">=</span><span class="n">array_caching</span><span class="p">,</span>
+            <span class="n">highlight_subgraph</span><span class="o">=</span><span class="n">highlight_subgraph</span><span class="p">,</span>
+            <span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span>
+            <span class="n">return_graph</span><span class="o">=</span><span class="n">return_graph</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">return_graph</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">graph</span></div>
+
+<div class="viewcode-block" id="Module.compile"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.compile">[docs]</a>    <span class="k">def</span> <span class="nf">compile</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">compile_kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compile the `ivy.Module`&#39;s `_unified_ivy_graph` or `_call` method to the target backend.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            compile_kwargs:</span>
+<span class="sd">                keyword arguments passed to the compile function.</span>
+<span class="sd">            args:</span>
+<span class="sd">                arguments used to compile. Defaults to None.</span>
+<span class="sd">            kwargs:</span>
+<span class="sd">                keyword arguments used to compile. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># no arguments given to compile, so delay the compilation</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">args</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lazy_compiled</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+
+        <span class="c1"># we do not need convert the args to source</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">())</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span>
+
+        <span class="c1"># shallow copy the kwargs dict</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
+
+        <span class="n">fn_to_compile</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_module_graph</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_module_graph</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="n">fn_to_compile</span><span class="p">,</span> <span class="o">**</span><span class="n">compile_kwargs</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lazy_compiled</span> <span class="o">=</span> <span class="kc">False</span></div></div>
 </pre></div>
 
            </div>
