@@ -1035,7 +1035,7 @@ def array_values(
             if "complex" in dtype:
                 values = [complex(*v) for v in values]
     else:
-        values = draw(list_of_size(x=st.booleans(), length=size))
+        values = draw(list_of_size(x=st.booleans(), size=size))
     if dtype == "bfloat16":
         # check bfloat16 behavior enabled or not
         try:
