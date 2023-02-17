@@ -852,10 +852,12 @@ def test_torch_tensorsolve(
 @handle_frontend_test(
     fn_tree="torch.linalg.matmul",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        min_value=-1e04,
+        max_value=1e04,
     ),
     test_with_out=st.just(False),
 )
