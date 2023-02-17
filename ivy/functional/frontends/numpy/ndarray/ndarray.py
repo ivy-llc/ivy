@@ -230,6 +230,11 @@ class ndarray:
         where=True,
         out=None,
     ):
+        if where is None or (type(where) == bool and not where):
+            if dtype is not None:
+                return ivy.array(initial, dtype=dtype)
+            else:
+                return initial  # should broadcast to shape of self with reduced axis
         if (
             ivy.is_array(where)
             or ivy.is_native_array(where)
@@ -239,19 +244,27 @@ class ndarray:
                 arg = ivy.where(where, self.ivy_array, 1)
             else:
                 arg = ivy.where(where, self, 1)
-            _where = True
         else:
             arg = self
-            _where = True  # where
-        return np_frontend.prod(
-            arg,
-            axis=axis,
-            dtype=dtype,
-            keepdims=keepdims,
-            initial=initial,
-            where=_where,
-            out=out,
-        )
+        if initial is not None:
+            return np_frontend.multiply(
+                ivy.array(initial, dtype=dtype),
+                np_frontend.prod(
+                    arg,
+                    axis=axis,
+                    dtype=dtype,
+                    keepdims=keepdims,
+                    out=out,
+                ),
+            )
+        else:
+            return np_frontend.prod(
+                arg,
+                axis=axis,
+                dtype=dtype,
+                keepdims=keepdims,
+                out=out,
+            )
 
     def sort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.sort(self._ivy_array, axis=axis, kind=kind, order=order)
