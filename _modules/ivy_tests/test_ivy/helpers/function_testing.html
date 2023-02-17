@@ -167,6 +167,8 @@
 
 
 <div class="viewcode-block" id="framework_comparator"><a class="viewcode-back" href="../../../../testing/function_testing/framework_comparator.html#ivy_tests.test_ivy.helpers.function_testing.framework_comparator">[docs]</a><span class="k">def</span> <span class="nf">framework_comparator</span><span class="p">(</span><span class="n">frontend</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">!=</span> <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;jax&quot;</span><span class="p">:</span>
         <span class="n">fw</span> <span class="o">=</span> <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">backend_fw</span> <span class="o">=</span> <span class="p">(</span>
@@ -181,8 +183,8 @@
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="o">==</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">__version__</span>
+            <span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="o">==</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">__version__</span>
         <span class="p">)</span></div>
 
 
@@ -786,8 +788,6 @@
         <span class="n">shallow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c1"># temporarily set frontend framework as backend</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">frontend</span><span class="p">:</span>
         <span class="c1"># multiversion zone, changes made in non-multiversion zone should</span>
         <span class="c1"># be applied here too</span>
@@ -826,7 +826,7 @@
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
                         <span class="n">frontend_ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">frontend_ret</span><span class="p">,)</span>
                     <span class="n">frontend_ret_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span>
-                        <span class="n">frontend_ret</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+                        <span class="n">frontend_ret</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
                     <span class="p">)</span>
                     <span class="n">frontend_ret_flat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span>
                         <span class="n">frontend_ret</span><span class="p">,</span> <span class="n">frontend_ret_idxs</span>
@@ -837,6 +837,9 @@
                 <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
                 <span class="k">raise</span> <span class="n">e</span>
         <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># temporarily set frontend framework as backend</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># create frontend framework args</span>
                 <span class="n">args_frontend</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
@@ -896,6 +899,8 @@
                         <span class="n">frontend_ret</span><span class="p">,</span> <span class="n">frontend_ret_idxs</span>
                     <span class="p">)</span>
                     <span class="n">frontend_ret_np_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frontend_ret_flat</span><span class="p">]</span>
+                <span class="c1"># unset frontend framework from backend</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
                 <span class="k">raise</span> <span class="n">e</span>
@@ -905,6 +910,8 @@
         <span class="c1"># non-multiversion zone, changes made here should be</span>
         <span class="c1"># applied to multiversion zone too</span>
 
+        <span class="c1"># temporarily set frontend framework as backend</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">frontend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># create frontend framework args</span>
             <span class="n">args_frontend</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
@@ -959,11 +966,11 @@
                     <span class="n">frontend_ret</span><span class="p">,</span> <span class="n">frontend_ret_idxs</span>
                 <span class="p">)</span>
                 <span class="n">frontend_ret_np_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frontend_ret_flat</span><span class="p">]</span>
+            <span class="c1"># unset frontend framework from backend</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
             <span class="k">raise</span> <span class="n">e</span>
-    <span class="c1"># unset frontend framework from backend</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
 
     <span class="n">ret_np_flat</span> <span class="o">=</span> <span class="n">flatten_and_to_np</span><span class="p">(</span><span class="n">ret</span><span class="o">=</span><span class="n">ret</span><span class="p">)</span>
 
