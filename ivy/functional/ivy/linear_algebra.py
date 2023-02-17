@@ -2441,7 +2441,7 @@ def vector_norm(
     ivy.array([2, 4])
 
     >>> x = ivy.Container(a = [-1., 1., -2., 2.], b = [0., 1.2, 2.3, -3.1])
-    >>> y = ivy.vector_nosdfrm(x, ord = -1)
+    >>> y = ivy.vector_norm(x, ord = -1)
     >>> print(y)
     {
         a: ivy.array([0.33333334]),
