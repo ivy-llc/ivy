@@ -28,45 +28,35 @@ def _get_castable_dtypes_values(draw, *, allow_nan=False):
     dtype1, values, dtype2 = draw(
         helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
     )
-    return [dtype1], [values], axis, dtype2
+    where = draw(np_frontend_helpers.where(shape=shape))
+    return [dtype1], [values], axis, dtype2, where
 
 
 # sum
 @handle_frontend_test(
     fn_tree="numpy.sum",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float")
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype_x_axis_dtype=_get_castable_dtypes_values(),
     keep_dims=st.booleans(),
-    initial=st.one_of(st.floats(), st.none()),
-    where=np_frontend_helpers.where(),
+    initial=st.one_of(st.floats()),
 )
 def test_numpy_sum(
-    dtype_x_axis,
-    dtype,
+    dtype_x_axis_dtype,
     keep_dims,
-    where,
     initial,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
-    if initial is not None:
-        (
-            where,
-            input_dtypes,
-            test_flags,
-        ) = np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
-    else:
-        where = None
-    helpers.test_frontend_function(
+    input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype
+    if ivy.current_backend_str() == "torch":
+        assume(not test_flags.as_variable[0])
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
@@ -74,7 +64,7 @@ def test_numpy_sum(
         on_device=on_device,
         x=x[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=dtype,
         keepdims=keep_dims,
         initial=initial,
         where=where,

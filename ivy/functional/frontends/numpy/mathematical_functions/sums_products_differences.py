@@ -25,17 +25,17 @@ def sum(
     initial=None,
     where=True,
 ):
-    if not where:
-        if dtype:
-            return ivy.astype(ivy.array(0), ivy.as_ivy_dtype(dtype))
-        return ivy.array(0)
-    if initial:
+    if ivy.is_array(where):
+        x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
+    if initial is not None:
         s = ivy.shape(x, as_array=True)
         s[axis] = 1
         header = ivy.full(ivy.Shape(tuple(s)), initial)
-        if where:
-            x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)))
+        if ivy.is_array(where):
+            x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
         x = ivy.concat([x, header], axis=axis)
+    else:
+        x = ivy.where(ivy.isnan(x), ivy.zeros_like(x), x)
     return ivy.sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
