@@ -89,6 +89,21 @@ def flip(
     return ret
 
 
+def sequence_insert(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    arr: Union[tf.Tensor, tf.Variable],
+    pos: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if pos is None:
+        x.insert(ivy.array.size(x), arr)
+    else:
+        x.insert(pos, arr)
+    return x
+
+
 def permute_dims(
     x: Union[tf.Tensor, tf.Variable],
     /,
