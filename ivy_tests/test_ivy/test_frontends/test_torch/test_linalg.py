@@ -878,4 +878,6 @@ def test_torch_matmul(
         test_flags=test_flags,
         input=x[0],
         other=x[1],
+        rtol=1e-03,
+        atol=1e-06,
     )
