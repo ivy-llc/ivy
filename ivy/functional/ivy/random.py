@@ -13,7 +13,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
-from ivy.backend_handler import backend_stack
+from ivy.utils.backend import backend_stack
 from ivy.exceptions import handle_exceptions
 
 

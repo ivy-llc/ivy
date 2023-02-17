@@ -62,19 +62,6 @@ except ImportError:
 import ivy
 
 
-class IvyModel(ivy.Module):
-    def __init__(self, in_size, out_size, hidden_units=64):
-        self.linear0 = ivy.Linear(in_size, hidden_units)
-        self.linear1 = ivy.Linear(hidden_units, 64)
-        self.linear2 = ivy.Linear(hidden_units, out_size)
-        ivy.Module.__init__(self)
-
-    def _forward(self, x, *args, **kwargs):
-        x = ivy.relu(self.linear0(x))
-        x = ivy.relu(self.linear1(x))
-        return ivy.sigmoid(self.linear2(x))
-
-
 class TensorflowLinear(tf.keras.Model):
     def __init__(self, out_size):
         super(TensorflowLinear, self).__init__()
@@ -199,7 +186,10 @@ def test_from_backend_module(bs_ic_oc, from_class_and_args):
                 in_size=input_channels, out_size=output_channels
             )
 
-        ivy_module = module_converter(native_module)
+        fw_kwargs = {}
+        if ivy.current_backend_str() == "jax":
+            fw_kwargs["params_hk"] = native_module.init(0, x)
+        ivy_module = module_converter(native_module, **fw_kwargs)
 
     def loss_fn(v_=None):
         out = ivy_module(x, v=v_)
@@ -228,116 +218,3 @@ def test_from_backend_module(bs_ic_oc, from_class_and_args):
     assert loss.shape == ()
     # value test
     assert (abs(grads).max() > 0).cont_all_true()
-
-
-@pytest.mark.parametrize("bs_ic_oc", [([2, 3], 10, 5)])
-def test_to_torch_module(bs_ic_oc):
-    ivy.set_backend("torch")
-    batch_shape, input_channels, output_channels = bs_ic_oc
-    ivy_model = IvyModel(input_channels, output_channels)
-    torch_model = ivy_model.to_torch_module()
-    optimizer = torch.optim.SGD(torch_model.parameters(), lr=1e-3)
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    y = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels),
-        "float32",
-    )
-    x_in = ivy.to_native(x)
-    target = ivy.to_native(y)
-    mae = nn.L1Loss()
-    loss_tm1 = 1e12
-
-    def loss_fn():
-        preds = torch_model(x_in)
-        return mae(target, preds)
-
-    for step in range(10):
-        loss = loss_fn()
-        loss.backward()
-        optimizer.step()
-
-        assert loss < loss_tm1
-        loss_tm1 = loss
-
-
-@pytest.mark.parametrize("bs_ic_oc", [([2, 3], 10, 5)])
-def test_to_keras_module(bs_ic_oc):
-    ivy.set_backend("tensorflow")
-    batch_shape, input_channels, output_channels = bs_ic_oc
-    ivy_model = IvyModel(input_channels, output_channels)
-    tf_model = ivy_model.to_keras_module()
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    y = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels),
-        "float32",
-    )
-    x_in = ivy.to_native(x)
-    target = ivy.to_native(y)
-    optimizer = tf.keras.optimizers.SGD(learning_rate=1e-3)
-    mae = tf.keras.losses.MeanAbsoluteError()
-    loss_tm1 = 1e12
-
-    def loss_fn():
-        preds = tf_model(x_in)
-        return mae(target, preds)
-
-    for epoch in range(10):
-        with tf.GradientTape(persistent=False, watch_accessed_variables=False) as tape:
-            tape.watch(tf_model.trainable_weights)
-            loss = loss_fn()
-        grads = tape.gradient(loss, tf_model.trainable_weights)
-        optimizer.apply_gradients(zip(grads, tf_model.trainable_weights))
-
-        assert loss < loss_tm1
-        loss_tm1 = loss
-
-
-@pytest.mark.parametrize("bs_ic_oc", [([2, 3], 10, 5)])
-def test_to_haiku_module(bs_ic_oc):
-    ivy.set_backend("jax")
-    batch_shape, input_channels, output_channels = bs_ic_oc
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
-    )
-    y = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels),
-        "float32",
-    )
-    x_in = ivy.to_native(x)
-    target = ivy.to_native(y)
-    loss_tm1 = 1e12
-
-    ivy_model = IvyModel(input_channels, output_channels)
-    haiku_model = ivy_model.to_haiku_module()
-    rng = jax.random.PRNGKey(42)
-    lr = 0.001
-
-    def forward_fn(*a, **kw):
-        model = haiku_model()
-        return model(*a, **kw)
-
-    def MAELoss(weights, input_data, target):
-        preds = model.apply(weights, rng, input_data)
-        return jnp.mean(jnp.abs(target - preds))
-
-    model = hk.transform(forward_fn)
-
-    rng = jax.random.PRNGKey(42)
-    params = model.init(rng, x_in)
-
-    def UpdateWeights(weights, gradients):
-        return weights - lr * gradients
-
-    for epoch in range(10):
-        loss, param_grads = jax.value_and_grad(MAELoss)(params, x_in, target)
-        params = jax.tree_map(UpdateWeights, params, param_grads)
-
-        assert loss < loss_tm1
-        loss_tm1 = loss

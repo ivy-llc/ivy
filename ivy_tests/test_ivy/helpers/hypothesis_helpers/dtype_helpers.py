@@ -3,11 +3,21 @@ import numpy as np
 from hypothesis import strategies as st
 from typing import Optional
 
+try:
+    import jsonpickle
+except ImportError:
+    pass
 # local
 import ivy
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
+
+
+def make_json_pickable(s):
+    s = s.replace("builtins.bfloat16", "ivy.bfloat16")
+    s = s.replace("jax._src.device_array.reconstruct_device_array", "jax.numpy.array")
+    return s
 
 
 @st.composite
@@ -67,9 +77,32 @@ def get_dtypes(
 
     # TODO refactor this so we run the intersection in a chained clean way
     backend_dtypes = _get_type_dict(ivy)[kind]
-    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:  # NOQA
-        fw_dtypes = _get_type_dict(test_globals.CURRENT_FRONTEND())[kind]
-        valid_dtypes = tuple(set(fw_dtypes).intersection(backend_dtypes))
+
+    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval or isinstance(
+        test_globals.CURRENT_FRONTEND_STR, list
+    ):  # NOQA
+        if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
+            process = test_globals.CURRENT_FRONTEND_STR[1]
+            try:
+                process.stdin.write("1" + "\n")
+                process.stdin.flush()
+            except Exception as e:
+                print(
+                    "Something bad happened to the subprocess, here are the logs:\n\n"
+                )
+                print(process.stdout.readlines())
+                raise e
+            frontend_ret = process.stdout.readline()
+            if frontend_ret:
+                frontend_ret = jsonpickle.loads(make_json_pickable(frontend_ret))
+            else:
+                print(process.stderr.readlines())
+                raise Exception
+            fw_dtypes = frontend_ret[kind]
+            valid_dtypes = tuple(set(fw_dtypes).intersection(backend_dtypes))
+        else:
+            fw_dtypes = _get_type_dict(test_globals.CURRENT_FRONTEND())[kind]
+            valid_dtypes = tuple(set(fw_dtypes).intersection(backend_dtypes))
     else:
         valid_dtypes = backend_dtypes
 
