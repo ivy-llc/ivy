@@ -273,7 +273,7 @@ def _interp_args(draw, scale_factor=False):
     size = draw(
         st.one_of(
             helpers.lists(
-                arg=helpers.ints(min_value=1, max_value=5),
+                x=helpers.ints(min_value=1, max_value=5),
                 min_size=num_dims - 2,
                 max_size=num_dims - 2,
             ),
