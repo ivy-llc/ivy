@@ -89,6 +89,7 @@ def flip(
     return ret
 
 
+"""
 def sequence_insert(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -102,6 +103,7 @@ def sequence_insert(
     else:
         x.insert(pos, arr)
     return x
+"""
 
 
 def permute_dims(
