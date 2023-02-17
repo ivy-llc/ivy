@@ -941,7 +941,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([1., 2., 3.])
-        >>> x.vector_norm()
+        >>> y = x.vector_norm()
+        >>> print(y)
         ivy.array([3.7416575])
         """
         return ivy.vector_norm(
