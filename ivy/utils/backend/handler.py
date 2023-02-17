@@ -86,7 +86,7 @@ def _determine_backend_from_args(args):
     --------
     If `args` is a jax.numpy array, then Ivy's jax backend will be returned:
 
-    >>> from ivy.backend_handler import _determine_backend_from_args
+    >>> from ivy.utils.backend.handler import _determine_backend_from_args
     >>> import jax.numpy as jnp
     >>> x = jnp.array([1])
     >>> print(_determine_backend_from_args(x))
