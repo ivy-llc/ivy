@@ -867,7 +867,6 @@ def dft(
     return res
 
 
-
 @handle_exceptions
 @to_native_arrays_and_back
 @handle_array_like_without_promotion

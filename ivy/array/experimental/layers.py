@@ -635,7 +635,6 @@ class ArrayWithLayersExperimental(abc.ABC):
             out=out,
         )
 
-
     def stft(
             self: ivy.Array,
             /,
@@ -649,7 +648,6 @@ class ArrayWithLayersExperimental(abc.ABC):
     ) -> ivy.Array:
         """
         Computes the Short-time Fourier Transform of signals.
-
 
         Parameters
         ----------
@@ -698,7 +696,8 @@ class ArrayWithLayersExperimental(abc.ABC):
         return ivy.stft(
             self._data, frame_length=frame_length, frame_step=frame_step,
             fft_length=fft_length, window_fn=window_fn, 
-            pad_end=pad_end, name=name)
+            pad_end=pad_end, name=name
+        )
 
     def interpolate(
         self,

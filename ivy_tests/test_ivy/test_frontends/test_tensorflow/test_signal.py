@@ -41,17 +41,26 @@ def test_tensorflow_kaiser_window(
         dtype=dtype,
     )
 
+
 @st.composite
 def stft_st(draw):
-    dtype_s, signal = draw(helpers.dtype_and_values(dtype=["float32"], min_num_dims=1))
-    dtype_fft, fft_l = draw(helpers.dtype_and_values(dtype=["int32"], min_value=1, shape=(1,),
-                                                     large_abs_safety_factor=1, small_abs_safety_factor=1))
-    dtype_fl, fl = draw(helpers.dtype_and_values(dtype=["int32"], min_value=fft_l[0][0], shape=(1,),
-                                                 large_abs_safety_factor=1, small_abs_safety_factor=1))
-    dtype_fs, fs = draw(helpers.dtype_and_values(dtype=["int32"], min_value=1, shape=(1,),
-                                                 large_abs_safety_factor=1, small_abs_safety_factor=1))
+    dtype_s, signal = draw(helpers.dtype_and_values(dtype=["float32"],
+                                                    min_num_dims=1))
+    dtype_fft, fft_l = draw(helpers.dtype_and_values(dtype=["int32"],
+                                                     min_value=1, shape=(1,),
+                                                     large_abs_safety_factor=1,
+                                                     small_abs_safety_factor=1))
+    dtype_fl, fl = draw(helpers.dtype_and_values(dtype=["int32"],
+                                                 min_value=fft_l[0][0], shape=(1,),
+                                                 large_abs_safety_factor=1,
+                                                 small_abs_safety_factor=1))
+    dtype_fs, fs = draw(helpers.dtype_and_values(dtype=["int32"], min_value=1,
+                                                 shape=(1,),
+                                                 large_abs_safety_factor=1,
+                                                 small_abs_safety_factor=1))
     dtypes = [dtype_s[0], dtype_fl[0], dtype_fs[0], dtype_fft[0]]
     return dtypes, signal, fl[0][0], fs[0][0], fft_l[0][0]
+
 
 @handle_frontend_test(
     fn_tree="tensorflow.signal.stft",
