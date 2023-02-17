@@ -97,7 +97,7 @@ class ModuleConverters:
     @staticmethod
     def from_haiku_module(
         native_module,
-        params_hk,
+        params_hk=None,
         constructor_args: Optional[List] = None,
         constructor_kwargs: Optional[Dict] = None,
         instance_args: Optional[List] = None,
@@ -112,6 +112,9 @@ class ModuleConverters:
         ----------
         native_module
             The module in the native framework to convert(class or instance).
+        params_hk
+            Haiku parameters to pass to the constructor of the native module.
+            Default is ``None``.
         constructor_args
             Positional arguments to pass to the constructor of the native module.
             Default is ``None``.
@@ -216,6 +219,7 @@ class ModuleConverters:
                 return model(*i_args, **i_kwargs)
 
             transformed_module = hk.transform(forward_fn)
+            params_hk = transformed_module.init(0, *i_args, **i_kwargs)
 
         return HaikuIvyModule(
             *i_args,
