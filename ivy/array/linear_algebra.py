@@ -714,9 +714,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        adjoint: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.solve(self._data, x2, out=out)
+        return ivy.solve(self._data, x2, adjoint=adjoint, out=out)
 
     def svd(
         self: ivy.Array,
