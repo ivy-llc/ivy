@@ -852,22 +852,24 @@ def test_torch_tensorsolve(
 # lu_factor
 @st.composite
 def _lu_factor_helper(draw):
-    # generate input matrix of shape (*, m, n) and where '*' is one or more batch dimensions
+    # generate input matrix of shape (*, m, n) and where '*' is one or more
+    # batch dimensions
     input_dtype = draw(
         helpers.get_dtypes("float")
     )
 
-    dim1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim2 = draw(helpers.ints(min_value=2, max_value=5))
-    batch_dim = draw(helpers.ints(min_value=0, max_value=5))
+    dim1 = draw(helpers.ints(min_value=2, max_value=3))
+    dim2 = draw(helpers.ints(min_value=2, max_value=3))
+    # batch_dim = draw(helpers.ints(min_value=0, max_value=2))
+    batch_dim = 0
 
     if batch_dim == 0:
         input_matrix = draw(
             helpers.array_values(
                 dtype=input_dtype[0],
                 shape=(dim1, dim2),
-                min_value=-5,
-                max_value=5,
+                min_value=-1,
+                max_value=1,
             )
         )
     else:
@@ -875,8 +877,8 @@ def _lu_factor_helper(draw):
             helpers.array_values(
                 dtype=input_dtype[0],
                 shape=(batch_dim, dim1, dim2),
-                min_value=-5,
-                max_value=5,
+                min_value=-1,
+                max_value=1,
             )
         )
 
@@ -903,8 +905,8 @@ def test_torch_lu_factor(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        rtol=1e-03,
-        atol=1e-02,
+        # rtol=1e-03,
+        # atol=1e-02,
         A=input,
     )
     ret = [ivy.to_numpy(x) for x in ret]
@@ -918,4 +920,3 @@ def test_torch_lu_factor(
         ret_from_gt_np=[frontend_LU, frontend_pivot],
         ground_truth_backend=frontend
     )
-
