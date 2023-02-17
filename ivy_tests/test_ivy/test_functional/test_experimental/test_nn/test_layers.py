@@ -257,7 +257,7 @@ def test_dct(
 
 
 @st.composite
-def _interp_args(draw):
+def _interp_args(draw, scale_factor=False):
     mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"]))
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
@@ -292,7 +292,24 @@ def _interp_args(draw):
             safety_factor_scale="log",
         )
     )
-
+    if scale_factor:
+        scale_factor = draw(st.booleans())
+        if scale_factor:
+            recompute_scale_factor = draw(st.booleans())
+            scale_factors = size
+            size = None
+        else:
+            scale_factors = None
+            recompute_scale_factor = False
+        return (
+            dtype,
+            x,
+            mode,
+            size,
+            align_corners,
+            scale_factors,
+            recompute_scale_factor,
+        )
     return dtype, x, mode, size, align_corners
 
 

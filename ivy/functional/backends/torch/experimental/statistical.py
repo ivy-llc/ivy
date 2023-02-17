@@ -16,13 +16,13 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
+    temp = input
     if hasattr(axis, "__iter__"):
         for dim in axis:
-            input = torch.median(
-                input,
+            temp = torch.median(
+                temp,
                 dim=dim,
                 keepdim=keepdims,
-                out=out,
             )[0]
         return input
     else:
@@ -30,11 +30,10 @@ def median(
             input,
             dim=axis,
             keepdim=keepdims,
-            out=out,
-        )
+        )[0]
 
 
-median.support_native_out = True
+median.support_native_out = False
 
 
 def nanmean(
@@ -96,13 +95,16 @@ def quantile(
             if i not in axis:
                 desired_shape += [current_shape[i]]
 
-        a = a.reshape((-1,) + tuple(desired_shape))
+        temp = a.reshape((-1,) + tuple(desired_shape))
 
-        a = torch.quantile(a, q, dim=0, keepdim=keepdims, interpolation=interpolation)
-
-        return a
+        return torch.quantile(
+            temp, q, dim=0, keepdim=keepdims, interpolation=interpolation
+        )
 
     return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
+
+
+quantile.support_native_out = False
 
 
 def corrcoef(
@@ -138,3 +140,21 @@ def nanmedian(
 
 
 nanmedian.support_native_out = True
+
+
+def unravel_index(
+    indices: torch.Tensor,
+    shape: Tuple[int],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    temp = indices
+    output = []
+    for dim in reversed(shape):
+        output.append(temp % dim)
+        temp = temp // dim
+    return tuple(reversed(output))
+
+
+unravel_index.support_native_out = False

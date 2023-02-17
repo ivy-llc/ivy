@@ -11,6 +11,8 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return jnp.median(
         input,
         axis=axis,

@@ -1056,19 +1056,19 @@ def interpolate(
                     for d_dim in range(size[0]):
                         for h_dim in range(size[1]):
                             for w_dim in range(size[2]):
-                                ret[i][j][d_dim][h_dim][w_dim] = x[i][j][
+                                ret[i, j, d_dim, h_dim, w_dim] = x[i][j][
                                     round(d_dim // d_scale)
                                 ][round(h_dim // h_scale)][round(w_dim // w_scale)]
                 elif dims == 2:
                     h_scale = size[-2] / x.shape[-2]
                     for h_dim in range(size[0]):
                         for w_dim in range(size[1]):
-                            ret[i][j][h_dim][w_dim] = x[i][j][round(h_dim // h_scale)][
+                            ret[i, j, h_dim, w_dim] = x[i][j][round(h_dim // h_scale)][
                                 round(w_dim // w_scale)
                             ]
                 elif dims == 1:
                     for w_dim in range(size[0]):
-                        ret[i][j][w_dim] = x[i][j][round(w_dim // w_scale)]
+                        ret[i, j, w_dim] = x[i][j][round(w_dim // w_scale)]
     elif mode == "area":
         ret = ivy.zeros((x.shape[:2] + size))
         scale = ivy.divide(ivy.shape(x)[2:], size)
@@ -1094,7 +1094,7 @@ def interpolate(
                                 scale_y = h_index[1] - h_index[0]
                                 scale_x = w_index[1] - w_index[0]
                                 area = scale_z * scale_y * scale_x
-                                ret[i][j][d_dim][h_dim][w_dim] = ivy.sum(
+                                ret[i, j, d_dim, h_dim, w_dim] = ivy.sum(
                                     ch[
                                         d_index[0] : d_index[1],
                                         h_index[0] : h_index[1],
@@ -1115,7 +1115,7 @@ def interpolate(
                             scale_y = h_index[1] - h_index[0]
                             scale_x = w_index[1] - w_index[0]
                             area = scale_y * scale_x
-                            ret[i][j][h_dim][w_dim] = ivy.sum(
+                            ret[i, j, h_dim, w_dim] = ivy.sum(
                                 ch[h_index[0] : h_index[1], w_index[0] : w_index[1]]
                             ) * (1 / area)
                 else:
@@ -1125,7 +1125,7 @@ def interpolate(
                             math.ceil((w_dim + 1) * scale[0]),
                         )
                         scale_x = w_index[1] - w_index[0]
-                        ret[i][j][w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
+                        ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
                             1 / scale_x
                         )
     return ivy.astype(ret, ivy.dtype(x))
