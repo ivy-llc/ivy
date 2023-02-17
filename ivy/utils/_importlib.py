@@ -77,7 +77,6 @@ def _import_module(name, package=None):
     else:
         msg = f"No module named {absolute_name!r}"
         raise ModuleNotFoundError(msg, name=absolute_name)
-    # print(spec, name)
     module = module_from_spec(spec)
     import_cache[absolute_name] = module
     spec.loader.exec_module(module)
