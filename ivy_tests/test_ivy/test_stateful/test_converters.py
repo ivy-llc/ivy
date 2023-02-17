@@ -62,19 +62,6 @@ except ImportError:
 import ivy
 
 
-class IvyModel(ivy.Module):
-    def __init__(self, in_size, out_size, hidden_units=64):
-        self.linear0 = ivy.Linear(in_size, hidden_units)
-        self.linear1 = ivy.Linear(hidden_units, 64)
-        self.linear2 = ivy.Linear(hidden_units, out_size)
-        ivy.Module.__init__(self)
-
-    def _forward(self, x, *args, **kwargs):
-        x = ivy.relu(self.linear0(x))
-        x = ivy.relu(self.linear1(x))
-        return ivy.sigmoid(self.linear2(x))
-
-
 class TensorflowLinear(tf.keras.Model):
     def __init__(self, out_size):
         super(TensorflowLinear, self).__init__()
