@@ -1,0 +1,33 @@
+Handler
+=======
+
+.. automodule:: ivy.utils.backend.handler
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Handler
+
+   handler/prevent_access_locally.rst
+   handler/fn_name_from_version_specific_fn_name.rst
+   handler/set_backend_to_specific_version.rst
+   handler/current_backend.rst
+   handler/convert_from_source_backend_to_numpy.rst
+   handler/convert_from_numpy_to_target_backend.rst
+   handler/set_backend.rst
+   handler/set_numpy_backend.rst
+   handler/set_jax_backend.rst
+   handler/set_tensorflow_backend.rst
+   handler/set_torch_backend.rst
+   handler/get_backend.rst
+   handler/unset_backend.rst
+   handler/clear_backend_stack.rst
+   handler/choose_random_backend.rst
+   handler/with_backend.rst
+   handler/ContextManager.rst
+

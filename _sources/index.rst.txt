@@ -345,6 +345,16 @@ Citation
 .. toctree::
    :hidden:
    :maxdepth: -1
+   :caption: Utils
+
+   utils/backend.rst
+   utils/_importlib.rst
+   utils/dynamic_import.rst
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
    :caption: Testing
 
    testing/assertions.rst

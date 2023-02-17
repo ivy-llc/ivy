@@ -1,0 +1,17 @@
+Dynamic import
+==============
+
+.. automodule:: ivy.utils.dynamic_import
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Dynamic import
+
+   dynamic_import/import_module.rst
+

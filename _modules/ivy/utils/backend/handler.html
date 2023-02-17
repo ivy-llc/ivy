@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ivy.utils.backend.handler &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nested_array/nested_array.html">Nested array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/dynamic_import.html">Dynamic import</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/testing_helpers.html">Testing helpers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>ivy.utils.backend.handler</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ivy.utils.backend.handler</h1><div class="highlight"><pre>
+<span></span><span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ivy</span> <span class="kn">import</span> <span class="n">verbosity</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">gc</span>
+<span class="kn">from</span> <span class="nn">ivy.utils</span> <span class="kn">import</span> <span class="n">_importlib</span>
+<span class="kn">from</span> <span class="nn">ivy.utils.backend</span> <span class="kn">import</span> <span class="n">ast_helpers</span>
+
+<span class="c1"># local</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">_wrap_function</span>
+
+<span class="n">backend_stack</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">compiled_backends</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">implicit_backend</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
+<span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">ivy_original_fn_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="ContextManager"><a class="viewcode-back" href="../../../../utils/backend/handler/ContextManager.html#ivy.utils.backend.handler.ContextManager">[docs]</a><span class="k">class</span> <span class="nc">ContextManager</span><span class="p">:</span>
+<div class="viewcode-block" id="ContextManager.__init__"><a class="viewcode-back" href="../../../../utils/backend/handler/ContextManager.html#ivy.utils.backend.handler.ContextManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">module</span></div>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">set_backend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="n">unset_backend</span><span class="p">()</span></div>
+
+
+<span class="n">_array_types</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.numpy&quot;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;jax.interpreters.xla&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;jaxlib.xla_extension&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;tensorflow.python.framework.ops&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
+<span class="n">_array_types</span><span class="p">[</span>
+    <span class="s2">&quot;tensorflow.python.ops.resource_variable_ops&quot;</span>
+<span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;torch.nn.parameter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
+
+<span class="n">_backend_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.numpy&quot;</span>
+<span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;jax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
+<span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
+<span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
+
+<span class="n">_backend_reverse_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
+<span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.jax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;jax&quot;</span>
+<span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;tensorflow&quot;</span>
+<span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
+
+<span class="c1"># Backend Getting/Setting #</span>
+<span class="c1"># ----------------------- #</span>
+
+
+<div class="viewcode-block" id="prevent_access_locally"><a class="viewcode-back" href="../../../../utils/backend/handler/prevent_access_locally.html#ivy.utils.backend.handler.prevent_access_locally">[docs]</a><span class="k">def</span> <span class="nf">prevent_access_locally</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_local</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Calling </span><span class="si">{</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is not allowed on this object.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_fn</span></div>
+
+
+<span class="k">def</span> <span class="nf">_determine_backend_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the appropriate Ivy backend, given some arguments.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    args</span>
+<span class="sd">        the arguments from which to figure out the corresponding Ivy backend.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        the Ivy backend inferred from `args`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    If `args` is a jax.numpy array, then Ivy&#39;s jax backend will be returned:</span>
+
+<span class="sd">    &gt;&gt;&gt; from ivy.utils.backend.handler import _determine_backend_from_args</span>
+<span class="sd">    &gt;&gt;&gt; import jax.numpy as jnp</span>
+<span class="sd">    &gt;&gt;&gt; x = jnp.array([1])</span>
+<span class="sd">    &gt;&gt;&gt; print(_determine_backend_from_args(x))</span>
+<span class="sd">    &lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;    </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">arg_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># recursively call the function for each value in the dictionary</span>
+            <span class="n">lib</span> <span class="o">=</span> <span class="n">_determine_backend_from_args</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">lib</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">lib</span>
+        <span class="c1"># check if args is a list or tuple</span>
+    <span class="k">elif</span> <span class="n">arg_type</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="c1"># recursively call the function for each element in the list/tuple</span>
+            <span class="n">lib</span> <span class="o">=</span> <span class="n">_determine_backend_from_args</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">lib</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">lib</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># check if the class module of the arg is in _array_types</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">in</span> <span class="n">_array_types</span><span class="p">:</span>
+            <span class="n">module_name</span> <span class="o">=</span> <span class="n">_array_types</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="fn_name_from_version_specific_fn_name"><a class="viewcode-back" href="../../../../utils/backend/handler/fn_name_from_version_specific_fn_name.html#ivy.utils.backend.handler.fn_name_from_version_specific_fn_name">[docs]</a><span class="k">def</span> <span class="nf">fn_name_from_version_specific_fn_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name</span>
+<span class="sd">        the version specific name of the function for which the version support</span>
+<span class="sd">        is to be provided.</span>
+<span class="sd">    version</span>
+<span class="sd">        the version of the current framework for which the support is to be</span>
+<span class="sd">        provided, the version is inferred by importing the framework</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        the name of the original function which will then point to the version</span>
+<span class="sd">        specific function</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: add tests</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">version</span><span class="p">[:</span> <span class="n">version</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="s2">&quot;_to_&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;_v_&quot;</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;_to_&quot;</span><span class="p">)</span>
+        <span class="n">version_start</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span> <span class="p">:</span> <span class="n">e</span><span class="p">]</span>
+        <span class="n">version_start</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">version_start</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">)))</span>
+        <span class="n">version_end</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="n">e</span> <span class="o">+</span> <span class="mi">4</span> <span class="p">:]</span>
+        <span class="n">version_end</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">version_end</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">version_start</span> <span class="o">&lt;=</span> <span class="n">version</span> <span class="o">&lt;=</span> <span class="n">version_end</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="s2">&quot;_and_above&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;_v_&quot;</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;_and_&quot;</span><span class="p">)</span>
+        <span class="n">version_start</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span> <span class="p">:</span> <span class="n">e</span><span class="p">]</span>
+        <span class="n">version_start</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">version_start</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="n">version_start</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;_v_&quot;</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;_and_&quot;</span><span class="p">)</span>
+        <span class="n">version_start</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span> <span class="p">:</span> <span class="n">e</span><span class="p">]</span>
+        <span class="n">version_start</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">version_start</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="o">&lt;=</span> <span class="n">version_start</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="set_backend_to_specific_version"><a class="viewcode-back" href="../../../../utils/backend/handler/set_backend_to_specific_version.html#ivy.utils.backend.handler.set_backend_to_specific_version">[docs]</a><span class="k">def</span> <span class="nf">set_backend_to_specific_version</span><span class="p">(</span><span class="n">backend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates the backend dict to make the original function</span>
+<span class="sd">    name point to the version specific one.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    backend</span>
+<span class="sd">        the backend module for which we provide the version support</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: add functionality and tests</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;backends&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">9</span> <span class="p">:]</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">f_version</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">__version__</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;_v_&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+            <span class="n">orig_name</span> <span class="o">=</span> <span class="n">fn_name_from_version_specific_fn_name</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">f_version</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">orig_name</span><span class="p">:</span>
+                <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">orig_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">orig_name</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">orig_name</span></div>
+
+
+<div class="viewcode-block" id="current_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/current_backend.html#ivy.utils.backend.handler.current_backend">[docs]</a><span class="k">def</span> <span class="nf">current_backend</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the current backend. Priorities:</span>
+<span class="sd">    global_backend &gt; argument&#39;s backend.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    *args/**kwargs</span>
+<span class="sd">        the arguments from which to try to infer the backend, when there is</span>
+<span class="sd">        no globally set backend.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Ivy&#39;s current backend.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    If no global backend is set, then the backend is inferred from the arguments:</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; x = np.array([2.0])</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.current_backend(x))</span>
+<span class="sd">    &lt;module &#39;ivy.functional.backends.numpy&#39; from &#39;/ivy/ivy/functional/backends/numpy/__init__.py&#39;&gt;   </span>
+
+<span class="sd">    The global backend set in set_backend has priority over any arguments</span>
+<span class="sd">    passed to current_backend:</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;jax&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; x = np.array([2.0])</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.current_backend(x))</span>
+<span class="sd">    &lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;   </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_local</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">ivy</span>
+    <span class="k">global</span> <span class="n">implicit_backend</span>
+    <span class="c1"># if a global backend has been set with</span>
+    <span class="c1"># set_backend then this will be returned</span>
+    <span class="k">if</span> <span class="n">backend_stack</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">backend_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;Using backend from stack: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">f</span>
+
+    <span class="c1"># if no global backend exists, we try to infer</span>
+    <span class="c1"># the backend from the arguments</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">_determine_backend_from_args</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">implicit_backend</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">f</span>
+    <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;Using backend from type: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_backend_dict</span><span class="p">[</span><span class="n">implicit_backend</span><span class="p">])</span></div>
+
+
+<span class="k">def</span> <span class="nf">_set_backend_as_ivy</span><span class="p">(</span><span class="n">original_dict</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">backend</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">original_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">compositional</span> <span class="o">=</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">invalid_dtypes</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">target</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="k">continue</span>
+            <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="n">target</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_wrap_function</span><span class="p">(</span>
+            <span class="n">key</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">to_wrap</span><span class="o">=</span><span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">original</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">compositional</span><span class="o">=</span><span class="n">compositional</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_handle_backend_specific_vars</span><span class="p">(</span><span class="n">backend</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">set_default_device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;jax&quot;</span><span class="p">:</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">set_global_attr</span><span class="p">(</span><span class="s2">&quot;RNG&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RNG</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="convert_from_source_backend_to_numpy"><a class="viewcode-back" href="../../../../utils/backend/handler/convert_from_source_backend_to_numpy.html#ivy.utils.backend.handler.convert_from_source_backend_to_numpy">[docs]</a><span class="k">def</span> <span class="nf">convert_from_source_backend_to_numpy</span><span class="p">(</span><span class="n">variable_ids</span><span class="p">,</span> <span class="n">numpy_objs</span><span class="p">):</span>
+    <span class="c1"># Dynamic Backend</span>
+    <span class="kn">from</span> <span class="nn">ivy.functional.ivy.gradients</span> <span class="kn">import</span> <span class="n">_is_variable</span><span class="p">,</span> <span class="n">_variable_data</span>
+
+    <span class="k">def</span> <span class="nf">_is_var</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+
+            <span class="k">def</span> <span class="nf">_map_fn</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span>
+                <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">in</span> <span class="p">(</span>
+                    <span class="s2">&quot;numpy&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;jax.interpreters.xla&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;jaxlib.xla_extension&quot;</span><span class="p">,</span>
+                <span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">return</span> <span class="n">_is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_map_fn</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">cont_all_true</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span>
+            <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="s2">&quot;numpy&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;jax.interpreters.xla&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;jaxlib.xla_extension&quot;</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="n">_is_variable</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_remove_intermediate_arrays</span><span class="p">(</span><span class="n">arr_list</span><span class="p">,</span> <span class="n">cont_list</span><span class="p">):</span>
+        <span class="n">cont_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">cont_to_flat_list</span><span class="p">()</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">cont_list</span><span class="p">]</span>
+
+        <span class="n">cont_ids</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">id</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="k">else</span> <span class="nb">id</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">cont_list</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">cont</span>
+        <span class="p">]</span>
+        <span class="n">arr_ids</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">id</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="k">else</span> <span class="nb">id</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">arr_list</span>
+        <span class="p">]</span>
+
+        <span class="n">new_objs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">arr_ids</span><span class="p">,</span> <span class="n">arr_list</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cont_ids</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">new_objs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="c1"># get all ivy array and container instances in the project scope</span>
+    <span class="n">array_list</span><span class="p">,</span> <span class="n">container_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="n">obj</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_objects</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">obj_type</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="c1"># filter uninitialized arrays</span>
+    <span class="n">array_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">arr</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">array_list</span> <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">]</span>
+
+    <span class="c1"># remove numpy intermediate objects</span>
+    <span class="n">new_objs</span> <span class="o">=</span> <span class="n">_remove_intermediate_arrays</span><span class="p">(</span><span class="n">array_list</span><span class="p">,</span> <span class="n">container_list</span><span class="p">)</span>
+    <span class="n">new_objs</span> <span class="o">+=</span> <span class="n">container_list</span>
+
+    <span class="c1"># now convert all ivy.Array and ivy.Container instances</span>
+    <span class="c1"># to numpy using the current backend</span>
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">new_objs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">dynamic_backend</span><span class="p">:</span>
+            <span class="n">numpy_objs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_is_var</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+                <span class="c1"># add variable object id to set</span>
+                <span class="n">variable_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+                <span class="n">native_var</span> <span class="o">=</span> <span class="n">_variable_data</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                <span class="n">np_data</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">native_var</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">np_data</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">cont_inplace_update</span><span class="p">(</span><span class="n">np_data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np_data</span>
+
+    <span class="k">return</span> <span class="n">variable_ids</span><span class="p">,</span> <span class="n">numpy_objs</span></div>
+
+
+<div class="viewcode-block" id="convert_from_numpy_to_target_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/convert_from_numpy_to_target_backend.html#ivy.utils.backend.handler.convert_from_numpy_to_target_backend">[docs]</a><span class="k">def</span> <span class="nf">convert_from_numpy_to_target_backend</span><span class="p">(</span><span class="n">variable_ids</span><span class="p">,</span> <span class="n">numpy_objs</span><span class="p">):</span>
+    <span class="c1"># Dynamic Backend</span>
+    <span class="kn">from</span> <span class="nn">ivy.functional.ivy.gradients</span> <span class="kn">import</span> <span class="n">_variable</span>
+
+    <span class="c1"># convert all ivy.Array and ivy.Container instances from numpy</span>
+    <span class="c1"># to native arrays using the newly set backend</span>
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">numpy_objs</span><span class="p">:</span>
+        <span class="n">np_arr</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span>
+        <span class="c1"># check if object was originally a variable</span>
+        <span class="k">if</span> <span class="nb">id</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">in</span> <span class="n">variable_ids</span><span class="p">:</span>
+            <span class="n">native_arr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
+                <span class="n">np_arr</span><span class="p">,</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">asarray</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shallow</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+            <span class="n">new_data</span> <span class="o">=</span> <span class="n">_variable</span><span class="p">(</span><span class="n">native_arr</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_data</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
+                <span class="n">np_arr</span><span class="p">,</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">asarray</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shallow</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">cont_inplace_update</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">new_data</span><span class="o">.</span><span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="set_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_backend.html#ivy.utils.backend.handler.set_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
+<span class="k">def</span> <span class="nf">set_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets `backend` to be the global backend.</span>
+<span class="sd">    Will also convert all Array and Container objects \</span>
+<span class="sd">    to the new backend if `dynamic` = True</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    If we set the global backend to be numpy, then subsequent calls to ivy functions</span>
+<span class="sd">    will be called from Ivy&#39;s numpy backend:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;numpy&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; native = ivy.native_array([1])</span>
+<span class="sd">    &gt;&gt;&gt; print(type(native))</span>
+<span class="sd">    &lt;class &#39;numpy.ndarray&#39;&gt;</span>
+
+<span class="sd">    Or with jax as the global backend:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;jax&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; native = ivy.native_array([1])</span>
+<span class="sd">    &gt;&gt;&gt; print(type(native))</span>
+<span class="sd">    &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"></span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_false</span><span class="p">(</span>
+        <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">backend</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_backend_dict</span><span class="p">,</span>
+        <span class="s2">&quot;backend must be one from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_backend_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
+    <span class="p">)</span>
+
+    <span class="n">variable_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>  <span class="c1"># create an empty set to store variable object ids</span>
+    <span class="n">numpy_objs</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># create an empty list to store numpy objects</span>
+    <span class="c1"># created during 1st conversion step</span>
+
+    <span class="k">if</span> <span class="n">dynamic</span><span class="p">:</span>
+        <span class="n">variable_ids</span><span class="p">,</span> <span class="n">numpy_objs</span> <span class="o">=</span> <span class="n">convert_from_source_backend_to_numpy</span><span class="p">(</span>
+            <span class="n">variable_ids</span><span class="p">,</span> <span class="n">numpy_objs</span>
+        <span class="p">)</span>
+
+    <span class="c1"># update the global dict with the new backend</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">locks</span><span class="p">[</span><span class="s2">&quot;backend_setter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+    <span class="k">global</span> <span class="n">ivy_original_dict</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">backend_stack</span><span class="p">:</span>
+        <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">temp_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">backend_stack</span><span class="p">:</span>
+            <span class="n">temp_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unset_backend</span><span class="p">())</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_backend_dict</span><span class="p">[</span><span class="n">backend</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">fw</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">temp_stack</span><span class="p">):</span>
+            <span class="n">backend_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fw</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_default_device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;jax&quot;</span><span class="p">:</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_global_attr</span><span class="p">(</span><span class="s2">&quot;RNG&quot;</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RNG</span><span class="p">)</span>
+    <span class="n">backend_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span>
+    <span class="n">set_backend_to_specific_version</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span>
+    <span class="n">_set_backend_as_ivy</span><span class="p">(</span><span class="n">ivy_original_dict</span><span class="p">,</span> <span class="n">ivy</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dynamic</span><span class="p">:</span>
+        <span class="n">convert_from_numpy_to_target_backend</span><span class="p">(</span><span class="n">variable_ids</span><span class="p">,</span> <span class="n">numpy_objs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;backend stack: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backend_stack</span><span class="p">))</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">locks</span><span class="p">[</span><span class="s2">&quot;backend_setter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="set_numpy_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_numpy_backend.html#ivy.utils.backend.handler.set_numpy_backend">[docs]</a><span class="k">def</span> <span class="nf">set_numpy_backend</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets NumPy to be the global backend. equivalent to `ivy.set_backend(&quot;numpy&quot;)`.&quot;&quot;&quot;</span>  <span class="c1"></span>
+    <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_jax_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_jax_backend.html#ivy.utils.backend.handler.set_jax_backend">[docs]</a><span class="k">def</span> <span class="nf">set_jax_backend</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets JAX to be the global backend. equivalent to `ivy.set_backend(&quot;jax&quot;)`.&quot;&quot;&quot;</span>  <span class="c1"></span>
+    <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_tensorflow_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_tensorflow_backend.html#ivy.utils.backend.handler.set_tensorflow_backend">[docs]</a><span class="k">def</span> <span class="nf">set_tensorflow_backend</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets TensorFlow to be the global backend. equivalent to</span>
+<span class="sd">    `ivy.set_backend(&quot;tensorflow&quot;)`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_torch_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_torch_backend.html#ivy.utils.backend.handler.set_torch_backend">[docs]</a><span class="k">def</span> <span class="nf">set_torch_backend</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets torch to be the global backend. equivalent to `ivy.set_backend(&quot;torch&quot;)`.&quot;&quot;&quot;</span>  <span class="c1"></span>
+    <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/get_backend.html#ivy.utils.backend.handler.get_backend">[docs]</a><span class="k">def</span> <span class="nf">get_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns Ivy&#39;s backend for `backend` if specified, or if it isn&#39;t specified it</span>
+<span class="sd">    returns the Ivy backend associated with the current globally set backend.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    backend</span>
+<span class="sd">        The backend for which we want to retrieve Ivy&#39;s backend i.e. one of &#39;jax&#39;,</span>
+<span class="sd">        &#39;torch&#39;, &#39;tensorflow&#39;, &#39;numpy&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Ivy&#39;s backend for either `backend` or for the current global backend.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Global backend doesn&#39;t matter, if `backend` argument has been specified:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;jax&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy_np = ivy.get_backend(&quot;numpy&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy_np)</span>
+<span class="sd">    &lt;module &#39;ivy.functional.backends.numpy&#39; from &#39;/ivy/ivy/functional/backends/numpy/__init__.py&#39;&gt;   </span>
+
+<span class="sd">    If backend isn&#39;t specified, the global backend is used:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;jax&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy_jax = ivy.get_backend()</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy_jax)</span>
+<span class="sd">    &lt;module &#39;ivy.functional.backends.jax&#39; from &#39;/ivy/ivy/functional/backends/jax/__init__.py&#39;&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"></span>
+    <span class="c1"># ToDo: change this so that it doesn&#39;t depend at all on the global ivy.</span>
+    <span class="c1">#  Currently all backend-agnostic implementations returned in this</span>
+    <span class="c1">#  module will still use the global ivy backend.</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_local</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">ivy</span>
+    <span class="k">global</span> <span class="n">ivy_original_dict</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">backend_stack</span><span class="p">:</span>
+        <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="c1"># current global backend is retrieved if backend isn&#39;t specified,</span>
+    <span class="c1"># otherwise `backend` argument will be used</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">backend_stack</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_backend_dict</span><span class="p">[</span><span class="n">backend</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ivy_original_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">return</span> <span class="n">backend</span></div>
+
+
+<div class="viewcode-block" id="unset_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/unset_backend.html#ivy.utils.backend.handler.unset_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
+<span class="k">def</span> <span class="nf">unset_backend</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unsets the current global backend, and adjusts the ivy dict such that either</span>
+<span class="sd">    a previously set global backend is then used as the backend, otherwise we return</span>
+<span class="sd">    to Ivy&#39;s implementations.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        the backend that was unset, or None if there was no set global backend.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Torch is the last set backend hence is the backend used in the first examples.</span>
+<span class="sd">    However, as seen in the example after, if `unset_backend` is called before</span>
+<span class="sd">    `ivy.native_array` then tensorflow will become the current backend and any</span>
+<span class="sd">    torch backend implementations in the Ivy dict will be swapped with the</span>
+<span class="sd">    tensorflow implementation::</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;tensorflow&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;torch&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1])</span>
+<span class="sd">    &gt;&gt;&gt; print(type(x))</span>
+<span class="sd">    &lt;class &#39;torch.Tensor&#39;&gt;</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;tensorflow&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;torch&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.unset_backend()</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1])</span>
+<span class="sd">    &gt;&gt;&gt; print(type(x))</span>
+<span class="sd">    &lt;class&#39;tensorflow.python.framework.ops.EagerTensor&#39;&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"></span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># if the backend stack is empty, nothing is done then we just return `None`</span>
+    <span class="k">if</span> <span class="n">backend_stack</span><span class="p">:</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="n">backend_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># remove last backend from the stack</span>
+        <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_device</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;jax&quot;</span><span class="p">:</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">del_global_attr</span><span class="p">(</span><span class="s2">&quot;RNG&quot;</span><span class="p">)</span>
+        <span class="c1"># the new backend is the backend that was set before the one</span>
+        <span class="c1"># we just removed from the stack, or Ivy if there was no</span>
+        <span class="c1"># previously set backend</span>
+        <span class="k">if</span> <span class="n">backend_stack</span><span class="p">:</span>
+            <span class="n">new_backend</span> <span class="o">=</span> <span class="n">backend_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">new_backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">set_default_device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">new_backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;jax&quot;</span><span class="p">:</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">set_global_attr</span><span class="p">(</span><span class="s2">&quot;RNG&quot;</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RNG</span><span class="p">)</span>
+        <span class="n">new_backend_dict</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">backend_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span> <span class="k">if</span> <span class="n">backend_stack</span> <span class="k">else</span> <span class="n">ivy_original_dict</span>
+        <span class="p">)</span>
+        <span class="c1"># wrap backend functions if there still is a backend, and add functions</span>
+        <span class="c1"># to ivy namespace</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_backend_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">backend_stack</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ivy_original_dict</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">_wrap_function</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">ivy_original_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ivy_original_dict</span><span class="p">:</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;backend stack: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backend_stack</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">backend</span></div>
+
+
+<div class="viewcode-block" id="clear_backend_stack"><a class="viewcode-back" href="../../../../utils/backend/handler/clear_backend_stack.html#ivy.utils.backend.handler.clear_backend_stack">[docs]</a><span class="nd">@prevent_access_locally</span>
+<span class="k">def</span> <span class="nf">clear_backend_stack</span><span class="p">():</span>
+    <span class="k">while</span> <span class="n">backend_stack</span><span class="p">:</span>
+        <span class="n">unset_backend</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="choose_random_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/choose_random_backend.html#ivy.utils.backend.handler.choose_random_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
+<span class="k">def</span> <span class="nf">choose_random_backend</span><span class="p">(</span><span class="n">excluded</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">excluded</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span> <span class="k">if</span> <span class="n">excluded</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">excluded</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">excluded</span><span class="p">),</span>
+            <span class="mi">4</span><span class="p">,</span>
+            <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Unable to select backend, all backends are excluded,</span><span class="se">\</span>
+<span class="s2">            or not installed.&quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">f_srt</span> <span class="k">for</span> <span class="n">f_srt</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">_backend_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">f_srt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">excluded</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">excluded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">selected backend: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">f</span></div>
+
+
+<span class="c1"># noinspection PyProtectedMember</span>
+<div class="viewcode-block" id="with_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/with_backend.html#ivy.utils.backend.handler.with_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
+<span class="k">def</span> <span class="nf">with_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="c1"># TODO do error handling if finder fails</span>
+    <span class="n">finder</span> <span class="o">=</span> <span class="n">ast_helpers</span><span class="o">.</span><span class="n">IvyPathFinder</span><span class="p">()</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">meta_path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">finder</span><span class="p">)</span>
+    <span class="n">_importlib</span><span class="o">.</span><span class="n">path_hooks</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">finder</span><span class="p">)</span>
+    <span class="n">ivy_pack</span> <span class="o">=</span> <span class="n">_importlib</span><span class="o">.</span><span class="n">_import_module</span><span class="p">(</span><span class="s2">&quot;ivy&quot;</span><span class="p">)</span>
+    <span class="n">ivy_pack</span><span class="o">.</span><span class="n">_is_local_pkg</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">backend_module</span> <span class="o">=</span> <span class="n">_importlib</span><span class="o">.</span><span class="n">_import_module</span><span class="p">(</span>
+        <span class="n">ivy_pack</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">_backend_dict</span><span class="p">[</span><span class="n">backend</span><span class="p">],</span> <span class="n">ivy_pack</span><span class="o">.</span><span class="n">__package__</span>
+    <span class="p">)</span>
+    <span class="n">_handle_backend_specific_vars</span><span class="p">(</span><span class="n">ivy_pack</span><span class="p">)</span>
+    <span class="c1"># We know for sure that the backend stack is empty, no need to do backend unsetting</span>
+    <span class="n">ivy_pack</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">_set_backend_as_ivy</span><span class="p">(</span>
+        <span class="n">ivy_pack</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">ivy_pack</span><span class="p">,</span> <span class="n">backend_module</span>
+    <span class="p">)</span>
+    <span class="n">ivy_pack</span><span class="o">.</span><span class="n">backend_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">backend_module</span><span class="p">)</span>
+    <span class="n">ivy_pack</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">_importlib</span><span class="o">.</span><span class="n">import_cache</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">_importlib</span><span class="o">.</span><span class="n">import_cache</span><span class="p">)</span>
+    <span class="n">_importlib</span><span class="o">.</span><span class="n">path_hooks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">finder</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">meta_path</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">finder</span><span class="p">)</span>
+    <span class="n">_importlib</span><span class="o">.</span><span class="n">_clear_cache</span><span class="p">()</span>
+    <span class="n">compiled_backends</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ivy_pack</span><span class="o">.</span><span class="n">backend</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="n">ivy_pack</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy_pack</span>
+    <span class="k">return</span> <span class="n">ivy_pack</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2023, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

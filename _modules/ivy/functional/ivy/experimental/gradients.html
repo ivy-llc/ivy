@@ -97,6 +97,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../nested_array/nested_array.html">Nested array</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/dynamic_import.html">Dynamic import</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../testing/assertions.html">Assertions</a></li>
@@ -147,7 +152,7 @@
              
   <h1>Source code for ivy.functional.ivy.experimental.gradients</h1><div class="highlight"><pre>
 <span></span><span class="c1"># local</span>
-<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.utils.backend</span> <span class="kn">import</span> <span class="n">current_backend</span>
 
 
 <div class="viewcode-block" id="bind_custom_gradient_function"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/gradients/bind_custom_gradient_function.html#ivy.functional.ivy.experimental.bind_custom_gradient_function">[docs]</a><span class="k">def</span> <span class="nf">bind_custom_gradient_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">custom_grad_func</span><span class="p">):</span>
