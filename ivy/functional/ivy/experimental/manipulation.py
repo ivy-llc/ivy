@@ -18,7 +18,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 from ivy.exceptions import handle_exceptions
 
 

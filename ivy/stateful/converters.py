@@ -38,7 +38,7 @@ except ImportError:
 # local
 import ivy
 from ivy.functional.ivy.gradients import _is_variable
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 
 
 def to_ivy_module(
