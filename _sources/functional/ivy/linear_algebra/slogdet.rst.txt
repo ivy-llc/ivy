@@ -5,9 +5,9 @@ slogdet
 
 .. autofunction:: ivy.array.array_methods.slogdet
 
-.. autofunction:: ivy.container.container_methods.static_slogdet
-
 .. autofunction:: ivy.container.container_methods.slogdet
+
+.. autofunction:: ivy.container.container_methods.static_slogdet
 |
 | **Supported Frameworks:**
 

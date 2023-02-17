@@ -5,9 +5,9 @@ zeta
 
 .. autofunction:: ivy.array.array_methods.zeta
 
-.. autofunction:: ivy.container.container_methods.zeta
-
 .. autofunction:: ivy.container.container_methods.static_zeta
+
+.. autofunction:: ivy.container.container_methods.zeta
 |
 | **Supported Frameworks:**
 

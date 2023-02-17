@@ -5,9 +5,9 @@ count_nonzero
 
 .. autofunction:: ivy.array.array_methods.count_nonzero
 
-.. autofunction:: ivy.container.container_methods.static_count_nonzero
-
 .. autofunction:: ivy.container.container_methods.count_nonzero
+
+.. autofunction:: ivy.container.container_methods.static_count_nonzero
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ inplace_increment
 
 .. autofunction:: ivy.array.array_methods.inplace_increment
 
-.. autofunction:: ivy.container.container_methods.static_inplace_increment
-
 .. autofunction:: ivy.container.container_methods.inplace_increment
+
+.. autofunction:: ivy.container.container_methods.static_inplace_increment
 |
 | **Supported Frameworks:**
 

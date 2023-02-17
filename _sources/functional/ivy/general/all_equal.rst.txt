@@ -5,9 +5,9 @@ all_equal
 
 .. autofunction:: ivy.array.array_methods.all_equal
 
-.. autofunction:: ivy.container.container_methods.all_equal
-
 .. autofunction:: ivy.container.container_methods.static_all_equal
+
+.. autofunction:: ivy.container.container_methods.all_equal
 |
 | **Supported Frameworks:**
 

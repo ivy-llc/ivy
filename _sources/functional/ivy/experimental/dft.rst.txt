@@ -3,9 +3,9 @@ dft
 
 .. autofunction:: ivy.functional.ivy.experimental.dft
 
-.. autofunction:: ivy.container.container_methods.dft
-
 .. autofunction:: ivy.container.container_methods.static_dft
+
+.. autofunction:: ivy.container.container_methods.dft
 |
 | **Supported Frameworks:**
 

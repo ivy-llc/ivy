@@ -5,9 +5,9 @@ max_pool1d
 
 .. autofunction:: ivy.array.array_methods.max_pool1d
 
-.. autofunction:: ivy.container.container_methods.static_max_pool1d
-
 .. autofunction:: ivy.container.container_methods.max_pool1d
+
+.. autofunction:: ivy.container.container_methods.static_max_pool1d
 |
 | **Supported Frameworks:**
 

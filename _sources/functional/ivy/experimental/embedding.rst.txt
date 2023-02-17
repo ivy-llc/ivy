@@ -5,9 +5,9 @@ embedding
 
 .. autofunction:: ivy.array.array_methods.embedding
 
-.. autofunction:: ivy.container.container_methods.static_embedding
-
 .. autofunction:: ivy.container.container_methods.embedding
+
+.. autofunction:: ivy.container.container_methods.static_embedding
 |
 | **Supported Frameworks:**
 

@@ -55,9 +55,6 @@
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../experimental.html">Experimental</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="l2_normalize.html">l2_normalize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instance_norm.html">instance_norm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lp_normalize.html">lp_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diagflat.html">diagflat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kron.html">kron</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matrix_exp.html">matrix_exp</a></li>
@@ -87,25 +84,7 @@
 <li class="toctree-l2"><a class="reference internal" href="hsplit.html">hsplit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="broadcast_shapes.html">broadcast_shapes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="expand.html">expand</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bind_custom_gradient_function.html">bind_custom_gradient_function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
-<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
-<li class="toctree-l2"><a class="reference internal" href="poisson.html">poisson</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bernoulli.html">bernoulli</a></li>
-<li class="toctree-l2"><a class="reference internal" href="logit.html">logit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="prelu.html">prelu</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thresholded_relu.html">thresholded_relu</a></li>
-<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lexsort.html">lexsort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kaiser_window.html">kaiser_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kaiser_bessel_derived_window.html">kaiser_bessel_derived_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hamming_window.html">hamming_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tril_indices.html">tril_indices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eye_like.html">eye_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_native_dtype.html">is_native_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max_pool1d.html">max_pool1d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max_pool2d.html">max_pool2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max_pool3d.html">max_pool3d</a></li>
@@ -126,17 +105,33 @@
 <li class="toctree-l2"><a class="reference internal" href="interp.html">interp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="interpolate.html">interpolate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="padding_ceil_mode.html">padding_ceil_mode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="l2_normalize.html">l2_normalize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instance_norm.html">instance_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lp_normalize.html">lp_normalize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="corrcoef.html">corrcoef</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nanmedian.html">nanmedian</a></li>
-<li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lexsort.html">lexsort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kaiser_window.html">kaiser_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kaiser_bessel_derived_window.html">kaiser_bessel_derived_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hamming_window.html">hamming_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tril_indices.html">tril_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eye_like.html">eye_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logit.html">logit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prelu.html">prelu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thresholded_relu.html">thresholded_relu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sinc.html">sinc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lcm.html">lcm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fmod.html">fmod</a></li>
@@ -165,8 +160,13 @@
 <li class="toctree-l2"><a class="reference internal" href="xlogy.html">xlogy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="real.html">real</a></li>
 <li class="toctree-l2"><a class="reference internal" href="binarizer.html">binarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bind_custom_gradient_function.html">bind_custom_gradient_function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_native_dtype.html">is_native_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poisson.html">poisson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bernoulli.html">bernoulli</a></li>
 <li class="toctree-l2"><a class="reference internal" href="SparseArray.html">SparseArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="NativeSparseArray.html">NativeSparseArray</a></li>
 </ul>
@@ -179,9 +179,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../experimental.html">Experimental</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="l2_normalize.html">l2_normalize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="instance_norm.html">instance_norm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lp_normalize.html">lp_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diagflat.html">diagflat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kron.html">kron</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matrix_exp.html">matrix_exp</a></li>
@@ -211,25 +208,7 @@
 <li class="toctree-l2"><a class="reference internal" href="hsplit.html">hsplit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="broadcast_shapes.html">broadcast_shapes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="expand.html">expand</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bind_custom_gradient_function.html">bind_custom_gradient_function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
-<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
-<li class="toctree-l2"><a class="reference internal" href="poisson.html">poisson</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bernoulli.html">bernoulli</a></li>
-<li class="toctree-l2"><a class="reference internal" href="logit.html">logit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="prelu.html">prelu</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thresholded_relu.html">thresholded_relu</a></li>
-<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lexsort.html">lexsort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kaiser_window.html">kaiser_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kaiser_bessel_derived_window.html">kaiser_bessel_derived_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hamming_window.html">hamming_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tril_indices.html">tril_indices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eye_like.html">eye_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_native_dtype.html">is_native_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max_pool1d.html">max_pool1d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max_pool2d.html">max_pool2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max_pool3d.html">max_pool3d</a></li>
@@ -250,17 +229,33 @@
 <li class="toctree-l2"><a class="reference internal" href="interp.html">interp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="interpolate.html">interpolate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="padding_ceil_mode.html">padding_ceil_mode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="l2_normalize.html">l2_normalize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instance_norm.html">instance_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lp_normalize.html">lp_normalize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="corrcoef.html">corrcoef</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nanmedian.html">nanmedian</a></li>
-<li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lexsort.html">lexsort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kaiser_window.html">kaiser_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kaiser_bessel_derived_window.html">kaiser_bessel_derived_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hamming_window.html">hamming_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tril_indices.html">tril_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eye_like.html">eye_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logit.html">logit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prelu.html">prelu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thresholded_relu.html">thresholded_relu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sinc.html">sinc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lcm.html">lcm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fmod.html">fmod</a></li>
@@ -289,8 +284,13 @@
 <li class="toctree-l2"><a class="reference internal" href="xlogy.html">xlogy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="real.html">real</a></li>
 <li class="toctree-l2"><a class="reference internal" href="binarizer.html">binarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bind_custom_gradient_function.html">bind_custom_gradient_function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_native_dtype.html">is_native_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poisson.html">poisson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bernoulli.html">bernoulli</a></li>
 <li class="toctree-l2"><a class="reference internal" href="SparseArray.html">SparseArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="NativeSparseArray.html">NativeSparseArray</a></li>
 </ul>
@@ -318,15 +318,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
 <ul>
@@ -442,11 +442,12 @@ The signal_dim at the specified axis is equal to the dft_length.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.dft">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">dft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onesided</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dft_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'backward'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.dft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.dft" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_dft">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_dft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onesided</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dft_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'backward'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_dft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_dft" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – </p></li>
 <li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 <li><p><strong>inverse</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
 <li><p><strong>onesided</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
@@ -466,12 +467,11 @@ The signal_dim at the specified axis is equal to the dft_length.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.static_dft">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_dft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onesided</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dft_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'backward'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_dft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_dft" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ivy.container.container_methods.dft">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">dft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onesided</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dft_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'backward'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.dft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.dft" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – </p></li>
 <li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 <li><p><strong>inverse</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
 <li><p><strong>onesided</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>

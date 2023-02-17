@@ -5,9 +5,9 @@ angle
 
 .. autofunction:: ivy.array.array_methods.angle
 
-.. autofunction:: ivy.container.container_methods.static_angle
-
 .. autofunction:: ivy.container.container_methods.angle
+
+.. autofunction:: ivy.container.container_methods.static_angle
 |
 | **Supported Frameworks:**
 

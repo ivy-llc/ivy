@@ -5,9 +5,9 @@ argwhere
 
 .. autofunction:: ivy.array.array_methods.argwhere
 
-.. autofunction:: ivy.container.container_methods.static_argwhere
-
 .. autofunction:: ivy.container.container_methods.argwhere
+
+.. autofunction:: ivy.container.container_methods.static_argwhere
 |
 | **Supported Frameworks:**
 

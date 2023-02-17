@@ -5,9 +5,9 @@ expand
 
 .. autofunction:: ivy.array.array_methods.expand
 
-.. autofunction:: ivy.container.container_methods.expand
-
 .. autofunction:: ivy.container.container_methods.static_expand
+
+.. autofunction:: ivy.container.container_methods.expand
 |
 | **Supported Frameworks:**
 

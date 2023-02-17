@@ -5,9 +5,9 @@ fourier_encode
 
 .. autofunction:: ivy.array.array_methods.fourier_encode
 
-.. autofunction:: ivy.container.container_methods.static_fourier_encode
-
 .. autofunction:: ivy.container.container_methods.fourier_encode
+
+.. autofunction:: ivy.container.container_methods.static_fourier_encode
 |
 | **Supported Frameworks:**
 
