@@ -1,6 +1,7 @@
 from typing import Optional, Union
 
 # global
+import jax
 import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
@@ -11,6 +12,10 @@ def logit(x: JaxArray, /, *, eps: Optional[float] = None, out=None):
     else:
         x = jnp.clip(x, eps, 1 - eps)
     return jnp.log(x / (1 - x))
+
+
+def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.relu6(x)
 
 
 def thresholded_relu(
