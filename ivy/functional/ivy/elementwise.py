@@ -25,7 +25,6 @@ from ivy.exceptions import handle_exceptions
 @handle_exceptions
 @handle_array_like_without_promotion
 @handle_array_function
-@handle_array_function
 def abs(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
