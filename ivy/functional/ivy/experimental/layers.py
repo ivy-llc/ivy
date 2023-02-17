@@ -937,12 +937,6 @@ def _fill_triangle_kernel(x):
     return ivy.maximum(0, 1 - ivy.abs(x))
 
 
-def _fill_keys_cubic_kernel(x):
-    out = ((1.5 * x - 2.5) * x) * x + 1.0
-    out = ivy.where(x >= 1.0, ((-0.5 * x + 2.5) * x - 4.0) * x + 2.0, out)
-    return ivy.where(x >= 2.0, 0.0, out)
-
-
 def compute_weight_mat(
     input_size, output_size, scale, align_corners, kernel_fn, antialias: bool
 ):
