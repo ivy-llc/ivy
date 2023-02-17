@@ -44,7 +44,15 @@ def sum(
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def prod(
-    x, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=True
+    x,
+    /,
+    *,
+    axis=None,
+    dtype=None,
+    out=None,
+    keepdims=False,
+    initial=ivy.nan,
+    where=True,
 ):
     if ivy.is_array(where):
         x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)), out=out)
@@ -52,8 +60,6 @@ def prod(
         s = ivy.shape(x, as_array=True)
         s[axis] = 1
         header = ivy.full(ivy.Shape(tuple(s)), initial)
-        if ivy.is_array(where):
-            x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)), out=out)
         x = ivy.concat([header, x], axis=axis)
     return ivy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
@@ -64,11 +70,16 @@ def prod(
 @from_zero_dim_arrays_to_scalar
 def nansum(
     a, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None
-):  # ToDo handle initial
+):
     fill_values = ivy.zeros_like(a)
     a = ivy.where(ivy.isnan(a), fill_values, a)
-    if where is not None:
-        a = ivy.where(where, a, fill_values)
+    if ivy.is_array(where):
+        a = ivy.where(where, a, ivy.default(out, fill_values), out=out)
+    if initial is not None:
+        s = ivy.shape(a, as_array=True)
+        s[axis] = 1
+        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        a = ivy.concat([header, a], axis=axis)
     return ivy.sum(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
@@ -78,11 +89,16 @@ def nansum(
 @from_zero_dim_arrays_to_scalar
 def nanprod(
     a, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None
-):  # ToDo handle initial
+):
     fill_values = ivy.ones_like(a)
     a = ivy.where(ivy.isnan(a), fill_values, a)
-    if where is not None:
-        a = ivy.where(where, a, fill_values)
+    if ivy.is_array(where):
+        a = ivy.where(where, a, ivy.default(out, fill_values), out=out)
+    if initial is not None:
+        s = ivy.shape(a, as_array=True)
+        s[axis] = 1
+        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        a = ivy.concat([header, a], axis=axis)
     return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 

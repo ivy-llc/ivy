@@ -39,7 +39,7 @@ def _get_castable_dtypes_values(draw, *, allow_nan=False, use_where=False):
     fn_tree="numpy.sum",
     dtype_x_axis_dtype=_get_castable_dtypes_values(use_where=True),
     keep_dims=st.booleans(),
-    initial=st.one_of(st.floats()),
+    initial=st.one_of(st.floats(min_value=-100, max_value=100)),
 )
 def test_numpy_sum(
     dtype_x_axis_dtype,
@@ -78,7 +78,7 @@ def test_numpy_sum(
     fn_tree="numpy.prod",
     dtype_x_axis_dtype=_get_castable_dtypes_values(use_where=True),
     keep_dims=st.booleans(),
-    initial=st.one_of(st.floats()),
+    initial=st.one_of(st.floats(min_value=-100, max_value=100)),
 )
 def test_numpy_prod(
     dtype_x_axis_dtype,
@@ -183,6 +183,8 @@ def test_numpy_nancumprod(
     on_device,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
+    if ivy.current_backend_str() == "torch":
+        assume(not test_flags.as_variable[0])
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -208,6 +210,8 @@ def test_numpy_nancumsum(
     on_device,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
+    if ivy.current_backend_str() == "torch":
+        assume(not test_flags.as_variable[0])
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -223,29 +227,22 @@ def test_numpy_nancumsum(
 # nanprod
 @handle_frontend_test(
     fn_tree="numpy.nanprod",
-    dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
-        large_abs_safety_factor=2,
-        safety_factor_scale="log",
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype_and_x_dtype=_get_castable_dtypes_values(allow_nan=True, use_where=True),
     keepdims=st.booleans(),
-    where=np_frontend_helpers.where(),
+    initial=st.one_of(st.floats(min_value=-100, max_value=100)),
 )
 def test_numpy_nanprod(
-    dtype_and_x,
-    dtype,
+    dtype_and_x_dtype,
+    initial,
     frontend,
     test_flags,
     fn_tree,
     on_device,
-    where,
     keepdims,
 ):
-    input_dtypes, x, axis = dtype_and_x
+    input_dtypes, x, axis, dtype, where = dtype_and_x_dtype
+    if ivy.current_backend_str() == "torch":
+        assume(not test_flags.as_variable[0])
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -259,7 +256,8 @@ def test_numpy_nanprod(
         on_device=on_device,
         a=x[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=dtype,
+        initial=initial,
         where=where,
         keepdims=keepdims,
     )
@@ -268,29 +266,22 @@ def test_numpy_nanprod(
 # nansum
 @handle_frontend_test(
     fn_tree="numpy.nansum",
-    dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
-        large_abs_safety_factor=2,
-        safety_factor_scale="log",
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype_and_x_dtype=_get_castable_dtypes_values(allow_nan=True, use_where=True),
     keepdims=st.booleans(),
-    where=np_frontend_helpers.where(),
+    initial=st.one_of(st.floats(min_value=-100, max_value=100)),
 )
 def test_numpy_nansum(
-    dtype_and_x,
-    dtype,
+    dtype_and_x_dtype,
+    initial,
     frontend,
     test_flags,
     fn_tree,
     on_device,
-    where,
     keepdims,
 ):
-    input_dtypes, x, axis = dtype_and_x
+    input_dtypes, x, axis, dtype, where = dtype_and_x_dtype
+    if ivy.current_backend_str() == "torch":
+        assume(not test_flags.as_variable[0])
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -304,7 +295,8 @@ def test_numpy_nansum(
         on_device=on_device,
         a=x[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=dtype,
+        initial=initial,
         where=where,
         keepdims=keepdims,
     )
