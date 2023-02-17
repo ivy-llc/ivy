@@ -2383,7 +2383,7 @@ def test_numpy_instance_len__(
     init_tree="numpy.array",
     method_name="__array__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_numpy_instance_array__(
@@ -2400,7 +2400,9 @@ def test_numpy_instance_array__(
             "object": x[0],
         },
         method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={
+            "dtype": input_dtypes[0],
+        },
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
