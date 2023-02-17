@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 
 # local
 import ivy
@@ -635,6 +635,7 @@ class ArrayWithLayersExperimental(abc.ABC):
             out=out,
         )
 
+
     def stft(
             self: ivy.Array,
             /,
@@ -659,11 +660,16 @@ class ArrayWithLayersExperimental(abc.ABC):
         frame_step
             Number of samples to step
         fft_length
-            Size of FFT to apply. If not specified, uses the smallest power of 2 closest to frame_length
+            Size of FFT to apply. If not specified, 
+            uses the smallest power of 2 closest to frame_length
         window_fn
-            Window function to use - takes in window length and dtype, returns a tensor of [window_length] samples. No windowing is applied if not specified
+            Window function to use - takes in window length and dtype, 
+            returns a tensor of [window_length] samples. 
+            No windowing is applied if not specified
         pad_end
-            Whether to pad the end of signals with zeros when the provided frame length and step produces a frame that lies partially past its end
+            Whether to pad the end of signals with zeros 
+            when the provided frame length and step produces 
+            a frame that lies partially past its end
         name
             An optional name for the operation.
 
@@ -691,5 +697,59 @@ class ArrayWithLayersExperimental(abc.ABC):
         """
         return ivy.stft(
             self._data, frame_length=frame_length, frame_step=frame_step,
-            fft_length=fft_length, window_fn=window_fn, pad_end=pad_end, name=name
+            fft_length=fft_length, window_fn=window_fn, 
+            pad_end=pad_end, name=name)
+
+    def interpolate(
+        self,
+        size: Union[Sequence[int], int],
+        /,
+        *,
+        mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
+        align_corners: Optional[bool] = None,
+        antialias: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Down/up samples the input to the given size.
+        The algorithm used for interpolation is determined by mode.
+
+        Parameters
+        ----------
+        self
+            Input array, Must have the shape
+            [batch x channels x [optional depth] x [optional height] x width].
+        size
+            Output size.
+        mode
+            Interpolation mode. Can be one of the following:
+            - linear
+            - bilinear
+            - trilinear
+            - nearest
+        align_corners
+            If True, the corner pixels of the input and output tensors are aligned,
+            and thus preserving the values at the corner pixels. If False, the corner
+            pixels are not aligned, and the interpolation uses edge value padding for
+            out-of-boundary values.
+            only has an effect when mode is 'linear', 'bilinear',
+            'bicubic' or 'trilinear'. Default: False
+        antialias
+            If True, antialiasing is applied when downsampling an image.
+            Supported modes: 'bilinear', 'bicubic'.
+        out
+            Optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+            resized array
+        """
+        return ivy.interpolate(
+            self._data,
+            size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
+            out=out,
         )

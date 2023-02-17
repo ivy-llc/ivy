@@ -262,6 +262,8 @@ def test_trapz(
         fw=backend_fw,
         ground_truth_backend=ground_truth_backend,
         fn_name=fn_name,
+        rtol_=1e-3,
+        atol_=1e-3,
         y=np.asarray(y[0], dtype=input_dtype[0]),
         x=x,
         dx=dx,
@@ -458,28 +460,40 @@ def test_count_nonzero(
 
 
 # nansum
+@st.composite
+def _get_castable_dtypes_values(draw, *, allow_nan=False):
+    available_dtypes = helpers.get_dtypes("numeric")
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
+    dtype, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            num_arrays=1,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+            shape=shape,
+            allow_nan=allow_nan,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    dtype1, values, dtype2 = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("float")), dtype[0], values[0]
+        )
+    )
+    return [dtype1], [values], axis, dtype2
+
+
+# nansum
 @handle_test(
     fn_tree="functional.ivy.experimental.nansum",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        shared_dtype=True,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=2,
-        min_value=-100,
-        max_value=100,
-        valid_axis=True,
-        allow_neg_axes=False,
-        min_axes_size=1,
-        force_tuple_axis=True,
-        allow_nan=True,
-    ),
+    dtype_x_axis_dtype=_get_castable_dtypes_values(allow_nan=True),
     keep_dims=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_nansum(
     *,
-    dtype_x_axis,
+    dtype_x_axis_dtype,
     keep_dims,
     test_flags,
     on_device,
@@ -487,19 +501,18 @@ def test_nansum(
     backend_fw,
     ground_truth_backend,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis, dtype = dtype_x_axis_dtype
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         on_device=on_device,
-        rtol_=1e-02,
-        atol_=1,
         fn_name=fn_name,
         x=x[0],
         axis=axis,
         keepdims=keep_dims,
+        dtype=dtype,
     )
 
 
@@ -632,7 +645,7 @@ def test_angle(
 @handle_test(
     fn_tree="functional.ivy.experimental.imag",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32"],
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-5,
         max_value=5,
         max_dim_size=5,
@@ -860,28 +873,40 @@ def test_nextafter(
 # diff
 @handle_test(
     fn_tree="functional.ivy.experimental.diff",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=2,
-        shared_dtype=True,
+    dtype_n_x_n_axis=helpers.dtype_values_axis(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
         min_num_dims=1,
-        max_num_dims=3,
-        min_value=-100,
-        max_value=100,
-        allow_nan=False,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    n=st.integers(min_value=0, max_value=5),
+    dtype_prepend=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    dtype_append=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
     ),
     test_gradients=st.just(False),
 )
 def test_diff(
     *,
-    dtype_and_x,
+    dtype_n_x_n_axis,
+    n,
+    dtype_prepend,
+    dtype_append,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_n_x_n_axis
+    _, prepend = dtype_prepend
+    _, append = dtype_append
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -890,6 +915,10 @@ def test_diff(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        n=n,
+        axis=axis,
+        prepend=prepend[0],
+        append=append[0],
     )
 
 
@@ -1064,4 +1093,35 @@ def test_hypot(
         ground_truth_backend=ground_truth_backend,
         x1=x[0],
         x2=x[1],
+    )
+
+
+@handle_test(
+    fn_tree="binarizer",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    threshold=helpers.floats(),
+    container_flags=st.just([False]),
+)
+def test_binarizer(
+    *,
+    dtype_and_x,
+    threshold,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        threshold=threshold,
     )

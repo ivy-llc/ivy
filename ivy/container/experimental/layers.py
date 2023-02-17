@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple, Literal
+from typing import Optional, Union, List, Dict, Tuple, Literal, Sequence
 
 # local
 import ivy
@@ -1359,6 +1359,7 @@ class ContainerWithLayersExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
     
     @staticmethod
     def static_stft(
@@ -1391,11 +1392,16 @@ class ContainerWithLayersExperimental(ContainerBase):
         frame_step
             Number of samples to step
         fft_length
-            Size of FFT to apply. If not specified, uses the smallest power of 2 closest to frame_length
+            Size of FFT to apply. If not specified,
+            uses the smallest power of 2 closest to frame_length
         window_fn
-            Window function to use - takes in window length and dtype, returns a tensor of [window_length] samples. No windowing is applied if not specified
+            Window function to use - takes in window length and dtype,
+            returns a tensor of [window_length] samples.
+            No windowing is applied if not specified
         pad_end
-            Whether to pad the end of signals with zeros when the provided frame length and step produces a frame that lies partially past its end
+            Whether to pad the end of signals with zeros
+            when the provided frame length and step produces a
+            frame that lies partially past its end
         name
             An optional name for the operation.
         out
@@ -1426,6 +1432,66 @@ class ContainerWithLayersExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "stft",
             signal,
+
+
+    @staticmethod
+    def static_interpolate(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        size: Union[Sequence[int], int],
+        /,
+        *,
+        mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
+        align_corners: Optional[bool] = None,
+        antialias: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        Down/up samples the input to the given size.
+        The algorithm used for interpolation is determined by mode.
+
+        Parameters
+        ----------
+        x
+            Input array, Must have the shape
+            [batch x channels x [optional depth] x [optional height] x width].
+        size
+            Output size.
+        mode
+            Interpolation mode. Can be one of the following:
+            - linear
+            - bilinear
+            - trilinear
+            - nearest
+        align_corners
+            If True, the corner pixels of the input and output tensors are aligned,
+            and thus preserving the values at the corner pixels. If False, the corner
+            pixels are not aligned, and the interpolation uses edge value padding for
+            out-of-boundary values.
+            only has an effect when mode is 'linear', 'bilinear',
+            'bicubic' or 'trilinear'. Default: False
+        antialias
+            If True, antialiasing is applied when downsampling an image.
+            Supported modes: 'bilinear', 'bicubic'.
+        out
+            Optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+            resized array
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "interpolate",
+            x,
+            size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
+
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1469,11 +1535,16 @@ class ContainerWithLayersExperimental(ContainerBase):
         frame_step
             Number of samples to step
         fft_length
-            Size of FFT to apply. If not specified, uses the smallest power of 2 closest to frame_length
+            Size of FFT to apply. If not specified,
+            uses the smallest power of 2 closest to frame_length
         window_fn
-            Window function to use - takes in window length and dtype, returns a tensor of [window_length] samples. No windowing is applied if not specified
+            Window function to use - takes in window length and dtype,
+            returns a tensor of [window_length] samples.
+            No windowing is applied if not specified
         pad_end
-            Whether to pad the end of signals with zeros when the provided frame length and step produces a frame that lies partially past its end
+            Whether to pad the end of signals with zeros
+            when the provided frame length and step produces a
+            frame that lies partially past its end
         name
             An optional name for the operation.
         out
@@ -1503,15 +1574,74 @@ class ContainerWithLayersExperimental(ContainerBase):
         """
         self.static_stft(
             self,
+        )
+
+    def interpolate(
+        self: ivy.Container,
+        size: Union[Sequence[int], int],
+        /,
+        *,
+        mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
+        align_corners: Optional[bool] = None,
+        antialias: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        Down/up samples the input to the given size.
+        The algorithm used for interpolation is determined by mode.
+
+        Parameters
+        ----------
+        x
+            Input array, Must have the shape
+            [batch x channels x [optional depth] x [optional height] x width].
+        size
+            Output size.
+        mode
+            Interpolation mode. Can be one of the following:
+            - linear
+            - bilinear
+            - trilinear
+            - nearest
+        align_corners
+            If True, the corner pixels of the input and output tensors are aligned,
+            and thus preserving the values at the corner pixels. If False, the corner
+            pixels are not aligned, and the interpolation uses edge value padding for
+            out-of-boundary values.
+            only has an effect when mode is 'linear', 'bilinear',
+            'bicubic' or 'trilinear'. Default: False
+        antialias
+            If True, antialiasing is applied when downsampling an image.
+            Supported modes: 'bilinear', 'bicubic'.
+        out
+            Optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+            resized array
+        """
+        return self.static_interpolate(
+            self,
+            size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+
             frame_length=frame_length,
             frame_step=frame_step,
             fft_length=fft_length,
             window_fn=window_fn,
             pad_end=pad_end,
             name=name
+
         )

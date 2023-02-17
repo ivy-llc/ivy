@@ -1,6 +1,9 @@
+# global
 import math
-from typing import Union, Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
+
+# local
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
@@ -362,6 +365,7 @@ def embedding(
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
 
 
+
 def stft(
         signal: Union[tf.Tensor, tf.Variable],
         /,
@@ -382,3 +386,32 @@ def stft(
 
     return tf.signal.stft(signal, frame_length=frame_length, frame_step=frame_step, fft_length=fft_length,
                           window_fn=window_fn, pad_end=pad_end, name=name)
+
+def interpolate(
+    x: Union[tf.Tensor, tf.Variable],
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Union[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    align_corners: Optional[bool] = None,
+    antialias: Optional[bool] = False,
+):
+    if align_corners:
+        return ivy.functional.experimental.interpolate(
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias
+        )
+    elif mode == "linear":
+        x = tf.transpose(x, (0, 2, 1))
+        return tf.transpose(
+            tf.image.resize(
+                x, size=[x.shape[0], size], method="bilinear", antialias=antialias
+            ),
+            (0, 2, 1),
+        )
+    elif mode == "bilinear":
+        x = tf.transpose(x, (0, 2, 3, 1))
+        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 3, 1, 2))
+    elif mode == "trilinear":
+        x = tf.transpose(x, (0, 2, 3, 4, 1))
+        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 4, 1, 2, 3))
+

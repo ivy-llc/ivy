@@ -27,10 +27,10 @@ except ImportError:
     jax.interpreters = SimpleNamespace()
     jax.interpreters.xla = SimpleNamespace()
     jax.interpreters.xla._DeviceArray = SimpleNamespace()
-    jax.Buffer = SimpleNamespace()
     jaxlib = SimpleNamespace()
     jaxlib.xla_extension = SimpleNamespace()
     jaxlib.xla_extension.DeviceArray = SimpleNamespace()
+    jaxlib.xla_extension.Buffer = SimpleNamespace()
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
@@ -207,7 +207,7 @@ class Shape(tuple):
                 torch.Size,
                 jax.interpreters.xla._DeviceArray,
                 jaxlib.xla_extension.DeviceArray,
-                jax.Buffer,
+                jax.xla_extension.Buffer,
                 np.ndarray,
                 tf.Tensor,
             )
@@ -836,7 +836,7 @@ class GlobalsDict(dict):
 
 
 # defines ivy.globals attribute
-globals = GlobalsDict(
+globals_vars = GlobalsDict(
     {
         "backend_stack": backend_stack,
         "default_device_stack": device.default_device_stack,
@@ -872,11 +872,11 @@ globals = GlobalsDict(
 
 
 def set_global_attr(attr_name, attr_val):
-    setattr(globals, attr_name, attr_val)
+    setattr(globals_vars, attr_name, attr_val)
 
 
 def del_global_attr(attr_name):
-    delattr(globals, attr_name)
+    delattr(globals_vars, attr_name)
 
 
 backend = "none"
@@ -1099,6 +1099,7 @@ def unset_nan_policy():
     global nan_policy_stack
     if nan_policy_stack:
         nan_policy_stack.pop(-1)
+
 
 # Dynamic Backend
 
