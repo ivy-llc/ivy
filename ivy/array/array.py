@@ -262,7 +262,10 @@ class Array(
                 and (t.__ivy_array_function__ is not ivy.Array.__ivy_array_function__)
                 or (
                     hasattr(ivy.NativeArray, "__ivy_array_function__")
-                    and (t.__ivy_array_function__ is not ivy.NativeArray.__ivy_array_function__)
+                    and (
+                        t.__ivy_array_function__
+                        is not ivy.NativeArray.__ivy_array_function__
+                    )
                 )
             ):
                 return NotImplemented
