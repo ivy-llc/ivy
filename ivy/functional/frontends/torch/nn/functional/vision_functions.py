@@ -1,5 +1,11 @@
+# global
+import math
+
+# local
 import ivy
+from ivy import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.exceptions import IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
@@ -246,3 +252,165 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     )
 
     return result
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def interpolate(
+    input,
+    size=None,
+    scale_factor=None,
+    mode="nearest",
+    align_corners=None,
+    recompute_scale_factor=None,
+    antialias=False,
+):
+    if mode in ["nearest", "area", "nearest-exact"]:
+        ivy.assertions.check_exists(
+            align_corners,
+            inverse=True,
+            message="align_corners option can only be set with the interpolating modes:"
+            " linear | bilinear | bicubic | trilinear",
+        )
+    else:
+        if not ivy.exists(align_corners):
+            align_corners = False
+
+    dim = ivy.get_num_dims(input) - 2  # Number of spatial dimensions.
+
+    if ivy.exists(size) and ivy.exists(scale_factor):
+        raise ivy.exceptions.IvyException(
+            "only one of size or scale_factor should be defined"
+        )
+
+    elif ivy.exists(size) and not ivy.exists(scale_factor):
+        scale_factors = None
+
+        if isinstance(size, (list, tuple)):
+            ivy.assertions.check_equal(
+                len(size),
+                dim,
+                inverse=False,
+                message=f"Input and output must have the "
+                f"same number of spatial dimensions,"
+                f" but got input with spatial dimensions of {list(input.shape[2:])}"
+                f" and output size of {size}. "
+                f"Please provide input tensor in (N, C, d1, d2, ...,dK) format"
+                f" and output size in (o1, o2, ...,oK) format.",
+            )
+            output_size = size
+        else:
+            output_size = [size for _ in range(dim)]
+
+    elif ivy.exists(scale_factor) and not ivy.exists(size):
+        output_size = None
+
+        if isinstance(scale_factor, (list, tuple)):
+            ivy.assertions.check_equal(
+                len(scale_factor),
+                dim,
+                inverse=False,
+                message=f"Input and scale_factor must have the "
+                f"same number of spatial dimensions,"
+                f" but got input with spatial dimensions of {list(input.shape[2:])}"
+                f" and scale_factor of shape {scale_factor}. "
+                f"Please provide input tensor in (N, C, d1, d2, ...,dK) format"
+                f" and scale_factor in (s1, s2, ...,sK) format.",
+            )
+            scale_factors = scale_factor
+        else:
+            scale_factors = [scale_factor for _ in range(dim)]
+
+    else:
+        ivy.assertions.check_any(
+            [ivy.exists(size), ivy.exists(scale_factor)],
+            message="either size or scale_factor should be defined",
+        )
+
+    if (
+        ivy.exists(size)
+        and ivy.exists(recompute_scale_factor)
+        and bool(recompute_scale_factor)
+    ):
+        raise ivy.exceptions.IvyException(
+            "recompute_scale_factor is not meaningful with an explicit size."
+        )
+
+    if ivy.exists(scale_factors):
+        output_size = [
+            math.floor(ivy.shape(input)[i + 2] * scale_factors[i]) for i in range(dim)
+        ]
+
+    if (
+        bool(antialias)
+        and not (mode in ["bilinear", "bicubic"])
+        and ivy.get_num_dims(input) == 4
+    ):
+        raise ivy.exceptions.IvyException(
+            "recompute_scale_factor is not meaningful with an explicit size."
+        )
+
+    if ivy.get_num_dims(input) == 3 and mode == "bilinear":
+        raise IvyNotImplementedException(
+            "Got 3D input, but bilinear mode needs 4D input"
+        )
+    if ivy.get_num_dims(input) == 3 and mode == "trilinear":
+        raise IvyNotImplementedException(
+            "Got 3D input, but trilinear mode needs 5D input"
+        )
+    if ivy.get_num_dims(input) == 4 and mode == "linear":
+        raise IvyNotImplementedException("Got 4D input, but linear mode needs 3D input")
+    if ivy.get_num_dims(input) == 4 and mode == "trilinear":
+        raise IvyNotImplementedException(
+            "Got 4D input, but trilinear mode needs 5D input"
+        )
+    if ivy.get_num_dims(input) == 5 and mode == "linear":
+        raise IvyNotImplementedException("Got 5D input, but linear mode needs 3D input")
+    if ivy.get_num_dims(input) == 5 and mode == "bilinear":
+        raise IvyNotImplementedException(
+            "Got 5D input, but bilinear mode needs 4D input"
+        )
+
+    ivy.assertions.check_elem_in_list(
+        ivy.get_num_dims(input),
+        range(3, 6),
+        message=f"Input Error: Only 3D, 4D and 5D input Tensors supported "
+        f"(got {ivy.get_num_dims(input)}D) for the modes: nearest | linear | bilinear "
+        f"| bicubic | trilinear | area | nearest-exact (got {mode})",
+    )
+
+    return ivy.interpolate(
+        input, output_size, mode=mode, align_corners=align_corners, antialias=antialias
+    )
+
+
+@to_ivy_arrays_and_back
+def upsample(
+    input,
+    size=None,
+    scale_factor=None,
+    mode="nearest",
+    align_corners=None,
+):
+
+    return interpolate(
+        input,
+        size=size,
+        scale_factor=scale_factor,
+        mode=mode,
+        align_corners=align_corners,
+    )
+
+
+@to_ivy_arrays_and_back
+def upsample_nearest(input, size=None, scale_factor=None):
+
+    return interpolate(input, size=size, scale_factor=scale_factor, mode="nearest")
