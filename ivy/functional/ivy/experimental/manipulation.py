@@ -17,6 +17,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_view,
 )
 from ivy.utils.backend import current_backend
 from ivy.exceptions import handle_exceptions
@@ -162,6 +163,7 @@ def flatten(
 flatten.mixed_function = True
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -332,6 +334,7 @@ def heaviside(
     return ivy.current_backend().heaviside(x1, x2, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -452,6 +455,7 @@ def hstack(
     return ivy.current_backend().hstack(arrays, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -607,6 +611,7 @@ def top_k(
     return current_backend(x).top_k(x, k, axis=axis, largest=largest, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1196,6 +1201,7 @@ def pad(
     return padded
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1236,6 +1242,7 @@ def vsplit(
     return ivy.current_backend(ary).vsplit(ary, indices_or_sections)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_nestable
 @handle_array_like_without_promotion
@@ -1279,6 +1286,7 @@ def dsplit(
     return ivy.current_backend(ary).dsplit(ary, indices_or_sections)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1354,6 +1362,7 @@ def dstack(
     return ivy.current_backend().dstack(arrays)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1392,6 +1401,7 @@ def atleast_2d(
     return ivy.current_backend().atleast_2d(*arys)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1480,6 +1490,7 @@ def take_along_axis(
     return ivy.current_backend(arr).take_along_axis(arr, indices, axis, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_nestable
 @handle_array_like_without_promotion

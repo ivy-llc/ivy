@@ -92,6 +92,7 @@ def concat(
     return current_backend(xs[0]).concat(xs, axis=axis, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -218,6 +219,7 @@ def expand_dims(
     return current_backend(x).expand_dims(x, axis=axis, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -303,6 +305,7 @@ def flip(
     return current_backend(x).flip(x, axis=axis, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -623,6 +626,7 @@ def roll(
     return current_backend(x).roll(x, shift, axis=axis, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1074,6 +1078,7 @@ def repeat(
     return current_backend(x).repeat(x, repeats, axis=axis, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
@@ -1148,6 +1153,7 @@ def split(
     )
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

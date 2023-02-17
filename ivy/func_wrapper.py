@@ -75,6 +75,23 @@ def _get_first_array(*args, **kwargs):
     return arr
 
 
+def _build_view(original, view, fn, args, kwargs):
+    if ivy.exists(original._base):
+        warnings.warn(
+            "Creating many views will lead to overhead "
+            "when performing inplace updates with this backend"
+        )
+        base = original._base
+        view._base = base
+        view._manipulation_stack = python_copy.copy(original._manipulation_stack)
+    else:
+        base = original
+        view._base = base
+    base._view_refs.append(weakref.ref(view))
+    view._manipulation_stack.append((fn, args[1:], kwargs))
+    return view
+
+
 # Array Handling #
 # ---------------#
 
@@ -336,19 +353,11 @@ def handle_view(fn: Callable) -> Callable:
         if copy or ivy.backend in ("numpy", "torch"):
             return ret
         original = ivy.to_ivy(args[0])
-        if ivy.exists(original._base):
-            warnings.warn(
-                "Creating many views will lead to overhead "
-                "when performing inplace updates with this backend"
-            )
-            base = original._base
-            ret._base = base
-            ret._manipulation_stack = python_copy.copy(original._manipulation_stack)
+        if isinstance(ret, list):
+            for i, view in enumerate(ret):
+                ret[i] = _build_view(original, view, fn, args, kwargs)
         else:
-            base = original
-            ret._base = base
-        base._view_refs.append(weakref.ref(ret))
-        ret._manipulation_stack.append((fn, args[1:], kwargs))
+            ret = _build_view(original, ret, fn, args, kwargs)
         return ret
 
     new_fn.handle_view = True
