@@ -3,6 +3,7 @@ A state holder for testing, this is only intended to hold and store
 testing data to be used by the test helpers to prune unsupported data.
 Should not be used inside any of the test functions.
 """
+import importlib
 import sys
 from ... import config
 
@@ -35,6 +36,7 @@ CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
+CURRENT_FRONTEND_STR = ""
 
 
 @dataclass(frozen=True)  # ToDo use kw_only=True when version is updated
@@ -83,7 +85,8 @@ class InterruptedTest(BaseException):
 def _get_ivy_numpy(version=None):
     """Import Numpy module from ivy"""
     if version:
-        config.reset_sys_modules_to_base()
+        if version.split("/")[1] != importlib.import_module("numpy").__version__:
+            config.reset_sys_modules_to_base()
         config.allow_global_framework_imports(fw=[version])
 
     try:
@@ -101,13 +104,8 @@ def _get_ivy_jax(version=None):
             version.split("/")[2] + "/" + version.split("/")[3],
         ]
         config.allow_global_framework_imports(fw=las)
-        try:
-            config.reset_sys_modules_to_base()
-            import ivy.functional.backends.jax
+        import ivy.functional.backends.jax
 
-            return ivy.functional.backends.jax
-        except ImportError as e:
-            raise e
     else:
         try:
             import ivy.functional.backends.jax
@@ -174,11 +172,13 @@ def _set_test_data(test_data: TestData):
 
 def _set_frontend(framework: str):
     global CURRENT_FRONTEND
+    global CURRENT_FRONTEND_STR
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     if isinstance(framework, list):
 
         CURRENT_FRONTEND = FWS_DICT[framework[0].split("/")[0]]
+        CURRENT_FRONTEND_STR = framework
     else:
         CURRENT_FRONTEND = FWS_DICT[framework]
 
