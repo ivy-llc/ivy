@@ -46,12 +46,7 @@ def gelu(
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-def sigmoid(
-    x: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if not ivy.is_array(x):
         x = torch.tensor(x)
     return torch.sigmoid(x, out=out)
