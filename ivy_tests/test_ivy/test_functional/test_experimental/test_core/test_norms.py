@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_test
     dtype_and_x=helpers.arrays_and_axes(
         available_dtypes=helpers.get_dtypes("float"),
         num=1,
-        returndtype=True,
+        return_dtype=True,
         force_int_axis=True,
     ),
     test_gradients=st.just(False),
@@ -44,7 +44,7 @@ def test_l2_normalize(
     dtype_and_x=helpers.arrays_and_axes(
         available_dtypes=helpers.get_dtypes("float"),
         num=1,
-        returndtype=True,
+        return_dtype=True,
         force_int_axis=True,
     ),
     p=st.floats(min_value=0.1, max_value=2),

@@ -1643,6 +1643,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        conjugate: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1687,6 +1688,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "matrix_transpose",
             x,
+            conjugate=conjugate,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1698,6 +1700,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        conjugate: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1740,6 +1743,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_matrix_transpose(
             self,
+            conjugate=conjugate,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2095,6 +2099,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        adjoint: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2105,6 +2110,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             "solve",
             x1,
             x2,
+            adjoint=adjoint,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2117,6 +2123,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        adjoint: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2126,6 +2133,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         return self.static_solve(
             self,
             x2,
+            adjoint=adjoint,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2690,6 +2698,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
             array must have a floating-point data type determined
             by :ref:`type-promotion`.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a = [1., 2., 3.], b = [-2., 0., 3.2])
+        >>> y = ivy.Container.static_vector_norm(x)
+        >>> print(y)
+        {
+            a: ivy.array([3.7416575]),
+            b: ivy.array([3.77359247])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "vector_norm",
@@ -2794,6 +2811,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
             ``x``. The returned array must have a floating-point data type
             determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a = [1., 2., 3.], b = [-2., 0., 3.2])
+        >>> y = x.vector_norm()
+        >>> print(y)
+        {
+            a: ivy.array([3.7416575]),
+            b: ivy.array([3.77359247])
+        }
         """
         return self.static_vector_norm(
             self,

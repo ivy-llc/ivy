@@ -493,6 +493,41 @@ def test_jax_numpy_mod(
     )
 
 
+# divmod
+@handle_frontend_test(
+    fn_tree="jax.numpy.divmod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=2,
+        safety_factor_scale="linear",
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_divmod(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)) and "bfloat16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+        atol=1,
+    )
+
+
 # tan
 @handle_frontend_test(
     fn_tree="jax.numpy.tan",

@@ -14,6 +14,8 @@ except:
 
 
 def framework_comparator(frontend):
+    if ivy.current_backend_str() != frontend.split("/")[0]:
+        return False
     if frontend.split("/")[0] == "jax":
         fw = frontend.split("/")[1] + frontend.split("/")[3]
         backend_fw = (
@@ -28,8 +30,8 @@ def framework_comparator(frontend):
         )
     else:
         return (
-            frontend.split("/")[1]
-            == importlib.import_module(frontend.split("/")[1]).__version__
+            frontend.split("/")[0]
+            == importlib.import_module(frontend.split("/")[0]).__version__
         )
 
 
@@ -633,8 +635,6 @@ def test_frontend_function(
         shallow=False,
     )
 
-    # temporarily set frontend framework as backend
-    ivy.set_backend(frontend.split("/")[0])
     if "/" in frontend:
         # multiversion zone, changes made in non-multiversion zone should
         # be applied here too
@@ -673,7 +673,8 @@ def test_frontend_function(
                     if not isinstance(frontend_ret, tuple):
                         frontend_ret = (frontend_ret,)
                     frontend_ret_idxs = ivy.nested_argwhere(
-                        frontend_ret, lambda x: isinstance(x, np.ndarray)
+                        frontend_ret,
+                        lambda x: isinstance(x, np.ndarray) or isinstance(x, ivy.Array),
                     )
                     frontend_ret_flat = ivy.multi_index_nest(
                         frontend_ret, frontend_ret_idxs
@@ -684,6 +685,9 @@ def test_frontend_function(
                 ivy.unset_backend()
                 raise e
         else:
+
+            # temporarily set frontend framework as backend
+            ivy.set_backend(frontend.split("/")[0])
             try:
                 # create frontend framework args
                 args_frontend = ivy.nested_map(
@@ -743,6 +747,8 @@ def test_frontend_function(
                         frontend_ret, frontend_ret_idxs
                     )
                     frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+                # unset frontend framework from backend
+                ivy.unset_backend()
             except Exception as e:
                 ivy.unset_backend()
                 raise e
@@ -752,6 +758,8 @@ def test_frontend_function(
         # non-multiversion zone, changes made here should be
         # applied to multiversion zone too
 
+        # temporarily set frontend framework as backend
+        ivy.set_backend(frontend.split("/")[0])
         try:
             # create frontend framework args
             args_frontend = ivy.nested_map(
@@ -806,11 +814,11 @@ def test_frontend_function(
                     frontend_ret, frontend_ret_idxs
                 )
                 frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+            # unset frontend framework from backend
+            ivy.unset_backend()
         except Exception as e:
             ivy.unset_backend()
             raise e
-    # unset frontend framework from backend
-    ivy.unset_backend()
 
     ret_np_flat = flatten_and_to_np(ret=ret)
 

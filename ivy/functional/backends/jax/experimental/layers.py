@@ -440,25 +440,16 @@ def interpolate(
     antialias: Optional[bool] = False,
 ):
     # keeping the batch and channel dimension same
-    size = [*x.shape[0:1], *size]
-    if align_corners:
-        return ivy.interpolate(
+    dims = len(x.shape) - 2
+    size = (size,) * dims if isinstance(size, int) else size
+    size = [x.shape[0], *size, x.shape[1]]
+
+    if align_corners or mode == "area":
+        return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
-    elif mode == "linear":
-        x = jnp.transpose(x, (0, 2, 1))
-        return jnp.transpose(
-            jax.image.resize(x, shape=size, method=mode, antialias=antialias), (0, 2, 1)
-        )
-    elif mode == "bilinear":
-        x = jnp.transpose(x, (0, 2, 3, 1))
-        return jnp.transpose(
-            jax.image.resize(x, shape=size, method=mode, antialias=antialias),
-            (0, 3, 1, 2),
-        )
-    elif mode == "trilinear":
-        x = jnp.transpose(x, (0, 2, 3, 4, 1))
-        return jnp.transpose(
-            jax.image.resize(x, shape=size, method=mode, antialias=antialias),
-            (0, 4, 1, 2, 3),
-        )
+    x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
+    return jnp.transpose(
+        jax.image.resize(x, shape=size, method=mode, antialias=antialias),
+        (0, dims + 1, *range(1, dims + 1)),
+    )

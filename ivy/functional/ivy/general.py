@@ -12,7 +12,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy.backend_handler import current_backend, backend_stack
+from ivy.utils.backend import current_backend, backend_stack
 from ivy.functional.ivy.gradients import _is_variable
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
@@ -2178,7 +2178,25 @@ stable_pow.unsupported_dtypes = ("bfloat16",)
 
 @handle_exceptions
 def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
-    """Gets all arrays which are currently alive."""
+    """
+    Gets all arrays which are currently alive.
+
+    Returns
+    -------
+    ret
+        All arrays which are alive.
+
+    Examples
+    --------
+    >>> ivy.get_all_arrays_in_memory()
+    []
+    >>> x = ivy.get_all_arrays_in_memory()
+    >>> x
+    []
+    >>> y = ivy.array([0, 1, 2])
+    >>> x
+    [ivy.array([0, 1, 2])]
+    """
     all_arrays = list()
     for obj in gc.get_objects():
         try:
