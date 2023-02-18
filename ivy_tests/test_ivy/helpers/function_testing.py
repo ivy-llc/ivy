@@ -673,7 +673,8 @@ def test_frontend_function(
                     if not isinstance(frontend_ret, tuple):
                         frontend_ret = (frontend_ret,)
                     frontend_ret_idxs = ivy.nested_argwhere(
-                        frontend_ret, lambda x: isinstance(x, np.ndarray) or isinstance(x,ivy.Array)
+                        frontend_ret,
+                        lambda x: isinstance(x, np.ndarray) or isinstance(x, ivy.Array),
                     )
                     frontend_ret_flat = ivy.multi_index_nest(
                         frontend_ret, frontend_ret_idxs

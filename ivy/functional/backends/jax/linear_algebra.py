@@ -352,7 +352,7 @@ def solve(
     /,
     *,
     adjoint: bool = False,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if adjoint:
         x1 = jnp.transpose(jnp.conjugate(x1))
