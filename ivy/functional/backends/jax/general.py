@@ -15,7 +15,7 @@ import multiprocessing as _multiprocessing
 # necessary import, because stateful imports jax as soon as you import ivy, however,
 # during multi-version jax is not there, and therefore a later import results in
 # some sort of circular import, so haiku is needed
-import haiku
+# import haiku
 
 from haiku._src.data_structures import FlatMapping
 
