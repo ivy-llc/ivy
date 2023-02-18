@@ -12,8 +12,9 @@ from jaxlib.xla_extension import Buffer
 from typing import Iterable, Optional, Union, Sequence, Callable
 import multiprocessing as _multiprocessing
 
-# necessary import, because stateful imports jax as soon as you import ivy, however, during multiversion
-# jax is not there, and therefore a later import results in some sort of circular import, so haiku is needed
+# necessary import, because stateful imports jax as soon as you import ivy, however,
+# during multi-version jax is not there, and therefore a later import results in
+# some sort of circular import, so haiku is needed
 import haiku
 
 from haiku._src.data_structures import FlatMapping

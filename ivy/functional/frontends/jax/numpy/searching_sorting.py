@@ -119,11 +119,11 @@ def sort(
     stable: bool = True,
     out: Optional[ivy.Array] = None,
 ):
-    if axis == -1 and descending == False and stable == True:
+    if axis == -1 and descending is False and stable is True:
         x = ivy.sort(x)
-    if axis == 1 and descending == True and stable == False:
+    if axis == 1 and descending is True and stable is False:
         x = ivy.sort(x, axis=1, descending=True, stable=False)
-    if descending == True and stable == False:
+    if descending is True and stable is False:
         y = ivy.zeros(5)
         x = ivy.sort(x, descending=True, stable=False, out=y)
     if out == x:

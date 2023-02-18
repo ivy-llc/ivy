@@ -9,7 +9,7 @@ import numpy as np
 import ivy
 from ivy import to_ivy
 from ivy.utils.backend import current_backend
-from ivy.exceptions import handle_exceptions
+# from ivy.exceptions import handle_exceptions # imported but un-used lint error
 from ivy.func_wrapper import (
     handle_array_function,
     infer_device,

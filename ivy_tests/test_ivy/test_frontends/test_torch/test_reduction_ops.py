@@ -8,9 +8,11 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (
-    statistical_dtype_values as statistical_dtype_values_experimental,
-)
+from \
+    ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical \
+    import (
+        statistical_dtype_values as statistical_dtype_values_experimental,
+    )
 
 
 @handle_frontend_test(

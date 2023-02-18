@@ -115,16 +115,16 @@ class ArrayWithActivations(abc.ABC):
         """
         ivy.Array instance method variant of ivy.sigmoid.
 
-        This method simply wraps the function, and so the docstring for ivy.sigmoid also applies to this method
-        with minimal changes.
+        This method simply wraps the function, and so the docstring for
+        ``ivy.sigmoid`` also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             Input array
         out
-            optional output array for writing the result to. It must have the same shape the input broadcast to
-            default: None
+            optional output array for writing the result to. It must have the same
+            shape the input broadcast to default: None
 
         Returns
         -------
