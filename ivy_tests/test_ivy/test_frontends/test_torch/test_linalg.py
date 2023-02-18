@@ -919,6 +919,7 @@ def test_torch_lu_factor(
         ret_np=[LU, pivot],
         ret_from_gt_np=[frontend_LU, frontend_pivot],
         ground_truth_backend=frontend
+    )
 
 
 @handle_frontend_test(
