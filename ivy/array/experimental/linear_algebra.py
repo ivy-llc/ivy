@@ -1,12 +1,33 @@
 # global
 import abc
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List
 
 # local
 import ivy
 
 
 class ArrayWithLinearAlgebraExperimental(abc.ABC):
+    def eigh_tridiagonal(
+        self: Union[ivy.Array, ivy.NativeArray],
+        beta: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        eigvals_only: bool = True,
+        select: str = 'a',
+        select_range: Optional[Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]] = None,
+        tol: Optional[float] = None,
+    ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
+        """
+        """
+        return ivy.eigh_tridiagonal(
+            self._data,
+            beta,
+            eigvals_only=eigvals_only,
+            select=select,
+            select_range=select_range,
+            tol=tol,
+        )
+
     def diagflat(
         self: Union[ivy.Array, ivy.NativeArray],
         *,

@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, List, Dict
+from typing import Union, Optional, List, Dict, Tuple
 
 # local
 from ivy.container.base import ContainerBase
@@ -7,6 +7,62 @@ import ivy
 
 
 class ContainerWithLinearAlgebraExperimental(ContainerBase):
+    @staticmethod
+    def static_eigh_tridiagonal(
+        alpha: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        beta: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        eigvals_only: bool = True,
+        select: str = 'a',
+        select_range: Optional[Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]] = None,
+        tol: Optional[float] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container]]:
+        return ContainerBase.cont_multi_map_in_function(
+            "eigh_tridiagonal",
+            alpha,
+            beta,
+            eigvals_only=eigvals_only,
+            select=select,
+            select_range=select_range,
+            tol=tol,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def eigh_tridiagonal(
+        self: ivy.Container,
+        beta: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        eigvals_only: bool = True,
+        select: str = 'a',
+        select_range: Optional[Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]] = None,
+        tol: Optional[float] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container]]:
+        return self.static_eigh_tridiagonal(
+            self,
+            beta,
+            eigvals_only=eigvals_only,
+            select=select,
+            select_range=select_range,
+            tol=tol,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
     @staticmethod
     def static_diagflat(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

@@ -5,11 +5,11 @@ import ivy
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 
 
-@with_supported_dtypes({"2.9.1 and below": ("float32", "float64")}, backend_version)
+#@with_unsupported_dtypes({"2.9.1 and below": ("int", "float16", "bfloat16")}, backend_version)
 def eigh_tridiagonal(
     alpha: Union[tf.Tensor, tf.Variable],
     beta: Union[tf.Tensor, tf.Variable],
@@ -17,9 +17,9 @@ def eigh_tridiagonal(
     *,
     eigvals_only: bool = True,
     select: str = 'a',
-    select_range: Optional[Union[Tuple[int], List[int], tf.Tensor, tf.Variable]] = None,
+    select_range: Optional[Union[Tuple[int, int], List[int], tf.Tensor, tf.Variable]] = None,
     tol: Optional[float] = None,
-) -> Union[Union[tf.Tensor, tf.Variable], Tuple[Union[tf.Tensor, tf.Variable]]]:
+) -> Union[tf.Tensor, tf.Variable, Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]]:
     if eigvals_only:
         return tf.linalg.eigh_tridiagonal(
             alpha,
@@ -29,24 +29,29 @@ def eigh_tridiagonal(
             select_range=select_range,
             tol=tol
         )
-        
-    result_tuple = NamedTuple(
-        "eigh",
-        [
-            ("eigenvalues", Union[tf.Tensor, tf.Variable]),
-            ("eigenvectors", Union[tf.Tensor, tf.Variable]),
-        ],
-    )
-    eigenvalues, eigenvectors = tf.linalg.eigh_tridiagonal(
-        alpha,
-        beta,
-        eigvals_only=eigvals_only,
-        select=select,
-        select_range=select_range,
-        tol=tol
-    )
+    
+    vals = tf.linalg.eigh_tridiagonal(
+            alpha,
+            beta,
+            eigvals_only=True,
+            select=select,
+            select_range=select_range,
+            tol=tol
+        )
+    if len(vals)>0:
+        eigenvalues, eigenvectors = tf.linalg.eigh_tridiagonal(
+            alpha,
+            beta,
+            eigvals_only=eigvals_only,
+            select=select,
+            select_range=select_range,
+            tol=tol
+        )
+    else:
+        eigenvalues = vals
+        eigenvectors = vals
 
-    return result_tuple(eigenvalues, eigenvectors)
+    return eigenvalues, eigenvectors
 
 
 def diagflat(

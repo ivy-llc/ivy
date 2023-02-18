@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_array_function,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -24,6 +25,7 @@ def _check_valid_dimension_size(std):
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def eigh_tridiagonal(
     alpha: Union[ivy.Array, ivy.NativeArray],
     beta: Union[ivy.Array, ivy.NativeArray],
@@ -31,9 +33,9 @@ def eigh_tridiagonal(
     *,
     eigvals_only: bool = True,
     select: str = 'a',
-    select_range: Optional[Union[Tuple[int], List[int], ivy.Array, ivy.NativeArray]] = None,
+    select_range: Optional[Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]] = None,
     tol: Optional[float] = None,
-) -> Union[ivy.Array, Tuple[ivy.Array]]:
+) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
     """
     """
     if ivy.current_backend(alpha).backend == "tensorflow":
@@ -67,15 +69,7 @@ def eigh_tridiagonal(
 
     if eigvals_only:
         return eigenvalues
-
-    result_tuple = NamedTuple(
-        "eigh",
-        [
-            ("eigenvalues", ivy.NativeArray),
-            ("eigenvectors", ivy.NativeArray),
-        ],
-    )
-    return result_tuple(eigenvalues, eigenvectors)
+    return eigenvalues, eigenvectors
 
 
 @to_native_arrays_and_back
