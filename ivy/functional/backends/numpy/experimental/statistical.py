@@ -1,6 +1,10 @@
 from typing import Optional, Union, Tuple, Sequence
 import numpy as np
 
+import ivy
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
+
 
 def median(
     input: np.ndarray,
@@ -30,12 +34,15 @@ def nanmean(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return np.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
 
 nanmean.support_native_out = True
 
 
+@with_supported_dtypes({"1.23.0 and below": ("int32", "int64")}, backend_version)
 def unravel_index(
     indices: np.ndarray,
     shape: Tuple[int],
@@ -43,7 +50,7 @@ def unravel_index(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.unravel_index(indices, shape)
+    return np.unravel_index(indices, shape).astype(indices.dtype)
 
 
 def quantile(

@@ -8,7 +8,7 @@ import inspect
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
-    "array_function_wrapper",
+    "handle_array_function",
     "infer_device",
     "infer_dtype",
     "integer_arrays_to_float",
@@ -34,13 +34,13 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
         return False, None
 
     for overloaded_arg in overloaded_args:
-        # Note that we're only calling __array_function__ on the *first*
+        # Note that we're only calling __ivy_array_function__ on the *first*
         # occurence of each argument type. This is necessary for reasonable
         # performance with a possibly long list of overloaded arguments, for
-        # which each __array_function__ implementation might reasonably need to
+        # which each __ivy_array_function__ implementation might reasonably need to
         # check all argument types.
         try:
-            result = overloaded_arg.__array_function__(func, types, args, kwargs)
+            result = overloaded_arg.__ivy_array_function__(func, types, args, kwargs)
         except Exception:
             raise ivy.exceptions.IvyNotImplementedException
 
@@ -49,7 +49,7 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
     raise TypeError(
         "no implementation found for {} on types that implement "
-        "__array_function__: {}".format(func, list(map(type, overloaded_args)))
+        "__ivy_array_function__: {}".format(func, list(map(type, overloaded_args)))
     )
 
 
@@ -89,12 +89,13 @@ def handle_array_function(func):
         for arg in args + tuple(kwargs.values()):
             if ivy.exists(arg) and (
                 not isinstance(arg, ivy.Container)
-                and hasattr(arg, "__array_function__")
+                and hasattr(arg, "__ivy_array_function__")
             ):
                 if type(arg) not in overloaded_types:
                     overloaded_types.append(type(arg))
                     if (
-                        arg.__array_function__ is not ivy.Array.__array_function__
+                        arg.__ivy_array_function__
+                        is not ivy.Array.__ivy_array_function__
                         and not isinstance(arg, (ivy.Array, ivy.NativeArray))
                     ):
                         index = len(overloaded_args)
@@ -106,14 +107,14 @@ def handle_array_function(func):
             if ivy.exists(arg) and isinstance(arg, ivy.Container):
                 arg = ivy.Container.cont_flatten_key_chains(arg)
                 indices = ivy.nested_argwhere(
-                    arg, lambda x: hasattr(x, "__array_function__")
+                    arg, lambda x: hasattr(x, "__ivy_array_function__")
                 )
                 for a in indices:
                     if type(getattr(arg, a[0])) not in overloaded_types:
                         overloaded_types.append(type(getattr(arg, a[0])))
                         if getattr(
                             arg, a[0]
-                        ).__array_function__ is not ivy.Array.__array_function__ and not isinstance(
+                        ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(
                             getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
                         ):
                             index = len(overloaded_args)
@@ -130,7 +131,7 @@ def handle_array_function(func):
             return value
         return func(*args, **kwargs)
 
-    new_func.array_function_wrapper = True
+    new_func.handle_array_function = True
     return new_func
 
 
