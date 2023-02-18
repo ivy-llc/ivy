@@ -127,6 +127,19 @@ def transpose(input, dim0, dim1):
 
 
 @to_ivy_arrays_and_back
+def t(input):
+    if input.ndim > 2:
+        raise ivy.exceptions.IvyException(
+            "t(input) expects a tensor with <= 2 dimensions, but self is %dD"
+            % input.ndim
+        )
+    if input.ndim == 2:
+        return ivy.swapaxes(input, 0, 1)
+    else:
+        return input
+
+
+@to_ivy_arrays_and_back
 def tile(input, dims):
     try:
         tup = tuple(dims)
