@@ -25,7 +25,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy.backend_handler import _backend_dict
+from ivy.utils.backend.handler import _backend_dict
 
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 

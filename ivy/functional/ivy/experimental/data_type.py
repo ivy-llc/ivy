@@ -3,7 +3,7 @@ from typing import Union
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 from ivy.exceptions import handle_exceptions
 
 
