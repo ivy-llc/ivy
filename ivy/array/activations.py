@@ -110,12 +110,7 @@ class ArrayWithActivations(abc.ABC):
         """
         return ivy.gelu(self._data, approximate=approximate, out=out)
 
-    def sigmoid(
-        self: ivy.Array,
-        /, 
-        *, 
-        out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def sigmoid(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
 
         """
         ivy.Array instance method variant of ivy.sigmoid.
