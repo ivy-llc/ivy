@@ -206,6 +206,11 @@ def matrix_power(x: JaxArray, n: int, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.linalg.matrix_power(x, n)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
+def matrix_exp(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.exp(x)
+
+
 @with_unsupported_dtypes(
     {"0.3.14 and below": ("bfloat16", "float16", "complex")},
     backend_version,
