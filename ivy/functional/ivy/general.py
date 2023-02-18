@@ -1945,12 +1945,13 @@ def einops_repeat(
 
 @handle_exceptions
 def get_min_denominator() -> float:
-    """Get the global minimum denominator used by ivy for numerically stable division.
+    """
+    Gets the global minimum denominator used by ivy for numerically stable division.
 
     Returns
     -------
     ret
-        A float number of the global minimum denominator.
+        The value of the global minimum denominator.
 
     Examples
     --------
