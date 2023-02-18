@@ -1049,6 +1049,8 @@ class ArrayWithGeneral(abc.ABC):
     def inplace_update(
         self: ivy.Array,
         val: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         ensure_in_backend: bool = False,
     ) -> ivy.Array:
         """

@@ -174,6 +174,8 @@ def inplace_increment(
 def inplace_update(
     x: Union[ivy.Array, np.ndarray],
     val: Union[ivy.Array, np.ndarray],
+    /,
+    *,
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
     ivy.assertions.check_inplace_sizes_valid(x, val)

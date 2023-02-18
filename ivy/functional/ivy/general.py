@@ -2527,6 +2527,8 @@ def get_item(
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
     """Perform in-place update for the input array. This will always be performed on
@@ -2551,6 +2553,49 @@ def inplace_update(
     ret
         The array following the in-place update.
 
+    Raises
+    ------
+    IvyException
+        If backend set doesn't natively support inplace updates and ensure_in_backend is
+        True, above exception will be raised.
+
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input and default backend set as `numpy`:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([0])
+    >>> ivy.inplace_update(x, y)
+    >>> print(x)
+    ivy.array([0])
+
+
+    With :class:`ivy.Container` instances:, and backend set as `torch`:
+
+    >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
+    >>> y = ivy.Container(a=ivy.array([1]), b=ivy.array([2]))
+    >>> ivy.inplace_update(x, y)
+    >>> print(x)
+    {
+        a: ivy.array([1]),
+        b: ivy.array([2])
+    }
+
+
+    With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:, and backend set as `torch`:
+
+    >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
+    >>> y = ivy.array([1, 2])
+    >>> ivy.inplace_update(x, y)
+    >>> print(x)
+    {
+        a: ivy.array([1, 2]),
+        b: ivy.array([1, 2])
+    }
+    
     """
     return current_backend(x).inplace_update(x, val, ensure_in_backend)
 
