@@ -73,3 +73,17 @@ def _isnan(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting_special
+@from_zero_dim_arrays_to_scalar
+def _iscomplex(x):
+    res = []
+    for num in x:
+        arr = ivy.asarray([num])
+        ret = ivy.is_complex_dtype(arr)
+        res.append(ret)
+    return ivy.asarray(res)
