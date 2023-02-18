@@ -2420,7 +2420,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
     Raises
     ------
-    ValueError
+    IvyException
         If x isn't a class instance of ivy.Array or ivy.NativeArray, an exception will
         be raised.
 
@@ -2434,7 +2434,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     >>> x = ivy.array([0, 1, 2])
     >>> y = ivy.supports_inplace_updates(x)
     >>> print(y)
-    False
+    True
 
     With :class:`ivy.Container` input and backend set as `torch`:
 
@@ -2442,9 +2442,17 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     >>> y = ivy.supports_inplace_updates(x)
     >>> print(y)
     {
-        a: false,
-        b: false
+        a: True,
+        b: True
     }
+
+    With `ivy.Array` input and backend set as "tensorflow":
+
+    >>> x = ivy.array([1., 4.2, 2.2])
+    >>> ret = x.supports_inplace_updates()
+    >>> print(ret)
+    False
+    
     """
     if _is_variable(x):
         return ivy.inplace_variables_supported()

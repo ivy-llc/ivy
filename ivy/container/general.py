@@ -3508,7 +3508,7 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_supports_inplace_updates(
-        x: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
+        x: ivy.Container,
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -3517,8 +3517,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.supports_inplace. This method
-        simply wraps the function, and so the docstring for ivy.supports_inplace
+        ivy.Container static method variant of ivy.supports_inplace_updates. This method
+        simply wraps the function, and so the docstring for ivy.supports_inplace_updates
         also applies to this method with minimal changes.
 
         Parameters
@@ -3545,34 +3545,6 @@ class ContainerWithGeneral(ContainerBase):
             An ivy.Container instance of bool values.
             True if nodes of x support in-place operations. False otherwise.
 
-        Raises
-        ------
-        ValueError
-            If a node(s) of the container isn't a class instance of ivy.Array or
-            ivy.NativeArray, an exception will be raised.
-
-        Examples
-        --------
-        With `ivy.Container` input and backend set as 'numpy':
-
-        >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
-        >>> ret = ivy.Container.static_supports_inplace_updates(x)
-        >>> print(ret)
-        {
-            a: true,
-            b: true
-        }
-
-        With `ivy.Container` input and backend set as 'tensorflow':
-
-        >>> x = ivy.Container(a=ivy.array(ivy.array([2.0, 0.0])),
-        ...                   b=ivy.array([0., 5.5, -8]))
-        >>> ret = ivy.Container.static_supports_inplace_updates(x)
-        >>> print(ret)
-        {
-            a: true,
-            b: false
-        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "supports_inplace_updates",
@@ -3621,26 +3593,6 @@ class ContainerWithGeneral(ContainerBase):
             An ivy.Container instance of bool values.
             True if nodes of the Container support in-place operations. False otherwise.
 
-        Examples
-        --------
-        With an `ivy.Container` instance and backend set as 'numpy':
-        >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
-        >>> ret = x.supports_inplace_updates()
-        >>> print(ret)
-        {
-            a: false,
-            b: false
-        }
-
-        With an `ivy.Container` instance and backend set as 'tensorflow':
-        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),
-        ...                   b=ivy.array([0., 5.5, -8]))
-        >>> ret = x.supports_inplace_updates()
-        >>> print(ret)
-        {
-            a: false,
-            b: false
-        }
         """
         return ContainerWithGeneral.static_supports_inplace_updates(
             self,

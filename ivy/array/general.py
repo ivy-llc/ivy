@@ -581,11 +581,11 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_list(self)
 
-    def supports_inplace_updates(self: ivy.Array) -> bool:
+    def supports_inplace_updates(self: ivy.Array, /) -> bool:
         """
         ivy.Array instance method variant of ivy.supports_inplace_updates. This method
-        simply wraps the function, and so the docstring for ivy.supports_inplace also
-        applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.supports_inplace_updates 
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -598,14 +598,6 @@ class ArrayWithGeneral(abc.ABC):
             Bool value depends on whether the currently active backend
             framework supports in-place operations with argument's data type.
 
-        Examples
-        --------
-        With `ivy.Array` input and backend set as "tensorflow":
-
-        >>> x = ivy.array([1., 4.2, 2.2])
-        >>> ret = x.supports_inplace_updates()
-        >>> print(ret)
-        False
         """
         return ivy.supports_inplace_updates(self)
 
