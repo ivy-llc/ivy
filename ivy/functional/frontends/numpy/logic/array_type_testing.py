@@ -81,6 +81,7 @@ def _isnan(
 @handle_numpy_casting_special
 @from_zero_dim_arrays_to_scalar
 def _iscomplex(x):
+
     res = []
     for num in x:
         arr = ivy.asarray([num])
