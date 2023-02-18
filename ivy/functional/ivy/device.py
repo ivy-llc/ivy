@@ -39,12 +39,9 @@ max_chunk_sizes = dict()
 class DefaultDevice:
     """Ivy Device Class"""
 
-    def __init__(
-        self,
-        device: Union[ivy.Device, ivy.NativeDevice],
-        /,
-    ) -> None:
-        """Initialises the DefaultDevice class
+    def __init__(self, device: Union[ivy.Device, ivy.NativeDevice], /, ) -> None:
+        """
+        Initialises the DefaultDevice class
 
         Parameters
         ----------
@@ -53,6 +50,8 @@ class DefaultDevice:
 
         Examples
         --------
+        A "tpu" as device:
+
         >>> x = ivy.DefaultDevice("tpu")
         """
         self._dev = device
