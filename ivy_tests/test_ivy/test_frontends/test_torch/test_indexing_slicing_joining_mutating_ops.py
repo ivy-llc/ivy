@@ -445,6 +445,7 @@ def test_torch_transpose(
         dim1=dim1,
     )
 
+
 # t
 @handle_frontend_test(
     fn_tree="torch.t",
@@ -470,6 +471,7 @@ def test_torch_t(
         on_device=on_device,
         input=value[0],
     )
+
 
 # squeeze
 @handle_frontend_test(

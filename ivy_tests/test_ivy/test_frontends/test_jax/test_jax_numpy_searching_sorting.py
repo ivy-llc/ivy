@@ -267,7 +267,7 @@ def test_numpy_sort(
     on_device,
     test_flags,
 ):
-    input_dtype, x, axis= dtype_x_axis
+    input_dtype, x, axis = dtype_x_axis
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
