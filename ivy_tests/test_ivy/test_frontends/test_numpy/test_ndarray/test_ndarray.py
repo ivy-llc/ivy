@@ -21,6 +21,9 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.te
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.test_sums_products_differences import (  # noqa
     _get_castable_dtypes_values,
 )
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
+    _input_fill_and_dtype,
+)
 
 
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
@@ -771,6 +774,38 @@ def test_numpy_instance_diagonal(
         init_flags=init_flags,
         method_flags=method_flags,
     )
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="fill",
+    input_shape=helpers.get_shape(min_num_dims=2),
+    input_fill_dtype=_input_fill_and_dtype(),
+)
+def test_numpy_instance_fill(
+    input_shape,
+    input_fill_dtype,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, _, fill, dtype_to_cast = input_fill_dtype
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": input_shape,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "value": fill,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        test_values=False
+    )
 
 
 @handle_frontend_method(
@@ -974,7 +1009,6 @@ def test_numpy_instance_searchsorted(
     frontend,
 ):
     input_dtypes, xs = dtype_x_v
-
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
@@ -2337,21 +2371,44 @@ def test_numpy_instance_len__(
         frontend_method_data=frontend_method_data,
     )
 
+
 # __array__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="__array__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_numpy_instance_array__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "dtype": input_dtypes[0],
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+    )
+
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
-    method_name="__tobytes__",
+    method_name="tobytes",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),

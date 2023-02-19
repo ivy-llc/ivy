@@ -220,8 +220,8 @@ class ndarray:
             axis2=axis2,
         )
 
-    def fill(self, value, dtype=None):
-        return np_frontend.full(self.shape, fill_value=value, dtype=dtype)
+    def fill(self, value):
+        return np_frontend.full(shape=self.shape, fill_value=value, dtype=self.dtype)
 
     def sort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.sort(self._ivy_array, axis=axis, kind=kind, order=order)
