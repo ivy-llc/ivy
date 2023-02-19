@@ -20,14 +20,22 @@ backend_version = {"version": jax.__version__}
 
 config.update("jax_enable_x64", True)
 
-register_pytree_node(
-    ivy.Container,
-    lambda c: tree_flatten(c.cont_to_dict()),
-    lambda a, c: ivy.Container(tree_unflatten(a, c)),
-)
+# To avoid trying to add ivy.Container multiple times when with_backend is called
+if not ivy.is_local():
+    register_pytree_node(
+        ivy.Container,
+        lambda c: tree_flatten(c.cont_to_dict()),
+        lambda a, c: ivy.Container(tree_unflatten(a, c)),
+    )
+
 
 # noinspection PyUnresolvedReferences
-use = ivy.backend_handler.ContextManager(sys.modules[__name__])
+if not ivy.is_local():
+    _module_in_memory = sys.modules[__name__]
+else:
+    _module_in_memory = sys.modules[ivy.import_module_path].import_cache[__name__]
+
+use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 # noinspection PyUnresolvedReferences
 JaxArray = Union[

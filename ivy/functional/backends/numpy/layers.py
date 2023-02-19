@@ -153,13 +153,13 @@ def conv1d(
 def conv1d_transpose(
     x: np.ndarray,
     filters: np.ndarray,
-    strides: int,
+    strides: Union[int, Tuple[int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: Optional[str] = "NWC",
-    dilations: Optional[int] = 1,
+    data_format: str = "NWC",
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if data_format == "NCW":

@@ -551,10 +551,10 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         >>> b = a.quantile(q, axis = 0, interpolation="lower")
         >>> print(b)
         {
-            x: ivy.array([[3., 2., 1.], 
+            x: ivy.array([[3., 2., 1.],
                         [3., 2., 1.]]),
             y: ivy.array([1., 3.])
-        }   
+        }
         """
         return self.static_quantile(
             self,
@@ -756,10 +756,12 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             keepdims any exceptions will be raised.
         overwrite_input
             If True, then allow use of memory of input array a for calculations.
-            The input array will be modified by the call to median. This will
-            save memory when you do not need to preserve the contents of the input array.
-            Treat the input as undefined, but it will probably be fully or partially sorted.
-            Default is False. If overwrite_input is True and a is not already an ndarray,
+            The input array will be modified by the call to median.
+            This will save memory when you do not need to preserve
+            the contents of the input array.Treat the input as undefined,
+            but it will probably be fully or partially sorted.
+            Default is False. If overwrite_input is True and
+            a is not already an ndarray,
             an error will be raised.
         out
             optional output array, for writing the result to.

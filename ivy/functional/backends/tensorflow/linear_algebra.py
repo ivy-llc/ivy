@@ -221,14 +221,14 @@ def matmul(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     dtype_from = tf.as_dtype(x1.dtype)
 
-    if transpose_a is True:
+    if transpose_a:
         x1 = tf.transpose(x1)
-    if transpose_b is True:
+    if transpose_b:
         x2 = tf.transpose(x2)
 
-    if adjoint_a is True:
+    if adjoint_a:
         x1 = tf.linalg.adjoint(x1)
-    if adjoint_b is True:
+    if adjoint_b:
         x2 = tf.linalg.adjoint(x2)
 
     if dtype_from.is_unsigned or dtype_from == tf.int8 or dtype_from == tf.int16:
@@ -554,8 +554,11 @@ def solve(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    adjoint: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if adjoint:
+        x1 = tf.linalg.adjoint(x1)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     expanded_last = False
     if len(x2.shape) <= 1:

@@ -127,11 +127,11 @@ def conv(
 
 def _set_dimension_numbers(dims):
     if dims == 1:
-        return 'NHC', 'HIO', 'NHC'
+        return "NHC", "HIO", "NHC"
     elif dims == 2:
-        return 'NHWC', 'HWIO', 'NHWC'
+        return "NHWC", "HWIO", "NHWC"
     elif dims == 3:
-        return 'NDHWC', 'DHWIO', 'NDHWC'
+        return "NDHWC", "DHWIO", "NDHWC"
 
 
 def _get_general_df(data_format):
@@ -144,17 +144,17 @@ def _get_general_df(data_format):
 
 
 def _conv_transpose_padding(k, s, padding):
-    if padding == 'SAME':
+    if padding == "SAME":
         pad_len = k + s - 2
         if s > k - 1:
-          pad_a = k - 1
+            pad_a = k - 1
         else:
-          pad_a = int(ivy.to_scalar(ivy.ceil(pad_len / 2)))
-    elif padding == 'VALID':
+            pad_a = int(ivy.to_scalar(ivy.ceil(pad_len / 2)))
+    elif padding == "VALID":
         pad_len = k + s - 2 + ivy.to_scalar(ivy.maximum(k - s, 0))
         pad_a = k - 1
     else:
-        raise ValueError('Padding mode must be `SAME` or `VALID`.')
+        raise ValueError("Padding mode must be `SAME` or `VALID`.")
     pad_b = pad_len - pad_a
     return pad_a, pad_b
 
@@ -178,13 +178,16 @@ def conv_transpose(
     dims = len(lhs.shape) - 2
     if dimension_numbers is None:
         dimension_numbers = _set_dimension_numbers(dims)
-    k_sdims = [rhs.shape[i]
-               for i, v in enumerate(dimension_numbers[1]) if v not in ['I', 'O']]
+    k_sdims = [
+        rhs.shape[i] for i, v in enumerate(dimension_numbers[1]) if v not in ["I", "O"]
+    ]
     rhs_dilation = 1 if rhs_dilation is None else rhs_dilation
-    if isinstance(padding, str) and padding in {'SAME', 'VALID'}:
+    if isinstance(padding, str) and padding in {"SAME", "VALID"}:
         effective_k_size = map(lambda k, r: (k - 1) * r + 1, k_sdims, rhs_dilation)
-        padding = [_conv_transpose_padding(k, s, padding)
-                   for k, s in zip(effective_k_size, strides)]
+        padding = [
+            _conv_transpose_padding(k, s, padding)
+            for k, s in zip(effective_k_size, strides)
+        ]
     return ivy.conv_general_dilated(
         lhs,
         _format_rhs(rhs, dimension_numbers),
@@ -193,7 +196,7 @@ def conv_transpose(
         dilations=rhs_dilation,
         x_dilations=strides,
         dims=dims,
-        data_format=_get_general_df(dimension_numbers[0])
+        data_format=_get_general_df(dimension_numbers[0]),
     )
 
 
