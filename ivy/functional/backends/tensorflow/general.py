@@ -209,11 +209,40 @@ def inplace_update(
             )
         elif ivy.is_ivy_array(x):
             x.data = val_native
+            if ivy.exists(x._base):
+                base = x._base
+                base_idx = ivy.arange(base.size).reshape(base.shape)
+                for fn, args, kwargs in x._manipulation_stack:
+                    base_idx = fn(base_idx, *args, **kwargs)
+                base_flat = tf.reshape(base.data, -1)
+                base_flat = tf.tensor_scatter_nd_update(
+                    base_flat,
+                    tf.reshape(base_idx.data, (-1, 1)),
+                    tf.reshape(val_native, -1),
+                )
+
+                base.data = tf.reshape(base_flat, base.shape)
+                for ref in base._view_refs:
+                    view = ref()
+                    if ivy.exists(view) and view is not x:
+                        _update_view(view, base)
+            else:
+                for ref in x._view_refs:
+                    view = ref()
+                    if ivy.exists(view):
+                        _update_view(view, x)
         else:
             x = ivy.to_ivy(x_native)
         return x
     else:
         return val
+
+
+def _update_view(view, base):
+    for fn, args, kwargs in view._manipulation_stack:
+        base = fn(base, *args, **kwargs)
+    view.data = base.data
+    return view
 
 
 def inplace_variables_supported():
