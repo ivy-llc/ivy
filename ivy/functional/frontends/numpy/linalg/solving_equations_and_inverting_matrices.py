@@ -6,6 +6,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 from ivy.functional.frontends.numpy.linalg.norms_and_other_numbers import matrix_rank
 
+
 # solve
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back

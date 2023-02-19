@@ -257,7 +257,7 @@ def test_dct(
 
 
 @st.composite
-def _interp_args(draw):
+def _interp_args(draw, scale_factor=False):
     mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"]))
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
@@ -265,23 +265,26 @@ def _interp_args(draw):
         num_dims = 3
     elif mode == "bilinear":
         size = draw(
-            helpers.lists(
-                arg=helpers.ints(min_value=1, max_value=5), min_size=2, max_size=2
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=2,
             )
         )
         num_dims = 4
     elif mode == "trilinear":
         size = draw(
-            helpers.lists(
-                arg=helpers.ints(min_value=1, max_value=5), min_size=3, max_size=3
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=3,
             )
         )
         num_dims = 5
     elif mode == "nearest" or mode == "area":
         dim = draw(helpers.ints(min_value=1, max_value=3))
         size = draw(
-            helpers.lists(
-                arg=helpers.ints(min_value=1, max_value=5), min_size=dim, max_size=dim
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=dim,
             )
         )
         size = size[0] if dim == 1 else size
@@ -294,12 +297,29 @@ def _interp_args(draw):
             max_num_dims=num_dims,
             min_dim_size=1,
             max_dim_size=3,
-            large_abs_safety_factor=30,
-            small_abs_safety_factor=30,
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
             safety_factor_scale="log",
         )
     )
-
+    if scale_factor:
+        scale_factor = draw(st.booleans())
+        if scale_factor:
+            recompute_scale_factor = draw(st.booleans())
+            scale_factors = size
+            size = None
+        else:
+            scale_factors = None
+            recompute_scale_factor = False
+        return (
+            dtype,
+            x,
+            mode,
+            size,
+            align_corners,
+            scale_factors,
+            recompute_scale_factor,
+        )
     return dtype, x, mode, size, align_corners
 
 

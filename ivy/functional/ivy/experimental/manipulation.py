@@ -18,7 +18,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 from ivy.exceptions import handle_exceptions
 
 
@@ -36,9 +36,9 @@ def flatten(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
-        If start_dim or end_dim are passed, only dimensions starting
-        with start_dim and ending with end_dim are flattened.
-        The order of elements in input is unchanged.
+    If start_dim or end_dim are passed, only dimensions starting
+    with start_dim and ending with end_dim are flattened.
+    The order of elements in input is unchanged.
 
     Parameters
     ----------

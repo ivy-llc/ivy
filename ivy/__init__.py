@@ -1,4 +1,5 @@
 # global
+import copy
 from types import SimpleNamespace
 import warnings
 from ivy._version import __version__ as __version__
@@ -33,6 +34,15 @@ except ImportError:
     jaxlib.xla_extension.Buffer = SimpleNamespace()
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
+
+
+# Local Ivy
+
+import_module_path = "ivy.utils._importlib"
+
+
+def is_local():
+    return hasattr(ivy, "_is_local_pkg")
 
 
 # class placeholders
@@ -704,8 +714,10 @@ from .container import (
     add_ivy_container_instance_methods,
 )
 from .nested_array import NestedArray
-from .backend_handler import (
+from ivy.utils.backend import (
     current_backend,
+    compiled_backends,
+    with_backend,
     get_backend,
     set_backend,
     set_numpy_backend,
@@ -718,7 +730,8 @@ from .backend_handler import (
     clear_backend_stack,
 )
 from .func_wrapper import *
-from . import assertions, backend_handler, func_wrapper, exceptions
+from . import assertions, func_wrapper, exceptions
+from .utils.backend import handler
 from . import functional
 from .functional import *
 from . import stateful
@@ -834,9 +847,15 @@ class GlobalsDict(dict):
     __delattr__ = dict.__delitem__
     __name__ = dict.__name__
 
+    def __deepcopy__(self, memo):
+        ret = self.__class__.__new__(self.__class__)
+        for k, v in self.items():
+            ret[k] = copy.deepcopy(v)
+        return ret
+
 
 # defines ivy.globals attribute
-globals = GlobalsDict(
+globals_vars = GlobalsDict(
     {
         "backend_stack": backend_stack,
         "default_device_stack": device.default_device_stack,
@@ -870,13 +889,20 @@ globals = GlobalsDict(
     }
 )
 
+_default_globals = copy.deepcopy(globals_vars)
+
+
+def reset_globals():
+    global globals_vars
+    globals_vars = copy.deepcopy(_default_globals)
+
 
 def set_global_attr(attr_name, attr_val):
-    setattr(globals, attr_name, attr_val)
+    setattr(globals_vars, attr_name, attr_val)
 
 
 def del_global_attr(attr_name):
-    delattr(globals, attr_name)
+    delattr(globals_vars, attr_name)
 
 
 backend = "none"

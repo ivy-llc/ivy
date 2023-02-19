@@ -84,18 +84,16 @@ def _arrays_idx_n_dtypes(draw):
         st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
     )
     common_shape = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_dims - 1,
-            max_size=num_dims - 1,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_arrays,
-            max_size=num_arrays,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_arrays,
         )
     )
     xs = list()
