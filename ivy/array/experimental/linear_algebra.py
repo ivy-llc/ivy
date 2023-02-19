@@ -13,12 +13,13 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
         /,
         *,
         eigvals_only: bool = True,
-        select: str = 'a',
-        select_range: Optional[Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]] = None,
+        select: str = "a",
+        select_range: Optional[
+            Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]
+        ] = None,
         tol: Optional[float] = None,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
-        """
-        """
+        """ """
         return ivy.eigh_tridiagonal(
             self._data,
             beta,

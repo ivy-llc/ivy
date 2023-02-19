@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, List, NamedTuple
+from typing import Union, Optional, Tuple, List
 
 # local
 import ivy
@@ -32,12 +32,13 @@ def eigh_tridiagonal(
     /,
     *,
     eigvals_only: bool = True,
-    select: str = 'a',
-    select_range: Optional[Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]] = None,
+    select: str = "a",
+    select_range: Optional[
+        Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]
+    ] = None,
     tol: Optional[float] = None,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
-    """
-    """
+    """ """
     if ivy.current_backend(alpha).backend == "tensorflow":
         return ivy.current_backend(alpha).eigh_tridiagonal(
             alpha,
@@ -45,31 +46,34 @@ def eigh_tridiagonal(
             eigvals_only=eigvals_only,
             select=select,
             select_range=select_range,
-            tol=tol
+            tol=tol,
         )
     x = ivy.diag(alpha)
     y = ivy.diag(beta, k=1)
     z = ivy.diag(beta, k=-1)
-    w = x+y+z
+    w = x + y + z
 
     eigh_out = ivy.linalg.eigh(w)
     eigenvalues = eigh_out.eigenvalues
     eigenvectors = eigh_out.eigenvectors
 
-    if select == 'i':
-        eigenvalues = eigenvalues[select_range[0]:select_range[1]+1]
-        eigenvectors = eigenvectors[:,select_range[0]:select_range[1]+1]
-    elif select == 'v':
+    if select == "i":
+        eigenvalues = eigenvalues[select_range[0] : select_range[1] + 1]
+        eigenvectors = eigenvectors[:, select_range[0] : select_range[1] + 1]
+    elif select == "v":
         condition = ivy.logical_and(
             eigenvalues.greater(select_range[0]),
-            eigenvalues.less_equal(select_range[1])
+            eigenvalues.less_equal(select_range[1]),
         )
         eigenvalues = eigenvalues[condition]
-        eigenvectors = eigenvectors[:,condition]
+        eigenvectors = eigenvectors[:, condition]
 
     if eigvals_only:
         return eigenvalues
     return eigenvalues, eigenvectors
+
+
+eigh_tridiagonal.mixed_function = True
 
 
 @to_native_arrays_and_back

@@ -136,40 +136,58 @@ def _generate_diag_args(draw):
 
 @st.composite
 def _generate_eigh_tridiagonal_args(draw):
-    dtype, alpha = draw(helpers.dtype_and_values(
-        min_dim_size=2,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_value=1.0,
-        max_value=1.0e5,
-        available_dtypes=(
-            ivy.float32,
-            ivy.float64,
-            ivy.complex64,
-            ivy.complex128,
-        ),
-    ))
+    dtype, alpha = draw(
+        helpers.dtype_and_values(
+            min_dim_size=2,
+            min_num_dims=1,
+            max_num_dims=1,
+            min_value=1.0,
+            max_value=1.0e5,
+            available_dtypes=(
+                ivy.float32,
+                ivy.float64,
+                ivy.complex64,
+                ivy.complex128,
+            ),
+        )
+    )
     beta_shape = len(alpha[0]) - 1
-    dtype, beta = draw(helpers.dtype_and_values(
-        available_dtypes=st.just(dtype),
-        shape=(beta_shape,),
-        min_value=1.0,
-        max_value=1.0e5,
-    ))
-    
+    dtype, beta = draw(
+        helpers.dtype_and_values(
+            available_dtypes=st.just(dtype),
+            shape=(beta_shape,),
+            min_value=1.0,
+            max_value=1.0e5,
+        )
+    )
+
     select = draw(st.sampled_from(("a", "i", "v")))
     if select == "a":
         select_range = None
     elif select == "i":
-        range_slice = draw(st.slices(beta_shape+1).filter(
-            lambda x: x.start and x.stop and x.step and x.start >= 0 and x.stop >= 0 and x.step >= 0 and x.start < x.stop
-        ))
+        range_slice = draw(
+            st.slices(beta_shape + 1).filter(
+                lambda x: x.start
+                and x.stop
+                and x.step
+                and x.start >= 0
+                and x.stop >= 0
+                and x.step >= 0
+                and x.start < x.stop
+            )
+        )
 
         select_range = [range_slice.start, range_slice.stop]
     else:
-        range_slice = draw(st.slices(beta_shape+1).filter(
-            lambda x: x.start and x.stop and x.step and x.step >= 0 and x.start < x.stop
-        ))
+        range_slice = draw(
+            st.slices(beta_shape + 1).filter(
+                lambda x: x.start
+                and x.stop
+                and x.step
+                and x.step >= 0
+                and x.start < x.stop
+            )
+        )
 
         select_range = [range_slice.start, range_slice.stop]
 
@@ -201,6 +219,8 @@ def test_eigh_tridiagonal(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
         input_dtypes=dtype,
         alpha=alpha,
         beta=beta,

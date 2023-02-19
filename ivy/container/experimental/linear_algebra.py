@@ -14,8 +14,10 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         /,
         *,
         eigvals_only: bool = True,
-        select: str = 'a',
-        select_range: Optional[Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]] = None,
+        select: str = "a",
+        select_range: Optional[
+            Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]
+        ] = None,
         tol: Optional[float] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -42,8 +44,10 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         /,
         *,
         eigvals_only: bool = True,
-        select: str = 'a',
-        select_range: Optional[Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]] = None,
+        select: str = "a",
+        select_range: Optional[
+            Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]
+        ] = None,
         tol: Optional[float] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
