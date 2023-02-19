@@ -166,6 +166,7 @@ def max_value_as_shape_prod(draw):
     test_gradients=st.just(False),
 )
 def test_unravel_index(
+    *,
     dtype_x_shape,
     test_flags,
     backend_fw,
