@@ -7,7 +7,7 @@ import itertools
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 
 from ivy.func_wrapper import (
     handle_array_function,

@@ -380,15 +380,24 @@ def interpolate(
         )
     elif mode == "linear":
         x = tf.transpose(x, (0, 2, 1))
-        return tf.transpose(
-            tf.image.resize(
-                x, size=[x.shape[0], size], method="bilinear", antialias=antialias
+        return tf.cast(
+            tf.transpose(
+                tf.image.resize(
+                    x, size=[x.shape[0], size], method="bilinear", antialias=antialias
+                ),
+                (0, 2, 1),
             ),
-            (0, 2, 1),
+            x.dtype,
         )
     elif mode == "bilinear":
         x = tf.transpose(x, (0, 2, 3, 1))
-        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 3, 1, 2))
+        return tf.cast(
+            tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 3, 1, 2)),
+            x.dtype,
+        )
     elif mode == "trilinear":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
-        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 4, 1, 2, 3))
+        return tf.cast(
+            tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 4, 1, 2, 3)),
+            x.dtype,
+        )

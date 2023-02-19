@@ -445,7 +445,7 @@ def interpolate(
     size = [x.shape[0], *size, x.shape[1]]
 
     if align_corners or mode == "area":
-        return ivy.interpolate(
+        return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
     x = jnp.transpose(x, (0, *range(2, dims + 2), 1))

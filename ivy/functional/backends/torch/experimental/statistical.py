@@ -19,15 +19,17 @@ def median(
     temp = input
     if hasattr(axis, "__iter__"):
         for dim in axis:
-            temp = torch.median(
+            temp = torch.quantile(
                 temp,
+                0.5,
                 dim=dim,
                 keepdim=keepdims,
             )[0]
-        return input
+        return temp
     else:
-        return torch.median(
+        return torch.quantile(
             input,
+            0.5,
             dim=axis,
             keepdim=keepdims,
         )[0]
@@ -97,7 +99,9 @@ def quantile(
 
         temp = a.reshape((-1,) + tuple(desired_shape))
 
-        return torch.quantile(temp, q, dim=0, keepdim=keepdims, interpolation=interpolation)
+        return torch.quantile(
+            temp, q, dim=0, keepdim=keepdims, interpolation=interpolation
+        )
 
     return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
 
