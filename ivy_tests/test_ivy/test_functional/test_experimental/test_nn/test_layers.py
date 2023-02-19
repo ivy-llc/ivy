@@ -271,6 +271,14 @@ def _interp_args(draw, scale_factor=False):
             )
         )
         num_dims = 4
+    elif mode == "bicubic":
+        size = draw(
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=2,
+            )
+        )
+        num_dims = 4
     elif mode == "trilinear":
         size = draw(
             helpers.list_of_size(

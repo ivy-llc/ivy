@@ -933,6 +933,78 @@ def interp(x, xp, fp, left=None, right=None, period=None):
         return ivy.astype(ivy.array(ret), "float64")
 
 
+def paddedRow(arr: ivy.array) -> ivy.array:
+    return ivy.array([arr[0], arr[0], *arr, arr[-1], arr[-1]])
+
+
+# take four points and find the value of P on slop between p[1] and p[2]
+def polynomial_calclulation(arr: ivy.array, p: float) -> float:
+    arr = ivy.astype(arr, 'float64')
+    x = arr[1] + 0.5 * p * (arr[2] - arr[0] + p * (
+                2.0 * arr[0] - 5.0 * arr[1] + 4.0 * arr[2] - arr[3] + p * (3.0 * (arr[1] - arr[2]) + arr[3] - arr[0])))
+    x = ivy.astype(x, 'float64')
+    return x
+
+
+def cubic(row: ivy.array, size: int, align_corners: bool) -> ivy.array:
+    # append 2 extra pixels on both-ends of the row
+    padded = paddedRow(row)
+
+    # distributing pixles on x-axis for resampling
+    resample = ivy.zeros(size)
+
+    if align_corners:
+        delta = (len(row) - 1) / (size - 1);
+        for i in range(size):
+            resample[i] = i * delta;
+    else:
+        delta = len(row) / size;
+        for i in range(size):
+            resample[i] = ((i + 0.5) * delta) - 0.5;
+
+    # Calculating interpolated value of every newly distributed pixel
+    for i in range(size):
+        p = resample[i] + 1
+        dec = int(p)
+        frc = p % 1
+        resample[i] = polynomial_calclulation(padded[dec:dec + 4], frc)
+
+    return resample
+
+
+def bicubic(
+    matrix: ivy.array,
+    size: Union[Sequence[int], int],
+    align_corners: Optional[bool] = None,
+) -> ivy.array:
+    width = size[-1] if isinstance(size, (list, tuple)) else size
+    height = size[-2] if isinstance(size, (list, tuple)) else size
+
+    arr_4d = []
+    for i in range(ivy.shape(matrix)[0]):
+
+        arr_3d = []
+        for j in range(ivy.shape(matrix)[1]):
+
+            tempX = []
+            for k in range(ivy.shape(matrix)[2]):
+                tempX.append(cubic(matrix[i][j][k], width, align_corners))
+            tempX = ivy.array(tempX)
+
+            # Then, Resampling column-wise (result of row-wise)
+            tempY = []
+            for k in range(tempX.shape[-1]):
+                tempY.append(cubic(tempX[:, k], height, align_corners))
+
+            print(tempY)
+            resample = ivy.matrix_transpose(tempY)
+            arr_3d.append(resample)
+
+        arr_4d.append(arr_3d)
+
+    return arr_4d
+
+
 @to_native_arrays_and_back
 @handle_exceptions
 @handle_out_argument
@@ -943,7 +1015,7 @@ def interpolate(
     /,
     *,
     mode: Union[
-        Literal["linear", "bilinear", "trilinear", "nearest", "area", "nearest_exact"]
+        Literal["linear", "bilinear", "bicubic", "trilinear", "nearest", "area", "nearest_exact"]
     ] = "linear",
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
@@ -1025,6 +1097,8 @@ def interpolate(
                 for k, col in enumerate(row_ret):
                     ret[i, j, k] = ivy.interp(missing_h, x_up_h, col)
         ret = ivy.permute_dims(ret, (0, 1, 3, 2))
+    elif mode == "bicubic":
+        ret = bicubic(x, size, align_corners)
     elif mode == "trilinear":
         if not align_corners or align_corners is None:
             x_up_d = ivy.arange(0, ivy.shape(x)[-3])
