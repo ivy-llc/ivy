@@ -36,6 +36,15 @@ except ImportError:
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
 
+# Local Ivy
+
+import_module_path = "ivy.utils._importlib"
+
+
+def is_local():
+    return hasattr(ivy, "_is_local_pkg")
+
+
 # class placeholders
 
 
@@ -1116,15 +1125,6 @@ def unset_nan_policy():
     global nan_policy_stack
     if nan_policy_stack:
         nan_policy_stack.pop(-1)
-
-
-# Local Ivy
-
-import_module_path = "ivy.utils._importlib"
-
-
-def is_local():
-    return hasattr(ivy, "_is_local_pkg")
 
 
 # Dynamic Backend
