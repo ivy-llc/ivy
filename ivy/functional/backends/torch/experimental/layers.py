@@ -465,6 +465,42 @@ def dropout1d(
         return x
 
 
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
+def dropout3d(
+    x: torch.Tensor,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if training:
+        is_batched = len(x.shape) == 5
+        if data_format == "NDHWC":
+            perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
+            x = torch.permute(x, perm)
+        # ToDo: switch to native dropout1d once torch version is updated.
+        noise_shape = list(x.shape)
+        noise_shape[-3:] = [1] * 3
+        mask = torch.rand(noise_shape) > prob
+        res = torch.where(mask, x / (1 - prob), torch.zeros_like(x))
+        if data_format == "NDHWC":
+            perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
+            res = torch.permute(res, perm)
+        return res
+    else:
+        return x
+
+
 def ifft(
     x: torch.Tensor,
     dim: int,

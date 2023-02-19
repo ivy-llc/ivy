@@ -564,6 +564,33 @@ def dropout1d(
         return x
 
 
+def dropout3d(
+    x: np.ndarray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if training:
+        is_batched = len(x.shape) == 5
+        if data_format == "NCDHW":
+            perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
+            x = np.transpose(x, perm)
+        noise_shape = list(x.shape)
+        sl = slice(1,-1) if is_batched else slice(-1)
+        noise_shape[sl] = [1] * 3
+        mask = np.random.binomial(1, 1 - prob, noise_shape)
+        res = np.where(mask, x / (1 - prob), 0)
+        if data_format == "NCDHW":
+            perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
+            res = np.transpose(res, perm)
+        return res
+    else:
+        return x
+
+
 def ifft(
     x: np.ndarray,
     dim: int,

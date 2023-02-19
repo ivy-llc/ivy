@@ -305,6 +305,32 @@ def dropout1d(
         return x
 
 
+def dropout3d(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if training:
+        is_batched = len(x.shape) == 5
+        if data_format == "NCDHW":
+            perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
+            x = tf.transpose(x, perm)
+        noise_shape = list(x.shape)
+        sl = slice(1,-1) if is_batched else slice(-1)
+        noise_shape[sl] = [1] * 3
+        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
+        if data_format == "NCDHW":
+            perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
+            res = tf.transpose(res, perm)
+        return res
+    else:
+        return x
+
+
 def ifft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
