@@ -367,3 +367,38 @@ def margin_ranking_loss(
     loss = ivy.where(loss < 0, 0, loss)
     reduction = _get_reduction(reduction, size_average, reduce)
     return reduction(loss)
+
+
+@to_ivy_arrays_and_back
+def hinge_embedding_loss(
+    input,
+    target,
+    margin=1.0,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    # loss = ivy.where(
+    #     target == 1,
+    #     input,
+    #
+    # )
+    # temp = ivy.multiply(target, input)
+    # loss = ivy.maximum(1 - temp, 0)
+    # reduction = _get_reduction(reduction, size_average, reduce)
+    # ret = reduction(loss)
+    # return ret
+
+    # mean(maximum(1 - y_true * y_pred, 0), axis=-1)
+
+    margin = ivy.array(margin)
+    loss = ivy.where(
+        ivy.equal(target, 1),
+        input,
+        ivy.maximum(0, ivy.subtract(margin, input)),
+    )
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+
+    return ivy.astype(ret, input.dtype)
