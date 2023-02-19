@@ -294,3 +294,62 @@ def nanmedian(
     return ivy.current_backend().nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def average(
+    a: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+) -> ivy.Array:
+
+    """ivy.Array instance method variant of ivy.average.
+
+    Parameters
+    ----------
+    a
+        Input array.
+    axis
+        Axis or axes along which the average are computed.
+
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original a.
+
+    Returns
+    -------
+    ret
+        The average of the array elements.
+
+    Examples
+    -------------------
+    # the default backend is numpy
+    >>> a = ivy.array([[1, 9], [-3, 4]])
+    >>> ivy.average(a)
+    ivy.array(2.75)
+
+    >>> a = ivy.array([[1, 9], [-3, 4]])
+    >>> ivy.average(a, axis=0)
+    ivy.array([-1. ,  6.5])
+
+    >>> a = ivy.array([[1, 9], [-3, 4]])
+    >>> ivy.average(a, axis=1)
+    ivy.array([5. , 0.5])
+
+    >>> a = ivy.array([[1, 9], [-3, 4]])
+    >>> ivy.average(a, axis=1,keepdims=True)
+    ivy.array([[5. ],
+           [0.5]])
+
+    >>> ivy.set_backend("jax")
+    >>> a = ivy.array([[10, 9], [3, 4]])
+    >>> ivy.average(a)
+    Array(6.5, dtype=float32)
+    """
+    return ivy.current_backend(a).average(a, axis=axis, keepdims=keepdims)
+
