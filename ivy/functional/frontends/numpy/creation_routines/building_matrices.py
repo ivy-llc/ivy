@@ -16,7 +16,4 @@ def diag(v, k=0):
 @with_unsupported_dtypes({"1.23.0 and below": ("float32", "float16")}, "numpy")
 @to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
-    if N == 0:
-        return ivy.array([], dtype=x.dtype)
-    else:
-        return ivy.vander(x, N=N, increasing=increasing, out=None)
+    return ivy.vander(x, N=N, increasing=increasing, out=None)
