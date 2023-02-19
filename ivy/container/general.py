@@ -608,6 +608,18 @@ class ContainerWithGeneral(ContainerBase):
         ret
             An array with the vector norm downscaled to the max norm if needed.
 
+        Examples
+        --------
+        With :class:`ivy.Container` input and default backend set as `numpy`:
+
+        >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
+        >>> y = ivy.Container(a=ivy.array([1]), b=ivy.array([2]))
+        >>> x.inplace_update(y)
+        >>> print(x)
+        {
+            a: ivy.array([1]),
+            b: ivy.array([2])
+        }
         """
         return self.static_inplace_update(
             self,
