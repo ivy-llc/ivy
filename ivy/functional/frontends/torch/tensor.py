@@ -11,7 +11,9 @@ class Tensor:
     def __init__(self, array, device=None, _init_overload=False):
 
         if _init_overload:
-            self._ivy_array = ivy.asarray(array, device=device)
+            self._ivy_array = (
+                ivy.array(array) if not isinstance(array, ivy.Array) else array
+            )
 
         else:
             self._ivy_array = ivy.asarray(

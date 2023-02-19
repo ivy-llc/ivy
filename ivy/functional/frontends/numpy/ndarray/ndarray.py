@@ -6,10 +6,17 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 class ndarray:
-    def __init__(self, shape, dtype="float32", order=None):
+    def __init__(self, shape, dtype="float32", order=None, _init_overload=False):
         if isinstance(dtype, np_frontend.dtype):
             dtype = dtype.ivy_dtype
-        self._ivy_array = ivy.empty(shape, dtype=dtype)
+
+        # in thise case shape is actually the desired array
+        if _init_overload:
+            self._ivy_array = (
+                ivy.array(shape) if not isinstance(shape, ivy.Array) else shape
+            )
+        else:
+            self._ivy_array = ivy.empty(shape, dtype=dtype)
 
         ivy.assertions.check_elem_in_list(
             order,

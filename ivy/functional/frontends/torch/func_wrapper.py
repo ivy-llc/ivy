@@ -22,7 +22,6 @@ def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=No
         a = torch_frontend.Tensor(
             x, _init_overload=True
         )  # TODO: Find better initialisation workaround
-        # a.ivy_array = x
         return a
     return x
 
