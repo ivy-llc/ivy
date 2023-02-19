@@ -1125,11 +1125,11 @@ def test_binarizer(
         x=x[0],
         threshold=threshold,
     )
-    
-    
+
+
 # conj
 @handle_test(
-    fn_tree="functional.ivy.experimental.conj",
+    fn_tree="conj",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("real_and_complex")
     ),

@@ -1165,7 +1165,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.binarizer(self._data, threshold=threshold, out=out)
 
-def conj(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def conj(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.conj. This method simply wraps
         the function, and so the docstring for ivy.conj also applies to this

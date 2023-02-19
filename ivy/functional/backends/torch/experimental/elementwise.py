@@ -441,5 +441,5 @@ def conj(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    conjx = torch.conj(x)
-    return torch.resolve_conj(input=conjx)
+    conj_x = torch.conj(x)
+    return torch.resolve_conj(input=conj_x)

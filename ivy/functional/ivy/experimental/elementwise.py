@@ -1358,13 +1358,13 @@ def binarizer(
     xc = ivy.copy_array(x, out=out)
     bin = ivy.where(xc > threshold, 1, 0)
     return bin
-    
-    
-    @to_native_arrays_and_back
-    @handle_out_argument
-    @handle_nestable
-    @handle_exceptions
-    @handle_array_like_without_promotion
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
 def conj(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
