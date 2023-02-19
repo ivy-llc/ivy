@@ -899,11 +899,11 @@ def hypot(
 @handle_nestable
 @handle_array_like_without_promotion
 def diff(
-    x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
     append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
     out: Optional[ivy.Array] = None,
@@ -923,14 +923,18 @@ def diff(
         Values to prepend/append to x along given axis prior to performing the
         difference. Scalar values are expanded to arrays with length 1 in the direction
         of axis and the shape of the input array in along all other axes. Otherwise the
-        dimension and shape must match a except along axis.
+        dimension and shape must match x except along axis.
     out
         optional output array, for writing the result to.
 
     Returns
     -------
     ret
-        Rreturns the n-th discrete difference along the given axis.
+        Returns the n-th discrete difference along the given axis.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -1325,6 +1329,42 @@ def real(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+def binarizer(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    threshold: float = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Maps the values of the input tensor to either 0 or 1,
+    element-wise, based on the outcome of a comparison
+    against a threshold value.
+    Parameters
+    ----------
+    x
+        Data to be binarized
+    threshold
+        Values greater than this are
+        mapped to 1, others to 0.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+    Returns
+    -------
+    ret
+        Binarized output data
+    """
+    xc = ivy.copy_array(x, out=out)
+    bin = ivy.where(xc > threshold, 1, 0)
+    return bin
+    
+    
+    @to_native_arrays_and_back
+    @handle_out_argument
+    @handle_nestable
+    @handle_exceptions
+    @handle_array_like_without_promotion
 def conj(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

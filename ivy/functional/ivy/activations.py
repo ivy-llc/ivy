@@ -5,8 +5,9 @@ import sys
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
+    handle_array_function,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
@@ -100,6 +101,7 @@ ACTIVATION_FUNCTIONS = [
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -207,6 +209,7 @@ def get(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -271,6 +274,7 @@ def leaky_relu(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -341,6 +345,7 @@ def log_softmax(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def relu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -394,10 +399,13 @@ def relu(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Applies the sigmoid function element-wise.
+
+    """
+    Applies the sigmoid function element-wise.
 
     Parameters
     ----------
@@ -405,7 +413,8 @@ def sigmoid(
         input array.
     out
         optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        input broadcast to.
+        default: None
 
     Returns
     -------
@@ -416,16 +425,23 @@ def sigmoid(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([-1., 1., 2.])
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
 
+    or
 
-    >>> x = ivy.array([-1.3, 3.8, 2.1])
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.sigmoid()
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([0.214, 0.978, 0.891])
+    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
     """
     return current_backend(x).sigmoid(x, out=out)
 
@@ -435,6 +451,7 @@ def sigmoid(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -483,6 +500,7 @@ def softmax(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -539,6 +557,7 @@ def softplus(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:

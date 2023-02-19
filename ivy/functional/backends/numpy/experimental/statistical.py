@@ -1,6 +1,10 @@
 from typing import Optional, Union, Tuple, Sequence
 import numpy as np
 
+import ivy
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
+
 
 def median(
     input: np.ndarray,
@@ -18,6 +22,9 @@ def median(
     )
 
 
+median.support_native_out = True
+
+
 def nanmean(
     a: np.ndarray,
     /,
@@ -27,12 +34,15 @@ def nanmean(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return np.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
 
-nanmean_support_native_out = True
+nanmean.support_native_out = True
 
 
+@with_supported_dtypes({"1.23.0 and below": ("int32", "int64")}, backend_version)
 def unravel_index(
     indices: np.ndarray,
     shape: Tuple[int],
@@ -40,7 +50,7 @@ def unravel_index(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.unravel_index(indices, shape)
+    return np.unravel_index(indices, shape).astype(indices.dtype)
 
 
 def quantile(
@@ -72,3 +82,20 @@ def corrcoef(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
+
+
+def nanmedian(
+    input: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    overwrite_input: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nanmedian(
+        input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+    )
+
+
+nanmedian.support_native_out = True

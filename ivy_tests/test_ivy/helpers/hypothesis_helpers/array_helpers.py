@@ -15,48 +15,110 @@ from . import dtype_helpers, number_helpers
 
 @st.composite
 def array_bools(
-    draw,
-    *,
-    num_arrays=st.shared(
-        number_helpers.ints(min_value=1, max_value=4), key="num_arrays"
-    ),
+    draw, *, size=st.shared(number_helpers.ints(min_value=1, max_value=4), key="size")
 ):
-    """Draws a boolean list of a given size.
+    """Draws a list of booleans with a given size.
 
     Parameters
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    num_arrays
+    size
         size of the list.
 
     Returns
     -------
-    A strategy that draws a list.
+    ret
+        A strategy that draws a list.
+
+    Examples
+    --------
+    >>> array_bools(size=5)
+    [False, True, False, False, False]
+    [False, False, False, False, False]
+    [True, False, False, False, False]
+
+    >>> array_bools(size=1)
+    [True]
+    [False]
+    [True]
+
+    >>> array_bools()
+    [False, False, False, False]
+    [True, True, True, False]
+    [True]
+
     """
-    size = num_arrays if isinstance(num_arrays, int) else draw(num_arrays)
+    size = size if isinstance(size, int) else draw(size)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
-def list_of_length(*, x, length):
-    """Returns a random list of the given length from elements in x."""
-    return st.lists(x, min_size=length, max_size=length)
+def list_of_size(*, x, size):
+    """Returns a list of the given length with elements drawn randomly from x.
+
+    Parameters
+    ----------
+    x
+        a list to draw elements from.
+    size
+        length of the list.
+
+    Returns
+    -------
+    ret
+        A strategy that draws a list.
+
+    Examples
+    --------
+    >>> list_of_size(
+    ...     x=st.sampled_from([-1, 5, 9]),
+    ...     size=4,
+    ... )
+    [-1, 5, -1, -1]
+    [9, -1, -1, -1]
+    [9, 9, -1, 9]
+
+    >>> list_of_size(
+    ...     x=st.integers(min_value=0, max_value=4),
+    ...     size=10,
+    ... )
+    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [3, 3, 2, 4, 1, 0, 4, 2, 1, 2]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    >>> list_of_size(
+    ...     x=st.booleans(),
+    ...     size=3,
+    ... )
+    [False, False, False]
+    [True, True, False]
+    [False, True, False]
+
+    """
+    return lists(x=x, min_size=size, max_size=size)
 
 
 @st.composite
-def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
-    """Draws a list from the dataset arg.
+def lists(
+    draw,
+    *,
+    x,
+    min_size=None,
+    max_size=None,
+    size_bounds=None,
+):
+    """Draws a list with a random bounded size from the data-set x.
 
     Parameters
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    arg
-        dataset of elements.
+    x
+        data-set of elements.
     min_size
-        least size of the list.
+        minimum size of the list.
     max_size
         max size of the list.
     size_bounds
@@ -65,7 +127,49 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
 
     Returns
     -------
-    A strategy that draws a list.
+    ret
+        A strategy that draws a list.
+
+    Examples
+    --------
+    >>> lists(
+    ...     x=st.sampled_from([-1, 5, 9]),
+    ...     min_size=4,
+    ...     max_size=5,
+    ... )
+    [5, 5, 5, 9, 9]
+    [5, 9, -1, -1]
+    [5, 9, 5, 9]
+
+    >>> lists(
+    ...     x=st.integers(min_value=0, max_value=4),
+    ...     size_bounds=(9, 10),
+    ... )
+    [0, 2, 4, 3, 3, 3, 3, 2, 1, 4]
+    [1, 0, 1, 2, 1, 4, 1, 3, 1]
+    [1, 0, 1, 2, 1, 4, 1, 3, 1]
+
+    >>> lists(
+    ...     x=st.integers(min_value=0, max_value=4),
+    ...     size_bounds=[9, 10],
+    ... )
+    [1, 3, 0, 2, 0, 0, 1, 4, 2, 3]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [1, 2, 4, 1, 1, 1, 4, 3, 2]
+
+    >>> lists(
+    ...     x=st.floats(
+    ...         min_value=1,
+    ...         max_value=3,
+    ...         exclude_max=True,
+    ...     ),
+    ...     min_size=5,
+    ...     max_size=5,
+    ... )
+    [1.1, 1.0, 1.0, 1.0, 1.0]
+    [2.00001, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]
+    [1.0, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]
+
     """
     integers = (
         number_helpers.ints(min_value=size_bounds[0], max_value=size_bounds[1])
@@ -76,7 +180,7 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
         min_size = draw(st.shared(integers, key=min_size))
     if isinstance(max_size, str):
         max_size = draw(st.shared(integers, key=max_size))
-    return draw(st.lists(arg, min_size=min_size, max_size=max_size))
+    return draw(st.lists(x, min_size=min_size, max_size=max_size))
 
 
 @st.composite
@@ -127,7 +231,7 @@ def dtype_and_values(
     large_abs_safety_factor
         A safety factor of 1 means that all values are included without limitation,
 
-        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        when a "linear" safety factor scaler is used, a safety factor of 2 means
         that only 50% of the range is included, a safety factor of 3 means that
         only 33% of the range is included etc.
 
@@ -177,7 +281,60 @@ def dtype_and_values(
 
     Returns
     -------
-    A strategy that draws a list of dtype and arrays (as lists).
+    ret
+        A strategy that draws a tuple of a list of dtypes and a list
+        of their respective arrays.
+
+    Examples
+    --------
+    >>> dtype_and_values(
+    ...     num_arrays=3,
+    ... )
+    (['uint16', 'float16', 'uint16'], [array([37915, 6322, 26765, 12413,
+        26986, 34665], dtype=uint16), array([-5.000e-01, -5.000e-01,
+        -2.000e+00, -6.711e-05, -1.100e+00, -5.955e+04], dtype=float16),
+        array([40817, 56193, 29200, 0, 5851, 9746], dtype=uint16)])
+    (['bool', 'uint32', 'bool'], [array(False), array(0, dtype=uint32),
+        array(False)])
+    (['int8', 'int8', 'int8'], [array(0, dtype=int8), array(0, dtype=int8),
+        array(0, dtype=int8)])
+
+    >>> dtype_and_values(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     min_value=-10,
+    ...     max_value=10,
+    ...     num_arrays=2,
+    ...     shared_dtype=True,
+    ... ),
+    (['float32', 'float32'], [array([1.1, 1.5], dtype=float32),
+        array([-5.9604645e-08, 5.9604645e-08], dtype=float32)])
+    (['int32', 'int32'], [array(-5, dtype=int32), array(-1, dtype=int32)])
+    (['uint64', 'uint64'], [array([0], dtype=uint64), array([0],
+        dtype=uint64)])
+
+    >>> dtype_and_values(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=2,
+    ...     ret_shape=True
+    ... )
+    (['int8', 'int32'], [array([27], dtype=int8), array([192],
+        dtype=int32)], (1,))
+    (['int32', 'int16'], [array(0, dtype=int32), array(0,
+        dtype=int16)], ())
+    (['int32', 'int16'], [array([[-103, 12, -41795, 1170789994,
+        44251, 44209, 433075925]], dtype=int32), array([[24791,
+        -24691, 24892, 16711, 7696, 972, 15357]], dtype=int16)],
+        (1, 7))
+
+    >>> dtype_and_values(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=1,
+    ...     ret_shape=True,
+    ... )
+    (['uint8'], [array([0], dtype=uint8)], (1,))
+    (['float32'], [array(-1., dtype=float32)], ())
+    (['int64'], [array(72057594037927936)], ())
+
     """
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
@@ -291,7 +448,7 @@ def dtype_values_axis(
     large_abs_safety_factor
         A safety factor of 1 means that all values are included without limitation,
 
-        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        when a "linear" safety factor scaler is used, a safety factor of 2 means
         that only 50% of the range is included, a safety factor of 3 means that
         only 33% of the range is included etc.
 
@@ -352,7 +509,51 @@ def dtype_values_axis(
 
     Returns
     -------
-    A strategy that draws a dtype, an array (as list), and an axis.
+    ret
+        A strategy that draws a tuple of a list of dtypes,
+        a list of arrays, and an axis.
+
+    Examples
+    -------
+    >>> dtype_values_axis()
+    (['int16'], [array(29788, dtype=int16)])
+    (['complex128'], [array(1.62222885e+156-2.68281172e-257j)])
+    (['float64'], [array(-1.40129846e-45)])
+
+    >>> dtype_values_axis(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=2,
+    ... )
+    (['int8', 'int16'], [array([[0]], dtype=int8), array([[1]], dtype=int16)], 0)
+    (['uint16', 'uint16'], [array(0, dtype=uint16), array(0, dtype=uint16)], 0)
+    (['float64', 'int16'], [array(-2.44758124e-308), array(0, dtype=int16)], 0)
+
+    >>> dtype_values_axis(
+    ...     available_dtypes=get_dtypes("float"),
+    ...     min_num_dims=2,
+    ...     max_num_dims=3,
+    ...     min_dim_size=2,
+    ...     max_dim_size=5,
+    ...     min_axis=-2,
+    ...     max_axis=1,
+    ... )
+    (['float64'], [array([[1.90000000e+000, 1.63426649e+308],
+        [-1.50000000e+000, -1.91931887e+234]])], -1)
+    (['bfloat16'], [array([[-1.29488e-38, -1.29488e-38],
+        [-1.29488e-38, -1.29488e-38]], dtype=bfloat16)], 0)
+    (['float64'], [array([[-2.44758124e-308, -2.44758124e-308],
+        [-2.44758124e-308, -2.44758124e-308]])], 0)
+
+    >>> dtype_values_axis(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=1,
+    ...     allow_inf=True,
+    ...     allow_nan=True,
+    ... )
+    (['float64'], [array([inf, -5.14361019e+16, 5.96046448e-08, 1.50000000e+00])], -51)
+    (['int16'], [array(12445, dtype=int16)], 171)
+    (['uint32'], [array([0], dtype=uint32)], 0)
+
     """
     results = draw(
         dtype_and_values(
@@ -421,12 +622,18 @@ def array_indices_axis(
 
     Parameters
     ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
     array_dtypes
         list of data type to draw the array dtype from.
     indices_dtypes
         list of data type to draw the indices dtype from.
     disable_random_axis
-        axis is set to -1 when True. Randomly generated with hypothesis if False.
+        axis is randomly generated with hypothesis if False. If True, axis is set
+        to 0 if axis_zero is True, -1 otherwise.
+    axis_zero
+        If True, axis is set to zero if disable_random_axis is True.
     allow_inf
         inf values are allowed to be generated in the values array when True.
     min_num_dims
@@ -442,8 +649,9 @@ def array_indices_axis(
 
     Returns
     -------
-    A strategy that can be used in the @given hypothesis decorator
-    which generates arrays of values and indices.
+    ret
+        A strategy that can be used in the @given hypothesis
+        decorator which generates arrays of values and indices.
 
     Examples
     --------
@@ -457,6 +665,48 @@ def array_indices_axis(
             max_dim_size=10
             )
     )
+
+    >>> array_indices_axis(
+    ...    array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=["int64"],
+    ...     max_num_dims=1,
+    ...     indices_same_dims=True,
+    ...     disable_random_axis=True,
+    ...     axis_zero=True,
+    ... )
+    (['int64', 'int64'], array([-65536]), array([0]))
+    (['bool', 'int64'], array([False, False, False, True,
+        False, False, False, False]), array([0, 0, 2, 4,
+        0, 0, 0, 1]))
+    (['int64', 'int64'], array([0]), array([0]))
+
+    >>> array_indices_axis(
+    ...     array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=get_dtypes("integer"),
+    ...     disable_random_axis=True,
+    ...     first_dimension_only=True,
+    ... )
+    (['float64', 'uint64'], array([-2.44758124e-308]),
+        array([0], dtype=uint64))
+    (['bool', 'uint64'], array([False]), array([0], dtype=uint64))
+    (['bool', 'int8'], array([False]), array([[0, 0, 0, 0],
+       [0, 0, 0, 0],
+       [0, 0, 0, 0],
+       [0, 0, 0, 0]], dtype=int8))
+
+    >>> array_indices_axis(
+    ...     array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=["int64"],
+    ...     max_num_dims=1,
+    ...     indices_same_dims=True,
+    ... )
+    (['float16', 'int64'], array([-256.], dtype=float16),
+        array([0]), 0, 0)
+    (['uint8', 'int64'], array([1], dtype=uint8),
+        array([0]), -1, 0)
+    (['uint64', 'int64'], array([0], dtype=uint64),
+        array([0]), 0, 0)
+
     """
     x_dtype, x, x_shape = draw(
         dtype_and_values(
@@ -505,9 +755,10 @@ def array_indices_axis(
             )
         )
         indices_shape = batch_shape + shape_var
-    max_axis = max(x_shape[axis] - 1, 0)
     if first_dimension_only:
         max_axis = max(x_shape[0] - 1, 0)
+    else:
+        max_axis = max(x_shape[axis] - 1, 0)
     indices_dtype, indices = draw(
         dtype_and_values(
             available_dtypes=indices_dtypes,
@@ -534,7 +785,7 @@ def arrays_and_axes(
     min_dim_size=1,
     max_dim_size=10,
     num=2,
-    returndtype=False,
+    return_dtype=False,
     force_int_axis=False,
 ):
     shapes = list()
@@ -575,7 +826,7 @@ def arrays_and_axes(
                     st.one_of(st.none(), st.integers(0, len(shape) - 1))
                 )
         axes = draw(st.tuples(*all_axes_ranges))
-    if returndtype:
+    if return_dtype:
         return dtype, arrays, axes
     return arrays, axes
 
@@ -638,7 +889,7 @@ def array_values(
     large_abs_safety_factor
         A safety factor of 1 means that all values are included without limitation,
 
-        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        when a "linear" safety factor scaler is used, a safety factor of 2 means
         that only 50% of the range is included, a safety factor of 3 means that
         only 33% of the range is included etc.
 
@@ -721,9 +972,7 @@ def array_values(
                 min_value += 1
             if exclude_max:
                 max_value -= 1
-            values = draw(
-                list_of_length(x=st.integers(min_value, max_value), length=size)
-            )
+            values = draw(list_of_size(x=st.integers(min_value, max_value), size=size))
         elif kind_dtype == "float":
             floats_info = {
                 "float16": {"cast_type": "float16", "width": 16},
@@ -782,18 +1031,21 @@ def array_values(
                 )
             if "complex" in dtype:
                 float_strategy = st.tuples(float_strategy, float_strategy)
-            values = draw(
-                list_of_length(
-                    x=float_strategy,
-                    length=size,
-                )
-            )
+            values = draw(list_of_size(x=float_strategy, size=size))
             if "complex" in dtype:
                 values = [complex(*v) for v in values]
     else:
-        values = draw(list_of_length(x=st.booleans(), length=size))
+        values = draw(list_of_size(x=st.booleans(), size=size))
+    if dtype == "bfloat16":
+        # check bfloat16 behavior enabled or not
+        try:
+            np.dtype("bfloat16")
+        except Exception:
+            # enables bfloat16 behavior with possibly no side-effects
+            import paddle_bfloat  # noqa
 
     array = np.asarray(values, dtype=dtype)
+
     if isinstance(shape, (tuple, list)):
         return array.reshape(shape)
     return np.asarray(array)
@@ -900,7 +1152,13 @@ def array_and_broadcastable_shape(draw, dtype):
 
 @st.composite
 def arrays_for_pooling(
-    draw, min_dims, max_dims, min_side, max_side, allow_explicit_padding=False
+    draw,
+    min_dims,
+    max_dims,
+    min_side,
+    max_side,
+    allow_explicit_padding=False,
+    return_dilation=False,
 ):
     in_shape = draw(
         nph.array_shapes(
@@ -931,24 +1189,27 @@ def arrays_for_pooling(
         )
     if array_dim == 3:
         kernel = draw(st.tuples(st.integers(1, in_shape[1])))
+    new_kernel = kernel
+    if return_dilation:
+        new_kernel = []
+        dilations = []
+        for i in range(len(kernel)):
+            if kernel[i] > 1:
+                max_dilation = (in_shape[i + 1] - kernel[i]) // (kernel[i] - 1) + 1
+                dilations.append(draw(st.integers(1, max_dilation)))
+                new_kernel.append(kernel[i] + (kernel[i] - 1) * (dilations[i] - 1))
+            else:
+                dilations.append(1)
+                new_kernel.append(kernel[i])
     if allow_explicit_padding:
         padding = []
         for i in range(array_dim - 2):
-            max_pad = kernel[i] // 2
-            possible_pad_combos = [
-                (i, max_pad - i)
-                for i in range(0, max_pad)
-                if i + (max_pad - i) == max_pad
-            ]
-            if len(possible_pad_combos) == 0:
-                pad_selected_combo = (0, 0)
-            else:
-                pad_selected_combo = draw(st.sampled_from(possible_pad_combos))
+            max_pad = new_kernel[i] // 2
             padding.append(
                 draw(
                     st.tuples(
-                        st.integers(0, pad_selected_combo[0]),
-                        st.integers(0, pad_selected_combo[1]),
+                        st.integers(0, max_pad),
+                        st.integers(0, max_pad),
                     )
                 )
             )
@@ -956,4 +1217,6 @@ def arrays_for_pooling(
     else:
         padding = draw(st.sampled_from(["VALID", "SAME"]))
     strides = draw(st.tuples(st.integers(1, in_shape[1])))
+    if return_dilation:
+        return dtype, x, kernel, strides, padding, dilations
     return dtype, x, kernel, strides, padding

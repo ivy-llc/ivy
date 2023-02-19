@@ -3,7 +3,8 @@
 # global
 import os
 import abc
-import ivy.functional.backends.numpy
+import copy
+from typing import Optional, List, Tuple, Dict
 
 # local
 import ivy
@@ -34,6 +35,7 @@ class Module(ModuleConverters, ModuleHelpers):
         with_partial_v=False,
         devices=None,
         dtype=None,
+        dynamic_backend=None,
         **kwargs,
     ):
         """
@@ -119,7 +121,11 @@ class Module(ModuleConverters, ModuleHelpers):
         self._kwargs = kwargs
         if build_mode != "on_init":
             return
-        self.build(*args, **kwargs)
+        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
+
+        self._module_graph = None
+        self._target = None
+        self._lazy_compiled = False
 
     # Private #
     # --------#
@@ -474,6 +480,19 @@ class Module(ModuleConverters, ModuleHelpers):
         -------
         ret
         """
+        if self._lazy_compiled:
+            # we are compiling since we want to transpile module, so set the appropriate backend
+            if self._target:
+                ivy.set_backend(self._target)
+            self.compile(args=args, kwargs=kwargs)
+            if self._target:
+                ivy.unset_backend()
+
+        if self._module_graph:
+            # we need `v` in kwargs, since this is a compiled call
+            v = v if v else self.v
+            return self._module_graph(*args, v=v, **kwargs)
+
         with_grads = ivy.with_grads(with_grads=with_grads)
         self.submod_rets = ivy.Container(
             alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
@@ -511,7 +530,15 @@ class Module(ModuleConverters, ModuleHelpers):
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.cont_to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
+    def build(
+        self,
+        *args,
+        from_call=False,
+        device=None,
+        dtype=None,
+        dynamic_backend=None,
+        **kwargs,
+    ):
         """
         Build the internal layers and variables for this module.
 
@@ -541,14 +568,23 @@ class Module(ModuleConverters, ModuleHelpers):
         else:
             dtype = ivy.default_dtype(dtype=self._dtype, as_native=True)
 
-        kwargs["dtype"] = dtype
+        # why are we adding this kwarg in user-defined build ?
+        # it results in the error while doing `from_haiku_module` if haiku's forward
+        # therefore leaving it commented out
+        # kwargs["dtype"] = dtype
+
         # build local Module, and any child modules flagged with "explicit" build mode
         built = ivy.default(self._build(*args, **kwargs), True)
 
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
-        created = Container(self._create_variables(device=self._dev, dtype=dtype))
-        created_n_found = Container(dict(**self._find_variables(obj=self), **created))
+        created = Container(
+            self._create_variables(device=self._dev, dtype=dtype), dynamic_backend=False
+        )
+        created_n_found = Container(
+            dict(**self._find_variables(obj=self), **created),
+            dynamic_backend=dynamic_backend,
+        )
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
                 if v_from_constructor:
@@ -622,3 +658,89 @@ class Module(ModuleConverters, ModuleHelpers):
     @property
     def built_(self):
         return self._built
+
+    def show_graph(
+        self,
+        *args,
+        v=None,
+        with_grads=True,
+        stateful: Optional[List] = None,
+        arg_stateful_idxs: Optional[List] = None,
+        kwarg_stateful_idxs: Optional[List] = None,
+        randomness_factor: float = 0.1,
+        save_to_disk: bool = False,
+        with_edge_labels: bool = True,
+        with_arg_labels: bool = True,
+        with_output_labels: bool = True,
+        output_connected_only: bool = True,
+        include_generators: bool = True,
+        array_caching: bool = True,
+        highlight_subgraph: Optional[int] = None,
+        fname: Optional[str] = None,
+        return_graph: bool = False,
+        **kwargs,
+    ):
+        self(*args, v=v, with_grads=with_grads, **kwargs)  # for on call build modes
+        if not self._built:
+            self.build(*args, from_call=False, **kwargs)  # for explicit build modes
+        kwargs["v"] = ivy.default(v, self.v)
+        kwargs["with_grads"] = with_grads
+        graph = ivy.show_graph(
+            self._call,
+            *args,
+            **kwargs,
+            stateful=stateful,
+            arg_stateful_idxs=arg_stateful_idxs,
+            kwarg_stateful_idxs=kwarg_stateful_idxs,
+            randomness_factor=randomness_factor,
+            save_to_disk=save_to_disk,
+            with_edge_labels=with_edge_labels,
+            with_arg_labels=with_arg_labels,
+            with_output_labels=with_output_labels,
+            output_connected_only=output_connected_only,
+            include_generators=include_generators,
+            array_caching=array_caching,
+            highlight_subgraph=highlight_subgraph,
+            fname=fname,
+            return_graph=return_graph,
+        )
+
+        if return_graph:
+            return graph
+
+    def compile(
+        self,
+        args: Optional[Tuple] = None,
+        kwargs: Optional[Dict] = None,
+        **compile_kwargs,
+    ):
+        """Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the target backend.
+
+        Args:
+            compile_kwargs:
+                keyword arguments passed to the compile function.
+            args:
+                arguments used to compile. Defaults to None.
+            kwargs:
+                keyword arguments used to compile. Defaults to None.
+        """
+        # no arguments given to compile, so delay the compilation
+        if not (args or kwargs):
+            self._lazy_compiled = True
+            return
+
+        # we do not need convert the args to source
+        args = ivy.default(args, tuple())
+        kwargs = ivy.default(kwargs, dict())
+
+        # shallow copy the kwargs dict
+        kwargs = copy.copy(kwargs)
+        kwargs["v"] = self.v
+
+        fn_to_compile = ivy.default(self._module_graph, self._call)
+
+        self._module_graph = ivy.compile(
+            fn_to_compile, **compile_kwargs, args=args, kwargs=kwargs
+        )
+
+        self._lazy_compiled = False

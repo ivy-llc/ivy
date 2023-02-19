@@ -18,7 +18,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 from ivy.exceptions import handle_exceptions
 
 
@@ -36,9 +36,9 @@ def flatten(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
-        If start_dim or end_dim are passed, only dimensions starting
-        with start_dim and ending with end_dim are flattened.
-        The order of elements in input is unchanged.
+    If start_dim or end_dim are passed, only dimensions starting
+    with start_dim and ending with end_dim are flattened.
+    The order of elements in input is unchanged.
 
     Parameters
     ----------
@@ -1202,28 +1202,25 @@ def pad(
 @handle_array_like_without_promotion
 def vsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[ivy.Array]:
-    """Split an array into multiple sub-arrays along the 3rd axis.
+    """Split an array vertically into multiple sub-arrays.
 
     Parameters
     ----------
     ary
         Array input.
     indices_or_sections
-        If indices_or_sections is an integer n, the array is split into n sections.
-        If the array is divisible by n along the 3rd axis, each section will be of
-        equal size. If input is not divisible by n, the sizes of the first
-        int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1,
-        and the rest will have size int(ary.size(0) / n).
+        If indices_or_sections is an integer n, the array is split into n
+        equal sections, provided that n must be a divisor of the split axis.
         If indices_or_sections is a tuple of ints, then input is split at each of
         the indices in the tuple.
 
     Returns
     -------
     ret
-        input array split along the 3rd axis.
+        input array split vertically.
 
     Examples
     --------

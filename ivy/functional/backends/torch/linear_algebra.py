@@ -164,13 +164,19 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
-    if transpose_a is True:
+    if transpose_a:
         x1 = torch.t(x1)
-    if transpose_b is True:
+    if transpose_b:
         x2 = torch.t(x2)
+    if adjoint_a:
+        x1 = torch.adjoint(x1)
+    if adjoint_b:
+        x2 = torch.adjoint(x2)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.matmul(x1, x2, out=out)
 
@@ -238,8 +244,10 @@ matrix_rank.support_native_out = True
 
 
 def matrix_transpose(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, conjugate: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    if conjugate:
+        torch.conj(x)
     return torch.swapaxes(x, -1, -2)
 
 
@@ -323,8 +331,11 @@ def solve(
     x2: torch.Tensor,
     /,
     *,
+    adjoint: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if adjoint:
+        x1 = torch.adjoint(x1)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     expanded_last = False
     if len(x2.shape) <= 1:
@@ -414,7 +425,7 @@ def trace(
     if len(x) == 0:
         return ivy.array([])
     ret = torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
-    ret = torch.sum(ret)
+    ret = torch.sum(ret, dim=-1)
     return ret
 
 

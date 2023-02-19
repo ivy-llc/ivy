@@ -16,22 +16,26 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
+    temp = input
     if hasattr(axis, "__iter__"):
         for dim in axis:
-            input = torch.median(
-                input,
+            temp = torch.quantile(
+                temp,
+                0.5,
                 dim=dim,
                 keepdim=keepdims,
-                out=out,
             )[0]
-        return input
+        return temp
     else:
-        return torch.median(
+        return torch.quantile(
             input,
+            0.5,
             dim=axis,
             keepdim=keepdims,
-            out=out,
-        )
+        )[0]
+
+
+median.support_native_out = False
 
 
 def nanmean(
@@ -46,7 +50,7 @@ def nanmean(
     return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
 
 
-nanmean_support_native_out = True
+nanmean.support_native_out = True
 
 
 @with_unsupported_dtypes(
@@ -93,13 +97,16 @@ def quantile(
             if i not in axis:
                 desired_shape += [current_shape[i]]
 
-        a = a.reshape((-1,) + tuple(desired_shape))
+        temp = a.reshape((-1,) + tuple(desired_shape))
 
-        a = torch.quantile(a, q, dim=0, keepdim=keepdims, interpolation=interpolation)
-
-        return a
+        return torch.quantile(
+            temp, q, dim=0, keepdim=keepdims, interpolation=interpolation
+        )
 
     return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
+
+
+quantile.support_native_out = False
 
 
 def corrcoef(
@@ -118,3 +125,38 @@ def corrcoef(
         xarr = xarr.T if not rowvar else xarr
 
     return torch.corrcoef(xarr)
+
+
+def nanmedian(
+    input: torch.tensor,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    overwrite_input: Optional[bool] = False,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.nanmedian(
+        input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
+    )
+
+
+nanmedian.support_native_out = True
+
+
+def unravel_index(
+    indices: torch.Tensor,
+    shape: Tuple[int],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    temp = indices
+    output = []
+    for dim in reversed(shape):
+        output.append(temp % dim)
+        temp = temp // dim
+    return tuple(reversed(output))
+
+
+unravel_index.support_native_out = False

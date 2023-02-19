@@ -1,4 +1,5 @@
 # global
+import copy
 from types import SimpleNamespace
 import warnings
 from ivy._version import __version__ as __version__
@@ -24,11 +25,24 @@ try:
     import jaxlib
 except ImportError:
     jax = SimpleNamespace()
+    jax.interpreters = SimpleNamespace()
+    jax.interpreters.xla = SimpleNamespace()
     jax.interpreters.xla._DeviceArray = SimpleNamespace()
+    jaxlib = SimpleNamespace()
+    jaxlib.xla_extension = SimpleNamespace()
     jaxlib.xla_extension.DeviceArray = SimpleNamespace()
-    jax.Buffer = SimpleNamespace()
+    jaxlib.xla_extension.Buffer = SimpleNamespace()
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
+
+
+# Local Ivy
+
+import_module_path = "ivy.utils._importlib"
+
+
+def is_local():
+    return hasattr(ivy, "_is_local_pkg")
 
 
 # class placeholders
@@ -203,7 +217,7 @@ class Shape(tuple):
                 torch.Size,
                 jax.interpreters.xla._DeviceArray,
                 jaxlib.xla_extension.DeviceArray,
-                jax.Buffer,
+                jax.xla_extension.Buffer,
                 np.ndarray,
                 tf.Tensor,
             )
@@ -302,6 +316,7 @@ array_significant_figures_stack = list()
 array_decimal_values_stack = list()
 warning_level_stack = list()
 nan_policy_stack = list()
+dynamic_backend_stack = list()
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
@@ -699,8 +714,10 @@ from .container import (
     add_ivy_container_instance_methods,
 )
 from .nested_array import NestedArray
-from .backend_handler import (
+from ivy.utils.backend import (
     current_backend,
+    compiled_backends,
+    with_backend,
     get_backend,
     set_backend,
     set_numpy_backend,
@@ -713,7 +730,8 @@ from .backend_handler import (
     clear_backend_stack,
 )
 from .func_wrapper import *
-from . import assertions, backend_handler, func_wrapper, exceptions
+from . import assertions, func_wrapper, exceptions
+from .utils.backend import handler
 from . import functional
 from .functional import *
 from . import stateful
@@ -829,15 +847,20 @@ class GlobalsDict(dict):
     __delattr__ = dict.__delitem__
     __name__ = dict.__name__
 
+    def __deepcopy__(self, memo):
+        ret = self.__class__.__new__(self.__class__)
+        for k, v in self.items():
+            ret[k] = copy.deepcopy(v)
+        return ret
+
 
 # defines ivy.globals attribute
-globals = GlobalsDict(
+globals_vars = GlobalsDict(
     {
         "backend_stack": backend_stack,
         "default_device_stack": device.default_device_stack,
         "valid_dtypes": valid_dtypes,
         "valid_numeric_dtypes": valid_numeric_dtypes,
-        "valid_int_dtypes": valid_int_dtypes,
         "valid_int_dtypes": valid_int_dtypes,
         "valid_uint_dtypes": valid_uint_dtypes,
         "valid_complex_dtypes": valid_complex_dtypes,
@@ -862,16 +885,24 @@ globals = GlobalsDict(
         "default_int_dtype_stack": data_type.default_int_dtype_stack,
         "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
         "nan_policy_stack": nan_policy_stack,
+        "dynamic_backend_stack": dynamic_backend_stack,
     }
 )
 
+_default_globals = copy.deepcopy(globals_vars)
+
+
+def reset_globals():
+    global globals_vars
+    globals_vars = copy.deepcopy(_default_globals)
+
 
 def set_global_attr(attr_name, attr_val):
-    setattr(globals, attr_name, attr_val)
+    setattr(globals_vars, attr_name, attr_val)
 
 
 def del_global_attr(attr_name):
-    delattr(globals, attr_name)
+    delattr(globals_vars, attr_name)
 
 
 backend = "none"
@@ -1094,3 +1125,55 @@ def unset_nan_policy():
     global nan_policy_stack
     if nan_policy_stack:
         nan_policy_stack.pop(-1)
+
+
+# Dynamic Backend
+
+
+def get_dynamic_backend():
+    """Returns the current dynamic backend setting, with the default being True"""
+    global dynamic_backend_stack
+    if not dynamic_backend_stack:
+        return True
+    else:
+        return dynamic_backend_stack[-1]
+
+
+def set_dynamic_backend(flag):
+    """Sets the global dynamic backend setting to the provided flag (True or False)"""
+    global dynamic_backend_stack
+    if flag not in [True, False]:
+        raise ValueError("dynamic_backend must be a boolean value (True or False)")
+    dynamic_backend_stack.append(flag)
+
+
+def unset_dynamic_backend():
+    """
+    Removes the current dynamic backend setting,
+    restoring the previous setting (if any)
+    """
+    global dynamic_backend_stack
+    if dynamic_backend_stack:
+        dynamic_backend_stack.pop()
+
+
+# Context Managers
+
+
+class DynamicBackendContext:
+    def __init__(self, value):
+        self.value = value
+        self.original = None
+
+    def __enter__(self):
+        self.original = get_dynamic_backend()
+        set_dynamic_backend(self.value)
+
+    def __exit__(self, type, value, traceback):
+        unset_dynamic_backend()
+        if self.original is not None:
+            set_dynamic_backend(self.original)
+
+
+def dynamic_backend_as(value):
+    return DynamicBackendContext(value)

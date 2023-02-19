@@ -4,6 +4,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+import ivy
 
 
 # cross_entropy
@@ -239,6 +240,70 @@ def test_torch_binary_cross_entropy_with_logits(
         reduce=reduce,
         reduction=reduction,
         pos_weight=pos_weight[0],
+    )
+
+
+# cosine_embedding_loss
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.cosine_embedding_loss",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=2,
+        max_value=5,
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=2,
+        shared_dtype=True,
+        num_arrays=2,
+    ),
+    margin=st.floats(
+        min_value=-1.0,
+        max_value=1.0,
+        width=16,
+    ),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
+    test_with_out=st.just(False),
+)
+def test_torch_cosine_embedding_loss(
+    *,
+    dtype_and_inputs,
+    margin,
+    size_average,
+    reduce,
+    reduction,
+    test_flags,
+    fn_tree,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_inputs
+    input1_dtype, input1 = input_dtype[0], x[0]
+    input2_dtype, input2 = input_dtype[1], x[1]
+
+    if input1.ndim == input2.ndim == 1:
+        tar = ivy.array(1.0)
+    else:
+        third = input1.shape[0] // 3
+        ones = ivy.ones(input1.shape[0] - (third * 2))
+        minus_ones = ivy.ones(third) * -1
+        randoms = ivy.random_uniform(shape=[third])
+        tar = ivy.hstack((ones, minus_ones, randoms)).shuffle()
+
+    helpers.test_frontend_function(
+        input_dtypes=[input1_dtype, input2_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input1=input1,
+        input2=input2,
+        target=tar,
+        margin=margin,
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction,
     )
 
 

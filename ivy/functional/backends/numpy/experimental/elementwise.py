@@ -119,6 +119,7 @@ def trapz(
 trapz.support_native_out = False
 
 
+@_scalar_output_to_0d_array
 def float_power(
     x1: Union[np.ndarray, float, list, tuple],
     x2: Union[np.ndarray, float, list, tuple],
@@ -126,7 +127,8 @@ def float_power(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.float_power(x1, x2, out=out), dtype=x1.dtype)
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.float_power(x1, x2, out=out)
 
 
 float_power.support_native_out = True
@@ -316,11 +318,11 @@ def hypot(
 
 
 def diff(
-    x: Union[np.ndarray, int, float, list, tuple],
+    x: Union[np.ndarray, list, tuple],
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
     append: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
     out: Optional[np.ndarray] = None,
@@ -425,7 +427,7 @@ def xlogy(
         return x * np.log(y)
 
 
-def real(x: Union[np.ndarray], /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.real(x)
 
 

@@ -30,6 +30,46 @@ def _getitem_setitem(draw, available_dtypes=None):
     return index, x
 
 
+def test_array_function():
+    HANDLED_FUNCTIONS = {}
+
+    class MyArray:
+        def __init__(self, data=None):
+            self.data = data
+
+        def __ivy_array_function__(self, func, types, args, kwargs):
+            if func not in HANDLED_FUNCTIONS:
+                return NotImplemented
+            if not all(
+                issubclass(t, (MyArray, ivy.Array, ivy.NativeArray)) for t in types
+            ):
+                return NotImplemented
+            return HANDLED_FUNCTIONS[func](*args, **kwargs)
+
+    def implements(ivy_function):
+        """Register an __ivy_array_function__ implementation for MyArray objects."""
+
+        def decorator(func):
+            HANDLED_FUNCTIONS[ivy_function] = func
+            return func
+
+        return decorator
+
+    @implements(ivy.abs)
+    def _(my_array, ivy_array):
+        my_array.data = abs(my_array.data)
+        ivy_array = ivy.abs(ivy_array)
+        return (my_array, ivy_array)
+
+    x = MyArray(-3)
+    y = ivy.array([1, -1])
+    xy = _(x, ivy_array=y)
+    x1 = xy[0]
+    y1 = xy[1]
+    assert x1.data == 3
+    assert all(y1 == ivy.array([1, 1]))
+
+
 # TODO do not use dummy fn_tree
 @handle_test(
     fn_tree="functional.ivy.native_array",  # dummy fn_tree
@@ -383,6 +423,7 @@ def test_array__rpow__(
 @handle_method(
     method_tree="Array.__ipow__",
     dtype_and_x=pow_helper(),
+    method_container_flags=st.just([False]),
 )
 def test_array__ipow__(
     dtype_and_x,
@@ -497,6 +538,7 @@ def test_array__radd__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__iadd__(
     dtype_and_x,
@@ -596,6 +638,7 @@ def test_array__rsub__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__isub__(
     dtype_and_x,
@@ -695,6 +738,7 @@ def test_array__rmul__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__imul__(
     dtype_and_x,
@@ -796,6 +840,7 @@ def test_array__rmod__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__imod__(
     dtype_and_x,
@@ -964,6 +1009,7 @@ def test_array__rtruediv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__itruediv__(
     dtype_and_x,
@@ -1065,6 +1111,7 @@ def test_array__rfloordiv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__ifloordiv__(
     dtype_and_x,
@@ -1151,6 +1198,7 @@ def test_array__rmatmul__(
     method_tree="Array.__imatmul__",
     x1=_get_first_matrix_and_dtype(),
     x2=_get_second_matrix_and_dtype(),
+    method_container_flags=st.just([False]),
 )
 def test_array__imatmul__(
     x1,
@@ -1241,6 +1289,7 @@ def test_array__float__(
         min_value=-1e15,
         max_value=1e15,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__int__(
     dtype_and_x,
@@ -1542,6 +1591,7 @@ def test_array__rand__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__iand__(
     dtype_and_x,
@@ -1632,6 +1682,7 @@ def test_array__ror__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__ior__(
     dtype_and_x,
@@ -1750,6 +1801,7 @@ def test_array__rxor__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__ixor__(
     dtype_and_x,
@@ -1842,6 +1894,7 @@ def test_array__rlshift__(
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__ilshift__(
     dtype_and_x,
@@ -1936,6 +1989,7 @@ def test_array__rrshift__(
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    method_container_flags=st.just([False]),
 )
 def test_array__irshift__(
     dtype_and_x,

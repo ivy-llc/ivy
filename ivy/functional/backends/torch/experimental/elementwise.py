@@ -113,7 +113,11 @@ def float_power(
 ) -> torch.Tensor:
     # Native out is supported but with restrictions leading
     # to failures hence letting ivy handle it.
-    return torch.float_power(x1, x2).to(x1.dtype)
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return torch.float_power(x1, x2, out=out)
+
+
+float_power.support_native_out = True
 
 
 def exp2(
@@ -168,10 +172,10 @@ def count_nonzero(
     if not keepdims:
         return x
     if isinstance(axis, tuple):
-        for d in sorted(axis, reverse=True):
+        for d in sorted(axis):
             x = x.unsqueeze(d)
         return x
-    elif isinstance(x, int):
+    elif isinstance(axis, int):
         return x.unsqueeze(axis)
     return x
 
@@ -188,6 +192,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
     return torch.nansum(x, dim=axis, keepdim=keepdims, dtype=dtype)
 
 
@@ -241,14 +246,15 @@ angle.support_native_out = True
 
 
 def imag(
-    input: torch.Tensor,
+    val: torch.Tensor,
     /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if input.dtype != torch.complex64:
-        input = input.to(torch.complex64)
-    return torch.imag(input)
+    if val.dtype not in (torch.complex64, torch.complex128):
+        ret = torch.imag(val.to(torch.complex64))
+        return ret.to(val.dtype)
+    return torch.imag(val)
 
 
 imag.support_native_out = False
@@ -290,11 +296,11 @@ logaddexp2.support_native_out = True
 
 
 def diff(
-    x: Union[torch.Tensor, int, float, list, tuple],
+    x: Union[torch.Tensor, list, tuple],
     /,
     *,
-    n: Optional[int] = 1,
-    axis: Optional[int] = -1,
+    n: int = 1,
+    axis: int = -1,
     prepend: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     out: Optional[torch.Tensor] = None,
@@ -425,9 +431,7 @@ def xlogy(
     return torch.xlogy(x, y, out=out)
 
 
-def real(
-    x: Union[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.real(x)
 
 
