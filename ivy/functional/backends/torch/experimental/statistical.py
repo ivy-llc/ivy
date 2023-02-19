@@ -24,6 +24,7 @@ def median(
                 0.5,
                 dim=dim,
                 keepdim=keepdims,
+                interpolation='midpoint',
             )[0]
         return temp
     else:
@@ -32,6 +33,7 @@ def median(
             0.5,
             dim=axis,
             keepdim=keepdims,
+            interpolation='midpoint',
         )[0]
 
 
@@ -47,7 +49,8 @@ def nanmean(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
+    input = a.to(dtype)
+    return torch.nanmean(input, dim=axis, keepdim=keepdims, out=out)
 
 
 nanmean.support_native_out = True
