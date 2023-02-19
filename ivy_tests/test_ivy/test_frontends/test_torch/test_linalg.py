@@ -881,3 +881,56 @@ def test_torch_matmul(
         rtol=1e-03,
         atol=1e-06,
     )
+
+
+# eigh
+@handle_frontend_test(
+    fn_tree="torch.linalg.eigh",
+    dtype_x=_get_symmetrix_matrix(),
+    UPLO=st.sampled_from(("L", "U")),
+    test_with_out=st.just(False),
+)
+def test_torch_eigh(
+    *,
+    dtype_x,
+    UPLO,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    if x.dtype == ivy.float32:
+        x = x.astype("float64")
+        input_dtype = [ivy.float64]
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        input=x,
+        UPLO=UPLO,
+    )
+    ret = [ivy.to_numpy(x).astype("float64") for x in ret]
+    frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
+
+    l, q = ret
+    front_l, front_q = frontend_ret
+
+    assert_all_close(
+        ret_np=l,
+        ret_from_gt_np=front_l,
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )
+
+    assert_all_close(
+        ret_np=q,
+        ret_from_gt_np=front_q,
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )

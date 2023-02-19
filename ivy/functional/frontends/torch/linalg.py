@@ -187,3 +187,8 @@ def tensorsolve(A, B, dims=None, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def eigh(input, UPLO="L", *, out=None):
+    return ivy.eigh(input, UPLO=UPLO, out=out)
