@@ -598,6 +598,22 @@ class ArrayWithGeneral(abc.ABC):
             Bool value depends on whether the currently active backend
             framework supports in-place operations with argument's data type.
 
+        Examples
+        --------
+        With :class:`ivy.Array` input and default backend set as `numpy`:
+
+        >>> x = ivy.array([0, 1, 2])
+        >>> ret = x.supports_inplace_updates()
+        >>> print(ret)
+        True
+
+        With `ivy.Array` input and backend set as "tensorflow":
+
+        >>> x = ivy.array([1., 4.2, 2.2])
+        >>> ret = x.supports_inplace_updates()
+        >>> print(ret)
+        False
+        
         """
         return ivy.supports_inplace_updates(self)
 

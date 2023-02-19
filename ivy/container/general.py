@@ -3593,6 +3593,28 @@ class ContainerWithGeneral(ContainerBase):
             An ivy.Container instance of bool values.
             True if nodes of the Container support in-place operations. False otherwise.
 
+        Examples
+        --------
+        With :class:`ivy.Container` input and backend set as `torch`:
+
+        >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
+        >>> ret = x.supports_inplace_updates()
+        >>> print(ret)
+        {
+            a: True,
+            b: True
+        }
+
+        With :class:`ivy.Container` input and backend set as `jax`:
+
+        >>> x = ivy.Container(a=ivy.array([5.]), b=ivy.array([7.]))
+        >>> ret = x.supports_inplace_updates()
+        >>> print(ret)
+        {
+            a: False,
+            b: False
+        }
+
         """
         return ContainerWithGeneral.static_supports_inplace_updates(
             self,
