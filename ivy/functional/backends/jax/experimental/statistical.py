@@ -87,3 +87,14 @@ def nanmedian(
     return jnp.nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
+
+def average(
+    a: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+) -> JaxArray:
+
+    return jnp.average(a, axis=axis, keepdims=keepdims)
+
