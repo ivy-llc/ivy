@@ -2213,8 +2213,24 @@ def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
 
 
 @handle_exceptions
-def num_arrays_in_memory():
-    """Returns the number of arrays which are currently alive."""
+def num_arrays_in_memory() -> int:
+    """Returns the number of arrays which are currently alive.
+
+    Returns
+    -------
+    ret
+        Number of all arrays which are alive.
+    Examples
+    --------
+    >>> ivy.num_arrays_in_memory()
+    0
+    >>> x = ivy.num_arrays_in_memory()
+    >>> x
+    0
+    >>> y = ivy.array([0, 1, 2])
+    >>> x
+    1
+    """
     return len(get_all_arrays_in_memory())
 
 
