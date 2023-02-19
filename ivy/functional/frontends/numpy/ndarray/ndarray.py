@@ -393,6 +393,9 @@ class ndarray:
 
     def __ifloordiv__(self, value, /):
         return np_frontend.floor_divide(self._ivy_array, value, out=self)
+    
+    def __mod__(self, value, /):
+        return np_frontend.mod(self._ivy_array, value)
 
     def __ipow__(self, value, /):
         return np_frontend.power(self._ivy_array, value)
