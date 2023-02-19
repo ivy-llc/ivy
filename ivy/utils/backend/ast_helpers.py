@@ -16,8 +16,9 @@ importlib_from_import_fn = "_from_import"
 
 
 def _retrive_local_modules():
-    ret = []
-    wd = sys.path[0]
+    ret = ["ivy"]  # TODO temporary hacky solution for finder
+    # Get Ivy package root
+    wd = sys.modules["ivy"].__path__[0]
     for entry in os.scandir(wd):
         if entry.is_file():
             if entry.name.endswith(".py"):

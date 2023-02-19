@@ -37,12 +37,7 @@ def gelu(
     return ivy.astype(ret, x.dtype, copy=False)
 
 
-def sigmoid(
-    x: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
+def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if not ivy.is_array(x):
         return np.asarray(1 / (1 + np.exp(-x)))
     return np.asarray(1 / (1 + np.exp(-x))).astype(x.dtype)

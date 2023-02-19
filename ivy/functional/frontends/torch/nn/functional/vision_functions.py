@@ -1,3 +1,7 @@
+# global
+import math
+
+# local
 import ivy
 from ivy import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
@@ -340,26 +344,10 @@ def interpolate(
             "recompute_scale_factor is not meaningful with an explicit size."
         )
 
-    if mode == "area" and not ivy.exists(output_size):
-        recompute_scale_factor = True
-
-    if ivy.all(
-        [
-            ivy.exists(recompute_scale_factor),
-            bool(recompute_scale_factor),
-            ivy.exists(scale_factors),
-        ]
-    ):
+    if ivy.exists(scale_factors):
         output_size = [
-            ivy.astype(
-                ivy.floor(
-                    ivy.astype(input.size(i + 2)) * scale_factors[i], ivy.FloatDtype
-                ),
-                ivy.IntDtype,
-            )
-            for i in range(dim)
+            math.floor(ivy.shape(input)[i + 2] * scale_factors[i]) for i in range(dim)
         ]
-        scale_factors = None
 
     if (
         bool(antialias)
@@ -400,7 +388,7 @@ def interpolate(
     )
 
     return ivy.interpolate(
-        input, size, mode=mode, align_corners=align_corners, antialias=antialias
+        input, output_size, mode=mode, align_corners=align_corners, antialias=antialias
     )
 
 

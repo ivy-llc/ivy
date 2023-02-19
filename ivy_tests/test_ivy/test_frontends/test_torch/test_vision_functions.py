@@ -221,7 +221,7 @@ def test_torch_upsample_bilinear(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.interpolate",
-    dtype_and_input_and_other=_interp_args(),
+    dtype_and_input_and_other=_interp_args(scale_factor=True),
     number_positional_args=st.just(2),
 )
 def test_torch_interpolate(
@@ -232,7 +232,15 @@ def test_torch_interpolate(
     frontend,
     test_flags,
 ):
-    input_dtype, x, mode, size, align_corners = dtype_and_input_and_other
+    (
+        input_dtype,
+        x,
+        mode,
+        size,
+        align_corners,
+        scale_factor,
+        recompute_scale_factor,
+    ) = dtype_and_input_and_other
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -243,8 +251,10 @@ def test_torch_interpolate(
         atol=1e-01,
         input=x[0],
         size=size,
+        scale_factor=scale_factor,
         mode=mode,
         align_corners=align_corners,
+        recompute_scale_factor=recompute_scale_factor,
     )
 
 
