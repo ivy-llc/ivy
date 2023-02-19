@@ -113,6 +113,7 @@ class Array(
         ArrayWithStatisticalExperimental.__init__(self),
         ArrayWithUtilityExperimental.__init__(self),
         self._init(data, dynamic_backend)
+        self._view_attributes(data)
 
     def _init(self, data, dynamic_backend=None):
         if ivy.is_ivy_array(data):
@@ -139,6 +140,8 @@ class Array(
             self._dynamic_backend = dynamic_backend
         else:
             self._dynamic_backend = ivy.get_dynamic_backend()
+
+    def _view_attributes(self, data):
         if hasattr(data, "base"):
             self._base = data.base
         elif hasattr(data, "_base"):
