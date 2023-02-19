@@ -290,8 +290,13 @@ def scatter_nd(
 ) -> JaxArray:
 
     # parse numeric inputs
-    if indices not in [Ellipsis, ()] and not (
-        isinstance(indices, Iterable) and Ellipsis in indices
+    if (
+        indices not in [Ellipsis, ()]
+        and not (isinstance(indices, Iterable) and Ellipsis in indices)
+        and not isinstance(indices, slice)
+        and not (
+            isinstance(indices, Iterable) and any(isinstance(k, slice) for k in indices)
+        )
     ):
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = jnp.array(indices)
@@ -308,7 +313,7 @@ def scatter_nd(
     )
 
     # handle Ellipsis
-    if isinstance(indices, tuple) or indices is Ellipsis:
+    if isinstance(indices, tuple) or indices is Ellipsis or isinstance(indices, slice):
         indices_tuple = indices
     else:
         expected_shape = (
