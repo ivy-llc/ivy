@@ -700,6 +700,7 @@ def test_torch_margin_ranking_loss(
         reduction=reduction,
     )
 
+
 # triplet margin loss
 @handle_frontend_test(
     fn_tree="torch.nn.functional.triplet_margin_loss",
