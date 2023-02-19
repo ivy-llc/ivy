@@ -699,3 +699,58 @@ def test_torch_margin_ranking_loss(
         reduce=reduce,
         reduction=reduction,
     )
+
+# triplet margin loss
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.triplet_margin_loss",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+    margin=st.floats(),
+    p=st.integers(),
+    eps=st.floats(),
+    swap=st.booleans(),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
+    test_with_out=st.just(False),
+)
+def test_torch_triplet_margin_losss(
+    *,
+    dtype_and_inputs,
+    margin,
+    p,
+    eps,
+    swap,
+    size_average,
+    reduce,
+    reduction,
+    test_flags,
+    fn_tree,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_inputs
+    anchor_dtype, anchor = input_dtype[0], x[0]
+    positive_dtype, positive = input_dtype[1], x[1]
+    negative_dtype, negative = input_dtype[2], x[2]
+    helpers.test_frontend_function(
+        input_dtypes=[anchor_dtype, positive_dtype, negative_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        anchor=anchor,
+        positive=positive,
+        negative=negative,
+        margin=margin,
+        p=p,
+        eps=eps,
+        swap=swap,
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction,
+    )
