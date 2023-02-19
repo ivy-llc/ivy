@@ -534,8 +534,14 @@ def stop_gradient(
 @handle_array_like_without_promotion
 @handle_array_function
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
-):
+    func,
+    xs: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    retain_grads: bool = False,
+    xs_grad_idxs: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ret_grad_idxs: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
     """Call function func with input of xs variables, and return the function result
     func_ret and the gradients of each output variable w.r.t each input variable,
 
@@ -561,6 +567,39 @@ def execute_with_gradients(
     ret
         the function result func_ret and a dictionary of gradients of each output
         variable w.r.t each input variable.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1, 4, 6], [2, 6, 9]])
+    >>> func = lambda x: ivy.mean(ivy.square(x))
+    >>> func_ret = ivy.execute_with_gradients(func, x, retain_grads=True)
+    >>> print(func_ret)
+    (ivy.array(29.), ivy.array([[0.33333334, 1.33333337, 2.        ],
+       [0.66666669, 2.        , 3.        ]]))
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([1, 4, 6]),
+    ...                   b = ivy.array([2, 6, 9]))
+    >>> func = lambda x: ivy.mean(ivy.square(x))
+    >>> func_ret = ivy.execute_with_gradients(func, x, retain_grads=True)
+    >>> print(func_ret)
+    ({
+    a: ivy.array(17.666666),
+    b: ivy.array(40.333332)
+    },
+    {
+    a: {
+        a: ivy.array([0.66666669, 2.66666675, 4.]),
+        b: ivy.array([0., 0., 0.])
+    },
+    b: {
+        a: ivy.array([0., 0., 0.]),
+        b: ivy.array([1.33333337, 4., 6.])
+    }
+    })
 
     """
     return current_backend(None).execute_with_gradients(
