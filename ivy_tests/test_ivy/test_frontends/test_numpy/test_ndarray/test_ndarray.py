@@ -774,6 +774,8 @@ def test_numpy_instance_diagonal(
         init_flags=init_flags,
         method_flags=method_flags,
     )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -2433,3 +2435,4 @@ def test_numpy_instance_tobytes__(
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
+    
