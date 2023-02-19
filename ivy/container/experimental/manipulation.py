@@ -240,6 +240,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
         >>> ivy.Container.static_flipud(m)
         {
@@ -287,6 +288,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> m = ivy.Container(a=ivy.diag([1, 2, 3]), b=ivy.arange(4))
         >>> m.flipud()
         {
@@ -366,9 +368,11 @@ class ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> c = ivy.Container(a=[ivy.array([1,2,3]), ivy.array([0,0,0])],
                               b=ivy.arange(3))
-        >>> ivy.Container.static_vstack(c)
+        >>> y = ivy.Container.static_vstack(c)
+        >>> print(y)
         {
             a: ivy.array([[1, 2, 3],
                           [0, 0, 0]]),
@@ -410,7 +414,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
-        >>> x.hstack([y])
+        >>> z = x.hstack([y])
+        >>> print(z)
         {
             a: ivy.array([[0, 1, 3, 2],
                           [2, 3, 1, 0]]),
@@ -517,7 +522,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
                         b=ivy.array([[1,2,3,4],\
                                     [7,8,9,10]]))
-        >>> ivy.Container.static_rot90(m)
+        >>> n = ivy.Container.static_rot90(m)
+        >>> print(n)
         {
             a: ivy.array([[2, 4],
                           [1, 3]]),
@@ -587,9 +593,9 @@ class ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
-                        b=ivy.array([[1,2,3,4],\
-                                    [7,8,9,10]]))
-        >>> m.rot90()
+        ...                   b=ivy.array([[1,2,3,4],[7,8,9,10]]))
+        >>> n = m.rot90()
+        >>> print(n)
         {
             a: ivy.array([[2, 4],
                           [1, 3]]),
@@ -810,7 +816,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
         >>> m = ivy.Container(a=ivy.diag([1, 2, 3]),\
-                            b=ivy.array([[1, 2, 3],[4, 5, 6]]))
+        ...                    b=ivy.array([[1, 2, 3],[4, 5, 6]]))
         >>> ivy.Container.static_fliplr(m)
         {
             a: ivy.array([[0, 0, 1],
@@ -856,8 +862,9 @@ class ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> m = ivy.Container(a=ivy.diag([1, 2, 3]),\
-                            b=ivy.array([[1, 2, 3],[4, 5, 6]]))
+        ...                    b=ivy.array([[1, 2, 3],[4, 5, 6]]))
         >>> m.fliplr()
         {
             a: ivy.array([[0, 0, 1],
@@ -901,6 +908,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array(4))
         >>> ivy.Container.static_i0(x)
         {
@@ -944,6 +952,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array(4))
         >>> x.i0()
         {

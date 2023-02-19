@@ -12,7 +12,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy.backend_handler import current_backend, backend_stack
+from ivy.utils.backend import current_backend, backend_stack
 from ivy.functional.ivy.gradients import _is_variable
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
@@ -2213,8 +2213,24 @@ def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
 
 
 @handle_exceptions
-def num_arrays_in_memory():
-    """Returns the number of arrays which are currently alive."""
+def num_arrays_in_memory() -> int:
+    """Returns the number of arrays which are currently alive.
+
+    Returns
+    -------
+    ret
+        Number of all arrays which are alive.
+    Examples
+    --------
+    >>> ivy.num_arrays_in_memory()
+    0
+    >>> x = ivy.num_arrays_in_memory()
+    >>> x
+    0
+    >>> y = ivy.array([0, 1, 2])
+    >>> x
+    1
+    """
     return len(get_all_arrays_in_memory())
 
 
