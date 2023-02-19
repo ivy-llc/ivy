@@ -8,10 +8,15 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 
 class Tensor:
-    def __init__(self, array, device=None):
-        self._ivy_array = ivy.asarray(
-            array, dtype=torch_frontend.float32, device=device
-        )
+    def __init__(self, array, device=None, _init_overload=False):
+
+        if _init_overload:
+            self._ivy_array = ivy.asarray(array, device=device)
+
+        else:
+            self._ivy_array = ivy.asarray(
+                array, dtype=torch_frontend.float32, device=device
+            )
 
     def __repr__(self):
         return str(self._ivy_array.__repr__()).replace(
