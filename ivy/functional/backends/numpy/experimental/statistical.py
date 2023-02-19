@@ -50,7 +50,10 @@ def unravel_index(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.unravel_index(indices, shape).astype(indices.dtype)
+    return np.unravel_index(indices, shape)
+
+
+unravel_index.support_native_out = False
 
 
 def quantile(
