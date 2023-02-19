@@ -60,9 +60,9 @@ def mean(input, dim, keepdim=False, *, out=None):
 @to_ivy_arrays_and_back
 def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
     num_elements = input.numel()
-    sum_tensor = ivy.sum(input, dim=dim, keepdim=keepdim, out=out)
+    sum_tensor = ivy.sum(input, axis=dim, keepdims=keepdim, out=out)
     mean_values = (
-        ivy.sum(sum_tensor, dim=dim, keepdim=keepdim, out=out) - sum_tensor
+        ivy.sum(sum_tensor, axis=dim, keepdims=keepdim, out=out) - sum_tensor
     ) / (num_elements - sum_tensor.numel())
     return mean_values
 
