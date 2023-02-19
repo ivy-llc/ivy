@@ -729,6 +729,7 @@ def test_torch_hinge_embedding_loss(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
