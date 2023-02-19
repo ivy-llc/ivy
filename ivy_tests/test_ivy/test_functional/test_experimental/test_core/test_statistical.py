@@ -170,6 +170,7 @@ def test_unravel_index(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     dtype_and_x, shape = dtype_x_shape
@@ -180,6 +181,7 @@ def test_unravel_index(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         indices=np.asarray(x[0], dtype=input_dtype[0]),
         shape=shape,
     )
