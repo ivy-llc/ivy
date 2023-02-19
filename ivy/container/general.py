@@ -981,8 +981,27 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            a container of whether or not inplace operations are supported for x and
-            its leaves.
+            An ivy.Container instance of True bool values if nodes of the Container \
+            support in-place operations, raises IvyBackendException otherwise
+
+        Examples
+        --------
+        With :class:`ivy.Container` input and default backend set as `numpy`:
+
+        >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
+        >>> print(x.assert_supports_inplace())
+        {
+            a: True,
+            b: True
+        }
+
+        With :class:`ivy.Container` input and default backend set as `jax`:
+
+        >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
+        >>> print(x.assert_supports_inplace())
+        IvyBackendException: jax: assert_supports_inplace: Inplace operations \
+        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
+        
         """
         return self.static_assert_supports_inplace(
             self,

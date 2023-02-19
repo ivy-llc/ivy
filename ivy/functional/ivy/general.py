@@ -2458,7 +2458,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_exceptions
 @handle_array_function
 def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
-    """Asserts that inplace operations are supported for x, else raises exception.
+    """Asserts that inplace operations are supported for x, else raises IvyBackendException.
 
     Parameters
     ----------
@@ -2468,7 +2468,41 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     Returns
     -------
     ret
-        True if support, raises exception otherwise
+        True if supports, raises IvyBackendException otherwise
+    
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input and default backend set as `numpy`:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> print(x.assert_supports_inplace())
+    True
+
+    With :class:`ivy.Array` input and default backend set as `jax`:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> print(x.assert_supports_inplace())
+    IvyBackendException: jax: assert_supports_inplace: Inplace operations \
+    are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
+
+    With :class:`ivy.Container` input and default backend set as `numpy`:
+
+    >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
+    >>> print(x.assert_supports_inplace())
+    {
+        a: True,
+        b: True
+    }
+
+    With :class:`ivy.Container` input and default backend set as `jax`:
+
+    >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
+    >>> print(x.assert_supports_inplace())
+    IvyBackendException: jax: assert_supports_inplace: Inplace operations \
+    are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
 
     """
     ivy.assertions.check_true(
