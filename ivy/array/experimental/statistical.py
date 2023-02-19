@@ -317,3 +317,51 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             overwrite_input=overwrite_input,
             out=out,
         )
+
+    def average(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+    ) -> ivy.Array:
+
+        """ivy.Array instance method variant of ivy.average.
+
+        Parameters
+        ----------
+        a
+            Input array.
+        axis
+            Axis or axes along which the average are computed.
+
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one.
+
+        Returns
+        -------
+        ret
+            The average of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 9], [-3, 4]])
+        >>> ivy.average(a)
+        ivy.array(2.75)
+
+        >>> a = ivy.array([[1, 9], [-3, 4]])
+        >>> ivy.average(a, axis=0)
+        ivy.array([-1. ,  6.5])
+
+        >>> a = ivy.array([[1, 9], [-3, 4]])
+        >>> ivy.average(a, axis=1)
+        ivy.array([5. , 0.5])
+
+        >>> a = ivy.array([[1, 9], [-3, 4]])
+        >>> ivy.average(a, axis=1,keepdims=True)
+        ivy.array([[5. ],
+               [0.5]])
+        """
+
+        return ivy.average(self._data, axis=axis, keepdims=keepdims)
