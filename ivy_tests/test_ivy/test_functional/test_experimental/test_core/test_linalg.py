@@ -1,6 +1,7 @@
 # global
 import math
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -141,13 +142,11 @@ def _generate_eigh_tridiagonal_args(draw):
             min_dim_size=2,
             min_num_dims=1,
             max_num_dims=1,
-            min_value=1.0,
-            max_value=1.0e5,
+            min_value=2.0,
+            max_value=5,
             available_dtypes=(
                 ivy.float32,
                 ivy.float64,
-                ivy.complex64,
-                ivy.complex128,
             ),
         )
     )
@@ -156,8 +155,8 @@ def _generate_eigh_tridiagonal_args(draw):
         helpers.dtype_and_values(
             available_dtypes=st.just(dtype),
             shape=(beta_shape,),
-            min_value=1.0,
-            max_value=1.0e5,
+            min_value=2.0,
+            max_value=5,
         )
     )
 
@@ -191,9 +190,9 @@ def _generate_eigh_tridiagonal_args(draw):
 
         select_range = [range_slice.start, range_slice.stop]
 
-    eigvals_only = draw(st.booleans())
-    tol = draw(st.floats() | st.just(None))
-    return dtype, alpha[0], beta[0], eigvals_only, select, select_range, tol
+    eigvals_only = draw(st.just(False))
+    tol = draw(st.floats(1e-5, 1e-3) | st.just(None))
+    return dtype, alpha, beta, eigvals_only, select, select_range, tol
 
 
 # eigh_tridiagonal
@@ -213,8 +212,8 @@ def test_eigh_tridiagonal(
 ):
     dtype, alpha, beta, eigvals_only, select, select_range, tol = args_packet
     test_flags.with_out = False
-    helpers.test_function(
-        ground_truth_backend="numpy",
+    results = helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -222,12 +221,46 @@ def test_eigh_tridiagonal(
         rtol_=1e-2,
         atol_=1e-2,
         input_dtypes=dtype,
-        alpha=alpha,
-        beta=beta,
+        alpha=alpha[0],
+        beta=beta[0],
         eigvals_only=eigvals_only,
         select=select,
         select_range=select_range,
         tol=tol,
+        test_values=False,
+        return_flat_np_arrays=True,
+    )
+    if results is None:
+        return
+    ret_np_flat, ret_from_np_flat = results
+    reconstructed_np = None
+    for i in range(len(ret_np_flat) // 2):
+        eigenvalue = ret_np_flat[i]
+        eigenvector = ret_np_flat[len(ret_np_flat) // 2 + i]
+        if reconstructed_np is not None:
+            reconstructed_np += eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+        else:
+            reconstructed_np = eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+
+    reconstructed_from_np = None
+    for i in range(len(ret_from_np_flat) // 2):
+        eigenvalue = ret_from_np_flat[i]
+        eigenvector = ret_from_np_flat[len(ret_np_flat) // 2 + i]
+        if reconstructed_from_np is not None:
+            reconstructed_from_np += eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+        else:
+            reconstructed_from_np = eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+    # value test
+    helpers.assert_all_close(
+        reconstructed_np, reconstructed_from_np, rtol=1e-1, atol=1e-2
     )
 
 

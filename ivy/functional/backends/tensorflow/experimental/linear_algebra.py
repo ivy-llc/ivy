@@ -28,38 +28,14 @@ def eigh_tridiagonal(
     tf.Variable,
     Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]],
 ]:
-    if eigvals_only:
-        return tf.linalg.eigh_tridiagonal(
-            alpha,
-            beta,
-            eigvals_only=eigvals_only,
-            select=select,
-            select_range=select_range,
-            tol=tol,
-        )
-
-    vals = tf.linalg.eigh_tridiagonal(
+    return tf.linalg.eigh_tridiagonal(
         alpha,
         beta,
-        eigvals_only=True,
+        eigvals_only=eigvals_only,
         select=select,
         select_range=select_range,
         tol=tol,
     )
-    if len(vals) > 0:
-        eigenvalues, eigenvectors = tf.linalg.eigh_tridiagonal(
-            alpha,
-            beta,
-            eigvals_only=eigvals_only,
-            select=select,
-            select_range=select_range,
-            tol=tol,
-        )
-    else:
-        eigenvalues = vals
-        eigenvectors = vals
-
-    return eigenvalues, eigenvectors
 
 
 def diagflat(
