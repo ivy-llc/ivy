@@ -97,7 +97,9 @@ def quantile(
 
         temp = a.reshape((-1,) + tuple(desired_shape))
 
-        return torch.quantile(temp, q, dim=0, keepdim=keepdims, interpolation=interpolation)
+        return torch.quantile(
+            temp, q, dim=0, keepdim=keepdims, interpolation=interpolation
+        )
 
     return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
 
