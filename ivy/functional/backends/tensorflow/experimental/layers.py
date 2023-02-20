@@ -378,7 +378,7 @@ def interpolate(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     dims = len(x.shape) - 2
-    if align_corners or dims > 2 or mode == "nearest":
+    if align_corners or dims > 2 or mode in ["nearest", "area"]:
         return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
