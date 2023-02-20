@@ -24,7 +24,7 @@ def median(
                 0.5,
                 dim=dim,
                 keepdim=keepdims,
-                interpolation='midpoint',
+                interpolation="midpoint",
             )[0]
         return temp
     else:
@@ -33,7 +33,7 @@ def median(
             0.5,
             dim=axis,
             keepdim=keepdims,
-            interpolation='midpoint',
+            interpolation="midpoint",
         )[0]
 
 
