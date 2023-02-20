@@ -420,5 +420,5 @@ def triplet_margin_loss(
         dist_positive - dist_negative + ivy.array(margin), ivy.array(0.0)
     )
 
-    loss = reduction(loss)
+    loss = reduction(loss).astype(anchor.dtype)
     return loss
