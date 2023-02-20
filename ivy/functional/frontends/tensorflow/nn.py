@@ -1,19 +1,32 @@
 # global
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.tensorflow import math
+
+
+def _reduce_strides_dilations(dim, stride, dilations):
+    if len(stride) > dim:
+        stride = stride[1:-1]
+    if len(dilations) > dim:
+        dilations = dilations[1:-1]
+    if len(stride) == 1 and dim != 1:
+        stride = stride[0]
+    if len(dilations) == 1 and dim != 1:
+        dilations = dilations[0]
+    return stride, dilations
 
 
 @to_ivy_arrays_and_back
 def atrous_conv2d(value, filters, rate, padding):
-    return ivy.conv2d(value, filters, 1, padding, dilations=rate)
+    return ivy.conv2d(value, filters, 1, padding, dilations=[rate] * 2)
 
 
 @to_ivy_arrays_and_back
 def atrous_conv2d_transpose(value, filters, output_shape, rate, padding):
+    filters = filters.swapaxes(-2, -1)
     return ivy.conv2d_transpose(
-        value, filters, rate, padding, output_shape=output_shape, dilations=rate
+        value, filters, 1, padding, output_shape=output_shape, dilations=[rate] * 2
     )
 
 
@@ -21,6 +34,7 @@ def atrous_conv2d_transpose(value, filters, output_shape, rate, padding):
 def conv1d(
     input, filters, stride, padding, data_format="NWC", dilations=None, name=None
 ):
+    stride, dilations = _reduce_strides_dilations(1, stride, dilations)
     return ivy.conv1d(
         input, filters, stride, padding, data_format=data_format, dilations=dilations
     )
@@ -37,6 +51,8 @@ def conv1d_transpose(
     dilations=None,
     name=None,
 ):
+    strides, dilations = _reduce_strides_dilations(1, strides, dilations)
+    filters = filters.swapaxes(-2, -1)
     return ivy.conv1d_transpose(
         input,
         filters,
@@ -57,6 +73,7 @@ def gelu(features, approximate=False, name=None):
 def conv2d(
     input, filters, strides, padding, data_format="NHWC", dilations=None, name=None
 ):
+    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     return ivy.conv2d(
         input, filters, strides, padding, data_format=data_format, dilations=dilations
     )
@@ -73,6 +90,8 @@ def conv2d_transpose(
     dilations=None,
     name=None,
 ):
+    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    filters = filters.swapaxes(-2, -1)
     return ivy.conv2d_transpose(
         input,
         filters,
@@ -88,11 +107,13 @@ def conv2d_transpose(
 def conv3d(
     input, filters, strides, padding, data_format="NDHWC", dilations=None, name=None
 ):
+    strides, dilations = _reduce_strides_dilations(3, strides, dilations)
     return ivy.conv3d(
         input, filters, strides, padding, data_format=data_format, dilations=dilations
     )
 
 
+@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
     input,
@@ -104,6 +125,8 @@ def conv3d_transpose(
     dilations=None,
     name=None,
 ):
+    strides, dilations = _reduce_strides_dilations(3, strides, dilations)
+    filters = filters.swapaxes(-2, -1)
     return ivy.conv3d_transpose(
         input,
         filters,
@@ -122,16 +145,22 @@ def depthwise_conv2d(
     strides,
     padding="SAME",
     data_format="NHWC",
-    dilations=[1, 1],
+    dilations=None,
     name=None,
 ):
-    return ivy.depthwise_conv2d(
+    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    fc = filter.shape[-2]
+    filter = filter.reshape(
+        [*filter.shape[0:2], 1, filter.shape[-2] * filter.shape[-1]]
+    )
+    return ivy.conv_general_dilated(
         input,
         filter,
         strides,
         padding,
-        data_format=data_format,
+        data_format="channel_last" if data_format[-1] == "C" else "channel_first",
         dilations=dilations,
+        feature_group_count=fc,
     )
 
 
@@ -150,8 +179,8 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
 
 
 @to_ivy_arrays_and_back
-def dropout(x, prob, scale, dtype, name=None):
-    return ivy.dropout(x, prob, scale, dtype)
+def dropout(x, rate, noise_shape=None, seed=None, name=None):
+    return ivy.dropout(x, rate, noise_shape=noise_shape, seed=seed)
 
 
 @to_ivy_arrays_and_back
@@ -394,6 +423,7 @@ def embedding_lookup(params, ids, max_norm=None, name=None):
     return ivy.embedding(params, ids, max_norm=max_norm)
 
 
+@to_ivy_arrays_and_back
 def relu(features, name=None):
     return ivy.relu(features)
 

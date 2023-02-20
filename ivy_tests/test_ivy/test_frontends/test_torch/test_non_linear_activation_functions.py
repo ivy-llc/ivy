@@ -64,7 +64,7 @@ def test_torch_sigmoid(
         force_int_axis=True,
         valid_axis=True,
     ),
-    dtypes=helpers.get_dtypes("float", none=True, full=False),
+    dtypes=helpers.get_dtypes("float", full=False),
 )
 def test_torch_softmax(
     *,
@@ -94,6 +94,7 @@ def test_torch_softmax(
     fn_tree="torch.nn.functional.gelu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        max_value=1e04,
     ),
 )
 def test_torch_gelu(
@@ -212,7 +213,7 @@ def test_torch_logsigmoid(
         force_int_axis=True,
         valid_axis=True,
     ),
-    dtypes=helpers.get_dtypes("float", none=True, full=False),
+    dtypes=helpers.get_dtypes("float", full=False),
 )
 def test_torch_softmin(
     *,
@@ -1279,10 +1280,10 @@ def test_torch_batch_norm(
         test_flags=test_flags,
         fn_tree=fn_tree,
         input=input[0],
-        weight=weight,
-        bias=bias,
         running_mean=running_mean,
         running_var=running_var,
+        weight=weight,
+        bias=bias,
         training=training,
         momentum=momentum,
         eps=eps,

@@ -57,8 +57,17 @@ def poisson(input, generator=None):
 
 
 @to_ivy_arrays_and_back
-def rand(size, *, generator=None, out=None, dtype=None, layout=None, device=None,
-         requires_grad=False, pin_memory=False):
+def rand(
+    size,
+    *,
+    generator=None,
+    out=None,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    pin_memory=False
+):
     return ivy.random_uniform(
         shape=size,
         out=out,

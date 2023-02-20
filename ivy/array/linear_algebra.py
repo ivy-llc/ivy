@@ -16,6 +16,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
         *,
         transpose_a: bool = False,
         transpose_b: bool = False,
+        adjoint_a: bool = False,
+        adjoint_b: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -57,7 +59,13 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array(11.)
         """
         return ivy.matmul(
-            self._data, x2, transpose_a=transpose_a, transpose_b=transpose_b, out=out
+            self._data,
+            x2,
+            transpose_a=transpose_a,
+            transpose_b=transpose_b,
+            adjoint_a=adjoint_a,
+            adjoint_b=adjoint_b,
+            out=out,
         )
 
     def cholesky(
@@ -518,7 +526,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
 
     def matrix_transpose(
-        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, conjugate: bool = False, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         Transposes a matrix (or a stack of matrices) ``x``.
@@ -549,7 +557,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array([[1., 0.],
                    [2., 3.]])
         """
-        return ivy.matrix_transpose(self._data, out=out)
+        return ivy.matrix_transpose(self._data, conjugate=conjugate, out=out)
 
     def outer(
         self: ivy.Array,
@@ -706,9 +714,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        adjoint: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.solve(self._data, x2, out=out)
+        return ivy.solve(self._data, x2, adjoint=adjoint, out=out)
 
     def svd(
         self: ivy.Array,
@@ -869,6 +878,82 @@ class ArrayWithLinearAlgebra(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+            ivy.Array instance method variant of ivy.vector_norm.
+            This method computes the vector norm of a vector (or batch of vectors).
+
+        Parameters
+        ----------
+        self
+            Input array. Should have a floating-point data type.
+        axis
+            If an integer, ``axis`` specifies the axis (dimension) along which to
+            compute vector norms. If an n-tuple, ``axis`` specifies the axes
+            (dimensions) along which to compute batched vector norms. If ``None``,
+            the vector norm must be computed over all array values (i.e., equivalent
+            to computing the vector norm of a flattened array). Negative indices are
+            also supported. Default: ``None``.
+        keepdims
+            If ``True``, the axes (dimensions) specified by ``axis`` must be included
+            in the result as singleton dimensions, and, accordingly, the result must be
+            compatible with the input array (see :ref:`broadcasting`). Otherwise, if
+            ``False``, the axes (dimensions) specified by ``axis`` must not be included
+            in the result.
+            Default: ``False``.
+        ord
+            order of the norm. The following mathematical norms are supported:
+
+            +------------------+----------------------------+
+            | ord              | description                |
+            +==================+============================+
+            | 1                | L1-norm (Manhattan)        |
+            +------------------+----------------------------+
+            | 2                | L2-norm (Euclidean)        |
+            +------------------+----------------------------+
+            | inf              | infinity norm              |
+            +------------------+----------------------------+
+            | (int,float >= 1) | p-norm                     |
+            +------------------+----------------------------+
+
+            The following non-mathematical "norms" are also supported:
+
+            +------------------+--------------------------------+
+            | ord              | description                    |
+            +==================+================================+
+            | 0                | sum(a != 0)                    |
+            +------------------+--------------------------------+
+            | -inf             | min(abs(a))                    |
+            +------------------+--------------------------------+
+            | (int,float < 1)  | sum(abs(a)**ord)**(1./ord)     |
+            +------------------+--------------------------------+
+
+            Default: ``2``.
+        dtype
+            data type that may be used to perform the computation more precisely.
+            The input array ``self`` gets cast to ``dtype`` before the function's
+            computations.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the vector norms. If ``axis`` is ``None``, the returned
+            array must be a zero-dimensional array containing a vector norm. If ``axis``
+            is a scalar value (``int`` or ``float``), the returned array must have a
+            rank which is one less than the rank of ``self``. If ``axis`` is a
+            ``n``-tuple, the returned array must have a rank which is ``n`` less than
+            the rank of ``self``. The returned array must have a floating-point data
+            type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1., 2., 3.])
+        >>> y = x.vector_norm()
+        >>> print(y)
+        ivy.array([3.7416575])
+        """
         return ivy.vector_norm(
             self._data, axis=axis, keepdims=keepdims, ord=ord, dtype=dtype, out=out
         )

@@ -3,6 +3,10 @@ import numpy as np
 from hypothesis import strategies as st
 from typing import Optional
 
+try:
+    import jsonpickle
+except ImportError:
+    pass
 # local
 import ivy
 from . import number_helpers as nh
@@ -62,6 +66,12 @@ def _get_type_dict(framework, kind):
         raise RuntimeError("{} is an unknown kind!".format(kind))
 
 
+def make_json_pickable(s):
+    s = s.replace("builtins.bfloat16", "ivy.bfloat16")
+    s = s.replace("jax._src.device_array.reconstruct_device_array", "jax.numpy.array")
+    return s
+
+
 @st.composite
 def get_dtypes(
     draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True
@@ -78,7 +88,8 @@ def get_dtypes(
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
     kind
-        Supported types are integer, float, valid, numeric, and unsigned
+        Supported types are integer, float, valid, numeric, signed_integer, complex,
+        real_and_complex, float_and_complex, bool, and unsigned
     index
         list indexing incase a test needs to be skipped for a particular dtype(s)
     full
@@ -171,9 +182,19 @@ def array_dtypes(
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if num_arrays == 1:
-        dtypes = draw(ah.list_of_length(x=st.sampled_from(available_dtypes), length=1))
+        dtypes = draw(
+            ah.list_of_size(
+                x=st.sampled_from(available_dtypes),
+                size=1,
+            )
+        )
     elif shared_dtype:
-        dtypes = draw(ah.list_of_length(x=st.sampled_from(available_dtypes), length=1))
+        dtypes = draw(
+            ah.list_of_size(
+                x=st.sampled_from(available_dtypes),
+                size=1,
+            )
+        )
         dtypes = [dtypes[0] for _ in range(num_arrays)]
     else:
         unwanted_types = set(ivy.all_dtypes).difference(set(available_dtypes))

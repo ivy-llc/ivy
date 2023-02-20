@@ -140,15 +140,7 @@ def test_torch_poisson(
         max_dim_size=10,
     ),
 )
-def test_torch_rand(
-    *,
-    dtype,
-    size,
-    frontend,
-    fn_tree,
-    test_flags
-):
-
+def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
     def call():
         return helpers.test_frontend_function(
             input_dtypes=dtype,
@@ -156,7 +148,7 @@ def test_torch_rand(
             test_values=False,
             fn_tree=fn_tree,
             test_flags=test_flags,
-            size=size
+            size=size,
         )
 
     ret = call()

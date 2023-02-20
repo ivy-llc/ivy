@@ -81,7 +81,7 @@ def set_frontend_to_specific_version(frontend):
     try:
         f = importlib.import_module(f)
         f_version = f.__version__
-    except ImportError:
+    except (ImportError, AttributeError):
         f_version = versions[str_f]
 
     for i in list(frontend.__dict__):

@@ -700,10 +700,11 @@ def test_tensorflow_reduce_mean(
 # reduce_variance
 @handle_frontend_test(
     fn_tree="tensorflow.math.reduce_variance",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_x=statistical_dtype_values(
+        function="var",
     ),
     test_with_out=st.just(False),
+    keepdims=st.booleans(),
 )
 def test_tensorflow_reduce_variance(
     *,
@@ -712,8 +713,9 @@ def test_tensorflow_reduce_variance(
     test_flags,
     fn_tree,
     on_device,
+    keepdims,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis, ddof = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -721,6 +723,10 @@ def test_tensorflow_reduce_variance(
         fn_tree=fn_tree,
         on_device=on_device,
         input_tensor=x[0],
+        axis=axis,
+        atol=1e-2,
+        rtol=1e-2,
+        keepdims=keepdims,
     )
 
 
@@ -1153,12 +1159,6 @@ def test_tensorflow_truediv(
 )
 def test_tensorflow_pow(dtype_and_x, frontend, test_flags, fn_tree):
     input_dtype, x = dtype_and_x
-    if x[1].dtype == "int32" or x[1].dtype == "int64":
-        if x[1].ndim == 0:
-            if x[1] < 0:
-                x[1] *= -1
-        else:
-            x[1][(x[1] < 0).nonzero()] *= -1
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1239,13 +1239,12 @@ def test_tensorflow_equal(
         min_value=-20,
         max_value=20,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_floor(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -1253,10 +1252,7 @@ def test_tensorflow_floor(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1273,13 +1269,12 @@ def test_tensorflow_floor(
         min_value=-20,
         max_value=20,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_ceil(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -1287,10 +1282,7 @@ def test_tensorflow_ceil(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1308,13 +1300,12 @@ def test_tensorflow_ceil(
         max_value=20,
         shared_dtype=True,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_minimum(
     *,
     dtype_and_x,
-    num_positional_args,
-    as_variable,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -1322,10 +1313,7 @@ def test_tensorflow_minimum(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1343,13 +1331,12 @@ def test_tensorflow_minimum(
         min_value=-20,
         max_value=20,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_sigmoid(
     *,
     dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -1357,10 +1344,7 @@ def test_tensorflow_sigmoid(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1455,5 +1439,33 @@ def test_tensorflow_nextafter(
         fn_tree=fn_tree,
         on_device=on_device,
         x1=x[0],
-        x2=x[1]
+        x2=x[1],
+    )
+
+
+# log_softmax
+@handle_frontend_test(
+    fn_tree="tensorflow.math.log_softmax",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_log_softmax(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=x[0],
     )

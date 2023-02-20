@@ -30,16 +30,15 @@ def test_numpy_all(
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
     axis = axis if axis is None or isinstance(axis, int) else axis[0]
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -74,16 +73,15 @@ def test_numpy_any(
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
     axis = axis if axis is None or isinstance(axis, int) else axis[0]
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=test_flags.as_variable,
-        native_array=test_flags.native_arrays,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -116,4 +114,30 @@ def test_numpy_isscalar(
         fn_tree=fn_tree,
         on_device=on_device,
         element=element,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.isfortran",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_isfortran(
+    dtype_and_x,
+    frontend,
+    on_device,
+    *,
+    fn_tree,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
     )
