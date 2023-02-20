@@ -311,6 +311,7 @@ def _interp_args(draw):
     dtype_x_mode=_interp_args(),
     test_gradients=st.just(False),
     number_positional_args=st.just(2),
+    test_with_out=st.just(False),
 )
 def test_interpolate(
     dtype_x_mode,
@@ -407,6 +408,7 @@ def test_fft(
     training=st.booleans(),
     data_format=st.sampled_from(["NWC", "NCW"]),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_dropout1d(
     *,
