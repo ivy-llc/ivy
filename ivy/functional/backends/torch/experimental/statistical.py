@@ -65,19 +65,10 @@ def quantile(
     /,
     *,
     axis: Optional[Union[Sequence[int], int]] = None,
-    keepdims: bool = False,
-    interpolation: str = "linear",
+    keepdims: Optional[bool] = False,
+    interpolation: Optional[str] = "linear",
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-
-    # a,_ = torch.sort(a)
-    # n_axis = len(a.size())
-
-    # if isinstance(axis, tuple):
-    #     axis = list(axis)
-    #     axis = [item * (-1) - (n_axis - 1)for item in axis]
-    # elif isinstance(axis,int):
-    #     axis = n_axis - 1 - axis
 
     if axis is None:
         return torch.quantile(a, q, keepdim=keepdims, interpolation=interpolation)
