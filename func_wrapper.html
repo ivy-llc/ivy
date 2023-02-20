@@ -201,6 +201,43 @@ array_function method.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.func_wrapper.handle_view">
+<span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">handle_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#handle_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.handle_view" title="Permalink to this definition"></a></dt>
+<dd><p>Wraps <cite>fn</cite> and performs view handling if copy is False. Used for functional
+backends (Jax and TensorFlow). Checks if the first arg is a view or original
+array by checking if the ._base attribute is populated. If it’s original
+it adds the returned array to its view references, then the returned array
+adds the operation to its manipulation stack and stores the original as its
+base. If the first arg is a view, then the returned array copies its base and
+manipulation stack, appends the new operation to the manipulation stack and
+appends its reference to the base array’s view_refs attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.func_wrapper.handle_view_indexing">
+<span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">handle_view_indexing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#handle_view_indexing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.handle_view_indexing" title="Permalink to this definition"></a></dt>
+<dd><p>Wraps <cite>fn</cite> and performs view handling specifically for indexing. As with NumPy
+it returns a copy if advanced indexing is performed. Used for functional
+backends (Jax and TensorFlow). Checks if the first arg is a view or
+original array by checking if the ._base attribute is populated. If it’s original
+it adds the returned array to its view references, then the returned array
+adds the operation to its manipulation stack and stores the original as its
+base. If the first arg is a view, then the returned array copies its base and
+manipulation stack, appends the new operation to the manipulation stack and
+appends its reference to the base array’s view_refs attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.func_wrapper.infer_device">
 <span class="sig-prename descclassname"><span class="pre">ivy.func_wrapper.</span></span><span class="sig-name descname"><span class="pre">infer_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/func_wrapper.html#infer_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.func_wrapper.infer_device" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">

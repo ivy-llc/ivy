@@ -177,6 +177,7 @@
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
     <span class="n">handle_array_like_without_promotion</span><span class="p">,</span>
+    <span class="n">handle_view_indexing</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.functional.ivy.device</span> <span class="kn">import</span> <span class="n">dev</span>
 
@@ -2628,7 +2629,7 @@
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">assert_supports_inplace</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Asserts that inplace operations are supported for x, else raises exception.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Asserts that inplace operations are supported for x, else raises IvyBackendException.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2638,7 +2639,41 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        True if support, raises exception otherwise</span>
+<span class="sd">        True if supports, raises IvyBackendException otherwise</span>
+<span class="sd">    </span>
+<span class="sd">    This function is *nestable*, and therefore also accepts :code:&#39;ivy.Container&#39;</span>
+<span class="sd">    instance in place of the argument.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input and default backend set as `numpy`:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; print(x.assert_supports_inplace())</span>
+<span class="sd">    True</span>
+
+<span class="sd">    With :class:`ivy.Array` input and default backend set as `jax`:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; print(x.assert_supports_inplace())</span>
+<span class="sd">    IvyBackendException: jax: assert_supports_inplace: Inplace operations \</span>
+<span class="sd">    are not supported &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt; types with jax backend</span>
+
+<span class="sd">    With :class:`ivy.Container` input and default backend set as `numpy`:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))</span>
+<span class="sd">    &gt;&gt;&gt; print(x.assert_supports_inplace())</span>
+<span class="sd">    {</span>
+<span class="sd">        a: True,</span>
+<span class="sd">        b: True</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With :class:`ivy.Container` input and default backend set as `jax`:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))</span>
+<span class="sd">    &gt;&gt;&gt; print(x.assert_supports_inplace())</span>
+<span class="sd">    IvyBackendException: jax: assert_supports_inplace: Inplace operations \</span>
+<span class="sd">    are not supported &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt; types with jax backend</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
@@ -2650,12 +2685,14 @@
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="get_item"><a class="viewcode-back" href="../../../../functional/ivy/general/get_item.html#ivy.functional.ivy.general.get_item">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="get_item"><a class="viewcode-back" href="../../../../functional/ivy/general/get_item.html#ivy.functional.ivy.general.get_item">[docs]</a><span class="nd">@handle_view_indexing</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_array_like_without_promotion</span>
 <span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">get_item</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
     <span class="n">query</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

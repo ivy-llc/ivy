@@ -166,6 +166,7 @@
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
     <span class="n">handle_array_like_without_promotion</span><span class="p">,</span>
+    <span class="n">handle_view</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
@@ -244,7 +245,8 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="expand_dims"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/expand_dims/expand_dims_functional.html#ivy.functional.ivy.manipulation.expand_dims">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="expand_dims"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/expand_dims/expand_dims_functional.html#ivy.functional.ivy.manipulation.expand_dims">[docs]</a><span class="nd">@handle_view</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -370,7 +372,8 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="flip"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/flip/flip_functional.html#ivy.functional.ivy.manipulation.flip">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="flip"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/flip/flip_functional.html#ivy.functional.ivy.manipulation.flip">[docs]</a><span class="nd">@handle_view</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -455,7 +458,8 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="permute_dims"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/permute_dims/permute_dims_functional.html#ivy.functional.ivy.manipulation.permute_dims">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="permute_dims"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/permute_dims/permute_dims_functional.html#ivy.functional.ivy.manipulation.permute_dims">[docs]</a><span class="nd">@handle_view</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -545,7 +549,8 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">permute_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="reshape"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/reshape/reshape_functional.html#ivy.functional.ivy.manipulation.reshape">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="reshape"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/reshape/reshape_functional.html#ivy.functional.ivy.manipulation.reshape">[docs]</a><span class="nd">@handle_view</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -774,7 +779,8 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="squeeze"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/squeeze/squeeze_functional.html#ivy.functional.ivy.manipulation.squeeze">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="squeeze"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/squeeze/squeeze_functional.html#ivy.functional.ivy.manipulation.squeeze">[docs]</a><span class="nd">@handle_view</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -1225,7 +1231,8 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">repeats</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="split"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/split/split_functional.html#ivy.functional.ivy.manipulation.split">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="split"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/split/split_functional.html#ivy.functional.ivy.manipulation.split">[docs]</a><span class="nd">@handle_view</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
@@ -1299,7 +1306,8 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="swapaxes"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/swapaxes/swapaxes_functional.html#ivy.functional.ivy.manipulation.swapaxes">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="swapaxes"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/swapaxes/swapaxes_functional.html#ivy.functional.ivy.manipulation.swapaxes">[docs]</a><span class="nd">@handle_view</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -1481,7 +1489,8 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">repeats</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unstack"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/unstack/unstack_functional.html#ivy.functional.ivy.manipulation.unstack">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="unstack"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/unstack/unstack_functional.html#ivy.functional.ivy.manipulation.unstack">[docs]</a><span class="nd">@handle_view</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>

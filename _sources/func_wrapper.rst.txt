@@ -22,6 +22,8 @@ Func wrapper
    func_wrapper/output_to_native_arrays.rst
    func_wrapper/to_ivy_arrays_and_back.rst
    func_wrapper/to_native_arrays_and_back.rst
+   func_wrapper/handle_view.rst
+   func_wrapper/handle_view_indexing.rst
    func_wrapper/infer_dtype.rst
    func_wrapper/integer_arrays_to_float.rst
    func_wrapper/infer_device.rst
