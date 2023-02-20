@@ -1,7 +1,7 @@
 from typing import Optional, Union, Tuple, Sequence
 import numpy as np
 
-import ivy
+import ivy  # noqa
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 

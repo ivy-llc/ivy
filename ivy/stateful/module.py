@@ -481,7 +481,8 @@ class Module(ModuleConverters, ModuleHelpers):
         ret
         """
         if self._lazy_compiled:
-            # we are compiling since we want to transpile module, so set the appropriate backend
+            # we are compiling since we want to transpile module,
+            # so set the appropriate backend
             if self._target:
                 ivy.set_backend(self._target)
             self.compile(args=args, kwargs=kwargs)
@@ -714,7 +715,9 @@ class Module(ModuleConverters, ModuleHelpers):
         kwargs: Optional[Dict] = None,
         **compile_kwargs,
     ):
-        """Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the target backend.
+        """
+        Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the
+        target backend.
 
         Args:
             compile_kwargs:

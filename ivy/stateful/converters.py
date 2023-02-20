@@ -2,7 +2,7 @@
 # global
 from types import SimpleNamespace
 from typing import Optional, Dict, List
-import re
+import re  # noqa
 import inspect
 from collections import OrderedDict
 
