@@ -8,10 +8,17 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 
 class Tensor:
-    def __init__(self, array, device=None):
-        self._ivy_array = ivy.asarray(
-            array, dtype=torch_frontend.float32, device=device
-        )
+    def __init__(self, array, device=None, _init_overload=False):
+
+        if _init_overload:
+            self._ivy_array = (
+                ivy.array(array) if not isinstance(array, ivy.Array) else array
+            )
+
+        else:
+            self._ivy_array = ivy.asarray(
+                array, dtype=torch_frontend.float32, device=device
+            )
 
     def __repr__(self):
         return str(self._ivy_array.__repr__()).replace(
@@ -54,7 +61,7 @@ class Tensor:
         if shape is not None:
             return torch_frontend.reshape(self._ivy_array, shape)
         if args:
-            if isinstance(args[0], tuple):
+            if isinstance(args[0], (tuple, list)):
                 shape = args[0]
                 return torch_frontend.reshape(self._ivy_array, shape)
             else:
@@ -326,6 +333,11 @@ class Tensor:
     def arctan2(self, other):
         return torch_frontend.arctan2(self._ivy_array, other)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def arctan2_(self, other):
+        self._ivy_array = self.arctan2(other).ivy_array
+        return self
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acos(self):
         return torch_frontend.acos(self._ivy_array)
@@ -501,7 +513,7 @@ class Tensor:
         if dims is not None:
             return torch_frontend.permute(self._ivy_array, dims)
         if args:
-            if isinstance(args[0], tuple):
+            if isinstance(args[0], (tuple, list)):
                 dims = args[0]
                 return torch_frontend.permute(self._ivy_array, dims)
             else:
@@ -524,6 +536,11 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def cumsum(self, dim, dtype):
         return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def cumsum_(self, dim, *, dtype=None):
+        self._ivy_array = self.cumsum(dim, dtype).ivy_array
+        return self
 
     def inverse(self):
         return torch_frontend.inverse(self._ivy_array)

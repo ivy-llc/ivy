@@ -18,18 +18,16 @@ def _arrays_idx_n_dtypes(draw):
         st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
     )
     common_shape = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_dims - 1,
-            max_size=num_dims - 1,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_arrays,
-            max_size=num_arrays,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_arrays,
         )
     )
     xs = list()
@@ -445,6 +443,33 @@ def test_torch_transpose(
         input=value[0],
         dim0=dim0,
         dim1=dim1,
+    )
+
+
+# t
+@handle_frontend_test(
+    fn_tree="torch.t",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(max_num_dims=2), key="shape"),
+    ),
+)
+def test_torch_t(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
     )
 
 
@@ -1013,6 +1038,37 @@ def test_torch_hsplit(
             and ivy.current_backend_str() in ("tensorflow", "jax")
         )
     )
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        indices_or_sections=indices_or_sections,
+    )
+
+
+# vsplit
+@handle_frontend_test(
+    fn_tree="torch.vsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
+    number_positional_args=st.just(2),
+)
+def test_torch_vsplit(
+    *,
+    dtype_value,
+    indices_or_sections,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

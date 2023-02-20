@@ -168,12 +168,18 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if transpose_a is True:
+    if transpose_a:
         x1 = jnp.transpose(x1)
-    if transpose_b is True:
+    if transpose_b:
         x2 = jnp.transpose(x2)
+    if adjoint_a:
+        x1 = jnp.transpose(jnp.conjugate(x1))
+    if adjoint_b:
+        x2 = jnp.transpose(jnp.conjugate(x2))
     return jnp.matmul(x1, x2)
 
 
@@ -279,7 +285,11 @@ def matrix_rank(
     {"0.3.14 and below": ("int", "float16", "complex")},
     backend_version,
 )
-def matrix_transpose(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def matrix_transpose(
+    x: JaxArray, /, *, conjugate: bool = False, out: Optional[JaxArray] = None
+) -> JaxArray:
+    if conjugate:
+        jnp.conj(x)
     return jnp.swapaxes(x, -1, -2)
 
 
@@ -336,7 +346,16 @@ def slogdet(
     {"0.3.14 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
-def solve(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def solve(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if adjoint:
+        x1 = jnp.transpose(jnp.conjugate(x1))
     expanded_last = False
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if len(x2.shape) <= 1:
