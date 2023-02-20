@@ -41,18 +41,21 @@ _array_types[
 ] = "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
 _array_types["torch.nn.parameter"] = "ivy.functional.backends.torch"
+_array_types["paddle"] = "ivy.functional.backends.paddle"
 
 _backend_dict = dict()
 _backend_dict["numpy"] = "ivy.functional.backends.numpy"
 _backend_dict["jax"] = "ivy.functional.backends.jax"
 _backend_dict["tensorflow"] = "ivy.functional.backends.tensorflow"
 _backend_dict["torch"] = "ivy.functional.backends.torch"
+_backend_dict["paddle"] = "ivy.functional.backends.paddle"
 
 _backend_reverse_dict = dict()
 _backend_reverse_dict["ivy.functional.backends.numpy"] = "numpy"
 _backend_reverse_dict["ivy.functional.backends.jax"] = "jax"
 _backend_reverse_dict["ivy.functional.backends.tensorflow"] = "tensorflow"
 _backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
+_backend_reverse_dict["ivy.functional.backends.paddle"] = "paddle"
 
 # Backend Getting/Setting #
 # ----------------------- #
