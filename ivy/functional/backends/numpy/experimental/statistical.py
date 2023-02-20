@@ -14,6 +14,8 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if out is not None:
+        out = np.reshape(out, input.shape)
     return np.median(
         input,
         axis=axis,
