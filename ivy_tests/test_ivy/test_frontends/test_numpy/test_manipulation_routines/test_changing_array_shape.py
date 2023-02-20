@@ -180,3 +180,29 @@ def test_numpy_moveaxis(
         source=source,
         destination=destination,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.resize",
+    dtype_a_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), ret_shape=True
+    ),
+)
+def test_resize(
+    dtype_a_shape,
+    frontend,
+    on_device,
+    *,
+    fn_tree,
+    test_flags,
+):
+    dtypes, a, shape = dtype_a_shape
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
+        new_shape=shape,
+    )
