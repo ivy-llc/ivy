@@ -432,9 +432,10 @@ def floor_divide(x1, x2, /, out=None):
 
 @to_ivy_arrays_and_back
 def prod(x, /, out=None):
-    return ivy.prod(x, out=out)
+    return ivy.prod(x, out=out, dtype=ivy.dtype(x))
 
 
+@to_ivy_arrays_and_back
 def inner(a, b):
     a, b = promote_types_of_jax_inputs(a, b)
     return ivy.inner(a, b)
