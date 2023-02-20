@@ -370,18 +370,34 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    mode: Union[
+        Literal["linear", "bilinear", "trilinear", "nearest", "area"]
+    ] = "linear",
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     dims = len(x.shape) - 2
-    size = (size,) * dims if isinstance(size, int) else size
-    if align_corners:
+    if align_corners or dims > 2 or mode == "nearest":
         return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
+    size = (size,) * dims if isinstance(size, int) else size
+    remove_dim = False
+    if mode in ["linear", "area"]:
+        if dims == 1:
+            size = (1,) + tuple(size)
+            x = tf.expand_dims(x, axis=-2)
+            dims = 2
+            remove_dim = True
+        mode = "bilinear" if mode == "linear" else mode
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
-    return tf.transpose(
-        tf.image.resize(x, shape=size, method=mode, antialias=antialias),
+    ret = tf.transpose(
+        tf.cast(
+            tf.image.resize(x, size=size, method=mode, antialias=antialias), x.dtype
+        ),
         (0, dims + 1, *range(1, dims + 1)),
     )
+    if remove_dim:
+        ret = tf.squeeze(ret, axis=-2)
+    return ret

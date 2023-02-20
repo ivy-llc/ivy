@@ -1122,7 +1122,7 @@ def interpolate(
                         ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
                             1 / scale_x
                         )
-    return ivy.astype(ret, ivy.dtype(x))
+    return ivy.astype(ret, ivy.dtype(x), out=out)
 
 
 interpolate.mixed_function = True
