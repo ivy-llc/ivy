@@ -14,7 +14,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 @to_ivy_arrays_and_back
@@ -46,7 +46,9 @@ def argsort(a, axis=-1, kind="stable", order=None):
             "are supported."
         )
     if order is not None:
-        raise ivy.exceptions.IvyError("'order' argument to argsort is not supported.")
+        raise ivy.utils.exceptions.IvyError(
+            "'order' argument to argsort is not supported."
+        )
 
     return ivy.argsort(a, axis=axis)
 

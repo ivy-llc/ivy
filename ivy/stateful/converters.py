@@ -209,7 +209,7 @@ class ModuleConverters:
 
         if inspect.isclass(native_module):
             if len(i_args) == 0 and len(i_kwargs) == 0:
-                raise ivy.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     "both instance_args and instance_kwargs cannot be none"
                     " when passing a native class"
                 )
@@ -310,7 +310,7 @@ class ModuleConverters:
 
         if inspect.isclass(native_module):
             if len(i_args) == 0 and len(i_kwargs) == 0:
-                raise ivy.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     "both instance_args and instance_kwargs cannot be none"
                     " when passing a native class"
                 )
@@ -427,7 +427,7 @@ class ModuleConverters:
                         # noinspection PyProtectedMember
                         native.__setattr__(k, torch.nn.Parameter(v))
                     else:
-                        raise ivy.exceptions.IvyException(
+                        raise ivy.utils.exceptions.IvyException(
                             "found item in variable container {} which was neither a "
                             "sub ivy.Container nor a variable.".format(v)
                         )
