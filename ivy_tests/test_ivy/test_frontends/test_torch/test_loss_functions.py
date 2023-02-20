@@ -709,6 +709,9 @@ def test_torch_margin_ranking_loss(
         num_arrays=3,
         allow_inf=False,
         shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
     ),
     margin=st.floats(),
     p=st.integers(),
@@ -719,7 +722,7 @@ def test_torch_margin_ranking_loss(
     reduction=st.sampled_from(["none", "mean", "sum"]),
     test_with_out=st.just(False),
 )
-def test_torch_triplet_margin_losss(
+def test_torch_triplet_margin_loss(
     *,
     dtype_and_inputs,
     margin,
