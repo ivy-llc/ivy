@@ -3070,7 +3070,7 @@ def _conv2d_helper(draw):
         padding = draw(_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
-        padding=st.sampled_from(["SAME", "VALID"]),
+        padding=st.sampled_from(["SAME", "VALID", "EXPLICIT"]),
         type="2d",
         dilation_min=1,
         dilation_max=1,
