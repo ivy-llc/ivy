@@ -405,7 +405,7 @@ class ndarray:
 
     def __ior__(self, value, /):
         return np_frontend.logical_or(self._ivy_array, value)
-
+        
     def __ixor__(self, value, /):
         return np_frontend.logical_xor(self._ivy_array, value)
 
