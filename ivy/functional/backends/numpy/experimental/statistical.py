@@ -64,8 +64,8 @@ def quantile(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    interpolation: str = "linear",
+    keepdims: Optional[bool] = False,
+    interpolation: Optional[str] = "linear",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     # quantile method in numpy backend, always return an array with dtype=float64.
