@@ -4067,7 +4067,6 @@ def test_torch_instance_ne(
 )
 def test_torch_instance_ne_(
     dtype_and_x,
-    init_num_positional_args,
     method_num_positional_args,
     as_variable,
     native_array,
@@ -4081,6 +4080,8 @@ def test_torch_instance_ne_(
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "other": x[1],
         },
