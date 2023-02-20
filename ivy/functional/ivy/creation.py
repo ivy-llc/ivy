@@ -225,12 +225,12 @@ def arange(
     
     >>> x = ivy.arange(12,step=2)
     >>> print(x)
-    ivy.array([0, 2, 4, 6, 8, 10])
+    ivy.array([0., 2., 4., 6., 8., 10.])
     
     >>> x = ivy.arange(start=1,stop=8,step=2).reshape(2,2)
     >>> print(x)
-    ivy.array([[1, 3],
-               [5, 7]])
+    ivy.array([[1., 3.],
+               [5., 7.]])
                
     >>> x = ivy.arange(1,2,step=0.1)
     >>> print(x)
@@ -238,8 +238,8 @@ def arange(
     
     >>> a = ivy.arange(6).reshape((2, 3))
     >>> print(a)
-    ivy.array([[0, 1, 2],
-               [3, 4, 5]])
+    ivy.array([[0., 1., 2.],
+               [3., 4., 5.]])
      
     """
     return current_backend().arange(
