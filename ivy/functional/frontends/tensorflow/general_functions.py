@@ -347,8 +347,8 @@ def roll(input, shift, axis, name=None):
 
 @to_ivy_arrays_and_back
 def repeat(
-        input_,
+        input,
         repeats,
-        axis=None
+        axis = None
 ):
-    return ivy.repeat(input_, repeats, axis=axis)
+    return ivy.repeat(input, repeats, axis=axis)

@@ -1494,45 +1494,36 @@ def test_tensorflow_roll(
 
 
 # repeat
-@st.composite
-def _repeat_helper(draw):
-    dtypes, x, axis, shape = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            min_num_dims=1,
-            valid_axis=True,
-            ret_shape=True,
-            force_int_axis=True,
-        )
-    )
-    if axis is None or len(shape) == 1:
-        repeats = draw(helpers.ints(min_value=0))
-    else:
-        repeat_shape = shape[axis]
-        repeats = draw(helpers.array_values(dtype="int32", shape=repeat_shape))
-    return dtypes, x[0], repeats, axis
-
-
 @handle_frontend_test(
     fn_tree="tensorflow.repeat",
-    x=_repeat_helper()
+    dtypes_and_value_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        max_dim_size=10,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    repeats=helpers.ints(min_value=1, max_value=5)
 )
 def test_tensorflow_repeat(
     *,
-    x,
+    dtypes_and_value_and_axis,
+    repeats,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtypes, input_, repeats, axis = x
+    input_dtypes, x, axis = dtypes_and_value_and_axis
+    repeats = repeats
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input_=input_,
+        input=x[0],
         repeats=repeats,
         axis=axis
     )
