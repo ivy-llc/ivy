@@ -485,9 +485,12 @@ def Pow(*, x, y, name="Pow"):
     return ivy.pow(x, y)
 
 
-@to_ivy_arrays_and_back
-def Relu6(features, name="Relu6"):
-    return ivy.relu6(features)
+Relu6 = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.nn.relu6,
+        kwargs_to_update={"x": "features"},
+    )
+)
 
 
 Sigmoid = to_ivy_arrays_and_back(
