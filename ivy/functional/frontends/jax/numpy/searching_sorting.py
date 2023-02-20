@@ -100,24 +100,6 @@ def extract(condition, arr):
     return arr[condition]
 
 
-@to_ivy_arrays_and_back
-def count_nonzero(a, axis=None):
-    if axis is None:
-        return ivy.count_nonzero(a)
-
-    return ivy.sum(a != 0, axis=axis)
-
-
-@to_ivy_arrays_and_back
-def flatnonzero(a):
-    return ivy.flatten(ivy.nonzero(a), end_axis=-1)
-
-
-@to_ivy_arrays_and_back
-def lexsort(keys, /, *, axis=-1):
-    return ivy.lexsort(keys, axis=axis)
-
-
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -142,4 +124,22 @@ def sort(
     if out == x:
         x = ivy.sort(x, out=x)
     return x
+
+
+@to_ivy_arrays_and_back
+def count_nonzero(a, axis=None):
+    if axis is None:
+        return ivy.count_nonzero(a)
+
+    return ivy.sum(a != 0, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def flatnonzero(a):
+    return ivy.flatten(ivy.nonzero(a), end_axis=-1)
+
+
+@to_ivy_arrays_and_back
+def lexsort(keys, /, *, axis=-1):
+    return ivy.lexsort(keys, axis=axis)
 
