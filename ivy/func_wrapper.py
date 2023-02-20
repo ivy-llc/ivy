@@ -47,7 +47,7 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
         try:
             result = overloaded_arg.__ivy_array_function__(func, types, args, kwargs)
         except Exception:
-            raise ivy.exceptions.IvyNotImplementedException
+            raise ivy.utils.exceptions.IvyNotImplementedException
 
         if result is not NotImplemented:
             return True, result
@@ -868,7 +868,7 @@ def handle_nans(fn: Callable) -> Callable:
         if result:
             # handle nans based on the selected policy
             if nan_policy == "raise_exception":
-                raise ivy.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     "Nans are not allowed in `raise_exception` policy."
                 )
             elif nan_policy == "warns":

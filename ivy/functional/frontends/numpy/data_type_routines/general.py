@@ -5,7 +5,7 @@ import ivy.functional.frontends.numpy as np_frontend
 
 @to_ivy_arrays_and_back
 def can_cast(from_, to, casting="safe"):
-    ivy.assertions.check_elem_in_list(
+    ivy.utils.assertions.check_elem_in_list(
         casting,
         ["no", "equiv", "safe", "same_kind", "unsafe"],
         message="casting must be one of [no, equiv, safe, same_kind, unsafe]",
@@ -18,7 +18,7 @@ def can_cast(from_, to, casting="safe"):
     elif isinstance(from_, np_frontend.dtype):
         from_ = from_._ivy_dtype
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "from_ must be one of dtype, dtype specifier, scalar, or array"
         )
 
@@ -27,7 +27,7 @@ def can_cast(from_, to, casting="safe"):
     elif isinstance(to, np_frontend.dtype):
         to = to._ivy_dtype
     else:
-        raise ivy.exceptions.IvyException("to must be dtype or dtype specifier")
+        raise ivy.utils.exceptions.IvyException("to must be dtype or dtype specifier")
 
     if casting == "no" or casting == "equiv":
         return from_ == to
