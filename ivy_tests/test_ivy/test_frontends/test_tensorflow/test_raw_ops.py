@@ -3059,7 +3059,6 @@ def test_tensorflow_Elu(
         name=name,
     )
 
-
 @st.composite
 def _conv2d_helper(draw):
     input_dtype, \
@@ -3071,32 +3070,23 @@ def _conv2d_helper(draw):
         padding = draw(_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
-        padding=st.sampled_from(["SAME", "VALID", "EXPLICIT"]),
+        padding=st.sampled_from(["SAME", "VALID"]),
         type="2d",
         dilation_min=1,
         dilation_max=1,
     ))
     if padding == "EXPLICIT":
-        explicit_paddings = padding
         pad_top = draw(st.integers(min_value=0, max_value=3))
         pad_bottom = draw(st.integers(min_value=0, max_value=3))
         pad_left = draw(st.integers(min_value=0, max_value=3))
         pad_right = draw(st.integers(min_value=0, max_value=3))
-
+        explicit_paddings = [(pad_top, pad_bottom), (pad_left, pad_right)]
         if data_format == "NHWC":
-            explicit_paddings = [(0, 0),
-                                 (pad_top, pad_bottom),
-                                 (pad_left, pad_right),
-                                 (0, 0)]
+            explicit_paddings = [(0, 0), *explicit_paddings, (0, 0)]
         else:
-            explicit_paddings = [(0, 0),
-                                 (0, 0),
-                                 (pad_top, pad_bottom),
-                                 (pad_left, pad_right)]
-
-    elif padding == "SAME" or padding == "VALID":
+            explicit_paddings = [(0, 0), (0, 0), *explicit_paddings]
+    else:
         explicit_paddings = []
-        padding = padding
 
     return input_dtype, \
         x, \
@@ -3104,7 +3094,8 @@ def _conv2d_helper(draw):
         dilations, \
         data_format, \
         strides, \
-        padding
+        padding, \
+        explicit_paddings
 
 
 @handle_frontend_test(
@@ -3126,7 +3117,8 @@ def test_tensorflow_Conv2D(
         dilation, \
         data_format, \
         stride, \
-        padding = x_f_d_df
+        paddings,\
+        explicit_paddings = x_f_d_df
     # Broadcast strides and dilations to correct dims for the ground truth
     # backend func to run correctly
     stride = _convolution_broadcast_helper(
@@ -3144,7 +3136,8 @@ def test_tensorflow_Conv2D(
         input=x,
         filter=filters,
         strides=stride,
-        padding=padding,
+        padding=paddings,
+        explicit_paddings=explicit_paddings,
         data_format=data_format,
         dilations=dilation,
     )
