@@ -343,3 +343,31 @@ def test_numpy_nanargmin(
         axis=axis,
         keepdims=keep_dims,
     )
+
+# extract
+@handle_frontend_test(
+    fn_tree="numpy.extract",
+    dtype_x_condition=helpers.dtype_values_condition(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_extract(
+    dtype_x_condition,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, condition = dtype_x_condition
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=condition[0],
+        a=x[0],
+    )
+    
