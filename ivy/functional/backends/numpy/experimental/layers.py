@@ -579,7 +579,7 @@ def dropout3d(
             perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
             x = np.transpose(x, perm)
         noise_shape = list(x.shape)
-        sl = slice(1,-1) if is_batched else slice(-1)
+        sl = slice(1, -1) if is_batched else slice(-1)
         noise_shape[sl] = [1] * 3
         mask = np.random.binomial(1, 1 - prob, noise_shape)
         res = np.where(mask, x / (1 - prob), 0)

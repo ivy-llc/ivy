@@ -320,7 +320,7 @@ def dropout3d(
             perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
             x = tf.transpose(x, perm)
         noise_shape = list(x.shape)
-        sl = slice(1,-1) if is_batched else slice(-1)
+        sl = slice(1, -1) if is_batched else slice(-1)
         noise_shape[sl] = [1] * 3
         res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
         if data_format == "NCDHW":

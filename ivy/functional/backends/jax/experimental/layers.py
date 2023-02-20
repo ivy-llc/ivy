@@ -15,13 +15,13 @@ from ivy.functional.ivy.layers import _handle_padding
 def _from_int_to_tuple(arg, dim):
     if isinstance(arg, int):
         return (arg,) * dim
-    if isinstance(arg, tuple) and len(arg) == 1:
+    if _check_if_iterable(arg) and len(arg) == 1:
         return (arg[0],) * dim
     return arg
 
 
 def general_pool(
-    inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation, ceil_mode
+    inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation=1, ceil_mode=True
 ):
     window_shape = _from_int_to_tuple(window_shape, dim)
     strides = _from_int_to_tuple(strides, dim)
@@ -199,7 +199,7 @@ def avg_pool1d(
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
     res = res / general_pool(
-        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding,1
     )
     if data_format == "NCW":
         res = jnp.transpose(x, (0, 2, 1))
@@ -235,7 +235,7 @@ def avg_pool2d(
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
     res = res / general_pool(
-        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding,2
     )
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
@@ -269,7 +269,7 @@ def avg_pool3d(
     res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 3)
 
     res = res / general_pool(
-        jnp.ones_like(x, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones_like(x, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding,3
     )
 
     if data_format == "NCDHW":
@@ -419,7 +419,7 @@ def dropout3d(
             perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
             x = jnp.transpose(x, perm)
         noise_shape = list(x.shape)
-        sl = slice(1,-1) if is_batched else slice(-1)
+        sl = slice(1, -1) if is_batched else slice(-1)
         noise_shape[sl] = [1] * 3
         _, rng_input = jax.random.split(RNG.key)
         mask = jax.random.bernoulli(rng_input, 1 - prob, noise_shape)
