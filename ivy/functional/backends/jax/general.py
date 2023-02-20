@@ -11,6 +11,12 @@ from functools import reduce
 from jaxlib.xla_extension import Buffer
 from typing import Iterable, Optional, Union, Sequence, Callable
 import multiprocessing as _multiprocessing
+
+# necessary import, because stateful imports jax as soon as you import ivy, however,
+# during multiversion # jax is not there, and therefore a later import results in some
+# sort of circular import, so haiku is needed
+import haiku  # NOQA
+
 from haiku._src.data_structures import FlatMapping
 
 # local
@@ -285,8 +291,13 @@ def scatter_nd(
 ) -> JaxArray:
 
     # parse numeric inputs
-    if indices not in [Ellipsis, ()] and not (
-        isinstance(indices, Iterable) and Ellipsis in indices
+    if (
+        indices not in [Ellipsis, ()]
+        and not (isinstance(indices, Iterable) and Ellipsis in indices)
+        and not isinstance(indices, slice)
+        and not (
+            isinstance(indices, Iterable) and any(isinstance(k, slice) for k in indices)
+        )
     ):
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = jnp.array(indices)
@@ -303,7 +314,7 @@ def scatter_nd(
     )
 
     # handle Ellipsis
-    if isinstance(indices, tuple) or indices is Ellipsis:
+    if isinstance(indices, tuple) or indices is Ellipsis or isinstance(indices, slice):
         indices_tuple = indices
     else:
         expected_shape = (
