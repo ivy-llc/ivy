@@ -36,6 +36,15 @@ except ImportError:
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
 
+# Local Ivy
+
+import_module_path = "ivy.utils._importlib"
+
+
+def is_local():
+    return hasattr(ivy, "_is_local_pkg")
+
+
 # class placeholders
 
 
@@ -695,6 +704,7 @@ extra_promotion_table = {
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}
 
 
+from .func_wrapper import *
 from .array import Array, add_ivy_array_instance_methods
 from .array.conversions import *
 from .array import conversions as arr_conversions
@@ -720,7 +730,6 @@ from ivy.utils.backend import (
     choose_random_backend,
     clear_backend_stack,
 )
-from .func_wrapper import *
 from . import assertions, func_wrapper, exceptions
 from .utils.backend import handler
 from . import functional
@@ -1116,15 +1125,6 @@ def unset_nan_policy():
     global nan_policy_stack
     if nan_policy_stack:
         nan_policy_stack.pop(-1)
-
-
-# Local Ivy
-
-import_module_path = "ivy.utils._importlib"
-
-
-def is_local():
-    return hasattr(ivy, "_is_local_pkg")
 
 
 # Dynamic Backend

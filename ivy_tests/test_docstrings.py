@@ -72,19 +72,19 @@ def check_docstring_examples_run(
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
-    if fn_name not in ivy.backend.backend_handler.ivy_original_dict:
+    if fn_name not in ivy.utils.backend.handler.ivy_original_dict:
         return True
 
     if from_container:
         docstring = getattr(
-            ivy.backend.backend_handler.ivy_original_dict["Container"], fn_name
+            ivy.utils.backend.handler.ivy_original_dict["Container"], fn_name
         ).__doc__
     elif from_array:
         docstring = getattr(
-            ivy.backend.backend_handler.ivy_original_dict["Array"], fn_name
+            ivy.utils.backend.handler.ivy_original_dict["Array"], fn_name
         ).__doc__
     else:
-        docstring = ivy.backend.backend_handler.ivy_original_dict[fn_name].__doc__
+        docstring = ivy.utils.backend.handler.ivy_original_dict[fn_name].__doc__
     if docstring is None:
         return True
 

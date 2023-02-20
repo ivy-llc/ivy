@@ -19,17 +19,21 @@ def median(
     temp = input
     if hasattr(axis, "__iter__"):
         for dim in axis:
-            temp = torch.median(
+            temp = torch.quantile(
                 temp,
+                0.5,
                 dim=dim,
                 keepdim=keepdims,
+                interpolation="midpoint",
             )[0]
-        return input
+        return temp
     else:
-        return torch.median(
+        return torch.quantile(
             input,
+            0.5,
             dim=axis,
             keepdim=keepdims,
+            interpolation="midpoint",
         )[0]
 
 
@@ -45,7 +49,15 @@ def nanmean(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
+    if isinstance(dtype, str):
+        TORCH_DTYPES = {
+            'float32': torch.float32,
+            'float64': torch.float64,
+        }
+        temp = Torch_DTYPES[dtype]
+    else:
+        temp = dtype
+    return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=temp, out=out)
 
 
 nanmean.support_native_out = True
@@ -60,19 +72,10 @@ def quantile(
     /,
     *,
     axis: Optional[Union[Sequence[int], int]] = None,
-    keepdims: bool = False,
-    interpolation: str = "linear",
+    keepdims: Optional[bool] = False,
+    interpolation: Optional[str] = "linear",
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-
-    # a,_ = torch.sort(a)
-    # n_axis = len(a.size())
-
-    # if isinstance(axis, tuple):
-    #     axis = list(axis)
-    #     axis = [item * (-1) - (n_axis - 1)for item in axis]
-    # elif isinstance(axis,int):
-    #     axis = n_axis - 1 - axis
 
     if axis is None:
         return torch.quantile(a, q, keepdim=keepdims, interpolation=interpolation)
@@ -149,7 +152,7 @@ def unravel_index(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    temp = indices
+    temp = indices.to("int64")
     output = []
     for dim in reversed(shape):
         output.append(temp % dim)

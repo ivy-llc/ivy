@@ -33,12 +33,7 @@ def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
 
 
-def sigmoid(
-    x: Tensor,
-    /,
-    *,
-    out: Optional[Tensor] = None
-) -> Tensor:
+def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     if not ivy.is_array(x):
         x = float(x)
     return tf.nn.sigmoid(x)

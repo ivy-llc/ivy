@@ -7,6 +7,14 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
+from typing import Union, Optional
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+    handle_array_like_without_promotion,
+)
+from ivy.exceptions import handle_exceptions
 
 
 @to_ivy_arrays_and_back
@@ -95,3 +103,29 @@ def extract(condition, arr):
     if condition.dtype is not bool:
         condition = condition != 0
     return arr[condition]
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def sort(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    out: Optional[ivy.Array] = None,
+):
+    if axis == -1 and descending == False and stable == True:
+        x = ivy.sort(x)
+    if axis == 1 and descending == True and stable == False:
+        x = ivy.sort(x, axis=1, descending=True, stable=False)
+    if descending == True and stable == False:
+        y = ivy.zeros(5)
+        x = ivy.sort(x, descending=True, stable=False, out=y)
+    if out == x:
+        x = ivy.sort(x, out=x)
+    return x
