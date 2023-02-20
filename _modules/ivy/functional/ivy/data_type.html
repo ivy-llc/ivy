@@ -100,7 +100,10 @@
 <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/assertions.html">Assertions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/verbosity.html">Verbosity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
@@ -172,7 +175,7 @@
     <span class="n">handle_array_like_without_promotion</span><span class="p">,</span>
     <span class="n">inputs_to_ivy_arrays</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+<span class="kn">from</span> <span class="nn">ivy.utils.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
 <span class="c1"># Helpers #</span>
@@ -356,7 +359,7 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">(),</span> <span class="n">base</span><span class="p">)</span>
 
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
             <span class="n">supported</span> <span class="o">=</span> <span class="n">merge_fn</span><span class="p">(</span><span class="n">supported</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">complement</span><span class="p">:</span>
@@ -1724,7 +1727,7 @@
 <span class="sd">    (&#39;bool&#39;, &#39;float64&#39;, &#39;int64&#39;, &#39;uint8&#39;, &#39;int8&#39;, &#39;float32&#39;, &#39;int32&#39;, &#39;int16&#39;, \</span>
 <span class="sd">    &#39;bfloat16&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
         <span class="n">_is_valid_dtypes_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span>
         <span class="s2">&quot;supported_dtypes and unsupported_dtypes attributes cannot both exist </span><span class="se">\</span>
 <span class="s2">        in a particular backend&quot;</span><span class="p">,</span>
@@ -1761,7 +1764,7 @@
 <span class="sd">    &gt;&gt;&gt; print(ivy.function_unsupported_dtypes(ivy.acosh))</span>
 <span class="sd">    (&#39;float16&#39;,&#39;uint16&#39;,&#39;uint32&#39;,&#39;uint64&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
         <span class="n">_is_valid_dtypes_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span>
         <span class="s2">&quot;supported_dtypes and unsupported_dtypes attributes cannot both exist </span><span class="se">\</span>
 <span class="s2">        in a particular backend&quot;</span><span class="p">,</span>
@@ -2140,7 +2143,7 @@
                 <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">type1</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">type2</span><span class="p">))</span>
             <span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;these dtypes are not type promotable&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;these dtypes are not type promotable&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span></div>
 
 

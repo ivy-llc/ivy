@@ -100,7 +100,10 @@
 <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/assertions.html">Assertions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/verbosity.html">Verbosity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
@@ -158,10 +161,9 @@
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">ivy</span> <span class="kn">import</span> <span class="n">verbosity</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">import</span> <span class="nn">gc</span>
-<span class="kn">from</span> <span class="nn">ivy.utils</span> <span class="kn">import</span> <span class="n">_importlib</span>
+<span class="kn">from</span> <span class="nn">ivy.utils</span> <span class="kn">import</span> <span class="n">_importlib</span><span class="p">,</span> <span class="n">verbosity</span>
 <span class="kn">from</span> <span class="nn">ivy.utils.backend</span> <span class="kn">import</span> <span class="n">ast_helpers</span>
 
 <span class="c1"># local</span>
@@ -548,7 +550,7 @@
 <span class="sd">    &gt;&gt;&gt; print(type(native))</span>
 <span class="sd">    &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"></span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_false</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_false</span><span class="p">(</span>
         <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">backend</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_backend_dict</span><span class="p">,</span>
         <span class="s2">&quot;backend must be one from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_backend_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
     <span class="p">)</span>
@@ -740,7 +742,7 @@
 <span class="k">def</span> <span class="nf">choose_random_backend</span><span class="p">(</span><span class="n">excluded</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">excluded</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span> <span class="k">if</span> <span class="n">excluded</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">excluded</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">excluded</span><span class="p">),</span>
             <span class="mi">4</span><span class="p">,</span>
             <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>

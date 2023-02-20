@@ -100,7 +100,10 @@
 <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/assertions.html">Assertions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/verbosity.html">Verbosity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
@@ -163,14 +166,14 @@
     <span class="n">handle_nestable</span><span class="p">,</span>
     <span class="n">handle_array_like_without_promotion</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+<span class="kn">from</span> <span class="nn">ivy.utils.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 <span class="c1"># Helpers #</span>
 <span class="c1"># ------- #</span>
 
 
 <span class="k">def</span> <span class="nf">_check_valid_dimension_size</span><span class="p">(</span><span class="n">std</span><span class="p">):</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_dimensions</span><span class="p">(</span><span class="n">std</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_dimensions</span><span class="p">(</span><span class="n">std</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="diagflat"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/linear_algebra/diagflat.html#ivy.functional.ivy.experimental.diagflat">[docs]</a><span class="nd">@to_native_arrays_and_back</span>

@@ -100,7 +100,10 @@
 <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/assertions.html">Assertions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/verbosity.html">Verbosity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
@@ -173,7 +176,7 @@
     <span class="n">handle_view</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.utils.backend</span> <span class="kn">import</span> <span class="n">current_backend</span>
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+<span class="kn">from</span> <span class="nn">ivy.utils.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
 <div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/manipulation/flatten.html#ivy.functional.ivy.experimental.flatten">[docs]</a><span class="nd">@handle_out_argument</span>
@@ -1013,7 +1016,7 @@
     <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,):</span>
         <span class="k">return</span> <span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),)</span> <span class="o">*</span> <span class="n">n</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
             <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
             <span class="n">message</span><span class="o">=</span><span class="s2">&quot;tuple argument should contain &quot;</span>
@@ -1037,7 +1040,7 @@
     <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">flag_assert</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="n">flag_assert</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
             <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; should be int, tuple of ints or tuple of int tuples&quot;</span>
         <span class="p">)</span>
 
@@ -1050,7 +1053,7 @@
     <span class="n">end_values</span><span class="p">,</span>
     <span class="n">reflect_type</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
         <span class="n">callable</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
         <span class="ow">or</span> <span class="n">mode</span>
         <span class="ow">in</span> <span class="p">[</span>
@@ -1069,36 +1072,36 @@
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;the provided mode is not supported&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">_check_tuple_arg</span><span class="p">(</span><span class="n">pad_width</span><span class="p">,</span> <span class="s2">&quot;pad_width&quot;</span><span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
         <span class="nb">all</span><span class="p">(</span><span class="n">element</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ndenumerate</span><span class="p">(</span><span class="n">pad_width</span><span class="p">)),</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;the pad_widths must be greater or equal to zero&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;maximum&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span> <span class="s2">&quot;minimum&quot;</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">stat_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;stat_length is required for mode: &quot;</span> <span class="o">+</span> <span class="n">mode</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_check_tuple_arg</span><span class="p">(</span><span class="n">stat_length</span><span class="p">,</span> <span class="s2">&quot;stat_length&quot;</span><span class="p">)</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
                 <span class="nb">all</span><span class="p">(</span><span class="n">element</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ndenumerate</span><span class="p">(</span><span class="n">stat_length</span><span class="p">)),</span>
                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;the stat lengths must be greater than zero&quot;</span><span class="p">,</span>
             <span class="p">)</span>
     <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;constant&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">constant_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;constant_values is required for mode: &quot;</span> <span class="o">+</span> <span class="n">mode</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_check_tuple_arg</span><span class="p">(</span><span class="n">constant_values</span><span class="p">,</span> <span class="s2">&quot;constant_values&quot;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;linear_ramp&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">end_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;end_values is required for mode: &quot;</span> <span class="o">+</span> <span class="n">mode</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_check_tuple_arg</span><span class="p">(</span><span class="n">end_values</span><span class="p">,</span> <span class="s2">&quot;end_values&quot;</span><span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
         <span class="n">reflect_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;even&quot;</span><span class="p">,</span> <span class="s2">&quot;odd&quot;</span><span class="p">],</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;the provided reflect_type is not supported&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1324,7 +1327,7 @@
         <span class="n">func</span> <span class="o">=</span> <span class="n">stat_functions</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
         <span class="n">stat_length</span> <span class="o">=</span> <span class="n">_to_pairs</span><span class="p">(</span><span class="n">stat_length</span><span class="p">,</span> <span class="n">padded</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;median&quot;</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
                 <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="nb">input</span><span class="p">),</span>
                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;median interpolation is only supported for floats&quot;</span><span class="p">,</span>
             <span class="p">)</span>

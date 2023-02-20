@@ -1,0 +1,37 @@
+Assertions
+==========
+
+.. automodule:: ivy.utils.assertions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Assertions
+
+   assertions/check_less.rst
+   assertions/check_greater.rst
+   assertions/check_equal.rst
+   assertions/check_isinstance.rst
+   assertions/check_exists.rst
+   assertions/check_elem_in_list.rst
+   assertions/check_true.rst
+   assertions/check_false.rst
+   assertions/check_all.rst
+   assertions/check_any.rst
+   assertions/check_all_or_any_fn.rst
+   assertions/check_shape.rst
+   assertions/check_same_dtype.rst
+   assertions/check_fill_value_and_dtype_are_compatible.rst
+   assertions/check_gather_input_valid.rst
+   assertions/check_gather_nd_input_valid.rst
+   assertions/check_one_way_broadcastable.rst
+   assertions/check_inplace_sizes_valid.rst
+   assertions/check_shapes_broadcastable.rst
+   assertions/check_dimensions.rst
+   assertions/check_kernel_padding_size.rst
+

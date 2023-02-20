@@ -100,7 +100,10 @@
 <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils/assertions.html">Assertions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils/verbosity.html">Verbosity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
@@ -281,7 +284,7 @@
 <span class="sd">        gain</span>
 <span class="sd">            Scales the output of the distribution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
             <span class="n">fan_mode</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;fan_in&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_numerator</span> <span class="o">=</span> <span class="n">numerator</span>
@@ -312,20 +315,20 @@
 <span class="sd">            Desired data type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_in&quot;</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
                 <span class="n">fan_in</span><span class="p">,</span>
                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;input_channels must be specified for fan_in denominator mode&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_in</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
                 <span class="n">fan_out</span><span class="p">,</span>
                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;output_channels must be specified for fan_out </span><span class="se">\</span>
 <span class="s2">                denominator mode&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_out</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
                 <span class="n">fan_in</span><span class="p">,</span>
                 <span class="n">fan_out</span><span class="p">,</span>
                 <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span>
@@ -335,7 +338,7 @@
             <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
                 <span class="n">fan_in</span><span class="p">,</span>
                 <span class="n">fan_out</span><span class="p">,</span>
                 <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span>
@@ -345,7 +348,7 @@
             <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="p">(</span><span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;Invalid denominator mode, must be one of [ fan_in | fan_out | &quot;</span>
                 <span class="s2">&quot;fan_sum | fan_avg ] &quot;</span>
             <span class="p">)</span>
@@ -415,7 +418,7 @@
 <span class="sd">            - `fan_sum` sets `fan` to the average of the number of input features and</span>
 <span class="sd">              output features of this neuron.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
             <span class="n">fan_mode</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;fan_in&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">mean</span>
@@ -453,20 +456,20 @@
 <span class="sd">            Desired data type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_in&quot;</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
                 <span class="n">fan_in</span><span class="p">,</span>
                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;input_channels must be specified for fan_in denominator mode&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_in</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
                 <span class="n">fan_out</span><span class="p">,</span>
                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;output_channels must be specified for fan_out </span><span class="se">\</span>
 <span class="s2">                denominator mode&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_out</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
                 <span class="n">fan_in</span><span class="p">,</span>
                 <span class="n">fan_out</span><span class="p">,</span>
                 <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span>
@@ -476,7 +479,7 @@
             <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
                 <span class="n">fan_in</span><span class="p">,</span>
                 <span class="n">fan_out</span><span class="p">,</span>
                 <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span>
@@ -486,7 +489,7 @@
             <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="p">(</span><span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;Invalid denominator mode, must be one of [ fan_in | fan_out | &quot;</span>
                 <span class="s2">&quot;fan_sum | fan_avg ] &quot;</span>
             <span class="p">)</span>

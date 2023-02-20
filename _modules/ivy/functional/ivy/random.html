@@ -100,7 +100,10 @@
 <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/assertions.html">Assertions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/verbosity.html">Verbosity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
@@ -167,7 +170,7 @@
     <span class="n">handle_nestable</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.utils.backend</span> <span class="kn">import</span> <span class="n">backend_stack</span>
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+<span class="kn">from</span> <span class="nn">ivy.utils.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
 <span class="c1"># Helpers #</span>
@@ -176,7 +179,7 @@
 
 <span class="k">def</span> <span class="nf">_check_bounds_and_get_shape</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
             <span class="n">low</span><span class="p">,</span>
             <span class="n">high</span><span class="p">,</span>
             <span class="n">fn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)),</span>
@@ -199,7 +202,7 @@
         <span class="n">valid_types</span> <span class="o">+=</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">valid_types</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">valid_types</span><span class="p">):</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">low</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">high</span><span class="p">))</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">low</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">high</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">low</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">valid_types</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">high</span><span class="p">)</span>
@@ -207,7 +210,7 @@
 
 
 <span class="k">def</span> <span class="nf">_randint_check_dtype_and_bound</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
         <span class="n">low</span><span class="p">,</span>
         <span class="n">high</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">,</span>
@@ -216,7 +219,7 @@
         <span class="n">limit</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;randint cannot take arguments of type uint&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
         <span class="n">low</span><span class="p">,</span>
         <span class="n">high</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">,</span>
@@ -225,18 +228,18 @@
         <span class="n">limit</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;randint cannot take arguments of type float&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_check_valid_scale</span><span class="p">(</span><span class="n">std</span><span class="p">):</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_greater</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_greater</span><span class="p">(</span>
         <span class="n">std</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">allow_equal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;std must be non-negative&quot;</span>
     <span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_check_shapes_broadcastable</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">inp</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_shapes_broadcastable</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">inp</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_shapes_broadcastable</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">inp</span><span class="p">)</span>
 
 
 <span class="c1"># Extra #</span>

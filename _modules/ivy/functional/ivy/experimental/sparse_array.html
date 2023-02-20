@@ -100,7 +100,10 @@
 <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/assertions.html">Assertions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/verbosity.html">Verbosity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
@@ -154,12 +157,12 @@
 <span></span><span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">inputs_to_native_arrays</span>
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+<span class="kn">from</span> <span class="nn">ivy.utils.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
 <span class="c1"># helpers</span>
 <span class="k">def</span> <span class="nf">_verify_coo_components</span><span class="p">(</span><span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
         <span class="n">indices</span><span class="p">,</span>
         <span class="n">values</span><span class="p">,</span>
         <span class="n">dense_shape</span><span class="p">,</span>
@@ -168,21 +171,25 @@
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;indices, values and dense_shape must all be specified&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="c1"># coordinates style (COO), must be shaped (x, y)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;indices must be 2D&quot;</span><span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 1D&quot;</span><span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;indices must be 2D&quot;</span>
+    <span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 1D&quot;</span>
+    <span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy_shape</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)),</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;shape and indices shape do not match&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="c1"># number of values must match number of coordinates</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values and indices do not match&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
             <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy_shape</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)[</span><span class="n">i</span><span class="p">],</span>
             <span class="n">message</span><span class="o">=</span><span class="s2">&quot;indices is larger than shape&quot;</span><span class="p">,</span>
@@ -192,7 +199,7 @@
 <span class="k">def</span> <span class="nf">_verify_common_row_format_components</span><span class="p">(</span>
     <span class="n">crow_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span>
 <span class="p">):</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
         <span class="n">crow_indices</span><span class="p">,</span>
         <span class="n">col_indices</span><span class="p">,</span>
         <span class="n">values</span><span class="p">,</span>
@@ -203,34 +210,34 @@
 <span class="s2">must all be specified.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;crow_indices must be 1D.&quot;</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;col_indices must be 1D.&quot;</span>
     <span class="p">)</span>
 
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">),</span>
         <span class="mi">2</span><span class="p">,</span>
         <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Only 2D arrays can be converted to </span><span class="si">{</span><span class="nb">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> sparse arrays.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">crow_indices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;size of col_indices does not match with last element of crow_indices&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># number of values must match number of coordinates</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values and col_indices do not match&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># index in crow_indices must not exceed length of col_indices</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
         <span class="n">crow_indices</span><span class="p">,</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">allow_equal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -249,11 +256,13 @@
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 1D.&quot;</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 1D.&quot;</span>
+    <span class="p">)</span>
     <span class="c1"># number of intervals must be equal to x in shape (x, y)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
         <span class="n">col_indices</span><span class="p">,</span>
         <span class="n">dense_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;index in col_indices does not match shape&quot;</span><span class="p">,</span>
@@ -270,22 +279,24 @@
         <span class="n">dense_shape</span><span class="o">=</span><span class="n">dense_shape</span><span class="p">,</span>
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;bsr&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">3</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 3D.&quot;</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">3</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 3D.&quot;</span>
+    <span class="p">)</span>
     <span class="n">nrowblocks</span><span class="p">,</span> <span class="n">ncolblocks</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="n">dense_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">%</span> <span class="n">nrowblocks</span><span class="p">,</span>
         <span class="mi">0</span><span class="p">,</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;The number of rows of array must be divisible by that of block.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="n">dense_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="n">ncolblocks</span><span class="p">,</span>
         <span class="mi">0</span><span class="p">,</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;The number of cols of array must be divisible by that of block.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="n">nrowblocks</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
         <span class="n">col_indices</span><span class="p">,</span>
         <span class="n">dense_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">ncolblocks</span><span class="p">,</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;index in col_indices does not match shape&quot;</span><span class="p">,</span>
@@ -295,7 +306,7 @@
 <span class="k">def</span> <span class="nf">_verify_common_column_format_components</span><span class="p">(</span>
     <span class="n">ccol_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csc&quot;</span>
 <span class="p">):</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
         <span class="n">ccol_indices</span><span class="p">,</span>
         <span class="n">row_indices</span><span class="p">,</span>
         <span class="n">values</span><span class="p">,</span>
@@ -305,26 +316,26 @@
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;ccol_indices, row_indices, values and dense_shape must all </span><span class="se">\</span>
 <span class="s2">        be specified&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ccol_indices</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;ccol_indices must be 1D&quot;</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">row_indices</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;row_indices must be 1D&quot;</span>
     <span class="p">)</span>
 
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">),</span>
         <span class="mi">2</span><span class="p">,</span>
         <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;only 2D arrays can be converted to </span><span class="si">{</span><span class="nb">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> sparse arrays&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="c1"># number of values must match number of coordinates</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">row_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values and row_indices do not match&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="c1"># index in ccol_indices must not exceed length of row_indices</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
         <span class="n">ccol_indices</span><span class="p">,</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">row_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">allow_equal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -343,10 +354,12 @@
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csc&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 1D&quot;</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 1D&quot;</span>
+    <span class="p">)</span>
     <span class="c1"># number of intervals must be equal to y in shape (x, y)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ccol_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ccol_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
         <span class="n">row_indices</span><span class="p">,</span>
         <span class="n">dense_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;index in row_indices does not match shape&quot;</span><span class="p">,</span>
@@ -363,23 +376,25 @@
         <span class="n">dense_shape</span><span class="o">=</span><span class="n">dense_shape</span><span class="p">,</span>
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;bsc&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">3</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 3D&quot;</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">3</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 3D&quot;</span>
+    <span class="p">)</span>
     <span class="n">nrowblocks</span><span class="p">,</span> <span class="n">ncolblocks</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="n">dense_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">%</span> <span class="n">nrowblocks</span><span class="p">,</span>
         <span class="mi">0</span><span class="p">,</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;number of rows of array must be divisible by that of block.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="n">dense_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="n">ncolblocks</span><span class="p">,</span>
         <span class="mi">0</span><span class="p">,</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;number of cols of array must be divisible by that of block.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="c1"># number of intervals must be equal to y in shape (x, y)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ccol_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">ncolblocks</span>
     <span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
         <span class="n">row_indices</span><span class="p">,</span>
         <span class="n">dense_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="n">nrowblocks</span><span class="p">,</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;index in row_indices does not match shape&quot;</span><span class="p">,</span>
@@ -398,7 +413,7 @@
     <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
             <span class="n">coo_indices</span><span class="p">,</span>
             <span class="n">crow_indices</span><span class="p">,</span>
             <span class="n">col_indices</span><span class="p">,</span>
@@ -529,7 +544,7 @@
                 <span class="n">values</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;specify all coo components (coo_indices, values </span><span class="se">\</span>
 <span class="s2">            and dense_shape), all csr components (crow_indices, </span><span class="se">\</span>
 <span class="s2">            col_indices, values and dense_shape), all csc components </span><span class="se">\</span>
@@ -551,7 +566,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dense_shape</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
                 <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_sparse_array</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;not a native sparse array&quot;</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>

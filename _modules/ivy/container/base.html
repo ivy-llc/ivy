@@ -100,7 +100,10 @@
 <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils/assertions.html">Assertions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils/verbosity.html">Verbosity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
@@ -163,7 +166,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">json</span>
 
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">IvyBackendException</span><span class="p">,</span> <span class="n">IvyException</span>
+<span class="kn">from</span> <span class="nn">ivy.utils.exceptions</span> <span class="kn">import</span> <span class="n">IvyBackendException</span><span class="p">,</span> <span class="n">IvyException</span>
 
 
 <span class="k">try</span><span class="p">:</span>
@@ -296,7 +299,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">dict_in</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;dict_in and **kwargs cannot both be specified for ivy.Container &quot;</span>
                 <span class="s2">&quot;constructor, please specify one or the other, not both.&quot;</span>
             <span class="p">)</span>
@@ -364,7 +367,9 @@
             <span class="n">conts</span> <span class="o">=</span> <span class="n">arg_conts</span> <span class="o">+</span> <span class="n">kwarg_conts</span> <span class="o">+</span> <span class="n">out_conts</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">conts</span> <span class="o">=</span> <span class="n">arg_conts</span> <span class="o">+</span> <span class="n">kwarg_conts</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span><span class="n">conts</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;no containers found in arguments&quot;</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
+            <span class="n">conts</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;no containers found in arguments&quot;</span>
+        <span class="p">)</span>
         <span class="n">cont0</span> <span class="o">=</span> <span class="n">conts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="n">cont0</span><span class="o">.</span><span class="n">cont_ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span>
@@ -649,7 +654,7 @@
 <span class="sd">            Compared containers</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;same_only&quot;</span><span class="p">,</span> <span class="s2">&quot;diff_only&quot;</span><span class="p">])</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;same_only&quot;</span><span class="p">,</span> <span class="s2">&quot;diff_only&quot;</span><span class="p">])</span>
 
         <span class="c1"># if inputs are not dicts, then compare their values to determine the diff dict</span>
         <span class="n">num_containers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span>
@@ -691,7 +696,7 @@
                         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diff_keys</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
                             <span class="n">key</span> <span class="o">=</span> <span class="n">diff_keys</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                                 <span class="s2">&quot;diff_keys must be either a string or list of strings,&quot;</span>
                                 <span class="s2">&quot;but found </span><span class="si">{}</span><span class="s2"> of type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                     <span class="n">diff_keys</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">diff_keys</span><span class="p">)</span>
@@ -740,7 +745,7 @@
                         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diff_keys</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
                             <span class="n">diff_dict</span><span class="p">[</span><span class="n">diff_keys</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                                 <span class="s2">&quot;diff_keys must be either a string or list of strings,&quot;</span>
                                 <span class="s2">&quot;but found </span><span class="si">{}</span><span class="s2"> of type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                     <span class="n">diff_keys</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">diff_keys</span><span class="p">)</span>
@@ -852,7 +857,7 @@
                     <span class="n">container0</span> <span class="o">=</span> <span class="n">container</span>
                 <span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">container</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
             <span class="n">container0</span><span class="p">,</span>
             <span class="n">message</span><span class="o">=</span><span class="s2">&quot;No containers found in the inputs to ivy.Container.cont_multi_map&quot;</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1084,7 +1089,7 @@
 <span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_identical</span><span class="p">(</span>
                 <span class="n">containers</span><span class="p">,</span>
                 <span class="n">check_types</span><span class="p">,</span>
@@ -1183,7 +1188,7 @@
 <span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_identical_structure</span><span class="p">(</span>
                 <span class="n">containers</span><span class="p">,</span> <span class="n">check_types</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">partial</span>
             <span class="p">),</span>
@@ -1203,7 +1208,7 @@
 <span class="sd">            containers to check.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_greater</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_greater</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">configs</span> <span class="o">=</span> <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">cont_config</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
         <span class="n">config0</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config0</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1269,7 +1274,7 @@
 <span class="sd">            Container loaded from disk</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
             <span class="n">h5py</span><span class="p">,</span>
             <span class="n">message</span><span class="o">=</span><span class="s2">&quot;You must install python package h5py in order to load hdf5 </span><span class="se">\</span>
 <span class="s2">            files from disk into a container.&quot;</span><span class="p">,</span>
@@ -1290,7 +1295,7 @@
                     <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">slice_obj</span><span class="p">])</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                     <span class="s2">&quot;Item found inside h5_obj which was neither a Group nor a Dataset.&quot;</span>
                 <span class="p">)</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">container_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span></div>
@@ -1353,7 +1358,7 @@
 <span class="sd">            Size of h5 file contents, and batch size.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
             <span class="n">h5py</span><span class="p">,</span>
             <span class="n">message</span><span class="o">=</span><span class="s2">&quot;You must install python package h5py in order to determine </span><span class="se">\</span>
 <span class="s2">            the size of hdf5 files.&quot;</span><span class="p">,</span>
@@ -1374,7 +1379,7 @@
                 <span class="n">size</span> <span class="o">+=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="n">value_shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">value</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span>
                 <span class="n">batch_size</span> <span class="o">=</span> <span class="n">value_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                     <span class="s2">&quot;Item found inside h5_obj which was neither a Group nor a Dataset.&quot;</span>
                 <span class="p">)</span>
         <span class="k">return</span> <span class="n">size</span><span class="p">,</span> <span class="n">batch_size</span></div>
@@ -1392,7 +1397,7 @@
 <span class="sd">            random seed to use for array shuffling (Default value = 0)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
             <span class="n">h5py</span><span class="p">,</span>
             <span class="n">message</span><span class="o">=</span><span class="s2">&quot;You must install python package h5py in order to shuffle </span><span class="se">\</span>
 <span class="s2">            hdf5 files on disk.&quot;</span><span class="p">,</span>
@@ -1412,7 +1417,7 @@
                 <span class="c1"># noinspection PyTypeChecker</span>
                 <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                     <span class="s2">&quot;Item found inside h5_obj which was neither a Group nor a Dataset.&quot;</span>
                 <span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h5_obj</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
@@ -1454,7 +1459,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">reduction</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                     <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                     <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Container reduce operation only valid for containers of arrays&quot;</span>
                 <span class="p">)</span></div>
@@ -1765,7 +1770,7 @@
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;invalid input </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dict_in</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;invalid input </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dict_in</span><span class="p">))</span>
         <span class="n">items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dict_in</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alphabetical_keys</span> <span class="k">else</span> <span class="n">dict_in</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span>
@@ -1934,7 +1939,7 @@
 
         <span class="k">def</span> <span class="nf">_ret_bool</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">assert_is_bool</span><span class="p">:</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">x</span>
             <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
@@ -2105,7 +2110,7 @@
 <span class="sd">            appending to file. (Default value = None)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
             <span class="n">h5py</span><span class="p">,</span>
             <span class="n">message</span><span class="o">=</span><span class="s2">&quot;You must install python package h5py in order to save </span><span class="se">\</span>
 <span class="s2">            containers to disk as hdf5 files.&quot;</span><span class="p">,</span>
@@ -2473,17 +2478,17 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cont_contains_sub_container</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="p">)</span>
             <span class="p">)</span>
-        <span class="k">except</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">:</span>
             <span class="n">key_chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_find_sub_structure</span><span class="p">(</span>
                 <span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">key_chain</span><span class="p">:</span>
                 <span class="n">key_chain</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="c1"># noinspection PyTypeChecker</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;Containers did not have identical structure and values:</span><span class="se">\n\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_diff</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key_chain</span><span class="p">],</span> <span class="n">sub_cont</span><span class="p">)</span>
                 <span class="p">)</span>
@@ -2576,17 +2581,17 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cont_contains_sub_structure</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="n">partial</span><span class="p">)</span>
             <span class="p">)</span>
-        <span class="k">except</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">:</span>
             <span class="n">key_chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_find_sub_structure</span><span class="p">(</span>
                 <span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">key_chain</span><span class="p">:</span>
                 <span class="n">key_chain</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="c1"># noinspection PyTypeChecker</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;Containers did not have identical structure:</span><span class="se">\n\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_structural_diff</span><span class="p">(</span>
                         <span class="bp">self</span><span class="p">[</span><span class="n">key_chain</span><span class="p">],</span>
@@ -2666,7 +2671,7 @@
             <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">ignore_key_errors</span><span class="p">:</span>
                     <span class="k">return</span>
-                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="ContainerBase.cont_at_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_at_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_at_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -2703,7 +2708,7 @@
                 <span class="p">[</span><span class="n">key_chains</span><span class="p">],</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="n">ignore_key_errors</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;Invalid type for input key_chains, must either be a list, tuple, dict&quot;</span>
                 <span class="s2">&quot; or ivy.Container, but found type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">key_chains</span><span class="p">))</span>
             <span class="p">)</span></div>
@@ -2816,14 +2821,14 @@
             <span class="n">cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span>
         <span class="n">sub_cont</span> <span class="o">=</span> <span class="n">cont</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
                 <span class="n">key</span><span class="p">,</span>
                 <span class="n">sub_cont</span><span class="p">,</span>
                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;key chain must already exist in container in order to </span><span class="se">\</span>
 <span class="s2">                call cont_overwrite_at_key_chain&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">sub_cont</span> <span class="o">=</span> <span class="n">sub_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
             <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
             <span class="n">sub_cont</span><span class="p">,</span>
             <span class="n">message</span><span class="o">=</span><span class="s2">&quot;key chain must already exist in container in order to </span><span class="se">\</span>
@@ -2889,7 +2894,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">target_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
                 <span class="n">k</span><span class="p">,</span>
                 <span class="n">return_dict</span><span class="p">,</span>
                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;key chain must already exist in container in order to </span><span class="se">\</span>
@@ -3004,7 +3009,7 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_chains</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_prune_key_chains_input_as_seq</span><span class="p">([</span><span class="n">key_chains</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;Invalid type for input key_chains, must either be a list, tuple, dict &quot;</span>
                 <span class="s2">&quot;or ivy.Container, but found type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">key_chains</span><span class="p">))</span>
             <span class="p">)</span></div>
@@ -3085,7 +3090,7 @@
 <span class="sd">            removed from the chain.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
             <span class="n">absolute</span><span class="p">,</span>
             <span class="n">containing</span><span class="p">,</span>
             <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span>
@@ -3126,7 +3131,7 @@
 <span class="sd">            key chains removed from the chain.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
             <span class="n">absolute</span><span class="p">,</span>
             <span class="n">containing</span><span class="p">,</span>
             <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span>
@@ -3542,8 +3547,8 @@
     <span class="k">def</span> <span class="nf">_cont_slice_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_slice</span><span class="p">):</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_slice</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key_slice</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">key_slice</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_alphabetical_keys</span><span class="p">)</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key_slice</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">key_slice</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_alphabetical_keys</span><span class="p">)</span>
             <span class="n">start_char</span> <span class="o">=</span> <span class="n">key_slice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">end_char</span> <span class="o">=</span> <span class="n">key_slice</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
             <span class="n">start_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">start_char</span><span class="p">])</span>
@@ -4093,7 +4098,7 @@
                 <span class="nb">range</span><span class="p">(</span><span class="n">query</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">query</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">query</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;Invalid slice type, must be one of integer, slice &quot;</span>
                 <span class="s2">&quot;or sequences of slices.&quot;</span>
             <span class="p">)</span>

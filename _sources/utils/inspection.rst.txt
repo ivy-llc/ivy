@@ -1,0 +1,18 @@
+Inspection
+==========
+
+.. automodule:: ivy.utils.inspection
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Inspection
+
+   inspection/fn_array_spec.rst
+   inspection/add_array_specs.rst
+
