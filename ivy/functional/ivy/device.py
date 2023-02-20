@@ -24,7 +24,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 default_device_stack = list()
 dev_handles = dict()
@@ -399,7 +399,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     elif device == "cpu":
         return psutil.virtual_memory().total / 1e9
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
@@ -445,7 +445,7 @@ def used_mem_on_dev(
     """
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
-        ivy.assertions.check_false(
+        ivy.utils.assertions.check_false(
             process_specific,
             "process-specific GPU queries are currently not supported",
         )
@@ -458,7 +458,7 @@ def used_mem_on_dev(
         vm = psutil.virtual_memory()
         return (vm.total - vm.available) / 1e9
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
@@ -505,7 +505,7 @@ def percent_used_mem_on_dev(
     """
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
-        ivy.assertions.check_false(
+        ivy.utils.assertions.check_false(
             process_specific,
             "process-specific GPU queries are currently not supported",
         )
@@ -518,7 +518,7 @@ def percent_used_mem_on_dev(
             return (psutil.Process(os.getpid()).memory_info().rss / vm.total) * 100
         return (1 - (vm.available / vm.total)) * 100
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
@@ -561,7 +561,7 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
         handle = _get_nvml_gpu_handle(device)
         return pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
@@ -906,7 +906,7 @@ def set_split_factor(
     >>> print(ivy.split_factors)
     {'cpu': 0.2, 'gpu': 0.3}
     """
-    ivy.assertions.check_less(0, factor, allow_equal=True)
+    ivy.utils.assertions.check_less(0, factor, allow_equal=True)
     global split_factors
     device = ivy.default(device, default_device())
     split_factors[device] = factor
@@ -1084,7 +1084,7 @@ def _get_devices(fn, complement=True):
             v = getattr(fn, key)
             if "einops" in fn.__name__ and isinstance(v, dict):
                 v = v.get(ivy.current_backend_str(), base)
-            ivy.assertions.check_isinstance(v, tuple)
+            ivy.utils.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 
     if complement:
@@ -1116,7 +1116,7 @@ def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
     >>> print(ivy.function_supported_devices(ivy.ones))
     ('cpu', 'gpu')
     """
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
         "supported_devices and unsupported_devices attributes cannot both \
         exist in a particular backend",
@@ -1154,7 +1154,7 @@ def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
     >>> print(ivy.function_unsupported_devices(ivy.ones))
     ()
     """
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
         "supported_devices and unsupported_devices attributes cannot both \
         exist in a particular backend",
@@ -1188,17 +1188,17 @@ class Profiler(abc.ABC):
     @abc.abstractmethod
     def start(self):
         """Start the profiler. This should be called before the code to be profiled."""
-        raise ivy.exceptions.IvyNotImplementedException
+        raise ivy.utils.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def stop(self):
         """Stop the profiler. This should be called after the code to be profiled."""
-        raise ivy.exceptions.IvyNotImplementedException
+        raise ivy.utils.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def __enter__(self):
-        raise ivy.exceptions.IvyNotImplementedException
+        raise ivy.utils.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def __exit__(self, exc_type, exc_val, exc_tb):
-        raise ivy.exceptions.IvyNotImplementedException
+        raise ivy.utils.exceptions.IvyNotImplementedException

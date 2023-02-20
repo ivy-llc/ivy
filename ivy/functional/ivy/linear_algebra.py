@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 inf = float("inf")
@@ -2165,7 +2165,7 @@ def tensorsolve(
         prod *= k
 
     if ivy.shape(ivy.flatten(x1))[0] != prod**2:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Input arrays must satisfy the requirement \
             prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
         )

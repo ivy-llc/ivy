@@ -26,8 +26,10 @@ class matrix:
             data = ivy.array(data, dtype=dtype)
             self._data = data
         else:
-            raise ivy.exceptions.IvyException("data must be an array, list, or str")
-        ivy.assertions.check_equal(
+            raise ivy.utils.exceptions.IvyException(
+                "data must be an array, list, or str"
+            )
+        ivy.utils.assertions.check_equal(
             len(ivy.shape(self._data)), 2, message="data must be 2D"
         )
         self._dtype = self._data.dtype
