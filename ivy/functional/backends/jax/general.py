@@ -56,7 +56,7 @@ def is_native_array(x, /, *, exclusive=False):
     )
 
 
-def get_item(x: JaxArray, query: JaxArray) -> JaxArray:
+def get_item(x: JaxArray, /, query: JaxArray) -> JaxArray:
     return x.__getitem__(query)
 
 
@@ -218,6 +218,29 @@ def inplace_update(
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_ivy_array(x):
             x.data = val_native
+            if ivy.exists(x._base):
+                base = x._base
+                base_idx = ivy.arange(base.size).reshape(base.shape)
+                for fn, args, kwargs, index in x._manipulation_stack:
+                    base_idx = fn(base_idx, *args, **kwargs)
+                    base_idx = base[index] if ivy.exists(index) else base_idx
+                base_flat = base.data.flatten()
+                base_flat = base_flat.at[base_idx.data.flatten()].set(
+                    val_native.flatten()
+                )
+
+                base.data = base_flat.reshape(base.shape)
+
+                for ref in base._view_refs:
+                    view = ref()
+                    if ivy.exists(view) and view is not x:
+                        _update_view(view, base)
+
+            else:
+                for ref in x._view_refs:
+                    view = ref()
+                    if ivy.exists(view):
+                        _update_view(view, x)
         else:
             raise ivy.exceptions.IvyException(
                 "JAX does not natively support inplace updates"
@@ -225,6 +248,14 @@ def inplace_update(
         return x
     else:
         return val
+
+
+def _update_view(view, base):
+    for fn, args, kwargs, index in view._manipulation_stack:
+        base = fn(base, *args, **kwargs)
+        base = base[index] if ivy.exists(index) else base
+    view.data = base.data
+    return view
 
 
 def inplace_variables_supported():
