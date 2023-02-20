@@ -348,6 +348,17 @@ def to_native_arrays_and_back(fn: Callable) -> Callable:
 
 
 def handle_view(fn: Callable) -> Callable:
+    """
+    Wraps `fn` and performs view handling if copy is False. Used for functional
+    backends (Jax and TensorFlow). Checks if the first arg is a view or original
+    array by checking if the ._base attribute is populated. If it's original
+    it adds the returned array to its view references, then the returned array
+    adds the operation to its manipulation stack and stores the original as its
+    base. If the first arg is a view, then the returned array copies its base and
+    manipulation stack, appends the new operation to the manipulation stack and
+    appends its reference to the base array's view_refs attribute.
+    """
+
     @functools.wraps(fn)
     def new_fn(*args, copy=None, **kwargs):
         ret = fn(*args, **kwargs)
@@ -366,6 +377,18 @@ def handle_view(fn: Callable) -> Callable:
 
 
 def handle_view_indexing(fn: Callable) -> Callable:
+    """
+    Wraps `fn` and performs view handling specifically for indexing. As with NumPy
+    it returns a copy if advanced indexing is performed. Used for functional
+    backends (Jax and TensorFlow). Checks if the first arg is a view or
+    original array by checking if the ._base attribute is populated. If it's original
+    it adds the returned array to its view references, then the returned array
+    adds the operation to its manipulation stack and stores the original as its
+    base. If the first arg is a view, then the returned array copies its base and
+    manipulation stack, appends the new operation to the manipulation stack and
+    appends its reference to the base array's view_refs attribute.
+    """
+
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         ret = fn(*args, **kwargs)
@@ -379,11 +402,7 @@ def handle_view_indexing(fn: Callable) -> Callable:
         if [i for i in query if not isinstance(i, (slice, int))]:
             return ret
         original = args[0]
-        if isinstance(ret, list):
-            for i, view in enumerate(ret):
-                ret[i] = _build_view(original, view, fn, args, kwargs)
-        else:
-            ret = _build_view(original, ret, fn, args, kwargs)
+        ret = _build_view(original, ret, fn, args, kwargs)
         return ret
 
     new_fn.handle_view_indexing = True
