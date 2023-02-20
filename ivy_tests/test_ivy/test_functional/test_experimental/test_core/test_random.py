@@ -15,6 +15,7 @@ import ivy
 @handle_test(
     fn_tree="functional.ivy.experimental.dirichlet",
     dtype_and_alpha=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.tuples(
             st.integers(min_value=2, max_value=5),
         ),
@@ -73,6 +74,7 @@ def test_dirichlet(
 @handle_test(
     fn_tree="functional.ivy.experimental.beta",
     dtype_and_alpha_beta=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         min_num_dims=1,
         max_num_dims=2,
@@ -127,6 +129,7 @@ def test_beta(
 @handle_test(
     fn_tree="functional.ivy.experimental.gamma",
     dtype_and_alpha_beta=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         min_num_dims=1,
         max_num_dims=2,
@@ -176,6 +179,7 @@ def test_gamma(
 @handle_test(
     fn_tree="functional.ivy.experimental.poisson",
     dtype_and_lam=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
         min_value=0,
         max_value=5,
         min_num_dims=0,

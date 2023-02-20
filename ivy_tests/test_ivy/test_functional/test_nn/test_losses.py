@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.cross_entropy",
     dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=1e-04,
         max_value=1,
         allow_inf=False,
@@ -18,6 +19,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1e-04,
         max_value=1,
         allow_inf=False,
@@ -67,6 +69,7 @@ def test_cross_entropy(
 @handle_test(
     fn_tree="functional.ivy.binary_cross_entropy",
     dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -75,6 +78,7 @@ def test_cross_entropy(
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1.0013580322265625e-05,
         max_value=1,
         allow_inf=False,
@@ -120,6 +124,7 @@ def test_binary_cross_entropy(
 @handle_test(
     fn_tree="functional.ivy.sparse_cross_entropy",
     dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
         max_value=2,
         allow_inf=False,
@@ -128,6 +133,7 @@ def test_binary_cross_entropy(
         min_dim_size=3,
     ),
     dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=4,
         safety_factor_scale="log",
         max_value=1,

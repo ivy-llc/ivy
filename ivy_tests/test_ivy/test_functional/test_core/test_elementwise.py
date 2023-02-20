@@ -22,7 +22,9 @@ def not_too_close_to_zero(x):
 # abs
 @handle_test(
     fn_tree="functional.ivy.abs",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_abs(
     *,
@@ -49,6 +51,7 @@ def test_abs(
 @handle_test(
     fn_tree="functional.ivy.acosh",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1,
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
@@ -81,6 +84,7 @@ def test_acosh(
 @handle_test(
     fn_tree="functional.ivy.acos",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -112,6 +116,7 @@ def test_acos(
 @handle_test(
     fn_tree="functional.ivy.add",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
@@ -150,6 +155,7 @@ def test_add(
 @handle_test(
     fn_tree="functional.ivy.asin",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -181,6 +187,7 @@ def test_asin(
 @handle_test(
     fn_tree="functional.ivy.asinh",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -211,7 +218,7 @@ def test_asinh(
 # atan
 @handle_test(
     fn_tree="functional.ivy.atan",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_atan(
     *,
@@ -238,6 +245,7 @@ def test_atan(
 @handle_test(
     fn_tree="functional.ivy.atan2",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_num_dims=1,
         max_num_dims=5,
@@ -271,7 +279,7 @@ def test_atan2(
 # atanh
 @handle_test(
     fn_tree="functional.ivy.atanh",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_atanh(
     *,
@@ -300,7 +308,7 @@ def test_atanh(
 @handle_test(
     fn_tree="functional.ivy.bitwise_and",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes()),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
         array_api_dtypes=True,
     ),
@@ -332,6 +340,7 @@ def test_bitwise_and(
 @handle_test(
     fn_tree="functional.ivy.bitwise_left_shift",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         array_api_dtypes=True,
     ),
@@ -368,7 +377,7 @@ def test_bitwise_left_shift(
 @handle_test(
     fn_tree="functional.ivy.bitwise_invert",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes()),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         array_api_dtypes=True,
     ),
     test_gradients=st.just(False),
@@ -398,7 +407,7 @@ def test_bitwise_invert(
 @handle_test(
     fn_tree="functional.ivy.bitwise_or",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes()),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
         array_api_dtypes=True,
     ),
@@ -430,7 +439,7 @@ def test_bitwise_or(
 @handle_test(
     fn_tree="functional.ivy.bitwise_right_shift",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes(),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         array_api_dtypes=True,
     ),
@@ -469,7 +478,7 @@ def test_bitwise_right_shift(
 @handle_test(
     fn_tree="functional.ivy.bitwise_xor",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes()),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
         array_api_dtypes=True,
     ),
@@ -501,7 +510,7 @@ def test_bitwise_xor(
 @handle_test(
     fn_tree="functional.ivy.ceil",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes(),
+        available_dtypes=helpers.get_dtypes("numeric"),
         small_abs_safety_factor=3,
         safety_factor_scale="linear",
     ),
@@ -530,7 +539,7 @@ def test_ceil(
 # cos
 @handle_test(
     fn_tree="functional.ivy.cos",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes()),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_cos(
     *,
@@ -556,7 +565,7 @@ def test_cos(
 # cosh
 @handle_test(
     fn_tree="functional.ivy.cosh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes()),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_cosh(
     *,
@@ -583,7 +592,7 @@ def test_cosh(
 @handle_test(
     fn_tree="functional.ivy.divide",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes(),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
@@ -619,7 +628,7 @@ def test_divide(
 @handle_test(
     fn_tree="functional.ivy.equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes(full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
     ),
     test_gradients=st.just(False),
 )
@@ -648,7 +657,7 @@ def test_equal(
 # exp
 @handle_test(
     fn_tree="functional.ivy.exp",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_exp(
     *,
@@ -674,7 +683,7 @@ def test_exp(
 # expm1
 @handle_test(
     fn_tree="functional.ivy.expm1",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_expm1(
     *,
@@ -702,7 +711,9 @@ def test_expm1(
 # floor
 @handle_test(
     fn_tree="functional.ivy.floor",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_floor(
     *,
@@ -729,6 +740,7 @@ def test_floor(
 @handle_test(
     fn_tree="functional.ivy.floor_divide",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
         large_abs_safety_factor=4,
@@ -766,7 +778,9 @@ def test_floor_divide(
 # greater
 @handle_test(
     fn_tree="functional.ivy.greater",
-    dtype_and_x=helpers.dtype_and_values(num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    ),
     test_gradients=st.just(False),
 )
 def test_greater(
@@ -796,7 +810,9 @@ def test_greater(
 # greater_equal
 @handle_test(
     fn_tree="functional.ivy.greater_equal",
-    dtype_and_x=helpers.dtype_and_values(num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    ),
     test_gradients=st.just(False),
 )
 def test_greater_equal(
@@ -828,7 +844,9 @@ def test_greater_equal(
 # isfinite
 @handle_test(
     fn_tree="functional.ivy.isfinite",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     test_gradients=st.just(False),
 )
 def test_isfinite(
@@ -855,7 +873,9 @@ def test_isfinite(
 # isinf
 @handle_test(
     fn_tree="functional.ivy.isinf",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     detect_positive=st.booleans(),
     detect_negative=st.booleans(),
     test_gradients=st.just(False),
@@ -888,7 +908,9 @@ def test_isinf(
 # isnan
 @handle_test(
     fn_tree="functional.ivy.isnan",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     test_gradients=st.just(False),
 )
 def test_isnan(
@@ -916,6 +938,7 @@ def test_isnan(
 @handle_test(
     fn_tree="functional.ivy.less",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_num_dims=1,
     ),
@@ -950,7 +973,9 @@ def test_less(
 # less_equal
 @handle_test(
     fn_tree="functional.ivy.less_equal",
-    dtype_and_x=helpers.dtype_and_values(num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    ),
     test_gradients=st.just(False),
 )
 def test_less_equal(
@@ -982,7 +1007,7 @@ def test_less_equal(
 # log
 @handle_test(
     fn_tree="functional.ivy.log",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_log(
     *,
@@ -1011,6 +1036,7 @@ def test_log(
 @handle_test(
     fn_tree="functional.ivy.log1p",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
@@ -1041,7 +1067,7 @@ def test_log1p(
 # log2
 @handle_test(
     fn_tree="functional.ivy.log2",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_log2(
     *,
@@ -1070,7 +1096,7 @@ def test_log2(
 # log10
 @handle_test(
     fn_tree="functional.ivy.log10",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_log10(
     *,
@@ -1101,6 +1127,7 @@ def test_log10(
 @handle_test(
     fn_tree="functional.ivy.logaddexp",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         abs_smallest_val=0.137,
         min_value=-80,
@@ -1248,7 +1275,9 @@ def test_logical_xor(
 # multiply
 @handle_test(
     fn_tree="functional.ivy.multiply",
-    dtype_and_x=helpers.dtype_and_values(num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    ),
 )
 def test_multiply(
     *,
@@ -1276,7 +1305,9 @@ def test_multiply(
 # negative
 @handle_test(
     fn_tree="functional.ivy.negative",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_negative(
     *,
@@ -1302,7 +1333,9 @@ def test_negative(
 # not_equal
 @handle_test(
     fn_tree="functional.ivy.not_equal",
-    dtype_and_x=helpers.dtype_and_values(num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
+    ),
     test_gradients=st.just(False),
 )
 def test_not_equal(
@@ -1331,7 +1364,9 @@ def test_not_equal(
 # positive
 @handle_test(
     fn_tree="functional.ivy.positive",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_positive(
     *,
@@ -1357,7 +1392,7 @@ def test_positive(
 @st.composite
 def pow_helper(draw, available_dtypes=None):
     if available_dtypes is None:
-        available_dtypes = helpers.get_dtypes()
+        available_dtypes = helpers.get_dtypes("numeric")
     dtype1, x1 = draw(
         helpers.dtype_and_values(
             available_dtypes=available_dtypes,
@@ -1455,6 +1490,7 @@ def test_pow(
 @handle_test(
     fn_tree="functional.ivy.remainder",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         large_abs_safety_factor=6,
         small_abs_safety_factor=6,
@@ -1498,7 +1534,9 @@ def test_remainder(
 # round
 @handle_test(
     fn_tree="functional.ivy.round",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_round(
     *,
@@ -1524,7 +1562,9 @@ def test_round(
 # sign
 @handle_test(
     fn_tree="functional.ivy.sign",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_sign(
     *,
@@ -1551,7 +1591,7 @@ def test_sign(
 # sin
 @handle_test(
     fn_tree="functional.ivy.sin",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_sin(
     *,
@@ -1577,7 +1617,7 @@ def test_sin(
 # sinh
 @handle_test(
     fn_tree="functional.ivy.sinh",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_sinh(
     *,
@@ -1603,7 +1643,9 @@ def test_sinh(
 # square
 @handle_test(
     fn_tree="functional.ivy.square",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_square(
     *,
@@ -1629,7 +1671,9 @@ def test_square(
 # sqrt
 @handle_test(
     fn_tree="functional.ivy.sqrt",
-    dtype_and_x=helpers.dtype_and_values(allow_inf=False),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), allow_inf=False
+    ),
 )
 def test_sqrt(
     *,
@@ -1658,6 +1702,7 @@ def test_sqrt(
 @handle_test(
     fn_tree="functional.ivy.subtract",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
@@ -1694,7 +1739,7 @@ def test_subtract(
 # tan
 @handle_test(
     fn_tree="functional.ivy.tan",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_tan(
     *,
@@ -1722,7 +1767,7 @@ def test_tan(
 # tanh
 @handle_test(
     fn_tree="functional.ivy.tanh",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_tanh(
     *,
@@ -1750,7 +1795,9 @@ def test_tanh(
 # trunc
 @handle_test(
     fn_tree="functional.ivy.trunc",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_trunc(
     *,
@@ -1780,7 +1827,7 @@ def test_trunc(
 # erf
 @handle_test(
     fn_tree="functional.ivy.erf",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_erf(
     *,
@@ -1811,6 +1858,7 @@ def min_max_helper(draw):
     if use_where:
         dtype_and_x = draw(
             helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
                 small_abs_safety_factor=6,
                 large_abs_safety_factor=6,
@@ -1820,6 +1868,7 @@ def min_max_helper(draw):
     else:
         dtype_and_x = draw(
             helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=2,
                 min_value=-1e5,
                 max_value=1e5,
@@ -1893,6 +1942,7 @@ def test_maximum(
 @handle_test(
     fn_tree="functional.ivy.reciprocal",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         small_abs_safety_factor=4,
         large_abs_safety_factor=4,
         safety_factor_scale="log",
@@ -1924,7 +1974,9 @@ def test_reciprocal(
 
 @handle_test(
     fn_tree="functional.ivy.deg2rad",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_deg2rad(
     *,
@@ -1949,7 +2001,9 @@ def test_deg2rad(
 
 @handle_test(
     fn_tree="functional.ivy.rad2deg",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_rad2deg(
     *,
@@ -1976,6 +2030,7 @@ def test_rad2deg(
 @handle_test(
     fn_tree="functional.ivy.trunc_divide",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
@@ -2011,7 +2066,9 @@ def test_trunc_divide(
 # isreal
 @handle_test(
     fn_tree="functional.ivy.isreal",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex")
+    ),
     test_gradients=st.just(False),
 )
 def test_isreal(

@@ -16,6 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.sinc",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -46,6 +47,7 @@ def test_sinc(
 @handle_test(
     fn_tree="functional.ivy.experimental.lcm",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["int16", "int32", "int64"],
         num_arrays=2,
         shared_dtype=False,
         min_num_dims=1,
@@ -80,6 +82,7 @@ def test_lcm(
 @handle_test(
     fn_tree="functional.ivy.experimental.fmod",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=False,
         large_abs_safety_factor=6,
@@ -119,6 +122,7 @@ def test_fmod(
 @handle_test(
     fn_tree="functional.ivy.experimental.fmax",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         num_arrays=2,
@@ -156,6 +160,7 @@ def test_fmax(
 @handle_test(
     fn_tree="functional.ivy.experimental.fmax",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         num_arrays=2,
@@ -196,7 +201,9 @@ def _either_x_dx(draw):
     if rand == 0:
         either_x_dx = draw(
             helpers.dtype_and_values(
-                avaliable_dtypes=st.shared(key="trapz_dtype"),
+                avaliable_dtypes=st.shared(
+                    helpers.get_dtypes("float"), key="trapz_dtype"
+                ),
                 min_value=-100,
                 max_value=100,
                 min_num_dims=1,
@@ -216,7 +223,7 @@ def _either_x_dx(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.trapz",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=st.shared(key="trapz_dtype"),
+        available_dtypes=st.shared(helpers.get_dtypes("float"), key="trapz_dtype"),
         min_value=-100,
         max_value=100,
         min_num_dims=1,
@@ -266,6 +273,7 @@ def test_trapz(
 @handle_test(
     fn_tree="functional.ivy.experimental.float_power",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         num_arrays=2,
@@ -302,6 +310,7 @@ def test_float_power(
 @handle_test(
     fn_tree="functional.ivy.experimental.exp2",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         min_num_dims=1,
@@ -335,6 +344,7 @@ def test_exp2(
 @handle_test(
     fn_tree="functional.ivy.experimental.copysign",
     dtype_x1_x2=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_num_dims=0,
         allow_nan=False,
@@ -431,6 +441,7 @@ def test_count_nonzero(
 @handle_test(
     fn_tree="functional.ivy.experimental.nansum",
     dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
         shared_dtype=True,
         min_num_dims=1,
         max_num_dims=5,
@@ -474,6 +485,7 @@ def test_nansum(
 @handle_test(
     fn_tree="functional.ivy.experimental.gcd",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=False,
         min_num_dims=1,
@@ -510,6 +522,7 @@ def test_gcd(
 @handle_test(
     fn_tree="functional.ivy.experimental.isclose",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         num_arrays=2,
@@ -557,6 +570,7 @@ def test_isclose(
 @handle_test(
     fn_tree="functional.ivy.experimental.angle",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float64"],
         min_value=-5,
         max_value=5,
         max_dim_size=5,
@@ -596,6 +610,7 @@ def test_angle(
 @handle_test(
     fn_tree="functional.ivy.experimental.imag",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32"],
         min_value=-5,
         max_value=5,
         max_dim_size=5,
@@ -632,6 +647,7 @@ def test_imag(
 @handle_test(
     fn_tree="functional.ivy.experimental.nan_to_num",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         max_num_dims=3,
         min_value=-100,
@@ -678,6 +694,7 @@ def test_nan_to_num(
 @handle_test(
     fn_tree="functional.ivy.experimental.logaddexp2",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
@@ -716,6 +733,7 @@ def test_logaddexp2(
 @handle_test(
     fn_tree="functional.ivy.experimental.allclose",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
@@ -755,6 +773,7 @@ def test_allclose(
 @handle_test(
     fn_tree="functional.ivy.experimental.fix",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", index=2),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -784,6 +803,7 @@ def test_fix(
 @handle_test(
     fn_tree="functional.ivy.experimental.nextafter",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
         num_arrays=2,
         shared_dtype=True,
         min_value=-10,
@@ -819,6 +839,7 @@ def test_nextafter(
 @handle_test(
     fn_tree="functional.ivy.experimental.diff",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
@@ -854,6 +875,7 @@ def test_diff(
 @handle_test(
     fn_tree="functional.ivy.experimental.zeta",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         min_value=-10,
@@ -887,6 +909,7 @@ def test_zeta(
 @handle_test(
     fn_tree="functional.ivy.experimental.gradient",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=("float32", "float16", "float64"),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=2,
@@ -926,6 +949,7 @@ def test_gradient(
 @handle_test(
     fn_tree="functional.ivy.experimental.xlogy",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float16", "float32", "float64"],
         num_arrays=2,
         shared_dtype=False,
         min_value=-10,
@@ -960,7 +984,9 @@ def test_xlogy(
 # real
 @handle_test(
     fn_tree="functional.ivy.experimental.real",
-    dtype_and_x=helpers.dtype_and_values(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex")
+    ),
 )
 def test_real(
     *,
@@ -987,6 +1013,7 @@ def test_real(
 @handle_test(
     fn_tree="functional.ivy.experimental.hypot",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         min_value=-100,

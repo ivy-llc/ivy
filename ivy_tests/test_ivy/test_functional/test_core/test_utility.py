@@ -12,6 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.all",
     dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         max_axes_size=1,
     ),
@@ -46,6 +47,7 @@ def test_all(
 @handle_test(
     fn_tree="functional.ivy.any",
     dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         valid_axis=True,
         max_axes_size=1,
     ),

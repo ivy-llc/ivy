@@ -148,6 +148,7 @@ def test_get_referrers_recursive():
 @handle_test(
     fn_tree="functional.ivy.array_equal",
     dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ),
     test_with_out=st.just(False),
@@ -178,7 +179,7 @@ def test_array_equal(
 def array_and_boolean_mask(
     draw,
     *,
-    array_dtypes=helpers.get_dtypes(),
+    array_dtypes,
     allow_inf=False,
     min_num_dims=1,
     max_num_dims=5,
@@ -213,11 +214,12 @@ def array_and_boolean_mask(
     fn_tree="functional.ivy.get_item",
     dtype_x_indices=st.one_of(
         helpers.array_indices_axis(
-            indices_dtypes=helpers.get_dtypes("integer", prune_function=False),
+            array_dtypes=helpers.get_dtypes("valid"),
+            indices_dtypes=helpers.get_dtypes("integer"),
             disable_random_axis=True,
             first_dimension_only=True,
         ),
-        array_and_boolean_mask(),
+        array_and_boolean_mask(array_dtypes=helpers.get_dtypes("valid")),
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -246,7 +248,9 @@ def test_get_item(
 # to_numpy
 @handle_test(
     fn_tree="functional.ivy.to_numpy",
-    dtype_x=helpers.dtype_and_values(),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
     copy=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -281,6 +285,7 @@ def test_to_numpy(
 @handle_test(
     fn_tree="functional.ivy.to_scalar",
     x0_n_x1_n_res=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=1,
@@ -314,6 +319,7 @@ def test_to_scalar(
 @handle_test(
     fn_tree="functional.ivy.to_list",
     x0_n_x1_n_res=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
         large_abs_safety_factor=20,
     ),
     test_with_out=st.just(False),
@@ -343,7 +349,9 @@ def test_to_list(
 # TODO: add container and array methods
 @handle_test(
     fn_tree="functional.ivy.shape",
-    x0_n_x1_n_res=helpers.dtype_and_values(),
+    x0_n_x1_n_res=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     as_array=st.booleans(),
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
@@ -375,7 +383,9 @@ def test_shape(
 # get_num_dims
 @handle_test(
     fn_tree="functional.ivy.get_num_dims",
-    x0_n_x1_n_res=helpers.dtype_and_values(),
+    x0_n_x1_n_res=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     as_array=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -515,8 +525,8 @@ def test_clip_vector_norm(
 def values_and_ndindices(
     draw,
     *,
-    array_dtypes=helpers.get_dtypes(),
-    indices_dtypes=helpers.get_dtypes("integer", prune_function=False),
+    array_dtypes,
+    indices_dtypes=helpers.get_dtypes("integer"),
     allow_inf=False,
     x_min_value=None,
     x_max_value=None,
@@ -593,12 +603,14 @@ def values_and_ndindices(
     x=st.integers(min_value=1, max_value=10).flatmap(
         lambda n: st.tuples(
             helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
                 min_num_dims=1,
                 max_num_dims=1,
                 min_dim_size=n,
                 max_dim_size=n,
             ),
             helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("integer"),
                 min_value=0,
                 max_value=max(n - 1, 0),
                 min_num_dims=1,
@@ -652,6 +664,7 @@ def test_scatter_flat(
 @handle_test(
     fn_tree="functional.ivy.scatter_nd",
     x=values_and_ndindices(
+        array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
         x_min_value=0,
         x_max_value=0,
@@ -690,6 +703,7 @@ def test_scatter_nd(
 @handle_test(
     fn_tree="functional.ivy.gather",
     params_indices_others=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
         min_num_dims=1,
         max_num_dims=5,
@@ -725,8 +739,8 @@ def test_gather(
 def array_and_ndindices_batch_dims(
     draw,
     *,
-    array_dtypes=helpers.get_dtypes(),
-    indices_dtypes=helpers.get_dtypes("integer", prune_function=False),
+    array_dtypes,
+    indices_dtypes=helpers.get_dtypes("integer"),
     allow_inf=False,
     min_num_dims=1,
     max_num_dims=5,
@@ -807,6 +821,7 @@ def ndindices_with_bounds(
 @handle_test(
     fn_tree="functional.ivy.gather_nd",
     params_n_ndindices_batch_dims=array_and_ndindices_batch_dims(
+        array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
         allow_inf=False,
     ),
@@ -840,6 +855,7 @@ def test_gather_nd(
     x=st.one_of(
         st.none(),
         helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
             allow_inf=False,
             min_num_dims=0,
             min_dim_size=1,
@@ -863,6 +879,7 @@ def test_exists(x):
     x=st.one_of(
         st.none(),
         helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
             allow_inf=False,
             min_num_dims=0,
             min_dim_size=2,
@@ -871,6 +888,7 @@ def test_exists(x):
     ),
     default_val=st.one_of(
         helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
             allow_inf=False,
             min_num_dims=0,
             min_dim_size=2,
@@ -1103,6 +1121,7 @@ def test_explicit_ivy_framework_handles():
 @handle_test(
     fn_tree="functional.ivy.einops_rearrange",
     dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
         min_num_dims=4,
         max_num_dims=4,
@@ -1155,6 +1174,7 @@ def test_einops_rearrange(
 @handle_test(
     fn_tree="functional.ivy.einops_reduce",
     dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
         min_num_dims=4,
         max_num_dims=4,
@@ -1172,7 +1192,7 @@ def test_einops_rearrange(
             ("b c (h1 h2) (w1 w2) -> b c h1 w1", {"h2": 2, "w2": 2}),
         ]
     ),
-    floattypes=helpers.get_dtypes("float", prune_function=False),
+    floattypes=helpers.get_dtypes("float"),
     reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
 )
 def test_einops_reduce(
@@ -1214,6 +1234,7 @@ def test_einops_reduce(
 @handle_test(
     fn_tree="functional.ivy.einops_repeat",
     dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
         min_num_dims=2,
         max_num_dims=2,
@@ -1289,6 +1310,7 @@ def test_inplace_variables_supported():
 @handle_test(
     fn_tree="functional.ivy.inplace_update",
     x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1315,6 +1337,7 @@ def test_inplace_update(x_val_and_dtypes, tensor_fn, on_device):
 @handle_test(
     fn_tree="functional.ivy.inplace_decrement",
     x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
@@ -1346,6 +1369,7 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, on_device):
 @handle_test(
     fn_tree="functional.ivy.inplace_increment",
     x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
@@ -1377,7 +1401,9 @@ def test_inplace_increment(x_val_and_dtypes, tensor_fn, on_device):
 # is_ivy_array
 @handle_test(
     fn_tree="functional.ivy.is_ivy_array",
-    x_val_and_dtypes=helpers.dtype_and_values(),
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     exclusive=st.booleans(),
     ground_truth_backend="numpy",
     as_variable_flags=st.just([False]),
@@ -1414,7 +1440,9 @@ def test_is_ivy_array(
 # is_native_array
 @handle_test(
     fn_tree="functional.ivy.is_native_array",
-    x_val_and_dtypes=helpers.dtype_and_values(),
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     exclusive=st.booleans(),
     as_variable_flags=st.just([False]),
     container_flags=st.just([False]),
@@ -1451,7 +1479,9 @@ def test_is_native_array(
 # is_array
 @handle_test(
     fn_tree="functional.ivy.is_array",
-    x_val_and_dtypes=helpers.dtype_and_values(),
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     exclusive=st.booleans(),
     as_variable_flags=st.just([False]),
     container_flags=st.just([False]),
@@ -1487,7 +1517,9 @@ def test_is_array(
 # is_ivy_container
 @handle_test(
     fn_tree="functional.ivy.is_ivy_container",
-    x_val_and_dtypes=helpers.dtype_and_values(),
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
@@ -1516,6 +1548,7 @@ def test_is_ivy_container(
 @handle_test(
     fn_tree="functional.ivy.all_equal",
     dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=2, max_value=10),
         min_num_dims=1,
     ),
@@ -1555,6 +1588,7 @@ def test_all_equal(
 @handle_test(
     fn_tree="functional.ivy.clip_matrix_norm",
     dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -1596,6 +1630,7 @@ def test_clip_matrix_norm(
 @handle_test(
     fn_tree="functional.ivy.value_is_nan",
     val_dtype=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         max_dim_size=1,
         max_num_dims=1,
         allow_nan=True,
@@ -1632,6 +1667,7 @@ def test_value_is_nan(
 @handle_test(
     fn_tree="functional.ivy.has_nans",
     x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         allow_nan=True,
         allow_inf=True,
     ),
@@ -1829,6 +1865,7 @@ def test_set_min_base(x):
 @handle_test(
     fn_tree="functional.ivy.stable_divide",
     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=3,
         shared_dtype=True,
         small_abs_safety_factor=8,
@@ -1952,7 +1989,9 @@ def test_set_tmp_dir():
 
 @handle_test(
     fn_tree="functional.ivy.supports_inplace_updates",
-    x_val_and_dtypes=helpers.dtype_and_values(),
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
@@ -1979,7 +2018,9 @@ def test_supports_inplace_updates(
 
 @handle_test(
     fn_tree="functional.ivy.assert_supports_inplace",
-    x_val_and_dtypes=helpers.dtype_and_values(),
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     ground_truth_backend="numpy",
     test_with_out=st.just(False),
     test_gradients=st.just(False),

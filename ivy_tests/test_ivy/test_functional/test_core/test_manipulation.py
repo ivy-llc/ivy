@@ -34,7 +34,9 @@ def _arrays_idx_n_dtypes(draw):
         )
     )
     xs = list()
-    input_dtypes = draw(helpers.array_dtypes())
+    input_dtypes = draw(
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
+    )
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
             helpers.array_values(
@@ -77,6 +79,7 @@ def test_concat(
 @handle_test(
     fn_tree="functional.ivy.expand_dims",
     dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=helpers.get_axis(
@@ -114,6 +117,7 @@ def test_expand_dims(
 @handle_test(
     fn_tree="functional.ivy.flip",
     dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     axis=helpers.get_axis(
@@ -159,6 +163,7 @@ def _permute_dims_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.permute_dims",
     dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     permutation=_permute_dims_helper(),
@@ -190,6 +195,7 @@ def test_permute_dims(
 @handle_test(
     fn_tree="functional.ivy.reshape",
     dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     reshape=helpers.reshape_shapes(
@@ -230,6 +236,7 @@ def test_reshape(
 @handle_test(
     fn_tree="functional.ivy.roll",
     dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
@@ -312,6 +319,7 @@ def _squeeze_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.squeeze",
     dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
@@ -346,7 +354,7 @@ def _stack_helper(draw):
     num_arrays = draw(
         st.shared(helpers.ints(min_value=1, max_value=3), key="num_arrays")
     )
-    dtype = draw(st.sampled_from(draw(helpers.get_dtypes())))
+    dtype = draw(st.sampled_from(draw(helpers.get_dtypes("valid"))))
     arrays = []
     dtypes = [dtype for _ in range(num_arrays)]
 
@@ -395,7 +403,11 @@ def test_stack(
 
 @st.composite
 def _basic_min_x_max(draw):
-    dtype, value = draw(helpers.dtype_and_values())
+    dtype, value = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+        )
+    )
     min_val = draw(helpers.array_values(dtype=dtype[0], shape=()))
     max_val = draw(
         helpers.array_values(dtype=dtype[0], shape=()).filter(lambda x: x > min_val)
@@ -433,7 +445,11 @@ def test_clip(
 
 @st.composite
 def _constant_pad_helper(draw):
-    dtype, value, shape = draw(helpers.dtype_and_values(ret_shape=True, min_num_dims=1))
+    dtype, value, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"), ret_shape=True, min_num_dims=1
+        )
+    )
     pad_width = tuple(
         draw(
             st.lists(
@@ -510,6 +526,7 @@ def _repeat_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.repeat",
     dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     axis=st.shared(
@@ -599,6 +616,7 @@ def _get_splits(draw):
 @handle_test(
     fn_tree="functional.ivy.split",
     dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     axis=st.shared(
@@ -644,6 +662,7 @@ def test_split(
 @handle_test(
     fn_tree="functional.ivy.swapaxes",
     dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     axis0=helpers.get_axis(
@@ -682,6 +701,7 @@ def test_swapaxes(
 @handle_test(
     fn_tree="functional.ivy.tile",
     dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     repeat=helpers.dtype_and_values(
@@ -751,6 +771,7 @@ def test_zero_pad(
 @handle_test(
     fn_tree="functional.ivy.unstack",
     x_n_dtype_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=5,
         min_axis=1,
         max_axis=4,
