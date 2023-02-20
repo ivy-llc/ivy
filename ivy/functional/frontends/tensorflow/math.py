@@ -430,3 +430,7 @@ def nextafter(x1, x2, name=None):
 
 def abs(x, name=None):
     return ivy.abs(x)
+
+@to_ivy_arrays_and_back
+def log_softmax(logits, axis=None):
+    return ivy.log_softmax(logits, axis=axis)

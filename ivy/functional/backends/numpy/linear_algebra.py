@@ -307,7 +307,7 @@ def solve(
     /,
     *,
     adjoint: bool = False,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if adjoint:
         x1 = np.transpose(np.conjugate(x1))

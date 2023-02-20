@@ -1,6 +1,9 @@
 import ivy
 import functools
 import logging
+import weakref
+import warnings
+import copy as python_copy
 from types import FunctionType
 from typing import Callable
 import inspect
@@ -17,6 +20,8 @@ FN_DECORATORS = [
     "inputs_to_native_arrays",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
+    "handle_view_indexing",
+    "handle_view",
     "handle_nestable",
     "handle_exceptions",
     "with_unsupported_dtypes",
@@ -71,6 +76,23 @@ def _get_first_array(*args, **kwargs):
     return arr
 
 
+def _build_view(original, view, fn, args, kwargs, index=None):
+    if ivy.exists(original._base):
+        warnings.warn(
+            "Creating many views will lead to overhead "
+            "when performing inplace updates with this backend"
+        )
+        base = original._base
+        view._base = base
+        view._manipulation_stack = python_copy.copy(original._manipulation_stack)
+    else:
+        base = original
+        view._base = base
+    base._view_refs.append(weakref.ref(view))
+    view._manipulation_stack.append((fn, args[1:], kwargs, index))
+    return view
+
+
 # Array Handling #
 # ---------------#
 
@@ -114,7 +136,7 @@ def handle_array_function(func):
                         overloaded_types.append(type(getattr(arg, a[0])))
                         if getattr(
                             arg, a[0]
-                        ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(
+                        ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(  # noqa
                             getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
                         ):
                             index = len(overloaded_args)
@@ -323,6 +345,68 @@ def to_native_arrays_and_back(fn: Callable) -> Callable:
     and return arrays are all converted to `ivy.Array` instances.
     """
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
+
+
+def handle_view(fn: Callable) -> Callable:
+    """
+    Wraps `fn` and performs view handling if copy is False. Used for functional
+    backends (Jax and TensorFlow). Checks if the first arg is a view or original
+    array by checking if the ._base attribute is populated. If it's original
+    it adds the returned array to its view references, then the returned array
+    adds the operation to its manipulation stack and stores the original as its
+    base. If the first arg is a view, then the returned array copies its base and
+    manipulation stack, appends the new operation to the manipulation stack and
+    appends its reference to the base array's view_refs attribute.
+    """
+
+    @functools.wraps(fn)
+    def new_fn(*args, copy=None, **kwargs):
+        ret = fn(*args, **kwargs)
+        if copy or ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
+            return ret
+        original = args[0]
+        if isinstance(ret, list):
+            for i, view in enumerate(ret):
+                ret[i] = _build_view(original, view, fn, args, kwargs, i)
+        else:
+            ret = _build_view(original, ret, fn, args, kwargs, None)
+        return ret
+
+    new_fn.handle_view = True
+    return new_fn
+
+
+def handle_view_indexing(fn: Callable) -> Callable:
+    """
+    Wraps `fn` and performs view handling specifically for indexing. As with NumPy
+    it returns a copy if advanced indexing is performed. Used for functional
+    backends (Jax and TensorFlow). Checks if the first arg is a view or
+    original array by checking if the ._base attribute is populated. If it's original
+    it adds the returned array to its view references, then the returned array
+    adds the operation to its manipulation stack and stores the original as its
+    base. If the first arg is a view, then the returned array copies its base and
+    manipulation stack, appends the new operation to the manipulation stack and
+    appends its reference to the base array's view_refs attribute.
+    """
+
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        if ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
+            return ret
+        if kwargs:
+            query = kwargs["query"]
+        else:
+            query = args[1]
+        query = (query,) if not isinstance(query, tuple) else query
+        if [i for i in query if not isinstance(i, (slice, int))]:
+            return ret
+        original = args[0]
+        ret = _build_view(original, ret, fn, args, kwargs)
+        return ret
+
+    new_fn.handle_view_indexing = True
+    return new_fn
 
 
 # Data Type Handling #

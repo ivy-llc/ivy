@@ -72,7 +72,7 @@ def current_backend_str() -> str:
 @with_unsupported_dtypes(
     {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
-def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
+def get_item(x: tf.Tensor, /, query: tf.Tensor) -> tf.Tensor:
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
         return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)
@@ -209,11 +209,42 @@ def inplace_update(
             )
         elif ivy.is_ivy_array(x):
             x.data = val_native
+            if ivy.exists(x._base):
+                base = x._base
+                base_idx = ivy.arange(base.size).reshape(base.shape)
+                for fn, args, kwargs, index in x._manipulation_stack:
+                    base_idx = fn(base_idx, *args, **kwargs)
+                    base_idx = base[index] if ivy.exists(index) else base_idx
+                base_flat = tf.reshape(base.data, -1)
+                base_flat = tf.tensor_scatter_nd_update(
+                    base_flat,
+                    tf.reshape(base_idx.data, (-1, 1)),
+                    tf.reshape(val_native, -1),
+                )
+
+                base.data = tf.reshape(base_flat, base.shape)
+                for ref in base._view_refs:
+                    view = ref()
+                    if ivy.exists(view) and view is not x:
+                        _update_view(view, base)
+            else:
+                for ref in x._view_refs:
+                    view = ref()
+                    if ivy.exists(view):
+                        _update_view(view, x)
         else:
             x = ivy.to_ivy(x_native)
         return x
     else:
         return val
+
+
+def _update_view(view, base):
+    for fn, args, kwargs, index in view._manipulation_stack:
+        base = fn(base, *args, **kwargs)
+        base = base[index] if ivy.exists(index) else base
+    view.data = base.data
+    return view
 
 
 def inplace_variables_supported():
@@ -304,12 +335,20 @@ def scatter_nd(
         if ivy.exists(out)
         else ivy.default_dtype(item=updates),
     )
-
+    contains_slices = (
+        any(isinstance(idx, slice) for idx in indices)
+        if isinstance(indices, (tuple, list))
+        else isinstance(indices, slice)
+    )
     # hanle non-tensor indices
     if indices == ():
         return updates
 
-    elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
+    elif (
+        indices is Ellipsis
+        or (isinstance(indices, tuple) and indices == (Ellipsis,))
+        or (isinstance(indices, slice) and indices == slice(None, None, None))
+    ):
         if updates.shape == () and ivy.exists(out) and out.shape == ():
             return updates
         shape = out.shape if ivy.exists(out) else updates.shape
@@ -320,7 +359,6 @@ def scatter_nd(
             ],
             axis=-1,
         )
-
     elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
         shape = (
             shape
@@ -337,6 +375,8 @@ def scatter_nd(
                     *[
                         tf.range(s)
                         if idx == slice(None, None, None)
+                        else tf.range(idx.start, idx.stop)
+                        if isinstance(idx, slice) and (idx != slice(None, None, None))
                         else tf.constant([idx % s])
                         for s, idx in zip(shape, indices)
                     ],
@@ -345,6 +385,45 @@ def scatter_nd(
             ],
             axis=-1,
         )
+    elif contains_slices:
+        shape = (
+            shape
+            if ivy.exists(shape)
+            else out.shape
+            if ivy.exists(out)
+            else updates.shape
+        )
+        if isinstance(indices, (tuple, list)):
+            indices = _parse_index(indices, len(shape)) if -1 in indices else indices
+            indices = tf.stack(
+                [
+                    tf.reshape(value, (-1,))
+                    for value in tf.meshgrid(
+                        *[
+                            tf.range(s)
+                            if idx == slice(None, None, None)
+                            else tf.range(idx.start, idx.stop)
+                            if isinstance(idx, slice)
+                            and (idx != slice(None, None, None))
+                            else tf.constant([idx % s])
+                            for s, idx in zip(shape, indices)
+                        ],
+                        indexing="ij",
+                    )
+                ],
+                axis=-1,
+            )
+        else:
+            indices = tf.stack(
+                [
+                    tf.reshape(value, (-1,))
+                    for value in tf.meshgrid(
+                        *[tf.range(indices.start, indices.stop)],
+                        indexing="ij",
+                    )
+                ],
+                axis=-1,
+            )
     else:
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = tf.constant(indices)
@@ -361,6 +440,9 @@ def scatter_nd(
                             *[
                                 tf.range(s)
                                 if idx == slice(None, None, None)
+                                else tf.range(idx.start, idx.stop)
+                                if isinstance(idx, slice)
+                                and idx != slice(None, None, None)
                                 else tf.constant([idx % s])
                                 for s, idx in zip(shape, index)
                             ],
@@ -382,6 +464,8 @@ def scatter_nd(
         updates = ivy.broadcast_to(updates, expected_shape)._data
     elif sum(updates.shape) > sum(expected_shape):
         indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])._data
+    elif updates.shape != expected_shape:
+        updates = ivy.broadcast_to(updates, expected_shape)._data
     # implementation
     target = out
     target_given = ivy.exists(target)
