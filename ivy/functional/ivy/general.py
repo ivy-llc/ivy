@@ -24,6 +24,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_view_indexing,
 )
 from ivy.functional.ivy.device import dev
 
@@ -1945,12 +1946,13 @@ def einops_repeat(
 
 @handle_exceptions
 def get_min_denominator() -> float:
-    """Get the global minimum denominator used by ivy for numerically stable division.
+    """
+    Gets the global minimum denominator used by ivy for numerically stable division.
 
     Returns
     -------
     ret
-        A float number of the global minimum denominator.
+        The value of the global minimum denominator.
 
     Examples
     --------
@@ -2496,12 +2498,14 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     return True
 
 
+@handle_view_indexing
 @to_native_arrays_and_back
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     query: Union[ivy.Array, ivy.NativeArray, Tuple],
 ) -> ivy.Array:
     """

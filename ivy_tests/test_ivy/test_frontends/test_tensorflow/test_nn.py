@@ -54,10 +54,17 @@ def _x_and_filters(
                 ),
             )
         )
+    fdilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if atrous:
         stride = 1
     elif type == "depthwise":
-        stride = draw(st.integers(stride_min, stride_max))
+        # if any value in dilations is greater than 1, tensorflow implements
+        # depthwise_covn2d as an atrous depthwise convolution, in which case all values
+        # in strides must be equal to 1.
+        if any(x > 1 for x in fdilations):
+            stride = 1
+        else:
+            stride = draw(st.integers(stride_min, stride_max))
     else:
         stride = draw(
             st.one_of(
@@ -68,7 +75,6 @@ def _x_and_filters(
             )
         )
     fstride = [stride] * dim if isinstance(stride, int) else stride
-    fdilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if dim == 1:
         if not transpose:
             filter_shape = draw(
