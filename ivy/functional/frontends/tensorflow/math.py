@@ -423,3 +423,6 @@ def rsqrt(x, name=None):
 @to_ivy_arrays_and_back
 def nextafter(x1, x2, name=None):
     return ivy.nextafter(x1, x2)
+
+def is_finite(x, name=None):
+    return ivy.isfinite(x)
