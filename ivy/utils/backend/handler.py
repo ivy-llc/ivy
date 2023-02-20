@@ -5,10 +5,9 @@ import ivy
 import importlib
 import functools
 import numpy as np
-from ivy import verbosity
 from typing import Optional
 import gc
-from ivy.utils import _importlib
+from ivy.utils import _importlib, verbosity
 from ivy.utils.backend import ast_helpers
 
 # local
@@ -398,7 +397,7 @@ def set_backend(backend: str, dynamic: bool = False):
     >>> print(type(native))
     <class 'jaxlib.xla_extension.DeviceArray'>
     """  # noqa
-    ivy.assertions.check_false(
+    ivy.utils.assertions.check_false(
         isinstance(backend, str) and backend not in _backend_dict,
         "backend must be one from {}".format(list(_backend_dict.keys())),
     )
@@ -590,7 +589,7 @@ def clear_backend_stack():
 def choose_random_backend(excluded=None):
     excluded = list() if excluded is None else excluded
     while True:
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             len(excluded),
             4,
             inverse=True,
