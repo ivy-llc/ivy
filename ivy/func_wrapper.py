@@ -75,7 +75,7 @@ def _get_first_array(*args, **kwargs):
     return arr
 
 
-def _build_view(original, view, fn, args, kwargs):
+def _build_view(original, view, fn, args, kwargs, index=None):
     if ivy.exists(original._base):
         warnings.warn(
             "Creating many views will lead to overhead "
@@ -88,7 +88,7 @@ def _build_view(original, view, fn, args, kwargs):
         base = original
         view._base = base
     base._view_refs.append(weakref.ref(view))
-    view._manipulation_stack.append((fn, args[1:], kwargs))
+    view._manipulation_stack.append((fn, args[1:], kwargs, index))
     return view
 
 
@@ -350,9 +350,30 @@ def handle_view(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, copy=None, **kwargs):
         ret = fn(*args, **kwargs)
-        if copy or ivy.backend in ("numpy", "torch"):
+        if copy or ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
             return ret
-        original = ivy.to_ivy(args[0])
+        original = args[0]
+        if isinstance(ret, list):
+            for i, view in enumerate(ret):
+                ret[i] = _build_view(original, view, fn, args, kwargs, i)
+        else:
+            ret = _build_view(original, ret, fn, args, kwargs, None)
+        return ret
+
+    new_fn.handle_view = True
+    return new_fn
+
+
+def handle_view_indexing(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        if ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
+            return ret
+        query = (args[1],) if not isinstance(args[1], tuple) else args[1]
+        if [i for i in query if not isinstance(i, (slice, int))]:
+            return ret
+        original = args[0]
         if isinstance(ret, list):
             for i, view in enumerate(ret):
                 ret[i] = _build_view(original, view, fn, args, kwargs)

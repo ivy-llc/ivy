@@ -220,8 +220,9 @@ def inplace_update(
             if ivy.exists(x._base):
                 base = x._base
                 base_idx = ivy.arange(base.size).reshape(base.shape)
-                for fn, args, kwargs in x._manipulation_stack:
+                for fn, args, kwargs, index in x._manipulation_stack:
                     base_idx = fn(base_idx, *args, **kwargs)
+                    base_idx = base[index] if ivy.exists(index) else base_idx
                 base_flat = base.data.flatten()
                 base_flat = base_flat.at[base_idx.data.flatten()].set(
                     val_native.flatten()
@@ -249,8 +250,9 @@ def inplace_update(
 
 
 def _update_view(view, base):
-    for fn, args, kwargs in view._manipulation_stack:
+    for fn, args, kwargs, index in view._manipulation_stack:
         base = fn(base, *args, **kwargs)
+        base = base[index] if ivy.exists(index) else base
     view.data = base.data
     return view
 

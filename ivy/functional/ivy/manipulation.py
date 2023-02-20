@@ -1336,6 +1336,7 @@ def tile(
     return current_backend(x).tile(x, repeats, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions

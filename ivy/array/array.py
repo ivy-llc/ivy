@@ -29,6 +29,7 @@ from .sorting import ArrayWithSorting
 from .statistical import ArrayWithStatistical
 from .utility import ArrayWithUtility
 from .experimental import *
+from ivy.func_wrapper import handle_view_indexing
 
 
 class Array(
@@ -330,6 +331,7 @@ class Array(
             attr = self._data.__getattr__(item)
         return to_ivy(attr)
 
+    @handle_view_indexing
     def __getitem__(self, query):
         return ivy.get_item(self._data, query)
 

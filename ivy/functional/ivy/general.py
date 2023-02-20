@@ -24,6 +24,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_view_indexing,
 )
 from ivy.functional.ivy.device import dev
 
@@ -2496,6 +2497,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     return True
 
 
+@handle_view_indexing
 @to_native_arrays_and_back
 @handle_nestable
 @handle_array_like_without_promotion
