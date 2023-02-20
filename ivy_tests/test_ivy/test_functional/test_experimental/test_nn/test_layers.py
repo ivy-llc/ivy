@@ -327,10 +327,11 @@ def test_interpolate(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, mode, size, align_corners = dtype_x_mode
     helpers.test_function(
-        ground_truth_backend="torch",
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
