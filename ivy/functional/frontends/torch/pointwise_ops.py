@@ -450,3 +450,8 @@ def hypot(input, other, *, out=None):
 @to_ivy_arrays_and_back
 def sigmoid(input, *, out=None):
     return ivy.sigmoid(input, out=out)
+
+
+@to_ivy_arrays_and_back
+def lerp(start, end, weight):
+    return ivy.lerp(start, end, weight)
