@@ -163,9 +163,13 @@ aminmax.unsupported_dtypes = {
     "tensorflow": ("float16", "bfloat16"),
 }
 
+
 @to_ivy_arrays_and_back
-def quantile(input, q, dim=None, keepdim=False, *, interpolation='linear', out=None):
-    return ivy.quantile(input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out)
+def quantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
+    return ivy.quantile(
+        input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
+    )
+
 
 quantile.unsupported_dtypes = {
     "torch": ("float16", "bfloat16"),

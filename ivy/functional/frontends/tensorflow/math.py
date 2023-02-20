@@ -426,3 +426,7 @@ def nextafter(x1, x2, name=None):
 
 def is_finite(x, name=None):
     return ivy.isfinite(x)
+
+@to_ivy_arrays_and_back
+def log_softmax(logits, axis=None):
+    return ivy.log_softmax(logits, axis=axis)

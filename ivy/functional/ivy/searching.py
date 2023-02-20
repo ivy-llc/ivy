@@ -4,7 +4,7 @@ from typing import Union, Optional, Tuple
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     handle_array_function,

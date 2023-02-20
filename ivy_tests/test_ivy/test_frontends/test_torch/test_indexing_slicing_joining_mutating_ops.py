@@ -446,6 +446,33 @@ def test_torch_transpose(
     )
 
 
+# t
+@handle_frontend_test(
+    fn_tree="torch.t",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(max_num_dims=2), key="shape"),
+    ),
+)
+def test_torch_t(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+    )
+
+
 # squeeze
 @handle_frontend_test(
     fn_tree="torch.squeeze",

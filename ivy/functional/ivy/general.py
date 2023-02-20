@@ -12,7 +12,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy.backend_handler import current_backend, backend_stack
+from ivy.utils.backend import current_backend, backend_stack
 from ivy.functional.ivy.gradients import _is_variable
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
@@ -24,6 +24,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_view_indexing,
 )
 from ivy.functional.ivy.device import dev
 
@@ -1945,12 +1946,13 @@ def einops_repeat(
 
 @handle_exceptions
 def get_min_denominator() -> float:
-    """Get the global minimum denominator used by ivy for numerically stable division.
+    """
+    Gets the global minimum denominator used by ivy for numerically stable division.
 
     Returns
     -------
     ret
-        A float number of the global minimum denominator.
+        The value of the global minimum denominator.
 
     Examples
     --------
@@ -2213,8 +2215,24 @@ def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
 
 
 @handle_exceptions
-def num_arrays_in_memory():
-    """Returns the number of arrays which are currently alive."""
+def num_arrays_in_memory() -> int:
+    """Returns the number of arrays which are currently alive.
+
+    Returns
+    -------
+    ret
+        Number of all arrays which are alive.
+    Examples
+    --------
+    >>> ivy.num_arrays_in_memory()
+    0
+    >>> x = ivy.num_arrays_in_memory()
+    >>> x
+    0
+    >>> y = ivy.array([0, 1, 2])
+    >>> x
+    1
+    """
     return len(get_all_arrays_in_memory())
 
 
@@ -2458,7 +2476,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_exceptions
 @handle_array_function
 def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
-    """Asserts that inplace operations are supported for x, else raises exception.
+    """Asserts that inplace operations are supported for x, else raises IvyBackendException.
 
     Parameters
     ----------
@@ -2468,7 +2486,41 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     Returns
     -------
     ret
-        True if support, raises exception otherwise
+        True if supports, raises IvyBackendException otherwise
+    
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input and default backend set as `numpy`:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> print(x.assert_supports_inplace())
+    True
+
+    With :class:`ivy.Array` input and default backend set as `jax`:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> print(x.assert_supports_inplace())
+    IvyBackendException: jax: assert_supports_inplace: Inplace operations \
+    are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
+
+    With :class:`ivy.Container` input and default backend set as `numpy`:
+
+    >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
+    >>> print(x.assert_supports_inplace())
+    {
+        a: True,
+        b: True
+    }
+
+    With :class:`ivy.Container` input and default backend set as `jax`:
+
+    >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
+    >>> print(x.assert_supports_inplace())
+    IvyBackendException: jax: assert_supports_inplace: Inplace operations \
+    are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
 
     """
     ivy.assertions.check_true(
@@ -2480,12 +2532,14 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     return True
 
 
+@handle_view_indexing
 @to_native_arrays_and_back
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     query: Union[ivy.Array, ivy.NativeArray, Tuple],
 ) -> ivy.Array:
     """

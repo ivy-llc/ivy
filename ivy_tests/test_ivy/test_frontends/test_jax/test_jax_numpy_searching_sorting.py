@@ -245,3 +245,36 @@ def test_jax_numpy_extract(
         condition=cond,
         arr=xs[0],
     )
+
+
+# sort
+@handle_frontend_test(
+    fn_tree="jax.numpy.sort",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_sort(
+    *,
+    dtype_x_axis,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+    )
