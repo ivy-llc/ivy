@@ -25,7 +25,7 @@ def current_backend_str() -> str:
     return "numpy"
 
 
-def get_item(x: np.ndarray, query: np.ndarray) -> np.ndarray:
+def get_item(x: np.ndarray, /, query: np.ndarray) -> np.ndarray:
     return x.__getitem__(query)
 
 

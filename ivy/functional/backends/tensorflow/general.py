@@ -72,7 +72,7 @@ def current_backend_str() -> str:
 @with_unsupported_dtypes(
     {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
-def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
+def get_item(x: tf.Tensor, /, query: tf.Tensor) -> tf.Tensor:
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
         return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)

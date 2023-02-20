@@ -2504,6 +2504,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_array_function
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     query: Union[ivy.Array, ivy.NativeArray, Tuple],
 ) -> ivy.Array:
     """

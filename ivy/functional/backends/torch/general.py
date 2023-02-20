@@ -68,6 +68,7 @@ def current_backend_str() -> str:
 
 def get_item(
     x: torch.Tensor,
+    /,
     query: torch.Tensor,
 ) -> torch.Tensor:
     if ivy.is_array(query) and ivy.dtype(query, as_native=True) is not torch.bool:

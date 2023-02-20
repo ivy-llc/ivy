@@ -20,6 +20,7 @@ FN_DECORATORS = [
     "inputs_to_native_arrays",
     "inputs_to_ivy_arrays",
     "handle_out_argument",
+    "handle_view_indexing",
     "handle_view",
     "handle_nestable",
     "handle_exceptions",
@@ -370,7 +371,11 @@ def handle_view_indexing(fn: Callable) -> Callable:
         ret = fn(*args, **kwargs)
         if ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
             return ret
-        query = (args[1],) if not isinstance(args[1], tuple) else args[1]
+        if kwargs:
+            query = kwargs["query"]
+        else:
+            query = args[1]
+        query = (query,) if not isinstance(query, tuple) else query
         if [i for i in query if not isinstance(i, (slice, int))]:
             return ret
         original = args[0]
@@ -381,7 +386,7 @@ def handle_view_indexing(fn: Callable) -> Callable:
             ret = _build_view(original, ret, fn, args, kwargs)
         return ret
 
-    new_fn.handle_view = True
+    new_fn.handle_view_indexing = True
     return new_fn
 
 
