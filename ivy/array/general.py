@@ -774,7 +774,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.array_equal(self, x)
 
-    def assert_supports_inplace(self: ivy.Array) -> bool:
+    def assert_supports_inplace(self: ivy.Array, /) -> bool:
         """
         ivy.Array instance method variant of ivy.assert_supports_inplace. This method
         simply wraps the function, and so the docstring for ivy.assert_supports_inplace
@@ -788,7 +788,22 @@ class ArrayWithGeneral(abc.ABC):
         Returns
         -------
         ret
-            True if support, raises exception otherwise
+            True if supports, raises IvyBackendException otherwise
+
+        Examples
+        --------
+        With :class:`ivy.Array` input and default backend set as `numpy`:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> print(x.assert_supports_inplace())
+        True
+
+        With :class:`ivy.Array` input and default backend set as `jax`:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> print(x.assert_supports_inplace())
+        IvyBackendException: jax: assert_supports_inplace: Inplace operations \
+        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
 
         """
         return ivy.assert_supports_inplace(self)
