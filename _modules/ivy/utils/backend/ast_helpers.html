@@ -166,6 +166,7 @@
 <span class="n">importlib_module_path</span> <span class="o">=</span> <span class="s2">&quot;ivy.utils._importlib&quot;</span>
 <span class="n">importlib_abs_import_fn</span> <span class="o">=</span> <span class="s2">&quot;_absolute_import&quot;</span>
 <span class="n">importlib_from_import_fn</span> <span class="o">=</span> <span class="s2">&quot;_from_import&quot;</span>
+<span class="n">_unmodified_ivy_path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s2">&quot;ivy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">_retrive_local_modules</span><span class="p">():</span>
@@ -360,8 +361,7 @@
             <span class="k">return</span> <span class="kc">None</span>
         <span class="c1"># We&#39;re local</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="c1"># TODO look for Ivy specificly</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="n">_unmodified_ivy_path</span><span class="p">]</span>
         <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">fullname</span><span class="p">:</span>
             <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">fullname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
