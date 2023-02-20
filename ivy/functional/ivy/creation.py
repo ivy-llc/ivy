@@ -9,7 +9,6 @@ import numpy as np
 import ivy
 from ivy import to_ivy
 from ivy.utils.backend import current_backend
-from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     handle_array_function,
     infer_device,
@@ -121,7 +120,10 @@ def asarray_infer_device(fn: Callable) -> Callable:
             The return of the function, with `device` passed explicitly.
         """
         if isinstance(args[0], list):
-            return fn(*args, device=ivy.default_device(as_native=True), **kwargs)
+            device = (
+                device if ivy.exists(device) else ivy.default_device(as_native=True)
+            )
+            return fn(*args, device=device, **kwargs)
 
         # find the first array argument, if required
         arr = None if ivy.exists(device) else args[0]
