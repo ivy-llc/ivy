@@ -52,10 +52,10 @@ def confusion_matrix(
     )
 
     # Sanity check (potential optimization)
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         labels, 0, allow_equal=True, message="labels contains negative values"
     )
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         predictions, 0, allow_equal=True, message="predictions contains negative values"
     )
 
@@ -63,16 +63,16 @@ def confusion_matrix(
         num_classes = max(ivy.max(labels), ivy.max(predictions)) + 1
     else:
         num_classes_int64 = ivy.astype(ivy.array(num_classes), ivy.int64, copy=False)
-        ivy.assertions.check_less(
+        ivy.utils.assertions.check_less(
             labels, num_classes_int64, message="labels out of bound"
         )
-        ivy.assertions.check_less(
+        ivy.utils.assertions.check_less(
             predictions, num_classes_int64, message="predictions out of bound"
         )
 
     if weights is not None:
         weights = ivy.array(weights)
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             ivy.shape(predictions),
             ivy.shape(weights),
             message="weights shape do not match predictions",
@@ -197,7 +197,7 @@ def negative(x, name=None):
 
 @to_ivy_arrays_and_back
 def polyval(coeffs, x, name=None):
-    ivy.assertions.check_isinstance(coeffs, list)
+    ivy.utils.assertions.check_isinstance(coeffs, list)
     x = ivy.array(x)
     if len(coeffs) < 1:
         return ivy.zeros_like(x, dtype=x.dtype)
@@ -318,7 +318,7 @@ def tan(x, name=None):
 def unsorted_segment_mean(
     data, segment_ids, num_segments, name="unsorted_segment_mean"
 ):
-    ivy.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
@@ -333,7 +333,7 @@ def unsorted_segment_mean(
 def unsorted_segment_sqrt_n(
     data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):
-    ivy.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
