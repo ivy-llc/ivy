@@ -374,30 +374,14 @@ def interpolate(
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
 ):
+    dims = len(x.shape) - 2
+    size = (size,) * dims if isinstance(size, int) else size
     if align_corners:
         return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
-    elif mode == "linear":
-        x = tf.transpose(x, (0, 2, 1))
-        return tf.cast(
-            tf.transpose(
-                tf.image.resize(
-                    x, size=[x.shape[0], size], method="bilinear", antialias=antialias
-                ),
-                (0, 2, 1),
-            ),
-            x.dtype,
-        )
-    elif mode == "bilinear":
-        x = tf.transpose(x, (0, 2, 3, 1))
-        return tf.cast(
-            tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 3, 1, 2)),
-            x.dtype,
-        )
-    elif mode == "trilinear":
-        x = tf.transpose(x, (0, 2, 3, 4, 1))
-        return tf.cast(
-            tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 4, 1, 2, 3)),
-            x.dtype,
-        )
+    x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+    return tf.transpose(
+        tf.image.resize(x, shape=size, method=mode, antialias=antialias),
+        (0, dims + 1, *range(1, dims + 1)),
+    )
