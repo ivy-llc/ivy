@@ -1,37 +1,10 @@
 # global
 import copy
-from types import SimpleNamespace
 import warnings
 from ivy._version import __version__ as __version__
 import builtins
 import numpy as np
 
-try:
-    import torch
-except ImportError:
-    torch = SimpleNamespace()
-    torch.Size = SimpleNamespace()
-    torch.Tensor = SimpleNamespace()
-
-try:
-    import tensorflow as tf
-except ImportError:
-    tf = SimpleNamespace()
-    tf.TensorShape = SimpleNamespace()
-    tf.Tensor = SimpleNamespace()
-
-try:
-    import jax
-    import jaxlib
-except ImportError:
-    jax = SimpleNamespace()
-    jax.interpreters = SimpleNamespace()
-    jax.interpreters.xla = SimpleNamespace()
-    jax.interpreters.xla._DeviceArray = SimpleNamespace()
-    jaxlib = SimpleNamespace()
-    jaxlib.xla_extension = SimpleNamespace()
-    jaxlib.xla_extension.DeviceArray = SimpleNamespace()
-    jaxlib.xla_extension.Buffer = SimpleNamespace()
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
@@ -215,13 +188,8 @@ class Shape(tuple):
             valid_types += (ivy.NativeShape, ivy.NativeArray)
         else:
             valid_types += (
-                tf.TensorShape,
-                torch.Size,
-                jax.interpreters.xla._DeviceArray,
-                jaxlib.xla_extension.DeviceArray,
-                jax.xla_extension.Buffer,
-                np.ndarray,
-                tf.Tensor,
+                current_backend(shape_tup).NativeShape,
+                current_backend(shape_tup).NativeArray,
             )
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
         if isinstance(shape_tup, int):
