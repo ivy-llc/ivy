@@ -90,7 +90,7 @@ def max_pool2d(
         padding = [(padding[0],) * 2, (padding[1],) * 2]
 
     if isinstance(padding, (tuple, list)):
-        ivy.assertions.check_kernel_padding_size(kernel, padding)
+        ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
 
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
@@ -165,7 +165,7 @@ def max_pool3d(
         value=float("-inf"),
     )
     if padding != "VALID" and padding != "SAME":
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -249,7 +249,7 @@ def avg_pool2d(
         mode="replicate",
     )
     if padding != "VALID" and padding != "SAME":
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -305,7 +305,7 @@ def avg_pool3d(
         mode="replicate",
     )
     if padding != "VALID" and padding != "SAME":
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -423,20 +423,26 @@ def fft(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if not isinstance(dim, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(dim)}"
+        )
     if n is None:
         n = x.shape[dim]
     if n < -len(x.shape):
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             f"Invalid dim {dim}, expecting ranging"
             " from {-len(x.shape)} to {len(x.shape)-1}  "
         )
     if not isinstance(n, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
     if n <= 1:
-        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {n}, expecting more than 1"
+        )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return torch.fft.fft(x, n, dim, norm, out=out)
 
 
@@ -465,6 +471,42 @@ def dropout1d(
         return x
 
 
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
+def dropout3d(
+    x: torch.Tensor,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if training:
+        is_batched = len(x.shape) == 5
+        if data_format == "NDHWC":
+            perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
+            x = torch.permute(x, perm)
+        # ToDo: switch to native dropout1d once torch version is updated.
+        noise_shape = list(x.shape)
+        noise_shape[-3:] = [1] * 3
+        mask = torch.rand(noise_shape) > prob
+        res = torch.where(mask, x / (1 - prob), torch.zeros_like(x))
+        if data_format == "NDHWC":
+            perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
+            res = torch.permute(res, perm)
+        return res
+    else:
+        return x
+
+
 def ifft(
     x: torch.Tensor,
     dim: int,
@@ -474,20 +516,26 @@ def ifft(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if not isinstance(dim, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(dim)}"
+        )
     if n is None:
         n = x.shape[dim]
     if n < -len(x.shape):
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             f"Invalid dim {dim}, expecting ranging"
             " from {-len(x.shape)} to {len(x.shape)-1}  "
         )
     if not isinstance(n, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
     if n <= 1:
-        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {n}, expecting more than 1"
+        )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return torch.fft.ifft(x, n, dim, norm, out=out).resolve_conj()
 
 

@@ -18,7 +18,7 @@ class ndarray:
         else:
             self._ivy_array = ivy.empty(shape, dtype=dtype)
 
-        ivy.assertions.check_elem_in_list(
+        ivy.utils.assertions.check_elem_in_list(
             order,
             ["C", "F", None],
             message="order must be one of 'C', 'F'",
@@ -65,7 +65,7 @@ class ndarray:
     # ---------------- #
 
     def astype(self, dtype, order="K", casting="unsafe", subok=True, copy=True):
-        ivy.assertions.check_elem_in_list(
+        ivy.utils.assertions.check_elem_in_list(
             order,
             ["C", "F", "A", "K"],
             message="order must be one of 'C', 'F', or 'A'",
@@ -79,7 +79,7 @@ class ndarray:
         if np_frontend.can_cast(ret._ivy_array, dtype, casting=casting):
             ret._ivy_array = ret._ivy_array.astype(dtype)
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 f"Cannot cast array data from dtype('{ret._ivy_array.dtype}')"
                 f" to dtype('{dtype}') according to the rule '{casting}'"
             )
@@ -105,7 +105,7 @@ class ndarray:
         )
 
     def reshape(self, newshape, /, *, order="C"):
-        ivy.assertions.check_elem_in_list(
+        ivy.utils.assertions.check_elem_in_list(
             order,
             ["C", "F", "A"],
             message="order must be one of 'C', 'F', or 'A'",
@@ -239,7 +239,7 @@ class ndarray:
         return np_frontend.nonzero(self._ivy_array)[0]
 
     def ravel(self, order="C"):
-        ivy.assertions.check_elem_in_list(
+        ivy.utils.assertions.check_elem_in_list(
             order,
             ["C", "F", "A", "K"],
             message="order must be one of 'C', 'F', 'A', or 'K'",
@@ -250,7 +250,7 @@ class ndarray:
             return np_frontend.ravel(self._ivy_array, order="C")
 
     def flatten(self, order="C"):
-        ivy.assertions.check_elem_in_list(
+        ivy.utils.assertions.check_elem_in_list(
             order,
             ["C", "F", "A", "K"],
             message="order must be one of 'C', 'F', 'A', or 'K'",

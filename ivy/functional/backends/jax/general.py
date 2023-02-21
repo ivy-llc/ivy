@@ -93,7 +93,7 @@ def gather(
 ) -> JaxArray:
     axis = axis % len(params.shape)
     batch_dims = batch_dims % len(params.shape)
-    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
+    ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
         result = jnp.take(params, indices, axis)
@@ -153,7 +153,7 @@ def gather_nd(
     batch_dims: Optional[int] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
     batch_dims = batch_dims % len(params.shape)
     result = []
     if batch_dims == 0:
@@ -212,7 +212,7 @@ def inplace_update(
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
         if ensure_in_backend:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "JAX does not natively support inplace updates"
             )
         (x_native, val_native), _ = ivy.args_to_native(x, val)
@@ -242,7 +242,7 @@ def inplace_update(
                     if ivy.exists(view):
                         _update_view(view, x)
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "JAX does not natively support inplace updates"
             )
         return x
@@ -280,8 +280,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        ivy.assertions.check_equal(len(target.shape), 1)
-        ivy.assertions.check_equal(target.shape[0], size)
+        ivy.utils.assertions.check_equal(len(target.shape), 1)
+        ivy.utils.assertions.check_equal(target.shape[0], size)
     if reduction == "sum":
         if not target_given:
             target = jnp.zeros([size], dtype=updates.dtype)
@@ -303,7 +303,7 @@ def scatter_flat(
         if not target_given:
             target = jnp.where(target == -1e12, 0.0, target)
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -366,7 +366,7 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if reduction == "sum":
         if not target_given:
@@ -393,7 +393,7 @@ def scatter_nd(
                 jnp.where(target == -1e12, 0.0, target), dtype=updates.dtype
             )
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
