@@ -66,8 +66,13 @@ def diagonal(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigh(
-    x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
+    x: np.ndarray, 
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray]:
+
     result_tuple = NamedTuple(
         "eigh", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
     )

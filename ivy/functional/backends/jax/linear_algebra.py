@@ -108,8 +108,13 @@ def tensorsolve(
     backend_version,
 )
 def eigh(
-    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+    x: JaxArray, 
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray]:
+
     result_tuple = NamedTuple(
         "eigh", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
     )

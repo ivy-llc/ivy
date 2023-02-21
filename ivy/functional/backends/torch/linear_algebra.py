@@ -93,8 +93,13 @@ def diagonal(
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
-    x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    UPLO: Optional[str] = "L", 
+    out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor]:
+
     result_tuple = NamedTuple(
         "eigh", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
     )
