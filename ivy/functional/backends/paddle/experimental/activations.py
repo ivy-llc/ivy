@@ -2,7 +2,7 @@ from typing import Optional, Union
 
 # global
 import paddle
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 # local
