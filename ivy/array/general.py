@@ -811,7 +811,8 @@ class ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([1, 2, 3])
         >>> print(x.assert_supports_inplace())
         IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
+        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types 
+        with jax backend
 
         """
         return ivy.assert_supports_inplace(self)
