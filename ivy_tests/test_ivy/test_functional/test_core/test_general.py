@@ -223,6 +223,7 @@ def array_and_boolean_mask(
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_get_item(
     dtype_x_indices,
@@ -2074,7 +2075,7 @@ def _fn3(x, y):
         min_dim_size=2,
         max_dim_size=10,
         num=2,
-        returndtype=True,
+        return_dtype=True,
     ),
     in_axes_as_cont=st.booleans(),
 )

@@ -95,7 +95,7 @@ def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, ou
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def cross(input, other, *, dim=None, out=None):
-    return torch_frontend.cross(input, other, dim=dim, out=out)
+    return torch_frontend.miscellaneous_ops.cross(input, other, dim=dim, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -183,6 +183,13 @@ def tensorsolve(A, B, dims=None, *, out=None):
     return ivy.tensorsolve(A, B, axes=dims, out=out)
 
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def matmul(input, other, *, out=None):
+    return ivy.matmul(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def multi_dot(input, *, out=None):
     return ivy.multi_dot(input, out=out)

@@ -113,15 +113,15 @@ def conv1d(
 )
 # noinspection PyUnresolvedReferences
 def conv1d_transpose(
-    x,
-    filters,
-    strides: int,
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: Optional[str] = "NWC",
-    dilations: Optional[int] = 1,
+    data_format: str = "NWC",
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[torch.Tensor] = None,
 ):
     if data_format == "NWC":
@@ -161,8 +161,8 @@ def conv2d(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if data_format == "NHWC":
