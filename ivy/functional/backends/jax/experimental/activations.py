@@ -15,7 +15,8 @@ def logit(x: JaxArray, /, *, eps: Optional[float] = None, out=None):
 
 
 def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jax.nn.relu6(x)
+    x_dtype = x.dtype
+    return jax.nn.relu6(x).astype(x_dtype)
 
 
 def thresholded_relu(
