@@ -967,7 +967,8 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
 <span class="sd">        &gt;&gt;&gt; print(x.assert_supports_inplace())</span>
 <span class="sd">        IvyBackendException: jax: assert_supports_inplace: Inplace operations \</span>
-<span class="sd">        are not supported &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt; types with jax backend</span>
+<span class="sd">        are not supported &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt; types </span>
+<span class="sd">        with jax backend</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">assert_supports_inplace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
