@@ -53,7 +53,22 @@ def _native_to_ivy_array(x):
 
 
 def _to_ivy_array(x):
-    return _from_jax_frontend_array_to_ivy_array(_native_to_ivy_array(x))
+    # if x is a native array return it as an ivy array
+    if isinstance(x, ivy.NativeArray):
+        return ivy.array(x)
+
+    # else if x is a frontend jax DeviceArray return the wrapped ivy array # noqa: E501
+    if (
+        isinstance(x, jax_frontend.DeviceArray)
+        and x.weak_type
+        and x.ivy_array.shape == ()
+    ):
+        return ivy.to_scalar(x.ivy_array)
+    if hasattr(x, "ivy_array"):
+        return x.ivy_array
+
+    # else just return x
+    return x
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
