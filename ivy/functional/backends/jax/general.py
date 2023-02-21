@@ -311,6 +311,9 @@ def scatter_flat(
     return _to_device(target)
 
 
+scatter_flat.support_native_out = True
+
+
 def scatter_nd(
     indices: JaxArray,
     updates: JaxArray,
