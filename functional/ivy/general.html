@@ -395,8 +395,7 @@ which itself contains the parameter name, type, and other helpful information.</
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.general.assert_supports_inplace">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">assert_supports_inplace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#assert_supports_inplace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.assert_supports_inplace" title="Permalink to this definition"></a></dt>
-<dd><p>Asserts that inplace operations are supported for x, else
-raises IvyBackendException.</p>
+<dd><p>Asserts that inplace operations are supported for x, else raises IvyBackendException.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Input variable or array to check for inplace support for.</p>
@@ -2526,7 +2525,7 @@ data type of x.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>IvyException</strong> – If x isn’t a class instance of ivy.Array or ivy.NativeArray, an exception will
+<li><p><strong>ValueError</strong> – If x isn’t a class instance of ivy.Array or ivy.NativeArray, an exception will
     be raised.</p></li>
 <li><p><strong>This function is nestable</strong><strong>, </strong><strong>and therefore also accepts :code:'ivy.Container'</strong> – </p></li>
 <li><p><strong>instance in place</strong><strong> of </strong><strong>the argument.</strong> – </p></li>
@@ -2538,7 +2537,7 @@ data type of x.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">supports_inplace_updates</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">True</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input and backend set as <cite>torch</cite>:</p>
@@ -2546,16 +2545,9 @@ data type of x.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">supports_inplace_updates</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: True,</span>
-<span class="go">    b: True</span>
+<span class="go">    a: false,</span>
+<span class="go">    b: false</span>
 <span class="go">}</span>
-</pre></div>
-</div>
-<p>With <cite>ivy.Array</cite> input and backend set as “tensorflow”:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ret</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">supports_inplace_updates</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
-<span class="go">False</span>
 </pre></div>
 </div>
 </dd></dl>
