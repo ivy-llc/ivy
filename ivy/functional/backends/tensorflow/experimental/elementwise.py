@@ -363,12 +363,12 @@ def angle(
     backend_version,
 )
 def imag(
-    input: Union[tf.Tensor, tf.Variable],
+    val: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.imag(input, name=None)
+    return tf.math.imag(val, name=None)
 
 
 @with_supported_dtypes(

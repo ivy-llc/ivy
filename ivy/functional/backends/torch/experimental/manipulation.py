@@ -140,7 +140,7 @@ def flatten(
     order: Optional[str] = "C",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if order == "F":
         return ivy.functional.experimental.flatten(
             x, start_dim=start_dim, end_dim=end_dim, order=order
@@ -150,7 +150,7 @@ def flatten(
 
 def vsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[torch.Tensor]:
     return torch.vsplit(ary, indices_or_sections)
@@ -162,7 +162,7 @@ def dsplit(
     /,
 ) -> List[torch.Tensor]:
     if len(ary.shape) < 3:
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
     return list(torch.dsplit(ary, indices_or_sections))
@@ -210,7 +210,7 @@ def take_along_axis(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if arr.shape != indices.shape:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "arr and indices must have the same shape;"
             + f" got {arr.shape} vs {indices.shape}"
         )

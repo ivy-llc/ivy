@@ -58,6 +58,36 @@ class NativeClass:
         self._native_class = native_class
 
 
+def _get_type_dict(framework):
+    return {
+        "valid": framework.valid_dtypes,
+        "numeric": framework.valid_numeric_dtypes,
+        "float": framework.valid_float_dtypes,
+        "integer": framework.valid_int_dtypes,
+        "unsigned": framework.valid_uint_dtypes,
+        "signed_integer": tuple(
+            set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
+        ),
+        "complex": framework.valid_complex_dtypes,
+        "real_and_complex": tuple(
+            set(framework.valid_numeric_dtypes).union(framework.valid_complex_dtypes)
+        ),
+        "float_and_complex": tuple(
+            set(framework.valid_float_dtypes).union(framework.valid_complex_dtypes)
+        ),
+        "bool": tuple(
+            set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
+        ),
+    }
+
+
+def dtype_handler(framework):
+    framework = importlib.import_module("ivy.functional.backends." + framework)
+    dtypes = _get_type_dict(framework)
+    dtypes = jsonpickle.dumps(dtypes)
+    print(dtypes)
+
+
 if __name__ == "__main__":
 
     arg_lis = sys.argv
@@ -80,6 +110,10 @@ if __name__ == "__main__":
     while j:
         try:
             z = input()
+            if z == "1":
+                dtype_handler(arg_lis[2].split("/")[0])
+                continue
+
             pickle_dict = jsonpickle.loads(z)
             frontend_fw = input()
 

@@ -487,7 +487,7 @@ def test_default_dtype(
     array=helpers.array_values(
         dtype=dtype_shared,
         shape=helpers.lists(
-            arg=helpers.ints(min_value=1, max_value=5),
+            x=helpers.ints(min_value=1, max_value=5),
             min_size="num_dims",
             max_size="num_dims",
             size_bounds=[1, 5],
