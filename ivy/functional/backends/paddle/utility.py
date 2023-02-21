@@ -24,3 +24,5 @@ def any(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
+
+
