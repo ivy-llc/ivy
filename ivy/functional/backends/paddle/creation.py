@@ -18,7 +18,7 @@ from ivy.functional.ivy.creation import (
     SupportsBufferProtocol,
 )
 from . import backend_version
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 from paddle.fluid.libpaddle import Place
 
 
