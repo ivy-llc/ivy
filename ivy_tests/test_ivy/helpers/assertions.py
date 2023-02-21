@@ -36,7 +36,7 @@ def assert_all_close(
     ret_dtype = str(ret_np.dtype)
     ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("longlong", "int64")
     assert ret_dtype == ret_from_gt_dtype, (
-        "the ground truth framework {} returned a {} datatype while"
+        "the ground truth framework {} returned a {} datatype while "
         "the backend {} returned a {} datatype".format(
             ground_truth_backend,
             ret_from_gt_dtype,
@@ -53,7 +53,7 @@ def assert_all_close(
         assert np.allclose(
             np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
         ), f" the results from backend {ivy.current_backend_str()} and ground truth framework {ground_truth_backend} " \
-           f"do not match\n\n {ret_np}!={ret_from_gt_np}"
+           f"do not match\n {ret_np}!={ret_from_gt_np} \n\n"
 
 
 def assert_same_type_and_shape(values, this_key_chain=None):
