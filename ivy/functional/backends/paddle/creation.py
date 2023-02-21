@@ -56,8 +56,57 @@ def asarray(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    # TODO: Implement device support
 
-    raise IvyNotImplementedException()
+    if isinstance(obj, paddle.Tensor) and dtype is None:
+        if copy is True:
+            return obj.clone().detach() 
+        else:
+            return obj.detach()
+
+    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
+        contain_tensor = False
+        if isinstance(obj[0], (list, tuple)):
+            first_tensor = _get_first_array(obj)
+            if ivy.exists(first_tensor):
+                contain_tensor = True
+                dtype = first_tensor.dtype
+        if dtype is None:
+            dtype = ivy.default_dtype(item=obj, as_native=True)
+
+        # if `obj` is a list of specifically tensors or
+        # a multidimensional list which contains a tensor
+        if isinstance(obj[0], paddle.Tensor) or contain_tensor:
+            if copy is True:
+                return (
+                    paddle.stack([paddle.as_tensor(i, dtype=dtype) for i in obj])
+                    .clone()
+                    .detach()
+                    
+                )
+            else:
+                return _stack_tensors(obj, dtype)
+
+    elif isinstance(obj, np.ndarray) and dtype is None:
+        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
+
+    else:
+        dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
+
+    if dtype == paddle.bfloat16 and isinstance(obj, np.ndarray):
+        if copy is True:
+            return (
+                paddle.as_tensor(obj.tolist(), dtype=dtype).clone().detach()
+            )
+        else:
+            return paddle.as_tensor(obj.tolist(), dtype=dtype)
+
+    if copy is True:
+        ret = paddle.as_tensor(obj, dtype=dtype).clone().detach()
+        return ret
+    else:
+        ret = paddle.as_tensor(obj, dtype=dtype)
+        return ret
 
 
 def empty(
