@@ -6,9 +6,6 @@ from hypothesis import strategies as st, assume
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
-import torch
-from torch.testing import assert_allclose
-
 
 # add
 @handle_frontend_test(
@@ -2102,19 +2099,15 @@ def test_torch_lerp(
     fn_tree,
     on_device,
 ):
-    input_dtype, inputs = dtype_and_input
-    start, end, weight = inputs
-
-    expected_output = torch.lerp(start, end, weight)
-    output = frontend.torch.lerp(start, end, weight)
-
-    assert_allclose(expected_output, output, rtol=1e-03, atol=1e-05)
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=(start, end, weight),
-        expected_output=expected_output,
-    )
+input_dtype, inputs = dtype_and_input
+start, end, weight = inputs
+helpers.test_frontend_function(
+input_dtypes=input_dtype,
+frontend=frontend,
+test_flags=test_flags,
+fn_tree=fn_tree,
+on_device=on_device,
+input_start=start,
+input_end=end,
+input_weight=weight,
+)
