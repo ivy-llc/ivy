@@ -39,7 +39,7 @@ def arctan2(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def convolve(a, v,  mode='full', *, precision=None):
+def convolve(a, v, mode='full', *, precision=None):
     a, v = promote_types_of_jax_inputs(a, v)
     if ivy.get_num_dims(a) != 1:
         raise ValueError(
@@ -63,7 +63,8 @@ def convolve(a, v,  mode='full', *, precision=None):
         padding = [(v.shape[0] - 1, v.shape[0] - 1)]
 
     result = ivy.conv_general_dilated(
-        a[None, None, :], v[:, None, None], (1,), padding, dims=1, data_format='channel_first'
+        a[None, None, :], v[:, None, None], (1,),
+        padding, dims=1, data_format='channel_first',
     )
     return result[0, 0, out_order]
 

@@ -173,7 +173,7 @@ def test_jax_numpy_arctan2(
 
 # convolve
 @handle_frontend_test(
-    fn_tree = "jax.numpy.convolve",
+    fn_tree="jax.numpy.convolve",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
