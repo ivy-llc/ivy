@@ -20,6 +20,7 @@ _dtype_kind_keys = {
     "float",
     "unsigned",
     "integer",
+    "signed_integer",
     "complex",
     "real_and_complex",
     "float_and_complex",
