@@ -175,9 +175,7 @@ def _generate_eigh_tridiagonal_args(draw):
 
         select_range = [range_slice.start, range_slice.stop]
     else:
-        range_start = draw(st.floats(1e-5, 1e4))
-        range_end = draw(st.floats(range_start + 0.1, 1e5))
-        select_range = [range_start, range_end]
+        select_range = [-100, 100]
 
     eigvals_only = draw(st.booleans())
     tol = draw(st.floats(1e-5, 1e-3) | st.just(None))
@@ -220,7 +218,7 @@ def test_eigh_tridiagonal(
     )
     if results is None:
         return
-    ret_np_flat, ret_from_np_flat = results
+    ret_np_flat, ret_np_from_gt_flat = results
     reconstructed_np = None
     for i in range(len(ret_np_flat) // 2):
         eigenvalue = ret_np_flat[i]
@@ -235,9 +233,9 @@ def test_eigh_tridiagonal(
             )
 
     reconstructed_from_np = None
-    for i in range(len(ret_from_np_flat) // 2):
-        eigenvalue = ret_from_np_flat[i]
-        eigenvector = ret_from_np_flat[len(ret_np_flat) // 2 + i]
+    for i in range(len(ret_np_from_gt_flat) // 2):
+        eigenvalue = ret_np_from_gt_flat[i]
+        eigenvector = ret_np_from_gt_flat[len(ret_np_flat) // 2 + i]
         if reconstructed_from_np is not None:
             reconstructed_from_np += eigenvalue * np.matmul(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
