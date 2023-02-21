@@ -137,7 +137,7 @@ def handle_array_function(func):
 
                         if getattr(
                             arg, a[0]
-                        ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(
+                        ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(  # noqa: E501
                             getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
                         ):
                             index = len(overloaded_args)
