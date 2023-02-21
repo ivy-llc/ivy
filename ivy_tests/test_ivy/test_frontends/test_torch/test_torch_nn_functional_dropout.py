@@ -27,7 +27,7 @@ import ivy_tests.test_ivy.helpers as helpers
 )
 def test_torch_dropout(
     *,
-    dtype_and_input,
+    dtype_and_x,
     prob,
     training,
     on_device,
@@ -35,7 +35,7 @@ def test_torch_dropout(
     frontend,
     test_flags,
 ):
-    input_dtype, x = dtype_and_input
+    input_dtype, x = dtype_and_x
     ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
