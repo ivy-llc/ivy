@@ -1028,15 +1028,9 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    # split the arguments into their positional and keyword components
+    init_input_dtypes = ivy.default(init_input_dtypes, [])
 
     # Constructor arguments #
-    (init_input_dtypes, init_as_variable_flags, init_native_array_flags,) = (
-        ivy.default(init_input_dtypes, []),
-        ivy.default(init_as_variable_flags, []),
-        ivy.default(init_native_array_flags, []),
-    )
-
     init_all_as_kwargs_np = ivy.default(init_all_as_kwargs_np, dict())
     # split the arguments into their positional and keyword components
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
