@@ -2,7 +2,7 @@
 import ivy
 from ivy.func_wrapper import handle_array_function
 from ivy.functional.ivy.gradients import gradient_descent_update
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 # local
 from typing import Optional, Union, Callable, Tuple, Any

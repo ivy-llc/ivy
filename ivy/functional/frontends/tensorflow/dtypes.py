@@ -64,14 +64,14 @@ class DType:
         if self._ivy_dtype.is_float_dtype:
             return 0, 1
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 f"{self._ivy_dtype} does not have defined limits"
             )
 
     @property
     def max(self):
         if self._ivy_dtype in (ivy.bool, ivy.complex128, ivy.complex64):
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 f"Cannot find maximum value of {self._ivy_dtype}"
             )
         if self._ivy_dtype is ivy.bfloat16:
@@ -81,7 +81,7 @@ class DType:
     @property
     def min(self):
         if self._ivy_dtype in (ivy.bool, ivy.complex128, ivy.complex64):
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 f"Cannot find maximum value of {self._ivy_dtype}"
             )
         if self._ivy_dtype is ivy.bfloat16:
@@ -104,7 +104,7 @@ class DType:
         if type(other) != DType:  # pylint: disable=unidiomatic-typecheck
             try:
                 other = as_dtype(other)
-            except ivy.exceptions.IvyException:
+            except ivy.utils.exceptions.IvyException:
                 return False
 
         return self._ivy_dtype == other._ivy_dtype
@@ -137,7 +137,7 @@ def as_dtype(type_value):
                 np_frontend.numpy_scalar_to_dtype[type_value]
             ]
         )
-    raise ivy.exceptions.IvyException(
+    raise ivy.utils.exceptions.IvyException(
         f"Cannot convert the argument 'type_value': {type_value!r} "
         "to a TensorFlow Dtype"
     )
