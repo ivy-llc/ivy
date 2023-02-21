@@ -387,34 +387,34 @@ class ndarray:
         return key in ivy.reshape(self._ivy_array, -1)
 
     def __iadd__(self, value, /):
-        return np_frontend.add(self._ivy_array, value)
+        return np_frontend.add(self._ivy_array, value, out=self)
 
     def __isub__(self, value, /):
-        return np_frontend.subtract(self._ivy_array, value)
+        return np_frontend.subtract(self._ivy_array, value, out=self)
 
     def __imul__(self, value, /):
-        return np_frontend.multiply(self._ivy_array, value)
+        return np_frontend.multiply(self._ivy_array, value, out=self)
 
     def __itruediv__(self, value, /):
-        return np_frontend.true_divide(self._ivy_array, value)
+        return np_frontend.true_divide(self._ivy_array, value, out=self)
 
     def __ifloordiv__(self, value, /):
         return np_frontend.floor_divide(self._ivy_array, value, out=self)
 
     def __ipow__(self, value, /):
-        return np_frontend.power(self._ivy_array, value)
+        return np_frontend.power(self._ivy_array, value, out=self)
 
     def __iand__(self, value, /):
-        return np_frontend.logical_and(self._ivy_array, value)
+        return np_frontend.logical_and(self._ivy_array, value, out=self)
 
     def __ior__(self, value, /):
-        return np_frontend.logical_or(self._ivy_array, value)
+        return np_frontend.logical_or(self._ivy_array, value, out=self)
 
     def __ixor__(self, value, /):
-        return np_frontend.logical_xor(self._ivy_array, value)
+        return np_frontend.logical_xor(self._ivy_array, value, out=self)
 
     def __imod__(self, value, /):
-        return np_frontend.mod(self._ivy_array, value)
+        return np_frontend.mod(self._ivy_array, value, out=self)
 
     def __abs__(self):
         return np_frontend.absolute(self._ivy_array)
