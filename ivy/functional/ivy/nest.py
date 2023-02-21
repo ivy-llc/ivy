@@ -1015,6 +1015,49 @@ def nested_map(
         x following the applicable of fn to it's nested leaves, or x itself if x is not
         nested.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> def special_square(x : float) -> float : return np.square(x)
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> results = ivy.nested_map(x,
+    ...                   fn = special_square)
+    >>> print(results)
+    [[1, 4, 9], [16, 25, 36]]
+
+    >>> def special_square(x : float) -> float : return np.square(x)
+    >>> x = ivy.array([[1, 2, 3], (4, 5, 6)])
+    >>> results = ivy.nested_map(x,
+    ...                   fn = special_square,
+    ...                   include_derived = True)
+    >>> print(results)
+    [[1, 4, 9], [16, 25, 36]]
+
+    >>> def special_square(x : float) -> float : return np.square(x)
+    >>> x = ivy.array([[1, 2, 3], (4, 5)])
+    >>> results = ivy.nested_map(x,
+    ...                   fn = special_square,
+    ...                   to_ignore = ivy.Tuple)
+    >>> print(results)
+    [[1, 4, 9], [16, 25]]
+
+    >>> def special_square(x : float) -> float : return np.square(x)
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> results = ivy.nested_map(x,
+    ...                   fn = special_square,
+    ...                   to_mutable = True)
+    >>> print(results)
+    [[1, 4, 9], [16, 25, 36]]
+
+    >>> def special_square(x : float) -> float : return np.square(x)
+    >>> x = ivy.array([[[1, 2]], [[3, 4]], [[5, 6]]])
+    >>> results = ivy.nested_map(x,
+    ...                   fn = special_square,
+    ...                   max_depth = 1)
+    >>> print(results)
+    [[[1, 2]], [[3, 4]], [[5, 6]]]
+
     """
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
