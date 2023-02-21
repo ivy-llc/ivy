@@ -9,18 +9,6 @@ import ivy.functional.frontends.jax as jax_frontend
 import ivy.functional.frontends.numpy as np_frontend
 
 
-def _from_jax_frontend_array_to_ivy_array(x):
-    if (
-        isinstance(x, jax_frontend.DeviceArray)
-        and x.weak_type
-        and x.ivy_array.shape == ()
-    ):
-        return ivy.to_scalar(x.ivy_array)
-    if hasattr(x, "ivy_array"):
-        return x.ivy_array
-    return x
-
-
 def _from_ivy_array_to_jax_frontend_array(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
@@ -43,12 +31,6 @@ def _from_ivy_array_to_jax_frontend_array_weak_type(
         )
     elif isinstance(x, ivy.Array):
         return jax_frontend.DeviceArray(x, weak_type=True)
-    return x
-
-
-def _native_to_ivy_array(x):
-    if isinstance(x, ivy.NativeArray):
-        return ivy.array(x)
     return x
 
 
