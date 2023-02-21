@@ -389,7 +389,7 @@ def dropout1d(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if training:
-        if data_format == "NWC":
+        if data_format == "NCW":
             perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
             x = jnp.transpose(x, perm)
         noise_shape = list(x.shape)
@@ -397,7 +397,7 @@ def dropout1d(
         _, rng_input = jax.random.split(RNG.key)
         mask = jax.random.bernoulli(rng_input, 1 - prob, noise_shape)
         res = jnp.where(mask, x / (1 - prob), 0)
-        if data_format == "NWC":
+        if data_format == "NCW":
             res = jnp.transpose(res, perm)
         return res
     else:
