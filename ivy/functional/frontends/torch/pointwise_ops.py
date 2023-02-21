@@ -252,7 +252,7 @@ def ceil(input, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def clamp(input, min=None, max=None, *, out=None):
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         min,
         max,
         fn=ivy.exists,
@@ -271,7 +271,7 @@ def clamp(input, min=None, max=None, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def clip(input, min=None, max=None, *, out=None):
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         min,
         max,
         fn=ivy.exists,

@@ -1,6 +1,6 @@
 # flake8: noqa
 # local
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 import ivy
 from numbers import Number
 from typing import Union, Tuple, Iterable
@@ -75,7 +75,7 @@ def check_tensorflow_casting(x1, x2):
         x1 = ivy.asarray(x1)
         if not hasattr(x2, "dtype"):
             x2 = ivy.asarray(x2, dtype=x1.dtype)
-        ivy.assertions.check_same_dtype(x1, x2)
+        ivy.utils.assertions.check_same_dtype(x1, x2)
     return x1, x2
 
 

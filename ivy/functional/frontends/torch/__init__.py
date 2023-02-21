@@ -46,7 +46,7 @@ from . import utilities
 from .utilities import *
 from . import linalg
 import ivy
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 # global
 from numbers import Number
@@ -234,7 +234,7 @@ def promote_types_torch(
     try:
         ret = torch_promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
     except KeyError:
-        raise ivy.exceptions.IvyException("these dtypes are not type promotable")
+        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
     return ret
 
 

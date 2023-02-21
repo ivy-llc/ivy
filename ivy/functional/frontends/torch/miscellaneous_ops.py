@@ -10,7 +10,7 @@ def flip(input, dims):
 
 @to_ivy_arrays_and_back
 def fliplr(input):
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         len(input.shape),
         2,
         allow_equal=True,
@@ -21,7 +21,7 @@ def fliplr(input):
 
 @to_ivy_arrays_and_back
 def flipud(input):
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         len(input.shape),
         1,
         allow_equal=True,
@@ -199,21 +199,21 @@ def rot90(input, k, dims):
     total_dims = ivy.get_num_dims(input)
     total_rot_dims = len(dims)
 
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         total_dims,
         2,
         allow_equal=True,
         message="expected total dims >= 2, but got total dims = " + str(total_dims),
     )
 
-    ivy.assertions.check_equal(
+    ivy.utils.assertions.check_equal(
         total_rot_dims,
         2,
         message="expected total rotation dims == 2, but got dims = "
         + str(total_rot_dims),
     )
 
-    ivy.assertions.check_equal(
+    ivy.utils.assertions.check_equal(
         dims[0],
         dims[1],
         inverse=True,
@@ -223,7 +223,7 @@ def rot90(input, k, dims):
         + str(dims[1]),
     )
 
-    ivy.assertions.check_equal(
+    ivy.utils.assertions.check_equal(
         ivy.abs(dims[0] - dims[1]),
         total_dims,
         inverse=True,
@@ -234,26 +234,26 @@ def rot90(input, k, dims):
     )
 
     # range of dims
-    ivy.assertions.check_less(
+    ivy.utils.assertions.check_less(
         dims[0],
         total_dims,
         message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
     )
 
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         dims[0],
         -total_dims,
         allow_equal=True,
         message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
     )
 
-    ivy.assertions.check_less(
+    ivy.utils.assertions.check_less(
         dims[1],
         total_dims,
         message="Rotation dim1 out of range, dim1 = " + str(dims[1]),
     )
 
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         dims[1],
         -total_dims,
         allow_equal=True,
