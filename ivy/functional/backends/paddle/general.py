@@ -14,7 +14,11 @@ from . import backend_version
 
 
 def is_native_array(x, /, *, exclusive=False):
-    raise IvyNotImplementedException()
+    if isinstance(x, paddle.Tensor):
+        if exclusive and not x.stop_gradient:
+            return False
+        return True
+    return False
 
 
 def array_equal(x0: paddle.Tensor, x1: paddle.Tensor, /) -> bool:

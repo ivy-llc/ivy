@@ -20,7 +20,12 @@ from ivy.utils.exceptions import IvyNotImplementedException
 def dev(
     x: paddle.Tensor, /, *, as_native: bool = False
 ) -> Union[ivy.Device, Place]:
-    raise IvyNotImplementedException()
+    dv = x.place
+    if as_native:
+        if isinstance(dv, Place):
+            dv = "gpu" if dv.is_gpu_place() else "cpu"
+        return paddle.device.set_device(dv)
+    return as_ivy_dev(dv)
 
 
 def to_device(
@@ -31,30 +36,52 @@ def to_device(
     stream: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if device is None:
+        return x
+    #TODO: check memory leak because ret is copying the original tensor
+    ret = paddle.to_tensor(x, place=as_native_dev(device), stop_gradient = x.stop_gradient)
+    return ret
 
 
 def as_ivy_dev(device: Place, /):
-    raise IvyNotImplementedException()
+    if isinstance(device, str):
+        return ivy.Device(device)
+    
+    if device.is_cpu_place():
+        dev_type = "cpu"
+        dev_idx = 0
+    elif device.is_gpu_place():
+        dev_type = "gpu"
+        dev_idx = device.gpu_device_id()
+     
+    if dev_type == "cpu":
+        return ivy.Device(dev_type)
+    
+    return ivy.Device(
+        dev_type + (":" + (str(dev_idx) if dev_idx is not None else "0"))
+    )
 
 
 def as_native_dev(
     device: Optional[Union[ivy.Device, Place]] = None,
     /,
 ) -> Optional[Place]:
-    raise IvyNotImplementedException()
+    if not isinstance(device, str):
+        return device
+    return paddle.device.set_device(ivy.Device(device))
 
 
 def clear_mem_on_dev(device: Place, /):
-    raise IvyNotImplementedException()
+    if device.is_gpu_place():
+        paddle.device.cuda.empty_cache()
 
 
 def num_gpus() -> int:
-    raise IvyNotImplementedException()
+    raise paddle.device.cuda.device_count()
 
 
 def gpu_is_available() -> bool:
-    raise IvyNotImplementedException()
+    return bool(paddle.device.cuda.device_count())
 
 
 # noinspection PyUnresolvedReferences
