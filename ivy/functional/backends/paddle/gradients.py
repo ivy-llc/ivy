@@ -6,7 +6,7 @@ from typing import Optional, Callable
 import paddle
 # local
 import ivy
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def variable(x, /):
