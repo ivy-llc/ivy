@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipul
 @handle_frontend_test(
     fn_tree="numpy.dsplit",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
     indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
