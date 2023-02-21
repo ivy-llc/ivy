@@ -103,6 +103,7 @@ def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -216,7 +217,7 @@ def expand_dims(
                       [5.]])
     }
     """
-    return current_backend(x).expand_dims(x, axis=axis, out=out)
+    return current_backend(x).expand_dims(x, axis=axis, copy=copy, out=out)
 
 
 @handle_view
@@ -230,6 +231,7 @@ def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -302,7 +304,7 @@ def flip(
                 [ 9,  8,  7]]])
 
     """
-    return current_backend(x).flip(x, axis=axis, out=out)
+    return current_backend(x).flip(x, axis=axis, copy=copy, out=out)
 
 
 @handle_view
@@ -317,6 +319,7 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
+    copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Permutes the axes (dimensions) of an array x.
@@ -393,7 +396,7 @@ def permute_dims(
     }
 
     """
-    return current_backend(x).permute_dims(x, axes, out=out)
+    return current_backend(x).permute_dims(x, axes, copy=copy, out=out)
 
 
 @handle_view
@@ -527,6 +530,7 @@ def roll(
     /,
     shift: Union[int, Sequence[int]],
     *,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.Container]:
@@ -623,7 +627,7 @@ def roll(
     }
 
     """
-    return current_backend(x).roll(x, shift, axis=axis, out=out)
+    return current_backend(x).roll(x, shift, copy=copy, axis=axis, out=out)
 
 
 @handle_view
@@ -638,6 +642,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
+    copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Removes singleton dimensions (axes) from x.
@@ -707,7 +712,7 @@ def squeeze(
         b: ivy.array([3., 4., 5.])
     }
     """
-    return current_backend(x).squeeze(x, axis, out=out)
+    return current_backend(x).squeeze(x, axis, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -807,6 +812,7 @@ def clip(
     x_max: Union[Number, ivy.Array, ivy.NativeArray],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Clips (limits) the values in an array.
@@ -918,7 +924,7 @@ def clip(
     }
 
     """
-    return current_backend(x).clip(x, x_min, x_max, out=out)
+    return current_backend(x).clip(x, x_min, x_max, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -932,6 +938,7 @@ def constant_pad(
     /,
     pad_width: Iterable[Tuple[int]],
     *,
+    copy: Optional[bool] = None,
     value: Optional[Number] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1005,7 +1012,7 @@ def constant_pad(
     }
 
     """
-    return current_backend(x).constant_pad(x, pad_width, value, out=out)
+    return current_backend(x).constant_pad(x, pad_width, copy=copy, value, out=out)
 
 
 @to_native_arrays_and_back
@@ -1019,6 +1026,7 @@ def repeat(
     /,
     repeats: Union[int, Iterable[int]],
     *,
+    copy: Optional[bool] = None,
     axis: int = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1075,7 +1083,7 @@ def repeat(
         b: ivy.array([0., 0., 1., 1., 2., 2.])
     }
     """
-    return current_backend(x).repeat(x, repeats, axis=axis, out=out)
+    return current_backend(x).repeat(x, repeats, copy=copy, axis=axis, out=out)
 
 
 @handle_view
@@ -1088,6 +1096,7 @@ def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    copy: Optional[bool] = None,
     num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
@@ -1147,6 +1156,7 @@ def split(
     """
     return current_backend(x).split(
         x,
+        copy=copy,
         num_or_size_splits=num_or_size_splits,
         axis=axis,
         with_remainder=with_remainder,
@@ -1166,6 +1176,7 @@ def swapaxes(
     axis1: int,
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Interchange two axes of an array.
@@ -1254,7 +1265,7 @@ def swapaxes(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).swapaxes(x, axis0, axis1, out=out)
+    return current_backend(x).swapaxes(x, axis0, axis1, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -1267,6 +1278,7 @@ def tile(
     /,
     repeats: Iterable[int],
     *,
+    copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Constructs an array by repeating x the number of times given by reps.
@@ -1333,7 +1345,7 @@ def tile(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).tile(x, repeats, out=out)
+    return current_backend(x).tile(x, repeats, copy=copy, out=out)
 
 
 @handle_view
@@ -1431,6 +1443,7 @@ def zero_pad(
     /,
     pad_width: Iterable[Tuple[int]],
     *,
+    copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Pads an array with zeros.
@@ -1489,4 +1502,4 @@ def zero_pad(
     }
 
     """
-    return current_backend(x).zero_pad(x, pad_width, out=out)
+    return current_backend(x).zero_pad(x, pad_width, copy=copy, out=out)
