@@ -1503,10 +1503,7 @@ def test_torch_floor(
 def test_torch_floor_divide(
     *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -1515,10 +1512,7 @@ def test_torch_floor_divide(
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -2019,6 +2013,66 @@ def test_torch_sinc(
     test_flags,
 ):
     input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+# hypot
+@handle_frontend_test(
+    fn_tree="torch.hypot",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+)
+def test_torch_hypot(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-2,
+        input=x[0],
+        other=x[1],
+    )
+
+
+# sigmoid
+@handle_frontend_test(
+    fn_tree="torch.sigmoid",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_sigmoid(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

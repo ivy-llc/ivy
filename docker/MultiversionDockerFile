@@ -1,0 +1,32 @@
+FROM ubuntu:20.04
+WORKDIR /ivy
+
+COPY ../docker/multicondaenv.yml .
+COPY ../docker/multiversion_framework_directory.py .
+COPY ../docker/multiversion_testing_requirements.txt .
+COPY ../docker/run_multiversion_framework_directory.sh .
+
+
+
+
+# Install miniconda
+ENV CONDA_DIR /opt/miniconda
+
+RUN apt clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install -y wget
+
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py38_22.11.1-1-Linux-x86_64.sh -O ~/miniconda.sh && \
+     /bin/bash ~/miniconda.sh -b -p /opt/miniconda
+
+
+ENV PATH=$CONDA_DIR/bin:$PATH
+RUN conda env create -f multicondaenv.yml
+
+RUN pip3 install --no-cache-dir --no-deps -r multiversion_testing_requirements.txt --target=/opt/miniconda/envs/multienv/lib/python3.8/site-packages
+RUN ./run_multiversion_framework_directory.sh
+# Make RUN commands use the new environment:
+SHELL ["conda", "run", "-n", "multienv", "/bin/bash", "-c"]
+
+

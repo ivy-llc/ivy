@@ -1,5 +1,8 @@
 # global
 import abc
+from typing import Optional, Union
+
+# local
 import ivy
 
 
@@ -40,3 +43,69 @@ class ArrayWithActivationsExperimental(abc.ABC):
 
         """
         return ivy.logit(self, eps=eps, out=out)
+
+    def thresholded_relu(
+        self: ivy.Array,
+        /,
+        *,
+        threshold: Optional[Union[int, float]] = 0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.thresholded_relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.thresholded_relu also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        threshold
+            threshold value above which the activation is linear. Default: ``0``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the relu activation function applied element-wise
+            with custom threshold.
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., .2, 1.])
+        >>> y = x.thresholded_relu(threshold=0.5)
+        >>> print(y)
+        ivy.array([0., 0., 1.])
+        """
+        return ivy.thresholded_relu(self._data, threshold=threshold, out=out)
+
+    def prelu(
+        self,
+        slope: Union[float, ivy.NativeArray, ivy.Array],
+        /,
+        *,
+        out: Optional["ivy.Array"] = None,
+    ) -> ivy.Array:
+        """
+        Prelu takes input data (Array) and slope array as input,
+        and produces one output data (array) where the function
+        f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
+        to the data array elementwise. This operator supports unidirectional
+        broadcasting (array slope should be unidirectional broadcastable to
+        input tensor X);
+
+        Parameters
+        ----------
+        self
+            input array.
+        slope
+            Slope Array. The shape of slope can be smaller then first input X;
+            if so, its shape must be unidirectional broadcastable to X.
+        out
+            Optional output array.
+        Returns
+        -------
+        """
+        return ivy.prelu(self._data, slope, out=out)

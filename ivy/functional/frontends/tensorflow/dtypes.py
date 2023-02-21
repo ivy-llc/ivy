@@ -2,7 +2,10 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 import ivy.functional.frontends.numpy as np_frontend
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_tf_dtype,
+)
 
 
 class DType:
@@ -61,14 +64,14 @@ class DType:
         if self._ivy_dtype.is_float_dtype:
             return 0, 1
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 f"{self._ivy_dtype} does not have defined limits"
             )
 
     @property
     def max(self):
         if self._ivy_dtype in (ivy.bool, ivy.complex128, ivy.complex64):
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 f"Cannot find maximum value of {self._ivy_dtype}"
             )
         if self._ivy_dtype is ivy.bfloat16:
@@ -78,7 +81,7 @@ class DType:
     @property
     def min(self):
         if self._ivy_dtype in (ivy.bool, ivy.complex128, ivy.complex64):
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 f"Cannot find maximum value of {self._ivy_dtype}"
             )
         if self._ivy_dtype is ivy.bfloat16:
@@ -101,7 +104,7 @@ class DType:
         if type(other) != DType:  # pylint: disable=unidiomatic-typecheck
             try:
                 other = as_dtype(other)
-            except ivy.exceptions.IvyException:
+            except ivy.utils.exceptions.IvyException:
                 return False
 
         return self._ivy_dtype == other._ivy_dtype
@@ -122,6 +125,10 @@ def as_dtype(type_value):
         return DType(type_value)
     if type_value in tf_frontend.tensorflow_type_to_enum:
         return DType(tf_frontend.tensorflow_type_to_enum[type_value])
+    if type_value is float:
+        return DType(1)
+    if type_value is bool:
+        return DType(10)
     if isinstance(type_value, np_frontend.dtype):
         return DType(tf_frontend.tensorflow_type_to_enum[type_value.ivy_dtype])
     if issubclass(type_value, np_frontend.generic):
@@ -130,12 +137,13 @@ def as_dtype(type_value):
                 np_frontend.numpy_scalar_to_dtype[type_value]
             ]
         )
-    raise ivy.exceptions.IvyException(
+    raise ivy.utils.exceptions.IvyException(
         f"Cannot convert the argument 'type_value': {type_value!r} "
         "to a TensorFlow Dtype"
     )
 
 
+@handle_tf_dtype
 @to_ivy_arrays_and_back
 def cast(x, dtype, name=None):
     if ivy.is_array(x):

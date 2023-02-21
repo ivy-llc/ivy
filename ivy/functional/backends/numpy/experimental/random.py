@@ -81,3 +81,22 @@ def poisson(
     if seed:
         np.random.seed(seed)
     return np.asarray(np.random.poisson(lam, shape), dtype=dtype)
+
+
+def bernoulli(
+    probs: [float, np.ndarray],
+    *,
+    logits: [float, np.ndarray] = None,
+    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
+    device: str = None,
+    dtype: np.dtype = None,
+    seed: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if seed is not None:
+        np.random.seed(seed)
+    if logits is not None:
+        probs = np.asarray(ivy.softmax(logits), dtype=dtype)
+    if not _check_shapes_broadcastable(shape, probs.shape):
+        shape = probs.shape
+    return np.asarray(np.random.binomial(1, p=probs, size=shape), dtype=dtype)

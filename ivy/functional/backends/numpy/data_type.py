@@ -122,14 +122,14 @@ def broadcast_to(
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[np.dtype, str, np.ndarray]) -> Finfo:
+def finfo(type: Union[np.dtype, str, np.ndarray], /) -> Finfo:
     if isinstance(type, np.ndarray):
         type = type.dtype
     return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[np.dtype, str, np.ndarray]) -> np.iinfo:
+def iinfo(type: Union[np.dtype, str, np.ndarray], /) -> np.iinfo:
     if isinstance(type, np.ndarray):
         type = type.dtype
     return np.iinfo(ivy.as_native_dtype(type))
@@ -148,7 +148,7 @@ def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> ivy.Dtype:
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[np.dtype, str, bool, int, float]) -> ivy.Dtype:
+def as_ivy_dtype(dtype_in: Union[np.dtype, str, bool, int, float], /) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
     if dtype_in is float:
@@ -161,7 +161,7 @@ def as_ivy_dtype(dtype_in: Union[np.dtype, str, bool, int, float]) -> ivy.Dtype:
         if dtype_in in native_dtype_dict:
             return ivy.Dtype(dtype_in)
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Cannot convert to ivy dtype."
                 f" {dtype_in} is not supported by NumPy backend."
             )
@@ -169,7 +169,7 @@ def as_ivy_dtype(dtype_in: Union[np.dtype, str, bool, int, float]) -> ivy.Dtype:
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
-def as_native_dtype(dtype_in: Union[np.dtype, str, bool, int, float]) -> np.dtype:
+def as_native_dtype(dtype_in: Union[np.dtype, str, bool, int, float], /) -> np.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
@@ -183,18 +183,18 @@ def as_native_dtype(dtype_in: Union[np.dtype, str, bool, int, float]) -> np.dtyp
     if dtype_in in native_dtype_dict.values():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             f"Cannot convert to numpy dtype. {dtype_in} is not supported by NumPy."
         )
 
 
-def dtype(x: np.ndarray, as_native: bool = False) -> ivy.Dtype:
+def dtype(x: np.ndarray, *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.to_native(x).dtype
     return as_ivy_dtype(x.dtype)
 
 
-def dtype_bits(dtype_in: Union[np.dtype, str]) -> int:
+def dtype_bits(dtype_in: Union[np.dtype, str], /) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1

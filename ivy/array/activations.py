@@ -103,18 +103,34 @@ class ArrayWithActivations(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([0.3, -0.1])
+        >>> x = ivy.array([-1.2, -0.6, 1.5])
         >>> y = x.gelu()
         >>> print(y)
-        ivy.array([ 0.185, -0.046])
+        ivy.array([-0.138, -0.165, 1.4])
         """
         return ivy.gelu(self._data, approximate=approximate, out=out)
 
     def sigmoid(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+
         """
-        ivy.Array instance method variant of ivy.sigmoid. This method simply wraps the
-        function, and so the docstring for ivy.sigmoid also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.sigmoid.
+
+        This method simply wraps the function, and so the docstring for ivy.sigmoid also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array
+        out
+            optional output array for writing the result to. It must have the same shape
+            the input broadcast to default: None
+
+        Returns
+        -------
+        ret
+            an array with the sigmoid activation function applied element-wise.
+
 
         Examples
         --------

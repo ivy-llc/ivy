@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy import with_supported_dtypes
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -51,10 +52,10 @@ def confusion_matrix(
     )
 
     # Sanity check (potential optimization)
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         labels, 0, allow_equal=True, message="labels contains negative values"
     )
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         predictions, 0, allow_equal=True, message="predictions contains negative values"
     )
 
@@ -62,16 +63,16 @@ def confusion_matrix(
         num_classes = max(ivy.max(labels), ivy.max(predictions)) + 1
     else:
         num_classes_int64 = ivy.astype(ivy.array(num_classes), ivy.int64, copy=False)
-        ivy.assertions.check_less(
+        ivy.utils.assertions.check_less(
             labels, num_classes_int64, message="labels out of bound"
         )
-        ivy.assertions.check_less(
+        ivy.utils.assertions.check_less(
             predictions, num_classes_int64, message="predictions out of bound"
         )
 
     if weights is not None:
         weights = ivy.array(weights)
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             ivy.shape(predictions),
             ivy.shape(weights),
             message="weights shape do not match predictions",
@@ -145,7 +146,7 @@ def is_non_decreasing(x, name="is_non_decreasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
     if ivy.array(x).size == 2:
-        return ivy.array(x[0] <= x[1])
+        return ivy.array([x[0] <= x[1]])
     return ivy.all(ivy.less_equal(x, ivy.roll(x, -1)))
 
 
@@ -196,7 +197,7 @@ def negative(x, name=None):
 
 @to_ivy_arrays_and_back
 def polyval(coeffs, x, name=None):
-    ivy.assertions.check_isinstance(coeffs, list)
+    ivy.utils.assertions.check_isinstance(coeffs, list)
     x = ivy.array(x)
     if len(coeffs) < 1:
         return ivy.zeros_like(x, dtype=x.dtype)
@@ -209,10 +210,6 @@ def polyval(coeffs, x, name=None):
 
 @to_ivy_arrays_and_back
 def pow(x, y, name="pow"):
-    if not (isinstance(x, int) or isinstance(x, float) or (x is None)):
-        x = x.data
-    if not (isinstance(y, int) or isinstance(y, float) or (y is None)):
-        y = y.data
     x, y = check_tensorflow_casting(x, y)
     return ivy.pow(x, y)
 
@@ -321,7 +318,7 @@ def tan(x, name=None):
 def unsorted_segment_mean(
     data, segment_ids, num_segments, name="unsorted_segment_mean"
 ):
-    ivy.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
@@ -336,7 +333,7 @@ def unsorted_segment_mean(
 def unsorted_segment_sqrt_n(
     data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):
-    ivy.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
@@ -369,10 +366,17 @@ def argmin(input, axis=None, output_type="int64", name=None):
 def truediv(x, y, name="truediv"):
     x, y = check_tensorflow_casting(x, y)
     x_dtype = ivy.dtype(x)
-    if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
-        return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
-    elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
-        return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+
+    if ivy.current_backend_str() == "torch":
+        if x_dtype in [ivy.int8, ivy.int16]:
+            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+        elif x_dtype in [ivy.int32, ivy.int64]:
+            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
+    else:
+        if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
+            return ivy.divide(ivy.astype(x, ivy.float32), ivy.astype(y, ivy.float32))
+        elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
+            return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
 
 
@@ -400,3 +404,27 @@ def minimum(x, y, name=None):
 @to_ivy_arrays_and_back
 def sigmoid(x, name=None):
     return ivy.sigmoid(x)
+
+
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def tanh(x, name=None):
+    return ivy.tanh(x)
+
+
+@to_ivy_arrays_and_back
+def rsqrt(x, name=None):
+    return ivy.reciprocal(ivy.sqrt(x))
+
+
+@to_ivy_arrays_and_back
+def nextafter(x1, x2, name=None):
+    return ivy.nextafter(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def log_softmax(logits, axis=None):
+    return ivy.log_softmax(logits, axis=axis)

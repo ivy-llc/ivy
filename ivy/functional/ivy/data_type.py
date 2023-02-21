@@ -9,8 +9,9 @@ import importlib
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
+    handle_array_function,
     handle_out_argument,
     to_native_arrays_and_back,
     inputs_to_native_arrays,
@@ -18,7 +19,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Helpers #
@@ -97,7 +98,7 @@ def _get_function_list(func):
                 if (
                     hasattr(nodef, "value")
                     and hasattr(nodef.value, "id")
-                    and nodef.value.id != "ivy"
+                    and nodef.value.id not in ["ivy", "self"]
                 ):
                     continue
                 names[nodef.attr] = getattr(
@@ -202,7 +203,7 @@ def _get_dtypes(fn, complement=True):
             if isinstance(v, dict):
                 v = v.get(ivy.current_backend_str(), base)
 
-            ivy.assertions.check_isinstance(v, tuple)
+            ivy.utils.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 
     if complement:
@@ -223,6 +224,7 @@ Iinfo = None
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
@@ -328,6 +330,7 @@ def astype(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
     """Broadcasts one or more arrays against one another.
 
@@ -405,6 +408,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -474,6 +478,7 @@ def broadcast_to(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def can_cast(
     from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
     to: ivy.Dtype,
@@ -1540,7 +1545,7 @@ def dtype(
     >>> print(y)
     float32
     """
-    return current_backend(x).dtype(x, as_native)
+    return current_backend(x).dtype(x, as_native=as_native)
 
 
 @handle_nestable
@@ -1566,7 +1571,7 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     ('bool', 'float64', 'int64', 'uint8', 'int8', 'float32', 'int32', 'int16', \
     'bfloat16')
     """
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
         "supported_dtypes and unsupported_dtypes attributes cannot both exist \
         in a particular backend",
@@ -1603,7 +1608,7 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
     ('float16','uint16','uint32','uint64')
     """
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
         "supported_dtypes and unsupported_dtypes attributes cannot both exist \
         in a particular backend",
@@ -1895,7 +1900,9 @@ def is_uint_dtype(
         return isinstance(dtype_in, np.unsignedinteger)
     elif isinstance(dtype_in, (list, tuple, dict)):
         return ivy.nested_argwhere(
-            dtype_in, lambda x: isinstance(x, np.unsignedinteger)
+            dtype_in,
+            lambda x: isinstance(x, np.unsignedinteger)
+            or (ivy.is_array(x) and "uint" in ivy.dtype(x)),
         )
     return "uint" in as_ivy_dtype(dtype_in)
 
@@ -1938,7 +1945,9 @@ def is_complex_dtype(
         return isinstance(dtype_in, (complex, np.complexfloating))
     elif isinstance(dtype_in, (list, tuple, dict)):
         return ivy.nested_argwhere(
-            dtype_in, lambda x: isinstance(x, (complex, np.complexfloating))
+            dtype_in,
+            lambda x: isinstance(x, (complex, np.complexfloating))
+            or (ivy.is_array(x) and "complex" in ivy.dtype(x)),
         )
     return "complex" in as_ivy_dtype(dtype_in)
 
@@ -1978,7 +1987,7 @@ def promote_types(
                 (ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))
             ]
     except KeyError:
-        raise ivy.exceptions.IvyException("these dtypes are not type promotable")
+        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
     return ret
 
 

@@ -51,13 +51,12 @@ def test_numpy_diagonal(
         min_dim_size=2,
     ),
     k=st.integers(min_value=-1, max_value=1),
+    test_with_out=st.just(False),
 )
 def test_numpy_diag(
     dtype_and_x,
     k,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
@@ -65,13 +64,10 @@ def test_numpy_diag(
     input_dtype, x = dtype_and_x
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
+        test_flags=test_flags,
         on_device=on_device,
         frontend=frontend,
         fn_tree=fn_tree,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         v=x[0],
         k=k,
     )
@@ -82,24 +78,20 @@ def test_numpy_diag(
     n=helpers.ints(min_value=1, max_value=10),
     ndim=helpers.ints(min_value=2, max_value=10),
     dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
 )
 def test_numpy_diag_indices(
     n,
     ndim,
     dtype,
-    as_variable,
-    num_positional_args,
-    native_array,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,

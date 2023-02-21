@@ -6,14 +6,15 @@ from typing import Optional, Union
 # local
 import ivy
 from ivy.func_wrapper import (
+    handle_array_function,
     infer_dtype,
     infer_device,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
 )
-from ivy.backend_handler import backend_stack
-from ivy.exceptions import handle_exceptions
+from ivy.utils.backend import backend_stack
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Helpers #
@@ -22,7 +23,7 @@ from ivy.exceptions import handle_exceptions
 
 def _check_bounds_and_get_shape(low, high, shape):
     if shape is not None:
-        ivy.assertions.check_all_or_any_fn(
+        ivy.utils.assertions.check_all_or_any_fn(
             low,
             high,
             fn=lambda x: isinstance(x, (int, float)),
@@ -45,7 +46,7 @@ def _check_bounds_and_get_shape(low, high, shape):
         valid_types += (ivy.NativeArray,)
     if isinstance(low, valid_types):
         if isinstance(high, valid_types):
-            ivy.assertions.check_equal(ivy.shape(low), ivy.shape(high))
+            ivy.utils.assertions.check_equal(ivy.shape(low), ivy.shape(high))
         return ivy.shape(low)
     if isinstance(high, valid_types):
         return ivy.shape(high)
@@ -53,7 +54,7 @@ def _check_bounds_and_get_shape(low, high, shape):
 
 
 def _randint_check_dtype_and_bound(low, high, dtype):
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         low,
         high,
         dtype,
@@ -62,7 +63,7 @@ def _randint_check_dtype_and_bound(low, high, dtype):
         limit=[0],
         message="randint cannot take arguments of type uint",
     )
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         low,
         high,
         dtype,
@@ -71,18 +72,18 @@ def _randint_check_dtype_and_bound(low, high, dtype):
         limit=[0],
         message="randint cannot take arguments of type float",
     )
-    ivy.assertions.check_less(low, high)
+    ivy.utils.assertions.check_less(low, high)
 
 
 def _check_valid_scale(std):
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         std, 0, allow_equal=True, message="std must be non-negative"
     )
 
 
 def _check_shapes_broadcastable(out, inp):
     if out is not None:
-        ivy.assertions.check_shapes_broadcastable(out, inp)
+        ivy.utils.assertions.check_shapes_broadcastable(out, inp)
 
 
 # Extra #
@@ -95,6 +96,7 @@ def _check_shapes_broadcastable(out, inp):
 @infer_dtype
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -208,6 +210,7 @@ def random_uniform(
 @infer_dtype
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -317,6 +320,7 @@ def random_normal(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -425,6 +429,7 @@ def multinomial(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
@@ -520,6 +525,7 @@ def seed(*, seed_value: int = 0) -> None:
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_function
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

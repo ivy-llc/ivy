@@ -777,3 +777,107 @@ def test_torch_tensorinv(
         input=x,
         ind=ind,
     )
+
+
+# tensorsolve
+@st.composite
+def _get_solve_matrices(draw):
+    # batch_shape, random_size, shared
+
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    dim = draw(helpers.ints(min_value=2, max_value=5))
+
+    first_matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=(dim, dim, dim, dim),
+            min_value=1.2,
+            max_value=5,
+        ).filter(
+            lambda x: np.linalg.cond(x.reshape((dim**2, dim**2)))
+            < 1 / sys.float_info.epsilon
+        )
+    )
+
+    second_matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=(dim, dim),
+            min_value=1.2,
+            max_value=3,
+        ).filter(
+            lambda x: np.linalg.cond(x.reshape((dim, dim))) < 1 / sys.float_info.epsilon
+        )
+    )
+
+    return input_dtype, first_matrix, second_matrix
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.tensorsolve",
+    a_and_b=_get_solve_matrices(),
+)
+def test_torch_tensorsolve(
+    *,
+    a_and_b,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, A, B = a_and_b
+    test_flags.num_positional_args = 2
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-3,
+        rtol=1e-3,
+        A=A,
+        B=B,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.matmul",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=(3, 3),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_matmul(
+    *,
+    dtype_x,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        input=x[0],
+        other=x[1],
+        rtol=1e-03,
+        atol=1e-06,
+    )

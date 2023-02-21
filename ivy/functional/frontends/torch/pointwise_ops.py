@@ -252,7 +252,7 @@ def ceil(input, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def clamp(input, min=None, max=None, *, out=None):
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         min,
         max,
         fn=ivy.exists,
@@ -271,7 +271,7 @@ def clamp(input, min=None, max=None, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def clip(input, min=None, max=None, *, out=None):
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         min,
         max,
         fn=ivy.exists,
@@ -438,3 +438,15 @@ def copysign(input, other, *, out=None):
 @to_ivy_arrays_and_back
 def sinc(input, *, out=None):
     return ivy.sinc(input, out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def hypot(input, other, *, out=None):
+    return ivy.hypot(input, other, out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def sigmoid(input, *, out=None):
+    return ivy.sigmoid(input, out=out)

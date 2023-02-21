@@ -108,6 +108,7 @@ class Container(
         rebuild_child_containers=False,
         types_to_iteratively_nest=None,
         alphabetical_keys=True,
+        dynamic_backend=None,
         **kwargs
     ):
         ContainerBase.__init__(
@@ -127,6 +128,7 @@ class Container(
             rebuild_child_containers,
             types_to_iteratively_nest,
             alphabetical_keys,
+            dynamic_backend,
             **kwargs
         )
 

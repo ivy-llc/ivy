@@ -7,8 +7,10 @@ import random
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
+    _assume_tf_dilation_gt_1,
+)
 from ivy.functional.frontends.jax.numpy import can_cast
-from ivy.functional.ivy.layers import _deconv_length
 
 
 # add
@@ -105,18 +107,16 @@ def _arrays_idx_n_dtypes(draw):
         st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
     )
     common_shape = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=4),
-            min_size=num_dims - 1,
-            max_size=num_dims - 1,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=4),
+            size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_arrays,
-            max_size=num_arrays,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_arrays,
         )
     )
     xs = list()
@@ -1755,9 +1755,8 @@ def test_jax_lax_dot_general(
 
 @st.composite
 def x_and_filters(draw, dim=2, transpose=False, general=False):
-    strides = draw(
-        st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
-    )
+    if not isinstance(dim, int):
+        dim = draw(dim)
     batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
@@ -1765,20 +1764,29 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
         )
     )
     dtype = draw(helpers.get_dtypes("float", full=False))
-    padding = draw(st.sampled_from(["SAME", "VALID"]))
+    padding = draw(
+        st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=dim,
+                max_size=dim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
+        )
+    )
     input_channels = draw(st.integers(1, 3))
     output_channels = draw(st.integers(1, 3))
-    if general:
-        group_list = [i for i in range(1, 6)]
-        if not transpose:
-            group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
-        else:
-            group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
-        fc = draw(st.sampled_from(group_list))
+    group_list = [i for i in range(1, 6)]
+    if not transpose:
+        group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
     else:
-        fc = 1
-    # tensorflow backprop doesn't support dilations more than 1 on CPU
-    dilations = 1
+        group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
+    fc = draw(st.sampled_from(group_list)) if general else 1
+    strides = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+    dilations = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
     elif dim == 1:
@@ -1786,24 +1794,10 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
     else:
         data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
     x_dim = []
-    if transpose:
-        output_shape = []
-        x_dim = draw(
-            helpers.get_shape(
-                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
-            )
-        )
-        for i in range(dim):
-            output_shape.append(
-                _deconv_length(
-                    x_dim[i], strides[0], filter_shape[i], padding, dilations
-                )
-            )
-    else:
-        for i in range(dim):
-            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
-            x_dim.append(draw(st.integers(min_x, min_x + 1)))
-        x_dim = tuple(x_dim)
+    for i in range(dim):
+        min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
+        x_dim.append(draw(st.integers(min_x, min_x + 1)))
+    x_dim = tuple(x_dim)
     if dim == 1:
         filter_df = draw(st.sampled_from(["OIW", "WIO"]))
     elif dim == 2:
@@ -1819,7 +1813,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
     if filter_df[0] == "O":
         filter_shape = channel_shape + filter_shape
     else:
-        filter_shape = filter_shape + channel_shape
+        filter_shape = filter_shape + channel_shape[::-1]
     if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
         x_shape = (batch_size,) + x_dim + (input_channels,)
     else:
@@ -1840,7 +1834,17 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
             max_value=1.0,
         )
     )
-    ret = (
+    if general and not transpose:
+        x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
+        dilations = (dilations, x_dilation)
+    if draw(st.booleans()):
+        p_dtype, pref = draw(
+            helpers.get_castable_dtype(draw(helpers.get_dtypes("numeric")), dtype[0])
+        )
+        assume(can_cast(p_dtype, pref))
+    else:
+        pref = None
+    return (
         dtype,
         vals,
         filters,
@@ -1848,29 +1852,15 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
         (data_format, filter_df, data_format),
         strides,
         padding,
+        fc,
+        pref,
     )
-    return ret + (output_shape, fc) if transpose else ret + (fc,)
-
-
-@st.composite
-def _conv_helper(draw, general=False, transpose=False):
-    dims = draw(st.sampled_from([1, 2, 3]))
-    x_f_d_df = draw(x_and_filters(dim=dims, general=general, transpose=transpose))
-    if draw(st.booleans()):
-        dtype, pref = draw(
-            helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("numeric")), x_f_d_df[0][0]
-            )
-        )
-        assume(can_cast(dtype, pref))
-        return x_f_d_df + (pref,)
-    else:
-        return x_f_d_df + (None,)
 
 
 @handle_frontend_test(
     fn_tree="jax.lax.conv",
-    x_f_d_other=_conv_helper(),
+    x_f_d_other=x_and_filters(),
+    test_with_out=st.just(False),
 )
 def test_jax_lax_conv(
     *,
@@ -1881,6 +1871,7 @@ def test_jax_lax_conv(
     test_flags,
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
     assume(dim_num[0][1] == "C" and dim_num[1][0] == "O")
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -1899,28 +1890,72 @@ def test_jax_lax_conv(
 
 @handle_frontend_test(
     fn_tree="jax.lax.conv_transpose",
-    x_f_d_df=helpers.x_and_filters(dim=2),
+    x_f_d_other=x_and_filters(general=True, transpose=True),
     test_with_out=st.just(False),
 )
 def test_jax_lax_conv_transpose(
     *,
-    x_f_d_df,
+    x_f_d_other,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lhs=x,
+        rhs=filters,
+        strides=stride,
+        padding=pad,
+        rhs_dilation=dilation,
+        dimension_numbers=dim_num,
+        transpose_kernel=False,
+        precision=None,
+        preferred_element_type=pref,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.conv_general_dilated",
+    x_f_d_other=x_and_filters(general=True),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_conv_general_dilated(
+    *,
+    x_f_d_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, filters, dilations, dim_num, stride, pad, fc, pref = x_f_d_other
+    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations[0])
+    assume(
+        not (isinstance(pad, str) and not len(dilations[1]) == dilations[1].count(1))
+    )
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        lhs=x[0],
-        rhs=filters[0],
-        strides=(stride, stride),
+        lhs=x,
+        rhs=filters,
+        window_strides=stride,
         padding=pad,
+        lhs_dilation=dilations[1],
+        rhs_dilation=dilations[0],
+        dimension_numbers=dim_num,
+        feature_group_count=fc,
+        batch_group_count=1,
+        precision=None,
+        preferred_element_type=pref,
     )
 
 

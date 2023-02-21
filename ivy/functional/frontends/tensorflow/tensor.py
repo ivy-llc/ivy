@@ -12,9 +12,6 @@ class EagerTensor:
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
-        self._dtype = tf_frontend.DType(
-            tf_frontend.tensorflow_type_to_enum[self._ivy_array.dtype]
-        )
 
     def __repr__(self):
         return (
@@ -41,7 +38,9 @@ class EagerTensor:
 
     @property
     def dtype(self):
-        return self._dtype
+        return tf_frontend.DType(
+            tf_frontend.tensorflow_type_to_enum[self._ivy_array.dtype]
+        )
 
     @property
     def shape(self):
@@ -208,7 +207,7 @@ class EagerTensor:
         return y.__rxor__(self._ivy_array)
 
     def __setitem__(self, key, value):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "ivy.functional.frontends.tensorflow.EagerTensor object "
             "doesn't support assignment"
         )

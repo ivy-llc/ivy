@@ -660,7 +660,7 @@ def trunc(
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x
     if not ivy.is_array(x):
-        raise ivy.exceptions.IvyException("Input must be array")
+        raise ivy.utils.exceptions.IvyException("Input must be array")
     elif not ("int" in str(x.dtype)):
         if not ret.get_shape().ndims == 0:
             ret = tf.tensor_scatter_nd_update(

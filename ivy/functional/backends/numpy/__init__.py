@@ -8,7 +8,12 @@ import ivy
 backend_version = {"version": np.__version__}
 
 # noinspection PyUnresolvedReferences
-use = ivy.backend_handler.ContextManager(sys.modules[__name__])
+if not ivy.is_local():
+    _module_in_memory = sys.modules[__name__]
+else:
+    _module_in_memory = sys.modules[ivy.import_module_path].import_cache[__name__]
+
+use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 NativeArray = np.ndarray
 NativeVariable = np.ndarray
@@ -99,7 +104,7 @@ native_inplace_support = False
 supports_gradients = False
 
 
-def closest_valid_dtype(type):
+def closest_valid_dtype(type, /):
     if type is None:
         return ivy.default_dtype()
     type_str = ivy.as_ivy_dtype(type)

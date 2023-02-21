@@ -55,6 +55,8 @@ def vstack(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
     return torch.vstack(arrays, out=None)
 
 
@@ -64,6 +66,8 @@ def hstack(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
     return torch.hstack(arrays, out=None)
 
 
@@ -136,7 +140,7 @@ def flatten(
     order: Optional[str] = "C",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if order == "F":
         return ivy.functional.experimental.flatten(
             x, start_dim=start_dim, end_dim=end_dim, order=order
@@ -146,22 +150,22 @@ def flatten(
 
 def vsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+) -> List[torch.Tensor]:
     return torch.vsplit(ary, indices_or_sections)
 
 
 def dsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.dsplit(ary, indices_or_sections)
+) -> List[torch.Tensor]:
+    if len(ary.shape) < 3:
+        raise ivy.utils.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
+    return list(torch.dsplit(ary, indices_or_sections))
 
 
 def atleast_1d(*arys: torch.Tensor) -> List[torch.Tensor]:
@@ -177,6 +181,8 @@ def dstack(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
     return torch.dstack(arrays, out=None)
 
 
@@ -204,7 +210,7 @@ def take_along_axis(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if arr.shape != indices.shape:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "arr and indices must have the same shape;"
             + f" got {arr.shape} vs {indices.shape}"
         )
@@ -214,12 +220,10 @@ def take_along_axis(
 
 def hsplit(
     ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.hsplit(ary, indices_or_sections)
+) -> List[torch.Tensor]:
+    return list(torch.hsplit(ary, indices_or_sections))
 
 
 take_along_axis.support_native_out = True

@@ -17,9 +17,10 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_view,
 )
-from ivy.backend_handler import current_backend
-from ivy.exceptions import handle_exceptions
+from ivy.utils.backend import current_backend
+from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_out_argument
@@ -36,9 +37,9 @@ def flatten(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
-        If start_dim or end_dim are passed, only dimensions starting
-        with start_dim and ending with end_dim are flattened.
-        The order of elements in input is unchanged.
+    If start_dim or end_dim are passed, only dimensions starting
+    with start_dim and ending with end_dim are flattened.
+    The order of elements in input is unchanged.
 
     Parameters
     ----------
@@ -66,15 +67,6 @@ def flatten(
     -------
     ret
         the flattened array over the specified dimensions.
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     Examples
     --------
@@ -171,6 +163,7 @@ def flatten(
 flatten.mixed_function = True
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -341,6 +334,7 @@ def heaviside(
     return ivy.current_backend().heaviside(x1, x2, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -382,7 +376,12 @@ def flipud(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def vstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
+def vstack(
+    arrays: Sequence[ivy.Array],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
     """Stack arrays in sequence vertically (row wise).
 
     Parameters
@@ -414,13 +413,18 @@ def vstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
                [7, 8]])
 
     """
-    return ivy.current_backend(arrays[0]).vstack(arrays)
+    return ivy.current_backend().vstack(arrays, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def hstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
+def hstack(
+    arrays: Sequence[ivy.Array],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
     """Stack arrays in sequence horizotally (column wise).
 
     Parameters
@@ -448,9 +452,10 @@ def hstack(arrays: Sequence[ivy.Array], /) -> ivy.Array:
     ivy.array([[5, 6, 7, 8]])
 
     """
-    return ivy.current_backend(arrays[0]).hstack(arrays)
+    return ivy.current_backend().hstack(arrays, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -606,6 +611,7 @@ def top_k(
     return current_backend(x).top_k(x, k, axis=axis, largest=largest, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -854,7 +860,7 @@ def _to_pairs(x, n):
     elif ivy.asarray(list(x)).shape == (2,):
         return ((x[0], x[1]),) * n
     else:
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             ivy.asarray(list(x)).shape,
             (n, 2),
             message="tuple argument should contain "
@@ -878,7 +884,7 @@ def _check_tuple_arg(arg, name):
     elif not isinstance(arg, int):
         flag_assert = True
     if flag_assert:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             name + " should be int, tuple of ints or tuple of int tuples"
         )
 
@@ -891,7 +897,7 @@ def _check_arguments(
     end_values,
     reflect_type,
 ):
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         callable(mode)
         or mode
         in [
@@ -910,36 +916,36 @@ def _check_arguments(
         message="the provided mode is not supported",
     )
     _check_tuple_arg(pad_width, "pad_width")
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
         message="the pad_widths must be greater or equal to zero",
     )
     if mode in ["maximum", "mean", "median", "minimum"]:
         if stat_length is None:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "stat_length is required for mode: " + mode
             )
         else:
             _check_tuple_arg(stat_length, "stat_length")
-            ivy.assertions.check_true(
+            ivy.utils.assertions.check_true(
                 all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
                 message="the stat lengths must be greater than zero",
             )
     elif mode == "constant":
         if constant_values is None:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "constant_values is required for mode: " + mode
             )
         else:
             _check_tuple_arg(constant_values, "constant_values")
     elif mode == "linear_ramp":
         if end_values is None:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "end_values is required for mode: " + mode
             )
         else:
             _check_tuple_arg(end_values, "end_values")
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         reflect_type in ["even", "odd"],
         message="the provided reflect_type is not supported",
     )
@@ -1165,7 +1171,7 @@ def pad(
         func = stat_functions[mode]
         stat_length = _to_pairs(stat_length, padded.ndim)
         if mode == "median":
-            ivy.assertions.check_true(
+            ivy.utils.assertions.check_true(
                 ivy.is_float_dtype(input),
                 message="median interpolation is only supported for floats",
             )
@@ -1195,38 +1201,32 @@ def pad(
     return padded
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_array_like_without_promotion
 def vsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Split an array into multiple sub-arrays along the 3rd axis.
+) -> List[ivy.Array]:
+    """Split an array vertically into multiple sub-arrays.
 
     Parameters
     ----------
     ary
         Array input.
     indices_or_sections
-        If indices_or_sections is an integer n, the array is split into n sections.
-        If the array is divisible by n along the 3rd axis, each section will be of
-        equal size. If input is not divisible by n, the sizes of the first
-        int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1,
-        and the rest will have size int(ary.size(0) / n).
+        If indices_or_sections is an integer n, the array is split into n
+        equal sections, provided that n must be a divisor of the split axis.
         If indices_or_sections is a tuple of ints, then input is split at each of
         the indices in the tuple.
-    out
-        optional output array, for writing the result to.
 
     Returns
     -------
     ret
-        input array split along the 3rd axis.
+        input array split vertically.
 
     Examples
     --------
@@ -1239,22 +1239,18 @@ def vsplit(
     >>> ivy.vsplit(ary, 2)
     [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
     """
-    return ivy.current_backend(ary).vsplit(
-        ary, indices_or_sections=indices_or_sections, out=out
-    )
+    return ivy.current_backend(ary).vsplit(ary, indices_or_sections)
 
 
+@handle_view
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_array_like_without_promotion
 def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> List[ivy.Array]:
     """Split an array into multiple sub-arrays along the 3rd axis.
 
     Parameters
@@ -1269,8 +1265,6 @@ def dsplit(
         the rest will have size int(ary.size(0) / n).
         If indices_or_sections is a tuple of ints, then input is split at each of
         the indices in the tuple.
-    out
-        optional output array, for writing the result to.
 
     Returns
     -------
@@ -1289,11 +1283,10 @@ def dsplit(
     [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
      ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
     """
-    return ivy.current_backend(ary).dsplit(
-        ary, indices_or_sections=indices_or_sections, out=out
-    )
+    return ivy.current_backend(ary).dsplit(ary, indices_or_sections)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1366,9 +1359,10 @@ def dstack(
                [[2, 3]],
                [[3, 4]]])
     """
-    return ivy.current_backend(arrays[0]).dstack(arrays)
+    return ivy.current_backend().dstack(arrays)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1407,6 +1401,7 @@ def atleast_2d(
     return ivy.current_backend().atleast_2d(*arys)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1495,17 +1490,15 @@ def take_along_axis(
     return ivy.current_backend(arr).take_along_axis(arr, indices, axis, out=out)
 
 
+@handle_view
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_array_like_without_promotion
 def hsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
-    indices_or_sections: Union[int, Tuple[int]],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> List[ivy.Array]:
     """Split an array into multiple sub-arrays horizontally.
 
     Parameters
@@ -1513,15 +1506,10 @@ def hsplit(
     ary
         Array input.
     indices_or_sections
-        If indices_or_sections is an integer n, the array is split into n sections.
-        If the array is divisible by n along the 3rd axis, each section will be of
-        equal size. If input is not divisible by n, the sizes of the first
-        int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1,
-        and the rest will have size int(ary.size(0) / n).
+        If indices_or_sections is an integer n, the array is split into n
+        equal sections, provided that n must be a divisor of the split axis.
         If indices_or_sections is a tuple of ints, then input is split at each of
         the indices in the tuple.
-    out
-        optional output array, for writing the result to.
 
     Returns
     -------
@@ -1536,17 +1524,17 @@ def hsplit(
              [8.,  9., 10., 11.],
              [12., 13., 14., 15.]]
             )
-    >>> ivy.vsplit(ary, 2)
-    [ivy.array([[ 0.,  1.],
+    >>> ivy.hsplit(ary, 2)
+        [ivy.array([[ 0.,  1.],
                     [ 4.,  5.],
                     [ 8.,  9.],
                     [12., 13.]]),
          ivy.array([[ 2.,  3.],
                     [ 6.,  7.],
                     [10., 11.],
-                    [14., 15.]]))
+                    [14., 15.]])]
     """
-    return ivy.current_backend(ary).hsplit(ary, indices_or_sections, out=out)
+    return ivy.current_backend(ary).hsplit(ary, indices_or_sections)
 
 
 @handle_exceptions
@@ -1573,3 +1561,40 @@ def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     (3, 3)
     """
     return ivy.current_backend().broadcast_shapes(shapes)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_out_argument
+@handle_array_like_without_promotion
+def expand(
+    x: Union[ivy.Array, ivy.NativeArray],
+    shape: Union[ivy.Shape, ivy.NativeShape],
+    /,
+    *,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Broadcast the input Array following the given shape
+    and the broadcast rule.
+
+    Parameters
+    ----------
+    x
+        Array input.
+    shape
+        A 1-D Array indicates the shape you want to expand to,
+        following the broadcast rule
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Output Array
+    """
+    ones = ivy.ones(shape, dtype=x.dtype, device=device, out=out)
+    return x * ones

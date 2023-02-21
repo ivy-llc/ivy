@@ -188,6 +188,8 @@ def cumsum(
     if dtype is None:
         if dtype is jnp.bool_:
             dtype = ivy.default_int_dtype(as_native=True)
+        elif ivy.is_int_dtype(x.dtype):
+            dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
         else:
             dtype = _infer_dtype(x.dtype)
     if exclusive or reverse:

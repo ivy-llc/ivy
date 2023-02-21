@@ -1,5 +1,6 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -13,7 +14,7 @@ def embedding(
     sparse=False,
 ):
     # TODO: add support for the remaining arguments
-    ivy.assertions.check_equal(len(weight.shape), 2, message="weight must be 2-d")
+    ivy.utils.assertions.check_equal(len(weight.shape), 2, message="weight must be 2-d")
     ret = ivy.empty(
         input.shape + (weight.shape[1],), dtype=weight.dtype, device=weight.device
     )
@@ -26,4 +27,5 @@ def embedding(
             ret[i] = ivy.clip_vector_norm(weight[x, :], max_norm, p=norm_type)
         else:
             ret[i] = weight[x, :]
-    return ret
+    ret_dtype = torch_frontend.promote_types_torch(input.dtype, weight.dtype)
+    return ivy.astype(ret, ret_dtype)
