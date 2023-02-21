@@ -22,6 +22,7 @@ mod_backend = {
 # local
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy import DefaultDevice
+from ivy import set_exception_trace_mode
 from ivy_tests.test_ivy.helpers import globals as test_globals
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
@@ -39,6 +40,7 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 def pytest_configure(config):
     global available_frameworks
     #traceback
+    set_exception_trace_mode("NULL")
     raw_value = config.getoption("--tb")
     if raw_value == 'auto':
         config.option.tbstyle = "line"
