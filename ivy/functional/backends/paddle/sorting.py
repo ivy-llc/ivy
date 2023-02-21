@@ -6,7 +6,7 @@ from typing import Optional
 import ivy
 
 from . import backend_version
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def argsort(
