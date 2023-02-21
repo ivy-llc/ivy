@@ -1846,7 +1846,7 @@ def einops_reduce(
 
     Examples
     --------
-    With :class:`ivy.Array` instance method:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[-4.47, 0.93, -3.34],
     ...                [3.66, 24.29, 3.64]])
