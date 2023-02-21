@@ -1,6 +1,6 @@
 import ivy
 import paddle
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def is_native_sparse_array(x):
