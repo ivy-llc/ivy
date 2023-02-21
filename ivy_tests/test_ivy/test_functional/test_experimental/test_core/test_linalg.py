@@ -144,16 +144,13 @@ def _generate_eigh_tridiagonal_args(draw):
             max_num_dims=1,
             min_value=2.0,
             max_value=5,
-            available_dtypes=(
-                ivy.float32,
-                ivy.float64,
-            ),
+            available_dtypes=helpers.get_dtypes("float"),
         )
     )
     beta_shape = len(alpha[0]) - 1
     dtype, beta = draw(
         helpers.dtype_and_values(
-            available_dtypes=st.just(dtype),
+            available_dtypes=dtype,
             shape=(beta_shape,),
             min_value=2.0,
             max_value=5,
@@ -165,7 +162,7 @@ def _generate_eigh_tridiagonal_args(draw):
         select_range = None
     elif select == "i":
         range_slice = draw(
-            st.slices(beta_shape + 1).filter(
+            st.slices(beta_shape).filter(
                 lambda x: x.start
                 and x.stop
                 and x.step
@@ -178,19 +175,11 @@ def _generate_eigh_tridiagonal_args(draw):
 
         select_range = [range_slice.start, range_slice.stop]
     else:
-        range_slice = draw(
-            st.slices(beta_shape + 1).filter(
-                lambda x: x.start
-                and x.stop
-                and x.step
-                and x.step >= 0
-                and x.start < x.stop
-            )
-        )
+        range_start = draw(st.floats(1e-5, 1e4))
+        range_end = draw(st.floats(range_start + 0.1, 1e5))
+        select_range = [range_start, range_end]
 
-        select_range = [range_slice.start, range_slice.stop]
-
-    eigvals_only = draw(st.just(False))
+    eigvals_only = draw(st.booleans())
     tol = draw(st.floats(1e-5, 1e-3) | st.just(None))
     return dtype, alpha, beta, eigvals_only, select, select_range, tol
 
@@ -208,12 +197,11 @@ def test_eigh_tridiagonal(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype, alpha, beta, eigvals_only, select, select_range, tol = args_packet
     test_flags.with_out = False
     results = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="numpy",
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -227,7 +215,7 @@ def test_eigh_tridiagonal(
         select=select,
         select_range=select_range,
         tol=tol,
-        test_values=False,
+        test_values=eigvals_only,
         return_flat_np_arrays=True,
     )
     if results is None:
