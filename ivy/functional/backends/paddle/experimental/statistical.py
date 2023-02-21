@@ -1,7 +1,7 @@
 # global
 from typing import Optional, Union, Tuple, Sequence
 import paddle
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
