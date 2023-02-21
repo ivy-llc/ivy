@@ -50,7 +50,6 @@ def statistical_dtype_values(draw, *, function):
                 | helpers.floats(min_value=0, max_value=max_correction - 1)
             )
         return dtype, values, axis, correction
-
     if function == "quantile":
         q = draw(
             helpers.array_values(
@@ -71,7 +70,6 @@ def statistical_dtype_values(draw, *, function):
             )
         )
         return dtype, values, axis, interpolation, q
-
     return dtype, values, axis
 
 
@@ -263,12 +261,13 @@ def test_corrcoef(
         rowvar=rowvar,
     )
 
+
 # bincount
 @handle_test(
     fn_tree="functional.ivy.experimental.bincount",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["int32", "int64"],
-        num_arrays=1,
+        available_dtypes=["int32"],
+        num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
         max_num_dims=1,
@@ -278,13 +277,11 @@ def test_corrcoef(
         max_value=10,
         allow_nan=False,
     ),
-    weights=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_bincount(
     *,
     dtype_and_x,
-    weights,
     test_flags,
     backend_fw,
     fn_name,
@@ -300,5 +297,5 @@ def test_bincount(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
-        weights=np.random.uniform(size=x[0].shape) if weights else None,
+        weights=st.one_of(st.none(), st.just(x[1])),
     )

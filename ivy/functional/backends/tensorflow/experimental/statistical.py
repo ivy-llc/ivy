@@ -117,3 +117,13 @@ def nanmedian(
         interpolation="midpoint",
         keepdims=keepdims,
     )
+
+
+def bincount(
+    x: Union[tf.Tensor, tf.Variable],
+    weights: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    minlength: int = 0,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.bincount(x, weights=weights, minlength=minlength)

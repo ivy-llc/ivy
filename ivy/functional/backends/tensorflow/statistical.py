@@ -208,13 +208,3 @@ def einsum(
     dtype = _get_promoted_type_of_operands(operands)
     operands = (tf.cast(operand, tf.float32) for operand in operands)
     return tf.cast(tf.einsum(equation, *operands), dtype)
-
-
-def bincount(
-    x: Union[tf.Tensor, tf.Variable],
-    weights: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    minlength: int = 0,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.bincount(x, weights=weights, minlength=minlength)

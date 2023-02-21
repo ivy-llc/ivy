@@ -115,3 +115,6 @@ def bincount(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.bincount(x, weights=weights, minlength=minlength)
+
+
+bincount.support_native_out = False
